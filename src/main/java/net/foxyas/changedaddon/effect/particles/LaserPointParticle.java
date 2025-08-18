@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.effect.particles;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
@@ -8,12 +7,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.item.LaserPointer;
+import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.PlayerUtil;
-import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -24,25 +22,18 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static net.foxyas.changedaddon.util.FoxyasUtils.manualRaycastIgnoringBlocks;
 
 public class LaserPointParticle extends TextureSheetParticle {
     public final SpriteSet spriteSet;
     private final Entity entity;
-
 
     public LaserPointParticle(ClientLevel level, double x, double y, double z, double dx, double dy, double dz,
                               LaserPointParticle.Option data, SpriteSet sprites) {
@@ -57,11 +48,6 @@ public class LaserPointParticle extends TextureSheetParticle {
         this.bCol = data.getColorAsColor3().blue();
         this.gCol = data.getColorAsColor3().green();
         this.pickSprite(sprites);
-    }
-
-    @Override
-    public void render(@NotNull VertexConsumer p_107678_, @NotNull Camera p_107679_, float p_107680_) {
-        super.render(p_107678_, p_107679_, p_107680_);
     }
 
     @Override
@@ -80,9 +66,12 @@ public class LaserPointParticle extends TextureSheetParticle {
 
         if (level.isClientSide() && Minecraft.getInstance().player != null && ProcessTransfur.getPlayerTransfurVariantSafe(Minecraft.getInstance().player).map(
                 transfurVariantInstance -> transfurVariantInstance.getParent().is(ChangedAddonTags.TransfurTypes.CAT_LIKE) || transfurVariantInstance.getParent().is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE)
-        ).orElse(false)) {
+        ).orElse(false) && bbWidth != .35) {
             this.setSize(0.35f, 0.35f);
             this.quadSize = 0.35f;
+        } else if(bbWidth == .35) {
+            this.setSize(0.1f, 0.1f);
+            this.quadSize = 0.1f;
         }
 
 
@@ -92,42 +81,35 @@ public class LaserPointParticle extends TextureSheetParticle {
             return;
         }
 
-        HitResult result = owner.pick(LaserPointer.MAX_LASER_REACH, 0.0F, true);
-        Vec3 hitPos;
-        Direction face = null;
+        Vec3 eyePos = owner.getEyePosition();
+        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(owner.getViewVector(1).scale(LaserPointer.MAX_LASER_REACH)),
+                LaserPointer.IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(owner))
+        );
 
-        EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(owner, LaserPointer.MAX_LASER_REACH, true);
+        EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(owner, result.getType() != HitResult.Type.MISS
+                ? (float) result.distanceTo(owner)
+                : LaserPointer.MAX_LASER_REACH, false);
+
+        Vec3 hitPos = result.getLocation();
+        Direction face = null;
 
         boolean Subtract = false;
         if (entityHitResult != null) {
             hitPos = entityHitResult.getLocation();
             face = entityHitResult.getEntity().getDirection();
         } else if (result instanceof BlockHitResult blockResult) {
-            BlockHitResult finalResult = blockResult;
-
-            if (level.getBlockState(blockResult.getBlockPos()).is(ChangedTags.Blocks.LASER_TRANSLUCENT)) {
-                Set<Block> blockSet = Objects.requireNonNull(ForgeRegistries.BLOCKS.tags())
-                        .getTag(ChangedTags.Blocks.LASER_TRANSLUCENT).stream().collect(Collectors.toSet());
-                finalResult = manualRaycastIgnoringBlocks(level, owner, LaserPointer.MAX_LASER_REACH, blockSet);
-                Subtract = true;
-            }
-
-            hitPos = finalResult.getLocation();
-            face = finalResult.getDirection();
+            hitPos = blockResult.getLocation();
+            face = blockResult.getDirection();
             hitPos = FoxyasUtils.applyOffset(hitPos, face, !Subtract ? -0.01f : 0.05f);
-        } else {
-            hitPos = result.getLocation(); // fallback (geralmente miss)
         }
 
-        if (face != null) {
-            // Aplica offset dinâmico baseado na direção
-            double offset = !Subtract ? -0.05D : 0.05D;
-            hitPos = hitPos.subtract(
-                    face.getStepX() * offset,
-                    face.getStepY() * offset,
-                    face.getStepZ() * offset
-            );
-        }
+        // Aplica offset dinâmico baseado na direção
+        double offset = !Subtract ? -0.05D : 0.05D;
+        hitPos = hitPos.subtract(
+                face.getStepX() * offset,
+                face.getStepY() * offset,
+                face.getStepZ() * offset
+        );
 
         if (ChangedAddonClientConfiguration.SMOOTH_LASER_MOVEMENT.get()) {
             moveToward(hitPos);
@@ -152,12 +134,16 @@ public class LaserPointParticle extends TextureSheetParticle {
             this.x += this.xd;
             this.y += this.yd;
             this.z += this.zd;
+
+            setBoundingBox(getBoundingBox().move(xd, yd, zd));
         }
         this.age = 0; // Reset idade para manter a partícula viva
 
     }
 
     private void SetToward(Vec3 target) {
+        setBoundingBox(getBoundingBox().move(target.x - this.x, target.y - this.y, target.z - this.z));
+
         this.x = target.x;
         this.y = target.y;
         this.z = target.z;

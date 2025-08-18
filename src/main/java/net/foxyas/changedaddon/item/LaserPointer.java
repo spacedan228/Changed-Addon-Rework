@@ -40,9 +40,9 @@ public class LaserPointer extends Item implements SpecializedAnimations {
     public static final float MAX_LASER_REACH = 32;
     public static final int FOLLOW_LASER_RADIUS = 16;
     public static final int FOLLOW_BB_SIZE = FOLLOW_LASER_RADIUS * 2;
-    private static final ClipContext.ShapeGetter IGNORE_TRANSLUCENT = (state, b, pos, context) -> {
+    public static final ClipContext.ShapeGetter IGNORE_TRANSLUCENT = (state, b, pos, context) -> {
         if(state.is(ChangedTags.Blocks.LASER_TRANSLUCENT)) return Shapes.empty();
-        return ClipContext.Block.OUTLINE.get(state, b, pos, context);
+        return ClipContext.Block.COLLIDER.get(state, b, pos, context);
     };
 
     public LaserPointer() {
@@ -128,36 +128,27 @@ public class LaserPointer extends Item implements SpecializedAnimations {
         if(level.isClientSide) return InteractionResultHolder.pass(stack);
 
         Vec3 eyePos = player.getEyePosition();
-        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(player.getViewVector(0).scale(MAX_LASER_REACH)),
+        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(player.getViewVector(1).scale(MAX_LASER_REACH)),
                 IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(player))
         );
 
         EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(player, result.getType() != HitResult.Type.MISS
                 ? (float) result.distanceTo(player)
                 : LaserPointer.MAX_LASER_REACH, false);
-        Vec3 hitPos = result.getLocation();
+        Vec3 hitPos;
 
         if (entityHitResult != null) {
             Direction face = Direction.getNearest(entityHitResult.getLocation().x, entityHitResult.getLocation().y, entityHitResult.getLocation().z);
             hitPos = applyOffset(entityHitResult.getLocation(), face, -0.05f);
             spawnLaserParticle(level, player, stack, hitPos);
-        } else if (result instanceof BlockHitResult blockResult && level.getBlockState(blockResult.getBlockPos()).isAir()) {
-            // Mira no ar: define uma posição "alvo" no ar baseada na direção do olhar
-            spawnLaserParticle(level, player, stack, blockResult.getLocation());
         } else if (result instanceof BlockHitResult blockResult) {
+            if(level.getBlockState(blockResult.getBlockPos()).isAir()) {
+                spawnLaserParticle(level, player, stack, blockResult.getLocation());
+                return InteractionResultHolder.pass(stack);
+            }
+
             hitPos = applyOffset(result.getLocation(), blockResult.getDirection(), -0.05f);
             spawnLaserParticle(level, player, stack, hitPos);
-        }
-
-        List<Mob> nearbyMobs = level.getEntitiesOfClass(Mob.class, AABB.ofSize(hitPos, FOLLOW_BB_SIZE, FOLLOW_BB_SIZE, FOLLOW_BB_SIZE));
-
-        for (Mob mob : nearbyMobs) {
-            for (WrappedGoal wrapped : mob.goalSelector.getAvailableGoals()) {
-                if (!(wrapped.getGoal() instanceof FollowAndLookAtLaser followGoal)) continue;
-
-                followGoal.setLaserTarget(hitPos, player);
-                break;
-            }
         }
 
         player.awardStat(Stats.ITEM_USED.get(this));
@@ -169,24 +160,25 @@ public class LaserPointer extends Item implements SpecializedAnimations {
         super.onUsingTick(stack, player, count);
 
         Level level = player.level;
-        if(player.level.isClientSide) return;
+        if(player.level.isClientSide || count % 20 != 0) return;
 
         Vec3 eyePos = player.getEyePosition();
-        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(player.getViewVector(0).scale(MAX_LASER_REACH)),
+        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(player.getViewVector(1).scale(MAX_LASER_REACH)),
                 IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(player))
         );
 
         EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(player, result.getType() != HitResult.Type.MISS
                 ? (float) result.distanceTo(player)
                 : LaserPointer.MAX_LASER_REACH, false);
+
         Vec3 hitPos = result.getLocation();
 
         if (entityHitResult != null) {
             Direction face = Direction.getNearest(entityHitResult.getLocation().x, entityHitResult.getLocation().y, entityHitResult.getLocation().z);
             hitPos = applyOffset(entityHitResult.getLocation(), face, -0.05f);
-        } else if (result instanceof BlockHitResult blockResult && player.getLevel().getBlockState(blockResult.getBlockPos()).isAir()) {
-            // Mira no ar: define uma posição "alvo" no ar baseada na direção do olhar
         } else if (result instanceof BlockHitResult blockResult) {
+            if(level.getBlockState(blockResult.getBlockPos()).isAir()) return;
+
             hitPos = applyOffset(result.getLocation(), blockResult.getDirection(), -0.05f);
         }
 
