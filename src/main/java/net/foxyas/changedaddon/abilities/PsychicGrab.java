@@ -160,35 +160,38 @@ public class PsychicGrab extends SimpleAbility {
             return;
         }
         Entity target = getTarget(entity.getLevel(), TargetID);
+        Entity lookingAt = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6);
         if (entity.getEntity().isShiftKeyDown() || getTargetByID(entity.getLevel(), TargetID) == null) {
-            if (PlayerUtil.getEntityLookingAt(entity.getEntity(), 6) == null) {
+            if (lookingAt == null) {
                 return;
             }
-            TargetID = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6).getUUID();
-        } else {
-            if (!target.isAlive()) {
-                if (PlayerUtil.getEntityLookingAt(entity.getEntity(), 6) == null) {
-                    return;
-                }
-                TargetID = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6).getUUID();
-            }
+            TargetID = lookingAt.getUUID();
+            super.startUsing(entity);
+            return;
+        }
 
-            if (target instanceof Projectile projectile) {
-                if (projectile instanceof AbstractArrow arrow) {
-                    if (arrow instanceof AbstractArrowAccessor arrowAccessor) {
-                        if (arrowAccessor.inGround()) {
-                            arrowAccessor.setInGround(false);
-                            arrow.setDeltaMovement((look.subtract(target.position())));
-                        }
+        if (!target.isAlive()) {
+            if (lookingAt == null) {
+                return;
+            }
+            TargetID = lookingAt.getUUID();
+        }
+
+        if (target instanceof Projectile projectile) {
+            if (projectile instanceof AbstractArrow arrow) {
+                if (arrow instanceof AbstractArrowAccessor arrowAccessor) {
+                    if (arrowAccessor.inGround()) {
+                        arrowAccessor.setInGround(false);
+                        arrow.setDeltaMovement((look.subtract(target.position())));
                     }
-                    /*CompoundTag tag = new CompoundTag();
-                    arrow.addAdditionalSaveData(tag);
-                    boolean inGround = tag.contains("inGround") && tag.getBoolean("inGround");
-                    if (inGround){
-                        tag.putBoolean("inGround",false);
-                        arrow.readAdditionalSaveData(tag);
-                    }*/
                 }
+                /*CompoundTag tag = new CompoundTag();
+                arrow.addAdditionalSaveData(tag);
+                boolean inGround = tag.contains("inGround") && tag.getBoolean("inGround");
+                if (inGround){
+                    tag.putBoolean("inGround",false);
+                    arrow.readAdditionalSaveData(tag);
+                }*/
             }
         }
         super.startUsing(entity);
@@ -205,9 +208,9 @@ public class PsychicGrab extends SimpleAbility {
         if (target != null) {
             if (entity.getEntity().isShiftKeyDown()) {
                 if (entity.getAbilityInstance(this) != null && entity.getAbilityInstance(this).getController().getHoldTicks() <= 3) {
-                    if (PlayerUtil.getEntityLookingAt(entity.getEntity(), 6) != null
-                            && PlayerUtil.getEntityLookingAt(entity.getEntity(), 6) != getTargetByID(entity.getLevel(), TargetID)) {
-                        TargetID = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6).getUUID();
+                    Entity lookingAt = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6);
+                    if (lookingAt != null && lookingAt != getTargetByID(entity.getLevel(), TargetID)) {
+                        TargetID = lookingAt.getUUID();
                     }
                     return;
                 }

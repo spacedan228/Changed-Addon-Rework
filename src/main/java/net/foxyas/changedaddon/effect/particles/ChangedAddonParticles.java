@@ -46,7 +46,7 @@ public class ChangedAddonParticles {
     }
 
     private static <T extends ParticleOptions> ParticleType<T> register(ResourceLocation name, ParticleOptions.Deserializer<T> dec, final Function<ParticleType<T>, Codec<T>> fn) {
-        var type = new ParticleType<T>(false, dec) {
+        var type = new ParticleType<>(false, dec) {
             @Override
             public @NotNull Codec<T> codec() {
                 return fn.apply(this);

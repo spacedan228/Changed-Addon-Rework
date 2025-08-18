@@ -192,7 +192,7 @@ public class PlayerUtil {
         Vec3 eyePos = entity.getEyePosition(1.0f);
         HitResult hitResult = entity.pick(reach, 1.0f, false);
 
-        if (hitResult != null && hitResult.getType() != HitResult.Type.MISS) {
+        if (hitResult.getType() != HitResult.Type.MISS) {
             distance = hitResult.getLocation().distanceToSqr(eyePos);
         }
 
@@ -212,27 +212,24 @@ public class PlayerUtil {
     }
 
     @Nullable
-    public static EntityHitResult getEntityHitLookingAt(Entity entity, double reach) {
+    public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, boolean testLineOfSight) {
         double distance = reach * reach;
         Vec3 eyePos = entity.getEyePosition(1.0f);
-        HitResult hitResult = entity.pick(reach, 1.0f, false);
 
-        if (hitResult != null && hitResult.getType() != HitResult.Type.MISS) {
-            distance = hitResult.getLocation().distanceToSqr(eyePos);
+        if(testLineOfSight) {
+            HitResult hitResult = entity.pick(reach, 1.0f, false);
+
+            if (hitResult.getType() != HitResult.Type.MISS) {
+                distance = hitResult.getLocation().distanceToSqr(eyePos);
+                reach = (float) Math.sqrt(distance);
+            }
         }
 
         Vec3 viewVec = entity.getViewVector(1.0F);
         Vec3 toVec = eyePos.add(viewVec.x * reach, viewVec.y * reach, viewVec.z * reach);
         AABB aabb = entity.getBoundingBox().expandTowards(viewVec.scale(reach)).inflate(1.0D, 1.0D, 1.0D);
 
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, aabb, e -> !e.isSpectator(), distance);
-
-        if (entityHitResult != null) {
-            if (eyePos.distanceToSqr(entityHitResult.getLocation()) <= reach * reach) {
-                return entityHitResult;
-            }
-        }
-        return null;
+        return ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, aabb, e -> !e.isSpectator(), distance);
     }
 
     public static HitResult getEntityBlockHitLookingAt(Entity entity, double reach, float deltaTicks, boolean affectByFluids) {
@@ -240,8 +237,8 @@ public class PlayerUtil {
     }
 
     @Nullable
-    public static Vec3 getRelativeHitPosition(LivingEntity entity, double distance) {
-        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(entity, distance);
+    public static Vec3 getRelativeHitPosition(LivingEntity entity, float distance) {
+        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(entity, distance, true);
         if (hitResult != null) {
             Vec3 hitLocation = hitResult.getLocation();
             Vec3 entityPosition = hitResult.getEntity().getPosition(1);
@@ -275,7 +272,7 @@ public class PlayerUtil {
         Vec3 eyePos = player.getEyePosition(1.0f);
         HitResult hitResult = entity.pick(entityReach, 1.0f, false);
 
-        if (hitResult != null && hitResult.getType() != HitResult.Type.MISS) {
+        if (hitResult.getType() != HitResult.Type.MISS) {
             distance = hitResult.getLocation().distanceToSqr(eyePos);
             double blockReach = 5;
 

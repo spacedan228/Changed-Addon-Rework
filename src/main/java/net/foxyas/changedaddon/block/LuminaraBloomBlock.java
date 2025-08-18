@@ -21,7 +21,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -55,16 +54,15 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
     }
 
     @Override
-    public void animateTick(@NotNull BlockState state, @NotNull Level level, BlockPos pos, Random random) {
-        AABB aabb = this.getShape(state, level, pos, CollisionContext.empty()).bounds().move(Vec3.atCenterOf(pos));
-        Vec3 center = aabb.getCenter();//.add(0.0625F, 0.0625F, 0.0625F);
-        double x = center.x + (random.nextDouble(-0.5, 0.5));
-        double y = center.y + 0.05D;
-        double z = center.z + (random.nextDouble(-0.5, 0.5));
+    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Random random) {
+        if(random.nextFloat() >= 0.25) return;
 
-        if (random.nextFloat() < 0.25F) {
-            level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, x, y, z, 0, 0.01D, 0);
-        }
+        Vec3 offset = state.getOffset(level, pos);
+        float x = (float) offset.x + pos.getX() + 0.5f + random.nextFloat(-0.3f, 0.3f);
+        float y = (float) offset.y + pos.getY() + 0.5625f;
+        float z = (float) offset.z + pos.getZ() + 0.5f + random.nextFloat(-0.3f, 0.3f);
+
+        level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, x, y, z, 0, 0.01D, 0);
     }
 
 

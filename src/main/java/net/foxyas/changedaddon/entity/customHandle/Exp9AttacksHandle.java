@@ -574,7 +574,7 @@ public class Exp9AttacksHandle {
 
                 }
 
-                EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(this.boss, 10);
+                EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(this.boss, 10, true);
 
                 // Verifique o resultado do hit
                 if (hitResult != null && hitResult.getType() != HitResult.Type.MISS) {

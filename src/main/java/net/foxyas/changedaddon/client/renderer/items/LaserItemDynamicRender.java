@@ -10,10 +10,10 @@ public class LaserItemDynamicRender {
         Minecraft.getInstance().getItemColors().register(
                 (stack, tintIndex) -> {
                     if (tintIndex == 0) { // Só aplica a cor no layer certo
-                        if (LaserPointer.getColorAsColor(stack) == null) {
+                        if (LaserPointer.getAWTColor(stack) == null) {
                             return -1; // Cor padrão (branco)
                         }
-                        return LaserPointer.getColorAsColor(stack).getRGB();
+                        return LaserPointer.getAWTColor(stack).getRGB();
                     }
                     return -1; // Cor padrão (branco)
                 },
@@ -25,7 +25,7 @@ public class LaserItemDynamicRender {
         Minecraft.getInstance().getItemColors().register(
                 (stack, tintIndex) -> {
                     if (tintIndex == 0) { // Só aplica a cor no layer certo
-                        return LaserPointer.getColorAsColor(stack).getRGB();
+                        return LaserPointer.getAWTColor(stack).getRGB();
                     }
                     return -1; // Cor padrão (branco)
                 },
