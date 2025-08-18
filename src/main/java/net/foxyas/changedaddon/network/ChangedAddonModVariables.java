@@ -135,7 +135,13 @@ public class ChangedAddonModVariables {
             CompoundTag nbt = (CompoundTag) Tag;
             showWarns = nbt.getBoolean("showWarns");
             consciousnessFightProgress = nbt.getFloat("consciousnessFightProgress");
-            FTKCminigameType = nbt.getByte("FTKCminigameType") != (byte) -1 ? FightToKeepConsciousness.MinigameType.values()[nbt.getByte("FTKCminigameType")] : null;
+            
+            if(nbt.contains("FTKCminigameType")) {
+                FTKCminigameType = nbt.getByte("FTKCminigameType") != (byte) -1
+                        ? FightToKeepConsciousness.MinigameType.values()[nbt.getByte("FTKCminigameType")]
+                        : null;
+            } else FTKCminigameType = null;
+
             resetTransfurAdvancements = nbt.getBoolean("resetTransfurAdvancements");
             actCooldown = nbt.getBoolean("actCooldown");
             areDarkLatex = nbt.getBoolean("areDarkLatex");
