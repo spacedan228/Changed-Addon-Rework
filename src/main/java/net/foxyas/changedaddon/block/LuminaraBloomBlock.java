@@ -56,13 +56,13 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
 
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level level, BlockPos pos, Random random) {
-        AABB aabb = this.getShape(state, level, pos, CollisionContext.empty()).bounds();
-        Vec3 center = aabb.getCenter().add(0.0625F, 0.0625F, 0.0625F);
+        AABB aabb = this.getShape(state, level, pos, CollisionContext.empty()).bounds().move(Vec3.atCenterOf(pos));
+        Vec3 center = aabb.getCenter();//.add(0.0625F, 0.0625F, 0.0625F);
         double x = center.x + (random.nextDouble(-0.5, 0.5));
-        double y = center.y + 0.3D;
+        double y = center.y + 0.05D;
         double z = center.z + (random.nextDouble(-0.5, 0.5));
 
-        if (random.nextFloat() < 0.05F) {
+        if (random.nextFloat() < 0.25F) {
             level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, x, y, z, 0, 0.01D, 0);
         }
     }
