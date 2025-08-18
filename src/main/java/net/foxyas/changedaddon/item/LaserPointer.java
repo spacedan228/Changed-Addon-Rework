@@ -124,9 +124,11 @@ public class LaserPointer extends Item implements SpecializedAnimations {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
+        player.startUsingItem(hand);
         if(level.isClientSide) return InteractionResultHolder.pass(stack);
 
-        HitResult result = level.clip(new DynamicClipContext(player.getEyePosition(), player.getViewVector(0).scale(MAX_LASER_REACH),
+        Vec3 eyePos = player.getEyePosition();
+        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(player.getViewVector(0).scale(MAX_LASER_REACH)),
                 IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(player))
         );
 
@@ -158,8 +160,6 @@ public class LaserPointer extends Item implements SpecializedAnimations {
             }
         }
 
-        player.startUsingItem(hand);
-
         player.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResultHolder.pass(stack);
     }
@@ -171,7 +171,8 @@ public class LaserPointer extends Item implements SpecializedAnimations {
         Level level = player.level;
         if(player.level.isClientSide) return;
 
-        HitResult result = level.clip(new DynamicClipContext(player.getEyePosition(), player.getViewVector(1).scale(MAX_LASER_REACH),
+        Vec3 eyePos = player.getEyePosition();
+        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(player.getViewVector(0).scale(MAX_LASER_REACH)),
                 IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(player))
         );
 

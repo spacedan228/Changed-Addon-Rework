@@ -35,7 +35,7 @@ public class ChangedAddonParticles {
     }
 
     public static LaserPointParticle.Option laserPoint(Entity entity, Color color) {
-        return new LaserPointParticle.Option(entity, color.getRGB(), color.getAlpha());
+        return new LaserPointParticle.Option(entity, color.getRGB(), color.getAlpha() / 255f);
     }
 
 

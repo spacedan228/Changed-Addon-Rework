@@ -18,8 +18,6 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber
 public class ChangedAddonCommandRootCommand {
 
-    private static final float SIZE_TOLERANCE = BasicPlayerInfo.getSizeTolerance();
-
     @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
         event.getDispatcher().register(Commands.literal("changed-addon")
@@ -102,6 +100,7 @@ public class ChangedAddonCommandRootCommand {
     }
 
     private static float getSize(float size, boolean overrideSize) {
+        float SIZE_TOLERANCE = BasicPlayerInfo.getSizeTolerance();
         if (size < 1.0f - SIZE_TOLERANCE) {
             ChangedAddonMod.LOGGER.atWarn().log("Size value is too low: {}, The Size Value is going to be auto set to 0.95", size); // Too Low Warn
         } else if (size > 1.0f + SIZE_TOLERANCE) {
