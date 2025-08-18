@@ -3,10 +3,11 @@ package net.foxyas.changedaddon.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.entity.PinkCyanSkunk;
+import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -14,7 +15,9 @@ import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
 
-public class PinkCyanSkunk extends AdvancedHumanoidModel<ChangedEntity> implements AdvancedHumanoidModelInterface<ChangedEntity, PinkCyanSkunk> {
+import java.util.List;
+
+public class PinkCyanSkunkModel extends AdvancedHumanoidModel<PinkCyanSkunk> implements AdvancedHumanoidModelInterface<PinkCyanSkunk, PinkCyanSkunkModel> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("pink_cyan_skunk"), "main");
 
@@ -25,8 +28,9 @@ public class PinkCyanSkunk extends AdvancedHumanoidModel<ChangedEntity> implemen
     private final ModelPart Head;
     private final ModelPart Torso;
     private final ModelPart Tail;
+    private final HumanoidAnimator<PinkCyanSkunk, PinkCyanSkunkModel> animator;
 
-    public PinkCyanSkunk(ModelPart root) {
+    public PinkCyanSkunkModel(ModelPart root) {
         super(root);
         RightLeg = root.getChild("RightLeg");
         LeftLeg = root.getChild("LeftLeg");
@@ -35,11 +39,22 @@ public class PinkCyanSkunk extends AdvancedHumanoidModel<ChangedEntity> implemen
         Head = root.getChild("Head");
         Torso = root.getChild("Torso");
         Tail = this.Torso.getChild("Tail");
+
+        ModelPart tailPrimary = this.Tail.getChild("TailPrimary");
+        ModelPart tailSecondary = tailPrimary.getChild("TailSecondary");
+        ModelPart tailTertiary = tailSecondary.getChild("TailTertiary");
+        ModelPart tailQuaternary = tailTertiary.getChild("TailQuaternary");
+        ModelPart leftLowerLeg = this.LeftLeg.getChild("LeftLowerLeg");
+        ModelPart leftFoot = leftLowerLeg.getChild("LeftFoot");
+        ModelPart rightLowerLeg = this.RightLeg.getChild("RightLowerLeg");
+        ModelPart rightFoot = rightLowerLeg.getChild("RightFoot");
+        this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).addPreset(AnimatorPresets.catLike(this.Head, this.Head.getChild("LeftEar"), this.Head.getChild("RightEar"), this.Torso, this.LeftArm, this.RightArm, this.Tail, List.of(tailPrimary, tailSecondary, tailTertiary, tailQuaternary), this.LeftLeg, leftLowerLeg, leftFoot, leftFoot.getChild("LeftPad"), this.RightLeg, rightLowerLeg, rightFoot, rightFoot.getChild("RightPad")));
     }
 
     @Override
-    public void setupAnim(ChangedEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
+    public void setupAnim(@NotNull PinkCyanSkunk entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -136,6 +151,11 @@ public class PinkCyanSkunk extends AdvancedHumanoidModel<ChangedEntity> implemen
     }
 
     @Override
+    public void prepareMobModel(@NotNull PinkCyanSkunk pEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
+        prepareMobModel(this.animator, pEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
+    }
+
+    @Override
     public @NotNull ModelPart getArm(HumanoidArm humanoidArm) {
         return humanoidArm == HumanoidArm.RIGHT ? RightArm : LeftArm;
     }
@@ -166,12 +186,12 @@ public class PinkCyanSkunk extends AdvancedHumanoidModel<ChangedEntity> implemen
     }
 
     @Override
-    public void setupHand(ChangedEntity changedEntity) {
-
+    public void setupHand(PinkCyanSkunk changedEntity) {
+        animator.setupHand();
     }
 
     @Override
-    public HumanoidAnimator<ChangedEntity, PinkCyanSkunk> getAnimator(ChangedEntity changedEntity) {
-        return null;
+    public HumanoidAnimator<PinkCyanSkunk, PinkCyanSkunkModel> getAnimator(PinkCyanSkunk changedEntity) {
+        return animator;
     }
 }

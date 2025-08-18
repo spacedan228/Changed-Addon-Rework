@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.variants;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.entity.PinkCyanSkunk;
 import net.foxyas.changedaddon.entity.advanced.*;
 import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.simple.*;
@@ -94,6 +95,7 @@ public class ChangedAddonTransfurVariants {
             .addAbility(ChangedAddonAbilities.DODGE)
             .addAbility(ChangedAddonAbilities.LEAP)
             .stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
+    public static final RegistryObject<TransfurVariant<PinkCyanSkunk>> PINK_CYAN_SKUNK = register("pink_cyan_skunk", TransfurVariant.Builder.of(ChangedAddonEntities.PINK_CYAN_SKUNK).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     //Experiments
     public static final RegistryObject<TransfurVariant<Exp1MaleEntity>> EXP1_MALE = register("form_exp1/male", () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_1_MALE).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).extraJumps(2).addAbility(ChangedAddonAbilities.PSYCHIC_PULSE).addAbility(ChangedAddonAbilities.PSYCHIC_HOLD).addAbility(ChangedAddonAbilities.PSYCHIC_GRAB).addAbility(ChangedAbilities.SWITCH_GENDER).transfurMode(TransfurMode.NONE));
     public static final RegistryObject<TransfurVariant<Exp1FemaleEntity>> EXP1_FEMALE = register("form_exp1/female", () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_1_FEMALE).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).extraJumps(2).addAbility(ChangedAddonAbilities.PSYCHIC_PULSE).addAbility(ChangedAddonAbilities.PSYCHIC_HOLD).addAbility(ChangedAddonAbilities.PSYCHIC_GRAB).addAbility(ChangedAbilities.SWITCH_GENDER).transfurMode(TransfurMode.NONE));

@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.init;
 
-import net.foxyas.changedaddon.ChangedAddonMod;
 import net.ltxprogrammer.changed.world.features.structures.LootTables;
 import net.ltxprogrammer.changed.world.features.structures.facility.*;
 import net.minecraft.resources.ResourceLocation;
