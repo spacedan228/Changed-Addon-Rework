@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.effect.particles;
 
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
@@ -12,6 +13,7 @@ import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -56,13 +58,7 @@ public class LaserPointParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void tick() {
-        super.tick();
-
-        if (!(entity instanceof LivingEntity owner) || !owner.isAlive()) {
-            this.remove(); // Dono sumiu
-            return;
-        }
+    public void render(@NotNull VertexConsumer pBuffer, @NotNull Camera pRenderInfo, float pPartialTicks) {
 
         if (level.isClientSide() && Minecraft.getInstance().player != null && ProcessTransfur.getPlayerTransfurVariantSafe(Minecraft.getInstance().player).map(
                 transfurVariantInstance -> transfurVariantInstance.getParent().is(ChangedAddonTags.TransfurTypes.CAT_LIKE) || transfurVariantInstance.getParent().is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE)
@@ -74,6 +70,17 @@ public class LaserPointParticle extends TextureSheetParticle {
             this.quadSize = 0.1f;
         }
 
+        super.render(pBuffer, pRenderInfo, pPartialTicks);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+
+        if (!(entity instanceof LivingEntity owner) || !owner.isAlive()) {
+            this.remove(); // Dono sumiu
+            return;
+        }
 
         ItemStack heldItem = owner.getUseItem();
         if (heldItem.isEmpty() || !(heldItem.getItem() instanceof LaserPointer) || !owner.isUsingItem()) {
