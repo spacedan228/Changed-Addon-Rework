@@ -24,7 +24,7 @@
   },
   "result": {
     "item": "minecraft:tipped_arrow",
-    "nbt": "{Potion:\"changed_addon:litixcamoniaeffect\"}",
+    "nbt": "{Potion:\"changed_addon:litix_cammonia_effect\"}",
     "count": 1
   }
 }

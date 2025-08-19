@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity;
+package net.foxyas.changedaddon.entity.simple;
 
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
@@ -11,9 +11,9 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 
-public class PinkCyanSkunk extends ChangedEntity {
+public class PinkCyanSkunkEntity extends ChangedEntity {
 
-    public PinkCyanSkunk(EntityType<? extends PinkCyanSkunk> p_19870_, Level level) {
+    public PinkCyanSkunkEntity(EntityType<? extends PinkCyanSkunkEntity> p_19870_, Level level) {
         super(p_19870_, level);
     }
 

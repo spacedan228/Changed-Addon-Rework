@@ -70,5 +70,5 @@
 + Broken Mask (can be Repair using dark latex)
 + Dark Latex Mask Can Transfur Gamerule
 + Now you can't place the LatexSyringe with the Exp9 and Exp10 variants
-+ Now You Craft 4 ammonia particles per inpure ammonia instead of just 1 
++ Now You Craft 4 ammonia particles per impure ammonia instead of just 1
     * Notice the speed don't change

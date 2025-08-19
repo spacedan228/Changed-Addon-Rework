@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.variants;
 
-public interface ExtraVariantStats {
+public interface VariantExtraStats {
 
     // Variable Set By Entity
     float extraBlockBreakSpeed();
@@ -18,6 +18,9 @@ public interface ExtraVariantStats {
         ONLY_FALL,
         ONLY_FLY,
         BOTH;
+
+        FlyType(){
+        }
 
         public boolean canGlide() {
             return this == ONLY_FALL || this == BOTH;

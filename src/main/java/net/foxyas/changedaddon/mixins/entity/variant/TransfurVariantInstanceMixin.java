@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.mixins.entity.variant;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazmatSuitItem;
-import net.foxyas.changedaddon.variants.ExtraVariantStats;
+import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -50,8 +50,8 @@ public abstract class TransfurVariantInstanceMixin {
     private void negateFly(CallbackInfo cir) {
         if (this.parent.canGlide && this.shouldApplyAbilities()) {
             if (!this.host.isCreative() && !this.host.isSpectator()) {
-                if (this.getChangedEntity() instanceof ExtraVariantStats extraVariantStats) {
-                    if (extraVariantStats.getFlyType() == ExtraVariantStats.FlyType.ONLY_FALL) {
+                if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+                    if (variantExtraStats.getFlyType() == VariantExtraStats.FlyType.ONLY_FALL) {
                         if (this.host.getAbilities().flying || this.host.getAbilities().mayfly) {
                             this.host.getAbilities().mayfly = false;
                             this.host.getAbilities().flying = false;
@@ -67,8 +67,8 @@ public abstract class TransfurVariantInstanceMixin {
     private void negateFlyInTick(CallbackInfo cir) {
         if (this.parent.canGlide && this.shouldApplyAbilities()) {
             if (!this.host.isCreative() && !this.host.isSpectator()) {
-                if (this.getChangedEntity() instanceof ExtraVariantStats extraVariantStats) {
-                    if (extraVariantStats.getFlyType() == ExtraVariantStats.FlyType.ONLY_FALL) {
+                if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+                    if (variantExtraStats.getFlyType() == VariantExtraStats.FlyType.ONLY_FALL) {
                         if (this.host.getAbilities().flying || this.host.getAbilities().mayfly) {
                             this.host.getAbilities().mayfly = false;
                             this.host.getAbilities().flying = false;

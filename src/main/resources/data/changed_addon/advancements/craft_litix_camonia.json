@@ -4,10 +4,10 @@
       "item": "changed_addon:litix_camonia"
     },
     "title": {
-      "translate": "advancements.litixcamonia_adcancement.title"
+      "translate": "advancements.craft_litix_camonia.title"
     },
     "description": {
-      "translate": "advancements.litixcamonia_adcancement.descr"
+      "translate": "advancements.craft_litix_camonia.descr"
     },
     "frame": "goal",
     "show_toast": true,
@@ -15,7 +15,7 @@
     "hidden": true
   },
   "criteria": {
-    "litixcamonia_adcancement": {
+    "craft_litix_camonia": {
       "trigger": "minecraft:impossible"
     }
   },

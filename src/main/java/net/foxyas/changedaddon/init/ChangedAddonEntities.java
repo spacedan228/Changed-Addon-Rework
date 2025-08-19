@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.entity.PinkCyanSkunk;
+import net.foxyas.changedaddon.entity.simple.PinkCyanSkunkEntity;
 import net.foxyas.changedaddon.entity.advanced.*;
 import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.mobs.ErikEntity;
@@ -179,7 +179,7 @@ public class ChangedAddonEntities {
         event.put(MONGOOSE.get(), MongooseEntity.createAttributes().build());
         event.put(BOREALIS_MALE.get(), BorealisMaleEntity.createAttributes().build());
         event.put(BOREALIS_FEMALE.get(), BorealisFemaleEntity.createAttributes().build());
-        event.put(PINK_CYAN_SKUNK.get(), PinkCyanSkunk.createLatexAttributes().build());
+        event.put(PINK_CYAN_SKUNK.get(), PinkCyanSkunkEntity.createLatexAttributes().build());
     }
 
     public static final RegistryObject<EntityType<DazedLatexEntity>> DAZED_LATEX = registerChangedEntity("latex_dazed",
@@ -608,8 +608,8 @@ public class ChangedAddonEntities {
                     .setCustomClientFactory(ErikEntity::new)
                     .sized(0.6f, 1.8f));
 
-    public static final RegistryObject<EntityType<PinkCyanSkunk>> PINK_CYAN_SKUNK = registerChangedEntity("pink_cyan_skunk",
-            EntityType.Builder.of(PinkCyanSkunk::new, MobCategory.MONSTER)
+    public static final RegistryObject<EntityType<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = registerChangedEntity("pink_cyan_skunk",
+            EntityType.Builder.of(PinkCyanSkunkEntity::new, MobCategory.MONSTER)
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 

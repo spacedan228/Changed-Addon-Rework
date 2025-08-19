@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.mixins.entity;
 import net.foxyas.changedaddon.abilities.ClawsAbility;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
-import net.foxyas.changedaddon.variants.ExtraVariantStats;
+import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -95,14 +95,14 @@ public abstract class PlayerMixin {
         Player player = (Player) (Object) this;
         TransfurVariantInstance<?> latexVariant = ProcessTransfur.getPlayerTransfurVariant(player);
         if (latexVariant != null && latexVariant.getParent().canGlide) {
-            if (latexVariant.getParent() instanceof ExtraVariantStats extraVariantStats) {
-                if (extraVariantStats.getFlyType().canGlide() && !player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
+            if (latexVariant.getParent() instanceof VariantExtraStats variantExtraStats) {
+                if (variantExtraStats.getFlyType().canGlide() && !player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
                     player.startFallFlying();
                     ci.setReturnValue(true);
                     ci.cancel();
 
                     //player.respawn();
-                } else if (!extraVariantStats.getFlyType().canGlide() && !player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
+                } else if (!variantExtraStats.getFlyType().canGlide() && !player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
                     ItemStack itemstack = this.getItemBySlot(EquipmentSlot.CHEST);
                     if (itemstack.canElytraFly(player)) {
                         player.startFallFlying();

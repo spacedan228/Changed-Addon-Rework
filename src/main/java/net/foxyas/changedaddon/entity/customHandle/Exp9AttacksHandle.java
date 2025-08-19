@@ -111,7 +111,7 @@ public class Exp9AttacksHandle {
 
                 // Teleporta o boss para o chão dinamicamente
                 boss.teleportTo(smashPos.x, smashPos.y, smashPos.z);
-                boss.getLookControl().setLookAt(target);
+                boss.getLookControl().setLookAt(target, 30, 30);
                 boss.SpawnThunderBolt(smashPos);
                 boss.setAttackCoolDown(0);
             }
@@ -120,14 +120,14 @@ public class Exp9AttacksHandle {
         private void teleportTargetUp() {
             SummonTeleportParticles();
             boss.teleportTo(target.position().x, target.position().y, target.position().z);
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             boss.setAttackCoolDown(0);
             this.boss.swing(InteractionHand.MAIN_HAND);
             Vec3 newPos = target.position().add(0, 10, 0);
             if (target.isBlocking()) {
                 this.phase = 5;
                 target.teleportTo(newPos.x, newPos.y * 0.5, newPos.z);
-                boss.getLookControl().setLookAt(target);
+                boss.getLookControl().setLookAt(target, 30, 30);
                 return;
             }
             target.teleportTo(newPos.x, newPos.y, newPos.z);
@@ -298,7 +298,7 @@ public class Exp9AttacksHandle {
         private void teleportToTarget() {
             SummonTeleportParticles();
             boss.teleportTo(target.position().x, target.position().y, target.position().z);
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             boss.setAttackCoolDown(0);
             this.boss.swing(InteractionHand.MAIN_HAND);
             Vec3 knockDir = target.getLookAngle().scale(-1).add(0, 0.1f, 0);
@@ -318,7 +318,7 @@ public class Exp9AttacksHandle {
             SummonTeleportParticles();
             Vec3 knockDir = target.getLookAngle().scale(-1).add(0, 0.1f, 0);
             boss.teleportTo(target.getX(), target.getY(), target.getZ());
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             target.setDeltaMovement(knockDir);
             this.boss.swing(InteractionHand.MAIN_HAND);
             target.invulnerableTime = 0;
@@ -334,7 +334,7 @@ public class Exp9AttacksHandle {
             // Aplica o impacto ao alvo
             target.setDeltaMovement(0, 3, 0);
             boss.teleportTo(target.getX(), target.getY(), target.getZ());
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             boss.swing(InteractionHand.MAIN_HAND);
             target.invulnerableTime = 0;
             target.hurt(boss.getThunderDmg(), 4);
@@ -356,7 +356,7 @@ public class Exp9AttacksHandle {
             // Aplica o impacto ao alvo
             target.setDeltaMovement(0, -3, 0);
             boss.teleportTo(target.getX(), target.getY(), target.getZ());
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             boss.swing(InteractionHand.MAIN_HAND);
             target.invulnerableTime = 0;
             target.hurt(boss.getThunderDmg(), 4);
@@ -726,7 +726,7 @@ public class Exp9AttacksHandle {
             }
             Vec3 targetPos = target.position().add(0, target.getEyeHeight() * 0.5, 0);
             boss.teleportTo(targetPos.x, targetPos.y, targetPos.z);
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             target.hurt(boss.getThunderDmg(), 2);
             boss.setAttackCoolDown(0);
         }
@@ -748,7 +748,7 @@ public class Exp9AttacksHandle {
             }
             Vec3 targetPos = target.position().add(0, target.getEyeHeight() * 0.5, 0);
             boss.teleportTo(targetPos.x, targetPos.y, targetPos.z);
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             target.hurt(boss.getThunderDmg(), 2);
             boss.setAttackCoolDown(0);
         }
@@ -767,7 +767,7 @@ public class Exp9AttacksHandle {
             }
             Vec3 targetPos = target.position().add(0, target.getEyeHeight() * 0.5, 0);
             boss.teleportTo(targetPos.x, targetPos.y, targetPos.z);
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             target.hurt(boss.getThunderDmg(), 2);
         }
 
@@ -788,7 +788,7 @@ public class Exp9AttacksHandle {
             }
             Vec3 targetPos = target.position().add(0, target.getEyeHeight() * 0.5, 0);
             boss.teleportTo(targetPos.x, targetPos.y, targetPos.z);
-            boss.getLookControl().setLookAt(target);
+            boss.getLookControl().setLookAt(target, 30, 30);
             target.hurt(boss.getThunderDmg(), 2);
         }
     }

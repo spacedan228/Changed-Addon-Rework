@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.process.variantsExtraStats;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.variants.ExtraVariantStats;
+import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.player.Player;
@@ -21,8 +21,8 @@ public class FormsStats {
         }
 
         // Verifica se o jogador está segurando um item específico, ou se tem alguma condição
-        if (transfurVariantInstance.getChangedEntity() instanceof ExtraVariantStats extraVariantStats) {
-            event.setNewSpeed(event.getNewSpeed() * extraVariantStats.getBlockBreakSpeedMultiplier()); // More Fast Break
+        if (transfurVariantInstance.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+            event.setNewSpeed(event.getNewSpeed() * variantExtraStats.getBlockBreakSpeedMultiplier()); // More Fast Break
         }
     }
 

@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.entity.PinkCyanSkunk;
+import net.foxyas.changedaddon.entity.simple.PinkCyanSkunkEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class PinkCyanSkunkModel extends AdvancedHumanoidModel<PinkCyanSkunk> implements AdvancedHumanoidModelInterface<PinkCyanSkunk, PinkCyanSkunkModel> {
+public class PinkCyanSkunkModel extends AdvancedHumanoidModel<PinkCyanSkunkEntity> implements AdvancedHumanoidModelInterface<PinkCyanSkunkEntity, PinkCyanSkunkModel> {
 
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("pink_cyan_skunk"), "main");
 
@@ -28,7 +28,7 @@ public class PinkCyanSkunkModel extends AdvancedHumanoidModel<PinkCyanSkunk> imp
     private final ModelPart Head;
     private final ModelPart Torso;
     private final ModelPart Tail;
-    private final HumanoidAnimator<PinkCyanSkunk, PinkCyanSkunkModel> animator;
+    private final HumanoidAnimator<PinkCyanSkunkEntity, PinkCyanSkunkModel> animator;
 
     public PinkCyanSkunkModel(ModelPart root) {
         super(root);
@@ -52,7 +52,7 @@ public class PinkCyanSkunkModel extends AdvancedHumanoidModel<PinkCyanSkunk> imp
     }
 
     @Override
-    public void setupAnim(@NotNull PinkCyanSkunk entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setupAnim(@NotNull PinkCyanSkunkEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
@@ -151,7 +151,7 @@ public class PinkCyanSkunkModel extends AdvancedHumanoidModel<PinkCyanSkunk> imp
     }
 
     @Override
-    public void prepareMobModel(@NotNull PinkCyanSkunk pEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
+    public void prepareMobModel(@NotNull PinkCyanSkunkEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
         prepareMobModel(this.animator, pEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
     }
 
@@ -186,12 +186,12 @@ public class PinkCyanSkunkModel extends AdvancedHumanoidModel<PinkCyanSkunk> imp
     }
 
     @Override
-    public void setupHand(PinkCyanSkunk changedEntity) {
+    public void setupHand(PinkCyanSkunkEntity changedEntity) {
         animator.setupHand();
     }
 
     @Override
-    public HumanoidAnimator<PinkCyanSkunk, PinkCyanSkunkModel> getAnimator(PinkCyanSkunk changedEntity) {
+    public HumanoidAnimator<PinkCyanSkunkEntity, PinkCyanSkunkModel> getAnimator(PinkCyanSkunkEntity changedEntity) {
         return animator;
     }
 }

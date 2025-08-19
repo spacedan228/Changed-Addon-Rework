@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.client.renderer;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.PinkCyanSkunkModel;
-import net.foxyas.changedaddon.entity.PinkCyanSkunk;
+import net.foxyas.changedaddon.entity.simple.PinkCyanSkunkEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.GasMaskLayer;
@@ -12,9 +12,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class PinkCyanSkunkRenderer extends AdvancedHumanoidRenderer<PinkCyanSkunk, PinkCyanSkunkModel, ArmorLatexMaleWolfModel<PinkCyanSkunk>> {
+public class PinkCyanSkunkRenderer extends AdvancedHumanoidRenderer<PinkCyanSkunkEntity, PinkCyanSkunkModel, ArmorLatexMaleWolfModel<PinkCyanSkunkEntity>> {
 
-    private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/pink_cyan_skunk");
+    private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/pink_cyan_skunk/pink_cyan_skunk");
 
     public PinkCyanSkunkRenderer(EntityRendererProvider.Context context) {
         super(context, new PinkCyanSkunkModel(context.bakeLayer(PinkCyanSkunkModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5F);
@@ -24,7 +24,7 @@ public class PinkCyanSkunkRenderer extends AdvancedHumanoidRenderer<PinkCyanSkun
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull PinkCyanSkunk pEntity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull PinkCyanSkunkEntity pEntity) {
         return TEXTURE;
     }
 }

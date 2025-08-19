@@ -4,10 +4,10 @@
       "item": "changed_addon:impure_ammonia"
     },
     "title": {
-      "translate": "advancements.dn_astudyisafantasticthingadvancement.title"
+      "translate": "advancements.impure_ammonia_craft.title"
     },
     "description": {
-      "translate": "advancements.dn_astudyisafantasticthingadvancement.descr"
+      "translate": "advancements.impure_ammonia_craft.descr"
     },
     "frame": "task",
     "show_toast": true,
@@ -15,7 +15,7 @@
     "hidden": true
   },
   "criteria": {
-    "dn_astudyisafantasticthingadvancement": {
+    "impure_ammonia_craft": {
       "trigger": "minecraft:impossible"
     }
   },
