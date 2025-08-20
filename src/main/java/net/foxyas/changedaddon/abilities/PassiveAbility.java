@@ -18,11 +18,13 @@ public class PassiveAbility extends AbstractAbility<PassiveAbilityInstance> {
     }
 
     public static void ApplyMobEffect(IAbstractChangedEntity entity, MobEffectInstance mobEffectInstance) {
+        if (entity.getLevel().isClientSide()) return;
+
         LivingEntity livingEntity = entity.getEntity();
         MobEffect mobEffect = mobEffectInstance.getEffect();
-        if (!livingEntity.hasEffect(mobEffect) && mobEffect.equals(MobEffects.REGENERATION)) {
+        if (mobEffect == MobEffects.REGENERATION && !livingEntity.hasEffect(MobEffects.REGENERATION)) {
             livingEntity.addEffect(mobEffectInstance);
-        } else {
+        } else if (mobEffect != MobEffects.REGENERATION) {
             livingEntity.addEffect(mobEffectInstance);
         }
     }
@@ -40,6 +42,5 @@ public class PassiveAbility extends AbstractAbility<PassiveAbilityInstance> {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         super.startUsing(entity);
-
     }
 }

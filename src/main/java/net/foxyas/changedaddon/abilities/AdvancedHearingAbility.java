@@ -78,6 +78,7 @@ public class AdvancedHearingAbility extends SimpleAbility {
         if (!User.getLevel().isClientSide()) {
             User.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20 * 3), User);
         }
+
         List<PathfinderMob> livingEntityList = User.getLevel().getEntities(EntityTypeTest.forClass(PathfinderMob.class), User.getBoundingBox().inflate(30), (e) -> !e.isShiftKeyDown() && e != User && e instanceof Enemy);
         if (!livingEntityList.isEmpty()) {
             for (PathfinderMob living : livingEntityList) {
@@ -91,5 +92,10 @@ public class AdvancedHearingAbility extends SimpleAbility {
                 }
             }
         }
+    }
+
+    @Override
+    public void tickCharge(IAbstractChangedEntity entity, float ticks) {
+        super.tickCharge(entity, ticks);
     }
 }

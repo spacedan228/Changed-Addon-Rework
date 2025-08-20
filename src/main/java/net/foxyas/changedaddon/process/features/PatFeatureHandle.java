@@ -201,7 +201,8 @@ public class PatFeatureHandle {
 
             player.swing(getSwingHand(player), true);
 
-            if (ProcessTransfur.getPlayerTransfurVariant(player).getChangedEntity() instanceof CustomPatReaction playerPat) {
+            if (ProcessTransfur.getPlayerTransfurVariant(player) != null
+                    && ProcessTransfur.getPlayerTransfurVariant(player).getChangedEntity() instanceof CustomPatReaction playerPat) {
                 InteractionHand hand = getSwingHand(player);
                 playerPat.WhenPatEvent(player, hand, target);
                 if (ProcessTransfur.getPlayerTransfurVariant(target).getChangedEntity() instanceof CustomPatReaction TargetPat) {
@@ -211,7 +212,8 @@ public class PatFeatureHandle {
                     //p.displayClientMessage(new TextComponent("pat_message:" + target.getDisplayName().getString()), false);
                 }
             } else {
-                if (ProcessTransfur.getPlayerTransfurVariant(target).getChangedEntity() instanceof CustomPatReaction e) {
+                if (ProcessTransfur.getPlayerTransfurVariant(target) != null
+                        && ProcessTransfur.getPlayerTransfurVariant(target).getChangedEntity() instanceof CustomPatReaction e) {
                     InteractionHand hand = getSwingHand(player);
                     e.WhenPattedReaction(player, hand, entityHitResult.getLocation());
                     e.WhenPattedReaction(player, hand);
