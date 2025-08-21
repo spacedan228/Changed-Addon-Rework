@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.network;
 
-import net.foxyas.changedaddon.process.features.ProcessPatFeature;
+import net.foxyas.changedaddon.process.features.PatFeatureHandle;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -31,7 +31,7 @@ public record PatKeyMessage(int type, int pressedMs) {
 
         if (type == 0) {
 
-            ProcessPatFeature.ProcessPat(level, player);
+            PatFeatureHandle.run(level, player);
         }
     }
 }

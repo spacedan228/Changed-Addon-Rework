@@ -41,6 +41,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.Objects;
 import java.util.Random;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -213,6 +214,11 @@ public class PlayerUtil {
 
     @Nullable
     public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, boolean testLineOfSight) {
+        return getEntityHitLookingAt(entity, reach, testLineOfSight, e -> !e.isSpectator());
+    }
+
+    @Nullable
+    public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, boolean testLineOfSight, Predicate<Entity> targetPredicate) {
         double distance = reach * reach;
         Vec3 eyePos = entity.getEyePosition(1.0f);
 
@@ -229,7 +235,7 @@ public class PlayerUtil {
         Vec3 toVec = eyePos.add(viewVec.x * reach, viewVec.y * reach, viewVec.z * reach);
         AABB aabb = entity.getBoundingBox().expandTowards(viewVec.scale(reach)).inflate(1.0D, 1.0D, 1.0D);
 
-        return ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, aabb, e -> !e.isSpectator(), distance);
+        return ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, aabb, targetPredicate, distance);
     }
 
     public static HitResult getEntityBlockHitLookingAt(Entity entity, double reach, float deltaTicks, boolean affectByFluids) {

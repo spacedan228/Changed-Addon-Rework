@@ -28,7 +28,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -209,12 +208,10 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntity {
         return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.death")));
     }
 
+    private static final List<SoundEvent> sounds = List.of(SoundEvents.CAT_AMBIENT, SoundEvents.CAT_PURR, SoundEvents.CAT_PURREOW);
+
     @Override
     public void WhenPattedReaction() {
-        List<SoundEvent> soundEvents = new ArrayList<>();
-        soundEvents.add(SoundEvents.CAT_AMBIENT);
-        soundEvents.add(SoundEvents.CAT_PURR);
-        soundEvents.add(SoundEvents.CAT_PURREOW);
-        this.playSound(soundEvents.get(this.random.nextInt(soundEvents.size())), 2.5f, 1);
+        playSound(sounds.get(random.nextInt(sounds.size())), 2.5f, 1);
     }
 }

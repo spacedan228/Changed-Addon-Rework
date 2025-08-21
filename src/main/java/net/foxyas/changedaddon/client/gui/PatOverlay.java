@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.awt.*;
 
-import static net.foxyas.changedaddon.process.features.PatFeatureHandle.isPossibleToPat;
+import static net.foxyas.changedaddon.process.features.PatFeatureHandle.canPlayerPat;
 import static net.minecraft.client.gui.GuiComponent.drawCenteredString;
 
 @Mod.EventBusSubscriber({Dist.CLIENT})
@@ -64,7 +64,7 @@ public class PatOverlay {
                     Entity lookedEntity = PlayerUtil.getEntityLookingAt(entity, entity.getReachDistance());
                     if (lookedEntity != null && isPatableEntity(entity, lookedEntity) && isEntityInPassiveStage(lookedEntity) && isKeySet()) {
                         if (!getPatInfo(entity).getString().isEmpty()) {
-                            if (!lookedEntity.isInvisible() && isPossibleToPat(entity)) {
+                            if (!lookedEntity.isInvisible() && canPlayerPat(entity)) {
                                 if (!ChangedAddonClientConfiguration.PAW_STYLE_PAT_OVERLAY.get()) {
                                     drawCenteredString(event.getMatrixStack(), Minecraft.getInstance().font,
                                             getPatInfo(lookedEntity), (int) floatPosX, (int) floatPosY, -1);
