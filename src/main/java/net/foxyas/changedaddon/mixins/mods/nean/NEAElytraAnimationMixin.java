@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.mixins.mods;
+package net.foxyas.changedaddon.mixins.mods.nean;
 
 import dev.tr7zw.notenoughanimations.access.PlayerData;
 import dev.tr7zw.notenoughanimations.animations.vanilla.ElytraAnimation;

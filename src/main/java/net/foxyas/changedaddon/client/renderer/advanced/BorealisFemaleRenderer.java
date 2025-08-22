@@ -8,7 +8,7 @@ import net.foxyas.changedaddon.entity.advanced.BorealisFemaleEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.GasMaskLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.TransfurCapeLayer;
-import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleWolfModel;
+import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexFemaleWolfModel;
 import net.ltxprogrammer.changed.entity.BasicPlayerInfo;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -17,9 +17,9 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BorealisFemaleRenderer extends AdvancedHumanoidRenderer<BorealisFemaleEntity, BorealisFemaleModel, ArmorLatexMaleWolfModel<BorealisFemaleEntity>> {
+public class BorealisFemaleRenderer extends AdvancedHumanoidRenderer<BorealisFemaleEntity, BorealisFemaleModel, ArmorLatexFemaleWolfModel<BorealisFemaleEntity>> {
     public BorealisFemaleRenderer(EntityRendererProvider.Context context) {
-        super(context, new BorealisFemaleModel(context.bakeLayer(BorealisFemaleModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
+        super(context, new BorealisFemaleModel(context.bakeLayer(BorealisFemaleModel.LAYER_LOCATION)), ArmorLatexFemaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new ProtogenDisplay<>(this, getModel(),
                 new ResourceLocation("changed_addon:textures/entities/borealis_female/protogen_display_eyes.png"),
                 new ResourceLocation("changed_addon:textures/entities/borealis_female/protogen_display.png")) {
@@ -31,9 +31,8 @@ public class BorealisFemaleRenderer extends AdvancedHumanoidRenderer<BorealisFem
                     Color3 eyeColor = Color3.WHITE;    // Cor dos olhos
                     int overlay = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
 
-                    // Renderiza apenas a cabeça do modelo
-                    this.getParentModel().getHead().render(poseStack, bufferSource.getBuffer(getNormalDisplayRender()), packedLight, overlay, displayColor.red(), displayColor.green(), displayColor.blue(), 1.0F);
-                    this.getParentModel().getHead().render(poseStack, bufferSource.getBuffer(getGlowEyeRender()), packedLight, overlay, eyeColor.red(), eyeColor.green(), eyeColor.blue(), 1.0F);
+                    this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(getNormalDisplayRender()), packedLight, overlay, displayColor.red(), displayColor.green(), displayColor.blue(), 1.0F);
+                    this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(getGlowEyeRender()), packedLight, overlay, eyeColor.red(), eyeColor.green(), eyeColor.blue(), 1.0F);
                 }
             }
         });

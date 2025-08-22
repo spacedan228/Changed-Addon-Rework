@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "changed_addon.refmap.json",
   "mixins": [
+    "abilities.GrabEntityAbilityInstanceMixin",
+    "abilities.GrabEntityPacketMixin",
     "blocks.AbstractLatexBlockMixin",
     "blocks.BlockMixin",
     "blocks.CrossCollisionBlockMixin",
@@ -15,8 +17,6 @@
     "client.renderer.WingFlyAnimationMixin",
     "enchantments.EnchantmentMixin",
     "enchantments.InfinityEnchantmentMixin",
-    "entity.goals.AvoidEntityGoalMixin",
-    "entity.goals.ChangedEntityGoalsMixin",
     "entity.ChangedEntityTargetSelectorMixin",
     "entity.IronGolemMixin",
     "entity.LivingEntityMixin",
@@ -24,13 +24,15 @@
     "entity.PhantomAIMixin",
     "entity.PlayerMixin",
     "entity.ServerPlayerMixin",
+    "entity.goals.AvoidEntityGoalMixin",
+    "entity.goals.ChangedEntityGoalsMixin",
     "entity.projectiles.AbstractArrowAccessor",
     "entity.projectiles.ProjectileMixin",
     "entity.variant.RandomVariantFunctionMixin",
     "entity.variant.ServerTransfurVariantInstanceMixin",
     "entity.variant.TransfurVariantInstanceMixin",
-    "mods.ChangedMixin",
-    "mods.NEAElytraAnimationMixin"
+    "mods.changed.ChangedMixin",
+    "mods.nean.NEAElytraAnimationMixin"
   ],
   "injectors": {
     "defaultRequire": 1

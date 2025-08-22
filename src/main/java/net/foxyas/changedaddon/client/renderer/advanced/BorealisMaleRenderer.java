@@ -31,9 +31,8 @@ public class BorealisMaleRenderer extends AdvancedHumanoidRenderer<BorealisMaleE
                     Color3 eyeColor = Color3.WHITE;    // Cor dos olhos
                     int overlay = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
 
-                    // Renderiza apenas a cabeça do modelo
-                    this.getParentModel().getHead().render(poseStack, bufferSource.getBuffer(getNormalDisplayRender()), packedLight, overlay, displayColor.red(), displayColor.green(), displayColor.blue(), 1.0F);
-                    this.getParentModel().getHead().render(poseStack, bufferSource.getBuffer(getGlowEyeRender()), packedLight, overlay, eyeColor.red(), eyeColor.green(), eyeColor.blue(), 1.0F);
+                    this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(getNormalDisplayRender()), packedLight, overlay, displayColor.red(), displayColor.green(), displayColor.blue(), 1.0F);
+                    this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(getGlowEyeRender()), packedLight, overlay, eyeColor.red(), eyeColor.green(), eyeColor.blue(), 1.0F);
                 }
             }
         });

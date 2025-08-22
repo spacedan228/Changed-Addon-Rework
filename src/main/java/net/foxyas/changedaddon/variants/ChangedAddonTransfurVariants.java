@@ -86,14 +86,28 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<MongooseEntity>> MONGOOSE = register("form_latex_mongoose", TransfurVariant.Builder.of(ChangedAddonEntities.MONGOOSE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     public static final RegistryObject<TransfurVariant<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = register("form_pink_cyan_skunk", TransfurVariant.Builder.of(ChangedAddonEntities.PINK_CYAN_SKUNK).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     public static final RegistryObject<TransfurVariant<BorealisMaleEntity>> BOREALIS_MALE = register("form_borealis/male", TransfurVariant.Builder.of(ChangedAddonEntities.BOREALIS_MALE)
+            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+            .addAbility(ChangedAddonAbilities.CARRY)
             .addAbility(ChangedAddonAbilities.CLAWS)
             .addAbility(ChangedAddonAbilities.DODGE)
             .addAbility(ChangedAddonAbilities.LEAP)
+            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+            .nightVision()
+            .addAbility(ChangedAbilities.SWITCH_GENDER)
+            .jumpStrength(1.25f)
+            .scares(List.of(Creeper.class))
             .stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     public static final RegistryObject<TransfurVariant<BorealisFemaleEntity>> BOREALIS_FEMALE = register("form_borealis/female", TransfurVariant.Builder.of(ChangedAddonEntities.BOREALIS_FEMALE)
+            .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+            .addAbility(ChangedAddonAbilities.CARRY)
             .addAbility(ChangedAddonAbilities.CLAWS)
             .addAbility(ChangedAddonAbilities.DODGE)
             .addAbility(ChangedAddonAbilities.LEAP)
+            .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+            .nightVision()
+            .addAbility(ChangedAbilities.SWITCH_GENDER)
+            .jumpStrength(1.25f)
+            .scares(List.of(Creeper.class))
             .stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     //Experiments
     public static final RegistryObject<TransfurVariant<Exp1MaleEntity>> EXP1_MALE = register("form_exp1/male", () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_1_MALE).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).extraJumps(2).addAbility(ChangedAddonAbilities.PSYCHIC_PULSE).addAbility(ChangedAddonAbilities.PSYCHIC_HOLD).addAbility(ChangedAddonAbilities.PSYCHIC_GRAB).addAbility(ChangedAbilities.SWITCH_GENDER).transfurMode(TransfurMode.NONE));
@@ -178,22 +192,23 @@ public class ChangedAddonTransfurVariants {
 
     private static <T extends ChangedEntity> RegistryObject<TransfurVariant<T>> register(String name, TransfurVariant.Builder<T> builder) {
         Objects.requireNonNull(builder);
-        builder.addAbility(entityType -> {
+        /*builder.addAbility(entityType -> {
             if (entityType.is(ChangedTags.EntityTypes.LATEX) && !entityType.is(ChangedTags.EntityTypes.PARTIAL_LATEX)) {
                 return ChangedAddonAbilities.SOFTEN_ABILITY.get();
             }
             return null;
-        });
+        });*/
         return REGISTRY.register(name, builder::build);
     }
 
     private static <T extends ChangedEntity> RegistryObject<TransfurVariant<T>> register(String name, Supplier<TransfurVariant.Builder<T>> builder) {
-        return REGISTRY.register(name, () -> builder.get().addAbility(entityType -> {
+        return REGISTRY.register(name, () -> builder.get().build());
+        /*.addAbility(entityType -> {
             if (entityType.is(ChangedTags.EntityTypes.LATEX) && !entityType.is(ChangedTags.EntityTypes.PARTIAL_LATEX)) {
                 return ChangedAddonAbilities.SOFTEN_ABILITY.get();
             }
             return null;
-        }).build());
+        })*/
     }
 
     public static class Gendered {
