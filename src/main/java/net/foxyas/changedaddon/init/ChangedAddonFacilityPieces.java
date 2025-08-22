@@ -1,11 +1,16 @@
 package net.foxyas.changedaddon.init;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.ltxprogrammer.changed.world.features.structures.LootTables;
 import net.ltxprogrammer.changed.world.features.structures.facility.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonFacilityPieces {
 
+    @SubscribeEvent
     public static void RegisterAddonFacilityPieces(GatherFacilityPiecesEvent event) {
         switch (event.getPieceType()) {
             case ROOM -> registerAddonRooms(event.getBuilder());

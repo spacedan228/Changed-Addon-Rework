@@ -191,8 +191,8 @@
   "ability.changed_addon.grab_entity.extender.how_to_release": "Hold [%s] to release the entity",
   "ability.changed_addon.grab_entity.extender.how_to_hug": "Hold [%s] to hug the entity",
   "ability.changed_addon.grab_entity.extender.how_to_hug.tightly": "Hold [%s] to snuggle the entity",
-  "ability.changed_addon.grab_entity.extender.hugger": "You give %s a warm hug",
-  "ability.changed_addon.grab_entity.extender.hugged": "%s gives you a warm hug",
+  "ability.changed_addon.grab_entity.extender.hugger": "You gave %s a warm hug",
+  "ability.changed_addon.grab_entity.extender.hugged": "%s gave you a warm hug",
   "ability.changed_addon.grab_entity.extender.hugger.tight": "You squeezed %s tight",
   "ability.changed_addon.grab_entity.extender.hugged.tight": "%s squeezes you tight",
 

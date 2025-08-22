@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.mixins.mods.changed;
 
-import net.foxyas.changedaddon.init.ChangedAddonFacilityPieces;
+import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.Changed;
 import net.minecraftforge.eventbus.api.IEventBus;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,7 @@ public class ChangedMixin {
 
     @Inject(method = "registerLoadingEventListeners", at = @At("HEAD"), cancellable = true)
     private void CustomAbilitiesCode(IEventBus eventBus, CallbackInfo ci) {
-        //eventBus.addListener(ChangedAddonAbilities::addUniversalAbilities);
-        eventBus.addListener(ChangedAddonFacilityPieces::RegisterAddonFacilityPieces);
+        eventBus.addListener(ChangedAddonAbilities::addUniversalAbilities);
+        //eventBus.addListener(ChangedAddonFacilityPieces::RegisterAddonFacilityPieces);
     }
 }

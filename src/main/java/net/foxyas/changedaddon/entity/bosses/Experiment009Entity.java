@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
+import net.foxyas.changedaddon.entity.goals.exp9.ThunderDiveGoal;
+import net.foxyas.changedaddon.entity.goals.exp9.ThunderStrikeGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
@@ -15,6 +17,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -161,6 +164,9 @@ public class Experiment009Entity extends ChangedEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.targetSelector.addGoal(5, new ThunderStrikeGoal(this, 3, 120));
+        this.targetSelector.addGoal(10, new ThunderDiveGoal(this, 1.5f, 6f, 1f,0.5f, 4));
+
     }
 
     @Override
@@ -180,12 +186,12 @@ public class Experiment009Entity extends ChangedEntity {
 
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.hurt"));
+        return SoundEvents.GENERIC_HURT;
     }
 
     @Override
     public @NotNull SoundEvent getDeathSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.death"));
+        return SoundEvents.GENERIC_DEATH;
     }
 
     @Override

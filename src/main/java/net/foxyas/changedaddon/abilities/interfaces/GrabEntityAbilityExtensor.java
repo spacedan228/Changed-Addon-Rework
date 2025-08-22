@@ -25,6 +25,7 @@ public interface GrabEntityAbilityExtensor {
                 if (player instanceof ServerPlayer serverPlayer) {
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug");
                 }
+                player.getLevel().playSound(null, player, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1, 1);
             }
             if (livingEntity instanceof Player grabbedPlayer) {
                 if (!grabbedPlayer.getLevel().isClientSide())
@@ -34,6 +35,7 @@ public interface GrabEntityAbilityExtensor {
     }
 
     boolean isAlreadySnuggled();
+
     void setSnuggled(boolean value);
 
     default void runTightHug(@NotNull LivingEntity livingEntity) {
