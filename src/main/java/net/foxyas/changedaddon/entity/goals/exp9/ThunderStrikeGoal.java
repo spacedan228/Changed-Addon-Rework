@@ -91,13 +91,12 @@ public class ThunderStrikeGoal extends Goal {
                     DelayedTask.schedule(10, () -> {
                         pathfinderMob.getLevel().addFreshEntity(lightning);
                         pathfinderMob.swing(pathfinderMob.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+                        // recoil de knockback para trás
+                        Vec3 dir = pathfinderMob.position().vectorTo(target.position()).normalize().scale(-0.5);
+                        pathfinderMob.push(dir.x, dir.y * 1.25f, dir.z);
                     });
+                    pathfinderMob.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration + 40, 10, false, false));
                 }
-
-                // recoil de knockback para trás
-                Vec3 dir = pathfinderMob.position().vectorTo(target.position()).normalize().scale(-0.5);
-                pathfinderMob.push(dir.x, dir.y * 0.5f, dir.z);
-                pathfinderMob.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration + 40, 10, false, false));
             }
         }
     }

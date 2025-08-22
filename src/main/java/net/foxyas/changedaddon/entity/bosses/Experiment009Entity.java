@@ -164,7 +164,7 @@ public class Experiment009Entity extends ChangedEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.targetSelector.addGoal(5, new ThunderStrikeGoal(this, 3, 120));
+        this.targetSelector.addGoal(5, new ThunderStrikeGoal(this, 1.5f, 120));
         this.targetSelector.addGoal(10, new ThunderDiveGoal(this, 1.5f, 6f, 1f,0.5f, 4));
 
     }

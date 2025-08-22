@@ -36,6 +36,7 @@ public class ThunderDiveGoal extends Goal {
     private int ticks;
     private BlockPos startGroundPos;
     public int cooldown = 0;
+    private Vec3 lateral = Vec3.ZERO;
 
 
     public ThunderDiveGoal(PathfinderMob mob,
@@ -122,6 +123,7 @@ public class ThunderDiveGoal extends Goal {
                         lateral = new Vec3(toT.x, 0, toT.z).normalize().scale(diveSpeedXZ);
                     }
                     mob.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
+                    this.lateral = lateral;
                 } else {
                     // manter um “hover” suave (sem subir indefinidamente)
                     Vec3 dm = mob.getDeltaMovement();
@@ -132,11 +134,6 @@ public class ThunderDiveGoal extends Goal {
             case DIVE -> {
                 // reforça queda e correção lateral durante o mergulho
                 if (t != null) {
-                    Vec3 toT = mob.position().vectorTo(t.position());
-                    Vec3 lateral = new Vec3(toT.x, 0, toT.z);
-                    if (lateral.lengthSqr() > 1.0E-4) {
-                        lateral = lateral.normalize().scale(diveSpeedXZ);
-                    }
                     mob.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                     Vec3 position = mob.position().add(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                     mob.getLookControl().setLookAt(position.x, position.y, position.z, 30f, 30f);
