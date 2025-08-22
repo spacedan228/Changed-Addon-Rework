@@ -2,12 +2,13 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.WolfPlushBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import net.foxyas.changedaddon.procedures.InteractPlushesProcedure;
+import net.foxyas.changedaddon.init.ChangedAddonSounds;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
@@ -104,18 +105,16 @@ public class WolfPlushBlock extends Block implements EntityBlock {
     @Override
     public @NotNull InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
         super.use(blockstate, world, pos, entity, hand, hit);
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
         double hitX = hit.getLocation().x;
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
-        Direction direction = hit.getDirection();
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof WolfPlushBlockEntity PlusheBlockEntity) {
-            if (!PlusheBlockEntity.isSqueezed()) {
-                InteractPlushesProcedure.execute(world, x, y, z);
-                PlusheBlockEntity.squeezedTicks = 4;
+        if (blockEntity instanceof WolfPlushBlockEntity plushBlockEntity) {
+            if (!plushBlockEntity.isSqueezed()) {
+                if (!world.isClientSide()) {
+                    plushBlockEntity.squeezedTicks = 4;
+                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
+                }
             }
         }
         return InteractionResult.SUCCESS;

@@ -14,6 +14,7 @@ public class WolfPlushBlockEntity extends BlockEntity {
 
     public WolfPlushBlockEntity(BlockPos position, BlockState state) {
         super(ChangedAddonBlockEntities.WOLF_PLUSH.get(), position, state);
+        this.squeezedTicks = 0;
     }
 
     @Override

@@ -1,0 +1,29 @@
+{
+  "criteria": {
+    "hug_entity": {
+      "trigger": "changed_addon:grab_entity",
+      "conditions": {
+        "name": "hug"
+      }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  },
+  "display": {
+    "icon": {
+      "item": "minecraft:pink_wool"
+    },
+    "title": {
+      "translate": "advancement.grab.hug.title",
+      "color": "red"
+    },
+    "description": {
+      "translate": "advancement.grab.hug.description"
+    },
+    "frame": "challenge",
+    "announce_to_chat": true,
+    "show_toast": true,
+    "hidden": true
+  }
+}

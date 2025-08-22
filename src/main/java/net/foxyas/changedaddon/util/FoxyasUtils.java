@@ -22,6 +22,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -86,6 +87,76 @@ public class FoxyasUtils {
 
         return blockPosList.stream();
     }
+
+    public static List<BlockPos> getOutlineBlocks(BoundingBox box) {
+        List<BlockPos> outline = new ArrayList<>();
+
+        for (int x = box.minX(); x <= box.maxX(); x++) {
+            for (int y = box.minY(); y <= box.maxY(); y++) {
+                for (int z = box.minZ(); z <= box.maxZ(); z++) {
+                    boolean onXFace = x == box.minX() || x == box.maxX();
+                    boolean onYFace = y == box.minY() || y == box.maxY();
+                    boolean onZFace = z == box.minZ() || z == box.maxZ();
+
+                    // Se estiver em pelo menos uma face, adiciona ao outline
+                    if (onXFace || onYFace || onZFace) {
+                        outline.add(new BlockPos(x, y, z));
+                    }
+                }
+            }
+        }
+
+        return outline;
+    }
+
+    public static Stream<BlockPos> betweenClosedStreamSphereOutline(BlockPos center, int horizontalRadius, int verticalRadius) {
+        List<BlockPos> outline = new ArrayList<>();
+        double tolerance = 0.25; // ajusta a espessura da borda
+
+        for (int y = -verticalRadius; y <= verticalRadius; y++) {
+            for (int x = -horizontalRadius; x <= horizontalRadius; x++) {
+                for (int z = -horizontalRadius; z <= horizontalRadius; z++) {
+                    double dx = x / (double) horizontalRadius;
+                    double dy = y / (double) verticalRadius;
+                    double dz = z / (double) horizontalRadius;
+
+                    double distanceSq = dx * dx + dy * dy + dz * dz;
+
+                    if (distanceSq >= 1.0 - tolerance && distanceSq <= 1.0) {
+                        outline.add(center.offset(x, y, z));
+                    }
+                }
+            }
+        }
+
+        return outline.stream();
+    }
+
+
+    public static Stream<BlockPos> betweenClosedStreamSphereOutline(BlockPos center, int horizontalRadius, int verticalRadius, double borderDistance) {
+        List<BlockPos> outline = new ArrayList<>();
+        double tolerance = 0.25; // ajusta a espessura da borda
+
+        for (int y = -verticalRadius; y <= verticalRadius; y++) {
+            for (int x = -horizontalRadius; x <= horizontalRadius; x++) {
+                for (int z = -horizontalRadius; z <= horizontalRadius; z++) {
+                    double dx = x / (double) horizontalRadius;
+                    double dy = y / (double) verticalRadius;
+                    double dz = z / (double) horizontalRadius;
+
+                    double distanceSq = dx * dx + dy * dy + dz * dz;
+
+                    if (distanceSq >= borderDistance - tolerance && distanceSq <= borderDistance) {
+                        outline.add(center.offset(x, y, z));
+                    }
+                }
+            }
+        }
+
+        return outline.stream();
+    }
+
+
 
 
     /**

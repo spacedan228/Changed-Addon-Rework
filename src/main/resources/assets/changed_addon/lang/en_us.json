@@ -98,6 +98,12 @@
   "advancements.main.rock_fish.title": "Rock Fish",
   "advancements.main.rock_fish.description": "Use a fire resistance potion and swim in lava while transfured into an aquatic form.",
 
+  "advancement.grab.hug.title": "Warm Hug",
+  "advancement.grab.hug.description": "You gave someone a warm hug ♥",
+
+  "advancement.grab.hug_tight.title": "Snuggly Squeeze",
+  "advancement.grab.hug_tight.description": "You gave someone a big, cozy squeeze ♥",
+
   "attribute.changed_addon.latex_infection": "Latex Infection",
   "attribute.changed_addon.latex_resistance": "Latex Resistance",
 
@@ -181,6 +187,14 @@
   "changed_addon.ability.unfuse": "Unfuse",
   "changed_addon.ability.unfuse.description.line1": "Allows the player to unfuse from the slime creature and summon it for battle",
   "changed_addon.ability.unfuse.description.line2": "The creature can be fused back by interacting while holding shift",
+
+  "ability.changed_addon.grab_entity.extender.how_to_release": "Hold [%s] to release the entity",
+  "ability.changed_addon.grab_entity.extender.how_to_hug": "Hold [%s] to hug the entity",
+  "ability.changed_addon.grab_entity.extender.how_to_hug.tightly": "Hold [%s] to snuggle the entity",
+  "ability.changed_addon.grab_entity.extender.hugger": "You give %s a warm hug",
+  "ability.changed_addon.grab_entity.extender.hugged": "%s gives you a warm hug",
+  "ability.changed_addon.grab_entity.extender.hugger.tight": "You squeezed %s tight",
+  "ability.changed_addon.grab_entity.extender.hugged.tight": "%s squeezes you tight",
 
   "ability.changed_addon.toggle_climb": "Toggle Climb",
   "ability.changed_addon.passive_regeneration": "Passive Regeneration",
