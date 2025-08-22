@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.goals.phantom;
 
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.mixins.entity.PhantomAccessor;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.sounds.SoundEvents;
@@ -32,6 +33,15 @@ public class AvoidCatlikePlayerGoal extends Goal {
     @Override
     public boolean canContinueToUse() {
         return !isScared;
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        phantom.setTarget(null);
+        if (phantom instanceof PhantomAccessor phantomAccessor) {
+            phantomAccessor.setAttackPhase(Phantom.AttackPhase.CIRCLE);
+        }
     }
 
     private boolean checkNearbyCatlikeEntities() {
