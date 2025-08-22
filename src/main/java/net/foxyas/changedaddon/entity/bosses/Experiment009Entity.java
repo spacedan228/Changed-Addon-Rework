@@ -1,14 +1,13 @@
 package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
+import net.foxyas.changedaddon.entity.goals.exp9.SummonLightningGoal;
 import net.foxyas.changedaddon.entity.goals.exp9.ThunderDiveGoal;
 import net.foxyas.changedaddon.entity.goals.exp9.ThunderStrikeGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +18,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -35,7 +37,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -164,9 +165,10 @@ public class Experiment009Entity extends ChangedEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.targetSelector.addGoal(5, new ThunderStrikeGoal(this, 1.5f, 120));
-        this.targetSelector.addGoal(10, new ThunderDiveGoal(this, 1.5f, 6f, 1f,0.5f, 4));
+        goalSelector.addGoal(5, new ThunderStrikeGoal(this, 1.5f, 120));
+        goalSelector.addGoal(10, new ThunderDiveGoal(this, 1.5f, 6f, 1f,0.5f, 4));
 
+        goalSelector.addGoal(5, new SummonLightningGoal(this, ConstantInt.of(400), UniformInt.of(1, 4), UniformInt.of(60, 100), UniformInt.of(80, 100), ConstantFloat.of(10)));
     }
 
     @Override
