@@ -67,7 +67,6 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
         event.addAbility(event.isOfTag(ChangedTags.EntityTypes.LATEX).and(event.isNotOfTag(ChangedTags.EntityTypes.PARTIAL_LATEX)), SOFTEN_ABILITY);
         //event.addAbility(entityType -> getCanGlideEntities().contains(entityType), WING_FLAP_ABILITY);
         event.addAbility(event.isOfTag(ChangedAddonTags.EntityTypes.DRAGON_ENTITIES), WING_FLAP_ABILITY);
-        ChangedAddonMod.LOGGER.info("Changed addon global abilities applied with ease");
     }
 
     @SubscribeEvent

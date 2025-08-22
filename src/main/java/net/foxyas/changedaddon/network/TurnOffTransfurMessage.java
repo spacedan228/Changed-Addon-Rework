@@ -1,9 +1,13 @@
 package net.foxyas.changedaddon.network;
 
+import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
+import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -36,6 +40,14 @@ public record TurnOffTransfurMessage(int type, int pressedMs) {
             TransfurMode mode = tf.transfurMode;
 
             tf.transfurMode = mode == TransfurMode.NONE ? tf.getParent().transfurMode : TransfurMode.NONE;
+            player.displayClientMessage(new TranslatableComponent("key.changed_addon.turn_off_transfur.safe_mode", tf.transfurMode == TransfurMode.NONE), false);
+            if (tf.getSelectedAbility() instanceof GrabEntityAbilityInstance grabEntityAbilityInstance) {
+                if (grabEntityAbilityInstance instanceof GrabEntityAbilityExtensor abilityExtensor) {
+                    boolean safeMode = !abilityExtensor.isSafeMode();
+                    abilityExtensor.setSafeMode(safeMode);
+                    player.displayClientMessage(new TranslatableComponent("key.changed_addon.turn_off_transfur.grab_safe_mode", safeMode), false);
+                }
+            }
         }
     }
 }

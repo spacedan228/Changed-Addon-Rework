@@ -8,6 +8,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -64,12 +65,14 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     public void cancelSuitDmg(CallbackInfo ci) {
         if (this.isSafeMode()) {
             if (this.suitTransition >= 3.0f) {
-                ci.cancel();
-                this.grabStrength = 1;
-                this.runTightHug();
-                if (getSelf().getController().getHoldTicks() >= 1) {
-                    this.suitTransition -= 0.01f;
+                if (!(grabbedEntity instanceof Player player)) {
+                    this.grabStrength = 1;
+                    if (getSelf().getController().getHoldTicks() >= 1) {
+                        this.suitTransition -= 0.5f;
+                    }
+                    this.runTightHug();
                 }
+                ci.cancel();
             }
         }
     }

@@ -643,6 +643,8 @@
   "key.changed_addon.pat_message": "You pat %s",
   "key.changed_addon.pat_received": "%s pat You",
   "key.changed_addon.turn_off_transfur": "Turn Off Transfur",
+  "key.changed_addon.turn_off_transfur.grab_safe_mode": "You set the Friendly Grab to %s",
+  "key.changed_addon.turn_off_transfur.safe_mode": "You set the Transfur Attack to %s",
 
   "subtitles.armor_equip": "Armor Equip",
   "subtitles.block.plushes.sfx": "Plush Squeezed",
