@@ -137,14 +137,12 @@ public class ThunderDiveGoal extends Goal {
                     mob.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                     Vec3 position = mob.position().add(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                     mob.getLookControl().setLookAt(position.x, position.y, position.z, 30f, 30f);
-                    ChangedSounds.broadcastSound(mob, SoundEvents.ELYTRA_FLYING, 1, 1);
                     affectNearbyEntities(lateral);
                 } else {
                     // sem alvo, só cai
                     mob.setDeltaMovement(0, -Math.abs(diveSpeedY), 0);
                     Vec3 position = mob.position().add(0, -Math.abs(diveSpeedY), 0);
                     mob.getLookControl().setLookAt(position.x, position.y, position.z, 30f, 30f);
-                    ChangedSounds.broadcastSound(mob, SoundEvents.ELYTRA_FLYING, 1, 1);
                     affectNearbyEntities(new Vec3(0, -Math.abs(diveSpeedY), 0));
                 }
             }
