@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.exp9;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -12,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -33,6 +35,7 @@ public class SummonLightningGoal extends Goal {
     protected int castDuration;
     protected int lightningDelay;
     protected Vec3 strikePos;
+    protected BlockPos aboveWaterPos;
 
     public SummonLightningGoal(PathfinderMob holder, IntProvider cooldown, IntProvider lightningCount, IntProvider castDuration, IntProvider lightningDelay, FloatProvider damage){
         this.holder = holder;
@@ -101,6 +104,14 @@ public class SummonLightningGoal extends Goal {
         Random random = holder.getRandom();
         if(strikePos == null){
             strikePos = target.position();
+
+            BlockPos pos = new BlockPos(strikePos);
+            if(level.getBlockState(pos).is(Blocks.WATER)){
+                do pos = pos.above();
+                while (level.getBlockState(pos).is(Blocks.WATER));
+                aboveWaterPos = pos;
+            }
+
             lightningDelay = lightningDelayProvider.sample(random);
         }
 
@@ -109,7 +120,7 @@ public class SummonLightningGoal extends Goal {
 
             int gameTime = holder.tickCount;
             if(gameTime % 2 == 0){
-                ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, strikePos.x - 1, strikePos.y, strikePos.z - 1,
+                ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, strikePos.x - 1, aboveWaterPos != null ? aboveWaterPos.getY() : strikePos.y, strikePos.z - 1,
                         50, 2, 0.2, 2, 0.5);
             }
             if((gameTime + 10) % 40 == 0) level.playSound(null, strikePos.x, strikePos.y, strikePos.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 0.5f, 1);
@@ -124,6 +135,7 @@ public class SummonLightningGoal extends Goal {
         lightning(level, strikePos.x - 0.75, strikePos.y, strikePos.z + 0.75, damageProvider.sample(random));
 
         strikePos = null;
+        aboveWaterPos = null;
     }
 
     protected void lightning(Level level, double x, double y, double z, float damage){
@@ -139,5 +151,6 @@ public class SummonLightningGoal extends Goal {
         cooldown = cooldownProvider.sample(holder.getRandom());
         lightnings = 0;
         strikePos = null;
+        aboveWaterPos = null;
     }
 }

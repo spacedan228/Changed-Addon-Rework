@@ -1,9 +1,8 @@
 package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
+import net.foxyas.changedaddon.entity.goals.exp9.StaticDischargeGoal;
 import net.foxyas.changedaddon.entity.goals.exp9.SummonLightningGoal;
-import net.foxyas.changedaddon.entity.goals.exp9.ThunderDiveGoal;
-import net.foxyas.changedaddon.entity.goals.exp9.ThunderStrikeGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
@@ -20,6 +19,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -165,10 +165,11 @@ public class Experiment009Entity extends ChangedEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(5, new ThunderStrikeGoal(this, 1.5f, 120));
-        goalSelector.addGoal(10, new ThunderDiveGoal(this, 1.5f, 6f, 1f,0.5f, 4));
+        //goalSelector.addGoal(5, new ThunderStrikeGoal(this, 1.5f, 120));
+        //goalSelector.addGoal(10, new ThunderDiveGoal(this, 1.5f, 6f, 1f,0.5f, 4));
 
-        goalSelector.addGoal(5, new SummonLightningGoal(this, ConstantInt.of(400), UniformInt.of(1, 4), UniformInt.of(60, 100), UniformInt.of(80, 100), ConstantFloat.of(10)));
+        goalSelector.addGoal(5, new SummonLightningGoal(this, ConstantInt.of(300), UniformInt.of(2, 4), UniformInt.of(60, 100), UniformInt.of(80, 100), ConstantFloat.of(10)));
+        goalSelector.addGoal(5, new StaticDischargeGoal(this, ConstantInt.of(200), 4, UniformInt.of(30, 50), 8, UniformFloat.of(8, 12)));
     }
 
     @Override
@@ -299,7 +300,6 @@ public class Experiment009Entity extends ChangedEntity {
         LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(this.level);
         if (lightning != null) {
             lightning.moveTo(pos.x(), pos.y(), pos.z());
-            lightning.setCause(null);
             this.level.addFreshEntity(lightning);
         }
     }
