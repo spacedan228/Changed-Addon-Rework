@@ -657,8 +657,8 @@
   "key.changed_addon.pat_message": "Simogatod %s entitást",
   "key.changed_addon.pat_received": "%s téged simogat",
   "key.changed_addon.turn_off_transfur": "Transzfur kikapcsolása",
-  "key.changed_addon.turn_off_transfur.grab_safe_mode": "A barátságos megragadás beállítva: %s",
-  "key.changed_addon.turn_off_transfur.safe_mode": "A transzfur támadás beállítva: %s",
+  "key.changed_addon.turn_off_transfur.grab_safe_mode": "Barátságos megragadás beállítva: %s",
+  "key.changed_addon.turn_off_transfur.safe_mode": "Transzfur támadás beállítva: %s",
 
   "subtitles.armor_equip": "Páncél felvétele",
   "subtitles.block.plushes.sfx": "Plüss összenyomása",
