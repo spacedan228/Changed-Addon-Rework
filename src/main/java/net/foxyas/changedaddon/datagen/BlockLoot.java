@@ -99,6 +99,8 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
         dropSelf(PAWS_SCANNER.get());
 
         dropSelf(LUMINARA_BLOOM.get());
+
+        add(WOLF_CRYSTAL_PILLAR.get(), createSilkTouchOnlyTable(WOLF_CRYSTAL_PILLAR.get()));
     }
 
     @Override

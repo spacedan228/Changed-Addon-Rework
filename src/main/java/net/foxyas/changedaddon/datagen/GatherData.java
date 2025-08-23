@@ -27,6 +27,7 @@ public class GatherData {
 
         generator.addProvider(new LootTableProvider(generator));
 
+        generator.addProvider(new BlockStateProvider(generator, helper));
         //generator.addProvider(new AdvancementProvider(generator, helper));
     }
 }

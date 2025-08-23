@@ -64,6 +64,8 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> PAWS_SCANNER = REGISTRY.register("paws_scanner", PawsScanner::new);
     public static final RegistryObject<Block> LUMINARA_BLOOM = REGISTRY.register("luminara_bloom", LuminaraBloomBlock::new);
 
+    public static final RegistryObject<WolfCrystalPillar> WOLF_CRYSTAL_PILLAR = REGISTRY.register("wolf_crystal_pillar", WolfCrystalPillar::new);
+
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientSideHandler {
         @SubscribeEvent
@@ -85,6 +87,7 @@ public class ChangedAddonBlocks {
             HandScanner.registerRenderLayer();
             LuminarCrystalBlock.registerRenderLayer();
             LuminaraBloomBlock.registerRenderLayer();
+            WolfCrystalPillar.aaa();
         }
     }
 }
