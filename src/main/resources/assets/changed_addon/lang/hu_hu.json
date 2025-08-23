@@ -190,7 +190,7 @@
 
   "ability.changed_addon.grab_entity.extender.how_to_release": "Nyomja meg a(z) [%s] gombot az entitás elengedéséhez",
   "ability.changed_addon.grab_entity.extender.how_to_hug": "Tartsa nyomva a(z) [%s] gombot az entitás öleléséhez",
-  "ability.changed_addon.grab_entity.extender.how_to_hug.tightly": "Tartsa nyomva a(z) [%s] gombot az entitás hozzá szorításához",
+  "ability.changed_addon.grab_entity.extender.how_to_hug.tightly": "Tartsa nyomva a(z) [%s] gombot az entitás szoros öleléséhez",
   "ability.changed_addon.grab_entity.extender.hugger": "Adtál %s entitásnak egy meleg ölelést",
   "ability.changed_addon.grab_entity.extender.hugged": "%s adott neked egy meleg ölelést",
   "ability.changed_addon.grab_entity.extender.hugger.tight": "Szorosan magadhoz ölelted %s entitást",
