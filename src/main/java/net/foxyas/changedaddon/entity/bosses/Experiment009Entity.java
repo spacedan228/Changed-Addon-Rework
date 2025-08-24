@@ -167,7 +167,7 @@ public class Experiment009Entity extends ChangedEntity {
     protected void registerGoals() {
         super.registerGoals();
 
-        goalSelector.addGoal(5, new ThunderStrikeGoal(this, UniformInt.of(80, 120),1.5f, 120));
+        goalSelector.addGoal(5, new ThunderStrikeGoal(this, UniformInt.of(80, 120),1.5f, 200));
         goalSelector.addGoal(10, new ThunderDiveGoal(this, UniformInt.of(60, 100), 1.5f, 6f, 1f,0.5f, 4));
 
         //Basically perfect, damn... well done 0senia0

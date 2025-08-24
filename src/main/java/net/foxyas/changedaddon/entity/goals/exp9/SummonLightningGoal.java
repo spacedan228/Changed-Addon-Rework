@@ -7,11 +7,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -143,6 +141,31 @@ public class SummonLightningGoal extends Goal {
         lightning.moveTo(x, y, z);
         lightning.setDamage(damage);
         level.addFreshEntity(lightning);
+        applyKnockBack(lightning);
+    }
+
+    public void applyKnockBack(Entity mob) {
+        var list = mob.getLevel()
+                .getNearbyEntities(
+                        LivingEntity.class,
+                        TargetingConditions.DEFAULT
+                                .selector((target) -> !target.is(mob)),
+                        this.holder, mob.getBoundingBox().inflate(16)
+                );
+
+        for (LivingEntity livingEntity : list) {
+            Vec3 direction = livingEntity.position().subtract(mob.position());
+
+            direction = direction.normalize();
+
+            double strength = 2.0 / livingEntity.distanceTo(mob);
+
+            livingEntity.push(
+                    direction.x * strength,
+                    direction.y * strength * 2,
+                    direction.z * strength
+            );
+        }
     }
 
     @Override

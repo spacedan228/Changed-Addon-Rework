@@ -107,13 +107,12 @@ public class ThunderStrikeGoal extends Goal {
                 .getNearbyEntities(
                         LivingEntity.class,
                         TargetingConditions.DEFAULT
-                                .selector((target) -> !target.is(lightning) && !target.is(pathfinderMob))
-                                .range(6),
+                                .selector((target) -> !target.is(lightning) && !target.is(pathfinderMob)),
                         pathfinderMob, lightning.getBoundingBox().inflate(8)
                 );
 
         for (LivingEntity livingEntity : list) {
-            livingEntity.push(0,5,0);
+            livingEntity.push(0,3,0);
         }
     }
 
