@@ -18,6 +18,7 @@ import java.util.function.BiFunction;
 // BlakeBr0 Code
 // https://github.com/BlakeBr0/Cucumber/blob/1.18/src/main/java/com/blakebr0/cucumber/client/ModRenderTypes.java
 public final class ChangedAddonRenderTypes extends RenderType {
+
     public static final RenderType QUADS_WITH_TRANSPARENCY = RenderType.create(
             ChangedAddonMod.resourceLocString("quads"),
             DefaultVertexFormat.BLOCK,
@@ -33,6 +34,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true)
     );
+
     public static final RenderType QUADS_WITH_TRANSPARENCY_NO_CULL = RenderType.create(
             ChangedAddonMod.resourceLocString("quads_no_cull"),
             DefaultVertexFormat.BLOCK,
@@ -48,6 +50,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true)
     );
+
     public static final RenderType QUADS = RenderType.create(
             ChangedAddonMod.resourceLocString("quads"),
             DefaultVertexFormat.BLOCK,
@@ -63,6 +66,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true)
     );
+
     public static final RenderType QUADS_NO_CULL = RenderType.create(
             ChangedAddonMod.resourceLocString("quads_no_cull"),
             DefaultVertexFormat.BLOCK,
@@ -78,6 +82,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true)
     );
+
     private static final TransparencyStateShard GHOST_TRANSPARENCY = new TransparencyStateShard("ghost_transparency",
             () -> {
                 RenderSystem.enableBlend();
@@ -89,6 +94,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                 RenderSystem.disableBlend();
                 RenderSystem.defaultBlendFunc();
             });
+
     public static final RenderType GHOST = RenderType.create(
             ChangedAddonMod.resourceLocString("ghost"),
             DefaultVertexFormat.BLOCK, VertexFormat.Mode.QUADS, 2097152, true, false,
@@ -99,6 +105,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     .setTransparencyState(GHOST_TRANSPARENCY)
                     .createCompositeState(false)
     );
+
     private static final TransparencyStateShard HOLOGRAM_TRANSPARENCY = new TransparencyStateShard("hologram_transparency",
             () -> {
                 RenderSystem.enableBlend();
@@ -110,6 +117,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                 RenderSystem.disableBlend();
                 RenderSystem.defaultBlendFunc();
             });
+
     private static final BiFunction<ResourceLocation, Boolean, RenderType> QUADS_NO_CULL_WITH_TEXTURE = Util.memoize((resourceLocation, transparency) -> {
         CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
                 .setLightmapState(LIGHTMAP)
@@ -126,6 +134,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                 false,
                 rendertype$compositestate);
     });
+
     private static final BiFunction<ResourceLocation, Boolean, RenderType> HOLOGRAM = Util.memoize((resourceLocation, outline) -> {
         CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
                 .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
@@ -143,6 +152,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                 true,
                 rendertype$compositestate);
     });
+
     private static final BiFunction<ResourceLocation, Boolean, RenderType> HOLOGRAM_CULL = Util.memoize((resourceLocation, outline) -> {
         CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
                 .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)

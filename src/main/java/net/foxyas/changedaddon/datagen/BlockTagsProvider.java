@@ -44,7 +44,7 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
 
         tag(Tags.Blocks.NEEDS_NETHERITE_TOOL).add(DEEPSLATE_PAINITE_ORE.get(), PAINITE_BLOCK.get());
 
-        tag(BlockTags.ICE).add(WHITE_WOLF_CRYSTAL_BLOCK.get(), ORANGE_WOLF_CRYSTAL_BLOCK.get(), YELLOW_WOLF_CRYSTAL_BLOCK.get(), BLUE_WOLF_CRYSTAL_BLOCK.get(), LUMINAR_CRYSTAL_BLOCK.get());
+        tag(BlockTags.ICE).add(WHITE_WOLF_CRYSTAL_BLOCK.get(), ORANGE_WOLF_CRYSTAL_BLOCK.get(), YELLOW_WOLF_CRYSTAL_BLOCK.get(), BLUE_WOLF_CRYSTAL_BLOCK.get(), LUMINAR_CRYSTAL_BLOCK.get(), WOLF_CRYSTAL_PILLAR.get());
         tag(BlockTags.BEACON_BASE_BLOCKS).add(PAINITE_BLOCK.get(), IRIDIUM_BLOCK.get());
         tag(BlockTags.NEEDS_DIAMOND_TOOL).add(IRIDIUM_BLOCK.get(), IRIDIUM_ORE.get());
 
