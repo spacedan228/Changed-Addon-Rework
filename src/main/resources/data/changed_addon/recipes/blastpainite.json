@@ -3,7 +3,7 @@
   "experience": 20,
   "cookingtime": 100,
   "ingredient": {
-    "item": "changed_addon:painite_ore"
+    "item": "changed_addon:deepslate_painite_ore"
   },
   "result": "changed_addon:painite"
 }

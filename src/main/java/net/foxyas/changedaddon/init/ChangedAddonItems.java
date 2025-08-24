@@ -74,7 +74,7 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> PAINITE_ARMOR_CHESTPLATE = REGISTRY.register("painite_armor_chestplate", PainiteArmorItem.Chestplate::new);
     public static final RegistryObject<Item> PAINITE_ARMOR_LEGGINGS = REGISTRY.register("painite_armor_leggings", PainiteArmorItem.Leggings::new);
     public static final RegistryObject<Item> PAINITE_ARMOR_BOOTS = REGISTRY.register("painite_armor_boots", PainiteArmorItem.Boots::new);
-    public static final RegistryObject<BlockItem> PAINITE_ORE = block(ChangedAddonBlocks.PAINITE_ORE, ChangedAddonTabs.TAB_CHANGED_ADDON);
+    public static final RegistryObject<BlockItem> PAINITE_ORE = block(ChangedAddonBlocks.DEEPSLATE_PAINITE_ORE, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<BlockItem> PAINITE_BLOCK = block(ChangedAddonBlocks.PAINITE_BLOCK, ChangedAddonTabs.TAB_CHANGED_ADDON);
 
     public static final RegistryObject<Item> LITIX_CAMONIA_FLUID_BUCKET = REGISTRY.register("litix_camonia_fluid_bucket", LitixCamoniaFluidItem::new);

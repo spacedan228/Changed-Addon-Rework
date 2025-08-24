@@ -22,7 +22,7 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> LATEX_INSULATOR = REGISTRY.register("latex_insulator", LatexInsulatorBlock::new);
     public static final RegistryObject<Block> IRIDIUM_ORE = REGISTRY.register("iridium_ore", IridiumOreBlock::new);
     public static final RegistryObject<Block> IRIDIUM_BLOCK = REGISTRY.register("iridium_block", IridiumBlock::new);
-    public static final RegistryObject<Block> PAINITE_ORE = REGISTRY.register("painite_ore", PainiteOreBlock::new);
+    public static final RegistryObject<Block> DEEPSLATE_PAINITE_ORE = REGISTRY.register("deepslate_painite_ore", DeepslatePainiteOreBlock::new);
     public static final RegistryObject<Block> PAINITE_BLOCK = REGISTRY.register("painite_block", PainiteBlock::new);
     public static final RegistryObject<LiquidBlock> LITIX_CAMONIA_FLUID = REGISTRY.register("litix_camonia_fluid", LitixCamoniaFluidBlock::new);
     public static final RegistryObject<Block> CATALYZER = REGISTRY.register("catalyzer", CatalyzerBlock::new);
@@ -87,7 +87,7 @@ public class ChangedAddonBlocks {
             HandScanner.registerRenderLayer();
             LuminarCrystalBlock.registerRenderLayer();
             LuminaraBloomBlock.registerRenderLayer();
-            WolfCrystalPillar.aaa();
+            WolfCrystalPillar.registerRenderLayer();
         }
     }
 }

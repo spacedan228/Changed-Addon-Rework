@@ -42,13 +42,13 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
         tag(ChangedAddonTags.Blocks.LAB_DOORS).add(ChangedBlocks.LIBRARY_DOOR.get(), ChangedBlocks.LAB_DOOR.get(), ChangedBlocks.MAINTENANCE_DOOR.get(), ChangedBlocks.BLUE_LAB_DOOR.get());
         tag(ChangedAddonTags.Blocks.PASSABLE_BLOCKS).addTags(BlockTags.FENCES, BlockTags.FENCE_GATES, BlockTags.TRAPDOORS).add(Blocks.ACACIA_DOOR, Blocks.IRON_BARS, ChangedBlocks.BLACK_RAILING.get());
 
-        tag(Tags.Blocks.NEEDS_NETHERITE_TOOL).add(PAINITE_ORE.get(), PAINITE_BLOCK.get());
+        tag(Tags.Blocks.NEEDS_NETHERITE_TOOL).add(DEEPSLATE_PAINITE_ORE.get(), PAINITE_BLOCK.get());
 
         tag(BlockTags.ICE).add(WHITE_WOLF_CRYSTAL_BLOCK.get(), ORANGE_WOLF_CRYSTAL_BLOCK.get(), YELLOW_WOLF_CRYSTAL_BLOCK.get(), BLUE_WOLF_CRYSTAL_BLOCK.get(), LUMINAR_CRYSTAL_BLOCK.get());
         tag(BlockTags.BEACON_BASE_BLOCKS).add(PAINITE_BLOCK.get(), IRIDIUM_BLOCK.get());
         tag(BlockTags.NEEDS_DIAMOND_TOOL).add(IRIDIUM_BLOCK.get(), IRIDIUM_ORE.get());
 
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(IRIDIUM_BLOCK.get(), IRIDIUM_ORE.get(), PAINITE_BLOCK.get(), PAINITE_ORE.get(),
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(IRIDIUM_BLOCK.get(), IRIDIUM_ORE.get(), PAINITE_BLOCK.get(), DEEPSLATE_PAINITE_ORE.get(),
                 CATALYZER.get(), UNIFUSER.get(), SIGNAL_BLOCK.get(), INFORMANT_BLOCK.get(), CONTAINMENT_CONTAINER.get(),
                 ADVANCED_UNIFUSER.get(), ADVANCED_CATALYZER.get(), REINFORCED_WALL.get(), REINFORCED_WALL_SILVER_STRIPED.get(),
                 REINFORCED_WALL_SILVER_TILED.get(), REINFORCED_WALL_CAUTION.get(), REINFORCED_CROSS_BLOCK.get(), WALL_WHITE_CRACKED.get(),

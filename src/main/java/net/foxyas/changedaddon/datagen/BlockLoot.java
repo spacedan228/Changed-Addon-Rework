@@ -37,7 +37,7 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
         dropSelf(IRIDIUM_BLOCK.get());
 
         dropSelf(IRIDIUM_BLOCK.get());
-        add(PAINITE_ORE.get(), createOreDrop(PAINITE_ORE.get(), ChangedAddonItems.PAINITE.get()));
+        add(DEEPSLATE_PAINITE_ORE.get(), createOreDrop(DEEPSLATE_PAINITE_ORE.get(), ChangedAddonItems.PAINITE.get()));
         dropSelf(PAINITE_BLOCK.get());
 
         dropSelf(CATALYZER.get());

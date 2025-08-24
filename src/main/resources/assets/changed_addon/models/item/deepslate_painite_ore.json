@@ -1,5 +1,5 @@
 {
-  "parent": "changed_addon:block/painite_ore",
+  "parent": "changed_addon:block/deepslate_painite_ore",
   "display": {
     "thirdperson": {
       "rotation": [
