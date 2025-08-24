@@ -8,13 +8,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -35,17 +34,20 @@ public class ThunderDiveGoal extends Goal {
     private Phase phase;
     private int ticks;
     private BlockPos startGroundPos;
+    protected final IntProvider cooldownProvider;
     public int cooldown = 0;
     private Vec3 lateral = Vec3.ZERO;
 
 
     public ThunderDiveGoal(PathfinderMob mob,
+                           IntProvider cooldownProvider,
                            double ascendBoost,
                            double ascendHoldY,
                            double diveSpeedXZ,
                            double diveSpeedY,
                            float ringRadius) {
         this.mob = mob;
+        this.cooldownProvider = cooldownProvider;
         this.ascendBoost = ascendBoost;
         this.ascendHoldY = ascendHoldY;
         this.diveSpeedXZ = diveSpeedXZ;
@@ -183,6 +185,7 @@ public class ThunderDiveGoal extends Goal {
         BlockPos center = mob.blockPosition();
 
         // Anel de trovões em 4 ondas (outline em XZ)
+        applyKnockBack(this.mob);
         spawnThunderCircle(serverLevel, center, ringRadius, 6);
         DelayedTask.schedule(5, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.4, 4));
         DelayedTask.schedule(10, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.8, 8));
@@ -191,10 +194,35 @@ public class ThunderDiveGoal extends Goal {
         // efeito visual simples no chão
         serverLevel.levelEvent(2001, center, Block.getId(Blocks.LIGHTNING_ROD.defaultBlockState()));
 
-        cooldown = 140;
+        cooldown = cooldownProvider.sample(this.mob.getRandom());
     }
 
     /* ---------- Utils ---------- */
+
+    public void applyKnockBack(LivingEntity mob) {
+        var list = mob.getLevel()
+                .getNearbyEntities(
+                        LivingEntity.class,
+                        TargetingConditions.DEFAULT
+                                .selector((target) -> !target.is(mob)),
+                        this.mob, mob.getBoundingBox().inflate(8)
+                );
+
+        for (LivingEntity livingEntity : list) {
+            Vec3 direction = livingEntity.position().subtract(mob.position());
+
+            direction = direction.normalize();
+
+            double strength = 3.0 / livingEntity.distanceTo(mob);
+
+            livingEntity.push(
+                    direction.x * strength,
+                    direction.y * strength * 0.5f,
+                    direction.z * strength
+            );
+        }
+    }
+
 
     public static void spawnThunderCircle(ServerLevel level, BlockPos center, double radius, int bolts) {
         // garante que os strikes ocorram no topo do terreno naquele XZ

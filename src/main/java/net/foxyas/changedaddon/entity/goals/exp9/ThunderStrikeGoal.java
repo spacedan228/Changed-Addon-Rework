@@ -7,14 +7,13 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
@@ -26,12 +25,14 @@ public class ThunderStrikeGoal extends Goal {
     private int tickCounter;
     private BlockPos groundPos;
     private LivingEntity target;
+    protected final IntProvider cooldownProvider;
     public int cooldown = 0;
 
-    public ThunderStrikeGoal(PathfinderMob pathfinderMob, double jumpPower, int duration) {
+    public ThunderStrikeGoal(PathfinderMob pathfinderMob, IntProvider cooldownProvider, double jumpPower, int duration) {
         this.pathfinderMob = pathfinderMob;
         this.jumpPower = jumpPower;
         this.duration = duration;
+        this.cooldownProvider = cooldownProvider;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
     }
 
@@ -55,7 +56,6 @@ public class ThunderStrikeGoal extends Goal {
         Vec3 velocity = pathfinderMob.position().vectorTo(target.position()).normalize().scale(0.5f);
         pathfinderMob.setDeltaMovement(pathfinderMob.getDeltaMovement().add(velocity.x, jumpPower, velocity.z));
         ChangedSounds.broadcastSound(pathfinderMob, ChangedSounds.BOW2, 1, 1);
-
 
 
         // Slow falling para manter no ar
@@ -90,6 +90,7 @@ public class ThunderStrikeGoal extends Goal {
                     pathfinderMob.getLookControl().setLookAt(lightning, 30, 30);
                     DelayedTask.schedule(10, () -> {
                         pathfinderMob.getLevel().addFreshEntity(lightning);
+                        applyKnockBack(lightning);
                         pathfinderMob.swing(pathfinderMob.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
                         // recoil de knockback para trás
                         Vec3 dir = pathfinderMob.position().vectorTo(target.position()).normalize().scale(-0.5);
@@ -98,6 +99,21 @@ public class ThunderStrikeGoal extends Goal {
                     pathfinderMob.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration + 40, 10, false, false));
                 }
             }
+        }
+    }
+
+    public void applyKnockBack(Entity lightning) {
+        var list = lightning.getLevel()
+                .getNearbyEntities(
+                        LivingEntity.class,
+                        TargetingConditions.DEFAULT
+                                .selector((target) -> !target.is(lightning) && !target.is(pathfinderMob))
+                                .range(6),
+                        pathfinderMob, lightning.getBoundingBox().inflate(8)
+                );
+
+        for (LivingEntity livingEntity : list) {
+            livingEntity.push(0,5,0);
         }
     }
 
@@ -120,6 +136,6 @@ public class ThunderStrikeGoal extends Goal {
 
         this.target = null;
         this.groundPos = null;
-        this.cooldown = duration * 2;
+        this.cooldown = cooldownProvider.sample(this.pathfinderMob.getRandom());
     }
 }
