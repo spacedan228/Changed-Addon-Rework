@@ -20,6 +20,7 @@ public class ChangedAddonScreens {
             MenuScreens.register(ChangedAddonMenus.TRANSFUR_SOUNDS_GUI, TransfurSoundsGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.TRANSFUR_TOTEM_GUI, TransfurTotemGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.INFORMANT_GUI, InformantGuiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.PROTOTYPE_MENU, PrototypeMenuScreen::new);
         });
     }
 }

@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.entity.goals.prototype.*;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.entity.interfaces.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
@@ -26,6 +27,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -40,12 +42,9 @@ import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ChestMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -56,14 +55,18 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
+import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
+import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -94,6 +97,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Nullable
     private BlockPos targetChestPos = null;
 
+    private final IItemHandlerModifiable combinedInv;
+
     // Constructors
     public PrototypeEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.PROTOTYPE.get(), world);
@@ -103,6 +108,16 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         super(type, world);
         xpReward = 0;
         setPersistenceRequired();
+        combinedInv = new CombinedInvWrapper(new EntityArmorInvWrapper(this), new EntityHandsInvWrapper(this), new InvWrapper(inventory));
+    }
+
+    public IItemHandlerModifiable getCombinedInv(){
+        return combinedInv;
+    }
+
+    @Override
+    protected float getEquipmentDropChance(@NotNull EquipmentSlot pSlot) {
+        return 2;
     }
 
     // Static methods
@@ -257,7 +272,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        Item item = itemstack.getItem();
         if (!player.isShiftKeyDown()) {
             if (!getLevel().isClientSide) {
                 this.depositeType = depositeType.switchDepositeType();
@@ -265,7 +279,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
             player.displayClientMessage(new TranslatableComponent("entity.changed_addon.prototype.deposite_type.switch", depositeType.getFormatedName()), true);
         } else {
             if (!getLevel().isClientSide) {
-                player.openMenu(getMenuProvider());
+                NetworkHooks.openGui((ServerPlayer) player, getMenuProvider(), buf -> buf.writeVarInt(getId()));
             }
         }
 
@@ -287,11 +301,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         } else {
             return InteractionResult.SUCCESS;
         }
-    }
-
-    @Override
-    protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand pHand) {
-        return super.mobInteract(player, pHand);
     }
 
     @Override
@@ -406,7 +415,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
-        return new ChestMenu(MenuType.GENERIC_9x1, id, playerInventory, this.inventory, 1);
+        return new PrototypeMenu(id, playerInventory, this);
     }
 
     public MenuProvider getMenuProvider() {
@@ -565,60 +574,12 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         return closestCrop;
     }
 
-    public BlockPos findNearbyCropCube(Level level, BlockPos center, int range) {
-        BlockPos closestCrop = null;
-        double closestDist = Double.MAX_VALUE;
-
-        for (BlockPos pos : BlockPos.betweenClosed(
-                center.offset(-range, -range, -range),
-                center.offset(range, range, range))) {
-
-            BlockState state = level.getBlockState(pos);
-            if (state.getBlock() instanceof CropBlock crop && crop.isMaxAge(state)) {
-                double dist = pos.distSqr(center);
-                if (dist < closestDist) {
-                    closestDist = dist;
-                    closestCrop = pos.immutable();
-                }
-            }
-        }
-        return closestCrop;
-    }
-
-    public BlockPos findNearbyCropCubeNoFilter(Level level, BlockPos center, int range) {
-        for (BlockPos pos : BlockPos.betweenClosed(
-                center.offset(-range, -range, -range),
-                center.offset(range, range, range))) {
-
-            BlockState state = level.getBlockState(pos);
-            if (state.getBlock() instanceof CropBlock crop && crop.isMaxAge(state)) {
-                return pos.immutable();
-            }
-        }
-        return null;
-    }
-
     public void harvestCrop(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         if (state.getBlock() instanceof CropBlock crop && crop.isMaxAge(state)) {
             // Drop items naturally (simulate player breaking)
-            ItemStack tool = this.getMainHandItem();
-            if (!tool.isEmpty()) {
-                tool.enchant(Enchantments.BLOCK_FORTUNE, 3);
-
-                LootContext.Builder builder = new LootContext.Builder(level)
-                        .withRandom(level.getRandom())
-                        .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
-                        .withParameter(LootContextParams.TOOL, tool)
-                        .withParameter(LootContextParams.BLOCK_STATE, state)
-                        .withOptionalParameter(LootContextParams.THIS_ENTITY, this);
-
-                List<ItemStack> drops = state.getDrops(builder);
-
-                for (ItemStack drop : drops) {
-                    Block.popResource(level, pos, drop);
-                }
-            } else Block.dropResources(state, level, pos, null);
+            ItemStack tool = getMainHandItem();
+            Block.dropResources(state, level, pos, level.getBlockEntity(pos), this, tool);
 
             // Replant at age 0
             level.setBlock(pos, crop.getStateForAge(0), 3);

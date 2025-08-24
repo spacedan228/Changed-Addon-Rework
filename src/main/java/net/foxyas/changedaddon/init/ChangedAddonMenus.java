@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.init;
 
+import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.world.inventory.*;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
@@ -16,16 +17,20 @@ public class ChangedAddonMenus {
     private static final List<MenuType<?>> REGISTRY = new ArrayList<>();
 
     private static <T extends AbstractContainerMenu> MenuType<T> register(String registryname, IContainerFactory<T> containerFactory) {
-        MenuType<T> menuType = new MenuType<T>(containerFactory);
+        MenuType<T> menuType = new MenuType<>(containerFactory);
         menuType.setRegistryName(registryname);
         REGISTRY.add(menuType);
         return menuType;
-    }    public static final MenuType<FoxyasGuiMenu> FOXYAS_GUI = register("foxyas_gui", FoxyasGuiMenu::new);
+    }
+
+    public static final MenuType<FoxyasGuiMenu> FOXYAS_GUI = register("foxyas_gui", FoxyasGuiMenu::new);
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
         event.getRegistry().registerAll(REGISTRY.toArray(new MenuType[0]));
-    }    public static final MenuType<GeneratorGuiMenu> GENERATORGUI = register("generator_gui", GeneratorGuiMenu::new);
+    }
+
+    public static final MenuType<GeneratorGuiMenu> GENERATORGUI = register("generator_gui", GeneratorGuiMenu::new);
     public static final MenuType<CatalyzerGuiMenu> CATALYZER_GUI = register("catalyzer_gui", CatalyzerGuiMenu::new);
     public static final MenuType<UnifuserGuiMenu> UNIFUSER_GUI = register("unifuser_gui", UnifuserGuiMenu::new);
     public static final MenuType<FoxyasGui2Menu> FOXYAS_GUI_2 = register("foxyas_gui_2", FoxyasGui2Menu::new);
@@ -33,7 +38,7 @@ public class ChangedAddonMenus {
     public static final MenuType<TransfurTotemGuiMenu> TRANSFUR_TOTEM_GUI = register("transfur_totem_gui", TransfurTotemGuiMenu::new);
     public static final MenuType<InformantGuiMenu> INFORMANT_GUI = register("informant_gui", InformantGuiMenu::new);
 
-
+    public static final MenuType<PrototypeMenu> PROTOTYPE_MENU = register("prototype_menu", PrototypeMenu::new);
 
 
 
