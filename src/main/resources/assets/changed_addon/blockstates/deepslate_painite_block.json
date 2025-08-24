@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "changed_addon:block/painite_block"
+      "model": "changed_addon:block/deepslate_painite_block"
     }
   }
 }
