@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.util;
 
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
@@ -9,12 +11,18 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 //copy from a_changed
 public class DynamicClipContext extends ClipContext {
+
+    public static final ClipContext.ShapeGetter IGNORE_TRANSLUCENT = (state, b, pos, context) -> {
+        if(state.is(Tags.Blocks.GLASS)) return Shapes.empty();
+        return ClipContext.Block.COLLIDER.get(state, b, pos, context);
+    };
 
     protected final ShapeGetter block;
     protected final Predicate<FluidState> canPick;

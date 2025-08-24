@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.entity.interfaces.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.util.ColorUtil;
+import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -17,6 +18,7 @@ import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
@@ -45,6 +47,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -55,7 +58,9 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.world.BlockEvent;
@@ -111,7 +116,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         combinedInv = new CombinedInvWrapper(new EntityArmorInvWrapper(this), new EntityHandsInvWrapper(this), new InvWrapper(inventory));
     }
 
-    public IItemHandlerModifiable getCombinedInv(){
+    public IItemHandlerModifiable getCombinedInv() {
         return combinedInv;
     }
 
@@ -158,6 +163,9 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         this.goalSelector.addGoal(30, new GotoTargetChestGoal(this));
         this.goalSelector.addGoal(30, new PlantSeedsGoal(this));
         this.goalSelector.addGoal(30, new ApplyBonemealGoal(this));
+
+        // fixme
+        this.goalSelector.addGoal(50, new PruningOrangeLeavesGoal(this));
     }
 
     @Override
@@ -572,6 +580,34 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
             }
         }
         return closestCrop;
+    }
+
+    public BlockPos findNearbyOrangeLeaves(BlockPos center, int range) {
+        BlockPos closestCrop = null;
+        double closestDist = Double.MAX_VALUE;
+
+        for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(center, range, range).toList()) {
+            BlockState state = level.getBlockState(pos);
+            if (state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
+                double dist = pos.distSqr(center);
+                if (dist < closestDist) {
+                    if (level.clip(eyeContext(pos)).getType() == HitResult.Type.MISS) {
+                        closestDist = dist;
+                        closestCrop = pos.immutable();
+                    }
+                }
+            }
+        }
+        return closestCrop;
+    }
+
+    private @NotNull ClipContext eyeContext(BlockPos pos) {
+        return new DynamicClipContext(
+                this.getEyePosition(),
+                Vec3.atCenterOf(pos),
+                DynamicClipContext.IGNORE_TRANSLUCENT,
+                ClipContext.Fluid.ANY::canPick,
+                CollisionContext.of(this));
     }
 
     public void harvestCrop(ServerLevel level, BlockPos pos) {
