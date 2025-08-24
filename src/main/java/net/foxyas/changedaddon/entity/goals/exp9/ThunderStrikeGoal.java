@@ -112,7 +112,7 @@ public class ThunderStrikeGoal extends Goal {
                 );
 
         for (LivingEntity livingEntity : list) {
-            livingEntity.push(0,3,0);
+            livingEntity.push(0,0.5f,0);
         }
     }
 

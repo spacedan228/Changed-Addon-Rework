@@ -12,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
@@ -33,7 +34,7 @@ public class StaticDischargeGoal extends Goal {
     protected int castDuration;
     protected boolean triggered;
 
-    public StaticDischargeGoal(PathfinderMob holder, IntProvider cooldown, float closeEnough, IntProvider castDuration, float aoe, FloatProvider damage){
+    public StaticDischargeGoal(PathfinderMob holder, IntProvider cooldown, float closeEnough, IntProvider castDuration, float aoe, FloatProvider damage) {
         this.holder = holder;
         cooldownProvider = cooldown;
         assert closeEnough < aoe;
@@ -57,7 +58,7 @@ public class StaticDischargeGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if(cooldown > 0){
+        if (cooldown > 0) {
             cooldown--;
             return false;
         }
@@ -80,7 +81,7 @@ public class StaticDischargeGoal extends Goal {
 
     @Override
     public void tick() {
-        if(castDuration <= 0) return;
+        if (castDuration <= 0) return;
         castDuration--;
 
         float delta = 1 - Mth.inverseLerp(castDuration, 0, castDurationProvider.getMaxValue());
@@ -92,17 +93,30 @@ public class StaticDischargeGoal extends Goal {
                 Math.round(Mth.lerp(delta, 20, 160)),
                 doubleSize, doubleSize, doubleSize, 0.2);
 
-        if(delta >= 0.9f && !triggered) {
+        if (delta >= 0.9f && !triggered) {
             AABB aabb = AABB.ofSize(holder.position(), aoe * 2, aoe * 2, aoe * 2);
             ServerLevel level = (ServerLevel) holder.level;
             Random random = holder.getRandom();
-            level.getEntities(holder, aabb, entity -> entity.distanceToSqr(holder) <= aoeSqr).forEach(entity ->
-                    entity.hurt(DamageSource.LIGHTNING_BOLT, damageProvider.sample(random))
+            level.getEntities(holder, aabb, entity -> entity.distanceToSqr(holder) <= aoeSqr).forEach(entity -> {
+                        entity.hurt(DamageSource.LIGHTNING_BOLT, damageProvider.sample(random));
+                        Vec3 direction = entity.position().subtract(holder.position());
+
+                        direction = direction.normalize();
+
+                        double strength = 6.0 / entity.distanceTo(holder);
+
+                        entity.push(
+                                direction.x * strength,
+                                direction.y * 0.3f,
+                                direction.z * strength
+                        );
+                    }
             );
             level.playSound(null, holder.getX(), holder.getY(), holder.getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.MASTER, 1000.0F, 0.8F + random.nextFloat() * 0.2F);
             triggered = true;
         }
     }
+
 
     @Override
     public void stop() {

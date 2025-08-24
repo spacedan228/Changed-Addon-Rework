@@ -189,7 +189,7 @@ public class ThunderDiveGoal extends Goal {
         BlockPos center = mob.blockPosition();
 
         // Anel de trovões em 4 ondas (outline em XZ)
-        applyKnockBack(this.mob);
+        applyKnockBack(center);
         spawnThunderCircle(serverLevel, center, ringRadius, 6);
         DelayedTask.schedule(5, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.4, 4));
         DelayedTask.schedule(10, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.8, 8));
@@ -203,21 +203,18 @@ public class ThunderDiveGoal extends Goal {
 
     /* ---------- Utils ---------- */
 
-    public void applyKnockBack(LivingEntity mob) {
+    public void applyKnockBack(BlockPos pos) {
         var list = mob.getLevel()
-                .getNearbyEntities(
+                .getEntitiesOfClass(
                         LivingEntity.class,
-                        TargetingConditions.DEFAULT
-                                .selector((target) -> !target.is(mob)),
-                        this.mob, new AABB(lateral, lateral).inflate(16)
-                );
+                        new AABB(pos).inflate(16), (target) -> !target.is(mob));
 
         for (LivingEntity livingEntity : list) {
             Vec3 direction = livingEntity.position().subtract(mob.position());
 
             direction = direction.normalize();
 
-            double strength = 3.0 / livingEntity.distanceTo(mob);
+            double strength = 10.0 / livingEntity.distanceTo(mob);
 
             livingEntity.push(
                     direction.x * strength,

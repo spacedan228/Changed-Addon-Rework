@@ -12,6 +12,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -35,7 +36,7 @@ public class SummonLightningGoal extends Goal {
     protected Vec3 strikePos;
     protected BlockPos aboveWaterPos;
 
-    public SummonLightningGoal(PathfinderMob holder, IntProvider cooldown, IntProvider lightningCount, IntProvider castDuration, IntProvider lightningDelay, FloatProvider damage){
+    public SummonLightningGoal(PathfinderMob holder, IntProvider cooldown, IntProvider lightningCount, IntProvider castDuration, IntProvider lightningDelay, FloatProvider damage) {
         this.holder = holder;
         cooldownProvider = cooldown;
         assert lightningCount.getMinValue() >= 1;
@@ -57,7 +58,7 @@ public class SummonLightningGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if(cooldown > 0){
+        if (cooldown > 0) {
             cooldown--;
             return false;
         }
@@ -81,16 +82,16 @@ public class SummonLightningGoal extends Goal {
 
     @Override
     public void tick() {
-        if(lightnings <= 0) return;
+        if (lightnings <= 0) return;
 
         Level level = holder.level;
-        if(castDuration > 0){
+        if (castDuration > 0) {
             castDuration--;
 
             holder.setDeltaMovement(Vec3.ZERO);
             holder.getLookControl().setLookAt(target);
 
-            if(holder.tickCount % 2 == 0){
+            if (holder.tickCount % 2 == 0) {
                 ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK,
                         holder.getX() - 0.5, holder.getY(), holder.getZ() - 0.5,
                         25, 1, 0.1, 1, 0.5);
@@ -100,11 +101,11 @@ public class SummonLightningGoal extends Goal {
         }
 
         Random random = holder.getRandom();
-        if(strikePos == null){
+        if (strikePos == null) {
             strikePos = target.position();
 
             BlockPos pos = new BlockPos(strikePos);
-            if(level.getBlockState(pos).is(Blocks.WATER)){
+            if (level.getBlockState(pos).is(Blocks.WATER)) {
                 do pos = pos.above();
                 while (level.getBlockState(pos).is(Blocks.WATER));
                 aboveWaterPos = pos;
@@ -113,15 +114,16 @@ public class SummonLightningGoal extends Goal {
             lightningDelay = lightningDelayProvider.sample(random);
         }
 
-        if(lightningDelay > 0){
+        if (lightningDelay > 0) {
             lightningDelay--;
 
             int gameTime = holder.tickCount;
-            if(gameTime % 2 == 0){
+            if (gameTime % 2 == 0) {
                 ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, strikePos.x - 1, aboveWaterPos != null ? aboveWaterPos.getY() : strikePos.y, strikePos.z - 1,
                         50, 2, 0.2, 2, 0.5);
             }
-            if((gameTime + 10) % 40 == 0) level.playSound(null, strikePos.x, strikePos.y, strikePos.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 0.5f, 1);
+            if ((gameTime + 10) % 40 == 0)
+                level.playSound(null, strikePos.x, strikePos.y, strikePos.z, SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 0.5f, 1);
             return;
         }
 
@@ -136,29 +138,29 @@ public class SummonLightningGoal extends Goal {
         aboveWaterPos = null;
     }
 
-    protected void lightning(Level level, double x, double y, double z, float damage){
+    protected void lightning(Level level, double x, double y, double z, float damage) {
         LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
         lightning.moveTo(x, y, z);
         lightning.setDamage(damage);
         level.addFreshEntity(lightning);
-        applyKnockBack(lightning);
+        applyKnockBack(AABB.ofSize(new Vec3(x, y, z), 16, 16, 16));
     }
 
-    public void applyKnockBack(Entity mob) {
-        var list = mob.getLevel()
+    public void applyKnockBack(AABB hitbox) {
+        var list = holder.getLevel()
                 .getNearbyEntities(
                         LivingEntity.class,
                         TargetingConditions.DEFAULT
-                                .selector((target) -> !target.is(mob)),
-                        this.holder, mob.getBoundingBox().inflate(16)
+                                .selector((target) -> !target.is(holder)),
+                        this.holder, hitbox
                 );
 
         for (LivingEntity livingEntity : list) {
-            Vec3 direction = livingEntity.position().subtract(mob.position());
+            Vec3 direction = livingEntity.position().subtract(holder.position());
 
             direction = direction.normalize();
 
-            double strength = 2.0 / livingEntity.distanceTo(mob);
+            double strength = 6.0 / livingEntity.distanceTo(holder);
 
             livingEntity.push(
                     direction.x * strength,
