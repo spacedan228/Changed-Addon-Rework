@@ -25,5 +25,6 @@
     "announce_to_chat": true,
     "show_toast": true,
     "hidden": true
-  }
+  },
+  "parent": "changed_addon:changedaddon_advancement"
 }

@@ -4,10 +4,10 @@
       "item": "changed_addon:pot_with_camonia"
     },
     "title": {
-      "translate": "advancements.untransfuradvancement.title"
+      "translate": "advancements.untransfur_advancement.title"
     },
     "description": {
-      "translate": "advancements.untransfuradvancement.descr"
+      "translate": "advancements.untransfur_advancement.descr"
     },
     "frame": "goal",
     "show_toast": true,
@@ -15,9 +15,9 @@
     "hidden": true
   },
   "criteria": {
-    "untransfuradvancement": {
+    "untransfur_advancement": {
       "trigger": "minecraft:impossible"
     }
   },
-  "parent": "changed_addon:untransfuritemadvancement"
+  "parent": "changed_addon:untransfur_item_advancement"
 }

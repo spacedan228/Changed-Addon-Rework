@@ -46,7 +46,7 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
 
     @Override
     public int getUseDuration(@NotNull ItemStack itemstack) {
-        return 20;
+        return super.getUseDuration(itemstack);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
         if (ProcessTransfur.isPlayerNotLatex(player)) {
             applyMobEffect(player, ChangedAddonMobEffects.UNTRANSFUR.get(), 1000);
             if (playerVars.showWarns && !player.level.isClientSide())
-                player.displayClientMessage(new TranslatableComponent("changedaddon.untransfur.sloweffect"), true);
+                player.displayClientMessage(new TranslatableComponent("changedaddon.untransfur.slow_effect"), true);
             return;
         }
 
@@ -97,7 +97,7 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
 
         // Grant untransfur advancement if not already
         if (player instanceof ServerPlayer serverPlayer) {
-            grantAdvancementIfNotDone(serverPlayer, "changed_addon:untransfuradvancement_2");
+            grantAdvancementIfNotDone(serverPlayer, "changed_addon:untransfur_advancement_2");
         }
 
         // Play sound

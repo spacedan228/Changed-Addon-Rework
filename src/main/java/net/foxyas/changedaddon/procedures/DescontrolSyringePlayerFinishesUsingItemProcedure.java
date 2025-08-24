@@ -65,9 +65,9 @@ public class DescontrolSyringePlayerFinishesUsingItemProcedure {
                     _entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
             }
             if (!(entity instanceof ServerPlayer _plr5 && _plr5.level instanceof ServerLevel
-                    && _plr5.getAdvancements().getOrStartProgress(_plr5.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfuradvancement_2"))).isDone())) {
+                    && _plr5.getAdvancements().getOrStartProgress(_plr5.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfur_advancement_2"))).isDone())) {
                 if (entity instanceof ServerPlayer _player) {
-                    Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfuradvancement_2"));
+                    Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfur_advancement_2"));
                     AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
                     if (!_ap.isDone()) {
                         Iterator _iterator = _ap.getRemainingCriteria().iterator();

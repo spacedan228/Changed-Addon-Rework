@@ -4,10 +4,10 @@
       "item": "changed_addon:syringe_with_litix_cammonia"
     },
     "title": {
-      "translate": "advancements.untransfuradvancement_2.title"
+      "translate": "advancements.untransfur_advancement_2.title"
     },
     "description": {
-      "translate": "advancements.untransfuradvancement_2.descr"
+      "translate": "advancements.untransfur_advancement_2.descr"
     },
     "frame": "goal",
     "show_toast": true,
@@ -15,9 +15,9 @@
     "hidden": true
   },
   "criteria": {
-    "untransfuradvancement_2": {
+    "untransfur_advancement_2": {
       "trigger": "minecraft:impossible"
     }
   },
-  "parent": "changed_addon:untransfuritemadvancement"
+  "parent": "changed_addon:untransfur_item_advancement"
 }

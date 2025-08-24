@@ -32,16 +32,11 @@ public class DiffusionSyringeItem extends AbstractSyringeItem implements Special
     }
 
     public int getUseDuration(@NotNull ItemStack itemstack) {
-        return 20;
+        return super.getUseDuration(itemstack);
     }
 
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull LivingEntity entity) {
-        //double x = entity.getX();
-        //double y = entity.getY();
-        //double z = entity.getZ();
-        //DescontrolSyringePlayerFinishesUsingItemProcedure.execute(world, x, y, z, entity);
-
         if (entity instanceof Player player) {
             SummonEntityProcedure.execute(world, player);
             PlayerUtil.UnTransfurPlayerAndPlaySound(player, !player.isCreative() && !player.isSpectator());

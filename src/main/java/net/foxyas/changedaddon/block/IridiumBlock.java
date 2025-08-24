@@ -14,17 +14,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.TierSortingRegistry;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-@ParametersAreNonnullByDefault
-public class IridiumBlockBlock extends Block implements NonLatexCoverableBlock {
-    public IridiumBlockBlock() {
+public class IridiumBlock extends Block implements NonLatexCoverableBlock {
+    public IridiumBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.SNOW).sound(SoundType.NETHERITE_BLOCK).strength(30f, 50f).requiresCorrectToolForDrops());
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
         return 15;
     }
 
@@ -34,6 +34,6 @@ public class IridiumBlockBlock extends Block implements NonLatexCoverableBlock {
         if (selectedItem.getItem() instanceof TieredItem tieredItem && tieredItem.isCorrectToolForDrops(selectedItem, state)) {
             return TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state) || tieredItem.getTier().getLevel() >= 4;
         }
-        return false;
+        return super.canHarvestBlock(state, world, pos, player);
     }
 }

@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.procedures;
 
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -21,9 +22,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.Objects;
 import java.util.Random;
 
-public class SyringeWithLitixCammoniaLivingEntityIsHitWithItemProcedure {
+public class SyringeWithLitixCammoniaAttack {
 
-    public static void execute(Entity entity, Entity sourceEntity, ItemStack itemStack) {
+    public static void run(Entity entity, Entity sourceEntity, ItemStack itemStack) {
         if (!(entity instanceof Player player) || sourceEntity == null) return;
 
         boolean isTransfurred = ProcessTransfur.isPlayerTransfurred(player);
@@ -80,7 +81,7 @@ public class SyringeWithLitixCammoniaLivingEntityIsHitWithItemProcedure {
 
     private static void giveSyringeBack(Entity entity) {
         if (entity instanceof Player player) {
-            ItemStack syringe = new ItemStack(ForgeRegistries.ITEMS.getValue(new ResourceLocation("changed:syringe")));
+            ItemStack syringe = new ItemStack(ChangedItems.SYRINGE.get());
             syringe.setCount(1);
             ItemHandlerHelper.giveItemToPlayer(player, syringe);
         }

@@ -13,7 +13,6 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.EyeStyle;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurMode;
-import net.ltxprogrammer.changed.entity.ai.LatexFollowOwnerGoal;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
@@ -46,6 +45,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -56,6 +56,8 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
@@ -600,7 +602,24 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         BlockState state = level.getBlockState(pos);
         if (state.getBlock() instanceof CropBlock crop && crop.isMaxAge(state)) {
             // Drop items naturally (simulate player breaking)
-            Block.dropResources(state, level, pos, null);
+            ItemStack tool = this.getMainHandItem();
+            if (!tool.isEmpty()) {
+                tool.enchant(Enchantments.BLOCK_FORTUNE, 3);
+
+                LootContext.Builder builder = new LootContext.Builder(level)
+                        .withRandom(level.getRandom())
+                        .withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
+                        .withParameter(LootContextParams.TOOL, tool)
+                        .withParameter(LootContextParams.BLOCK_STATE, state)
+                        .withOptionalParameter(LootContextParams.THIS_ENTITY, this);
+
+                List<ItemStack> drops = state.getDrops(builder);
+
+                for (ItemStack drop : drops) {
+                    Block.popResource(level, pos, drop);
+                }
+            } else Block.dropResources(state, level, pos, null);
+
             // Replant at age 0
             level.setBlock(pos, crop.getStateForAge(0), 3);
             level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);

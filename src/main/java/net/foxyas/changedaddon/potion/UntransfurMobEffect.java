@@ -80,9 +80,9 @@ public class UntransfurMobEffect extends MobEffect {
         });
 
         if (!(entity instanceof ServerPlayer sPlayer && sPlayer.level instanceof ServerLevel
-                && sPlayer.getAdvancements().getOrStartProgress(Objects.requireNonNull(sPlayer.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfuradvancement")))).isDone())) {
+                && sPlayer.getAdvancements().getOrStartProgress(Objects.requireNonNull(sPlayer.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfur_advancement")))).isDone())) {
             if (entity instanceof ServerPlayer _player) {
-                Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfuradvancement"));
+                Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfur_advancement"));
                 assert _adv != null;
                 AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
                 if (!_ap.isDone()) {

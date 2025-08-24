@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class PainiteBlockBlock extends Block {
-    public PainiteBlockBlock() {
+public class PainiteBlock extends Block {
+    public PainiteBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_RED).sound(SoundType.NETHERITE_BLOCK).strength(30f, 50f).requiresCorrectToolForDrops());
     }
 
@@ -35,7 +35,7 @@ public class PainiteBlockBlock extends Block {
         if (selectedItem.getItem() instanceof TieredItem tieredItem && tieredItem.isCorrectToolForDrops(selectedItem, state)) {
             return TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state) || tieredItem.getTier().getLevel() >= 4;
         }
-        return false;
+        return super.canHarvestBlock(state, world, pos, player);
     }
 
     @Override

@@ -4,10 +4,10 @@
       "item": "changed_addon:syringe_with_litix_cammonia"
     },
     "title": {
-      "translate": "advancements.timesthesyringewasuseadvancement_3.title"
+      "translate": "advancements.times_used_untransfur_syringe_advancement.title"
     },
     "description": {
-      "translate": "advancements.timesthesyringewasuseadvancement_3.descr"
+      "translate": "advancements.times_used_untransfur_syringe_advancement.descr"
     },
     "frame": "challenge",
     "show_toast": true,
@@ -15,7 +15,7 @@
     "hidden": true
   },
   "criteria": {
-    "timesthesyringewasuseadvancement_3": {
+    "times_used_untransfur_syringe_advancement": {
       "trigger": "minecraft:consume_item",
       "conditions": {
         "item": {
@@ -30,7 +30,7 @@
                 "type": "minecraft:used",
                 "stat": "changed_addon:syringe_with_litix_cammonia",
                 "value": {
-                  "min": 128,
+                  "min": 32,
                   "max": 999999
                 }
               }
@@ -40,5 +40,5 @@
       }
     }
   },
-  "parent": "changed_addon:timesthesyringewasuseadvancement_2"
+  "parent": "changed_addon:untransfur_advancement_2"
 }

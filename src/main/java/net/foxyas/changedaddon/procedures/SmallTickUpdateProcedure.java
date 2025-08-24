@@ -64,19 +64,6 @@ public class SmallTickUpdateProcedure {
             }
         }
 
-        if (entity instanceof Player _playerHasItem && (
-                _playerHasItem.getInventory().contains(new ItemStack(ChangedAddonItems.SYRINGE_WITH_LITIX_CAMMONIA.get())) ||
-                        _playerHasItem.getInventory().contains(new ItemStack(ChangedAddonItems.POT_WITH_CAMONIA.get())) ||
-                        _playerHasItem.getInventory().contains(new ItemStack(ChangedAddonItems.DIFFUSION_SYRINGE.get())))) {
-            if (entity instanceof ServerPlayer _player) {
-                Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfuritemadvancement"));
-                AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(Objects.requireNonNull(_adv));
-                if (!_ap.isDone()) {
-                    for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);
-                }
-            }
-        }
-
         if (entity instanceof Player player) {
             TransfurVariantInstance<?> variant = ProcessTransfur.getPlayerTransfurVariant(player);
             if (variant != null) {

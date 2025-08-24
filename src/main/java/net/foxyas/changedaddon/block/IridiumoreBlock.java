@@ -18,9 +18,9 @@ import net.minecraftforge.common.TierSortingRegistry;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class IridiumoreBlock extends OreBlock {
+public class IridiumOreBlock extends OreBlock {
 
-    public IridiumoreBlock() {
+    public IridiumOreBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.QUARTZ).sound(SoundType.STONE).strength(20f, 25f).requiresCorrectToolForDrops(),
                 UniformInt.of(20, 40)
         );
@@ -40,8 +40,8 @@ public class IridiumoreBlock extends OreBlock {
     public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
         ItemStack selectedItem = player.getInventory().getSelected();
         if (selectedItem.getItem() instanceof TieredItem tieredItem && tieredItem.isCorrectToolForDrops(selectedItem, state)) {
-            return TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state) || tieredItem.getTier().getLevel() >= 4;
+            return TierSortingRegistry.isCorrectTierForDrops(Tiers.DIAMOND, state) || tieredItem.getTier().getLevel() >= 3;
         }
-        return false;
+        return super.canHarvestBlock(state, world, pos, player);
     }
 }

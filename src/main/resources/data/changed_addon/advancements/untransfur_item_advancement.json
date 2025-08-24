@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "item": "changed_addon:syringe_with_litix_cammonia"
+    },
+    "title": {
+      "translate": "advancements.untransfur_advancement.title"
+    },
+    "description": {
+      "translate": "advancements.untransfur_advancement.descr"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": true
+  },
+  "criteria": {
+    "has_untransfur_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          { "item": "changed_addon:syringe_with_litix_cammonia" },
+          { "item": "changed_addon:pot_with_camonia" },
+          { "item": "changed_addon:diffusion_syringe" }
+        ]
+      }
+    }
+  },
+  "rewards": {
+    "experience": 50
+  },
+  "parent": "changed_addon:unifuser_advancement"
+}

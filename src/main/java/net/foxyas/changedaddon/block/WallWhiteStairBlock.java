@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraftforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -41,8 +43,8 @@ public class WallWhiteStairBlock extends StairBlock {
     @Override
     public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {
         if (player.getInventory().getSelected().getItem() instanceof PickaxeItem tieredItem)
-            return tieredItem.getTier().getLevel() >= 0;
-        return false;
+            return TierSortingRegistry.isCorrectTierForDrops(Tiers.WOOD, state) || tieredItem.getTier().getLevel() >= 0;
+        return super.canHarvestBlock(state, world, pos, player);
     }
 
     @Override

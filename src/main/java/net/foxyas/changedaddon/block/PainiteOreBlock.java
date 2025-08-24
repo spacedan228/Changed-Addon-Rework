@@ -42,6 +42,6 @@ public class PainiteOreBlock extends OreBlock {
         if (selectedItem.getItem() instanceof TieredItem tieredItem && tieredItem.isCorrectToolForDrops(selectedItem, state)) {
             return TierSortingRegistry.isCorrectTierForDrops(Tiers.NETHERITE, state) || tieredItem.getTier().getLevel() >= 4;
         }
-        return false;
+        return super.canHarvestBlock(state, world, pos, player);
     }
 }

@@ -343,6 +343,12 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
             }
             return super.hurt(source, amount * 0.5f);
         }
+
+        if (source instanceof EntityDamageSource entityDamageSource) {
+            if (entityDamageSource.isThorns()) {
+                return super.hurt(source, 0);
+            }
+        }
         return super.hurt(source, amount);
     }
 

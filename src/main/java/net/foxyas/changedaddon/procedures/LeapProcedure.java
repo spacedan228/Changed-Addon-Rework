@@ -45,7 +45,7 @@ public class LeapProcedure {
         if (tf == null) return;
 
         if (canLeap(tf)) {
-            if (!player.hasEffect(ChangedAddonMobEffects.FADIGE.get()) && player.getFoodData().getFoodLevel() > 6
+            if (!player.hasEffect(ChangedAddonMobEffects.FADIGUE.get()) && player.getFoodData().getFoodLevel() > 6
                     && player.isOnGround() && !player.isInWater()) {
                 if (!player.isShiftKeyDown()) {
                     deltaX = -Math.sin((player.getYRot() / 180) * (float) Math.PI);
@@ -60,7 +60,7 @@ public class LeapProcedure {
                     if (!player.isCreative()) {
                         player.causeFoodExhaustion((float) 0.3);
                         if (!player.level.isClientSide())
-                            player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGE.get(), 40, 0, false, false));
+                            player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGUE.get(), 40, 0, false, false));
                     }
 
                     if (!player.level.isClientSide() && player.getServer() != null)
@@ -80,7 +80,7 @@ public class LeapProcedure {
                     if (!player.isCreative()) {
                         player.causeFoodExhaustion((float) (motionY * 1.25));
                         if (!player.level.isClientSide())
-                            player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGE.get(), 40, 0, false, false));
+                            player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGUE.get(), 40, 0, false, false));
                     }
 
                     if (!(player instanceof ServerPlayer sPlayer && sPlayer.level instanceof ServerLevel
@@ -102,7 +102,7 @@ public class LeapProcedure {
                 }
             }
         } else if (tf.getFormId().toString().equals("changed_addon:form_experiment009_boss")) {
-            if (player.hasEffect(ChangedAddonMobEffects.FADIGE.get()) || player.isSpectator()) return;
+            if (player.hasEffect(ChangedAddonMobEffects.FADIGUE.get()) || player.isSpectator()) return;
 
             deltaX = -Math.sin((player.getYRot() / 180) * (float) Math.PI);
             deltaY = -Math.sin((player.getXRot() / 180) * (float) Math.PI);
@@ -122,7 +122,7 @@ public class LeapProcedure {
                 if (!player.isCreative()) {
                     player.causeFoodExhaustion((float) 0.1);
                     if (!player.level.isClientSide())
-                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGE.get(), 60, 0));
+                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGUE.get(), 60, 0));
                 }
             }
 
@@ -143,7 +143,7 @@ public class LeapProcedure {
                             if (!player.isCreative()) {
                                 player.causeFoodExhaustion((float) 0.1);
                                 if (!player.level.isClientSide())
-                                    player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGE.get(), 100, 0));
+                                    player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGUE.get(), 100, 0));
                             }
 
                             if (!(entity instanceof Player pl) || pl.isCreative() || pl.isSpectator()) continue;
@@ -184,7 +184,7 @@ public class LeapProcedure {
                 }
             }
         } else if (canFly(tf)) {
-            if (player.hasEffect(ChangedAddonMobEffects.FADIGE.get()) || player.getFoodData().getFoodLevel() < 8)
+            if (player.hasEffect(ChangedAddonMobEffects.FADIGUE.get()) || player.getFoodData().getFoodLevel() < 8)
                 return;
 
             if (player.getAbilities().flying && !player.isFallFlying()) {
@@ -200,7 +200,7 @@ public class LeapProcedure {
                 if (!player.isCreative()) {
                     player.causeFoodExhaustion((float) 0.8);
                     if (!player.level.isClientSide())
-                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGE.get(), 30, 0, false, false));
+                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGUE.get(), 30, 0, false, false));
                 }
 
             } else {
@@ -218,7 +218,7 @@ public class LeapProcedure {
                 if (!player.isCreative()) {
                     player.causeFoodExhaustion(4);
                     if (!player.level.isClientSide())
-                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGE.get(), 60, 0, false, false));
+                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGUE.get(), 60, 0, false, false));
                 }
             }
 
