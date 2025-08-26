@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.abilities;
 
 import com.mojang.math.Vector3f;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.animations.parameters.DodgeAnimationParameters;
 import net.foxyas.changedaddon.init.ChangedAddonAnimationEvents;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
@@ -9,6 +10,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.EndRodParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -57,31 +59,35 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         }
     }
 
-    private final Color particleColor = new Color(255, 255, 255);
 
-    private void applyDodgeAwayParticlesTrails(Entity dodger, Entity attacker) {
-        Vec3 motion = attacker.position().subtract(dodger.position()).scale(-0.25);
-        Vec3 dodgerPosition = dodger.position();
-        Vector3f colorVec = new Vector3f(
-                particleColor.getRed() / 255f,
-                particleColor.getGreen() / 255f,
-                particleColor.getBlue() / 255f);
+    private void applyDodgeAwayParticlesTrails(LivingEntity dodger, LivingEntity attacker) {
+        Vec3 motion = attacker.getEyePosition().subtract(dodger.getEyePosition()).scale(-0.25);
+        Vec3 dodgerPos = dodger.position();
 
-        if (attacker.getLevel().isClientSide && attacker.getLevel() instanceof ClientLevel serverLevel) {
-            int steps = 20; // número de partículas na trilha
-            for (int s = 0; s <= steps; s++) {
-                float t = s / (float) steps;
-                Vec3 offset = motion.scale(t);
-                Vec3 particlePos = dodgerPosition.add(offset);
-                serverLevel.addParticle(new DustParticleOptions(colorVec, 3),
-                        false,
-                        particlePos.x(),
-                        particlePos.y(),
-                        particlePos.z(),
-                        0, 0, 0);
+        if (dodger.getLevel() instanceof ServerLevel serverLevel) {
+            int steps = 20;         // número de partículas por linha
+            int lines = 5;          // quantas linhas paralelas
+            float spread = 0.5f;    // afastamento lateral das linhas
+
+            for (int l = 0; l < lines; l++) {
+                // gera um deslocamento lateral aleatório (x,z) em círculo
+                Vec3 lateralOffset = new Vec3(dodger.getRandom().nextFloat(spread) * l, dodger.getRandom().nextFloat(spread) * l, dodger.getRandom().nextFloat(spread) * l);
+
+                for (int s = 0; s <= steps; s++) {
+                    float t = s / (float) steps;
+                    Vec3 particlePos = dodgerPos.add(motion.scale(t)).add(lateralOffset);
+
+                    serverLevel.sendParticles(
+                            ParticleTypes.END_ROD,
+                            particlePos.x(),
+                            particlePos.y(),
+                            particlePos.z(),
+                            1, // count
+                            0, 0, 0, 0 // sem velocidade extra
+                    );
+                }
             }
         }
-
     }
 
     public static boolean isSpectator(Entity entity) {
@@ -143,8 +149,8 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
             event.setCanceled(true);
         }
 
-        if (attacker != null) {
-            applyDodgeAwayParticlesTrails(dodger, attacker);
+        if (attacker instanceof LivingEntity attackerLiving) {
+            applyDodgeAwayParticlesTrails(dodger, attackerLiving);
         }
 
         executeDodgeParticles(levelAccessor, dodger);

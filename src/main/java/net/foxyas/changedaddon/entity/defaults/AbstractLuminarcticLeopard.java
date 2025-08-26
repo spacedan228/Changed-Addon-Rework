@@ -45,6 +45,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
@@ -418,7 +419,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
     public static class WhenAttackAEntity {
         @SubscribeEvent
-        public static void WhenAttack(LivingAttackEvent event) {
+        public static void WhenAttack(LivingHurtEvent event) {
             LivingEntity target = event.getEntityLiving();
             Entity source = event.getSource().getEntity();
             if (source instanceof AbstractLuminarcticLeopard lumi && lumi.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
