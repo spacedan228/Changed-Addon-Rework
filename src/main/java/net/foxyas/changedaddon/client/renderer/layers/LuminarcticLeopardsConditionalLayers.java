@@ -104,11 +104,12 @@ public class LuminarcticLeopardsConditionalLayers {
                 } else if (entity instanceof LuminarcticLeopardFemaleEntity LUMI && LUMI.isActivatedAbility()) {
                     super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
                 }
+            } else {
+                if (entity instanceof LuminarcticLeopardFemaleEntity WILD_LUMI && WILD_LUMI.getTarget() != null) {
+                    super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+                }
             }
 
-            if (entity instanceof LuminarcticLeopardFemaleEntity WILD_LUMI && WILD_LUMI.getTarget() != null) {
-                super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
-            }
         }
     }
 
@@ -130,9 +131,9 @@ public class LuminarcticLeopardsConditionalLayers {
 
     public static class CustomEyesLayer<M extends AdvancedHumanoidModel<T>, T extends ChangedEntity> extends RenderLayer<T, M> {
 
-        private final net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer<M, T> customEyesLayer, customGlowEyesLayer;
+        private final CustomEyesLayer<M, T> customEyesLayer, customGlowEyesLayer;
 
-        public CustomEyesLayer(RenderLayerParent<T, M> parent, net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer<M, T> customEyesLayer, net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer<M, T> customGlowEyesLayer) {
+        public CustomEyesLayer(RenderLayerParent<T, M> parent, CustomEyesLayer<M, T> customEyesLayer, CustomEyesLayer<M, T> customGlowEyesLayer) {
             super(parent);
             this.customEyesLayer = customEyesLayer;
             this.customGlowEyesLayer = customGlowEyesLayer;

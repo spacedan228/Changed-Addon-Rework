@@ -60,6 +60,8 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     public static final int GLOW_ALWAYS = 2;
     private static final EntityDataAccessor<Integer> GLOW_STAGE =
             SynchedEntityData.defineId(AbstractLuminarcticLeopard.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> ACTIVATED_ABILITY =
+            SynchedEntityData.defineId(AbstractLuminarcticLeopard.class, EntityDataSerializers.BOOLEAN);
     public final ServerBossEvent bossBar = new ServerBossEvent(
             this.getDisplayName(), // Nome exibido na boss bar
             BossEvent.BossBarColor.WHITE, // Cor da barra
@@ -72,7 +74,6 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     public int PassivesTicksCooldown = 0;
     public int DashingTicks = 0;
     public DodgeAbilityInstance dodgeAbilityInstance = null;
-    private boolean ActivatedAbility = false;
     private boolean isBoss = false;
     private boolean Aggro = false;
 
@@ -81,6 +82,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         super(p_19870_, p_19871_);
         this.dodgeAbilityInstance = this.registerAbility((this::canDodge), new DodgeAbilityInstance(ChangedAddonAbilities.DODGE.get(), IAbstractChangedEntity.forEntity(this)));
     }
+
 
     public static <T extends AbstractLuminarcticLeopard> boolean canSpawnNear(EntityType<T> entityType, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, Random random) {
         if (world.getDifficulty() == Difficulty.PEACEFUL) {
@@ -151,6 +153,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(GLOW_STAGE, 0);
+        this.entityData.define(ACTIVATED_ABILITY, false);
     }
 
     public int getGlowStage() {
@@ -162,11 +165,11 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     }
 
     public boolean isActivatedAbility() {
-        return ActivatedAbility;
+        return this.entityData.get(ACTIVATED_ABILITY);
     }
 
     public void setActivatedAbility(boolean value) {
-        this.ActivatedAbility = value;
+        this.entityData.set(ACTIVATED_ABILITY, value);
     }
 
     @Override
@@ -205,7 +208,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
                         }
                     }
 
-                    this.ActivatedAbility = this.getTarget() != null;
+                    this.setActivatedAbility(this.getTarget() != null);
                     if (this.SuperAbilitiesTicksCooldown > 0) {
                         this.SuperAbilitiesTicksCooldown--; //Super Abilities CoolDown
                     }
@@ -269,7 +272,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         if (tag.contains("ActivatedAbility")) {
-            this.ActivatedAbility = tag.getBoolean("ActivatedAbility");
+            this.setActivatedAbility(tag.getBoolean("ActivatedAbility"));
         }
         if (tag.contains("AbilitiesTicksCooldown")) {
             this.AbilitiesTicksCooldown = tag.getFloat("AbilitiesTicksCooldown");
@@ -294,7 +297,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.putBoolean("ActivatedAbility", ActivatedAbility);
+        tag.putBoolean("ActivatedAbility", isActivatedAbility());
         tag.putFloat("AbilitiesTicksCooldown", AbilitiesTicksCooldown);
         tag.putInt("SuperAbilitiesTicksCooldown", SuperAbilitiesTicksCooldown);
         tag.putInt("PassivesTicksCooldown", PassivesTicksCooldown);
