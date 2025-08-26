@@ -21,7 +21,7 @@ public class LuminarcticLeopardFemaleRenderer extends AdvancedHumanoidRenderer<L
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotArmFur));
 
         Color3 RED = new Color3(255, 0, 0);
-        this.addLayer(new LuminarcticLeopardsConditionalLayers.CustomEyesLayer<>(this,
+        this.addLayer(new LuminarcticLeopardsConditionalLayers.LuminarcticCustomEyesLayer<>(this,
                 new CustomEyesLayer<>(this, context.getModelSet(),
                         CustomEyesLayer::scleraColor,
                         CustomEyesLayer::irisColorLeft,

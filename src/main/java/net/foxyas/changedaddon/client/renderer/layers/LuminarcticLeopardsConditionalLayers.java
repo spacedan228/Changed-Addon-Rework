@@ -6,6 +6,7 @@ import net.foxyas.changedaddon.entity.bosses.LuminarcticLeopardFemaleEntity;
 import net.foxyas.changedaddon.entity.bosses.LuminarcticLeopardMaleEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.ltxprogrammer.changed.ability.HypnosisAbility;
+import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.EmissiveBodyLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.FirstPersonLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
@@ -129,11 +130,11 @@ public class LuminarcticLeopardsConditionalLayers {
         }
     }
 
-    public static class CustomEyesLayer<M extends AdvancedHumanoidModel<T>, T extends ChangedEntity> extends RenderLayer<T, M> {
+    public static class LuminarcticCustomEyesLayer<M extends AdvancedHumanoidModel<T>, T extends ChangedEntity> extends RenderLayer<T, M> {
 
         private final CustomEyesLayer<M, T> customEyesLayer, customGlowEyesLayer;
 
-        public CustomEyesLayer(RenderLayerParent<T, M> parent, CustomEyesLayer<M, T> customEyesLayer, CustomEyesLayer<M, T> customGlowEyesLayer) {
+        public LuminarcticCustomEyesLayer(RenderLayerParent<T, M> parent, CustomEyesLayer<M, T> customEyesLayer, CustomEyesLayer<M, T> customGlowEyesLayer) {
             super(parent);
             this.customEyesLayer = customEyesLayer;
             this.customGlowEyesLayer = customGlowEyesLayer;
