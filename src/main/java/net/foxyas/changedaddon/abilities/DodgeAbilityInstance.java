@@ -62,16 +62,21 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     private void applyDodgeAwayParticlesTrails(LivingEntity dodger, LivingEntity attacker) {
         Vec3 motion = attacker.getEyePosition().subtract(dodger.getEyePosition()).scale(-0.25);
-        Vec3 dodgerPos = dodger.position();
+        Vec3 dodgerPos = dodger.position().add(0, 0.5f, 0);
 
         if (dodger.getLevel() instanceof ServerLevel serverLevel) {
             int steps = 20;         // número de partículas por linha
             int lines = 5;          // quantas linhas paralelas
-            float spread = 0.5f;    // afastamento lateral das linhas
+            float spread = 1;    // afastamento lateral das linhas
 
             for (int l = 0; l < lines; l++) {
                 // gera um deslocamento lateral aleatório (x,z) em círculo
-                Vec3 lateralOffset = new Vec3(dodger.getRandom().nextFloat(spread) * l, dodger.getRandom().nextFloat(spread) * l, dodger.getRandom().nextFloat(spread) * l);
+                Vec3 lateralOffset = new Vec3(dodger.getRandom().nextFloat(-spread, spread),
+                        dodger.getRandom().nextFloat(-spread, spread),
+                        dodger.getRandom().nextFloat(-spread, spread));
+                if (l == 0) {
+                    lateralOffset = Vec3.ZERO;
+                }
 
                 for (int s = 0; s <= steps; s++) {
                     float t = s / (float) steps;
