@@ -652,17 +652,16 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
 
     private void setDodging(Entity entity) {
         if (entity != null) {
-            this.lookAt(EntityAnchorArgument.Anchor.FEET, entity.getEyePosition());
+            this.getLookControl().setLookAt(entity.getEyePosition());
         }
         this.getNavigation().stop();
         if (this.dodgeAbilityInstance != null) {
-            this.dodgeAbilityInstance.executeDodgeEffects(this, this.getTarget());
+            this.dodgeAbilityInstance.executeDodgeAnimations(this.getLevel(), this);
             this.dodgeAbilityInstance.setDodgeActivate(true);
         }
     }
 
     public void tickDodgeTicks() {
-
         if (!this.isNoAi()) {
             if (this.dodgeAbilityInstance != null && this.dodgeAbilityInstance.isDodgeActive()) {
                 this.dodgeAbilityInstance.setDodgeActivate(false);

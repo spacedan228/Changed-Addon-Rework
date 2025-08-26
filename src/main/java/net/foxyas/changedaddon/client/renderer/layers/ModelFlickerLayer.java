@@ -19,12 +19,12 @@ public class ModelFlickerLayer<M extends AdvancedHumanoidModel<T>, T extends Cha
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, @NotNull T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         float healthRatio = entity.computeHealthRatio();
         if (healthRatio >= 0.5f) return;
 
         float intensity = 1.0f - healthRatio;
-        float flickerSpeed = 40f + 90f * intensity;
+        float flickerSpeed = 40f + 90f * (intensity * 2);
         float flicker = (float) Math.sin((entity.tickCount + partialTicks) * flickerSpeed) * intensity * 0.05f;
 
         poseStack.pushPose();
