@@ -67,7 +67,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 particleColor.getGreen() / 255f,
                 particleColor.getBlue() / 255f);
 
-        if (attacker.getLevel() instanceof ClientLevel serverLevel) {
+        if (attacker.getLevel().isClientSide && attacker.getLevel() instanceof ClientLevel serverLevel) {
             int steps = 20; // número de partículas na trilha
             for (int s = 0; s <= steps; s++) {
                 float t = s / (float) steps;
