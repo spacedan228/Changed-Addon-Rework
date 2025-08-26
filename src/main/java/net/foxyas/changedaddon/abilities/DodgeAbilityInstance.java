@@ -8,6 +8,7 @@ import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -66,7 +67,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 particleColor.getGreen() / 255f,
                 particleColor.getBlue() / 255f);
 
-        if (attacker.getLevel() instanceof ServerLevel serverLevel) {
+        if (attacker.getLevel() instanceof ClientLevel serverLevel) {
             int steps = 20; // número de partículas na trilha
             for (int s = 0; s <= steps; s++) {
                 float t = s / (float) steps;

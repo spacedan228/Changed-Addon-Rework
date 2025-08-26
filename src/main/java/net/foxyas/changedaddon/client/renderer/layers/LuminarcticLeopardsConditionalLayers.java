@@ -6,12 +6,15 @@ import net.foxyas.changedaddon.entity.bosses.LuminarcticLeopardFemaleEntity;
 import net.foxyas.changedaddon.entity.bosses.LuminarcticLeopardMaleEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.ltxprogrammer.changed.ability.HypnosisAbility;
+import net.ltxprogrammer.changed.client.FormRenderHandler;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.EmissiveBodyLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.FirstPersonLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -94,16 +97,16 @@ public class LuminarcticLeopardsConditionalLayers {
 
         @Override
         public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-            super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+            //super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
             if (entity.getUnderlyingPlayer() != null) {
                 Player player = entity.getUnderlyingPlayer();
                 var instance = ProcessTransfur.getPlayerTransfurVariant(player).getSelectedAbility();
-                if (instance != null && instance.ability instanceof HypnosisAbility ability) {
+                if (entity instanceof LuminarcticLeopardFemaleEntity LUMI && LUMI.isActivatedAbility()) {
+                    super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+                } else if (instance != null && instance.ability instanceof HypnosisAbility ability) {
                     if (instance.getController().getHoldTicks() > 0) {
                         super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
                     }
-                } else if (entity instanceof LuminarcticLeopardFemaleEntity LUMI && LUMI.isActivatedAbility()) {
-                    super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
                 }
             } else {
                 if (entity instanceof LuminarcticLeopardFemaleEntity WILD_LUMI && WILD_LUMI.getTarget() != null) {

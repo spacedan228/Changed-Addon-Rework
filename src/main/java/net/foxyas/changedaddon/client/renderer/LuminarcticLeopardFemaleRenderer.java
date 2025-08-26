@@ -41,7 +41,6 @@ public class LuminarcticLeopardFemaleRenderer extends AdvancedHumanoidRenderer<L
         this.addLayer(new LuminarcticLeopardsConditionalLayers.GlowLayer<>(this, new ResourceLocation("changed_addon:textures/entities/luminarctic_leopards/female/luminarctic_leopard_female_ability_active.png")));
         this.addLayer(new LuminarcticLeopardsConditionalLayers.GlowFelineEyesLayer<>(this, new ResourceLocation("changed_addon:textures/entities/luminarctic_leopards/female/luminarctic_leopard_feline_eyes_female.png")));
         this.addLayer(new EmissiveBodyLayer<>(this, new ResourceLocation("changed_addon:textures/entities/luminarctic_leopards/crystals_layer.png")));
-
     }
 
     @Override
