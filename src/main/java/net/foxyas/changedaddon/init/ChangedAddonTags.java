@@ -25,6 +25,9 @@ public final class ChangedAddonTags {
 
     public static final class Items {
 
+        public static final TagKey<Item> METAL = key("metal");
+        public static final TagKey<Item> PARTIAL_METAL = key("partial_metal");
+
         public static final TagKey<Item> SYRINGES = key("syringes");
         public static final TagKey<Item> UNTRANSFUR_ITEMS = key("untransfur_items");
         public static final TagKey<Item> GOOEY = key("gooey");

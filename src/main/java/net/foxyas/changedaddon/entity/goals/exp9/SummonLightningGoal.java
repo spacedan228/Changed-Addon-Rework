@@ -7,7 +7,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.level.Level;
@@ -134,6 +137,8 @@ public class SummonLightningGoal extends Goal {
         lightning(level, strikePos.x - 0.75, strikePos.y, strikePos.z - 0.75, damageProvider.sample(random));
         lightning(level, strikePos.x - 0.75, strikePos.y, strikePos.z + 0.75, damageProvider.sample(random));
 
+        applyKnockBack(AABB.ofSize(strikePos, 16, 16, 16));
+
         strikePos = null;
         aboveWaterPos = null;
     }
@@ -143,28 +148,27 @@ public class SummonLightningGoal extends Goal {
         lightning.moveTo(x, y, z);
         lightning.setDamage(damage);
         level.addFreshEntity(lightning);
-        applyKnockBack(AABB.ofSize(new Vec3(x, y, z), 16, 16, 16));
     }
 
     public void applyKnockBack(AABB hitbox) {
         var list = holder.getLevel()
                 .getNearbyEntities(
                         LivingEntity.class,
-                        TargetingConditions.DEFAULT
-                                .selector((target) -> !target.is(holder)),
-                        this.holder, hitbox
+                        TargetingConditions.forCombat().selector(target -> !target.is(holder)),
+                        holder, hitbox
                 );
 
+        Vec3 direction;
         for (LivingEntity livingEntity : list) {
-            Vec3 direction = livingEntity.position().subtract(holder.position());
+            direction = livingEntity.position().subtract(strikePos);
 
             direction = direction.normalize();
 
-            double strength = 6.0 / livingEntity.distanceTo(holder);
+            float strength = 6f / (float) Math.sqrt(livingEntity.distanceToSqr(strikePos));
 
             livingEntity.push(
                     direction.x * strength,
-                    direction.y * strength * 2,
+                    Math.max(direction.y, 0.1) * strength * 2,
                     direction.z * strength
             );
         }

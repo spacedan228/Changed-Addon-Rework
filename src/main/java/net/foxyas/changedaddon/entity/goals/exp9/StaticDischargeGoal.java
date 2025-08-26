@@ -103,7 +103,7 @@ public class StaticDischargeGoal extends Goal {
 
                         direction = direction.normalize();
 
-                        double strength = 6.0 / entity.distanceTo(holder);
+                        float strength = 3 / entity.distanceTo(holder);
 
                         entity.push(
                                 direction.x * strength,
