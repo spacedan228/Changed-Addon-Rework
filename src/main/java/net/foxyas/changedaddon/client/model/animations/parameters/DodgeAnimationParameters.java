@@ -21,7 +21,7 @@ public class DodgeAnimationParameters implements AnimationParameters {
 
     @Override
     public boolean shouldEndAnimation(LivingEntity livingEntity, float totalTime) {
-        if (livingEntity.hurtMarked && livingEntity.hurtDuration > 0) {
+        if (livingEntity.hurtMarked) {
             return true;
         }
         return totalTime > 1f;

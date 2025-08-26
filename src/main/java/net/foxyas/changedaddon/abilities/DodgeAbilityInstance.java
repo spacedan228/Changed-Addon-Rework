@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     private final int defaultRegenCooldown = 20;
-    public boolean ultraInstinct = false; //FUNNY VARIABLE
+    public boolean ultraInstinct = false; //FUNNY VARIABLE :3
     public DodgeType dodgeType = DodgeType.WEAVE;
     private int dodgeAmount = 4;
     private int maxDodgeAmount = 4;
@@ -42,8 +42,11 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         this.dodgeAmount = maxDodge;
     }
 
-    private static void dodgeAwayFromAttacker(Entity dodger, Entity attacker) {
+    private void dodgeAwayFromAttacker(Entity dodger, Entity attacker) {
         Vec3 motion = attacker.position().subtract(dodger.position()).scale(-0.25);
+        if () {
+
+        }
         if (dodger instanceof ServerPlayer serverPlayer) {
             serverPlayer.setDeltaMovement(motion.x, motion.y, motion.z);
             serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer.getId(), serverPlayer.getDeltaMovement()));
@@ -110,10 +113,14 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         if (event != null) {
             event.setCanceled(true);
         }
+        executeDodgeParticles(levelAccessor, dodger);
+        executeDodgeAnimations(levelAccessor, dodger);
+    }
+
+    public void executeDodgeParticles(LevelAccessor levelAccessor, LivingEntity dodger) {
         if (levelAccessor instanceof ServerLevel serverLevel) {
             spawnDodgeParticles(serverLevel, dodger, 0.5f, 0.3f, 0.3f, 0.3f, 10, 0.05f);
         }
-        executeDodgeAnimations(levelAccessor, dodger);
     }
 
     public void executeDodgeAnimations(LevelAccessor levelAccessor, LivingEntity dodger) {
