@@ -61,6 +61,8 @@ public class ChangedAddonEntityRenderers {
         event.registerEntityRenderer(ChangedAddonEntities.BOREALIS_MALE.get(), BorealisMaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.BOREALIS_FEMALE.get(), BorealisFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.PINK_CYAN_SKUNK.get(), PinkCyanSkunkRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.LATEX_WIND_CAT_FEMALE.get(), LatexWindCatFemaleRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleRenderer::new);
 
 
         // --- MONSTER/MOB ENTITIES ---
