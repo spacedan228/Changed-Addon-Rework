@@ -21,6 +21,7 @@ public class DynamicClipContext extends ClipContext {
 
     public static final ClipContext.ShapeGetter IGNORE_TRANSLUCENT = (state, b, pos, context) -> {
         if(state.is(Tags.Blocks.GLASS)) return Shapes.empty();
+        if(state.is(ChangedTags.Blocks.LASER_TRANSLUCENT)) return Shapes.empty();
         return ClipContext.Block.COLLIDER.get(state, b, pos, context);
     };
 

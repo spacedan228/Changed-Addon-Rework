@@ -21,8 +21,8 @@ public class DodgeAnimationParameters implements AnimationParameters {
 
     @Override
     public boolean shouldEndAnimation(LivingEntity livingEntity, float totalTime) {
-        if (!livingEntity.getLevel().isClientSide() && livingEntity instanceof PathfinderMob mob) {
-            mob.getNavigation().stop();
+        if (livingEntity.hurtMarked) {
+            return true;
         }
         return totalTime > 1f;
     }

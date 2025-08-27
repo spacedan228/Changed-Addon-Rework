@@ -44,6 +44,28 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
         tag(ChangedTagsExtension.AccessoryItemsTags.LEGS).add(
                 DYEABLE_SHORTS.get());
 
+        tag(ChangedAddonTags.Items.METAL).add(//TODO add guns?
+                Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE, Items.IRON_HOE, Items.IRON_SHOVEL,
+                Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS,
+                ChangedItems.IRON_QUADRUPEDAL_LEGGINGS.get(), ChangedItems.IRON_QUADRUPEDAL_BOOTS.get(), ChangedItems.IRON_UPPER_ABDOMEN_ARMOR.get(), ChangedItems.IRON_LOWER_ABDOMEN_ARMOR.get(),
+
+                Items.CHAINMAIL_HELMET, Items.CHAINMAIL_CHESTPLATE, Items.CHAINMAIL_LEGGINGS, Items.CHAINMAIL_BOOTS,
+                ChangedItems.CHAINMAIL_QUADRUPEDAL_LEGGINGS.get(), ChangedItems.CHAINMAIL_QUADRUPEDAL_BOOTS.get(), ChangedItems.CHAINMAIL_UPPER_ABDOMEN_ARMOR.get(), ChangedItems.CHAINMAIL_LOWER_ABDOMEN_ARMOR.get(),
+
+                Items.GOLDEN_SWORD, Items.GOLDEN_PICKAXE, Items.GOLDEN_AXE, Items.GOLDEN_HOE, Items.GOLDEN_SHOVEL,
+                Items.GOLDEN_HELMET, Items.GOLDEN_CHESTPLATE, Items.GOLDEN_LEGGINGS, Items.GOLDEN_BOOTS,
+                ChangedItems.GOLDEN_QUADRUPEDAL_LEGGINGS.get(), ChangedItems.GOLDEN_QUADRUPEDAL_BOOTS.get(), ChangedItems.GOLDEN_UPPER_ABDOMEN_ARMOR.get(), ChangedItems.GOLDEN_LOWER_ABDOMEN_ARMOR.get(),
+
+                ChangedItems.TSC_BATON.get(), ChangedItems.TSC_SHIELD.get(), ChangedItems.TSC_STAFF.get(), ChangedItems.EXOSKELETON.get(),
+                CROWBAR.get());
+
+        tag(ChangedAddonTags.Items.PARTIAL_METAL).add(
+                Items.NETHERITE_SWORD, Items.NETHERITE_PICKAXE, Items.NETHERITE_AXE, Items.NETHERITE_HOE, Items.NETHERITE_SHOVEL,
+                Items.NETHERITE_HELMET, Items.NETHERITE_CHESTPLATE, Items.NETHERITE_LEGGINGS, Items.NETHERITE_BOOTS,
+                ChangedItems.NETHERITE_QUADRUPEDAL_LEGGINGS.get(), ChangedItems.NETHERITE_QUADRUPEDAL_BOOTS.get(), ChangedItems.NETHERITE_UPPER_ABDOMEN_ARMOR.get(), ChangedItems.NETHERITE_LOWER_ABDOMEN_ARMOR.get(),
+
+                THE_DECIMATOR.get(), LAETHINMINATOR.get(), LUMINAR_CRYSTAL_SPEAR.get());
+
         tag(ChangedAddonTags.Items.BLOOD_TYPE_SYRINGE).add(
                 ChangedItems.BLOOD_SYRINGE.get(),
                 ChangedItems.LATEX_SYRINGE.get());

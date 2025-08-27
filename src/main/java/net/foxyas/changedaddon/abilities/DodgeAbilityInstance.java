@@ -1,12 +1,18 @@
 package net.foxyas.changedaddon.abilities;
 
+import com.mojang.math.Vector3f;
+import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.model.animations.parameters.DodgeAnimationParameters;
 import net.foxyas.changedaddon.init.ChangedAddonAnimationEvents;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.particle.EndRodParticle;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -21,10 +27,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+
 public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     private final int defaultRegenCooldown = 20;
-    public boolean ultraInstinct = false; //FUNNY VARIABLE
+    public boolean ultraInstinct = false; //FUNNY VARIABLE :3
     public DodgeType dodgeType = DodgeType.WEAVE;
     private int dodgeAmount = 4;
     private int maxDodgeAmount = 4;
@@ -41,13 +49,49 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         this.dodgeAmount = maxDodge;
     }
 
-    private static void dodgeAwayFromAttacker(Entity dodger, Entity attacker) {
+    private void dodgeAwayFromAttacker(Entity dodger, Entity attacker) {
         Vec3 motion = attacker.position().subtract(dodger.position()).scale(-0.25);
         if (dodger instanceof ServerPlayer serverPlayer) {
             serverPlayer.setDeltaMovement(motion.x, motion.y, motion.z);
             serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer.getId(), serverPlayer.getDeltaMovement()));
         } else {
             dodger.setDeltaMovement(motion.x, motion.y, motion.z);
+        }
+    }
+
+
+    private void applyDodgeAwayParticlesTrails(LivingEntity dodger, LivingEntity attacker) {
+        Vec3 motion = attacker.getEyePosition().subtract(dodger.getEyePosition()).scale(-0.25);
+        Vec3 dodgerPos = dodger.position().add(0, 0.5f, 0);
+
+        if (dodger.getLevel() instanceof ServerLevel serverLevel) {
+            int steps = 20;         // número de partículas por linha
+            int lines = 5;          // quantas linhas paralelas
+            float spread = 1;    // afastamento lateral das linhas
+
+            for (int l = 0; l < lines; l++) {
+                // gera um deslocamento lateral aleatório (x,z) em círculo
+                Vec3 lateralOffset = new Vec3(dodger.getRandom().nextFloat(-spread, spread),
+                        dodger.getRandom().nextFloat(-spread, spread),
+                        dodger.getRandom().nextFloat(-spread, spread));
+                if (l == 0) {
+                    lateralOffset = Vec3.ZERO;
+                }
+
+                for (int s = 0; s <= steps; s++) {
+                    float t = s / (float) steps;
+                    Vec3 particlePos = dodgerPos.add(motion.scale(t)).add(lateralOffset);
+
+                    serverLevel.sendParticles(
+                            ParticleTypes.END_ROD,
+                            particlePos.x(),
+                            particlePos.y(),
+                            particlePos.z(),
+                            1, // count
+                            0, 0, 0, 0 // sem velocidade extra
+                    );
+                }
+            }
         }
     }
 
@@ -105,28 +149,42 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         dodger.invulnerableTime = 20 * 3;
         dodger.hurtDuration = 20 * 3;
         dodger.hurtTime = dodger.hurtDuration;
+        dodger.hurtMarked = false;
         if (event != null) {
             event.setCanceled(true);
         }
+
+        if (attacker instanceof LivingEntity attackerLiving) {
+            applyDodgeAwayParticlesTrails(dodger, attackerLiving);
+        }
+
+        executeDodgeParticles(levelAccessor, dodger);
+        executeDodgeAnimations(levelAccessor, dodger);
+    }
+
+    public void executeDodgeParticles(LevelAccessor levelAccessor, LivingEntity dodger) {
         if (levelAccessor instanceof ServerLevel serverLevel) {
             spawnDodgeParticles(serverLevel, dodger, 0.5f, 0.3f, 0.3f, 0.3f, 10, 0.05f);
         }
+    }
+
+    public void executeDodgeAnimations(LevelAccessor levelAccessor, LivingEntity dodger) {
         ChangedSounds.broadcastSound(dodger, ChangedSounds.BOW2, 2.5f, 1);
         if (this.getDodgeType() == DodgeType.WEAVE) {
             int randomValue = levelAccessor.getRandom().nextInt(6);
             switch (randomValue) {
                 case 0 ->
-                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
+                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_LEFT.get(), DodgeAnimationParameters.INSTANCE);
                 case 1 ->
-                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), null);
+                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), DodgeAnimationParameters.INSTANCE);
                 case 2 ->
-                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), null);
+                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), DodgeAnimationParameters.INSTANCE);
                 case 3 ->
-                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), null);
+                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), DodgeAnimationParameters.INSTANCE);
                 case 4 ->
-                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), null);
+                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), DodgeAnimationParameters.INSTANCE);
                 case 5 ->
-                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), null);
+                        ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), DodgeAnimationParameters.INSTANCE);
                 //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
             }
         }
@@ -175,7 +233,6 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     public void executeDodgeEffects(LivingEntity dodger, Entity attacker) {
         this.executeDodgeEffects(dodger.getLevel(), attacker, dodger, null);
-
     }
 
     private void spawnDodgeParticles(ServerLevel level, Entity entity, float middle, float xV, float yV, float zV, int count, float speed) {

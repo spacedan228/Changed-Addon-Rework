@@ -20,7 +20,7 @@ public class ChangedAddonSounds {
     private static final Map<ResourceLocation, SoundEvent> REGISTRY = new HashMap<>();
 
     public static final SoundEvent ARMOR_EQUIP = registerSimple("armor_equip");
-    public static final SoundEvent GECKO = registerSimple("gecko_sound");
+    public static final SoundEvent GECKO_BEEP = registerSimple("gecko_sound");
     public static final SoundEvent PLUSHY_SOUND = registerSimple("block.plushes.sfx");
     public static final SoundEvent SPRAY_SOUND = registerSimple("spray.sound");
     public static final SoundEvent UNTRANSFUR = registerSimple("untransfur.sound");

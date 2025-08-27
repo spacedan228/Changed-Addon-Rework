@@ -10,10 +10,13 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
+
+import static net.minecraft.client.renderer.RenderType.OutlineProperty.IS_OUTLINE;
 
 // BlakeBr0 Code
 // https://github.com/BlakeBr0/Cucumber/blob/1.18/src/main/java/com/blakebr0/cucumber/client/ModRenderTypes.java
@@ -171,6 +174,34 @@ public final class ChangedAddonRenderTypes extends RenderType {
                 rendertype$compositestate);
     });
 
+    public static final BiFunction<ResourceLocation, RenderStateShard.CullStateShard, RenderType> OUTLINE_WITH_DEPTH = Util.memoize((resourceLocation, cullStateShard) ->
+            create(ChangedAddonMod.resourceLocString("outline_with_deep_test"),
+                    DefaultVertexFormat.POSITION_COLOR_TEX,
+                    VertexFormat.Mode.QUADS,
+                    256,
+                    false,
+                    false,
+                    RenderType.CompositeState.builder()
+                            .setShaderState(RENDERTYPE_OUTLINE_SHADER)
+                            .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+                            .setCullState(cullStateShard)
+                            .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                            .setOutputState(MAIN_TARGET)
+                            .createCompositeState(IS_OUTLINE)));
+
+    public static final CullStateShard OUTLINE_CULL_STATE = new RenderStateShard.CullStateShard(true) { // culling invertido
+        @Override
+        public void setupRenderState() {
+            RenderSystem.enableCull();
+            GL11.glCullFace(GL11.GL_FRONT);
+        }
+
+        @Override
+        public void clearRenderState() {
+            GL11.glCullFace(GL11.GL_BACK);
+        }
+    };
+
     // unused, just needed to extend RenderType for protected constants
     private ChangedAddonRenderTypes(String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_, Runnable p_173184_, Runnable p_173185_) {
         super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
@@ -186,5 +217,13 @@ public final class ChangedAddonRenderTypes extends RenderType {
 
     public static RenderType hologramCull(@NotNull ResourceLocation resourceLocation, boolean outline) {
         return HOLOGRAM_CULL.apply(resourceLocation, outline);
+    }
+
+    public static RenderType outlineWithDepth(ResourceLocation location) {
+        return OUTLINE_WITH_DEPTH.apply(location, OUTLINE_CULL_STATE);
+    }
+
+    public static RenderType outlineWithDepthFull(ResourceLocation location) {
+        return OUTLINE_WITH_DEPTH.apply(location, NO_CULL);
     }
 }

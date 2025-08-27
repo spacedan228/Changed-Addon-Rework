@@ -28,10 +28,13 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -58,6 +61,7 @@ import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -163,8 +167,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         this.goalSelector.addGoal(30, new GotoTargetChestGoal(this));
         this.goalSelector.addGoal(30, new PlantSeedsGoal(this));
         this.goalSelector.addGoal(30, new ApplyBonemealGoal(this));
-
-        // fixme
         this.goalSelector.addGoal(50, new PruningOrangeLeavesGoal(this));
     }
 
@@ -372,7 +374,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     // Inventory related methods
     @Override
     public boolean canTakeItem(@NotNull ItemStack pItemstack) {
-        if (this.pickAbleItems().contains(pItemstack.getItem()) || (pItemstack.is(Tags.Items.CROPS) || pItemstack.is(Tags.Items.SEEDS))) {
+        if (this.pickAbleItems().contains(pItemstack.getItem())
+                || (pItemstack.is(Tags.Items.CROPS) || (pItemstack.is(tag("fruits")) || pItemstack.is(Tags.Items.SHEARS) || pItemstack.is(Tags.Items.SEEDS)))) {
             return true;
         }
 
@@ -387,7 +390,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public boolean wantsToPickUp(@NotNull ItemStack pStack) {
         if (!isInventoryAndHandsFull()) {
-            if (pStack.is(Tags.Items.CROPS) || pStack.is(Tags.Items.SEEDS) || pickAbleItems().contains(pStack.getItem())) {
+            if (pStack.is(Tags.Items.CROPS) || (pStack.is(tag("fruits")) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem()))) {
                 return true;
             }
         }
@@ -396,13 +399,13 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
     @Override
     public boolean canHoldItem(@NotNull ItemStack pStack) {
-        return !isInventoryAndHandsFull() && (pStack.is(Tags.Items.CROPS) || pStack.is(Tags.Items.SEEDS) || pickAbleItems().contains(pStack.getItem()));
+        return !isInventoryAndHandsFull() && (pStack.is(Tags.Items.CROPS) || (pStack.is(tag("fruits")) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem())));
     }
 
     @Override
     protected void pickUpItem(@NotNull ItemEntity pItemEntity) {
         ItemStack pStack = pItemEntity.getItem();
-        if (pStack.is(Tags.Items.CROPS) || pStack.is(Tags.Items.SEEDS) || pickAbleItems().contains(pStack.getItem())) {
+        if (pStack.is(Tags.Items.CROPS) || (pStack.is(tag("fruits")) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem()))) {
             addToInventory(pStack);
             return;
         }
@@ -582,24 +585,40 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         return closestCrop;
     }
 
-    public BlockPos findNearbyOrangeLeaves(BlockPos center, int range) {
-        BlockPos closestCrop = null;
-        double closestDist = Double.MAX_VALUE;
+    @Nullable
+    public BlockPos findNearbyOrangeLeaves(BlockPos center, int range, Vec3 eyePos, @Nullable Entity viewer) {
+        BlockPos best = null;
+        double bestDist = Double.MAX_VALUE;
 
-        for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(center, range, range).toList()) {
+        // Evite .toList() para não alocar tudo; itere o stream diretamente
+        for (BlockPos pos : (Iterable<BlockPos>) FoxyasUtils.betweenClosedStreamSphere(center, range, range)::iterator) {
             BlockState state = level.getBlockState(pos);
-            if (state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
-                double dist = pos.distSqr(center);
-                if (dist < closestDist) {
-                    if (level.clip(eyeContext(pos)).getType() == HitResult.Type.MISS) {
-                        closestDist = dist;
-                        closestCrop = pos.immutable();
-                    }
-                }
+            if (!state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get()))
+                continue;
+
+            // Distância do olho ao centro do bloco (mais precisa)
+            double dist = eyePos.distanceToSqr(Vec3.atCenterOf(pos));
+            if (dist >= bestDist) continue;
+
+            // Raycast: do olho até o centro do bloco
+            /*ClipContext ctx = new ClipContext(
+                    eyePos,
+                    Vec3.atCenterOf(pos),
+                    ClipContext.Block.COLLIDER, // considera colisões de bloco reais
+                    ClipContext.Fluid.NONE,
+                    viewer
+            );*/
+            BlockHitResult hit = level.clip(eyeContext(pos));
+
+            if (hit.getType() == HitResult.Type.BLOCK &&
+                    hit.getBlockPos().equals(pos)) {
+                bestDist = dist;
+                best = pos.immutable();
             }
         }
-        return closestCrop;
+        return best;
     }
+
 
     private @NotNull ClipContext eyeContext(BlockPos pos) {
         return new DynamicClipContext(
@@ -647,7 +666,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
                             }
                         }
                     } else {
-                        tryFindNearbyChest(getLevel(), this.blockPosition(), 8);
+                        targetChestPos = tryFindNearbyChest(getLevel(), this.blockPosition(), 8);
                     }
                 }
             }
@@ -675,7 +694,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
                         this.setTargetChestPos(null);
                     }
                 } else {
-                    tryFindNearbyChest(getLevel(), this.blockPosition(), 8);
+                    targetChestPos = tryFindNearbyChest(getLevel(), this.blockPosition(), 8);
                 }
             }
         } else {
@@ -695,7 +714,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
     // Getters and setters
     public List<Item> pickAbleItems() {
-        return List.of(Items.BONE_MEAL);
+        return List.of(Items.BONE_MEAL, Items.SHEARS);
     }
 
     public DepositeType getDepositeType() {
@@ -738,8 +757,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     // Enums
     public enum DepositeType {
         SEEDS(Tags.Items.SEEDS),
-        CROPS(Tags.Items.CROPS),
-        BOTH(Tags.Items.CROPS, Tags.Items.SEEDS);
+        CROPS(tag("fruits"), Tags.Items.CROPS),
+        BOTH(tag("fruits"), Tags.Items.CROPS, Tags.Items.SEEDS);
 
         final List<TagKey<Item>> tagKeys;
 
@@ -749,6 +768,10 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
         DepositeType(TagKey<Item> typeTag) {
             this.tagKeys = List.of(typeTag);
+        }
+
+        DepositeType(TagKey<Item> fruits, TagKey<Item> crops, TagKey<Item> seeds) {
+            this.tagKeys = List.of(fruits, crops, seeds);
         }
 
         public List<TagKey<Item>> getTagKeys() {
@@ -770,6 +793,10 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
             int next = (this.ordinal() + 1) % DepositeType.values().length;
             return DepositeType.values()[next];
         }
+    }
+
+    public static TagKey<Item> tag(String name) {
+        return ItemTags.create(new ResourceLocation("forge", name));
     }
 
     @Mod.EventBusSubscriber
