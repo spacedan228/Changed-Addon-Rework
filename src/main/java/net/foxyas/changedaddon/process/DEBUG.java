@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.process;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.interfaces.SyncTrackMotion;
 import net.foxyas.changedaddon.network.packets.RequestMovementCheckPacket;
@@ -7,16 +8,29 @@ import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.foxyas.changedaddon.util.StructureUtil;
+import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderArmEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
+
+import static net.ltxprogrammer.changed.client.FormRenderHandler.renderHand;
 
 
 @Mod.EventBusSubscriber
@@ -157,6 +171,41 @@ public class DEBUG {
      * }
      * }
      */
+
+    // TODO
+    @SubscribeEvent
+    public static void onRenderHand(RenderArmEvent event) {
+        if (!PARTICLETEST) {
+            return;
+        }
+        Player player = Minecraft.getInstance().player;
+        if (player == null) return;
+
+        // Example: check if player is transfurred and should render both hands
+        ProcessTransfur.ifPlayerTransfurred(player, variant -> {
+            // Cancel vanilla rendering for this hand
+
+            PoseStack stack = event.getPoseStack();
+            MultiBufferSource buffer = event.getMultiBufferSource();
+            int light = event.getPackedLight();
+            float partialTicks = Minecraft.getInstance().getDeltaFrameTime();
+
+            EntityRenderer<? super LivingEntity> entRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
+            if (entRenderer instanceof LivingEntityRenderer<?, ?> livingEntityRenderer) {
+                if (livingEntityRenderer instanceof PlayerRenderer playerRenderer) {
+                    // Right hand
+                    // renderHand(variant.getChangedEntity(), HumanoidArm.RIGHT, playerRenderer.getModel().leftArm.storePose(), stack, buffer, light, partialTicks);
+
+                    // Left hand
+                    renderHand(variant.getChangedEntity(), HumanoidArm.LEFT, playerRenderer.getModel().rightArm.storePose(), stack, buffer, light, partialTicks);
+
+                }
+            }
+
+
+            return true;
+        });
+    }
 
 
     @SubscribeEvent
