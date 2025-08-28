@@ -1,5 +1,7 @@
 package net.foxyas.changedaddon.variants;
 
+import net.minecraft.nbt.CompoundTag;
+
 public interface VariantExtraStats {
 
     // Variable Set By Entity
@@ -14,7 +16,14 @@ public interface VariantExtraStats {
         return FlyType.BOTH;
     }
 
+    default void readExtraData(CompoundTag tag) {
+    }
+
+    default void saveExtraData(CompoundTag tag) {
+    }
+
     enum FlyType {
+        NONE,
         ONLY_FALL,
         ONLY_FLY,
         BOTH;
@@ -24,6 +33,10 @@ public interface VariantExtraStats {
 
         public boolean canGlide() {
             return this == ONLY_FALL || this == BOTH;
+        }
+
+        public boolean canFly() {
+            return this == ONLY_FLY || this == BOTH;
         }
     }
 }

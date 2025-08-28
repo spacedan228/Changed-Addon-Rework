@@ -84,6 +84,8 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(PinkCyanSkunkModel.LAYER_LOCATION, PinkCyanSkunkModel::createBodyLayer);
         event.registerLayerDefinition(LatexWindCatFemaleModel.LAYER_LOCATION, LatexWindCatFemaleModel::createBodyLayer);
         event.registerLayerDefinition(LatexWindCatMaleModel.LAYER_LOCATION, LatexWindCatMaleModel::createBodyLayer);
+        event.registerLayerDefinition(LuminaraFlowerBeastModel.LAYER_LOCATION, LuminaraFlowerBeastModel::createBodyLayer);
+
 
         // --- PROJECTILES ENTITIES MODELS ---
         event.registerLayerDefinition(SimpleProjectileModel.LAYER_LOCATION, SimpleProjectileModel::createBodyLayer);

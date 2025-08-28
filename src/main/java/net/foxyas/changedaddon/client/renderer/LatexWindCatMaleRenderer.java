@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class LatexWindCatMaleRenderer extends AdvancedHumanoidRenderer<LatexWindCatMaleEntity, LatexWindCatMaleModel, ArmorLatexMaleCatModel<LatexWindCatMaleEntity>> {
 
-    private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/latex_wind_cat_male");
+    private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/latex_wind_cat_male/latex_wind_cat_male");
 
     public LatexWindCatMaleRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexWindCatMaleModel(context.bakeLayer(LatexWindCatMaleModel.LAYER_LOCATION)), ArmorLatexMaleCatModel.MODEL_SET, 0.5F);

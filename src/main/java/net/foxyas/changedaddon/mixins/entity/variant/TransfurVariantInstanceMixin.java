@@ -51,7 +51,7 @@ public abstract class TransfurVariantInstanceMixin {
         if (this.parent.canGlide && this.shouldApplyAbilities()) {
             if (!this.host.isCreative() && !this.host.isSpectator()) {
                 if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                    if (variantExtraStats.getFlyType() == VariantExtraStats.FlyType.ONLY_FALL) {
+                    if (!variantExtraStats.getFlyType().canFly()) {
                         if (this.host.getAbilities().flying || this.host.getAbilities().mayfly) {
                             this.host.getAbilities().mayfly = false;
                             this.host.getAbilities().flying = false;
@@ -68,7 +68,7 @@ public abstract class TransfurVariantInstanceMixin {
         if (this.parent.canGlide && this.shouldApplyAbilities()) {
             if (!this.host.isCreative() && !this.host.isSpectator()) {
                 if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                    if (variantExtraStats.getFlyType() == VariantExtraStats.FlyType.ONLY_FALL) {
+                    if (!variantExtraStats.getFlyType().canFly()) {
                         if (this.host.getAbilities().flying || this.host.getAbilities().mayfly) {
                             this.host.getAbilities().mayfly = false;
                             this.host.getAbilities().flying = false;
@@ -86,6 +86,9 @@ public abstract class TransfurVariantInstanceMixin {
         if (this.getChangedEntity() instanceof AvaliEntity avaliEntity) {
             avaliEntity.saveColors(cir.getReturnValue());
         }
+        if (this.getChangedEntity() instanceof VariantExtraStats stats) {
+            stats.saveExtraData(cir.getReturnValue());
+        }
     }
 
     @Inject(method = "load", at = @At("RETURN"), cancellable = true)
@@ -99,15 +102,15 @@ public abstract class TransfurVariantInstanceMixin {
         if (this.getChangedEntity() instanceof AvaliEntity avaliEntity) {
             avaliEntity.readColors(tag);
         }
+        if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+            variantExtraStats.readExtraData(tag);
+        }
     }
-
-
 
     /*@Inject(method = "canWear", at = @At("HEAD"), cancellable = true)
     private void negateArmorForms(Player player, ItemStack itemStack, EquipmentSlot slot, CallbackInfoReturnable<Boolean> cir){
         if (this.getParent() == ChangedAddonTransfurVariants.LATEX_SNEP_FERAL_FORM.get() || this.getParent() == ChangedAddonTransfurVariants.LATEX_SNEP.get()){
             cir.setReturnValue(false);
         }
-    }
-*/
+    }*/
 }

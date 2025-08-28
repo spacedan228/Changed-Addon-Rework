@@ -4,7 +4,12 @@ import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmBobAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmRideAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmSwimAnimator;
+import net.ltxprogrammer.changed.client.renderer.animate.bipedal.DragonBipedalCreativeFlyAnimator;
+import net.ltxprogrammer.changed.client.renderer.animate.camera.DragonCameraCreativeFlyAnimator;
+import net.ltxprogrammer.changed.client.renderer.animate.tail.DragonTailCreativeFlyAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.CatHeadInitAnimator;
+import net.ltxprogrammer.changed.client.renderer.animate.upperbody.DragonHeadCreativeFlyAnimator;
+import net.ltxprogrammer.changed.client.renderer.animate.upperbody.DragonHeadInitAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.WolfHeadInitAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -44,6 +49,27 @@ public class ChangedAddonAnimationsPresets {
 
     public static <T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> Consumer<HumanoidAnimator<T, M>> protogenLike(ModelPart head, ModelPart leftEar, ModelPart rightEar, ModelPart torso, ModelPart leftArm, ModelPart rightArm, ModelPart tail, List<ModelPart> tailJoints, ModelPart leftLeg, ModelPart leftLegLower, ModelPart leftFoot, ModelPart leftPad, ModelPart rightLeg, ModelPart rightLegLower, ModelPart rightFoot, ModelPart rightPad) {
         return (animator) -> animator.addPreset(wolfBipedal(leftLeg, leftLegLower, leftFoot, leftPad, rightLeg, rightLegLower, rightFoot, rightPad)).addPreset(wolfUpperBody(head, torso, leftArm, rightArm)).addPreset(wolfTail(tail, tailJoints)).addAnimator(new WolfHeadInitAnimator<>(head)).addAnimator(new ArmSwimAnimator<>(leftArm, rightArm)).addAnimator(new ArmBobAnimator<>(leftArm, rightArm)).addAnimator(new ArmRideAnimator<>(leftArm, rightArm));
+    }
+
+    public static <T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> Consumer<HumanoidAnimator<T, M>> wingedDragonLikeMultiTail(ModelPart head, ModelPart torso, ModelPart leftArm, ModelPart rightArm, List<TailSet> tails, ModelPart leftLeg, ModelPart leftLegLower, ModelPart leftFoot, ModelPart leftPad, ModelPart rightLeg, ModelPart rightLegLower, ModelPart rightFoot, ModelPart rightPad, ModelPart leftWingRoot, ModelPart leftWingBone1, ModelPart leftWingBone2, ModelPart rightWingRoot, ModelPart rightWingBone1, ModelPart rightWingBone2) {
+        return (animator) -> {
+            animator.addPreset(dragonBipedal(leftLeg, leftLegLower, leftFoot, leftPad, rightLeg, rightLegLower, rightFoot, rightPad))
+                    .addPreset(dragonWingedUpperBody(head, torso, leftArm, rightArm))
+                    .addPreset(dragonWinged(leftWingRoot, leftWingBone1, leftWingBone2, rightWingRoot, rightWingBone1, rightWingBone2))
+                    .addAnimator(new DragonBipedalCreativeFlyAnimator<>(leftLeg, leftLegLower, leftFoot, leftPad, rightLeg, rightLegLower, rightFoot, rightPad))
+                    .addAnimator(new DragonHeadCreativeFlyAnimator<>(head))
+                    .addAnimator(new DragonHeadInitAnimator<>(head))
+                    .addAnimator(new ArmSwimAnimator<>(leftArm, rightArm))
+                    .addAnimator(new ArmBobAnimator<>(leftArm, rightArm))
+                    .addAnimator(new ArmRideAnimator<>(leftArm, rightArm))
+                    .addCameraAnimator(new DragonCameraCreativeFlyAnimator<>());
+
+            for (TailSet tail : tails) {
+                animator.addPreset(dragonTail(tail.root(), tail.joints())).addAnimator(new DragonTailCreativeFlyAnimator<>(tail.root(), tail.joints()));
+            }
+
+        };
+
     }
 
     public static <T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> Consumer<HumanoidAnimator<T, M>> wolfLikeMultiTail(ModelPart head,

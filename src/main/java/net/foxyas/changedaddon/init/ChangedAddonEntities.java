@@ -493,7 +493,7 @@ public class ChangedAddonEntities {
 
     // --- MONSTER/MOB ENTITIES ---
     public static final RegistryObject<EntityType<PrototypeEntity>> PROTOTYPE = registerMob("prototype",
-            EntityType.Builder.<PrototypeEntity>of(PrototypeEntity::new, MobCategory.MONSTER)
+            EntityType.Builder.<PrototypeEntity>of(PrototypeEntity::new, ChangedMobCategories.CHANGED)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(64)
                     .setUpdateInterval(3)
@@ -517,17 +517,22 @@ public class ChangedAddonEntities {
                     .sized(0.6f, 1.8f));
 
     public static final RegistryObject<EntityType<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = registerChangedEntity("pink_cyan_skunk",
-            EntityType.Builder.of(PinkCyanSkunkEntity::new, MobCategory.MONSTER)
+            EntityType.Builder.of(PinkCyanSkunkEntity::new, ChangedMobCategories.CHANGED)
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
     public static final RegistryObject<EntityType<LatexWindCatMaleEntity>> LATEX_WIND_CAT_MALE = registerChangedEntity("latex_wind_cat_male",
-            EntityType.Builder.of(LatexWindCatMaleEntity::new, MobCategory.MONSTER)
+            EntityType.Builder.of(LatexWindCatMaleEntity::new, ChangedMobCategories.CHANGED)
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
     public static final RegistryObject<EntityType<LatexWindCatFemaleEntity>> LATEX_WIND_CAT_FEMALE = registerChangedEntity("latex_wind_cat_female",
-            EntityType.Builder.of(LatexWindCatFemaleEntity::new, MobCategory.MONSTER)
+            EntityType.Builder.of(LatexWindCatFemaleEntity::new, ChangedMobCategories.CHANGED)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F));
+
+    public static final RegistryObject<EntityType<LuminaraFlowerBeastEntity>> LUMINARA_FLOWER_BEAST = registerChangedEntity("luminara_flower_beast",
+            EntityType.Builder.<LuminaraFlowerBeastEntity>of(LuminaraFlowerBeastEntity::new, ChangedMobCategories.CHANGED)
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
@@ -583,6 +588,7 @@ public class ChangedAddonEntities {
         event.put(PINK_CYAN_SKUNK.get(), PinkCyanSkunkEntity.createLatexAttributes().build());
         event.put(LATEX_WIND_CAT_FEMALE.get(), LatexWindCatFemaleEntity.createLatexAttributes().build());
         event.put(LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleEntity.createLatexAttributes().build());
+        event.put(LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastEntity.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -638,6 +644,7 @@ public class ChangedAddonEntities {
             BorealisFemaleEntity.init();
             LatexWindCatFemaleEntity.init();
             LatexWindCatMaleEntity.init();
+            LuminaraFlowerBeastEntity.init();
         });
     }
 

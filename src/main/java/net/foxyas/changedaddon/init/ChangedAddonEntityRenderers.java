@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.init;
 
+import net.foxyas.changedaddon.client.model.advanced.LuminaraFlowerBeastModel;
 import net.foxyas.changedaddon.client.renderer.*;
 import net.foxyas.changedaddon.client.renderer.advanced.*;
 import net.foxyas.changedaddon.client.renderer.basic.*;
@@ -63,7 +64,7 @@ public class ChangedAddonEntityRenderers {
         event.registerEntityRenderer(ChangedAddonEntities.PINK_CYAN_SKUNK.get(), PinkCyanSkunkRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_WIND_CAT_FEMALE.get(), LatexWindCatFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleRenderer::new);
-
+        event.registerEntityRenderer(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastRenderer::new);
 
         // --- MONSTER/MOB ENTITIES ---
         event.registerEntityRenderer(ChangedAddonEntities.PROTOTYPE.get(), PrototypeRenderer::new);
