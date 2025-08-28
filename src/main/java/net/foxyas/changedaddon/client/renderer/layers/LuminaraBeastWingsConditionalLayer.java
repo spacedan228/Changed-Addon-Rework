@@ -26,13 +26,15 @@ public class LuminaraBeastWingsConditionalLayer<T extends ChangedEntity, M exten
             if (luminaraFlowerBeastEntity.isAwakened()) {
                 this.getParentModel().prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
                 int overlay = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
-                this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(LuminaraFlowerBeastRenderer.WING_TEXTURE)), packedLight, overlay, 1, 1, 1, 1.0F);
 
                 if (entity.isFlying() || entity.isFallFlying()) {
                     boolean hasElytra = luminaraFlowerBeastEntity.getItemBySlot(EquipmentSlot.CHEST).is(Items.ELYTRA);
                     if (!hasElytra) {
+                        this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(LuminaraFlowerBeastRenderer.WING_ROOT_TEXTURE)), packedLight, overlay, 1, 1, 1, 1.0F);
                         this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.eyes(LuminaraFlowerBeastRenderer.WING_GLOW_TEXTURE)), packedLight, overlay, 1, 1, 1, 1.0F);
                     }
+                } else {
+                    this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(LuminaraFlowerBeastRenderer.WING_TEXTURE)), packedLight, overlay, 1, 1, 1, 1.0F);
                 }
             }
         }

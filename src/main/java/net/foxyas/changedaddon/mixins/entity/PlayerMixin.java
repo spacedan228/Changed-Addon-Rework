@@ -93,29 +93,35 @@ public abstract class PlayerMixin {
 
     @Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
     private void tryToStartFallFlying(CallbackInfoReturnable<Boolean> ci) {
+        ChangedAddonMod.LOGGER.info("JJJJJ99");
         Player player = (Player) (Object) this;
         TransfurVariantInstance<?> latexVariant = ProcessTransfur.getPlayerTransfurVariant(player);
         if (latexVariant != null && latexVariant.getParent().canGlide) {
+            ChangedAddonMod.LOGGER.info("JJJJJ88");
             if (latexVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                if (variantExtraStats.getFlyType().canGlide() && !player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
-                    player.startFallFlying();
-                    ci.setReturnValue(true);
-                    ci.cancel();
-
-                    //player.respawn();
-                } else if (!variantExtraStats.getFlyType().canGlide() && !player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
-                    ItemStack itemstack = this.getItemBySlot(EquipmentSlot.CHEST);
-                    if (itemstack.canElytraFly(player)) {
+                ChangedAddonMod.LOGGER.info("JJJJJ77");
+                if (variantExtraStats.getFlyType().canGlide()) {
+                    /*
+                    if (!player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
                         player.startFallFlying();
+                        ChangedAddonMod.LOGGER.info("JJJJJ4");
                         ci.setReturnValue(true);
                         ci.cancel();
 
                         //player.respawn();
-                    } else {
-                        player.stopFallFlying();
-                        ci.setReturnValue(false);
-                        ci.cancel();
+                    }*/
+                } else if (!variantExtraStats.getFlyType().canGlide()) {
+                    ChangedAddonMod.LOGGER.info("JJJJJ5");
+                    if (!player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
+                        ItemStack itemstack = player.getItemBySlot(EquipmentSlot.CHEST);
+                        if (!itemstack.canElytraFly(player)) {
+                            ChangedAddonMod.LOGGER.info("JJJJJ");
+                            player.stopFallFlying();
+                            ci.setReturnValue(false);
+                            ci.cancel();
+                        }
                     }
+
                 }
             }
         }

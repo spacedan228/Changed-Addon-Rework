@@ -45,7 +45,6 @@
     "client.renderer.GameRendererMixin",
     "client.renderer.LatexHumanoidArmorModelMixin",
     "client.renderer.LivingEntityRendererAccessor",
-    "client.renderer.PostChainMixin",
-    "client.renderer.renderHandMixin"
+    "client.renderer.PostChainMixin"
   ]
 }

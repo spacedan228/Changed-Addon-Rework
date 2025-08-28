@@ -23,6 +23,7 @@ public class LuminaraFlowerBeastRenderer extends AdvancedHumanoidRenderer<Lumina
     public static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/luminara_beast/luminara_flower_beast_base");
     public static final ResourceLocation GLOW_LAYER_TEXTURE = ChangedAddonMod.textureLoc("textures/entities/luminara_beast/luminara_flower_beast_base_layer_glow");
     public static final ResourceLocation WING_TEXTURE = ChangedAddonMod.textureLoc("textures/entities/luminara_beast/luminara_flower_beast_wings_layer");
+    public static final ResourceLocation WING_ROOT_TEXTURE = ChangedAddonMod.textureLoc("textures/entities/luminara_beast/luminara_flower_beast_only_wings_layer");
     public static final ResourceLocation WING_GLOW_TEXTURE = ChangedAddonMod.textureLoc("textures/entities/luminara_beast/luminara_flower_beast_wings_layer_glow_full");
 
 
