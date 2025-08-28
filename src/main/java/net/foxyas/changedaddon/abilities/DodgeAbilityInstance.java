@@ -154,17 +154,16 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
             event.setCanceled(true);
         }
 
-        if (attacker instanceof LivingEntity attackerLiving) {
-            applyDodgeAwayParticlesTrails(dodger, attackerLiving);
-        }
-
-        executeDodgeParticles(levelAccessor, dodger);
+        executeDodgeParticles(levelAccessor, dodger, attacker);
         executeDodgeAnimations(levelAccessor, dodger);
     }
 
-    public void executeDodgeParticles(LevelAccessor levelAccessor, LivingEntity dodger) {
+    public void executeDodgeParticles(LevelAccessor levelAccessor, LivingEntity dodger, Entity attacker) {
         if (levelAccessor instanceof ServerLevel serverLevel) {
             spawnDodgeParticles(serverLevel, dodger, 0.5f, 0.3f, 0.3f, 0.3f, 10, 0.05f);
+        }
+        if (attacker instanceof LivingEntity attackerLiving) {
+            applyDodgeAwayParticlesTrails(dodger, attackerLiving);
         }
     }
 

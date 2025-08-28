@@ -15,7 +15,6 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.AbstractGolem;
 import net.minecraft.world.entity.animal.Rabbit;
@@ -85,6 +84,8 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<BlueLizard>> BLUE_LIZARD = register("form_blue_lizard", TransfurVariant.Builder.of(ChangedAddonEntities.BLUE_LIZARD).canClimb().addAbility(ChangedAddonAbilities.TOGGLE_CLIMB).addAbility(ChangedAddonAbilities.APPLY_REGENERATION_PASSIVE).addAbility(ChangedAddonAbilities.DODGE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
     public static final RegistryObject<TransfurVariant<MongooseEntity>> MONGOOSE = register("form_latex_mongoose", TransfurVariant.Builder.of(ChangedAddonEntities.MONGOOSE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     public static final RegistryObject<TransfurVariant<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = register("form_pink_cyan_skunk", TransfurVariant.Builder.of(ChangedAddonEntities.PINK_CYAN_SKUNK).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
+    public static final RegistryObject<TransfurVariant<LatexWindCatFemaleEntity>> LATEX_WIND_CAT_FEMALE = register("latex_wind_cat/female", TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_FEMALE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
+    public static final RegistryObject<TransfurVariant<LatexWindCatMaleEntity>> LATEX_WIND_CAT_MALE = register("latex_wind_cat/male", TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_MALE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     public static final RegistryObject<TransfurVariant<BorealisMaleEntity>> BOREALIS_MALE = register("form_borealis/male", TransfurVariant.Builder.of(ChangedAddonEntities.BOREALIS_MALE)
             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
             .addAbility(ChangedAddonAbilities.CARRY)

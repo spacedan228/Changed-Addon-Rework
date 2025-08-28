@@ -180,6 +180,8 @@ public class ChangedAddonEntities {
         event.put(BOREALIS_MALE.get(), BorealisMaleEntity.createAttributes().build());
         event.put(BOREALIS_FEMALE.get(), BorealisFemaleEntity.createAttributes().build());
         event.put(PINK_CYAN_SKUNK.get(), PinkCyanSkunkEntity.createLatexAttributes().build());
+        event.put(LATEX_WIND_CAT_FEMALE.get(), LatexWindCatFemaleEntity.createLatexAttributes().build());
+        event.put(LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleEntity.createLatexAttributes().build());
     }
 
     public static final RegistryObject<EntityType<DazedLatexEntity>> DAZED_LATEX = registerChangedEntity("latex_dazed",
@@ -610,6 +612,16 @@ public class ChangedAddonEntities {
 
     public static final RegistryObject<EntityType<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = registerChangedEntity("pink_cyan_skunk",
             EntityType.Builder.of(PinkCyanSkunkEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F));
+
+    public static final RegistryObject<EntityType<LatexWindCatFemaleEntity>> LATEX_WIND_CAT_FEMALE = registerChangedEntity("latex_wind_cat_female",
+            EntityType.Builder.of(LatexWindCatFemaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F));
+
+    public static final RegistryObject<EntityType<LatexWindCatMaleEntity>> LATEX_WIND_CAT_MALE = registerChangedEntity("latex_wind_cat_male",
+            EntityType.Builder.of(LatexWindCatMaleEntity::new, MobCategory.MONSTER)
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
