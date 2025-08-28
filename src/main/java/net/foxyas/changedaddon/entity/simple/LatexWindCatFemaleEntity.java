@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.entity.EntityType;
@@ -20,6 +21,9 @@ public class LatexWindCatFemaleEntity extends ChangedEntity implements GenderedE
         attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(0.9);
     }
 
+    public static void init() {
+    }
+
     @Override
     public Gender getGender() {
         return Gender.FEMALE;
@@ -33,7 +37,15 @@ public class LatexWindCatFemaleEntity extends ChangedEntity implements GenderedE
         return TransfurMode.NONE;
     }
 
+    @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        return Color3.getColor("#334752");
+        Color3 firstColor = Color3.parseHex("#dfe6ec");
+        Color3 secondColor = Color3.parseHex("#87a5d4");
+        if (firstColor != null && secondColor != null) {
+            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
+        }
+
+
+        return firstColor;
     }
 }

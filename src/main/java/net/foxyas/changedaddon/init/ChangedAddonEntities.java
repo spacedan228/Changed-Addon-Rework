@@ -20,6 +20,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,17 +102,25 @@ public class ChangedAddonEntities {
         ADDON_CHANGED_ENTITIES.add(PROTOTYPE.get());
         ADDON_CHANGED_ENTITIES.add(MONGOOSE.get());
         ADDON_CHANGED_ENTITIES.add(BOREALIS_MALE.get());
+        ADDON_CHANGED_ENTITIES.add(BOREALIS_FEMALE.get());
+        ADDON_CHANGED_ENTITIES.add(PINK_CYAN_SKUNK.get());
+        ADDON_CHANGED_ENTITIES.add(LATEX_WIND_CAT_MALE.get());
+        ADDON_CHANGED_ENTITIES.add(LATEX_WIND_CAT_FEMALE.get());
         return ADDON_CHANGED_ENTITIES;
     }
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntity(String registryName, EntityType.Builder<T> entityTypeBuilder) {
         return REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
-    }    public static final RegistryObject<EntityType<LuminarCrystalSpearEntity>> LUMINAR_CRYSTAL_SPEAR = register("projectile_luminar_crystal_spear", EntityType.Builder.<LuminarCrystalSpearEntity>of(LuminarCrystalSpearEntity::new, MobCategory.MISC)
+    }
+
+    public static final RegistryObject<EntityType<LuminarCrystalSpearEntity>> LUMINAR_CRYSTAL_SPEAR = register("projectile_luminar_crystal_spear", EntityType.Builder.<LuminarCrystalSpearEntity>of(LuminarCrystalSpearEntity::new, MobCategory.MISC)
             .setCustomClientFactory(LuminarCrystalSpearEntity::new).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
 
     private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryName, EntityType.Builder<T> entityTypeBuilder) {
         return REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
-    }    // --- CHANGED ENTITIES ---
+    }
+
+    // --- CHANGED ENTITIES ---
     public static final RegistryObject<EntityType<LatexSnowFoxMaleEntity>> LATEX_SNOW_FOX_MALE = registerChangedEntity("latex_snow_fox_male",
             EntityType.Builder.<LatexSnowFoxMaleEntity>of(LatexSnowFoxMaleEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
@@ -122,7 +131,9 @@ public class ChangedAddonEntities {
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerMob(String registryName, EntityType.Builder<T> entityTypeBuilder) {
         return REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
-    }    public static final RegistryObject<EntityType<LatexSnowFoxFemaleEntity>> LATEX_SNOW_FOX_FEMALE = registerChangedEntity("latex_snow_fox_female",
+    }
+
+    public static final RegistryObject<EntityType<LatexSnowFoxFemaleEntity>> LATEX_SNOW_FOX_FEMALE = registerChangedEntity("latex_snow_fox_female",
             EntityType.Builder.<LatexSnowFoxFemaleEntity>of(LatexSnowFoxFemaleEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(64)
@@ -130,59 +141,6 @@ public class ChangedAddonEntities {
                     .setCustomClientFactory(LatexSnowFoxFemaleEntity::new)
                     .sized(0.7f, 1.93f));
 
-    @SubscribeEvent
-    public static void registerAttributes(EntityAttributeCreationEvent event) {
-        event.put(PROTOTYPE.get(), PrototypeEntity.createAttributes().build());
-        event.put(FOXYAS.get(), FoxyasEntity.createAttributes().build());
-        event.put(LATEX_SNOW_FOX_MALE.get(), LatexSnowFoxMaleEntity.createAttributes().build());
-        event.put(LATEX_SNOW_FOX_FEMALE.get(), LatexSnowFoxFemaleEntity.createAttributes().build());
-        event.put(DAZED_LATEX.get(), DazedLatexEntity.createAttributes().build());
-        event.put(PURO_KIND_MALE.get(), PuroKindMaleEntity.createAttributes().build());
-        event.put(PURO_KIND_FEMALE.get(), PuroKindFemaleEntity.createAttributes().build());
-        event.put(BUNY.get(), BunyEntity.createAttributes().build());
-        event.put(SNOW_LEOPARD_FEMALE_ORGANIC.get(), SnowLeopardFemaleOrganicEntity.createAttributes().build());
-        event.put(EXPERIMENT_009.get(), Experiment009Entity.createAttributes().build());
-        event.put(MIRROR_WHITE_TIGER.get(), MirrorWhiteTigerEntity.createAttributes().build());
-        event.put(SNOW_LEOPARD_MALE_ORGANIC.get(), SnowLeopardMaleOrganicEntity.createAttributes().build());
-        event.put(EXPERIMENT_10.get(), Experiment10Entity.createAttributes().build());
-        event.put(EXP_2_MALE.get(), Exp2MaleEntity.createAttributes().build());
-        event.put(EXP_2_FEMALE.get(), Exp2FemaleEntity.createAttributes().build());
-        event.put(WOLFY.get(), WolfyEntity.createAttributes().build());
-        event.put(ERIK.get(), ErikEntity.createAttributes().build());
-        event.put(EXP_6.get(), Exp6Entity.createAttributes().build());
-        event.put(REYN.get(), ReynEntity.createAttributes().build());
-        event.put(EXPERIMENT_009_BOSS.get(), Experiment009BossEntity.createAttributes().build());
-        event.put(EXPERIMENT_10_BOSS.get(), Experiment10BossEntity.createAttributes().build());
-        event.put(EXP_1_MALE.get(), Exp1MaleEntity.createAttributes().build());
-        event.put(EXP_1_FEMALE.get(), Exp1FemaleEntity.createAttributes().build());
-        event.put(LATEX_SNEP.get(), LatexSnepEntity.createAttributes().build());
-        event.put(LUMINARCTIC_LEOPARD_MALE.get(), LuminarcticLeopardMaleEntity.createAttributes().build());
-        event.put(LUMINARCTIC_LEOPARD_FEMALE.get(), LuminarcticLeopardFemaleEntity.createAttributes().build());
-        event.put(LATEX_SQUID_TIGER_SHARK.get(), LatexSquidTigerSharkEntity.createAttributes().build());
-        event.put(LYNX.get(), LynxEntity.createAttributes().build());
-        event.put(FOXTA_FOXY.get(), FoxtaFoxyEntity.createAttributes().build());
-        event.put(SNEPSI_LEOPARD.get(), SnepsiLeopardEntity.createAttributes().build());
-        event.put(BAGEL.get(), BagelEntity.createAttributes().build());
-        event.put(LATEX_DRAGON_SNOW_LEOPARD_SHARK.get(), LatexDragonSnowLeopardSharkEntity.createAttributes().build());
-        event.put(CRYSTAL_GAS_CAT_MALE.get(), CrystalGasCatMaleEntity.createAttributes().build());
-        event.put(CRYSTAL_GAS_CAT_FEMALE.get(), CrystalGasCatFemaleEntity.createAttributes().build());
-        event.put(VOID_FOX.get(), VoidFoxEntity.createAttributes().build());
-        event.put(FENGQI_WOLF.get(), FengQIWolfEntity.createAttributes().build());
-        event.put(HAYDEN_FENNEC_FOX.get(), HaydenFennecFoxEntity.createAttributes().build());
-        event.put(SNOW_LEOPARD_PARTIAL.get(), SnowLeopardPartialEntity.createAttributes().build());
-        event.put(BLUE_LIZARD.get(), BlueLizard.createAttributes().build());
-        event.put(AVALI.get(), AvaliEntity.createAttributes().build());
-        event.put(LATEX_KITSUNE_MALE.get(), LatexKitsuneMaleEntity.createAttributes().build());
-        event.put(LATEX_KITSUNE_FEMALE.get(), LatexKitsuneFemaleEntity.createAttributes().build());
-        event.put(LATEX_CALICO_CAT.get(), LatexCalicoCatEntity.createAttributes().build());
-        event.put(PROTOGEN.get(), ProtogenEntity.createAttributes().build());
-        event.put(MONGOOSE.get(), MongooseEntity.createAttributes().build());
-        event.put(BOREALIS_MALE.get(), BorealisMaleEntity.createAttributes().build());
-        event.put(BOREALIS_FEMALE.get(), BorealisFemaleEntity.createAttributes().build());
-        event.put(PINK_CYAN_SKUNK.get(), PinkCyanSkunkEntity.createLatexAttributes().build());
-        event.put(LATEX_WIND_CAT_FEMALE.get(), LatexWindCatFemaleEntity.createLatexAttributes().build());
-        event.put(LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleEntity.createLatexAttributes().build());
-    }
 
     public static final RegistryObject<EntityType<DazedLatexEntity>> DAZED_LATEX = registerChangedEntity("latex_dazed",
             EntityType.Builder.<DazedLatexEntity>of(DazedLatexEntity::new, MobCategory.MONSTER)
@@ -192,59 +150,7 @@ public class ChangedAddonEntities {
                     .setCustomClientFactory(DazedLatexEntity::new)
                     .sized(0.7f, 1.93f));
 
-    @SubscribeEvent
-    public static void init(FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-            PrototypeEntity.init();
-            FoxyasEntity.init();
-            LatexSnowFoxMaleEntity.init();
-            LatexSnowFoxFemaleEntity.init();
-            DazedLatexEntity.init();
-            PuroKindMaleEntity.init();
-            PuroKindFemaleEntity.init();
-            BunyEntity.init();
-            SnowLeopardFemaleOrganicEntity.init();
-            Experiment009Entity.init();
-            MirrorWhiteTigerEntity.init();
-            SnowLeopardMaleOrganicEntity.init();
-            Experiment10Entity.init();
-            Exp2MaleEntity.init();
-            Exp2FemaleEntity.init();
-            WolfyEntity.init();
-            ErikEntity.init();
-            Exp6Entity.init();
-            ReynEntity.init();
-            Experiment009BossEntity.init();
-            Experiment10BossEntity.init();
-            Exp1MaleEntity.init();
-            Exp1FemaleEntity.init();
-            LatexSnepEntity.init();
-            LuminarcticLeopardMaleEntity.init();
-            LuminarcticLeopardFemaleEntity.init();
-            LatexSquidTigerSharkEntity.init();
-            LynxEntity.init();
-            FoxtaFoxyEntity.init();
-            SnepsiLeopardEntity.init();
-            BagelEntity.init();
-            LatexDragonSnowLeopardSharkEntity.init();
-            CrystalGasCatMaleEntity.init();
-            CrystalGasCatFemaleEntity.init();
-            VoidFoxEntity.init();
-            FengQIWolfEntity.init();
-            HaydenFennecFoxEntity.init();
-            SnowLeopardPartialEntity.init();
-            ParticleProjectile.init();
-            BlueLizard.init();
-            AvaliEntity.init();
-            LatexKitsuneMaleEntity.init();
-            LatexKitsuneFemaleEntity.init();
-            LatexCalicoCatEntity.init();
-            ProtogenEntity.init();
-            MongooseEntity.init();
-            BorealisMaleEntity.init();
-            BorealisFemaleEntity.init();
-        });
-    }    public static final RegistryObject<EntityType<PuroKindMaleEntity>> PURO_KIND_MALE = registerChangedEntity("puro_kind_male",
+    public static final RegistryObject<EntityType<PuroKindMaleEntity>> PURO_KIND_MALE = registerChangedEntity("puro_kind_male",
             EntityType.Builder.<PuroKindMaleEntity>of(PuroKindMaleEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(64)
@@ -615,24 +521,124 @@ public class ChangedAddonEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
-    public static final RegistryObject<EntityType<LatexWindCatFemaleEntity>> LATEX_WIND_CAT_FEMALE = registerChangedEntity("latex_wind_cat_female",
-            EntityType.Builder.of(LatexWindCatFemaleEntity::new, MobCategory.MONSTER)
-                    .clientTrackingRange(10)
-                    .sized(0.7F, 1.93F));
-
     public static final RegistryObject<EntityType<LatexWindCatMaleEntity>> LATEX_WIND_CAT_MALE = registerChangedEntity("latex_wind_cat_male",
             EntityType.Builder.of(LatexWindCatMaleEntity::new, MobCategory.MONSTER)
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
+    public static final RegistryObject<EntityType<LatexWindCatFemaleEntity>> LATEX_WIND_CAT_FEMALE = registerChangedEntity("latex_wind_cat_female",
+            EntityType.Builder.of(LatexWindCatFemaleEntity::new, MobCategory.MONSTER)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F));
 
+    @SubscribeEvent
+    public static void registerAttributes(@NotNull EntityAttributeCreationEvent event) {
+        event.put(PROTOTYPE.get(), PrototypeEntity.createAttributes().build());
+        event.put(FOXYAS.get(), FoxyasEntity.createAttributes().build());
+        event.put(LATEX_SNOW_FOX_MALE.get(), LatexSnowFoxMaleEntity.createAttributes().build());
+        event.put(LATEX_SNOW_FOX_FEMALE.get(), LatexSnowFoxFemaleEntity.createAttributes().build());
+        event.put(DAZED_LATEX.get(), DazedLatexEntity.createAttributes().build());
+        event.put(PURO_KIND_MALE.get(), PuroKindMaleEntity.createAttributes().build());
+        event.put(PURO_KIND_FEMALE.get(), PuroKindFemaleEntity.createAttributes().build());
+        event.put(BUNY.get(), BunyEntity.createAttributes().build());
+        event.put(SNOW_LEOPARD_FEMALE_ORGANIC.get(), SnowLeopardFemaleOrganicEntity.createAttributes().build());
+        event.put(EXPERIMENT_009.get(), Experiment009Entity.createAttributes().build());
+        event.put(MIRROR_WHITE_TIGER.get(), MirrorWhiteTigerEntity.createAttributes().build());
+        event.put(SNOW_LEOPARD_MALE_ORGANIC.get(), SnowLeopardMaleOrganicEntity.createAttributes().build());
+        event.put(EXPERIMENT_10.get(), Experiment10Entity.createAttributes().build());
+        event.put(EXP_2_MALE.get(), Exp2MaleEntity.createAttributes().build());
+        event.put(EXP_2_FEMALE.get(), Exp2FemaleEntity.createAttributes().build());
+        event.put(WOLFY.get(), WolfyEntity.createAttributes().build());
+        event.put(ERIK.get(), ErikEntity.createAttributes().build());
+        event.put(EXP_6.get(), Exp6Entity.createAttributes().build());
+        event.put(REYN.get(), ReynEntity.createAttributes().build());
+        event.put(EXPERIMENT_009_BOSS.get(), Experiment009BossEntity.createAttributes().build());
+        event.put(EXPERIMENT_10_BOSS.get(), Experiment10BossEntity.createAttributes().build());
+        event.put(EXP_1_MALE.get(), Exp1MaleEntity.createAttributes().build());
+        event.put(EXP_1_FEMALE.get(), Exp1FemaleEntity.createAttributes().build());
+        event.put(LATEX_SNEP.get(), LatexSnepEntity.createAttributes().build());
+        event.put(LUMINARCTIC_LEOPARD_MALE.get(), LuminarcticLeopardMaleEntity.createAttributes().build());
+        event.put(LUMINARCTIC_LEOPARD_FEMALE.get(), LuminarcticLeopardFemaleEntity.createAttributes().build());
+        event.put(LATEX_SQUID_TIGER_SHARK.get(), LatexSquidTigerSharkEntity.createAttributes().build());
+        event.put(LYNX.get(), LynxEntity.createAttributes().build());
+        event.put(FOXTA_FOXY.get(), FoxtaFoxyEntity.createAttributes().build());
+        event.put(SNEPSI_LEOPARD.get(), SnepsiLeopardEntity.createAttributes().build());
+        event.put(BAGEL.get(), BagelEntity.createAttributes().build());
+        event.put(LATEX_DRAGON_SNOW_LEOPARD_SHARK.get(), LatexDragonSnowLeopardSharkEntity.createAttributes().build());
+        event.put(CRYSTAL_GAS_CAT_MALE.get(), CrystalGasCatMaleEntity.createAttributes().build());
+        event.put(CRYSTAL_GAS_CAT_FEMALE.get(), CrystalGasCatFemaleEntity.createAttributes().build());
+        event.put(VOID_FOX.get(), VoidFoxEntity.createAttributes().build());
+        event.put(FENGQI_WOLF.get(), FengQIWolfEntity.createAttributes().build());
+        event.put(HAYDEN_FENNEC_FOX.get(), HaydenFennecFoxEntity.createAttributes().build());
+        event.put(SNOW_LEOPARD_PARTIAL.get(), SnowLeopardPartialEntity.createAttributes().build());
+        event.put(BLUE_LIZARD.get(), BlueLizard.createAttributes().build());
+        event.put(AVALI.get(), AvaliEntity.createAttributes().build());
+        event.put(LATEX_KITSUNE_MALE.get(), LatexKitsuneMaleEntity.createAttributes().build());
+        event.put(LATEX_KITSUNE_FEMALE.get(), LatexKitsuneFemaleEntity.createAttributes().build());
+        event.put(LATEX_CALICO_CAT.get(), LatexCalicoCatEntity.createAttributes().build());
+        event.put(PROTOGEN.get(), ProtogenEntity.createAttributes().build());
+        event.put(MONGOOSE.get(), MongooseEntity.createAttributes().build());
+        event.put(BOREALIS_MALE.get(), BorealisMaleEntity.createAttributes().build());
+        event.put(BOREALIS_FEMALE.get(), BorealisFemaleEntity.createAttributes().build());
+        event.put(PINK_CYAN_SKUNK.get(), PinkCyanSkunkEntity.createLatexAttributes().build());
+        event.put(LATEX_WIND_CAT_FEMALE.get(), LatexWindCatFemaleEntity.createLatexAttributes().build());
+        event.put(LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleEntity.createLatexAttributes().build());
+    }
 
-
-
-
-
-
-
-
+    @SubscribeEvent
+    public static void init(@NotNull FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            PrototypeEntity.init();
+            FoxyasEntity.init();
+            LatexSnowFoxMaleEntity.init();
+            LatexSnowFoxFemaleEntity.init();
+            DazedLatexEntity.init();
+            PuroKindMaleEntity.init();
+            PuroKindFemaleEntity.init();
+            BunyEntity.init();
+            SnowLeopardFemaleOrganicEntity.init();
+            Experiment009Entity.init();
+            MirrorWhiteTigerEntity.init();
+            SnowLeopardMaleOrganicEntity.init();
+            Experiment10Entity.init();
+            Exp2MaleEntity.init();
+            Exp2FemaleEntity.init();
+            WolfyEntity.init();
+            ErikEntity.init();
+            Exp6Entity.init();
+            ReynEntity.init();
+            Experiment009BossEntity.init();
+            Experiment10BossEntity.init();
+            Exp1MaleEntity.init();
+            Exp1FemaleEntity.init();
+            LatexSnepEntity.init();
+            LuminarcticLeopardMaleEntity.init();
+            LuminarcticLeopardFemaleEntity.init();
+            LatexSquidTigerSharkEntity.init();
+            LynxEntity.init();
+            FoxtaFoxyEntity.init();
+            SnepsiLeopardEntity.init();
+            BagelEntity.init();
+            LatexDragonSnowLeopardSharkEntity.init();
+            CrystalGasCatMaleEntity.init();
+            CrystalGasCatFemaleEntity.init();
+            VoidFoxEntity.init();
+            FengQIWolfEntity.init();
+            HaydenFennecFoxEntity.init();
+            SnowLeopardPartialEntity.init();
+            ParticleProjectile.init();
+            BlueLizard.init();
+            AvaliEntity.init();
+            LatexKitsuneMaleEntity.init();
+            LatexKitsuneFemaleEntity.init();
+            LatexCalicoCatEntity.init();
+            ProtogenEntity.init();
+            MongooseEntity.init();
+            BorealisMaleEntity.init();
+            BorealisFemaleEntity.init();
+            LatexWindCatFemaleEntity.init();
+            LatexWindCatMaleEntity.init();
+        });
+    }
 
 }

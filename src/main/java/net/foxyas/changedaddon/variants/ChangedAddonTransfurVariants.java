@@ -84,8 +84,8 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<BlueLizard>> BLUE_LIZARD = register("form_blue_lizard", TransfurVariant.Builder.of(ChangedAddonEntities.BLUE_LIZARD).canClimb().addAbility(ChangedAddonAbilities.TOGGLE_CLIMB).addAbility(ChangedAddonAbilities.APPLY_REGENERATION_PASSIVE).addAbility(ChangedAddonAbilities.DODGE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
     public static final RegistryObject<TransfurVariant<MongooseEntity>> MONGOOSE = register("form_latex_mongoose", TransfurVariant.Builder.of(ChangedAddonEntities.MONGOOSE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     public static final RegistryObject<TransfurVariant<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = register("form_pink_cyan_skunk", TransfurVariant.Builder.of(ChangedAddonEntities.PINK_CYAN_SKUNK).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
-    public static final RegistryObject<TransfurVariant<LatexWindCatFemaleEntity>> LATEX_WIND_CAT_FEMALE = register("latex_wind_cat/female", TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_FEMALE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
-    public static final RegistryObject<TransfurVariant<LatexWindCatMaleEntity>> LATEX_WIND_CAT_MALE = register("latex_wind_cat/male", TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_MALE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
+    public static final RegistryObject<TransfurVariant<LatexWindCatFemaleEntity>> LATEX_WIND_CAT_FEMALE = register("form_latex_wind_cat/female", TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_FEMALE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
+    public static final RegistryObject<TransfurVariant<LatexWindCatMaleEntity>> LATEX_WIND_CAT_MALE = register("form_latex_wind_cat/male", TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_MALE).stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
     public static final RegistryObject<TransfurVariant<BorealisMaleEntity>> BOREALIS_MALE = register("form_borealis/male", TransfurVariant.Builder.of(ChangedAddonEntities.BOREALIS_MALE)
             .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
             .addAbility(ChangedAddonAbilities.CARRY)
@@ -222,6 +222,7 @@ public class ChangedAddonTransfurVariants {
         public static final GenderedPair<Exp1MaleEntity, Exp1FemaleEntity> EXP1 = new GenderedPair<>(EXP1_MALE, EXP1_FEMALE);
         public static final GenderedPair<Exp2MaleEntity, Exp2FemaleEntity> EXP2 = new GenderedPair<>(EXP2_MALE, EXP2_FEMALE);
         public static final GenderedPair<LuminarcticLeopardMaleEntity, LuminarcticLeopardFemaleEntity> LUMINARCTIC_LEOPARDS = new GenderedPair<>(LUMINARCTIC_LEOPARD_MALE, LUMINARCTIC_LEOPARD_FEMALE);
+        public static final GenderedPair<LatexWindCatMaleEntity, LatexWindCatFemaleEntity> WIND_CATS = new GenderedPair<>(LATEX_WIND_CAT_MALE, LATEX_WIND_CAT_FEMALE);
         public static final GenderedPair<CrystalGasCatMaleEntity, CrystalGasCatFemaleEntity> HIMALAYAN_CRYSTAL_GAS_CAT = new GenderedPair<>(HIMALAYAN_CRYSTAL_GAS_CAT_MALE, HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE);
         public static final GenderedPair<LatexKitsuneMaleEntity, LatexKitsuneFemaleEntity> KITSUNES = new GenderedPair<>(LATEX_KITSUNE_MALE, LATEX_KITSUNE_FEMALE);
         public static final GenderedPair<BorealisMaleEntity, BorealisFemaleEntity> BOREALIS = new GenderedPair<>(BOREALIS_MALE, BOREALIS_FEMALE);

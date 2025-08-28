@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.entity.EntityType;
@@ -14,10 +15,11 @@ public class LatexWindCatMaleEntity extends ChangedEntity implements GenderedEnt
         super(p_19870_, level);
     }
 
+    public static void init() {
+    }
+
     protected void setAttributes(AttributeMap attributes) {
-        super.setAttributes(attributes);
-        attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.1);
-        attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(0.9);
+
     }
 
     @Override
@@ -33,7 +35,15 @@ public class LatexWindCatMaleEntity extends ChangedEntity implements GenderedEnt
         return TransfurMode.NONE;
     }
 
+    @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        return Color3.getColor("#334752");
+        Color3 firstColor = Color3.parseHex("#dfe6ec");
+        Color3 secondColor = Color3.parseHex("#87a5d4");
+        if (firstColor != null && secondColor != null) {
+            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
+        }
+
+
+        return firstColor;
     }
 }
