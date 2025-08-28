@@ -90,7 +90,7 @@ public abstract class PlayerMixin {
         }));
     }
 
-    @Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "tryToStartFallFlying", at = @At("TAIL"), cancellable = true)
     protected void tryToStartFallFlying(CallbackInfoReturnable<Boolean> ci) {
         Player player = (Player) (Object) this;
         TransfurVariantInstance<?> latexVariant = ProcessTransfur.getPlayerTransfurVariant(player);
@@ -111,6 +111,7 @@ public abstract class PlayerMixin {
 
                         //player.respawn();
                     } else {
+                        player.stopFallFlying();
                         ci.setReturnValue(false);
                         ci.cancel();
                     }

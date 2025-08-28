@@ -396,6 +396,17 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
         return LayerDefinition.create(meshdefinition, 96, 96);
     }
 
+    @Override
+    public boolean shouldPartTransfur(ModelPart part) {
+        if (hiddenPartsByDefault().contains(part) && !part.visible) {
+            return false;
+        }
+        return super.shouldPartTransfur(part);
+    }
+
+    public List<ModelPart> hiddenPartsByDefault() {
+        return List.of(this.BigTail,this.RightWing, this.LeftWing);
+    }
 
     public @NotNull ModelPart getArm(HumanoidArm p_102852) {
         return p_102852 == HumanoidArm.LEFT ? this.LeftArm : this.RightArm;
