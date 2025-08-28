@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.ClawsAbility;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
@@ -90,12 +91,12 @@ public abstract class PlayerMixin {
         }));
     }
 
-    @Inject(method = "tryToStartFallFlying", at = @At("TAIL"), cancellable = true)
-    protected void tryToStartFallFlying(CallbackInfoReturnable<Boolean> ci) {
+    @Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
+    private void tryToStartFallFlying(CallbackInfoReturnable<Boolean> ci) {
         Player player = (Player) (Object) this;
         TransfurVariantInstance<?> latexVariant = ProcessTransfur.getPlayerTransfurVariant(player);
         if (latexVariant != null && latexVariant.getParent().canGlide) {
-            if (latexVariant.getParent() instanceof VariantExtraStats variantExtraStats) {
+            if (latexVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
                 if (variantExtraStats.getFlyType().canGlide() && !player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
                     player.startFallFlying();
                     ci.setReturnValue(true);
