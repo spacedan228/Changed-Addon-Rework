@@ -1,17 +1,21 @@
 package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.abilities.ToggleClimbAbilityInstance;
+import net.foxyas.changedaddon.abilities.WindPassiveAbility;
 import net.foxyas.changedaddon.entity.interfaces.ExtraConditions;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.villagerTrades.ChangedAddonTrades;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.ability.SimpleAbilityInstance;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.fluid.AbstractLatexFluid;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.material.FluidState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,9 +52,17 @@ public abstract class LivingEntityMixin {
         var variant = TransfurVariant.getEntityVariant(self);
         if (variant == null) return;
         if (variant.is(ChangedAddonTransfurVariants.LATEX_WIND_CAT_MALE) || variant.is(ChangedAddonTransfurVariants.LATEX_WIND_CAT_FEMALE)) {
-            if (!self.isShiftKeyDown()) {
-                callback.setReturnValue(true);
-            }
+            if (self instanceof Player player) {
+                TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+                if (instance != null) {
+                    SimpleAbilityInstance ability = instance.getAbilityInstance(ChangedAddonAbilities.WIND_PASSIVE.get());
+                    if (ability != null) {
+                        if (ability.getAbility() instanceof WindPassiveAbility windPassiveAbility) {
+                            callback.setReturnValue(windPassiveAbility.isActive);
+                        }
+                    }
+                }
+            } else callback.setReturnValue(true);
         }
     }
 

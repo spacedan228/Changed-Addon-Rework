@@ -54,7 +54,10 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 VOID_FOX.get(),
                 LATEX_KITSUNE_MALE.get(),
                 LATEX_KITSUNE_FEMALE.get(),
-                LATEX_CALICO_CAT.get());
+                LATEX_CALICO_CAT.get(),
+                LATEX_WIND_CAT_MALE.get(),
+                LATEX_WIND_CAT_FEMALE.get()
+                );
 
         tag(ChangedTags.EntityTypes.ORGANIC_LATEX).add(
                 BUNY.get(),

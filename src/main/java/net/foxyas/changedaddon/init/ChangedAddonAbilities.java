@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.DashAbility;
 import net.foxyas.changedaddon.abilities.*;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.client.ChangedClient;
@@ -26,6 +27,7 @@ import static net.ltxprogrammer.changed.init.ChangedRegistry.ABILITY;
 public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
 
     public static final DeferredRegister<AbstractAbility<?>> REGISTRY = ABILITY.createDeferred(ChangedAddonMod.MODID);
+    public static final RegistryObject<DashAbility> DASH = REGISTRY.register("dash", DashAbility::new);
     public static final RegistryObject<LeapAbility> LEAP = REGISTRY.register("leap", LeapAbility::new);
     public static final RegistryObject<ThunderBoltAbility> THUNDERBOLT = REGISTRY.register("thunderbolt", ThunderBoltAbility::new);
     public static final RegistryObject<ThunderPathAbility> THUNDER_PATH = REGISTRY.register("thunder_path", ThunderPathAbility::new);
@@ -49,6 +51,8 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     public static final RegistryObject<UnfuseAbility> UNFUSE = REGISTRY.register("unfuse", UnfuseAbility::new);
     public static final RegistryObject<ToggleClimbAbility> TOGGLE_CLIMB = REGISTRY.register("toggle_climb", ToggleClimbAbility::new);
     public static final RegistryObject<PassiveAbility> APPLY_REGENERATION_PASSIVE = REGISTRY.register("passive_regeneration", () -> new PassiveAbility((entity) -> PassiveAbility.ApplyMobEffect(entity, new MobEffectInstance(MobEffects.REGENERATION, 60, 0, false, false, true))));
+    public static final RegistryObject<WindControlAbility> WIND_CONTROL = REGISTRY.register("wind_control", WindControlAbility::new);
+    public static final RegistryObject<WindPassiveAbility> WIND_PASSIVE = REGISTRY.register("wind_control_passive", WindPassiveAbility::new);
 
 
     public static List<EntityType<?>> getCanGlideEntities() {

@@ -29,6 +29,8 @@
     "changed_addon:void_fox",
     "changed_addon:latex_kitsune_male",
     "changed_addon:latex_kitsune_female",
-    "changed_addon:latex_calico_cat"
+    "changed_addon:latex_calico_cat",
+    "changed_addon:latex_wind_cat_male",
+    "changed_addon:latex_wind_cat_female"
   ]
 }

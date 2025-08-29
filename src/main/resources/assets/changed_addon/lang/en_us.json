@@ -188,6 +188,11 @@
   "changed_addon.ability.unfuse": "Unfuse",
   "changed_addon.ability.unfuse.description.line1": "Allows the player to unfuse from the slime creature and summon it for battle",
   "changed_addon.ability.unfuse.description.line2": "The creature can be fused back by interacting while holding shift",
+  "changed_addon.ability.wind_control": "Wind Control",
+  "changed_addon.ability.wind_control.desc": "Allows The player to use the Wind to boost theyself or others",
+  "changed_addon.ability.wind_control.desc2": "[Hold Shift To Use the AOE Variant]",
+  "changed_addon.ability.wind_control_passive": "Wind Control Passive",
+  "changed_addon.ability.wind_control_passive.desc": "Allows the player to use Wind to walk on fluids. But be careful, you'll still touch the fluid.",
 
   "ability.changed_addon.grab_entity.extender.how_to_release": "Hold [%s] to release the entity",
   "ability.changed_addon.grab_entity.extender.how_to_hug": "Hold [%s] to hug the entity",
