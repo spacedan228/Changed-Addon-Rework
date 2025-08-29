@@ -104,7 +104,7 @@ public class WindControlAbility extends SimpleAbility {
         // Optional: spawn particles
         if (living.getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ParticleTypes.CLOUD,
-                    living.getX(), living.getY() + 1.0, living.getZ(),
+                    living.getX(), living.getY(), living.getZ(),
                     10, 0.3, 0.2, 0.3, 0.05);
         }
     }
@@ -135,7 +135,13 @@ public class WindControlAbility extends SimpleAbility {
         }
 
         level.playSound(null, living.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.0F);
-        ((ServerLevel)level).sendParticles(ParticleTypes.EXPLOSION, living.getX(), living.getY(), living.getZ(), 10, 1.0, 0.5, 1.0, 0.1);
+
+        if (living.getLevel() instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.CLOUD,
+                    living.getX(), living.getY(), living.getZ(),
+                    10, 0.3, 0.2, 0.3, 0.05);
+            serverLevel.sendParticles(ParticleTypes.EXPLOSION, living.getX(), living.getY(), living.getZ(), 10, 1.0, 0.5, 1.0, 0.1);
+        }
     }
 
 }

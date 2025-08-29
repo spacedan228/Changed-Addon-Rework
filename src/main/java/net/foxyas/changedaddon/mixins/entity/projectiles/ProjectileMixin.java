@@ -32,7 +32,7 @@ public abstract class ProjectileMixin {
             attacker = Objects.requireNonNullElseGet(owner, () -> (Projectile) (Object) this);
             if (pTarget instanceof ChangedEntity changedEntity) {
                 DodgeAbilityInstance dodgeAbilityInstance = changedEntity.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
-                DodgeAbilityInstance teleportDodgeAbilityInstance = changedEntity.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
+                DodgeAbilityInstance teleportDodgeAbilityInstance = changedEntity.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
                 if (dodgeAbilityInstance != null
                         && dodgeAbilityInstance.canUse()
                         && dodgeAbilityInstance.canKeepUsing()
@@ -57,7 +57,7 @@ public abstract class ProjectileMixin {
                 TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
                 if (instance != null) {
                     DodgeAbilityInstance dodgeAbilityInstance = instance.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
-                    DodgeAbilityInstance teleportDodgeAbilityInstance = instance.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
+                    DodgeAbilityInstance teleportDodgeAbilityInstance = instance.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
                     if (dodgeAbilityInstance != null
                             && dodgeAbilityInstance.canUse()
                             && dodgeAbilityInstance.canKeepUsing()

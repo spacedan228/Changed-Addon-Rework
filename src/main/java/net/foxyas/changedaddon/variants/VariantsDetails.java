@@ -23,16 +23,18 @@ public class VariantsDetails {
             TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
             if (instance != null) {
                 if (instance.hasAbility(ChangedAddonAbilities.WIND_CONTROL.get()) || instance.hasAbility(ChangedAddonAbilities.WIND_PASSIVE.get())) {
-                    if (player.getLevel().isClientSide() && player.getLevel() instanceof ClientLevel clientLevel) {
-                        Vec3 motion = player.getDeltaMovement();
-                        clientLevel.addParticle(ParticleTypes.POOF,
-                                player.getEyePosition().x(),
-                                player.getEyePosition().y(),
-                                player.getEyePosition().z(),
-                                (float) motion.x(),
-                                (float) motion.y(),
-                                (float) motion.z()
-                        );
+                    if (!player.isOnGround()) {
+                        if (player.getLevel().isClientSide() && player.getLevel() instanceof ClientLevel clientLevel) {
+                            Vec3 motion = player.getDeltaMovement();
+                            clientLevel.addParticle(ParticleTypes.POOF,
+                                    player.position().x(),
+                                    player.position().y(),
+                                    player.position().x(),
+                                    (float) motion.x(),
+                                    (float) motion.y(),
+                                    (float) motion.z()
+                            );
+                        }
                     }
                 }
             }
