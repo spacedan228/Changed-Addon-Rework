@@ -13,8 +13,9 @@ public class ChangedAddonClientConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Double> PAT_OVERLAY_Y;
     public static final ForgeConfigSpec.ConfigValue<Boolean> WING_FLAP_INFO;
     public static final ForgeConfigSpec.ConfigValue<Boolean> PAW_STYLE_PAT_OVERLAY;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_EXTRA_HAND;
     public static final ForgeConfigSpec.ConfigValue<Boolean> SMOOTH_LASER_MOVEMENT;
-    public static final ForgeConfigSpec.ConfigValue<Boolean> PLANTOIDS_VARIABLE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> PLANTOIDS_VISIBILITY;
 
     static {
         BUILDER.push("MusicPlayer");
@@ -35,12 +36,12 @@ public class ChangedAddonClientConfiguration {
         BUILDER.pop();
 
         BUILDER.push("Extra Animations");
-        //SHOW_EXTRA_HAND = BUILDER.comment("allow the show of the extra hand in some contexts like fall fly").define("Show Extra Hand", false);
+        SHOW_EXTRA_HAND = BUILDER.comment("allow the show of the extra hand in some contexts like fall fly").define("Show Extra Hand", false);
         SMOOTH_LASER_MOVEMENT = BUILDER.comment("Make the Laser Moviment be smooth, it may cause the particule to be slower").define("Laser Smooth Moviment", false);
         BUILDER.pop();
 
         BUILDER.push("ModelsHandle");
-        PLANTOIDS_VARIABLE = BUILDER.comment("Turn off the Plantoids [Female Chest Features]").define("Turn Off the Plantoids", false);
+        PLANTOIDS_VISIBILITY = BUILDER.comment("Turn off the Plantoids [Female Chest Features]").define("Turn Off the Plantoids", false);
         BUILDER.pop();
 
         BUILDER.push("Textual Info ");

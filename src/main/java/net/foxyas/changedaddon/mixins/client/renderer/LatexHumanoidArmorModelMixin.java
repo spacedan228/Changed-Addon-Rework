@@ -10,7 +10,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.NoSuchElementException;
 
@@ -23,7 +22,7 @@ public class LatexHumanoidArmorModelMixin {
         var torso = self.getTorso();
         try {
             ModelPart plantoidsPart = torso.getChild("Plantoids");
-            plantoidsPart.visible = !ChangedAddonClientConfiguration.PLANTOIDS_VARIABLE.get();
+            plantoidsPart.visible = !ChangedAddonClientConfiguration.PLANTOIDS_VISIBILITY.get();
         } catch (NoSuchElementException ignored) {
         }
     }

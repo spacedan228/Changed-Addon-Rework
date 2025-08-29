@@ -43,6 +43,7 @@
     "client.renderer.AdvancedHumanoidModelMixin",
     "client.renderer.AdvancedHumanoidRendererMixin",
     "client.renderer.GameRendererMixin",
+    "client.renderer.ItemInHandRendererAccessor",
     "client.renderer.LatexHumanoidArmorModelMixin",
     "client.renderer.LivingEntityRendererAccessor",
     "client.renderer.PostChainMixin"

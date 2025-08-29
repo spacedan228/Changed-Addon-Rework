@@ -20,7 +20,7 @@ public class AdvancedHumanoidModelMixin {
         try {
             ModelPart plantoidsPart = torso.getChild("Plantoids");
             if (part == plantoidsPart) {
-                cir.setReturnValue(!ChangedAddonClientConfiguration.PLANTOIDS_VARIABLE.get());
+                cir.setReturnValue(!ChangedAddonClientConfiguration.PLANTOIDS_VISIBILITY.get());
             }
             //plantoidsPart.visible = !ChangedAddonClientConfiguration.PLANTOIDS_VARIABLE.get();
         } catch (NoSuchElementException ignored) {

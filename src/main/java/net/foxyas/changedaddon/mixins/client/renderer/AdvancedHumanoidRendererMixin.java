@@ -33,7 +33,7 @@ public abstract class AdvancedHumanoidRendererMixin {
         var torso = this.getModel(entity).getTorso();
         try {
             ModelPart plantoidsPart = torso.getChild("Plantoids");
-            plantoidsPart.visible = !ChangedAddonClientConfiguration.PLANTOIDS_VARIABLE.get();
+            plantoidsPart.visible = !ChangedAddonClientConfiguration.PLANTOIDS_VISIBILITY.get();
         } catch (NoSuchElementException e) {
             // A parte "Plantoids" não existe no modelo principal, ignoramos
         }
@@ -42,7 +42,7 @@ public abstract class AdvancedHumanoidRendererMixin {
             try {
                 var armorTorso = this.armorLayer.getArmorModel(entity, EquipmentSlot.CHEST).getTorso();
                 ModelPart armorPlantoidsPart = armorTorso.getChild("Plantoids"); // Aqui estava o problema
-                armorPlantoidsPart.visible = !ChangedAddonClientConfiguration.PLANTOIDS_VARIABLE.get();
+                armorPlantoidsPart.visible = !ChangedAddonClientConfiguration.PLANTOIDS_VISIBILITY.get();
             } catch (NoSuchElementException e) {
                 // A parte "Plantoids" não existe na armadura, ignoramos
             }
