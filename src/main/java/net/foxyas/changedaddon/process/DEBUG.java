@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.process;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.interfaces.SyncTrackMotion;
 import net.foxyas.changedaddon.network.packets.RequestMovementCheckPacket;
@@ -8,9 +9,9 @@ import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.foxyas.changedaddon.util.StructureUtil;
-import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -18,19 +19,17 @@ import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderArmEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
-
-import static net.ltxprogrammer.changed.client.FormRenderHandler.renderHand;
 
 
 @Mod.EventBusSubscriber
@@ -173,18 +172,23 @@ public class DEBUG {
      */
 
     // TODO
+
+    static boolean lock;
+
     @SubscribeEvent
     public static void onRenderHand(RenderArmEvent event) {
+        if(lock) return;
         if (!PARTICLETEST) {
             return;
         }
-        Player player = Minecraft.getInstance().player;
+        AbstractClientPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
 
         // Example: check if player is transfurred and should render both hands
         ProcessTransfur.ifPlayerTransfurred(player, variant -> {
             // Cancel vanilla rendering for this hand
 
+            event.setCanceled(true);
             PoseStack stack = event.getPoseStack();
             MultiBufferSource buffer = event.getMultiBufferSource();
             int light = event.getPackedLight();
@@ -194,10 +198,37 @@ public class DEBUG {
             if (entRenderer instanceof LivingEntityRenderer<?, ?> livingEntityRenderer) {
                 if (livingEntityRenderer instanceof PlayerRenderer playerRenderer) {
                     // Right hand
-                    // renderHand(variant.getChangedEntity(), HumanoidArm.RIGHT, playerRenderer.getModel().leftArm.storePose(), stack, buffer, light, partialTicks);
+                    lock = true;
+                    if(event.getArm() == HumanoidArm.RIGHT){//Assume MAIN_HAND is RIGHT. for left mirror transforms (f = 1 instead of -1)
+                        playerRenderer.renderRightHand(stack, buffer, light, player);
+                        stack.popPose();
+                        stack.pushPose();
+                        float f = -1.0F;
+                        float pSwingProgress = 0;//entity.attackProgress on main hand
+                        float f1 = Mth.sqrt(pSwingProgress);
+                        float f2 = -0.3F * Mth.sin(f1 * (float)Math.PI);
+                        float f3 = 0.4F * Mth.sin(f1 * ((float)Math.PI * 2F));
+                        float f4 = -0.4F * Mth.sin(pSwingProgress * (float)Math.PI);
+                        stack.translate(f * (f2 + 0.64000005F), f3 + -0.6F + 0 * -0.6F, f4 + -0.71999997F);// 0 here is an inaccessible variable from ItemInHandRenderer
+                        stack.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
+                        float f5 = Mth.sin(pSwingProgress * pSwingProgress * (float)Math.PI);
+                        float f6 = Mth.sin(f1 * (float)Math.PI);
+                        stack.mulPose(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
+                        stack.mulPose(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
+                        stack.translate(f * -1.0F, 3.6F, 3.5D);
+                        stack.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
+                        stack.mulPose(Vector3f.XP.rotationDegrees(200.0F));
+                        stack.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
+                        stack.translate(f * 5.6F, 0.0D, 0.0D);
+
+                        playerRenderer.renderLeftHand(stack, buffer, light, player);
+                    }
+
+                    lock = false;
+                    //renderHand(variant.getChangedEntity(), HumanoidArm.RIGHT, playerRenderer.getModel().rightArm.storePose(), stack, buffer, light, partialTicks);
 
                     // Left hand
-                    renderHand(variant.getChangedEntity(), HumanoidArm.LEFT, playerRenderer.getModel().rightArm.storePose(), stack, buffer, light, partialTicks);
+                    //renderHand(variant.getChangedEntity(), HumanoidArm.LEFT, playerRenderer.getModel().rightArm.storePose(), stack, buffer, light, partialTicks);
 
                 }
             }
