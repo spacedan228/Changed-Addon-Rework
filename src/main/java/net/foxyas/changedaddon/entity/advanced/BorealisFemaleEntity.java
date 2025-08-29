@@ -63,13 +63,9 @@ public class BorealisFemaleEntity extends AbstractBasicOrganicChangedLeopardEnti
 
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        Color3 firstColor = Color3.parseHex("#6682C1");
-        Color3 secondColor = Color3.parseHex("1C2A4E");
-        if (firstColor != null && secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
-        }
-
-        return firstColor;
+        Color3 firstColor = Color3.getColor("#6682C1");
+        Color3 secondColor = Color3.getColor("1C2A4E");
+        return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
     }
 
     @Override

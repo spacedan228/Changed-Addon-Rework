@@ -39,13 +39,9 @@ public class MongooseEntity extends AbstractBasicChangedEntity implements Custom
 
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        Color3 firstColor = Color3.parseHex("#d59871");
-        Color3 secondColor = Color3.parseHex("#5c5c5c");
-        if (firstColor != null && secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
-        }
-
-        return firstColor;
+        Color3 firstColor = Color3.getColor("#d59871");
+        Color3 secondColor = Color3.getColor("#5c5c5c");
+        return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
     }
 
     @Override
@@ -54,7 +50,7 @@ public class MongooseEntity extends AbstractBasicChangedEntity implements Custom
     }
 
     public Color3 getDripColor() {
-        return this.random.nextBoolean() ? Color3.parseHex("#d59871") : Color3.parseHex("#5c5c5c");
+        return this.random.nextBoolean() ? Color3.getColor("#d59871") : Color3.getColor("#5c5c5c");
     }
 
     @Override

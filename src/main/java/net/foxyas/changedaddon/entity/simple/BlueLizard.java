@@ -5,9 +5,11 @@ import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.entity.interfaces.ExtraConditions;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.HairStyle;
 import net.ltxprogrammer.changed.entity.HairStyle.Collection;
+import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.Direction;
@@ -83,6 +85,13 @@ public class BlueLizard extends AbstractBasicChangedEntity implements ExtraCondi
 
     public Color3 getHairColor(int layer) {
         return Color3.WHITE;
+    }
+
+    @Override
+    public Color3 getTransfurColor(TransfurCause cause) {
+        Color3 firstColor = Color3.WHITE;
+        Color3 secondColor = Color3.getColor("#00f3ff");
+        return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
     }
 
     public @Nullable List<HairStyle> getValidHairStyles() {

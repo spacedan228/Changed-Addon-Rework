@@ -82,11 +82,7 @@ public class LynxEntity extends ChangedEntity implements PowderSnowWalkable, Var
     public Color3 getTransfurColor(TransfurCause cause) {
         Color3 firstColor = Color3.getColor("#ebd182");
         Color3 secondColor = Color3.getColor("#eace7a");
-        if (firstColor != null && secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
-        }
-
-        return firstColor;
+        return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
     }
 
     @Override

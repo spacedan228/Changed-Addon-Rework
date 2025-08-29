@@ -259,13 +259,9 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        Color3 firstColor = Color3.parseHex("#AEBBF7");
-        Color3 secondColor = Color3.parseHex("#71FFFF");
-        if (firstColor != null && secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
-        }
-
-        return firstColor;
+        Color3 firstColor = Color3.getColor("#AEBBF7");
+        Color3 secondColor = Color3.getColor("#71FFFF");
+        return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
     }
 
 
@@ -274,8 +270,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         SpawnGroupData ret = super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
 
         this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
-        this.getBasicPlayerInfo().setRightIrisColor(Color3.parseHex("#59c5ff"));
-        this.getBasicPlayerInfo().setLeftIrisColor(Color3.parseHex("#59c5ff"));
+        this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#59c5ff"));
+        this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#59c5ff"));
         return ret;
     }
 

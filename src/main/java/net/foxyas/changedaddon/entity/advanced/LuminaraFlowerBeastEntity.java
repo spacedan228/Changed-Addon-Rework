@@ -207,12 +207,8 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        Color3 firstColor = Color3.parseHex("#f5d4ef");
-        Color3 secondColor = Color3.parseHex("#241942");
-        if (firstColor != null && secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
-        }
-
-        return firstColor;
+        Color3 firstColor = Color3.getColor("#f5d4ef");
+        Color3 secondColor = Color3.getColor("#241942");
+        return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
     }
 }

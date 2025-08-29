@@ -53,7 +53,7 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
 
     public static List<EntityType<?>> getCanGlideEntities() {
         //["form_dark_dragon", "form_dark_latex_yufeng", "form_latex_pink_yuin_dragon", "form_latex_red_dragon"]
-        return List.of(ChangedEntities.DARK_LATEX_DOUBLE_YUFENG.get(), ChangedEntities.DARK_LATEX_YUFENG.get(), ChangedEntities.LATEX_PINK_YUIN_DRAGON.get(), ChangedEntities.DARK_DRAGON.get(), ChangedEntities.LATEX_RED_DRAGON.get());
+        return List.of(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), ChangedEntities.DARK_LATEX_DOUBLE_YUFENG.get(), ChangedEntities.DARK_LATEX_YUFENG.get(), ChangedEntities.LATEX_PINK_YUIN_DRAGON.get(), ChangedEntities.DARK_DRAGON.get(), ChangedEntities.LATEX_RED_DRAGON.get());
     }
 
     public static EntityType<?>[] getCanGlideEntitiesArray() {

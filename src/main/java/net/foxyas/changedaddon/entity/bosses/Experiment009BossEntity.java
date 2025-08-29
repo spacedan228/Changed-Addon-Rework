@@ -202,12 +202,8 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {
         Color3 firstColor = Color3.WHITE;
-        Color3 secondColor = Color3.parseHex("#E9E9E9");
-        if (secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
-        }
-
-        return firstColor;
+        Color3 secondColor = Color3.getColor("#E9E9E9");
+        return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
     }
 
     @Override

@@ -8,8 +8,12 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.ItemNameBlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -76,4 +80,54 @@ public class PrunOrangeLeavesEvent {
         }
 
     }
+
+    /*
+     * Silly Idea But I didn't get it working
+    @SubscribeEvent
+    public static void rightClickOrangeLeavesItem(PlayerInteractEvent.EntityInteract rightClickEntityEvent) {
+        Player player = rightClickEntityEvent.getPlayer();
+        ItemStack usedItem = rightClickEntityEvent.getItemStack();
+        Level world = rightClickEntityEvent.getWorld();
+        InteractionHand hand = rightClickEntityEvent.getHand();
+        Entity entity = rightClickEntityEvent.getTarget();
+        if (!(entity instanceof ItemEntity itemEntity)) {
+            return;
+        }
+        ItemStack itemEntityStack = itemEntity.getItem();
+        if (!(itemEntityStack.getItem() instanceof BlockItem blockItem)) {
+            return;
+        }
+
+        if (world instanceof ServerLevel serverLevel) {
+            if (blockItem.getBlock() == (ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
+                boolean hasShearsLikeItemInHand = usedItem.getItem() instanceof HoeItem || usedItem.is(Tags.Items.SHEARS);
+
+                if (hasShearsLikeItemInHand) {
+                    ItemStack newState = new ItemStack(Blocks.OAK_LEAVES.asItem());
+                    int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, usedItem);
+                    UniformInt uniformInt;
+
+                    if (fortune > 0) {
+                        uniformInt = UniformInt.of(fortune, 8 * fortune);
+                    } else {
+                        uniformInt = UniformInt.of(1, 8);
+                    }
+
+                    ItemStack orangeStack = new ItemStack(ChangedItems.ORANGE.get());
+                    orangeStack.setCount(uniformInt.sample(player.getRandom()));
+                    if (!usedItem.isEmpty()) {
+                        usedItem.hurtAndBreak(1, player, (ignored) -> {
+                        });
+                        player.swing(hand, true);
+                    }
+
+                    itemEntity.setItem(newState);
+                    LeavesBlock.popResource(serverLevel, rightClickEntityEvent.getPos(), orangeStack);
+                    serverLevel.playSound(null, player, SoundEvents.SNOW_GOLEM_SHEAR, SoundSource.BLOCKS, 1, 1);
+                }
+            }
+        }
+
+    }
+    */
 }

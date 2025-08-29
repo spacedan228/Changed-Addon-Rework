@@ -173,11 +173,7 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
     public Color3 getTransfurColor(TransfurCause cause) {
         Color3 firstColor = Color3.getColor("#181818");
         Color3 secondColor = Color3.getColor("#ed1c24");
-        if (secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
-        }
-
-        return firstColor;
+        return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
     }
 
     @Override
@@ -259,9 +255,9 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
         SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata, tag);
         this.getBasicPlayerInfo().setSize(1f);
         this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
-        this.getBasicPlayerInfo().setRightIrisColor(Color3.parseHex("#edbd25"));
-        this.getBasicPlayerInfo().setLeftIrisColor(Color3.parseHex("#edbd25"));
-        this.getBasicPlayerInfo().setScleraColor(Color3.parseHex("#edd725"));
+        this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#edbd25"));
+        this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#edbd25"));
+        this.getBasicPlayerInfo().setScleraColor(Color3.getColor("#edd725"));
         return retval;
     }
 

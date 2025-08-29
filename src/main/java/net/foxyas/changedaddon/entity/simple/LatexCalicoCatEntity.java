@@ -24,13 +24,9 @@ public class LatexCalicoCatEntity extends AbstractBasicChangedEntity {
 
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        Color3 firstColor = Color3.parseHex("#d67053");
-        Color3 secondColor = Color3.parseHex("#67423f");
-        if (firstColor != null && secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
-        }
-
-        return firstColor;
+        Color3 firstColor = Color3.getColor("#d67053");
+        Color3 secondColor = Color3.getColor("#67423f");
+        return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
     }
 
     @Override
@@ -44,6 +40,6 @@ public class LatexCalicoCatEntity extends AbstractBasicChangedEntity {
     }
 
     public Color3 getDripColor() {
-        return this.random.nextBoolean() ? Color3.parseHex("#d67053") : Color3.parseHex("#67423f");
+        return this.random.nextBoolean() ? Color3.getColor("#d67053") : Color3.getColor("#67423f");
     }
 }

@@ -39,13 +39,8 @@ public class LatexWindCatFemaleEntity extends ChangedEntity implements GenderedE
 
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        Color3 firstColor = Color3.parseHex("#dfe6ec");
-        Color3 secondColor = Color3.parseHex("#87a5d4");
-        if (firstColor != null && secondColor != null) {
-            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
-        }
-
-
-        return firstColor;
+        Color3 firstColor = Color3.getColor("#dfe6ec");
+        Color3 secondColor = Color3.getColor("#87a5d4");
+        return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
     }
 }
