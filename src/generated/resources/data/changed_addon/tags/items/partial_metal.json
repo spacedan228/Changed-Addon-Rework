@@ -13,6 +13,9 @@
     "changed:netherite_quadrupedal_leggings",
     "changed:netherite_quadrupedal_boots",
     "changed:netherite_upper_abdomen_armor",
-    "changed:netherite_lower_abdomen_armor"
+    "changed:netherite_lower_abdomen_armor",
+    "changed_addon:the_decimator",
+    "changed_addon:laethinminator",
+    "changed_addon:luminar_crystal_spear"
   ]
 }

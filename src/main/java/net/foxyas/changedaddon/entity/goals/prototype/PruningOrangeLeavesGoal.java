@@ -11,6 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -37,19 +38,20 @@ public class PruningOrangeLeavesGoal extends Goal {
     @Override
     public boolean canUse() {
         targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition(), prototypeEntity);
-        boolean hasShears = prototypeEntity.getMainHandItem().is(Tags.Items.SHEARS) || prototypeEntity.getOffhandItem().is(Tags.Items.SHEARS);
+        boolean hasShearsLikeItem = (prototypeEntity.getMainHandItem().getItem() instanceof HoeItem || prototypeEntity.getOffhandItem().getItem() instanceof HoeItem) ||
+                (prototypeEntity.getMainHandItem().is(Tags.Items.SHEARS) || prototypeEntity.getOffhandItem().is(Tags.Items.SHEARS));
 
-        if (hasShears) {
-            if (prototypeEntity.getMainHandItem().is(Tags.Items.SHEARS)) {
+        if (hasShearsLikeItem) {
+            if (prototypeEntity.getMainHandItem().is(Tags.Items.SHEARS) || prototypeEntity.getMainHandItem().getItem() instanceof HoeItem) {
                 shears = prototypeEntity.getMainHandItem();
                 hand = InteractionHand.MAIN_HAND;
-            } else if (prototypeEntity.getOffhandItem().is(Tags.Items.SHEARS)) {
+            } else if (prototypeEntity.getOffhandItem().is(Tags.Items.SHEARS) || prototypeEntity.getOffhandItem().getItem() instanceof HoeItem) {
                 shears = prototypeEntity.getOffhandItem();
                 hand = InteractionHand.OFF_HAND;
             }
         }
 
-        return targetLeave != null && hasShears;
+        return targetLeave != null && hasShearsLikeItem;
     }
 
     @Override

@@ -37,6 +37,8 @@
     "changed:golden_lower_abdomen_armor",
     "changed:tsc_baton",
     "changed:tsc_shield",
-    "changed:tsc_staff"
+    "changed:tsc_staff",
+    "changed:exoskeleton",
+    "changed_addon:crow_bar"
   ]
 }

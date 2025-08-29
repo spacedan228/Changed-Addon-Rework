@@ -2,11 +2,14 @@ package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -200,5 +203,16 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     @Override
     public FlyType getFlyType() {
         return this.isAwakened() ? FlyType.BOTH : FlyType.NONE;
+    }
+
+    @Override
+    public Color3 getTransfurColor(TransfurCause cause) {
+        Color3 firstColor = Color3.parseHex("#f5d4ef");
+        Color3 secondColor = Color3.parseHex("#241942");
+        if (firstColor != null && secondColor != null) {
+            return ColorUtil.lerpTFColor(firstColor, secondColor, getUnderlyingPlayer());
+        }
+
+        return firstColor;
     }
 }

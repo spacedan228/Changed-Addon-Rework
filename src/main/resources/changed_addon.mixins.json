@@ -11,6 +11,7 @@
     "blocks.BlockMixin",
     "blocks.CrossCollisionBlockMixin",
     "blocks.DroppedSyringeMixin",
+    "blocks.FluidsMixin",
     "blocks.WolfCrystalSmallMixin",
     "client.renderer.AnimationsMixin",
     "client.renderer.WingFallFlyAnimationMixin",

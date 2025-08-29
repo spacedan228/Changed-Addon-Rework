@@ -20,6 +20,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -27,87 +28,104 @@ import java.util.List;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonEntities {
-    //Todo: Make this Class a bit less Chaotic
-
-    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITIES, ChangedAddonMod.MODID);
-    // --- PROJECTILES ---
-    public static final RegistryObject<EntityType<ParticleProjectile>> PARTICLE_PROJECTILE = register("particle_projectile",
-            EntityType.Builder.<ParticleProjectile>of(ParticleProjectile::new, MobCategory.MISC)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .clientTrackingRange(64)
-                    .updateInterval(1)
-
-                    .sized(0.25F, 0.25F));
 
     /**
-     * Todo: Make this Class Use Maps or LISTS to make it more dynamic
+     * Todo: Make this Class Use HashMaps to make it registration more dynamic
      * example -> ATTRIBUTES.put(PROTOTYPE, PrototypeEntity::createAttributes);
      */
 
-    public static List<EntityType<?>> canUseAccessories() {
+    public static @NotNull List<EntityType<?>> canUseAccessories() {
         final List<EntityType<?>> ADDON_CHANGED_ENTITIES = getAddonHumanoidsChangedEntities();
         ADDON_CHANGED_ENTITIES.remove(REYN.get());
         ADDON_CHANGED_ENTITIES.remove(BUNY.get());
         return ADDON_CHANGED_ENTITIES;
     }
 
-    public static List<EntityType<?>> canUseExoskeleton() {
+    public static @NotNull List<EntityType<?>> canUseExoskeleton() {
         final List<EntityType<?>> ADDON_CHANGED_ENTITIES = getAddonHumanoidsChangedEntities();
         ADDON_CHANGED_ENTITIES.remove(REYN.get());
         return ADDON_CHANGED_ENTITIES;
     }
 
-    public static List<EntityType<?>> getAddonHumanoidsChangedEntities() {
-        final List<EntityType<?>> ADDON_CHANGED_ENTITIES = new ArrayList<>();
-        ADDON_CHANGED_ENTITIES.add(LATEX_SNOW_FOX_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(LATEX_SNOW_FOX_FEMALE.get());
-        ADDON_CHANGED_ENTITIES.add(REYN.get());
-        ADDON_CHANGED_ENTITIES.add(DAZED_LATEX.get());
-        ADDON_CHANGED_ENTITIES.add(PURO_KIND_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(PURO_KIND_FEMALE.get());
-        ADDON_CHANGED_ENTITIES.add(BUNY.get());
-        ADDON_CHANGED_ENTITIES.add(SNOW_LEOPARD_FEMALE_ORGANIC.get());
-        ADDON_CHANGED_ENTITIES.add(EXPERIMENT_009.get());
-        ADDON_CHANGED_ENTITIES.add(MIRROR_WHITE_TIGER.get());
-        ADDON_CHANGED_ENTITIES.add(SNOW_LEOPARD_MALE_ORGANIC.get());
-        ADDON_CHANGED_ENTITIES.add(EXPERIMENT_10.get());
-        ADDON_CHANGED_ENTITIES.add(EXP_2_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(EXP_2_FEMALE.get());
-        ADDON_CHANGED_ENTITIES.add(WOLFY.get());
-        ADDON_CHANGED_ENTITIES.add(EXP_6.get());
-        ADDON_CHANGED_ENTITIES.add(EXPERIMENT_009_BOSS.get());
-        ADDON_CHANGED_ENTITIES.add(EXPERIMENT_10_BOSS.get());
-        ADDON_CHANGED_ENTITIES.add(EXP_1_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(EXP_1_FEMALE.get());
-        ADDON_CHANGED_ENTITIES.add(LUMINARCTIC_LEOPARD_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(LUMINARCTIC_LEOPARD_FEMALE.get());
-        ADDON_CHANGED_ENTITIES.add(LATEX_SQUID_TIGER_SHARK.get());
-        ADDON_CHANGED_ENTITIES.add(LYNX.get());
-        ADDON_CHANGED_ENTITIES.add(FOXTA_FOXY.get());
-        ADDON_CHANGED_ENTITIES.add(SNEPSI_LEOPARD.get());
-        ADDON_CHANGED_ENTITIES.add(BAGEL.get());
-        ADDON_CHANGED_ENTITIES.add(LATEX_DRAGON_SNOW_LEOPARD_SHARK.get());
-        ADDON_CHANGED_ENTITIES.add(CRYSTAL_GAS_CAT_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(CRYSTAL_GAS_CAT_FEMALE.get());
-        ADDON_CHANGED_ENTITIES.add(VOID_FOX.get());
-        ADDON_CHANGED_ENTITIES.add(FENGQI_WOLF.get());
-        ADDON_CHANGED_ENTITIES.add(HAYDEN_FENNEC_FOX.get());
-        ADDON_CHANGED_ENTITIES.add(SNOW_LEOPARD_PARTIAL.get());
-        ADDON_CHANGED_ENTITIES.add(BLUE_LIZARD.get());
-        ADDON_CHANGED_ENTITIES.add(AVALI.get());
-        ADDON_CHANGED_ENTITIES.add(LATEX_KITSUNE_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(LATEX_KITSUNE_FEMALE.get());
-        ADDON_CHANGED_ENTITIES.add(LATEX_CALICO_CAT.get());
-        ADDON_CHANGED_ENTITIES.add(PROTOGEN.get());
-        ADDON_CHANGED_ENTITIES.add(PROTOTYPE.get());
-        ADDON_CHANGED_ENTITIES.add(MONGOOSE.get());
-        ADDON_CHANGED_ENTITIES.add(BOREALIS_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(BOREALIS_FEMALE.get());
-        ADDON_CHANGED_ENTITIES.add(PINK_CYAN_SKUNK.get());
-        ADDON_CHANGED_ENTITIES.add(LATEX_WIND_CAT_MALE.get());
-        ADDON_CHANGED_ENTITIES.add(LATEX_WIND_CAT_FEMALE.get());
-        return ADDON_CHANGED_ENTITIES;
+    @Contract(" -> new")
+    public static @NotNull List<EntityType<?>> getAddonHumanoidsChangedEntities() {
+        return new ArrayList<>(List.of(
+                // Snow foxes
+                LATEX_SNOW_FOX_MALE.get(),
+                LATEX_SNOW_FOX_FEMALE.get(),
+
+                // Foxes
+                FOXTA_FOXY.get(),
+                VOID_FOX.get(),
+                HAYDEN_FENNEC_FOX.get(),
+                LATEX_KITSUNE_MALE.get(),
+                LATEX_KITSUNE_FEMALE.get(),
+
+                // Leopards
+                SNOW_LEOPARD_FEMALE_ORGANIC.get(),
+                SNOW_LEOPARD_MALE_ORGANIC.get(),
+                SNOW_LEOPARD_PARTIAL.get(),
+                LUMINARCTIC_LEOPARD_MALE.get(),
+                LUMINARCTIC_LEOPARD_FEMALE.get(),
+                SNEPSI_LEOPARD.get(),
+
+                // Felines
+                MIRROR_WHITE_TIGER.get(),
+                LYNX.get(),
+                LATEX_WIND_CAT_MALE.get(),
+                LATEX_WIND_CAT_FEMALE.get(),
+                CRYSTAL_GAS_CAT_MALE.get(),
+                CRYSTAL_GAS_CAT_FEMALE.get(),
+                LATEX_CALICO_CAT.get(),
+
+                // Half/Partial Ones
+                SNOW_LEOPARD_PARTIAL.get(),
+
+                // Birds
+                AVALI.get(),
+
+                // Experiments
+                EXPERIMENT_009.get(),
+                EXPERIMENT_009_BOSS.get(),
+                EXPERIMENT_10.get(),
+                EXPERIMENT_10_BOSS.get(),
+                EXP_1_MALE.get(),
+                EXP_1_FEMALE.get(),
+                EXP_2_MALE.get(),
+                EXP_2_FEMALE.get(),
+                EXP_6.get(),
+
+                // Fusions
+                LATEX_SQUID_TIGER_SHARK.get(),
+                LATEX_DRAGON_SNOW_LEOPARD_SHARK.get(),
+
+                // Dragons
+                LUMINARA_FLOWER_BEAST.get(),
+
+                // Others...
+                REYN.get(),
+                DAZED_LATEX.get(),
+                PURO_KIND_MALE.get(),
+                PURO_KIND_FEMALE.get(),
+                BUNY.get(),
+                WOLFY.get(),
+                BAGEL.get(),
+                FENGQI_WOLF.get(),
+                BLUE_LIZARD.get(),
+                MONGOOSE.get(),
+                PINK_CYAN_SKUNK.get(),
+
+                // Protogens/Robot like
+                PROTOGEN.get(),
+                PROTOTYPE.get(),
+                BOREALIS_MALE.get(),
+                BOREALIS_FEMALE.get()
+
+        ));
     }
+
+    //Todo: Make this Class a bit less Chaotic
+    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITIES, ChangedAddonMod.MODID);
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntity(String registryName, EntityType.Builder<T> entityTypeBuilder) {
         return REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
@@ -119,6 +137,15 @@ public class ChangedAddonEntities {
     private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryName, EntityType.Builder<T> entityTypeBuilder) {
         return REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
     }
+
+    // --- PROJECTILES ---
+    public static final RegistryObject<EntityType<ParticleProjectile>> PARTICLE_PROJECTILE = register("particle_projectile",
+            EntityType.Builder.<ParticleProjectile>of(ParticleProjectile::new, MobCategory.MISC)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+
+                    .sized(0.25F, 0.25F));
 
     // --- CHANGED ENTITIES ---
     public static final RegistryObject<EntityType<LatexSnowFoxMaleEntity>> LATEX_SNOW_FOX_MALE = registerChangedEntity("latex_snow_fox_male",
