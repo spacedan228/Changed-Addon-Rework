@@ -26,7 +26,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
-public class CarryEventHandle {
+public class RenderHandsEventHandle {
 
     private static boolean lock;
 
@@ -41,7 +41,7 @@ public class CarryEventHandle {
                 PoseStack stack = event.getPoseStack();
                 MultiBufferSource buffer = event.getMultiBufferSource();
                 int light = event.getPackedLight();
-                float partialTicks = event.getPartialTicks();
+                float partialTicks = event.getPartialTicks(); //Useless for now
 
                 EntityRenderer<? super LivingEntity> entRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
                 if (entRenderer instanceof LivingEntityRenderer<?, ?> livingEntityRenderer) {
@@ -51,12 +51,8 @@ public class CarryEventHandle {
                             stack.pushPose();
                             boolean rightHand = player.getMainArm() == HumanoidArm.RIGHT;
 
-                            //float playerSwimAmount = player.getSwimAmount(partialTicks);
-                            //ItemInHandRenderer itemInHandRenderer = Minecraft.getInstance().getItemInHandRenderer();
-                            //float equipProgress = 1.0F - Mth.lerp(partialTicks, ((ItemInHandRendererAccessor) itemInHandRenderer).getoMainHandHeight(), ((ItemInHandRendererAccessor) itemInHandRenderer).getMainHandHeight());
-
                             float f = rightHand ? -1.0F : 1.0F;
-                            float pSwingProgress = event.getSwingProgress();//entity.attackProgress on main hand
+                            float pSwingProgress = event.getSwingProgress();
                             float f1 = Mth.sqrt(pSwingProgress);
                             float f2 = -0.3F * Mth.sin(f1 * (float) Math.PI);
                             float f3 = 0.4F * Mth.sin(f1 * ((float) Math.PI * 2F));
@@ -73,12 +69,14 @@ public class CarryEventHandle {
                             stack.mulPose(Vector3f.XP.rotationDegrees(200.0F));
                             stack.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
                             stack.translate(f * 5.6F, 0.0D, 0.0D);
-                            //applyBobbing(stack, partialTicks);
                             if (rightHand) {
-                                playerRenderer.renderLeftHand(stack, buffer, light, player);
+                                if (player.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
+                                    playerRenderer.renderLeftHand(stack, buffer, light, player);
+                                }
                             } else {
-                                //playerRenderer.renderLeftHand(stack, buffer, light, player);
-                                playerRenderer.renderRightHand(stack, buffer, light, player);
+                                if (player.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {
+                                    playerRenderer.renderRightHand(stack, buffer, light, player);
+                                }
                             }
                             stack.popPose();
                         }
