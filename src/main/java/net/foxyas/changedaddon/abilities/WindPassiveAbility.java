@@ -23,11 +23,13 @@ public class WindPassiveAbility extends SimpleAbility {
     }
 
     public static void spawnAirParticles(LivingEntity livingEntity) {
-        PlayerUtil.ParticlesUtil.sendParticlesWithMotion(livingEntity,
-                ParticleTypes.POOF,
-                new Vec3(0.3, 0.1, 0.3),
-                new Vec3(0, 0.25f, 0),
-                4, 1);
+        if (livingEntity.getRandom().nextFloat() >= 0.75f) {
+            PlayerUtil.ParticlesUtil.sendParticlesWithMotion(livingEntity,
+                    ParticleTypes.POOF,
+                    new Vec3(0.3, 0.1, 0.3),
+                    new Vec3(0, 0.25f, 0),
+                    2, 0.25f);
+        }
     }
 
     @Override
