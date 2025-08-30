@@ -11,6 +11,7 @@ import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModelSet;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -129,6 +130,11 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
     @Override
     public void prepareMobModel(@NotNull T entity, float p_102862_, float p_102863_, float partialTicks) {
         super.prepareMobModel(entity, p_102862_, p_102863_, partialTicks);
+    }
+
+    @Override
+    public void prepareMobModel(HumanoidAnimator<T, ? extends EntityModel<T>> animator, T entity, float p_102862_, float p_102863_, float partialTicks) {
+        super.prepareMobModel(animator, entity, p_102862_, p_102863_, partialTicks);
         if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
             Tail.visible = luminaraFlowerBeastEntity.isAwakened();
             LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
@@ -139,6 +145,11 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
     @Override
     public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
+            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
+            LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
+            RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
+        }
     }
 
     public HumanoidAnimator<T, ArmorLuminaraFlowerBeastModel<T>> getAnimator(T entity) {
