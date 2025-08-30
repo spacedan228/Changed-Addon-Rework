@@ -28,6 +28,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
@@ -222,7 +223,7 @@ public class PlayerUtil {
         double distance = reach * reach;
         Vec3 eyePos = entity.getEyePosition(1.0f);
 
-        if(testLineOfSight) {
+        if (testLineOfSight) {
             HitResult hitResult = entity.pick(reach, 1.0f, false);
 
             if (hitResult.getType() != HitResult.Type.MISS) {
@@ -579,6 +580,79 @@ public class PlayerUtil {
             if (level instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(particleOptions,
                         x, y, z, count, XV, YV, ZV, speed);
+            }
+        }
+
+        public static void sendParticlesWithMotion(Level level, ParticleOptions particleOptions, Vec3 position, Vec3 offset, Vec3 motion, int count, float speed) {
+            // Enviar as partículas
+            double XV = motion.x(), YV = motion.y(), ZV = motion.z;
+            Random random = level.getRandom();
+
+            if (level instanceof ServerLevel serverLevel) {
+                for (int i = 0; i < count; ++i) {
+                    double x = random.nextGaussian(-offset.x, offset.x);
+                    double y = random.nextGaussian(-offset.y, offset.y);
+                    double z = random.nextGaussian(-offset.z, offset.z);
+
+                    serverLevel.sendParticles(particleOptions,
+                            position.x() + x,
+                            position.y() + y,
+                            position.z() + z,
+                            0,
+                            XV,
+                            YV,
+                            ZV,
+                            speed);
+                }
+            }
+        }
+
+        public static void sendParticlesWithMotion(LivingEntity livingEntity, ParticleOptions particleOptions, Vec3 position, Vec3 offset, Vec3 motion, int count, float speed) {
+            // Enviar as partículas
+            double XV = motion.x(), YV = motion.y(), ZV = motion.z;
+            Random random = livingEntity.getRandom();
+
+            if (livingEntity.getLevel() instanceof ServerLevel serverLevel) {
+                for (int i = 0; i < count; ++i) {
+                    double x = random.nextGaussian(-offset.x, offset.x);
+                    double y = random.nextGaussian(-offset.y, offset.y);
+                    double z = random.nextGaussian(-offset.z, offset.z);
+
+                    serverLevel.sendParticles(particleOptions,
+                            position.x() + x,
+                            position.y() + y,
+                            position.z() + z,
+                            0,
+                            XV,
+                            YV,
+                            ZV,
+                            speed);
+                }
+            }
+        }
+
+        public static void sendParticlesWithMotion(LivingEntity livingEntity, ParticleOptions particleOptions, Vec3 offset, Vec3 motion, int count, float speed) {
+            // Enviar as partículas
+            double XV = motion.x(), YV = motion.y(), ZV = motion.z;
+            Random random = livingEntity.getRandom();
+            Vec3 position = livingEntity.position();
+
+            if (livingEntity.getLevel() instanceof ServerLevel serverLevel) {
+                for (int i = 0; i < count; ++i) {
+                    double x = random.nextGaussian(-offset.x, offset.x);
+                    double y = random.nextGaussian(-offset.y, offset.y);
+                    double z = random.nextGaussian(-offset.z, offset.z);
+
+                    serverLevel.sendParticles(particleOptions,
+                            position.x() + x,
+                            position.y() + y,
+                            position.z() + z,
+                            0,
+                            XV,
+                            YV,
+                            ZV,
+                            speed);
+                }
             }
         }
 

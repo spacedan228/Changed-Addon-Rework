@@ -37,7 +37,7 @@ public class FluidsMixin {
         if (pContext instanceof EntityCollisionContext entityCollisionContext) {
             Entity entity = entityCollisionContext.getEntity();
             if (entity instanceof LivingEntity livingEntity) {
-                final VoxelShape wantedHitShapeNotSneak = LiquidBlock.STABLE_SHAPE.move(0, 0.35, 0);
+                //final VoxelShape wantedHitShapeNotSneak = LiquidBlock.STABLE_SHAPE.move(0, 0.35, 0);
                 final VoxelShape wantedHitShape = Shapes.create(new AABB(0, 0.99, 0, 1, 1, 1));
 
                 if ((livingEntity instanceof Player player)) {
@@ -49,7 +49,7 @@ public class FluidsMixin {
                             if (ability.getAbility() instanceof WindPassiveAbility windPassiveAbility && windPassiveAbility.isActive) {
                                 if (entityCollisionContext.isAbove(wantedHitShape, pPos, true)) {
                                     WindPassiveAbility.spawnAirParticles(player);
-                                    cir.setReturnValue(player.isSteppingCarefully() ? wantedHitShape : wantedHitShapeNotSneak);
+                                    cir.setReturnValue(wantedHitShape);
                                 }
                             }
                         }
@@ -60,7 +60,7 @@ public class FluidsMixin {
                     if (variant.is(ChangedAddonTransfurVariants.LATEX_WIND_CAT_MALE) || variant.is(ChangedAddonTransfurVariants.LATEX_WIND_CAT_FEMALE)) {
                         if (entityCollisionContext.isAbove(wantedHitShape, pPos, true)) {
                             WindPassiveAbility.spawnAirParticles(livingEntity);
-                            cir.setReturnValue(livingEntity.isSteppingCarefully() ? wantedHitShape : wantedHitShapeNotSneak);
+                            cir.setReturnValue(wantedHitShape);
                         }
                     }
                 }

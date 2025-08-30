@@ -5,10 +5,12 @@ import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,14 +23,11 @@ public class WindPassiveAbility extends SimpleAbility {
     }
 
     public static void spawnAirParticles(LivingEntity livingEntity) {
-        PlayerUtil.ParticlesUtil.sendParticles(livingEntity.getLevel(),
-                new DustParticleOptions(
-                        new Vector3f(
-                                1.2f,
-                                1.2f,
-                                1.2f),
-                        1f),
-                livingEntity.position(), 0, 0.25f, 0, 0, 1);
+        PlayerUtil.ParticlesUtil.sendParticlesWithMotion(livingEntity,
+                ParticleTypes.POOF,
+                new Vec3(0.3, 0.1, 0.3),
+                new Vec3(0, 0.25f, 0),
+                4, 1);
     }
 
     @Override

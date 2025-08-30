@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.abilities;
 
+import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.client.model.animations.parameters.DodgeAnimationParameters;
 import net.foxyas.changedaddon.init.ChangedAddonAnimationEvents;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
@@ -9,6 +10,7 @@ import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -80,7 +82,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                     Vec3 particlePos = dodgerPos.add(lateralOffset);
 
                     serverLevel.sendParticles(
-                            ParticleTypes.END_ROD,
+                            new DustParticleOptions(new Vector3f(1, 1, 1), 1),
                             particlePos.x(),
                             particlePos.y(),
                             particlePos.z(),
@@ -164,7 +166,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     public void executeDodgeParticles(LevelAccessor levelAccessor, LivingEntity dodger, Entity attacker) {
         if (levelAccessor instanceof ServerLevel serverLevel) {
-            spawnDodgeParticles(serverLevel, dodger, 0.5f, 0.3f, 0.3f, 0.3f, 10, 0.05f);
+            //spawnDodgeParticles(serverLevel, dodger, 0.5f, 0.3f, 0.3f, 0.3f, 10, 0.05f);
         }
         if (attacker instanceof LivingEntity attackerLiving) {
             applyDodgeAwayParticlesTrails(dodger, attackerLiving);
@@ -238,15 +240,15 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 }
             } else {
                 if (dodger.randomTeleport(dodgePosBehind.x, dodgePosBehind.y, dodgePosBehind.z, true)) {
-                        // Optional: play sound & particles like Enderman
-                        levelAccessor.playSound(null, dodger.blockPosition(),
-                                SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                        if (levelAccessor instanceof ServerLevel serverLevel) {
-                            serverLevel.sendParticles(ParticleTypes.PORTAL,
-                                    dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
-                                    20, 0.5, 1.0, 0.5, 0.1);
-                        }
+                    // Optional: play sound & particles like Enderman
+                    levelAccessor.playSound(null, dodger.blockPosition(),
+                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    if (levelAccessor instanceof ServerLevel serverLevel) {
+                        serverLevel.sendParticles(ParticleTypes.PORTAL,
+                                dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
+                                20, 0.5, 1.0, 0.5, 0.1);
                     }
+                }
             }
         } else {
             dodgeAwayFromAttacker(dodger, attacker);
