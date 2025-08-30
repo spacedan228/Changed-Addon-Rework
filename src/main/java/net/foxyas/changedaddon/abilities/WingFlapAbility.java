@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.abilities;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
+import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -162,6 +163,12 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
 
         @Override
         public boolean canUse() {
+            if (this.entity.getChangedEntity() instanceof VariantExtraStats extraStats) {
+                if (extraStats.getFlyType() == VariantExtraStats.FlyType.NONE) {
+                    return false;
+                }
+            }
+
             return this.entity.getSelfVariant() != null && this.entity.getSelfVariant().canGlide;
         }
 

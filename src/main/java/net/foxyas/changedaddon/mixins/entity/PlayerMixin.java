@@ -103,14 +103,21 @@ public abstract class PlayerMixin {
                             player.startFallFlying();
                             ci.setReturnValue(true);
                             ci.cancel();
-
                             //player.respawn();
                         }
                     }
                 } else if (!variantExtraStats.getFlyType().canGlide()) {
                     if (!player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
                         ItemStack itemstack = player.getItemBySlot(EquipmentSlot.CHEST);
-                        if (!itemstack.canElytraFly(player) || itemstack.isEmpty()) {
+                        if (itemstack.canElytraFly(player)) {
+                            player.startFallFlying();
+                            ci.setReturnValue(true);
+                            ci.cancel();
+                        } else if (itemstack.isEmpty()) {
+                            player.stopFallFlying();
+                            ci.setReturnValue(false);
+                            ci.cancel();
+                        } else {
                             player.stopFallFlying();
                             ci.setReturnValue(false);
                             ci.cancel();
