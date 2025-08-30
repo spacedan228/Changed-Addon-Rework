@@ -10,6 +10,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -134,6 +135,7 @@ public class WindControlAbility extends SimpleAbility {
             target.hurtMarked = true;
         }
 
+        living.swing(InteractionHand.MAIN_HAND, true);
         level.playSound(null, living.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
         if (living.getLevel() instanceof ServerLevel serverLevel) {

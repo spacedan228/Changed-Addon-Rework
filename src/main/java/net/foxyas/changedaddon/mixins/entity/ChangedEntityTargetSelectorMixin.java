@@ -1,9 +1,13 @@
 package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
+import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
+import net.ltxprogrammer.changed.init.ChangedTags;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -12,6 +16,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.List;
 
 @Mixin(value = ChangedEntity.class, remap = false)
 public class ChangedEntityTargetSelectorMixin {
@@ -50,5 +56,23 @@ public class ChangedEntityTargetSelectorMixin {
                 }
             }
         }
+    }
+
+    @Inject(method = "targetSelectorTest", at = @At("HEAD"), cancellable = true)
+    private void injectTargetSelector(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
+        if (self().hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
+            cir.setReturnValue(false);
+        }
+
+        List<LivingEntity> nearLuminaraBeasts = self().getLevel().getEntitiesOfClass(LivingEntity.class, self().getBoundingBox().inflate(16), (entity) -> FoxyasUtils.canEntitySeeOther(entity, self()));
+        if (!nearLuminaraBeasts.isEmpty() && livingEntity.getType().is(ChangedTags.EntityTypes.HUMANOIDS)) {
+            self().addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 60 * 20, 0, true, false, true));
+            cir.setReturnValue(false);
+        }
+    }
+
+    @Unique
+    private ChangedEntity self() {
+        return (ChangedEntity) (Object) this;
     }
 }

@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity.variant;
 
+import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.ltxprogrammer.changed.server.ServerTransfurVariantInstance;
 import net.minecraft.world.effect.MobEffects;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,6 +21,8 @@ public class ServerTransfurVariantInstanceMixin {
         ServerTransfurVariantInstance<?> self = (ServerTransfurVariantInstance<?>) (Object) this;
         if (self.getHost().hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) {
             ci.cancel();
+        } else if (self.getHost().hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
+            ci.cancel();
         }
     }
 
@@ -32,6 +35,8 @@ public class ServerTransfurVariantInstanceMixin {
     private void tickInjectorSpeedModifier(CallbackInfo ci) {
         ServerTransfurVariantInstance<?> self = (ServerTransfurVariantInstance<?>) (Object) this;
         if (self.getHost().hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) {
+            ci.cancel();
+        } else if (self.getHost().hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
             ci.cancel();
         }
     }

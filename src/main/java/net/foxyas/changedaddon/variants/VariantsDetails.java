@@ -14,6 +14,8 @@ import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Random;
+
 @Mod.EventBusSubscriber
 public class VariantsDetails {
 
@@ -26,14 +28,21 @@ public class VariantsDetails {
                     if (!player.isOnGround()) {
                         if (player.getLevel().isClientSide() && player.getLevel() instanceof ClientLevel clientLevel) {
                             Vec3 motion = player.getDeltaMovement();
-                            clientLevel.addParticle(ParticleTypes.POOF,
-                                    player.position().x(),
-                                    player.position().y(),
-                                    player.position().x(),
-                                    (float) motion.x(),
-                                    (float) motion.y(),
-                                    (float) motion.z()
-                            );
+                            for (int i = 0; i < 4; i++) {
+                                Random random = player.getRandom();
+                                double x = 2 * random.nextDouble() - 1;
+                                double y = 2 * random.nextDouble() - 1;
+                                double z = 2 * random.nextDouble() - 1;
+
+                                clientLevel.addParticle(ParticleTypes.POOF,
+                                        player.position().x + x,
+                                        player.position().y + y,
+                                        player.position().z + z,
+                                        (float) motion.x(),
+                                        (float) motion.y(),
+                                        (float) motion.z()
+                                );
+                            }
                         }
                     }
                 }

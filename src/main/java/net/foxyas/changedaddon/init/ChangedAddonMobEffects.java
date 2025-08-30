@@ -19,4 +19,5 @@ public class ChangedAddonMobEffects {
     public static final RegistryObject<MobEffect> LATEX_CONTAMINATION = REGISTRY.register("latex_contamination", LatexContaminationMobEffect::new);
     public static final RegistryObject<MobEffect> TRANSFUR_SICKNESS = REGISTRY.register("transfur_sickness", TransfurSicknessMobEffect::new);
     public static final RegistryObject<MobEffect> LATEX_EXPOSURE = REGISTRY.register("latex_exposure", LatexExposureMobEffect::new);
+    public static final RegistryObject<MobEffect> PACIFIED = REGISTRY.register("pacified", PacifiedMobEffect::new);
 }

@@ -32,4 +32,9 @@ public class LatexContaminationMobEffect extends MobEffect {
         float Math = (amplifier + 1 * 0.1F) / 2;
         ProcessTransfur.setPlayerTransfurProgress(player, ProcessTransfur.getPlayerTransfurProgress(player) + Math);
     }
+
+    @Override
+    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+        super.applyEffectTick(pLivingEntity, pAmplifier);
+    }
 }

@@ -105,6 +105,13 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
     public void renderForSlot(T entity, RenderLayerParent<? super T, ?> parent, ItemStack stack, EquipmentSlot slot, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
         this.scaleForSlot(parent, slot, poseStack);
+
+        if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
+            Tail.visible &= luminaraFlowerBeastEntity.isAwakened();
+            LeftWing.visible &= luminaraFlowerBeastEntity.isAwakened();
+            RightWing.visible &= luminaraFlowerBeastEntity.isAwakened();
+        }
+
         switch (slot) {
             case HEAD:
                 this.Head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -134,22 +141,21 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
 
     @Override
     public void prepareMobModel(HumanoidAnimator<T, ? extends EntityModel<T>> animator, T entity, float p_102862_, float p_102863_, float partialTicks) {
+        super.prepareMobModel(animator, entity, p_102862_, p_102863_, partialTicks);
         if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
-            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
             LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
             RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
+            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
         }
-        super.prepareMobModel(animator, entity, p_102862_, p_102863_, partialTicks);
     }
 
     @Override
     public void setAllLimbsVisible(T entity, boolean visible) {
         super.setAllLimbsVisible(entity, visible);
-
         if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
-            Tail.visible = visible && luminaraFlowerBeastEntity.isAwakened();
             LeftWing.visible = visible && luminaraFlowerBeastEntity.isAwakened();
             RightWing.visible = visible && luminaraFlowerBeastEntity.isAwakened();
+            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
         }
     }
 

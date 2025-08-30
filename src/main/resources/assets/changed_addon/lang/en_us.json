@@ -309,6 +309,7 @@
   "effect.changed_addon.transfur_sickness.description": "Make Changed entities less effective when attempting to transfur humanoid entities.",
   "effect.changed_addon.untransfur": "§7Untransfur",
   "effect.changed_addon.untransfur.description": "Add an untransfur progress shown by an overlay. Progress speeds if sleeps. Once complete, the Untransfur is applied.",
+  "effect.changed_addon.pacified": "Pacified",
 
   "enchantment.changed_addon.changed_lure": "Changed Lure",
   "enchantment.changed_addon.changed_lure.desc": "Allows you to catch Latex Beasts using the fishing rod.",

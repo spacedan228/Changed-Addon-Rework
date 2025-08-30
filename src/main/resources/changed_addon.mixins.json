@@ -28,6 +28,7 @@
     "entity.goals.AvoidEntityGoalMixin",
     "entity.goals.ChangedEntityGoalsMixin",
     "entity.goals.PhantomAIMixin",
+    "entity.goals.VillagerHostilesSensorMixin",
     "entity.projectiles.AbstractArrowAccessor",
     "entity.variant.RandomVariantFunctionMixin",
     "entity.variant.ServerTransfurVariantInstanceMixin",

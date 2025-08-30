@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity;
 
+import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
@@ -22,6 +23,8 @@ public class IronGolemMixin {
                 return false;
             } else if (livingEntity instanceof Player player) {
                 if (player.hasEffect(MobEffects.HERO_OF_THE_VILLAGE)) {
+                    return false;
+                } else if (player.hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
                     return false;
                 }
                 return !ProcessTransfur.isPlayerNotLatex(player);

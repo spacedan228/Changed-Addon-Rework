@@ -38,6 +38,8 @@ import net.minecraftforge.network.PacketDistributor;
 @Mod.EventBusSubscriber
 @Deprecated(forRemoval = true)
 public class DEBUG {
+
+    public static boolean DEBUG = true;
     public static float HeadPosT, HeadPosV, HeadPosB, HeadPosK, HeadPosL, HeadPosJ = 10;
     public static float HeadPosX, HeadPosY, HeadPosZ = 1;
 
@@ -50,6 +52,9 @@ public class DEBUG {
 
     @SubscribeEvent
     public static void debug(ServerChatEvent event) {
+        if (!DEBUG) {
+            return;
+        }
         if (event.getMessage().startsWith("testMotion")) {
             if (MOTIONTEST == 0) {
                 MOTIONTEST = 1;
@@ -239,6 +244,9 @@ public class DEBUG {
 
     @SubscribeEvent
     public static void PARTICLETEST(TickEvent.PlayerTickEvent event) {
+        if (!DEBUG) {
+            return;
+        }
         if (PARTICLETEST && event.player.isShiftKeyDown()) {
             PlayerUtil.ParticlesUtil.sendParticles(event.player.getLevel(), ParticleTypes.GLOW, event.player.getEyePosition().add(FoxyasUtils.getRelativePosition(event.player, DeltaX, DeltaY, DeltaZ, true)), 0f, 0f, 0f, 4, 0);
         }

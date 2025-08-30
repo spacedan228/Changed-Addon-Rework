@@ -590,9 +590,9 @@ public class PlayerUtil {
 
             if (level instanceof ServerLevel serverLevel) {
                 for (int i = 0; i < count; ++i) {
-                    double x = random.nextGaussian(-offset.x, offset.x);
-                    double y = random.nextGaussian(-offset.y, offset.y);
-                    double z = random.nextGaussian(-offset.z, offset.z);
+                    double x = random.nextGaussian() * offset.x;
+                    double y = random.nextGaussian() * offset.y;
+                    double z = random.nextGaussian() * offset.z;
 
                     serverLevel.sendParticles(particleOptions,
                             position.x() + x,
@@ -614,9 +614,9 @@ public class PlayerUtil {
 
             if (livingEntity.getLevel() instanceof ServerLevel serverLevel) {
                 for (int i = 0; i < count; ++i) {
-                    double x = random.nextGaussian(-offset.x, offset.x);
-                    double y = random.nextGaussian(-offset.y, offset.y);
-                    double z = random.nextGaussian(-offset.z, offset.z);
+                    double x = random.nextGaussian() * offset.x;
+                    double y = random.nextGaussian() * offset.y;
+                    double z = random.nextGaussian() * offset.z;
 
                     serverLevel.sendParticles(particleOptions,
                             position.x() + x,
@@ -639,9 +639,9 @@ public class PlayerUtil {
 
             if (livingEntity.getLevel() instanceof ServerLevel serverLevel) {
                 for (int i = 0; i < count; ++i) {
-                    double x = random.nextGaussian(-offset.x, offset.x);
-                    double y = random.nextGaussian(-offset.y, offset.y);
-                    double z = random.nextGaussian(-offset.z, offset.z);
+                    double x = random.nextGaussian() * offset.x;
+                    double y = random.nextGaussian() * offset.y;
+                    double z = random.nextGaussian() * offset.z;
 
                     serverLevel.sendParticles(particleOptions,
                             position.x() + x,
