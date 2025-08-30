@@ -144,10 +144,14 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
             }
         }
 
-        dodger.invulnerableTime = 20 * 3;
-        dodger.hurtDuration = 20 * 3;
-        dodger.hurtTime = dodger.hurtDuration;
-        dodger.hurtMarked = false;
+        if (this.getDodgeType() == DodgeType.WEAVE) {
+            dodger.invulnerableTime = 20 * 3;
+            dodger.hurtDuration = 20 * 3;
+            dodger.hurtTime = dodger.hurtDuration;
+            dodger.hurtMarked = false;
+        } else if (this.getDodgeType() == DodgeType.TELEPORT) {
+            dodger.hurtMarked = false;
+        }
 
         if (event != null) {
             event.setCanceled(true);
@@ -197,7 +201,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         Vec3 attackerPos = attacker.position();
         Vec3 lookDirection = attacker.getLookAngle().normalize();
         //Vec3 dodgerLookDirection = dodger.getLookAngle();
-        final double distanceBehind = 2;
+        final double distanceBehind = 3;
         Vec3 dodgePosBehind = attackerPos.subtract(lookDirection.scale(distanceBehind));
         double distance = attacker.distanceTo(dodger);
         if (this.ultraInstinct) {
@@ -213,10 +217,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 event.setCanceled(true);
             }
 
-            if (distance > 1.5f) {
-                Level level = dodger.getLevel();
-
-
+            if (distance > 2f) {
                 // Random offset values
                 double maxDistance = 16.0; // maximum distance for teleport
                 double dx = (dodger.getRandom().nextDouble() - 0.5) * 2 * maxDistance;
@@ -227,26 +228,25 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 BlockPos targetPos = new BlockPos(dodger.getX() + dx, dodger.getY() + dy, dodger.getZ() + dz);
                 if (dodger.randomTeleport(targetPos.getX(), targetPos.getY(), targetPos.getZ(), true)) {
                     // Optional: play sound & particles like Enderman
-                    level.playSound(null, dodger.blockPosition(),
+                    levelAccessor.playSound(null, dodger.blockPosition(),
                             SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    if (level instanceof ServerLevel serverLevel) {
+                    if (levelAccessor instanceof ServerLevel serverLevel) {
                         serverLevel.sendParticles(ParticleTypes.PORTAL,
                                 dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
                                 20, 0.5, 1.0, 0.5, 0.1);
                     }
                 }
             } else {
-                BlockPos teleportPos = new BlockPos(dodgePosBehind.x, dodgePosBehind.y, dodgePosBehind.z);
-                if (levelAccessor instanceof ServerLevel serverLevel) {
-                    if (dodger.randomTeleport(teleportPos.getX(), teleportPos.getY(), teleportPos.getZ(), true)) {
+                if (dodger.randomTeleport(dodgePosBehind.x, dodgePosBehind.y, dodgePosBehind.z, true)) {
                         // Optional: play sound & particles like Enderman
-                        serverLevel.playSound(null, dodger.blockPosition(),
+                        levelAccessor.playSound(null, dodger.blockPosition(),
                                 SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                        serverLevel.sendParticles(ParticleTypes.PORTAL,
-                                dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
-                                20, 0.5, 1.0, 0.5, 0.1);
+                        if (levelAccessor instanceof ServerLevel serverLevel) {
+                            serverLevel.sendParticles(ParticleTypes.PORTAL,
+                                    dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
+                                    20, 0.5, 1.0, 0.5, 0.1);
+                        }
                     }
-                }
             }
         } else {
             dodgeAwayFromAttacker(dodger, attacker);

@@ -28,6 +28,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -421,7 +422,14 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         @SubscribeEvent
         public static void WhenAttack(LivingHurtEvent event) {
             LivingEntity target = event.getEntityLiving();
-            Entity source = event.getSource().getDirectEntity();
+            Entity source = event.getSource().getEntity();
+
+            if (event.getSource() instanceof EntityDamageSource entityDamageSource) {
+                if (entityDamageSource.isThorns()) {
+                    return;
+                }
+            }
+
             if (source instanceof AbstractLuminarcticLeopard lumi && lumi.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                 PlayerUtil.ParticlesUtil.sendParticles(target.level, ParticleTypes.SNOWFLAKE, target.getEyePosition(), 0.3f, 0.5f, 0.3f, 4, 0.05f);
                 target.setTicksFrozen(target.getTicksFrozen() + (int) (target.getTicksRequiredToFreeze() * 0.25f));

@@ -17,8 +17,10 @@ public class LatexWindCatFemaleEntity extends ChangedEntity implements GenderedE
 
     protected void setAttributes(AttributeMap attributes) {
         super.setAttributes(attributes);
-        attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.1);
-        attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(0.9);
+        attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue(22.0F);
+        attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.2f);
+        attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(0.9f);
+        attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(1.0F);
     }
 
     public static void init() {

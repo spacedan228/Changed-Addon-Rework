@@ -27,6 +27,7 @@ public class LuminarcticFemaleLeopardModel extends AdvancedHumanoidModel<Luminar
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart Head;
+    private final ModelPart CheekCrystals;
     private final ModelPart Torso;
     private final ModelPart RightArm;
     private final ModelPart LeftArm;
@@ -44,6 +45,7 @@ public class LuminarcticFemaleLeopardModel extends AdvancedHumanoidModel<Luminar
         this.RightLeg = root.getChild("RightLeg");
         this.LeftLeg = root.getChild("LeftLeg");
         this.Head = root.getChild("Head");
+        this.CheekCrystals = Head.getChild("CheekCrystals");
         this.Torso = root.getChild("Torso");
         this.Tail = Torso.getChild("Tail");
         this.RightArm = root.getChild("RightArm");
@@ -276,7 +278,7 @@ public class LuminarcticFemaleLeopardModel extends AdvancedHumanoidModel<Luminar
     }
 
     public boolean isPartNotArmFur(ModelPart part) {
-        return LeftArmFur.getAllParts().noneMatch(part::equals) && RightArmFur.getAllParts().noneMatch(part::equals);
+        return part != this.LeftArmFur && part != this.RightArmFur && part != this.CheekCrystals && LeftArmFur.getAllParts().noneMatch(part::equals) && RightArmFur.getAllParts().noneMatch(part::equals);
     }
 
     @Nullable
