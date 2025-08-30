@@ -47,7 +47,7 @@ public class FluidsMixin {
                         SimpleAbilityInstance ability = variant.getAbilityInstance(ChangedAddonAbilities.WIND_PASSIVE.get());
                         if (ability != null) {
                             if (ability.getAbility() instanceof WindPassiveAbility windPassiveAbility && windPassiveAbility.isActive) {
-                                if (entityCollisionContext.isAbove(wantedHitShape, pPos, true)) {
+                                if (entityCollisionContext.isAbove(wantedHitShape, pPos, true) && player.fallDistance <= 2) {
                                     WindPassiveAbility.spawnAirParticles(player);
                                     cir.setReturnValue(wantedHitShape);
                                 }
@@ -58,7 +58,7 @@ public class FluidsMixin {
                     var variant = TransfurVariant.getEntityVariant(livingEntity);
                     if (variant == null) return;
                     if (variant.is(ChangedAddonTransfurVariants.LATEX_WIND_CAT_MALE) || variant.is(ChangedAddonTransfurVariants.LATEX_WIND_CAT_FEMALE)) {
-                        if (entityCollisionContext.isAbove(wantedHitShape, pPos, true)) {
+                        if (entityCollisionContext.isAbove(wantedHitShape, pPos, true) && livingEntity.fallDistance <= 2) {
                             WindPassiveAbility.spawnAirParticles(livingEntity);
                             cir.setReturnValue(wantedHitShape);
                         }

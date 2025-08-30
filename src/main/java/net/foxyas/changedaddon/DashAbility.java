@@ -37,7 +37,7 @@ public class DashAbility extends SimpleAbility {
 
     @Override
     public boolean canUse(IAbstractChangedEntity entity) {
-        return true;
+        return entity.getEntity().isOnGround();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class DashAbility extends SimpleAbility {
 
     @Override
     public int getCoolDown(IAbstractChangedEntity entity) {
-        return 15;
+        return 20;
     }
 
     @Override
