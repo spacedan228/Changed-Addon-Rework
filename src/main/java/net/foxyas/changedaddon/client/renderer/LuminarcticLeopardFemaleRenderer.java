@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.foxyas.changedaddon.client.model.LuminarcticFemaleLeopardModel;
+import net.foxyas.changedaddon.client.model.LuminarcticLeopardFemaleModel;
 import net.foxyas.changedaddon.client.renderer.layers.LuminarcticLeopardsConditionalLayers;
 import net.foxyas.changedaddon.entity.bosses.LuminarcticLeopardFemaleEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
@@ -13,9 +13,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LuminarcticLeopardFemaleRenderer extends AdvancedHumanoidRenderer<LuminarcticLeopardFemaleEntity, LuminarcticFemaleLeopardModel, ArmorLatexFemaleCatModel<LuminarcticLeopardFemaleEntity>> {
+public class LuminarcticLeopardFemaleRenderer extends AdvancedHumanoidRenderer<LuminarcticLeopardFemaleEntity, LuminarcticLeopardFemaleModel, ArmorLatexFemaleCatModel<LuminarcticLeopardFemaleEntity>> {
     public LuminarcticLeopardFemaleRenderer(EntityRendererProvider.Context context) {
-        super(context, new LuminarcticFemaleLeopardModel(context.bakeLayer(LuminarcticFemaleLeopardModel.LAYER_LOCATION)),
+        super(context, new LuminarcticLeopardFemaleModel(context.bakeLayer(LuminarcticLeopardFemaleModel.LAYER_LOCATION)),
                 ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);
 
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotArmFur));

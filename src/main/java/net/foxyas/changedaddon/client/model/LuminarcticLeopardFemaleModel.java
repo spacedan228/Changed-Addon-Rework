@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class LuminarcticFemaleLeopardModel extends AdvancedHumanoidModel<LuminarcticLeopardFemaleEntity> implements AdvancedHumanoidModelInterface<LuminarcticLeopardFemaleEntity, LuminarcticFemaleLeopardModel> {
+public class LuminarcticLeopardFemaleModel extends AdvancedHumanoidModel<LuminarcticLeopardFemaleEntity> implements AdvancedHumanoidModelInterface<LuminarcticLeopardFemaleEntity, LuminarcticLeopardFemaleModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("changed_addon", "luminarctic_female_leopard"), "main");
     private final ModelPart RightLeg;
@@ -34,13 +34,13 @@ public class LuminarcticFemaleLeopardModel extends AdvancedHumanoidModel<Luminar
     private final ModelPart RightArmFur;
     private final ModelPart LeftArmFur;
     private final ModelPart Tail;
-    private final HumanoidAnimator<LuminarcticLeopardFemaleEntity, LuminarcticFemaleLeopardModel> animator;
+    private final HumanoidAnimator<LuminarcticLeopardFemaleEntity, LuminarcticLeopardFemaleModel> animator;
 
     //public float dodgeProgress = 0;
     //public float partialTicks = 0;
     //public boolean isReverse = false;
 
-    public LuminarcticFemaleLeopardModel(ModelPart root) {
+    public LuminarcticLeopardFemaleModel(ModelPart root) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
         this.LeftLeg = root.getChild("LeftLeg");
@@ -521,7 +521,7 @@ public class LuminarcticFemaleLeopardModel extends AdvancedHumanoidModel<Luminar
     }
 
     @Override
-    public HumanoidAnimator<LuminarcticLeopardFemaleEntity, LuminarcticFemaleLeopardModel> getAnimator(LuminarcticLeopardFemaleEntity entity) {
+    public HumanoidAnimator<LuminarcticLeopardFemaleEntity, LuminarcticLeopardFemaleModel> getAnimator(LuminarcticLeopardFemaleEntity entity) {
         return animator;
     }
 }

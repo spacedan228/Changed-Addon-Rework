@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LuminarcticLeopardModel extends AdvancedHumanoidModel<LuminarcticLeopardMaleEntity> implements AdvancedHumanoidModelInterface<LuminarcticLeopardMaleEntity, LuminarcticLeopardModel> {
+public class LuminarcticLeopardMaleModel extends AdvancedHumanoidModel<LuminarcticLeopardMaleEntity> implements AdvancedHumanoidModelInterface<LuminarcticLeopardMaleEntity, LuminarcticLeopardMaleModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("luminarctic_leopard"), "main");
     private final ModelPart RightLeg;
@@ -30,18 +30,18 @@ public class LuminarcticLeopardModel extends AdvancedHumanoidModel<LuminarcticLe
     private final ModelPart RightArmFur;
     private final ModelPart LeftArmFur;
     private final ModelPart Tail;
-    private final HumanoidAnimator<LuminarcticLeopardMaleEntity, LuminarcticLeopardModel> animator;
+    private final HumanoidAnimator<LuminarcticLeopardMaleEntity, LuminarcticLeopardMaleModel> animator;
 
     //public float dodgeProgress = 0;
     //public float partialTicks = 0;
     //public boolean isReverse = false;
 
-    public LuminarcticLeopardModel(ModelPart root) {
+    public LuminarcticLeopardMaleModel(ModelPart root) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
         this.LeftLeg = root.getChild("LeftLeg");
         this.Head = root.getChild("Head");
-        this.CheekCrystals = Head.getChild("CheekCrystals");
+        this.CheekCrystals = Head.getChild("ExtraFur").getChild("CheekCrystals");
         this.Torso = root.getChild("Torso");
         this.Tail = Torso.getChild("Tail");
         this.RightArm = root.getChild("RightArm");
@@ -628,7 +628,7 @@ public class LuminarcticLeopardModel extends AdvancedHumanoidModel<LuminarcticLe
     }
 
     @Override
-    public HumanoidAnimator<LuminarcticLeopardMaleEntity, LuminarcticLeopardModel> getAnimator(LuminarcticLeopardMaleEntity entity) {
+    public HumanoidAnimator<LuminarcticLeopardMaleEntity, LuminarcticLeopardMaleModel> getAnimator(LuminarcticLeopardMaleEntity entity) {
         return animator;
     }
 }

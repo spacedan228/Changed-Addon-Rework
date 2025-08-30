@@ -58,8 +58,8 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(SnowLeopardPartialModel.LAYER_LOCATION_LATEX_SLIM, () -> SnowLeopardPartialModel.createLatexLayer(true));
         event.registerLayerDefinition(GrapeSnowLeopardModel.LAYER_LOCATION, GrapeSnowLeopardModel::createBodyLayer);
         event.registerLayerDefinition(ReynModel.LAYER_LOCATION, ReynModel::createBodyLayer);
-        event.registerLayerDefinition(LuminarcticLeopardModel.LAYER_LOCATION, LuminarcticLeopardModel::createBodyLayer);
-        event.registerLayerDefinition(LuminarcticFemaleLeopardModel.LAYER_LOCATION, LuminarcticFemaleLeopardModel::createBodyLayer);
+        event.registerLayerDefinition(LuminarcticLeopardMaleModel.LAYER_LOCATION, LuminarcticLeopardMaleModel::createBodyLayer);
+        event.registerLayerDefinition(LuminarcticLeopardFemaleModel.LAYER_LOCATION, LuminarcticLeopardFemaleModel::createBodyLayer);
         event.registerLayerDefinition(LatexSquidTigerSharkModel.LAYER_LOCATION, LatexSquidTigerSharkModel::createBodyLayer);
         event.registerLayerDefinition(LynxModel.LAYER_LOCATION, LynxModel::createBodyLayer);
         event.registerLayerDefinition(SnepsiLeopardModel.LAYER_LOCATION, SnepsiLeopardModel::createBodyLayer);
