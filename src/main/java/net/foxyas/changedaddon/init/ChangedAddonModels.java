@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.client.model.*;
 import net.foxyas.changedaddon.client.model.advanced.*;
 import net.foxyas.changedaddon.client.model.armors.ArmorLatexDragonSnowLeopardSharkModel;
 import net.foxyas.changedaddon.client.model.armors.ArmorLatexSquidTigerSharkModel;
+import net.foxyas.changedaddon.client.model.armors.ArmorLuminaraFlowerBeastModel;
 import net.foxyas.changedaddon.client.model.armors.DarkLatexCoatModel;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
 import net.foxyas.changedaddon.client.model.simple.LatexCalicoCatModel;
@@ -93,6 +94,8 @@ public class ChangedAddonModels {
         // --- CUSTOM CHANGED ENTITIES ARMOR MODEL ---
         ArmorLatexSquidTigerSharkModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
         ArmorLatexDragonSnowLeopardSharkModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
+        ArmorLuminaraFlowerBeastModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
+
 
         // --- Non Anthro Entities Model ---
         event.registerLayerDefinition(LatexSnepModel.LAYER_LOCATION, LatexSnepModel::createBodyLayer);
