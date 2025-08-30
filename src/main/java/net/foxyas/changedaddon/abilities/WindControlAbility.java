@@ -41,7 +41,7 @@ public class WindControlAbility extends SimpleAbility {
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
-        Collection<Component> list = new ArrayList<>();
+        Collection<Component> list = new ArrayList<>(super.getAbilityDescription(entity));
         list.add(new TranslatableComponent("changed_addon.ability.wind_control.desc"));
         list.add(new TranslatableComponent("changed_addon.ability.wind_control.desc2"));
         return list;

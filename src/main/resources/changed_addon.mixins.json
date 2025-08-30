@@ -29,7 +29,6 @@
     "entity.goals.ChangedEntityGoalsMixin",
     "entity.goals.PhantomAIMixin",
     "entity.projectiles.AbstractArrowAccessor",
-    "entity.projectiles.ProjectileMixin",
     "entity.variant.RandomVariantFunctionMixin",
     "entity.variant.ServerTransfurVariantInstanceMixin",
     "entity.variant.TransfurVariantInstanceMixin",

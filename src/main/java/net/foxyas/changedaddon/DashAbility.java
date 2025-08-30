@@ -15,6 +15,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class DashAbility extends SimpleAbility {
 
@@ -29,9 +30,9 @@ public class DashAbility extends SimpleAbility {
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
-        Collection<Component> list = new ArrayList<>();
-        list.add(new TranslatableComponent("changed_addon.ability.dash.desc"));
-        return list;
+        Collection<Component> description = new ArrayList<>(super.getAbilityDescription(entity));
+        description.add(new TranslatableComponent("changed_addon.ability.dash.desc"));
+        return description;
     }
 
     @Override

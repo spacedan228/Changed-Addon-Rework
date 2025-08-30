@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class ClawsAbility extends SimpleAbility {
     public boolean isActive = false;
@@ -43,9 +44,9 @@ public class ClawsAbility extends SimpleAbility {
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
-        Collection<Component> list = new ArrayList<>();
-        list.add(new TranslatableComponent("changed_addon.ability.claws.desc"));
-        return list;
+        Collection<Component> description = new ArrayList<>(super.getAbilityDescription(entity));
+        description.add(new TranslatableComponent("changed_addon.ability.claws.desc"));
+        return description;
     }
 
     @Override

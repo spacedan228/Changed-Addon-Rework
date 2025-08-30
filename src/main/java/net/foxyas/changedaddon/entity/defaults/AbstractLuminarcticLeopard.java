@@ -421,7 +421,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         @SubscribeEvent
         public static void WhenAttack(LivingHurtEvent event) {
             LivingEntity target = event.getEntityLiving();
-            Entity source = event.getSource().getEntity();
+            Entity source = event.getSource().getDirectEntity();
             if (source instanceof AbstractLuminarcticLeopard lumi && lumi.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                 PlayerUtil.ParticlesUtil.sendParticles(target.level, ParticleTypes.SNOWFLAKE, target.getEyePosition(), 0.3f, 0.5f, 0.3f, 4, 0.05f);
                 target.setTicksFrozen(target.getTicksFrozen() + (int) (target.getTicksRequiredToFreeze() * 0.25f));

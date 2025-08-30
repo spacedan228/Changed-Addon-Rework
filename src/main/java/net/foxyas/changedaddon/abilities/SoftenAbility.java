@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,7 +23,8 @@ public class SoftenAbility extends AbstractAbility<SoftenAbilityInstance> {
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
-        Collection<Component> Description = List.of(new TranslatableComponent("changed_addon.ability.soften.description"));
+        Collection<Component> Description = new ArrayList<>(super.getAbilityDescription(entity));
+        Description.add(new TranslatableComponent("changed_addon.ability.soften.description"));
         return Description;
     }
 

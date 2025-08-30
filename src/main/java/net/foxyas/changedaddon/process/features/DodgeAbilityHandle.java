@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.process.features;
 
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.Entity;
@@ -10,13 +11,83 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Objects;
+
 @Mod.EventBusSubscriber
 public class DodgeAbilityHandle {
+
+    @SubscribeEvent
+    public static void onProjectileImpact(ProjectileImpactEvent event) {
+        Projectile self = event.getProjectile();
+        HitResult hitResult = event.getRayTraceResult();
+        if (!(hitResult instanceof EntityHitResult entityHitResult)) {
+            return;
+        }
+
+        /*if (entity.invulnerableTime <= 0) {
+        }*/
+
+        Entity pTarget = entityHitResult.getEntity();
+        if (!pTarget.getLevel().isClientSide()) {
+            Entity owner = self.getOwner();
+            Entity attacker;
+            attacker = Objects.requireNonNullElse(owner, self);
+            if (pTarget instanceof ChangedEntity changedEntity) {
+                DodgeAbilityInstance dodgeAbilityInstance = changedEntity.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
+                DodgeAbilityInstance teleportDodgeAbilityInstance = changedEntity.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
+                if (dodgeAbilityInstance != null
+                        && dodgeAbilityInstance.canUse()
+                        && dodgeAbilityInstance.canKeepUsing()
+                        && dodgeAbilityInstance.isDodgeActive()) {
+                    event.setCanceled(false);
+                    dodgeAbilityInstance.executeDodgeEffects(changedEntity, attacker);
+                    dodgeAbilityInstance.executeDodgeHandle(changedEntity, attacker);
+                } else if (teleportDodgeAbilityInstance != null
+                        && teleportDodgeAbilityInstance.canUse()
+                        && teleportDodgeAbilityInstance.canKeepUsing()
+                        && teleportDodgeAbilityInstance.isDodgeActive()) {
+                    event.setCanceled(false);
+                    teleportDodgeAbilityInstance.executeDodgeEffects(changedEntity, attacker);
+                    teleportDodgeAbilityInstance.executeDodgeHandle(changedEntity, attacker);
+                }
+            }
+
+            if (pTarget instanceof Player player) {
+                TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+                if (instance != null) {
+                    DodgeAbilityInstance dodgeAbilityInstance = instance.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
+                    DodgeAbilityInstance teleportDodgeAbilityInstance = instance.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
+                    if (dodgeAbilityInstance != null
+                            && dodgeAbilityInstance.canUse()
+                            && dodgeAbilityInstance.canKeepUsing()
+                            && dodgeAbilityInstance.isDodgeActive()) {
+                        if (dodgeAbilityInstance.getDodgeType() == DodgeAbilityInstance.DodgeType.WEAVE) {
+                            event.setCanceled(false);
+                            dodgeAbilityInstance.executeDodgeEffects(player, attacker);
+                            dodgeAbilityInstance.executeDodgeHandle(player, attacker);
+                        }
+                    } else if (teleportDodgeAbilityInstance != null
+                            && teleportDodgeAbilityInstance.canUse()
+                            && teleportDodgeAbilityInstance.canKeepUsing()
+                            && teleportDodgeAbilityInstance.isDodgeActive()) {
+                        if (teleportDodgeAbilityInstance.getDodgeType() == DodgeAbilityInstance.DodgeType.TELEPORT) {
+                            event.setCanceled(false);
+                            teleportDodgeAbilityInstance.executeDodgeEffects(player, attacker);
+                            teleportDodgeAbilityInstance.executeDodgeHandle(player, attacker);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     @SubscribeEvent
     public static void onEntityAttacked(LivingAttackEvent event) {
@@ -32,9 +103,14 @@ public class DodgeAbilityHandle {
         if (variant == null)
             return;
 
-        DodgeAbilityInstance dodge = (DodgeAbilityInstance) variant.abilityInstances.get(ChangedAddonAbilities.DODGE.get());
-        if (dodge == null)
-            return;
+        DodgeAbilityInstance dodge = variant.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
+        if (dodge == null) {
+            if (variant.abilityInstances.get(ChangedAddonAbilities.TELEPORT_DODGE.get()) == null) {
+                return;
+            } else {
+                dodge = variant.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
+            }
+        }
 
         if (!dodge.isDodgeActive())
             return;

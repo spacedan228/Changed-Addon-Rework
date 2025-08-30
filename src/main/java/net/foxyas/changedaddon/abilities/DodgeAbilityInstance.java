@@ -8,6 +8,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -19,6 +20,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -60,7 +62,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         Vec3 dodgerPos = dodger.position().add(0, 0.5f, 0);
 
         if (dodger.getLevel() instanceof ServerLevel serverLevel) {
-            int steps = 20;         // número de partículas por linha
+            int steps = 3;         // número de partículas por linha
             int lines = 5;          // quantas linhas paralelas
             float spread = 1;    // afastamento lateral das linhas
 
@@ -74,16 +76,16 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 }
 
                 for (int s = 0; s <= steps; s++) {
-                    float t = s / (float) steps;
-                    Vec3 particlePos = dodgerPos.add(motion.scale(t)).add(lateralOffset);
+                    //float t = s / (float) steps;
+                    Vec3 particlePos = dodgerPos.add(lateralOffset);
 
                     serverLevel.sendParticles(
                             ParticleTypes.END_ROD,
                             particlePos.x(),
                             particlePos.y(),
                             particlePos.z(),
-                            1, // count
-                            0, 0, 0, 0 // sem velocidade extra
+                            0, // count
+                            motion.x, motion.y, motion.z, 1 // sem velocidade extra
                     );
                 }
             }
@@ -100,7 +102,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     }
 
     public boolean isDodgeActive() {
-        return dodgeActive;
+        return dodgeActive || this.getController().getHoldTicks() > 0;
     }
 
     public void setDodgeActivate(boolean active) {
@@ -141,16 +143,19 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 player.causeFoodExhaustion(8f);
             }
         }
+
         dodger.invulnerableTime = 20 * 3;
         dodger.hurtDuration = 20 * 3;
         dodger.hurtTime = dodger.hurtDuration;
         dodger.hurtMarked = false;
+
         if (event != null) {
             event.setCanceled(true);
         }
-
-        executeDodgeParticles(levelAccessor, dodger, attacker);
-        executeDodgeAnimations(levelAccessor, dodger);
+        if (this.getDodgeType() == DodgeType.WEAVE) {
+            executeDodgeParticles(levelAccessor, dodger, attacker);
+            executeDodgeAnimations(levelAccessor, dodger);
+        }
     }
 
     public void executeDodgeParticles(LevelAccessor levelAccessor, LivingEntity dodger, Entity attacker) {
@@ -209,11 +214,8 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
             }
 
             if (distance > 1.5f) {
-                if (dodger.getLevel().isClientSide()) {
-                    return; // Only run on server
-                }
+                Level level = dodger.getLevel();
 
-                ServerLevel serverLevel = (ServerLevel) dodger.getLevel();
 
                 // Random offset values
                 double maxDistance = 16.0; // maximum distance for teleport
@@ -223,29 +225,29 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
                 // Calculate target position
                 BlockPos targetPos = new BlockPos(dodger.getX() + dx, dodger.getY() + dy, dodger.getZ() + dz);
-
-                // Find a safe position (the block itself and the block above must be empty)
-                if (serverLevel.isEmptyBlock(targetPos) && serverLevel.isEmptyBlock(targetPos.above())) {
-                    // Teleport
-                    dodger.teleportTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5);
-
+                if (dodger.randomTeleport(targetPos.getX(), targetPos.getY(), targetPos.getZ(), true)) {
                     // Optional: play sound & particles like Enderman
-                    serverLevel.playSound(null, dodger.blockPosition(),
+                    level.playSound(null, dodger.blockPosition(),
                             SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    serverLevel.sendParticles(ParticleTypes.PORTAL,
-                            dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
-                            20, 0.5, 1.0, 0.5, 0.1);
+                    if (level instanceof ServerLevel serverLevel) {
+                        serverLevel.sendParticles(ParticleTypes.PORTAL,
+                                dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
+                                20, 0.5, 1.0, 0.5, 0.1);
+                    }
                 }
-                return;
-            }
-
-            BlockPos teleportPos = new BlockPos(dodgePosBehind.x, dodger.getY(), dodgePosBehind.z);
-            if (levelAccessor instanceof ServerLevel serverLevel) {
-                if (serverLevel.isEmptyBlock(teleportPos) || serverLevel.isEmptyBlock(teleportPos.above())) {
-                    dodger.teleportTo(teleportPos.getX(), teleportPos.getY(), teleportPos.getZ());
+            } else {
+                BlockPos teleportPos = new BlockPos(dodgePosBehind.x, dodgePosBehind.y, dodgePosBehind.z);
+                if (levelAccessor instanceof ServerLevel serverLevel) {
+                    if (dodger.randomTeleport(teleportPos.getX(), teleportPos.getY(), teleportPos.getZ(), true)) {
+                        // Optional: play sound & particles like Enderman
+                        serverLevel.playSound(null, dodger.blockPosition(),
+                                SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
+                        serverLevel.sendParticles(ParticleTypes.PORTAL,
+                                dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
+                                20, 0.5, 1.0, 0.5, 0.1);
+                    }
                 }
             }
-
         } else {
             dodgeAwayFromAttacker(dodger, attacker);
             if (event != null) {
@@ -392,9 +394,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     }
 
     public enum DodgeType {
-
         TELEPORT(),
-
         WEAVE();
 
         DodgeType() {

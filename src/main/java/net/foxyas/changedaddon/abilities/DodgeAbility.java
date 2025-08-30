@@ -37,5 +37,21 @@ public class DodgeAbility extends AbstractAbility<DodgeAbilityInstance> {
         return UseType.HOLD;
     }
 
+    @Override
+    public void startUsing(IAbstractChangedEntity entity) {
+        super.startUsing(entity);
+        this.setDirty(entity);
+    }
 
+    @Override
+    public void tick(IAbstractChangedEntity entity) {
+        super.tick(entity);
+        this.setDirty(entity);
+    }
+
+    @Override
+    public void stopUsing(IAbstractChangedEntity entity) {
+        super.stopUsing(entity);
+        this.setDirty(entity);
+    }
 }
