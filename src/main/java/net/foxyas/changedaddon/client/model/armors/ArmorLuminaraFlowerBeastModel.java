@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -108,11 +109,6 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
                 this.Head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
                 break;
             case CHEST:
-                if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
-                    Tail.visible = luminaraFlowerBeastEntity.isAwakened();
-                    LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
-                    RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
-                }
                 this.Torso.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
                 this.LeftArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
                 this.RightArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
@@ -128,6 +124,21 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
         }
 
         poseStack.popPose();
+    }
+
+    @Override
+    public void prepareMobModel(@NotNull T entity, float p_102862_, float p_102863_, float partialTicks) {
+        super.prepareMobModel(entity, p_102862_, p_102863_, partialTicks);
+        if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
+            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
+            LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
+            RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
+        }
+    }
+
+    @Override
+    public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
 
     public HumanoidAnimator<T, ArmorLuminaraFlowerBeastModel<T>> getAnimator(T entity) {
