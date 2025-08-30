@@ -134,22 +134,28 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
 
     @Override
     public void prepareMobModel(HumanoidAnimator<T, ? extends EntityModel<T>> animator, T entity, float p_102862_, float p_102863_, float partialTicks) {
-        super.prepareMobModel(animator, entity, p_102862_, p_102863_, partialTicks);
         if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
             Tail.visible = luminaraFlowerBeastEntity.isAwakened();
             LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
             RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
+        }
+        super.prepareMobModel(animator, entity, p_102862_, p_102863_, partialTicks);
+    }
+
+    @Override
+    public void setAllLimbsVisible(T entity, boolean visible) {
+        super.setAllLimbsVisible(entity, visible);
+
+        if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
+            Tail.visible = visible && luminaraFlowerBeastEntity.isAwakened();
+            LeftWing.visible = visible && luminaraFlowerBeastEntity.isAwakened();
+            RightWing.visible = visible && luminaraFlowerBeastEntity.isAwakened();
         }
     }
 
     @Override
     public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
-            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
-            LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
-            RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
-        }
     }
 
     public HumanoidAnimator<T, ArmorLuminaraFlowerBeastModel<T>> getAnimator(T entity) {

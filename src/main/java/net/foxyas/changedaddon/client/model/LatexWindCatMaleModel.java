@@ -19,7 +19,7 @@ import java.util.List;
 
 public class LatexWindCatMaleModel extends AdvancedHumanoidModel<LatexWindCatMaleEntity> implements AdvancedHumanoidModelInterface<LatexWindCatMaleEntity, LatexWindCatMaleModel> {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("latex_wind_cat_male"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("latex_wind_cat_male", "main");
 
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;

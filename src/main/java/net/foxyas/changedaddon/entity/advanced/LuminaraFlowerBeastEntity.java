@@ -3,9 +3,11 @@ package net.foxyas.changedaddon.entity.advanced;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -23,6 +25,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PlayMessages;
 
 import java.util.Objects;
@@ -136,6 +140,19 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         removeModifier(player, ForgeMod.SWIM_SPEED.get(), SWIM_SPEED_ID);
     }
 
+    /**
+     * Remove awakened buffs, returning entity to neutral state.
+     */
+    public static void removeAwakenedBuffs(Player player) {
+        if (player == null) {
+            return;
+        }
+        removeModifier(player, Attributes.MOVEMENT_SPEED, SPEED_BOOST_ID);
+        removeModifier(player, Attributes.ATTACK_DAMAGE, DAMAGE_BOOST_ID);
+        removeModifier(player, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE_ID);
+        removeModifier(player, ForgeMod.SWIM_SPEED.get(), SWIM_SPEED_ID);
+    }
+
     // ===== Helper methods =====
 
     private static void addModifier(LivingEntity entity, net.minecraft.world.entity.ai.attributes.Attribute attribute, AttributeModifier modifier) {
@@ -152,6 +169,28 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
+    @Mod.EventBusSubscriber
+    public static class TransfurEventHandle {
+
+        @SubscribeEvent
+        public static void WhenUnTransfured(ProcessTransfur.EntityVariantAssigned changedVariant) {
+            final TransfurVariant<?> oldVariant = changedVariant.previousVariant;
+            final TransfurVariant<?> newVariant = changedVariant.originalVariant;
+            LivingEntity living = changedVariant.livingEntity;
+            if (living instanceof Player player && oldVariant != null) {
+                if (oldVariant.is(ChangedAddonTransfurVariants.LUMINARA_FLOWER_BEAST.get())) {
+                    if (newVariant == null) {
+                        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+                        if (instance != null && instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
+                            if (luminaraFlowerBeastEntity.isAwakened()) {
+                                removeAwakenedBuffs(player);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     public void variantTick(Level level) {

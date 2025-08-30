@@ -46,24 +46,4 @@ public abstract class LivingEntityMixin {
         });
     }
 
-    @Inject(method = "canStandOnFluid", at = @At("HEAD"), cancellable = true)
-    public void canStandOnFluid(FluidState state, CallbackInfoReturnable<Boolean> callback) {
-        LivingEntity self = (LivingEntity) (Object) this;
-        var variant = TransfurVariant.getEntityVariant(self);
-        if (variant == null) return;
-        if (variant.is(ChangedAddonTransfurVariants.LATEX_WIND_CAT_MALE) || variant.is(ChangedAddonTransfurVariants.LATEX_WIND_CAT_FEMALE)) {
-            if (self instanceof Player player) {
-                TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-                if (instance != null) {
-                    SimpleAbilityInstance ability = instance.getAbilityInstance(ChangedAddonAbilities.WIND_PASSIVE.get());
-                    if (ability != null) {
-                        if (ability.getAbility() instanceof WindPassiveAbility windPassiveAbility) {
-                            callback.setReturnValue(windPassiveAbility.isActive);
-                        }
-                    }
-                }
-            } else callback.setReturnValue(true);
-        }
-    }
-
 }

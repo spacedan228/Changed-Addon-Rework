@@ -4,6 +4,7 @@ import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class PassiveAbilityInstance extends AbstractAbilityInstance {
     public boolean isActivated = true;
@@ -25,6 +26,10 @@ public class PassiveAbilityInstance extends AbstractAbilityInstance {
     @Override
     public void startUsing() {
         isActivated = !isActivated;
+        entity.displayClientMessage(this.isActivated ?
+                        new TranslatableComponent("changed_addon.ability.passive.toggle.on") :
+                        new TranslatableComponent("changed_addon.ability.passive.toggle.off")
+                , true);
     }
 
     @Override

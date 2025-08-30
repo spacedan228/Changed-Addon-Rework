@@ -195,7 +195,11 @@
   "changed_addon.ability.wind_control.desc2": "[Hold Shift To Use the AOE Variant]",
   "changed_addon.ability.wind_control_passive": "Wind Control Passive",
   "changed_addon.ability.wind_control_passive.desc": "Allows the player to use Wind to walk on fluids. But be careful, you'll still touch the fluid.",
+  "changed_addon.ability.passive.toggle.on": "Your passive is now Enabled",
+  "changed_addon.ability.passive.toggle.off": "Your passive is now Disabled",
 
+  "ability.changed_addon.toggle_climb": "Toggle Climb",
+  "ability.changed_addon.passive_regeneration": "Passive Regeneration",
   "ability.changed_addon.grab_entity.extender.how_to_release": "Hold [%s] to release the entity",
   "ability.changed_addon.grab_entity.extender.how_to_hug": "Hold [%s] to hug the entity",
   "ability.changed_addon.grab_entity.extender.how_to_hug.tightly": "Hold [%s] to snuggle the entity",
@@ -204,8 +208,6 @@
   "ability.changed_addon.grab_entity.extender.hugger.tight": "You squeezed %s tight",
   "ability.changed_addon.grab_entity.extender.hugged.tight": "%s squeezes you tight",
 
-  "ability.changed_addon.toggle_climb": "Toggle Climb",
-  "ability.changed_addon.passive_regeneration": "Passive Regeneration",
 
   "changed_addon.compact_disc.content.experiment_009": "Experiment 009 Had to be Demoleculated!! he\u0027s powerful very powerful never let him fall into the wrong hands he apparently can\u0027t infect but he shows he doesn\u0027t want to §n§4 He Wants to Kill Everyone who gets in his way§r",
   "changed_addon.compact_disc.title.experiment_009": "§n§4Demoleculated §r§n§b Experiment",
