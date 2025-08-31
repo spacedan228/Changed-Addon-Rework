@@ -63,48 +63,47 @@ public class VoidTransformationHandler {
         if (instance != null && instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
             if (!luminaraFlowerBeastEntity.isAwakened()) {
                 luminaraFlowerBeastEntity.setAwakened(true);
-            }
 
-            // Cancel fall/void velocity and launch player upwards
-            player.setDeltaMovement(0, 8.0, 0); // strong vertical push
-            player.hurtMarked = true; // force velocity update to client
+                // Cancel fall/void velocity and launch player upwards
+                player.setDeltaMovement(0, 8.0, 0); // strong vertical push
+                player.hurtMarked = true; // force velocity update to client
+                DelayedTask.schedule(20, () -> {
+                    // Enable flight
+                    player.getAbilities().mayfly = true;
+                    player.getAbilities().flying = true; // auto fly
+                    player.onUpdateAbilities();
+                });
 
-            // Grant effects
-            player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20 * 10, 1));
-            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 10, 2));
+                // Grant effects
+                player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20 * 10, 1));
+                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 10, 2));
 
-            // Enable flight
-            DelayedTask.schedule(5, () -> {
-                player.getAbilities().mayfly = true;
-                player.getAbilities().flying = true; // auto fly
-                player.onUpdateAbilities();
-            });
-
-            // Explosion-like particles
-            if (player.getLevel() instanceof ServerLevel serverLevel) {
-                double radius = 1f;
-                double angle = 25f;
-                for (double theta = 0; theta < 360; theta += angle) {
-                    double angleTheta = Math.toRadians(theta);
-                    for (double phi = 0; phi <= 180; phi += angle) {
-                        double anglePhi = Math.toRadians(phi);
-                        double x = player.getX() + Math.sin(anglePhi) * Math.cos(angleTheta) * radius;
-                        double y = player.getY() + Math.cos(anglePhi) * radius;
-                        double z = player.getZ() + Math.sin(anglePhi) * Math.sin(angleTheta) * radius;
-                        Vec3 pos = new Vec3(x, y, z);
-                        PlayerUtil.ParticlesUtil.sendParticlesWithMotion(
-                                player.getLevel(),
-                                ParticleTypes.REVERSE_PORTAL,
-                                pos,
-                                Vec3.ZERO,
-                                pos.subtract(player.position()),
-                                1, 1
-                        );
+                // Explosion-like particles
+                if (player.getLevel() instanceof ServerLevel serverLevel) {
+                    double radius = 1f;
+                    double angle = 25f;
+                    for (double theta = 0; theta < 360; theta += angle) {
+                        double angleTheta = Math.toRadians(theta);
+                        for (double phi = 0; phi <= 180; phi += angle) {
+                            double anglePhi = Math.toRadians(phi);
+                            double x = player.getX() + Math.sin(anglePhi) * Math.cos(angleTheta) * radius;
+                            double y = player.getY() + Math.cos(anglePhi) * radius;
+                            double z = player.getZ() + Math.sin(anglePhi) * Math.sin(angleTheta) * radius;
+                            Vec3 pos = new Vec3(x, y, z);
+                            PlayerUtil.ParticlesUtil.sendParticlesWithMotion(
+                                    player.getLevel(),
+                                    ParticleTypes.REVERSE_PORTAL,
+                                    pos,
+                                    Vec3.ZERO,
+                                    pos.subtract(player.position()),
+                                    1, 1
+                            );
+                        }
                     }
-                }
 
-                serverLevel.playSound(null, player.blockPosition(),
-                        SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
+                    serverLevel.playSound(null, player.blockPosition(),
+                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
+                }
             }
         }
     }
