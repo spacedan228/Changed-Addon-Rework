@@ -195,7 +195,11 @@
   "changed_addon.ability.wind_control.desc2": "[Tartsa lenyomva a Shift billentyűt az AOE változat használatához]",
   "changed_addon.ability.wind_control_passive": "Passzív szélszabályozás",
   "changed_addon.ability.wind_control_passive.desc": "Lehetővé teszi a játékos számára, hogy a szél segítségével folyadékokon járjon. De légy óvatos, mert így is hozzáérsz a folyadékhoz.",
+  "changed_addon.ability.passive.toggle.on": "A passzív képességed mostantól engedélyezve van", 
+  "changed_addon.ability.passive.toggle.off": "A passzív képességed mostantól le van tiltva",
 
+  "ability.changed_addon.toggle_climb": "Mászás kapcsolása",
+  "ability.changed_addon.passive_regeneration": "Passzív regeneráció",
   "ability.changed_addon.grab_entity.extender.how_to_release": "Nyomja meg a(z) [%s] gombot az entitás elengedéséhez",
   "ability.changed_addon.grab_entity.extender.how_to_hug": "Tartsa nyomva a(z) [%s] gombot az entitás öleléséhez",
   "ability.changed_addon.grab_entity.extender.how_to_hug.tightly": "Tartsa nyomva a(z) [%s] gombot az entitás szoros öleléséhez",
@@ -204,9 +208,7 @@
   "ability.changed_addon.grab_entity.extender.hugger.tight": "Szorosan magadhoz ölelted %s entitást",
   "ability.changed_addon.grab_entity.extender.hugged.tight": "%s szorosan magához ölel téged",
 
-  "ability.changed_addon.toggle_climb": "Mászás kapcsolása",
-  "ability.changed_addon.passive_regeneration": "Passzív regeneráció",
-
+  
   "changed_addon.compact_disc.content.experiment_009": "A 009-es kísérletet demolekularizálni kellett!! Nagyon erős, sose hagyja, hogy rossz kezekbe kerüljön. Látszólag nem tud megfertőzni, de megmutatja, hogy nem akarja. §n§4 Mindenkit meg akar ölni, aki az útjába kerül.§r",
   "changed_addon.compact_disc.title.experiment_009": "§n§4Demolekularizált §r§n§b kísérlet",
 
@@ -307,6 +309,7 @@
   "effect.changed_addon.transfur_sickness.description": "Csökkenti a Changed entitások hatékonyságát, amikor humanoid entitások transzfurálására tesznek kísérletet.",
   "effect.changed_addon.untransfur": "§7Visszatranszfur",
   "effect.changed_addon.untransfur.description": "Hozzáadja egy visszatranszfur folyamatát, amelyet egy átfedés jeleníti meg. A folyamat gyorsul, ha szünetel. A befejezés után a visszatranszfur alkalmazásra kerül.",
+  "effect.changed_addon.pacified": "Békített",
 
   "enchantment.changed_addon.changed_lure": "Changed csalétekje",
   "enchantment.changed_addon.changed_lure.desc": "Lehetővé teszi, hogy horgászbottal fogjon latex lényeket.",
