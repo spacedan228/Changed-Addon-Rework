@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -21,7 +22,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -32,10 +32,8 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PlayMessages;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
 
 public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats {
@@ -108,12 +106,16 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
      */
 
     public void applyAwakenedBuffs() {
-        Player player = this.getUnderlyingPlayer();
-        if (player == null) {
-            return;
-        }
-        setAttributesAwakened(player.getAttributes());
+//        Player player = this.getUnderlyingPlayer();
+//        if (player == null) {
+//            return;
+//        }
+        setAttributesAwakened(getAttributes());
         attributesApplied = true;
+        var instance = IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).orElse(null);
+        if (instance != null) {
+            instance.refreshAttributes();
+        }
         /*
          *
         // Movement speed boost on land
@@ -140,12 +142,16 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
      * Remove awakened buffs, returning entity to neutral state.
      */
     public void removeAwakenedBuffs() {
-        Player player = this.getUnderlyingPlayer();
-        if (player == null) {
-            return;
-        }
-        setAttributes(player.getAttributes());
+//        Player player = this.getUnderlyingPlayer();
+//        if (player == null) {
+//            return;
+//        }
+        setAttributes(getAttributes());
         attributesApplied = false;
+        var instance = IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).orElse(null);
+        if (instance != null) {
+            instance.refreshAttributes();
+        }
 
         /*
         removeModifier(player, Attributes.MOVEMENT_SPEED, SPEED_BOOST_ID);
