@@ -23,7 +23,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -33,6 +32,7 @@ import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PlayMessages;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -44,7 +44,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     private boolean attributesApplied;
     private boolean attributesAppliedEntity;
 
-
     public LuminaraFlowerBeastEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), world);
     }
@@ -55,29 +54,28 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
-        Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((1));
-        Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((22));
-        Objects.requireNonNull(attributes.getInstance(Attributes.FOLLOW_RANGE)).setBaseValue(40.0f);
-        Objects.requireNonNull(attributes.getInstance(Attributes.MOVEMENT_SPEED)).setBaseValue(1f);
-        Objects.requireNonNull(attributes.getInstance(ForgeMod.SWIM_SPEED.get())).setBaseValue(1f);
-        Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_DAMAGE)).setBaseValue(2.0f);
-        Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR)).setBaseValue(0);
-        Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR_TOUGHNESS)).setBaseValue(0);
-        Objects.requireNonNull(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(0);
+        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()), 1.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH), 22.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE), 40.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED), 1.0f);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.SWIM_SPEED.get()), 1.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE), 2.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 0.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 0.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE), 0.0f);
     }
 
     public void setAttributesAwakened(AttributeMap attributes) {
-        Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((5f));
-        Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((40.0f));
-        Objects.requireNonNull(attributes.getInstance(Attributes.FOLLOW_RANGE)).setBaseValue(40.0f);
-        Objects.requireNonNull(attributes.getInstance(Attributes.MOVEMENT_SPEED)).setBaseValue(1.25f);
-        Objects.requireNonNull(attributes.getInstance(ForgeMod.SWIM_SPEED.get())).setBaseValue(1.25f);
-        Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_DAMAGE)).setBaseValue(5.0f);
-        Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR)).setBaseValue(0);
-        Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR_TOUGHNESS)).setBaseValue(0);
-        Objects.requireNonNull(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(0);
+        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()), 5.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH), 40.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE), 40.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED), 1.25f);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.SWIM_SPEED.get()), 1.25f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE), 5.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 0.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 0.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE), 0.0f);
     }
-
 
     @Override
     protected void defineSynchedData() {
