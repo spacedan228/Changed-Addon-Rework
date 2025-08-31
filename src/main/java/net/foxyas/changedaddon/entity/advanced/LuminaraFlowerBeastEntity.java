@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.advanced;
 
+import net.foxyas.changedaddon.entity.advanced.handle.VoidTransformationHandler;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
@@ -25,6 +26,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PlayMessages;
@@ -192,6 +195,23 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
+    @Mod.EventBusSubscriber
+    public static class TransfurEvolveEventsHandle {
+
+        @SubscribeEvent
+        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
+            if (event.phase == TickEvent.Phase.END) {
+                VoidTransformationHandler.handlePlayerVoid(event.player);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onLivingDamage(LivingDamageEvent event) {
+            VoidTransformationHandler.handleVoidDamage(event);
+        }
+
+    }
+
     @Override
     public void variantTick(Level level) {
         super.variantTick(level);
@@ -201,11 +221,11 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
                 applyAwakenedBuffs();
             } else {
                 TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-                if (instance != null) {
+                /*if (instance != null) {
                     if (instance.ageAsVariant >= 1000) {
                         this.setAwakened(true);
                     }
-                }
+                }*/
                 removeAwakenedBuffs();
             }
         }

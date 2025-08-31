@@ -13,7 +13,7 @@ public class BossesExpUseProcedure {
     @SubscribeEvent
     public static void VariantGet(LatexSyringe.UsedOnBlock event) {
         TransfurVariant<?> variant = event.syringeVariant;
-        if (event.player.isCreative()) {
+        if (event.player.isCreative() || !event.player.isShiftKeyDown()) {
             return;
         }
 
