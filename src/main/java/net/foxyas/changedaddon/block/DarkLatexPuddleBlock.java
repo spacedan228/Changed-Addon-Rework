@@ -15,8 +15,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -26,7 +24,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
@@ -42,9 +39,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class DarkLatexPuddleBlock extends Block implements EntityBlock, NonLatexCoverableBlock {
-
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements EntityBlock, NonLatexCoverableBlock {
 
     public DarkLatexPuddleBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.SLIME_BLOCK).strength(1f, 10f).speedFactor(0.8f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
@@ -132,14 +127,6 @@ public class DarkLatexPuddleBlock extends Block implements EntityBlock, NonLatex
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
-
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
     @Override

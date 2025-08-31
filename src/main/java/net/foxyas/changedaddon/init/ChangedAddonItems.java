@@ -271,7 +271,7 @@ public class ChangedAddonItems {
         return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
     }
 
-    private static RegistryObject<Item> blockNoTab(RegistryObject<Block> block, CreativeModeTab tab) {
+    private static RegistryObject<Item> blockNoTab(RegistryObject<? extends Block> block, CreativeModeTab tab) {
         return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
     }
 

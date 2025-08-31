@@ -23,7 +23,7 @@ public class ChangedAddonBlockEntities {
     //Non generic Ones
     public static final RegistryObject<BlockEntityType<TimedKeypadBlockEntity>> TIMED_KEYPAD_BLOCK_ENTITY = REGISTRY.register("timed_keypad_block_entity", () -> BlockEntityType.Builder.of(TimedKeypadBlockEntity::new, ChangedAddonBlocks.TIMED_KEYPAD.get()).build(null));    public static final RegistryObject<BlockEntityType<?>> CATALYZER = register("catalyzer_block_entity", ChangedAddonBlocks.CATALYZER, CatalyzerBlockEntity::new);
 
-    private static RegistryObject<BlockEntityType<?>> register(String registryName, RegistryObject<Block> block, BlockEntityType.BlockEntitySupplier<?> supplier) {
+    private static RegistryObject<BlockEntityType<?>> register(String registryName, RegistryObject<? extends Block> block, BlockEntityType.BlockEntitySupplier<?> supplier) {
         return REGISTRY.register(registryName, () -> BlockEntityType.Builder.of(supplier, block.get()).build(null));
     }    public static final RegistryObject<BlockEntityType<?>> UNIFUSER = register("unifuser_block_entity", ChangedAddonBlocks.UNIFUSER, UnifuserBlockEntity::new);
 

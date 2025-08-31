@@ -16,12 +16,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class UnifuserBlock extends Block implements EntityBlock {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+public class UnifuserBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
     public UnifuserBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.METAL).strength(5f, 10f));
@@ -56,14 +57,6 @@ public class UnifuserBlock extends Block implements EntityBlock {
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
-
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
     @Override

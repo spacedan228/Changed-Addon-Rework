@@ -1,11 +1,15 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.block.advanced.TimedKeypad;
+import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
@@ -14,7 +18,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.Function;
 
-import static net.foxyas.changedaddon.init.ChangedAddonBlocks.WOLF_CRYSTAL_PILLAR;
+import static net.foxyas.changedaddon.init.ChangedAddonBlocks.*;
 
 public class BlockStateProvider extends net.minecraftforge.client.model.generators.BlockStateProvider {
 
@@ -24,7 +28,71 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
 
     @Override
     protected void registerStatesAndModels() {
+        horizontalBlock(ADVANCED_CATALYZER);
+        horizontalBlock(ADVANCED_UNIFUSER);
+        horizontalBlock(CATALYZER);
+        horizontalBlock(UNIFUSER);
+        simpleBlock(BLUE_WOLF_CRYSTAL_BLOCK);
+        simpleBlock(BLUE_WOLF_CRYSTAL_SMALL);
+        simpleBlock(CONTAINMENT_CONTAINER, BlockStateProperties.WATERLOGGED);
+        horizontalBlock(DARK_LATEX_PUDDLE);
+        simpleBlock(PAINITE_BLOCK);
+        simpleBlock(DEEPSLATE_PAINITE_ORE);
+        simpleBlock(DORMANT_DARK_LATEX);
+        simpleBlock(DORMANT_WHITE_LATEX);
+        horizontalBlock(FOXTA_CAN, BlockStateProperties.WATERLOGGED);
+        simpleBlock(GENERATOR);
+        simpleBlock(GOO_CORE);
+        horizontalBlock(INFORMANT_BLOCK);
+        simpleBlock(IRIDIUM_BLOCK);
+        simpleBlock(IRIDIUM_ORE);
+        simpleBlock(LATEX_INSULATOR);
+        simpleBlock(LITIX_CAMONIA_FLUID, BlockStateProperties.LEVEL);
+        simpleBlock(LUMINARA_BLOOM);
+        simpleBlock(ORANGE_WOLF_CRYSTAL_BLOCK);
+        simpleBlock(ORANGE_WOLF_CRYSTAL_SMALL);
+        simpleBlock(REINFORCED_CROSS_BLOCK);
+        simpleBlock(REINFORCED_WALL);
+        simpleBlock(REINFORCED_WALL_CAUTION);
+        simpleBlock(REINFORCED_WALL_SILVER_STRIPED);
+        simpleBlock(REINFORCED_WALL_SILVER_TILED);
+        horizontalBlock(SNEPSI_CAN, BlockStateProperties.WATERLOGGED);
+        simpleBlock(WALL_WHITE_CRACKED);
+        simpleBlock(WHITE_WOLF_CRYSTAL_BLOCK);
+        simpleBlock(WHITE_WOLF_CRYSTAL_SMALL);
+        horizontalBlock(WOLF_PLUSH);
+        simpleBlock(YELLOW_WOLF_CRYSTAL_BLOCK);
+        simpleBlock(YELLOW_WOLF_CRYSTAL_SMALL);
+
+        timedKeypad();
+
         pillarBlockWithVariants(WOLF_CRYSTAL_PILLAR, 2, 0);
+    }
+
+    private final Property<?>[] IGNORE_LATEX = new Property[]{AbstractLatexBlock.COVERED};
+
+    private Property<?>[] makeIgnore(Property<?>... ignore){
+        Property<?>[] ignore1;
+        if(ignore == null || ignore.length == 0){
+            ignore1 = IGNORE_LATEX;
+        } else {
+            ignore1 = new Property[ignore.length + 1];
+            System.arraycopy(ignore, 0, ignore1, 0, ignore.length);
+            ignore1[ignore1.length - 1] = AbstractLatexBlock.COVERED;
+        }
+
+        return ignore1;
+    }
+
+    private void timedKeypad(){
+        ResourceLocation loc = blockLoc(TIMED_KEYPAD.getId());
+        ModelFile file = models().getExistingFile(loc);
+        ModelFile locked = models().getExistingFile(withSuffix(loc, "_locked"));
+
+        getVariantBuilder(TIMED_KEYPAD.get()).forAllStatesExcept(state ->
+            new ConfiguredModel[]{new ConfiguredModel(state.getValue(TimedKeypad.POWERED) ? file : locked, 0,
+                    (int) ((state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 270) % 360), false)},
+        IGNORE_LATEX);
     }
 
     private ResourceLocation blockLoc(ResourceLocation loc){
@@ -33,6 +101,26 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
 
     private ResourceLocation withSuffix(ResourceLocation loc, String suffix){
         return new ResourceLocation(loc.getNamespace(), loc.getPath() + suffix);
+    }
+
+    private void simpleBlock(RegistryObject<? extends Block> block, Property<?>... ignore){
+        ConfiguredModel[] model = new ConfiguredModel[]{new ConfiguredModel(models().getExistingFile(blockLoc(block.getId())))};
+        ignore = makeIgnore(ignore);
+
+        getVariantBuilder(block.get()).forAllStatesExcept(state -> model, ignore);
+    }
+
+    private void horizontalBlock(RegistryObject<? extends HorizontalDirectionalBlock> block, Property<?>... ignore){
+        ResourceLocation loc = blockLoc(block.getId());
+        Block bl = block.get();
+        ModelFile file = models().getExistingFile(loc);
+        ignore = makeIgnore(ignore);
+
+        getVariantBuilder(bl).forAllStatesExcept(state ->
+                        ConfiguredModel.builder().modelFile(file)
+                        .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 180) % 360)
+                        .build(),
+        ignore);
     }
 
     private void simpleWithVariants(RegistryObject<? extends Block> block, int variants, int itemModelIndex){
@@ -59,13 +147,13 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
             models[i] = models().getExistingFile(withSuffix(loc, "_" + i));
         }
 
-        getVariantBuilder(block).forAllStates(state ->
+        getVariantBuilder(block).forAllStatesExcept(state ->
             switch (state.getValue(BlockStateProperties.AXIS)){
                 case Y -> configure(models, ConfiguredModel::new);
                 case Z -> configure(models, model -> new ConfiguredModel(model, 90, 0, false));
                 case X -> configure(models, model -> new ConfiguredModel(model, 90, 90, false));
-            }
-        );
+            },
+        AbstractLatexBlock.COVERED);
 
         simpleBlockItem(block, models[itemModelIndex]);
     }

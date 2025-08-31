@@ -3,10 +3,6 @@
     "facing=north": {
       "model": "changed_addon:block/advanced_unifuser"
     },
-    "facing=east": {
-      "model": "changed_addon:block/advanced_unifuser",
-      "y": 90
-    },
     "facing=south": {
       "model": "changed_addon:block/advanced_unifuser",
       "y": 180
@@ -14,6 +10,10 @@
     "facing=west": {
       "model": "changed_addon:block/advanced_unifuser",
       "y": 270
+    },
+    "facing=east": {
+      "model": "changed_addon:block/advanced_unifuser",
+      "y": 90
     }
   }
 }
