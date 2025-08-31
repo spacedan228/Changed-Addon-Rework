@@ -4,14 +4,10 @@ import net.foxyas.changedaddon.entity.advanced.handle.VoidTransformationHandler;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -38,6 +34,9 @@ import java.util.UUID;
 public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats {
 
     private static final EntityDataAccessor<Boolean> AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
+    private boolean attributesApplied;
+    private boolean attributesAppliedEntity;
+
 
     public LuminaraFlowerBeastEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), world);
@@ -50,26 +49,26 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     @Override
     protected void setAttributes(AttributeMap attributes) {
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((1));
-        attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((22));
-        attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0f);
-        attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1f);
-        attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(1f);
-        attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(2.0f);
-        attributes.getInstance(Attributes.ARMOR).setBaseValue(0);
-        attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
-        attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
+        Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((22));
+        Objects.requireNonNull(attributes.getInstance(Attributes.FOLLOW_RANGE)).setBaseValue(40.0f);
+        Objects.requireNonNull(attributes.getInstance(Attributes.MOVEMENT_SPEED)).setBaseValue(1f);
+        Objects.requireNonNull(attributes.getInstance(ForgeMod.SWIM_SPEED.get())).setBaseValue(1f);
+        Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_DAMAGE)).setBaseValue(2.0f);
+        Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR)).setBaseValue(0);
+        Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR_TOUGHNESS)).setBaseValue(0);
+        Objects.requireNonNull(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(0);
     }
 
     public void setAttributesAwakened(AttributeMap attributes) {
-        attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()).setBaseValue((5f));
-        attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((40.0f));
-        attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0f);
-        attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.25f);
-        attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(1.25f);
-        attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(5.0f);
-        attributes.getInstance(Attributes.ARMOR).setBaseValue(0);
-        attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
-        attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
+        Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((5f));
+        Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((40.0f));
+        Objects.requireNonNull(attributes.getInstance(Attributes.FOLLOW_RANGE)).setBaseValue(40.0f);
+        Objects.requireNonNull(attributes.getInstance(Attributes.MOVEMENT_SPEED)).setBaseValue(1.25f);
+        Objects.requireNonNull(attributes.getInstance(ForgeMod.SWIM_SPEED.get())).setBaseValue(1.25f);
+        Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_DAMAGE)).setBaseValue(5.0f);
+        Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR)).setBaseValue(0);
+        Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR_TOUGHNESS)).setBaseValue(0);
+        Objects.requireNonNull(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(0);
     }
 
 
@@ -108,7 +107,10 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         if (player == null) {
             return;
         }
-
+        setAttributesAwakened(player.getAttributes());
+        attributesApplied = true;
+        /*
+         *
         // Movement speed boost on land
         addModifier(player, Attributes.MAX_HEALTH,
                 new AttributeModifier(MAX_HEALTH_ID, "Awakened Health Boost", 18, AttributeModifier.Operation.ADDITION));
@@ -126,7 +128,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
         // Reduced swim speed to make entity slower in water
         addModifier(player, ForgeMod.SWIM_SPEED.get(),
-                new AttributeModifier(SWIM_SPEED_ID, "Awakened Swim Speed Reduction", -0.15, AttributeModifier.Operation.MULTIPLY_TOTAL));
+                new AttributeModifier(SWIM_SPEED_ID, "Awakened Swim Speed Reduction", -0.15, AttributeModifier.Operation.MULTIPLY_TOTAL));*/
     }
 
     /**
@@ -137,41 +139,47 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         if (player == null) {
             return;
         }
+        setAttributes(player.getAttributes());
+        attributesApplied = false;
+
+        /*
         removeModifier(player, Attributes.MOVEMENT_SPEED, SPEED_BOOST_ID);
         removeModifier(player, Attributes.ATTACK_DAMAGE, DAMAGE_BOOST_ID);
         removeModifier(player, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE_ID);
         removeModifier(player, ForgeMod.SWIM_SPEED.get(), SWIM_SPEED_ID);
+        */
     }
 
-    /**
-     * Remove awakened buffs, returning entity to neutral state.
-     */
-    public static void removeAwakenedBuffs(Player player) {
-        if (player == null) {
-            return;
-        }
-        removeModifier(player, Attributes.MOVEMENT_SPEED, SPEED_BOOST_ID);
-        removeModifier(player, Attributes.ATTACK_DAMAGE, DAMAGE_BOOST_ID);
-        removeModifier(player, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE_ID);
-        removeModifier(player, ForgeMod.SWIM_SPEED.get(), SWIM_SPEED_ID);
-    }
+//    /**
+//     * Remove awakened buffs, returning entity to neutral state.
+//     */
+//    public static void removeAwakenedBuffs(Player player) {
+//        if (player == null) {
+//            return;
+//        }
+//        removeModifier(player, Attributes.MOVEMENT_SPEED, SPEED_BOOST_ID);
+//        removeModifier(player, Attributes.ATTACK_DAMAGE, DAMAGE_BOOST_ID);
+//        removeModifier(player, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE_ID);
+//        removeModifier(player, ForgeMod.SWIM_SPEED.get(), SWIM_SPEED_ID);
+//    }
+//
+//    // ===== Helper methods =====
+//
+//    private static void addModifier(LivingEntity entity, net.minecraft.world.entity.ai.attributes.Attribute attribute, AttributeModifier modifier) {
+//        AttributeInstance instance = entity.getAttribute(attribute);
+//        if (instance != null && instance.getModifier(modifier.getId()) == null) {
+//            instance.addTransientModifier(modifier); // transient = does not persist on save/load
+//        }
+//    }
+//
+//    private static void removeModifier(LivingEntity entity, net.minecraft.world.entity.ai.attributes.Attribute attribute, UUID id) {
+//        AttributeInstance instance = entity.getAttribute(attribute);
+//        if (instance != null && instance.getModifier(id) != null) {
+//            instance.removeModifier(id); // cleanly removes only the modifier with that UUID
+//        }
+//    }
 
-    // ===== Helper methods =====
-
-    private static void addModifier(LivingEntity entity, net.minecraft.world.entity.ai.attributes.Attribute attribute, AttributeModifier modifier) {
-        AttributeInstance instance = entity.getAttribute(attribute);
-        if (instance != null && instance.getModifier(modifier.getId()) == null) {
-            instance.addTransientModifier(modifier); // transient = does not persist on save/load
-        }
-    }
-
-    private static void removeModifier(LivingEntity entity, net.minecraft.world.entity.ai.attributes.Attribute attribute, UUID id) {
-        AttributeInstance instance = entity.getAttribute(attribute);
-        if (instance != null && instance.getModifier(id) != null) {
-            instance.removeModifier(id); // cleanly removes only the modifier with that UUID
-        }
-    }
-
+    /*
     @Mod.EventBusSubscriber
     public static class TransfurEventHandle {
 
@@ -193,7 +201,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
                 }
             }
         }
-    }
+    }*/
 
     @Mod.EventBusSubscriber
     public static class TransfurEvolveEventsHandle {
@@ -217,15 +225,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         super.variantTick(level);
         Player player = this.getUnderlyingPlayer();
         if (player != null) {
-            if (this.isAwakened()) {
+            if (this.isAwakened() && !attributesApplied) {
                 applyAwakenedBuffs();
-            } else {
-                TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-                /*if (instance != null) {
-                    if (instance.ageAsVariant >= 1000) {
-                        this.setAwakened(true);
-                    }
-                }*/
+            } else if (!this.isAwakened() && attributesApplied){
                 removeAwakenedBuffs();
             }
         }
@@ -234,9 +236,15 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     @Override
     public void baseTick() {
         super.baseTick();
-        if (this.isAwakened()) {
+
+        if (this.isAwakened() && !attributesAppliedEntity) {
             this.setAttributesAwakened(this.getAttributes());
+            this.attributesAppliedEntity = true;
+        } else if (!this.isAwakened() && attributesAppliedEntity) {
+            this.setAttributes(this.getAttributes());
+            this.attributesAppliedEntity = false;
         }
+
     }
 
     @Override

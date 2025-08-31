@@ -149,6 +149,11 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
     @Override
     public void prepareMobModel(@NotNull T entity, float p_102862_, float p_102863_, float partialTicks) {
         super.prepareMobModel(entity, p_102862_, p_102863_, partialTicks);
+        if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
+            LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
+            RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
+            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
+        }
     }
 
     @Override

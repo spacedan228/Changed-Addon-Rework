@@ -27,7 +27,7 @@ public class VoidTransformationHandler {
         if (player.isSpectator()) return;
 
         // Check if player is under world min height (void)
-        if (player.getY() < player.getLevel().getMinBuildHeight() - 4) {
+        if (player.getY() < player.getLevel().getMinBuildHeight() - 6f) {
             if (isVoidForm(player)) {
                 triggerVoidTransformation(player);
             }
@@ -58,6 +58,13 @@ public class VoidTransformationHandler {
      * - Spawn explosion-like particles
      */
     public static void triggerVoidTransformation(Player player) {
+        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+        if (instance != null && instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
+            if (!luminaraFlowerBeastEntity.isAwakened()) {
+                luminaraFlowerBeastEntity.setAwakened(true);
+            }
+        }
+
         // Cancel fall/void velocity and launch player upwards
         player.setDeltaMovement(0, 8.0, 0); // strong vertical push
         player.hurtMarked = true; // force velocity update to client
@@ -73,7 +80,7 @@ public class VoidTransformationHandler {
 
         // Explosion-like particles
         if (player.getLevel() instanceof ServerLevel serverLevel) {
-            double radius = 2f;
+            double radius = 1f;
             double angle = 25f;
             for (double theta = 0; theta < 360; theta += angle) {
                 double angleTheta = Math.toRadians(theta);
@@ -85,7 +92,7 @@ public class VoidTransformationHandler {
                     Vec3 pos = new Vec3(x, y, z);
                     PlayerUtil.ParticlesUtil.sendParticlesWithMotion(
                             player.getLevel(),
-                            ParticleTypes.PORTAL,
+                            ParticleTypes.REVERSE_PORTAL,
                             pos,
                             Vec3.ZERO,
                             pos.subtract(player.position()),
@@ -96,13 +103,6 @@ public class VoidTransformationHandler {
 
             serverLevel.playSound(null, player.blockPosition(),
                     SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
-
-            TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (instance != null && instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
-                if (!luminaraFlowerBeastEntity.isAwakened()) {
-                    luminaraFlowerBeastEntity.setAwakened(true);
-                }
-            }
         }
     }
 
