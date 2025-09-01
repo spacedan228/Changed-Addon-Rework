@@ -1,7 +1,9 @@
 package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
+import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
@@ -16,6 +18,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -32,7 +36,7 @@ import net.minecraftforge.network.PlayMessages;
 import java.util.Objects;
 import java.util.UUID;
 
-public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats {
+public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats, CustomPatReaction {
 
     private static final EntityDataAccessor<Boolean> AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
 
@@ -69,6 +73,15 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
     }
 
+    @Override
+    public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
+        patTarget.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600));
+    }
+
+    @Override
+    public void WhenPattedReaction(Player patter, InteractionHand hand) {
+        patter.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600));
+    }
 
     @Override
     protected void defineSynchedData() {
