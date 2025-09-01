@@ -135,8 +135,25 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
     }
 
     @Override
+    public boolean shouldPartTransfur(ModelPart part) {
+        if (hiddenPartsByDefault().contains(part) && !part.visible) {
+            return false;
+        }
+        return super.shouldPartTransfur(part);
+    }
+
+    public List<ModelPart> hiddenPartsByDefault() {
+        return List.of(this.Tail,this.RightWing, this.LeftWing);
+    }
+
+    @Override
     public void prepareMobModel(@NotNull T entity, float p_102862_, float p_102863_, float partialTicks) {
         super.prepareMobModel(entity, p_102862_, p_102863_, partialTicks);
+        if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
+            LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
+            RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
+            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
+        }
     }
 
     @Override
@@ -168,7 +185,7 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
         return this.animator;
     }
 
-    public ModelPart getArm(HumanoidArm arm) {
+    public @NotNull ModelPart getArm(HumanoidArm arm) {
         return arm == HumanoidArm.LEFT ? this.LeftArm : this.RightArm;
     }
 
@@ -176,7 +193,7 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
         return leg == HumanoidArm.LEFT ? this.LeftLeg : this.RightLeg;
     }
 
-    public ModelPart getHead() {
+    public @NotNull ModelPart getHead() {
         return this.Head;
     }
 

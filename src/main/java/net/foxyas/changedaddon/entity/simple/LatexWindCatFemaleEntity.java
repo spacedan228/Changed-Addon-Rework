@@ -11,7 +11,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexWindCatFemaleEntity extends ChangedEntity implements GenderedEntity {
+public class LatexWindCatFemaleEntity extends ChangedEntity implements GenderedEntity, PowderSnowWalkable {
 
     public LatexWindCatFemaleEntity(EntityType<? extends LatexWindCatFemaleEntity> p_19870_, Level level) {
         super(p_19870_, level);

@@ -11,6 +11,9 @@ import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
 import net.foxyas.changedaddon.recipes.UnifuserRecipe;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.ltxprogrammer.changed.init.ChangedItems;
+import net.ltxprogrammer.changed.item.Syringe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -77,6 +80,9 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.INFORMANT_BLOCK.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.informantblock"));
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LUNAR_ROSE_HELMET.get()), VanillaTypes.ITEM_STACK, new TextComponent(new TranslatableComponent("changed_addon.jei_descriptions.lunar_rose").getString().replace("#", "\n")));
 
+            ItemStack stack = new ItemStack(ChangedItems.LATEX_SYRINGE.get());
+            Syringe.setVariant(stack, ChangedAddonTransfurVariants.LUMINARA_FLOWER_BEAST.get().getFormId());
+            registration.addIngredientInfo(stack, VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.luminara.riddle"));
 
             addSharedDescriptions(registration, List.of(
                     ChangedAddonItems.BLUE_WOLF_CRYSTAL_FRAGMENT.get(),
