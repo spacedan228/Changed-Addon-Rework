@@ -211,7 +211,7 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntity {
     private static final List<SoundEvent> sounds = List.of(SoundEvents.CAT_AMBIENT, SoundEvents.CAT_PURR, SoundEvents.CAT_PURREOW);
 
     @Override
-    public void WhenPattedReaction() {
+    public void WhenPattedReactionSimple() {
         playSound(sounds.get(random.nextInt(sounds.size())), 2.5f, 1);
     }
 }
