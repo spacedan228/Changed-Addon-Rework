@@ -3,10 +3,6 @@
     "facing=north": {
       "model": "changed_addon:block/foxta_can"
     },
-    "facing=east": {
-      "model": "changed_addon:block/foxta_can",
-      "y": 90
-    },
     "facing=south": {
       "model": "changed_addon:block/foxta_can",
       "y": 180
@@ -14,6 +10,10 @@
     "facing=west": {
       "model": "changed_addon:block/foxta_can",
       "y": 270
+    },
+    "facing=east": {
+      "model": "changed_addon:block/foxta_can",
+      "y": 90
     }
   }
 }

@@ -3,10 +3,6 @@
     "facing=north": {
       "model": "changed_addon:block/wolf_plush"
     },
-    "facing=east": {
-      "model": "changed_addon:block/wolf_plush",
-      "y": 90
-    },
     "facing=south": {
       "model": "changed_addon:block/wolf_plush",
       "y": 180
@@ -14,6 +10,10 @@
     "facing=west": {
       "model": "changed_addon:block/wolf_plush",
       "y": 270
+    },
+    "facing=east": {
+      "model": "changed_addon:block/wolf_plush",
+      "y": 90
     }
   }
 }

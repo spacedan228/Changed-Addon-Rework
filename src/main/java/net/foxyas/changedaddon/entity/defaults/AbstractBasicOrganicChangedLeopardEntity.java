@@ -13,6 +13,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -33,6 +34,12 @@ public abstract class AbstractBasicOrganicChangedLeopardEntity extends AbstractS
     }
 
     public static void init() {
+    }
+
+    protected void safeSetBaseValue(@org.jetbrains.annotations.Nullable AttributeInstance instance, double value) {
+        if (instance != null) {
+            instance.setBaseValue(value);
+        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.util.FoxyasUtils;
@@ -61,12 +62,6 @@ public class ChangedEntityTargetSelectorMixin {
     @Inject(method = "targetSelectorTest", at = @At("HEAD"), cancellable = true)
     private void injectTargetSelector(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
         if (self().hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
-            cir.setReturnValue(false);
-        }
-
-        List<LivingEntity> nearLuminaraBeasts = self().getLevel().getEntitiesOfClass(LivingEntity.class, self().getBoundingBox().inflate(16), (entity) -> FoxyasUtils.canEntitySeeOther(entity, self()));
-        if (!nearLuminaraBeasts.isEmpty() && livingEntity.getType().is(ChangedTags.EntityTypes.HUMANOIDS)) {
-            self().addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 60 * 20, 0, true, false, true));
             cir.setReturnValue(false);
         }
     }
