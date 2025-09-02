@@ -31,7 +31,7 @@ public class LightningComboAttackGoal extends Goal {
     protected final IntProvider attackCountProvider;
     protected final IntProvider castDurationProvider;
     protected final FloatProvider damageProvider;
-    protected final DamageSource source = new DamageSource("lightningBolt"){
+    protected final DamageSource source = new DamageSource("lightningBolt") {
         @Override
         public @Nullable Vec3 getSourcePosition() {
             return attackPos;
@@ -46,7 +46,7 @@ public class LightningComboAttackGoal extends Goal {
     protected int castDuration;
     protected int wasBlocked;
 
-    public LightningComboAttackGoal(PathfinderMob holder, IntProvider cooldown, IntProvider attackCount, IntProvider castDuration, FloatProvider damage){
+    public LightningComboAttackGoal(PathfinderMob holder, IntProvider cooldown, IntProvider attackCount, IntProvider castDuration, FloatProvider damage) {
         this.holder = holder;
         random = holder.getRandom();
         cooldownProvider = cooldown;
@@ -69,7 +69,7 @@ public class LightningComboAttackGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if(cooldown > 0){
+        if (cooldown > 0) {
             cooldown--;
             return false;
         }
@@ -94,7 +94,7 @@ public class LightningComboAttackGoal extends Goal {
         holder.getLookControl().setLookAt(target);
     }
 
-    protected void pickAttackPos(){
+    protected void pickAttackPos() {
         attackPos = target.position();
         Level level = holder.level;
         BlockPos pos = new BlockPos(attackPos);
@@ -107,25 +107,31 @@ public class LightningComboAttackGoal extends Goal {
 
     @Override
     public void tick() {
-        if(attacks <= 0) return;
+        if (attacks <= 0) return;
 
         Level level = holder.level;
-        if(wasBlocked > 0){
+
+        if (target != null) {
+            holder.getLookControl().setLookAt(target, 30, 30);
+        }
+
+        if (wasBlocked > 0) {
             wasBlocked--;
 
             ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, holder.getX() - 1.5, holder.getY() - 1.5 + holder.getBbHeight() / 2, holder.getZ() - 1.5,
                     50 * wasBlocked / 30, 3, 3, 3, 0.5);
 
-            if(wasBlocked == 0) pickAttackPos();
+            if (wasBlocked == 0) pickAttackPos();
             return;
         }
 
-        if(castDuration > 0){
+        if (castDuration > 0) {
             castDuration--;
 
             if (holder.tickCount % 2 == 0) {
-                if(aboveWaterY != Integer.MAX_VALUE) ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, attackPos.x - 1, aboveWaterY, attackPos.z - 1,
-                        50, 2, 0.2, 2, 0.5);
+                if (aboveWaterY != Integer.MAX_VALUE)
+                    ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, attackPos.x - 1, aboveWaterY, attackPos.z - 1,
+                            50, 2, 0.2, 2, 0.5);
 
                 ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, attackPos.x - 1, attackPos.y, attackPos.z - 1,
                         50, 2, 0.2, 2, 0.5);
@@ -140,7 +146,7 @@ public class LightningComboAttackGoal extends Goal {
         holder.swing(InteractionHand.MAIN_HAND);
 
         SummonLightningGoal.lightning(holder.level, attackPos.x, attackPos.y, attackPos.z, 1);
-        if(attacks == 0){
+        if (attacks == 0) {
             SummonLightningGoal.lightning(level, attackPos.x + 0.75, attackPos.y, attackPos.z + 0.75, 0);
             SummonLightningGoal.lightning(level, attackPos.x + 0.75, attackPos.y, attackPos.z - 0.75, 0);
             SummonLightningGoal.lightning(level, attackPos.x - 0.75, attackPos.y, attackPos.z - 0.75, 0);
@@ -148,7 +154,7 @@ public class LightningComboAttackGoal extends Goal {
             applyKnockbackAndHurt(6, 2, 3);
         } else {
             castDuration = castDurationProvider.sample(random);
-            if(applyKnockbackAndHurt(4, 1, 1)) {
+            if (applyKnockbackAndHurt(4, 1, 1)) {
                 wasBlocked = 60;
             } else pickAttackPos();
         }
@@ -159,9 +165,9 @@ public class LightningComboAttackGoal extends Goal {
         float diameter = radius * 2;
         float radiusSqr = radius * radius;
         var list = level.getNearbyEntities(
-                        LivingEntity.class,
-                        TargetingConditions.forCombat().selector(target -> !target.is(holder)),
-                        holder, AABB.ofSize(attackPos, diameter, diameter, diameter)
+                LivingEntity.class,
+                TargetingConditions.forCombat().selector(target -> !target.is(holder)),
+                holder, AABB.ofSize(attackPos, diameter, diameter, diameter)
         );
 
         boolean anyBlocked = false, blocked;
@@ -169,7 +175,7 @@ public class LightningComboAttackGoal extends Goal {
         Vec3 direction;
         for (LivingEntity livingEntity : list) {
             dist = (float) livingEntity.distanceToSqr(attackPos);
-            if(dist > radiusSqr) continue;
+            if (dist > radiusSqr) continue;
 
             dist = Mth.sqrt(dist);
             blocked = livingEntity.isDamageSourceBlocked(source);
@@ -178,7 +184,7 @@ public class LightningComboAttackGoal extends Goal {
 
             direction = livingEntity.position().subtract(attackPos).normalize();
             knockback = radius / dist * knockbackMul;
-            if(blocked) {
+            if (blocked) {
                 knockback *= 0.25f;
                 anyBlocked = true;
             }
@@ -190,7 +196,7 @@ public class LightningComboAttackGoal extends Goal {
             );
         }
 
-        if(anyBlocked){
+        if (anyBlocked) {
             level.playSound(null, holder, SoundEvents.TOTEM_USE, SoundSource.MASTER, 10, 1);
 
             knockback = knockbackMul * 0.5f;

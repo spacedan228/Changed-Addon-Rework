@@ -160,14 +160,45 @@ public class Experiment009Entity extends ChangedEntity {
     protected void registerGoals() {
         super.registerGoals();
 
-        goalSelector.addGoal(5, new ThunderStrikeGoal(this, UniformInt.of(80, 120),1.5f, 200));
-        goalSelector.addGoal(10, new ThunderDiveGoal(this, UniformInt.of(60, 100), 1.5f, 6f, 1f,0.5f, 4));
+        goalSelector.addGoal(5, new ThunderStrikeGoal(
+                this,
+                UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+                1.5f,
+                200));
+        goalSelector.addGoal(10, new ThunderDiveGoal(this,
+                UniformInt.of(60, 100), //IntProvider -> cooldownProvider
+                1.5f,
+                6f,
+                1f,
+                0.5f,
+                4));
 
         //Basically perfect, damn... well done 0senia0
-        goalSelector.addGoal(5, new SummonLightningGoal(this, UniformInt.of(90, 150), UniformInt.of(2, 4), UniformInt.of(60, 100), UniformInt.of(80, 100), ConstantFloat.of(10)));
-        goalSelector.addGoal(5, new StaticDischargeGoal(this, UniformInt.of(75, 125), 4, UniformInt.of(30, 50), 8, UniformFloat.of(8, 12)));
-        goalSelector.addGoal(1, new InductionCoilGoal(this, UniformInt.of(100, 150), 20, UniformInt.of(60, 80), UniformFloat.of(3, 5)));
-        goalSelector.addGoal(5, new LightningComboAttackGoal(this, UniformInt.of(150, 200), UniformInt.of(3, 6), UniformInt.of(40, 60), UniformFloat.of(6, 8)));
+        goalSelector.addGoal(5, new SummonLightningGoal(this, //PathfinderMob -> holder,
+                UniformInt.of(90, 150), //IntProvider -> cooldown,
+                UniformInt.of(2, 4), //IntProvider -> lightningCount,
+                UniformInt.of(60, 100), //IntProvider -> castDuration,
+                UniformInt.of(80, 100), //IntProvider -> lightningDelay,
+                ConstantFloat.of(10))); //FloatProvider -> damage
+
+        goalSelector.addGoal(5, new StaticDischargeGoal(this,//PathfinderMob holder,
+                UniformInt.of(75, 125), //IntProvider -> cooldown,
+                4,
+                UniformInt.of(30, 50), //IntProvider -> castDuration,
+                8,
+                UniformFloat.of(8, 12))); //FloatProvider -> damage
+
+        goalSelector.addGoal(1, new InductionCoilGoal(this, //PathfinderMob -> holder
+                UniformInt.of(100, 150), //IntProvider -> cooldown
+                20,
+                UniformInt.of(60, 80), //IntProvider -> duration
+                UniformFloat.of(3, 5))); //FloatProvider -> damage
+
+        goalSelector.addGoal(5, new LightningComboAttackGoal(this, //PathfinderMob -> holder,
+                UniformInt.of(150, 200), //IntProvider -> cooldown,
+                UniformInt.of(3, 6), //IntProvider -> attackCount,
+                UniformInt.of(20, 40), //IntProvider -> castDuration,
+                UniformFloat.of(6, 8))); //FloatProvider -> damage) {
     }
 
     @Override

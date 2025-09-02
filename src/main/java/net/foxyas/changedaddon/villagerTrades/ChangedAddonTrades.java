@@ -17,6 +17,7 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ChangedAddonTrades {
+
     @SubscribeEvent
     public static void registerTrades(VillagerTradesEvent event) {
         if (event.getType() == ChangedAddonVillagerProfessions.SCIENTIST.get()) {
@@ -34,6 +35,7 @@ public class ChangedAddonTrades {
             event.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.IRON_INGOT, 1), new ItemStack(ChangedItems.SYRINGE.get(), 4), 12, 5, 0.02f));
             event.getTrades().get(1).add(new BasicItemListing(new ItemStack(ChangedItems.SYRINGE.get(), 8), new ItemStack(Items.EMERALD, 1), 8, 5, 0.02f));
             event.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.EMERALD, 4), new ItemStack(ChangedAddonItems.IMPURE_AMMONIA.get(), 2), 16, 15, 0.02f));
+            event.getTrades().get(1).add(new BasicItemListing(new ItemStack(Items.EMERALD, 8), new ItemStack(ChangedAddonItems.IMPURE_AMMONIA.get(), 1), new ItemStack(ChangedAddonItems.AMMONIA_PARTICLE.get(), 6), 8, 10, 0.02f));
 
             // Level 2 Trades
             event.getTrades().get(2).add(new BasicItemListing(new ItemStack(ChangedItems.DARK_LATEX_MASK.get()), new ItemStack(Items.EMERALD, 3), 12, 10, 0.02f));
