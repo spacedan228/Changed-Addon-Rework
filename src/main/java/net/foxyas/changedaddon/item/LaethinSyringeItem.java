@@ -83,10 +83,8 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
         PlayerUtil.UnTransfurPlayer(player);
 
         // Optional: Reset advancement
-        if (playerVars.resetTransfurAdvancements && !player.level.isClientSide() && player.getServer() != null) {
-            DelayedTask.schedule(10, () ->
-                    player.getServer().getCommands().performCommand(player.createCommandSourceStack().withSuppressedOutput().withPermission(4),
-                            "advancement revoke @s from minecraft:changed/transfur"));
+        if (playerVars.resetTransfurAdvancements && player instanceof ServerPlayer sp) {
+            resetAdvancement(sp, "minecraft:changed/transfur");
         }
 
         // Apply blindness/confusion if in survival or adventure
@@ -106,6 +104,16 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
 
     protected void applyMobEffect(Player entity, MobEffect effect, int duration) {
         entity.addEffect(new MobEffectInstance(effect, duration, 0, false, false));
+    }
+
+    private void resetAdvancement(ServerPlayer player, String id) {
+        Advancement adv = player.server.getAdvancements().getAdvancement(new ResourceLocation(id));
+        if (adv == null) return;
+
+        AdvancementProgress progress = player.getAdvancements().getOrStartProgress(adv);
+        for (String criteria : progress.getCompletedCriteria()) {
+            player.getAdvancements().revoke(adv, criteria);
+        }
     }
 
     protected void grantAdvancementIfNotDone(ServerPlayer player, String advancementId) {
