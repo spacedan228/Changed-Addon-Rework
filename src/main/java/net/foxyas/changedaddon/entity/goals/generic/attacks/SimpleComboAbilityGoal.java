@@ -1,12 +1,17 @@
 package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
 import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -260,11 +265,30 @@ public class SimpleComboAbilityGoal extends Goal {
                 serverLevel.sendParticles(impactParticle[type], pos.x, pos.y, pos.z, 3, 0, 0, 0, 0);
             }
 
+            if (type != 1 && type != 2 && attacker instanceof ChangedEntity changedEntity) {
+                if (changedEntity.getSelfVariant() != null && changedEntity.getSelfVariant().is(ChangedAddonTags.TransfurTypes.HAS_CLAWS)) {
+                    if (changedEntity.getMainHandItem().isEmpty()) {
+                        doClawsAttackEffect(changedEntity);
+                    }
+                }
+            }
+
             if (type != 1 && type != 2 && attacker instanceof VoidFoxEntity voidFoxEntity) {
                 if (voidFoxEntity.getMainHandItem().isEmpty()) {
                     voidFoxEntity.doClawsAttackEffect();
                 }
             }
+        }
+    }
+
+    public void doClawsAttackEffect(LivingEntity boss) {// Efeito visual
+        double d0 = (double) (-Mth.sin(boss.getYRot() * 0.017453292F)) * 1;
+        double d1 = (double) Mth.cos(boss.getYRot() * 0.017453292F) * 1;
+        if (boss.level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK, boss.getX() + d0, boss.getY(0.5), boss.getZ() + d1, 0, d0, 0.0, d1, 0.0);
+            serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK, boss.getX() + d0, boss.getY(0.6), boss.getZ() + d1, 0, d0, 0.0, d1, 0.0);
+            serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK, boss.getX() + d0, boss.getY(0.7), boss.getZ() + d1, 0, d0, 0.0, d1, 0.0);
+            boss.level.playSound(null, boss.getX(), boss.getY(), boss.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1f, 0.75f);
         }
     }
 }

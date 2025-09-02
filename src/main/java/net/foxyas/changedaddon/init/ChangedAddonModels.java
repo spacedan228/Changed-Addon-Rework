@@ -8,9 +8,12 @@ import net.foxyas.changedaddon.client.model.armors.ArmorLuminaraFlowerBeastModel
 import net.foxyas.changedaddon.client.model.armors.DarkLatexCoatModel;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
 import net.foxyas.changedaddon.client.model.simple.LatexCalicoCatModel;
+import net.foxyas.changedaddon.client.model.simple.LatexWhiteSnowLeopardFemaleModel;
+import net.foxyas.changedaddon.client.model.simple.LatexWhiteSnowLeopardMaleModel;
 import net.foxyas.changedaddon.client.model.simple.MongooseModel;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.ContainmentContainerRenderer;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.SnepPlushBlockEntityRenderer;
+import net.foxyas.changedaddon.entity.simple.LatexWhiteSnowLeopardFemale;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -83,8 +86,10 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(BorealisFemaleModel.LAYER_LOCATION, BorealisFemaleModel::createBodyLayer);
         event.registerLayerDefinition(PrototypeModel.LAYER_LOCATION, PrototypeModel::createBodyLayer);
         event.registerLayerDefinition(PinkCyanSkunkModel.LAYER_LOCATION, PinkCyanSkunkModel::createBodyLayer);
-        event.registerLayerDefinition(LatexWindCatFemaleModel.LAYER_LOCATION, LatexWindCatFemaleModel::createBodyLayer);
         event.registerLayerDefinition(LatexWindCatMaleModel.LAYER_LOCATION, LatexWindCatMaleModel::createBodyLayer);
+        event.registerLayerDefinition(LatexWindCatFemaleModel.LAYER_LOCATION, LatexWindCatFemaleModel::createBodyLayer);
+        event.registerLayerDefinition(LatexWhiteSnowLeopardMaleModel.LAYER_LOCATION, LatexWhiteSnowLeopardMaleModel::createBodyLayer);
+        event.registerLayerDefinition(LatexWhiteSnowLeopardFemaleModel.LAYER_LOCATION, LatexWhiteSnowLeopardFemaleModel::createBodyLayer);
         event.registerLayerDefinition(LuminaraFlowerBeastModel.LAYER_LOCATION, LuminaraFlowerBeastModel::createBodyLayer);
 
 

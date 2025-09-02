@@ -38,7 +38,7 @@ public class LatexWindCatFemaleEntity extends ChangedEntity implements GenderedE
     }
 
     public TransfurMode getTransfurMode() {
-        return TransfurMode.NONE;
+        return this.getRandom().nextBoolean() ? TransfurMode.ABSORPTION : TransfurMode.REPLICATION;
     }
 
     @Override

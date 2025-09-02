@@ -2,7 +2,9 @@ package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
+import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.WitherWave;
+import net.foxyas.changedaddon.entity.goals.exp9.LightningComboAttackGoal;
 import net.foxyas.changedaddon.entity.goals.generic.BurstAttack;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.DashPunchGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.LeapSmashGoal;
@@ -32,6 +34,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -203,6 +206,13 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     @Override
     protected void registerGoals() {
         super.registerGoals();
+
+        this.goalSelector.addGoal(5, new ClawsComboAttackGoal(this, //PathfinderMob -> holder,
+                UniformInt.of(150, 200), //IntProvider -> cooldown,
+                UniformInt.of(3, 6), //IntProvider -> attackCount,
+                UniformInt.of(20, 40), //IntProvider -> castDuration,
+                UniformFloat.of(6, 8))); //FloatProvider -> damage)
+
         this.goalSelector.addGoal(6, new BurstAttack(this));
         this.goalSelector.addGoal(6, new WitherWave(this, UniformInt.of(60, 120)));
         this.goalSelector.addGoal(6, new SimpleAntiFlyingAttack(this,

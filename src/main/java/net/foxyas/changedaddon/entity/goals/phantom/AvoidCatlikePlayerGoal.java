@@ -6,8 +6,10 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.animal.Cat;
 import net.minecraft.world.entity.monster.Phantom;
 import net.minecraft.world.entity.player.Player;
 
@@ -26,13 +28,33 @@ public class AvoidCatlikePlayerGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (phantom.getTarget() == null || !phantom.getTarget().isAlive()) return false;
-        return checkNearbyCatlikeEntities();
+        return phantom.getTarget() != null && ((PhantomAccessor) phantom).getAttackPhase() == Phantom.AttackPhase.SWOOP;
     }
 
     @Override
     public boolean canContinueToUse() {
-        return !isScared;
+        LivingEntity phantomTarget = phantom.getTarget();
+        if (phantomTarget == null) {
+            return false;
+        } else if (!phantomTarget.isAlive()) {
+            return false;
+        } else {
+            if (phantomTarget instanceof Player player) {
+                if (player.isSpectator() || player.isCreative()) {
+                    return false;
+                }
+            }
+            if (!this.canUse()) {
+                return false;
+            } else {
+                return checkNearbyCatlikeEntities();
+            }
+        }
+    }
+
+    @Override
+    public boolean requiresUpdateEveryTick() {
+        return true;
     }
 
     @Override

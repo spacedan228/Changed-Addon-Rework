@@ -558,6 +558,16 @@ public class ChangedAddonEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
+    public static final RegistryObject<EntityType<LatexWhiteSnowLeopardMale>> LATEX_WHITE_SNOW_LEOPARD_MALE = registerChangedEntity("latex_white_snow_leopard_male",
+            EntityType.Builder.of(LatexWhiteSnowLeopardMale::new, ChangedMobCategories.CHANGED)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F));
+
+    public static final RegistryObject<EntityType<LatexWhiteSnowLeopardFemale>> LATEX_WHITE_SNOW_LEOPARD_FEMALE = registerChangedEntity("latex_white_snow_leopard_female",
+            EntityType.Builder.of(LatexWhiteSnowLeopardFemale::new, ChangedMobCategories.CHANGED)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F));
+
     public static final RegistryObject<EntityType<LuminaraFlowerBeastEntity>> LUMINARA_FLOWER_BEAST = registerChangedEntity("luminara_flower_beast",
             EntityType.Builder.<LuminaraFlowerBeastEntity>of(LuminaraFlowerBeastEntity::new, ChangedMobCategories.CHANGED)
                     .clientTrackingRange(10)
@@ -615,6 +625,8 @@ public class ChangedAddonEntities {
         event.put(PINK_CYAN_SKUNK.get(), PinkCyanSkunkEntity.createLatexAttributes().build());
         event.put(LATEX_WIND_CAT_FEMALE.get(), LatexWindCatFemaleEntity.createLatexAttributes().build());
         event.put(LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleEntity.createLatexAttributes().build());
+        event.put(LATEX_WHITE_SNOW_LEOPARD_MALE.get(), LatexWhiteSnowLeopardMale.createLatexAttributes().build());
+        event.put(LATEX_WHITE_SNOW_LEOPARD_FEMALE.get(), LatexWhiteSnowLeopardFemale.createLatexAttributes().build());
         event.put(LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastEntity.createAttributes().build());
     }
 
@@ -671,6 +683,8 @@ public class ChangedAddonEntities {
             BorealisFemaleEntity.init();
             LatexWindCatFemaleEntity.init();
             LatexWindCatMaleEntity.init();
+            LatexWhiteSnowLeopardMale.init();
+            LatexWhiteSnowLeopardFemale.init();
             LuminaraFlowerBeastEntity.init();
         });
     }

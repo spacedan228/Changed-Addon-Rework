@@ -11,7 +11,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexWindCatMaleEntity extends ChangedEntity implements GenderedEntity, PowderSnowWalkable{
+public class LatexWindCatMaleEntity extends ChangedEntity implements GenderedEntity, PowderSnowWalkable {
 
     public LatexWindCatMaleEntity(EntityType<? extends LatexWindCatMaleEntity> p_19870_, Level level) {
         super(p_19870_, level);
@@ -38,7 +38,7 @@ public class LatexWindCatMaleEntity extends ChangedEntity implements GenderedEnt
     }
 
     public TransfurMode getTransfurMode() {
-        return TransfurMode.NONE;
+        return this.getRandom().nextBoolean() ? TransfurMode.ABSORPTION : TransfurMode.REPLICATION;
     }
 
     @Override
