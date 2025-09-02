@@ -1,11 +1,14 @@
 package net.foxyas.changedaddon.process.features;
 
+import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.init.ChangedParticles;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
@@ -15,6 +18,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class ProcessPatFeature {
 
@@ -67,6 +71,17 @@ public class ProcessPatFeature {
             Player player = event.player;
             LivingEntity target = event.target;
 
+            if (player.getLevel() instanceof ServerLevel serverLevel) {
+                if (target instanceof ChangedEntity changedEntity && !ProcessTransfur.isPlayerTransfurred(player)) {
+                    if (!PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
+                        Random random = changedEntity.getRandom();
+                        if (random.nextFloat() <= 0.0001f) {
+                            changedEntity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600, 0, true, false, true), player);
+                        }
+                    }
+                }
+            }
+
             if (!player.level.isClientSide()) {
                 player.displayClientMessage(new TranslatableComponent("key.changed_addon.pat_message", target.getDisplayName().getString()), true);
                 if (target instanceof Player targetPlayer) {
@@ -79,6 +94,12 @@ public class ProcessPatFeature {
             } else {
                 SpawnEmote(player, target);
             }
+
+
+
+
+
+
         }
     }
 
