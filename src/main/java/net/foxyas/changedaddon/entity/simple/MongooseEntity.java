@@ -54,7 +54,7 @@ public class MongooseEntity extends AbstractBasicChangedEntity implements Custom
     }
 
     @Override
-    public void WhenPattedReaction(Player patter, InteractionHand hand, Vec3 pattedLocation) {
+    public void WhenPattedReactionSpecific(Player patter, InteractionHand hand, Vec3 pattedLocation) {
         ChangedAnimationEvents.broadcastEntityAnimation(this, ChangedAddonAnimationEvents.PAT_REACTION.get(), PatReactionAnimationParameters.INSTANCE);
     }
 }

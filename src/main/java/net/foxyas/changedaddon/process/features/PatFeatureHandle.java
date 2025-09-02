@@ -87,9 +87,9 @@ public class PatFeatureHandle {
         player.swing(emptyHand);
         if(!(target instanceof CustomPatReaction pat)) return;
 
-        pat.WhenPattedReaction(player, emptyHand, entityHitResult.getLocation());
+        pat.WhenPattedReactionSpecific(player, emptyHand, entityHitResult.getLocation());
         pat.WhenPattedReaction(player, emptyHand);
-        pat.WhenPattedReaction();
+        pat.WhenPattedReactionSimple();
     }
 
     private static void handleLatexEntity(Player player, InteractionHand emptyHand, ChangedEntity target, EntityHitResult entityHitResult, Level level) {
@@ -103,12 +103,13 @@ public class PatFeatureHandle {
         TransfurVariantInstance<?> selfTF = ProcessTransfur.getPlayerTransfurVariant(player);
         if (selfTF != null && selfTF.getChangedEntity() instanceof CustomPatReaction playerPat) {
             playerPat.WhenPatEvent(player, emptyHand, target);
+            playerPat.WhenPatEventSpecific(player, emptyHand, target, entityHitResult);
         }
 
         if (target instanceof CustomPatReaction e) {
-            e.WhenPattedReaction(player, emptyHand, entityHitResult.getLocation());
+            e.WhenPattedReactionSpecific(player, emptyHand, entityHitResult.getLocation());
             e.WhenPattedReaction(player, emptyHand);
-            e.WhenPattedReaction();
+            e.WhenPattedReactionSimple();
         }
 
         if (player instanceof ServerPlayer sp) GiveStealthPatAdvancement(sp, target);
@@ -129,9 +130,9 @@ public class PatFeatureHandle {
         }
 
         if (targetTF != null && targetTF.getChangedEntity() instanceof CustomPatReaction TargetPat) {
-            TargetPat.WhenPattedReaction(player, emptyHand, entityHitResult.getLocation());
+            TargetPat.WhenPattedReactionSpecific(player, emptyHand, entityHitResult.getLocation());
             TargetPat.WhenPattedReaction(player, emptyHand);
-            TargetPat.WhenPattedReaction();
+            TargetPat.WhenPattedReactionSimple();
             //p.displayClientMessage(new TextComponent("pat_message:" + target.getDisplayName().getString()), false);
         }
 
