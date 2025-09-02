@@ -65,6 +65,7 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
     public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
         super.tick(pState, pLevel, pPos, pRandom);
         tryToPacifyNearbyEntities(pState, pLevel, pPos, 128);
+        pLevel.scheduleTick(pPos, this, 10);
     }
 
     public void tryToPacifyNearbyEntities(BlockState pState, ServerLevel pLevel, BlockPos pPos, double range) {

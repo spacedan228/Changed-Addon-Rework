@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity.goals;
 
-import net.foxyas.changedaddon.entity.goals.phantom.AvoidCatlikePlayerGoal;
+import net.foxyas.changedaddon.entity.goals.phantom.AvoidCatlikeOrCatGoal;
 import net.minecraft.world.entity.monster.Phantom;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +13,6 @@ public class PhantomAIMixin {
     @Inject(method = "registerGoals", at = @At("TAIL"))
     private void addCustomAI(CallbackInfo ci) {
         Phantom thisFixed = ((Phantom) (Object) this);
-        thisFixed.targetSelector.addGoal(3, new AvoidCatlikePlayerGoal(thisFixed));
+        thisFixed.targetSelector.addGoal(3, new AvoidCatlikeOrCatGoal(thisFixed));
     }
 }
