@@ -167,6 +167,7 @@ public class Experiment009Entity extends ChangedEntity {
         goalSelector.addGoal(5, new SummonLightningGoal(this, UniformInt.of(90, 150), UniformInt.of(2, 4), UniformInt.of(60, 100), UniformInt.of(80, 100), ConstantFloat.of(10)));
         goalSelector.addGoal(5, new StaticDischargeGoal(this, UniformInt.of(75, 125), 4, UniformInt.of(30, 50), 8, UniformFloat.of(8, 12)));
         goalSelector.addGoal(1, new InductionCoilGoal(this, UniformInt.of(100, 150), 20, UniformInt.of(60, 80), UniformFloat.of(3, 5)));
+        goalSelector.addGoal(5, new LightningComboAttackGoal(this, UniformInt.of(150, 200), UniformInt.of(3, 6), UniformInt.of(40, 60), UniformFloat.of(6, 8)));
     }
 
     @Override

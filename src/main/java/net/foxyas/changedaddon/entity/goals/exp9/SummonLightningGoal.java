@@ -143,10 +143,12 @@ public class SummonLightningGoal extends Goal {
         aboveWaterPos = null;
     }
 
-    protected void lightning(Level level, double x, double y, double z, float damage) {
+    public static void lightning(Level level, double x, double y, double z, float damage) {
         LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
         lightning.moveTo(x, y, z);
-        lightning.setDamage(damage);
+        if(damage > 0) {
+            lightning.setDamage(damage);
+        } else lightning.setVisualOnly(true);
         level.addFreshEntity(lightning);
     }
 
@@ -160,9 +162,7 @@ public class SummonLightningGoal extends Goal {
 
         Vec3 direction;
         for (LivingEntity livingEntity : list) {
-            direction = livingEntity.position().subtract(strikePos);
-
-            direction = direction.normalize();
+            direction = livingEntity.position().subtract(strikePos).normalize();
 
             float strength = 6f / (float) Math.sqrt(livingEntity.distanceToSqr(strikePos));
 
