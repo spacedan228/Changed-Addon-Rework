@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.abilities;
 
 import net.foxyas.changedaddon.entity.advanced.AbstractKitsuneEntity;
 import net.foxyas.changedaddon.util.FoxyasUtils;
-import net.foxyas.changedaddon.util.PlayerUtil;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.minecraft.core.particles.ParticleTypes;
@@ -90,7 +90,7 @@ public class TeleportAbility extends SimpleAbility {
     private void applyKitsuneTeleportEffects(IAbstractChangedEntity entity, Player player) {
         Color startColor = new Color(0xffeeee);
         Color endColor = new Color(0xFFCECE);
-        PlayerUtil.ParticlesUtil.sendColorTransitionParticles(player.getLevel(), player, startColor, endColor, 1, 0.25f, 0.25f, 0.25f, 10, 0.25f);
+        ParticlesUtil.sendColorTransitionParticles(player.getLevel(), player, startColor, endColor, 1, 0.25f, 0.25f, 0.25f, 10, 0.25f);
         Random random = entity.getLevel().getRandom();
         float pitch = random.nextFloat() + 1;
         float volume = 0.5f;

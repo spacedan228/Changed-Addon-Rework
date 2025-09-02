@@ -2,7 +2,11 @@ package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
-import net.foxyas.changedaddon.entity.goals.*;
+import net.foxyas.changedaddon.entity.goals.generic.attacks.ComboAbilityGoal;
+import net.foxyas.changedaddon.entity.goals.generic.attacks.KnockBackBurstGoal;
+import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleComboAbilityGoal;
+import net.foxyas.changedaddon.entity.goals.void_fox.VoidFoxAntiFlyingAttack;
+import net.foxyas.changedaddon.entity.goals.void_fox.VoidFoxDashAttack;
 import net.foxyas.changedaddon.entity.interfaces.CrawlFeature;
 import net.foxyas.changedaddon.entity.interfaces.IHasBossMusic;
 import net.foxyas.changedaddon.entity.projectile.AbstractGenericParticleProjectile;
@@ -19,7 +23,6 @@ import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.ChatFormatting;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -158,7 +161,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(10, new SimpleAntiFlyingAttack(this, 0, 32f, 1f, 40) {
+        this.goalSelector.addGoal(10, new VoidFoxAntiFlyingAttack(this, 0, 32f, 1f, 40) {
             @Override
             public void start() {
                 super.start();

@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals;
+package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -86,7 +86,7 @@ public class LeapSmashGoal extends Goal {
             if (leapTicks >= 40) {
                 Vec3 motion = mob.getDeltaMovement();
                 double verticalBoost = -0.5f;
-
+                mob.getLookControl().setLookAt(motion.x, verticalBoost, motion.z, 30, 30);
                 mob.setDeltaMovement(motion.x, verticalBoost, motion.z);
             }
         }

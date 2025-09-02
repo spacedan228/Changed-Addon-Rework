@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals;
+package net.foxyas.changedaddon.entity.goals.void_fox;
 
 import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
 import net.foxyas.changedaddon.entity.projectile.ParticleProjectile;
@@ -27,7 +27,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class SimpleAntiFlyingAttack extends Goal {
+public class VoidFoxAntiFlyingAttack extends Goal {
     private final Mob attacker;
     private final int delay;
     private final float minRange;
@@ -37,7 +37,7 @@ public class SimpleAntiFlyingAttack extends Goal {
     private LivingEntity target;
     private int ticks = 0;
 
-    public SimpleAntiFlyingAttack(Mob attacker, float minRange, float maxRange, float damage, int delay) {
+    public VoidFoxAntiFlyingAttack(Mob attacker, float minRange, float maxRange, float damage, int delay) {
         this.attacker = attacker;
         this.minRange = minRange;
         this.maxRange = maxRange;

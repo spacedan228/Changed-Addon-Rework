@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.entity.defaults.AbstractCanTameSnepChangedEntity;
-import net.foxyas.changedaddon.entity.goals.SleepingWithOwnerGoal;
+import net.foxyas.changedaddon.entity.goals.simple.SleepingWithOwnerGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.Gender;

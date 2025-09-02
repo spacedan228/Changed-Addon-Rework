@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon;
 
-import net.foxyas.changedaddon.util.PlayerUtil;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.ltxprogrammer.changed.init.ChangedSounds;
@@ -15,7 +15,6 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class DashAbility extends SimpleAbility {
 
@@ -76,7 +75,7 @@ public class DashAbility extends SimpleAbility {
                         player.getSoundSource(), 2.5F, 0);
             }
             if (player.getLevel() instanceof ServerLevel serverLevel) {
-                PlayerUtil.ParticlesUtil.sendParticles(serverLevel, ParticleTypes.POOF, player.getEyePosition(), (float) motion.x(), (float) motion.y(), (float) motion.z(), 0, 1);
+                ParticlesUtil.sendParticles(serverLevel, ParticleTypes.POOF, player.getEyePosition(), (float) motion.x(), (float) motion.y(), (float) motion.z(), 0, 1);
             }
         }
     }

@@ -6,12 +6,13 @@ import net.foxyas.changedaddon.effect.particles.ChangedAddonParticles;
 import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
 import net.foxyas.changedaddon.entity.customHandle.Exp9AttacksHandle;
 import net.foxyas.changedaddon.entity.goals.exp9.*;
+import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.entity.interfaces.BossWithMusic;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
-import net.foxyas.changedaddon.util.PlayerUtil;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
@@ -209,6 +210,12 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(6, new SimpleAntiFlyingAttack(this,
+                UniformInt.of(60, 100),
+                3,
+                8,
+                8f,
+                10));
         this.goalSelector.addGoal(6, new Exp9AttacksHandle.BurstAttack(this));
         this.goalSelector.addGoal(10, new Exp9AttacksHandle.ThunderStorm(this, UniformInt.of(60, 100)));
 
@@ -478,7 +485,7 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
                     double y = this.getY() + Math.cos(anglePhi) * 4.0;
                     double z = this.getZ() + Math.sin(anglePhi) * Math.sin(angleTheta) * 4.0;
                     Vec3 pos = new Vec3(x, y, z);
-                    PlayerUtil.ParticlesUtil.sendParticles(
+                    ParticlesUtil.sendParticles(
                             entityDamageSource.getDirectEntity().getLevel(),
                             ParticleTypes.ELECTRIC_SPARK,
                             pos,
@@ -502,16 +509,16 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
             if (this.getRandom().nextFloat() < 1 - Math.min(0.95, computeHealthRatio())) {
                 if (this.isPhase2()) {
                     if (this.shouldBleed) {
-                        PlayerUtil.ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.01f);
-                        PlayerUtil.ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.05f);
+                        ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.01f);
+                        ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.05f);
                     } else {
                         if (this.getRandom().nextFloat() > 0.95) {
-                            PlayerUtil.ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 10, 0.01f);
+                            ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 10, 0.01f);
                         }
-                        PlayerUtil.ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 10, 1);
+                        ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 10, 1);
                     }
                 } else {
-                    PlayerUtil.ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 5, 1);
+                    ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 5, 1);
                 }
             }
 
@@ -614,7 +621,7 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
             lightning.setCause(null);
             lightning.setDamage(6f);
             this.level.addFreshEntity(lightning);
-            PlayerUtil.ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
+            ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
         }
     }
 
@@ -624,7 +631,7 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
             lightning.moveTo(pos.x(), pos.y(), pos.z());
             lightning.setCause(null);
             this.level.addFreshEntity(lightning);
-            PlayerUtil.ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
+            ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
         }
     }
 
@@ -700,7 +707,7 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
         translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp9.pat.type_2"));
         translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp9.pat.type_3"));
 
-        PlayerUtil.ParticlesUtil.sendParticles(player.getLevel(),
+        ParticlesUtil.sendParticles(player.getLevel(),
                 ChangedParticles.emote(this, Emote.ANGRY),
                 this.getX(),
                 this.getY() + (double) this.getDimensions(this.getPose()).height + 0.65,

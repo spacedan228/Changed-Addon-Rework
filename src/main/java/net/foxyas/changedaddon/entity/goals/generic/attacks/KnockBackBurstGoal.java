@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals;
+package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;

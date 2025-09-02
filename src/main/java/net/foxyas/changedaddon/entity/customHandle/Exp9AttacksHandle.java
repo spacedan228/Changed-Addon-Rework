@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.entity.customHandle;
 import net.foxyas.changedaddon.effect.particles.ChangedAddonParticles;
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.util.DelayedTask;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -149,7 +150,7 @@ public class Exp9AttacksHandle {
             for (int i = 0; i <= maxAmount; i++) {
                 double ratio = (double) i / maxAmount;
                 Vec3 spawnPos = this.boss.getEyePosition().add(posDifference.scale(ratio));
-                PlayerUtil.ParticlesUtil.sendParticles(
+                ParticlesUtil.sendParticles(
                         this.boss.getLevel(),
                         ChangedAddonParticles.thunderSpark(1),
                         spawnPos,
@@ -377,7 +378,7 @@ public class Exp9AttacksHandle {
             for (int i = 0; i <= maxAmount; i++) {
                 double ratio = (double) i / maxAmount;
                 Vec3 spawnPos = this.boss.getEyePosition().add(posDifference.scale(ratio));
-                PlayerUtil.ParticlesUtil.sendParticles(
+                ParticlesUtil.sendParticles(
                         this.boss.getLevel(),
                         ChangedAddonParticles.thunderSpark(1),
                         spawnPos,

@@ -2,18 +2,19 @@ package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
-import net.foxyas.changedaddon.entity.goals.DashPunchGoal;
-import net.foxyas.changedaddon.entity.goals.LeapSmashGoal;
+import net.foxyas.changedaddon.entity.goals.exp10.WitherWave;
+import net.foxyas.changedaddon.entity.goals.generic.BurstAttack;
+import net.foxyas.changedaddon.entity.goals.generic.attacks.DashPunchGoal;
+import net.foxyas.changedaddon.entity.goals.generic.attacks.LeapSmashGoal;
+import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.entity.interfaces.BossWithMusic;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -31,6 +32,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -68,7 +70,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.RED, ServerBossEvent.BossBarOverlay.NOTCHED_6);
     private float TpCooldown;
 
-    public Experiment10BossEntity(PlayMessages.SpawnEntity packet, Level world) {
+    public Experiment10BossEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXPERIMENT_10_BOSS.get(), world);
     }
 
@@ -201,6 +203,14 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(6, new BurstAttack(this));
+        this.goalSelector.addGoal(6, new WitherWave(this, UniformInt.of(60, 120)));
+        this.goalSelector.addGoal(6, new SimpleAntiFlyingAttack(this,
+                UniformInt.of(60, 100),
+                3,
+                8,
+                8f,
+                10));
         this.goalSelector.addGoal(10, new LeapSmashGoal(this));
         this.goalSelector.addGoal(15, new DashPunchGoal(this));
     }

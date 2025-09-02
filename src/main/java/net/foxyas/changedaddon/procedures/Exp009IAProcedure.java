@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.procedures;
 
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
-import net.foxyas.changedaddon.util.PlayerUtil;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -403,7 +403,7 @@ public class Exp009IAProcedure {
                 }
             }
             if ((entity instanceof LivingEntity _livEnt ? _livEnt.getHealth() : -1) <= (entity instanceof LivingEntity _livEnt ? _livEnt.getMaxHealth() : -1) * 0.5833) {// Summon Particle
-                PlayerUtil.ParticlesUtil.sendColorTransitionParticles(entity.getLevel(), entity.getX(), entity.getY(), entity.getZ(), 0.0f, 0.57f, 0.82f, // Cores inicial em escala 0-1
+                ParticlesUtil.sendColorTransitionParticles(entity.getLevel(), entity.getX(), entity.getY(), entity.getZ(), 0.0f, 0.57f, 0.82f, // Cores inicial em escala 0-1
                         0.0f, 0.69f, 0.78f, // Cores final em escala 0-1
                         1.0f, // Tamanho da partícula
                         0.2f, // Velocidade X

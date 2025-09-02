@@ -2,9 +2,8 @@ package net.foxyas.changedaddon.entity.advanced.handle;
 
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
 import net.foxyas.changedaddon.util.DelayedTask;
-import net.foxyas.changedaddon.util.PlayerUtil;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.particles.ParticleTypes;
@@ -90,7 +89,7 @@ public class VoidTransformationHandler {
                             double y = player.getY() + Math.cos(anglePhi) * radius;
                             double z = player.getZ() + Math.sin(anglePhi) * Math.sin(angleTheta) * radius;
                             Vec3 pos = new Vec3(x, y, z);
-                            PlayerUtil.ParticlesUtil.sendParticlesWithMotion(
+                            ParticlesUtil.sendParticlesWithMotion(
                                     player.getLevel(),
                                     ParticleTypes.REVERSE_PORTAL,
                                     pos,

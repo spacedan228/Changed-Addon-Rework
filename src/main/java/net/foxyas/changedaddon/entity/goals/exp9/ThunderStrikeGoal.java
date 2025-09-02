@@ -87,7 +87,7 @@ public class ThunderStrikeGoal extends Goal {
                         lightning.setCause((ServerPlayer) changedEntity.getUnderlyingPlayer());
                     }
                     lightning.setDamage(10);
-                    PlayerUtil.ParticlesUtil.sendParticles(pathfinderMob.getLevel(), ChangedAddonParticles.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
+                    ParticlesUtil.sendParticles(pathfinderMob.getLevel(), ChangedAddonParticles.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
                     pathfinderMob.getLookControl().setLookAt(lightning, 30, 30);
                     DelayedTask.schedule(10, () -> {
                         pathfinderMob.getLevel().addFreshEntity(lightning);

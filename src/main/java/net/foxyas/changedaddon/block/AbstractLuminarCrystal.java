@@ -4,7 +4,7 @@ import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.util.PlayerUtil;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.block.AbstractLatexIceBlock;
 import net.ltxprogrammer.changed.block.TransfurCrystalBlock;
@@ -81,7 +81,7 @@ public class AbstractLuminarCrystal {
         double d3 = i == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
         double d4 = j == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
         double d5 = k == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        PlayerUtil.ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, 0.05, 0.05, 0.05, count, particleSpeed);
+        ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, 0.05, 0.05, 0.05, count, particleSpeed);
     }
 
     public static void spawnEndRodParticleOnFace(ServerLevel level, BlockPos pos, Direction direction, int count, float particleSpeed) {
@@ -96,7 +96,7 @@ public class AbstractLuminarCrystal {
         double d3 = i == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
         double d4 = j == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
         double d5 = k == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        PlayerUtil.ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, d3, d4, d5, count, particleSpeed);
+        ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, d3, d4, d5, count, particleSpeed);
     }
 
     public static void spawnSnowParticleOnFace(ServerLevel level, BlockPos pos, Direction direction, int count, float particleSpeed) {
@@ -111,7 +111,7 @@ public class AbstractLuminarCrystal {
         double d3 = i == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
         double d4 = j == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
         double d5 = k == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        PlayerUtil.ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, 0.2, 0.2, 0.2, count, particleSpeed);
+        ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, 0.2, 0.2, 0.2, count, particleSpeed);
     }
 
     public static abstract class Block extends AbstractLatexIceBlock {

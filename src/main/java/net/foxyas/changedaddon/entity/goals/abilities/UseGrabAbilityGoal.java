@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals;
+package net.foxyas.changedaddon.entity.goals.abilities;
 
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;

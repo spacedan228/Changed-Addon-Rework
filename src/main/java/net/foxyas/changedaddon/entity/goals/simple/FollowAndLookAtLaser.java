@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals;
+package net.foxyas.changedaddon.entity.goals.simple;
 
 import net.foxyas.changedaddon.item.LaserPointer;
 import net.ltxprogrammer.changed.entity.ChangedEntity;

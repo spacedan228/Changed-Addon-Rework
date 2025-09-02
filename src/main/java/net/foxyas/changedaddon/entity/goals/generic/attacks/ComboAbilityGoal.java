@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals;
+package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
 import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
 import net.minecraft.core.BlockPos;
@@ -20,9 +20,8 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.Random;
 
-public class SimpleComboAbilityGoal extends Goal {
+public class ComboAbilityGoal extends Goal {
     private final Mob attacker;
-    private final int maxPhases;
     private final Random random = new Random();
     private final float minRange;
     private final float maxRange;
@@ -35,11 +34,10 @@ public class SimpleComboAbilityGoal extends Goal {
     private int delay = 5;
     private boolean shouldEnd = false;
 
-    public SimpleComboAbilityGoal(Mob attacker, int phases, float minRange, float maxRange, float damage, int delay, SoundEvent[] impactSounds, ParticleOptions[] impactParticle) {
+    public ComboAbilityGoal(Mob attacker, float minRange, float maxRange, float damage, int delay, SoundEvent[] impactSounds, ParticleOptions[] impactParticle) {
         this.attacker = attacker;
         this.minRange = minRange;
         this.maxRange = maxRange;
-        this.maxPhases = phases;
         this.damage = damage;
         this.delay = delay;
         this.impactSound = impactSounds;
@@ -48,22 +46,6 @@ public class SimpleComboAbilityGoal extends Goal {
 
     public boolean isShouldEnd() {
         return shouldEnd;
-    }
-
-    public Mob getAttacker() {
-        return attacker;
-    }
-
-    public LivingEntity getTarget() {
-        return target;
-    }
-
-    public float getMinRange() {
-        return minRange;
-    }
-
-    public float getMaxRange() {
-        return maxRange;
     }
 
     @Override
@@ -82,14 +64,13 @@ public class SimpleComboAbilityGoal extends Goal {
         if (shouldEnd) {
             return false;
         }
-        return phase <= maxPhases && target != null && target.isAlive();
+        return phase <= 22 && target != null && target.isAlive();
     }
 
     @Override
     public void start() {
         phase = 0;
         ticks = 0;
-        shouldEnd = false;
         teleportToTarget();
     }
 
@@ -97,24 +78,11 @@ public class SimpleComboAbilityGoal extends Goal {
     public void tick() {
         ticks++;
         if (ticks % delay == 0) {
-            if (phase == 0) {
-                if (attacker.getRandom().nextFloat() >= 0.5f) {
-                    uppercut();
-                } else {
-                    teleportAndKnockback(1);
-                }
-            } else if (phase == maxPhases) {
-                slam();
-            } else {
-                if (!target.isOnGround()) {
-                    teleportAndKnockbackInAir(1);
-                } else {
-                    if (attacker.getRandom().nextFloat() >= 0.5f) {
-                        uppercut();
-                    } else {
-                        teleportAndKnockback(1);
-                    }
-                }
+            switch (phase) {
+                case 0, 1, 2, 3, 4 -> teleportAndKnockback(4f / Math.max(1, phase));
+                case 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 18, 19, 20, 21 -> teleportAndKnockbackInAir(1);
+                case 5, 11, 17 -> uppercut();
+                case 22 -> slam();
             }
             phase++;
         }
@@ -122,7 +90,7 @@ public class SimpleComboAbilityGoal extends Goal {
 
     @Override
     public void stop() {
-        if (shouldEnd && phase < maxPhases) {
+        if (shouldEnd && phase < 22) {
             slam();
         }
         if (!attacker.isOnGround()) {
@@ -139,8 +107,8 @@ public class SimpleComboAbilityGoal extends Goal {
     private void teleportToTarget() {
         if (target == null) return;
         attacker.teleportTo(target.getX(), target.getY(), target.getZ());
-        attacker.swing(InteractionHand.MAIN_HAND);
         attacker.lookAt(target, 1, 1);
+        attacker.swing(InteractionHand.MAIN_HAND);
         removeIframesFromTarget();
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage);
@@ -164,8 +132,8 @@ public class SimpleComboAbilityGoal extends Goal {
         attacker.teleportTo(target.getX(), target.getY(), target.getZ());
         Vec3 knockDir = attacker.getLookAngle().scale(strength).add(0, 0.2, 0);
         target.setDeltaMovement(knockDir);
-        attacker.swing(InteractionHand.MAIN_HAND);
         attacker.lookAt(target, 1, 1);
+        attacker.swing(InteractionHand.MAIN_HAND);
         removeIframesFromTarget();
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage / 2);
@@ -182,9 +150,8 @@ public class SimpleComboAbilityGoal extends Goal {
         attacker.teleportTo(target.getX(), target.getY(), target.getZ());
         Vec3 knockDir = attacker.getLookAngle().scale(strength).add(0, 0.2, 0);
         target.setDeltaMovement(knockDir);
-        attacker.swing(InteractionHand.MAIN_HAND);
         attacker.lookAt(target, 1, 1);
-
+        attacker.swing(InteractionHand.MAIN_HAND);
         removeIframesFromTarget();
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage / 2);
@@ -201,8 +168,8 @@ public class SimpleComboAbilityGoal extends Goal {
         if (target == null) return;
         attacker.teleportTo(target.getX(), target.getY(), target.getZ());
         target.setDeltaMovement(0, 1.5, 0);
-        attacker.swing(InteractionHand.MAIN_HAND);
         attacker.lookAt(target, 1, 1);
+        attacker.swing(InteractionHand.MAIN_HAND);
         removeIframesFromTarget();
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage);
@@ -219,8 +186,8 @@ public class SimpleComboAbilityGoal extends Goal {
         if (target == null) return;
         attacker.teleportTo(target.getX(), target.getY(), target.getZ());
         target.setDeltaMovement(0, -2, 0);
-        attacker.swing(InteractionHand.MAIN_HAND);
         attacker.lookAt(target, 1, 1);
+        attacker.swing(InteractionHand.MAIN_HAND);
         removeIframesFromTarget();
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage);

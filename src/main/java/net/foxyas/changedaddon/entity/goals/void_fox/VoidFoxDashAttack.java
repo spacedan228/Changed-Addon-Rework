@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals;
+package net.foxyas.changedaddon.entity.goals.void_fox;
 
 import net.foxyas.changedaddon.entity.projectile.ParticleProjectile;
 import net.minecraft.core.particles.ParticleTypes;

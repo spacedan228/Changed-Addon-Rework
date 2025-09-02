@@ -67,7 +67,7 @@ public class ChangedAddonLaethinminatorUtil {
         ).scale(speed); // Aplica velocidade
 
         // Envia a partícula para o nível
-        PlayerUtil.ParticlesUtil.sendParticles(level, particleType, particlePos, 0.15f, 0.15f, 0.15f, 2, 0f);
+        ParticlesUtil.sendParticles(level, particleType, particlePos, 0.15f, 0.15f, 0.15f, 2, 0f);
     }
 
 
@@ -88,7 +88,7 @@ public class ChangedAddonLaethinminatorUtil {
             BlockPos targetPos = new BlockPos(targetVec);
 
             Vec3 particlePos = eyePos.add(lookDir.scale(i * 0.5));
-            PlayerUtil.ParticlesUtil.sendParticles(world, particleOptions, particlePos, 0.25f, 0.25f, 0.25f, 2, 0f);
+            ParticlesUtil.sendParticles(world, particleOptions, particlePos, 0.25f, 0.25f, 0.25f, 2, 0f);
 
             // Verifica se o bloco é ar; se for, ignora essa fileira
             if (world.getBlockState(targetPos).isAir()) {
@@ -155,7 +155,7 @@ public class ChangedAddonLaethinminatorUtil {
                 ParticleOptions particleOptions = getParticleOptions(StartColor, EndColor);
 
                 // Adicionar partículas no bloco afetado
-                PlayerUtil.ParticlesUtil.sendParticles(world, particleOptions, pos, 0.25f, 0.25f, 0.25f, 1, 0f);
+                ParticlesUtil.sendParticles(world, particleOptions, pos, 0.25f, 0.25f, 0.25f, 1, 0f);
             }
         }
     }

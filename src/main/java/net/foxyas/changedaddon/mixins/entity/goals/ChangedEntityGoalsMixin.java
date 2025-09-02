@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity.goals;
 
-import net.foxyas.changedaddon.entity.goals.FollowAndLookAtLaser;
-import net.foxyas.changedaddon.entity.goals.SleepingWithOwnerGoal;
+import net.foxyas.changedaddon.entity.goals.simple.FollowAndLookAtLaser;
+import net.foxyas.changedaddon.entity.goals.simple.SleepingWithOwnerGoal;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;

@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals;
+package net.foxyas.changedaddon.entity.goals.simple;
 
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.entity.TamableLatexEntity;
