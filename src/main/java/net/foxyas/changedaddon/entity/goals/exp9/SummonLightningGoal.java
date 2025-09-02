@@ -145,6 +145,7 @@ public class SummonLightningGoal extends Goal {
 
     public static void lightning(Level level, double x, double y, double z, float damage) {
         LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
+        assert lightning != null;
         lightning.moveTo(x, y, z);
         if(damage > 0) {
             lightning.setDamage(damage);
