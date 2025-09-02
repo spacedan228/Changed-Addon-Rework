@@ -296,7 +296,7 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
         public static void WhenAttack(LivingAttackEvent event) {
             LivingEntity target = event.getEntityLiving();
             Entity source = event.getSource().getEntity();
-            if (event.getSource().getDirectEntity() instanceof Experiment009BossEntity experiment009BossEntity) {
+            if (source instanceof Experiment009BossEntity experiment009BossEntity) {
                 if (experiment009BossEntity.isPhase3()) {
                     experiment009BossEntity.heal(0.5f);
                 }

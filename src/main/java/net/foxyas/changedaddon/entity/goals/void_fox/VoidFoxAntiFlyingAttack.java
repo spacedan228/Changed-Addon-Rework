@@ -191,6 +191,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
         if (target instanceof Player player) {
             if (player.getAbilities().flying) {
                 player.getAbilities().flying = false;
+                player.onUpdateAbilities();
             }
         }
         attacker.teleportTo(target.getX(), target.getY(), target.getZ());

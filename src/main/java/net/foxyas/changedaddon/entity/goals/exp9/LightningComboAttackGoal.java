@@ -10,6 +10,7 @@ import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -31,12 +32,7 @@ public class LightningComboAttackGoal extends Goal {
     protected final IntProvider attackCountProvider;
     protected final IntProvider castDurationProvider;
     protected final FloatProvider damageProvider;
-    protected final DamageSource source = new DamageSource("lightningBolt") {
-        @Override
-        public @Nullable Vec3 getSourcePosition() {
-            return attackPos;
-        }
-    };
+    protected final DamageSource source;
 
     protected LivingEntity target;
     protected int cooldown;
@@ -53,6 +49,13 @@ public class LightningComboAttackGoal extends Goal {
         attackCountProvider = attackCount;
         castDurationProvider = castDuration;
         damageProvider = damage;
+
+        source = new EntityDamageSource("lightningBolt", holder) {
+            @Override
+            public @Nullable Vec3 getSourcePosition() {
+                return attackPos;
+            }
+        };
 
         setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
     }
