@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -109,11 +110,11 @@ public class Exp9AttacksHandle {
                 // Define a nova posição para o teleporte (levemente acima do chão para evitar clipagem)
                 Vec3 smashPos = new Vec3(x, groundY + 0.5, z);
 
-                // Teleporta o boss para o chão dinamicamente
+                // Teleporta o chefe para o chão dinamicamente
                 boss.teleportTo(smashPos.x, smashPos.y, smashPos.z);
                 boss.getLookControl().setLookAt(target, 30, 30);
                 boss.SpawnThunderBolt(smashPos);
-                boss.setAttackCoolDown(0);
+
             }
         }
 
@@ -121,7 +122,6 @@ public class Exp9AttacksHandle {
             SummonTeleportParticles();
             boss.teleportTo(target.position().x, target.position().y, target.position().z);
             boss.getLookControl().setLookAt(target, 30, 30);
-            boss.setAttackCoolDown(0);
             this.boss.swing(InteractionHand.MAIN_HAND);
             Vec3 newPos = target.position().add(0, 10, 0);
             if (target.isBlocking()) {
@@ -181,7 +181,7 @@ public class Exp9AttacksHandle {
             boss.swing(InteractionHand.MAIN_HAND);
             target.invulnerableTime = 0;
             target.hurt(boss.getThunderDmg(), 4);
-            boss.setAttackCoolDown(0);
+
 
             // Remove Slow Falling do boss e do target.
             //target.removeEffect(MobEffects.SLOW_FALLING);
@@ -288,10 +288,10 @@ public class Exp9AttacksHandle {
                 // Define a nova posição para o teleporte (levemente acima do chão para evitar clipagem)
                 Vec3 smashPos = new Vec3(x, groundY + 0.5, z);
 
-                // Teleporta o boss para o chão dinamicamente
+                // Teleporta o chefe para o chão dinamicamente
                 boss.teleportTo(smashPos.x, smashPos.y, smashPos.z);
                 boss.SpawnThunderBolt(smashPos);
-                boss.setAttackCoolDown(0);
+
             }
         }
 
@@ -299,7 +299,7 @@ public class Exp9AttacksHandle {
             SummonTeleportParticles();
             boss.teleportTo(target.position().x, target.position().y, target.position().z);
             boss.getLookControl().setLookAt(target, 30, 30);
-            boss.setAttackCoolDown(0);
+
             this.boss.swing(InteractionHand.MAIN_HAND);
             Vec3 knockDir = target.getLookAngle().scale(-1).add(0, 0.1f, 0);
             Vec3 newPos = target.position().add(0, 0, 0);
@@ -338,7 +338,7 @@ public class Exp9AttacksHandle {
             boss.swing(InteractionHand.MAIN_HAND);
             target.invulnerableTime = 0;
             target.hurt(boss.getThunderDmg(), 4);
-            boss.setAttackCoolDown(0);
+
 
             // Aplica Slow Falling no boss e no target por 4 segundos (80 ticks)
             MobEffectInstance slowFallingEffect = new MobEffectInstance(MobEffects.SLOW_FALLING, 40, 0, false, false);
@@ -360,7 +360,7 @@ public class Exp9AttacksHandle {
             boss.swing(InteractionHand.MAIN_HAND);
             target.invulnerableTime = 0;
             target.hurt(boss.getThunderDmg(), 4);
-            boss.setAttackCoolDown(0);
+
 
             // Remove Slow Falling do boss e do target.
             //target.removeEffect(MobEffects.SLOW_FALLING);
@@ -419,7 +419,7 @@ public class Exp9AttacksHandle {
             if (target == null) return false;
 
             double distance = this.boss.distanceTo(target);
-            return boss.getAttackCoolDown() >= 100 && distance < 5;
+            return distance < 5;
         }
 
         @Override
@@ -429,7 +429,7 @@ public class Exp9AttacksHandle {
 
         public void run() {
             thunderWave();
-            boss.setAttackCoolDown(0); // Reseta a AI
+             // Reseta a AI
         }
 
         public LivingEntity getTarget() {
@@ -467,7 +467,7 @@ public class Exp9AttacksHandle {
             if (target == null) return false;
 
             double distance = this.boss.distanceTo(target);
-            return boss.getAttackCoolDown() >= 100 && distance > 5;
+            return distance > 5;
         }
 
 
@@ -482,7 +482,7 @@ public class Exp9AttacksHandle {
 
         public void run() {
             thunderSpeed();
-            boss.setAttackCoolDown(0); // Reseta a AI
+             // Reseta a AI
         }
 
         private void thunderSpeed() {
@@ -520,7 +520,7 @@ public class Exp9AttacksHandle {
             if (target == null) return false;
 
             double distance = this.boss.distanceTo(target);
-            return boss.getAttackCoolDown() >= 100 && distance <= 10;
+            return distance <= 10;
         }
 
         @Override
@@ -530,7 +530,7 @@ public class Exp9AttacksHandle {
 
         public void run() {
             thunderShock();
-            boss.setAttackCoolDown(0); // Reseta a AI
+             // Reseta a AI
         }
 
         private void thunderShock() {
@@ -549,8 +549,8 @@ public class Exp9AttacksHandle {
                     Vec3 pos = startPos.add(endPos.subtract(startPos).scale(progress));
 
                     // Introduzindo variação aleatória para criar um efeito zig-zag
-                    double offsetX = (Math.random() - 0.5) * 0.5; // Variação aleatória lateral (±0.5)
-                    double offsetY = (Math.random() - 0.5) * 0.5; // Variação aleatória vertical (±0.5)
+                    double offsetX = (Math.random() - 0.5) * 0.5; // Variação aleatória lateral (±0,5)
+                    double offsetY = (Math.random() - 0.5) * 0.5; // Variação aleatória vertical (±0,5)
                     double offsetZ = (Math.random() - 0.5) * 0.5; // Variação aleatória ao longo do eixo Z
 
                     // Aplicando a variação
@@ -611,7 +611,7 @@ public class Exp9AttacksHandle {
             if (target == null) return false;
 
             double distance = this.boss.distanceTo(target);
-            return boss.getAttackCoolDown() >= 100 && distance >= 5;
+            return distance >= 5;
         }
 
         public LivingEntity getTarget() {
@@ -624,7 +624,6 @@ public class Exp9AttacksHandle {
             this.thunderIndex = 0;
             this.running = true;
             this.forward = this.boss.getLookAngle().scale(5);
-            this.boss.setAttackCoolDown(0); // Reseta o cooldown da IA
         }
 
         @Override
@@ -661,9 +660,13 @@ public class Exp9AttacksHandle {
 
         public final Experiment009BossEntity boss;
 
-        public ThunderStorm(Experiment009BossEntity boss) {
+        protected final IntProvider cooldownProvider;
+        public int cooldown = 0;
+
+        public ThunderStorm(Experiment009BossEntity boss, IntProvider cooldownProvider) {
             super();
             this.boss = boss;
+            this.cooldownProvider = cooldownProvider;
         }
 
         @Override
@@ -671,9 +674,13 @@ public class Exp9AttacksHandle {
             LivingEntity target = this.getTarget();
             if (target != null) {
                 double distance = this.boss.distanceTo(target);
+                if (cooldown > 0) {
+                    cooldown--;
+                    return false;
+                }
                 return distance <= 6;
             }
-            return true;
+            return false;
         }
 
 
@@ -690,6 +697,11 @@ public class Exp9AttacksHandle {
             thunderStorm();
         }
 
+        @Override
+        public void stop() {
+            super.stop();
+            cooldown = cooldownProvider.sample(this.boss.getRandom());
+        }
 
         private void thunderStorm() {
             if (this.boss.level instanceof ServerLevel) {
@@ -728,12 +740,12 @@ public class Exp9AttacksHandle {
             boss.teleportTo(targetPos.x, targetPos.y, targetPos.z);
             boss.getLookControl().setLookAt(target, 30, 30);
             target.hurt(boss.getThunderDmg(), 2);
-            boss.setAttackCoolDown(0);
+
         }
 
         @Override
         public boolean canUse() {
-            return boss.getTarget() != null && (boss.isOnGround() || boss.getTarget().isOnGround()) && boss.getHealth() / boss.getMaxHealth() <= 0.5 && this.boss.distanceTo(boss.getTarget()) >= 8 && this.boss.getAttackCoolDown() >= 50;
+            return boss.getTarget() != null && (boss.isOnGround() || boss.getTarget().isOnGround()) && boss.getHealth() / boss.getMaxHealth() <= 0.5 && this.boss.distanceTo(boss.getTarget()) >= 8;
         }
 
         @Override
@@ -750,7 +762,7 @@ public class Exp9AttacksHandle {
             boss.teleportTo(targetPos.x, targetPos.y, targetPos.z);
             boss.getLookControl().setLookAt(target, 30, 30);
             target.hurt(boss.getThunderDmg(), 2);
-            boss.setAttackCoolDown(0);
+
         }
     }
 
@@ -851,7 +863,7 @@ public class Exp9AttacksHandle {
             // Cria uma área circular de 4x4 (raio ~2)
             for (int x = -2; x <= 2; x++) {
                 for (int z = -2; z <= 2; z++) {
-                    if (x * x + z * z <= 4) { // raio <= 2.0 (círculo)
+                    if (x * x + z * z <= 4) { // raio ← 2,0 (círculo)
                         thunderPositions.add(center.offset(x, 0, z));
                     }
                 }

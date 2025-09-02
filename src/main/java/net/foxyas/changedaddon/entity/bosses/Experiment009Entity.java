@@ -198,7 +198,7 @@ public class Experiment009Entity extends ChangedEntity {
                 UniformInt.of(150, 200), //IntProvider -> cooldown,
                 UniformInt.of(3, 6), //IntProvider -> attackCount,
                 UniformInt.of(20, 40), //IntProvider -> castDuration,
-                UniformFloat.of(6, 8))); //FloatProvider -> damage) {
+                UniformFloat.of(6, 8))); //FloatProvider -> damage)
     }
 
     @Override

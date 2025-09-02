@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
 import net.foxyas.changedaddon.effect.particles.ChangedAddonParticles;
 import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
 import net.foxyas.changedaddon.entity.customHandle.Exp9AttacksHandle;
+import net.foxyas.changedaddon.entity.goals.exp9.*;
 import net.foxyas.changedaddon.entity.interfaces.BossWithMusic;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
@@ -33,6 +34,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.valueproviders.ConstantFloat;
+import net.minecraft.util.valueproviders.UniformFloat;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -72,7 +76,6 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
     private static final EntityDataAccessor<Boolean> PHASE3 =
             SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.BOOLEAN);
     private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.BLUE, ServerBossEvent.BossBarOverlay.NOTCHED_6);
-    private int AttackCoolDown;
     private boolean shouldBleed;
 
     public Experiment009BossEntity(PlayMessages.SpawnEntity packet, Level world) {
@@ -105,14 +108,6 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
 
     public EntityDamageSource getThunderDmg() {
         return new EntityDamageSource(DamageSource.LIGHTNING_BOLT.getMsgId(), this);
-    }
-
-    public int getAttackCoolDown() {
-        return AttackCoolDown;
-    }
-
-    public void setAttackCoolDown(int attackCoolDown) {
-        AttackCoolDown = attackCoolDown;
     }
 
     @Override
@@ -214,19 +209,63 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.targetSelector.addGoal(9, new Exp9AttacksHandle.ThunderPathway(this));
-        this.targetSelector.addGoal(8, new Exp9AttacksHandle.ThunderShock(this));
-        this.targetSelector.addGoal(5, new Exp9AttacksHandle.ThunderSpeed(this));
-        this.targetSelector.addGoal(5, new Exp9AttacksHandle.ThunderWave(this));
-        this.targetSelector.addGoal(10, new Exp9AttacksHandle.ThunderStorm(this));
-        this.targetSelector.addGoal(5, new Exp9AttacksHandle.TeleportAttack(this));
-        this.targetSelector.addGoal(20, new Exp9AttacksHandle.RandomTeleportAttack(this));
-        this.targetSelector.addGoal(4, new Exp9AttacksHandle.TeleportComboGoal(this));
-        this.targetSelector.addGoal(4, new Exp9AttacksHandle.TeleportAirComboGoal(this));
         this.goalSelector.addGoal(6, new Exp9AttacksHandle.BurstAttack(this));
-        this.targetSelector.addGoal(8, new Exp9AttacksHandle.ThunderBoltImpactAttack(this));
-        this.targetSelector.addGoal(7, new Exp9AttacksHandle.ThunderBoltAreaAttack(this));
+        this.goalSelector.addGoal(10, new Exp9AttacksHandle.ThunderStorm(this, UniformInt.of(60, 100)));
+
+        //New AI
+        this.goalSelector.addGoal(5, new ThunderStrikeGoal(
+                this,
+                UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+                1.5f,
+                200));
+        this.goalSelector.addGoal(10, new ThunderDiveGoal(this,
+                UniformInt.of(60, 100), //IntProvider -> cooldownProvider
+                1.5f,
+                6f,
+                1f,
+                0.5f,
+                4));
+
+        //Basically perfect, damn... well done 0senia0
+        this.goalSelector.addGoal(5, new SummonLightningGoal(this, //PathfinderMob -> holder,
+                UniformInt.of(90, 150), //IntProvider -> cooldown,
+                UniformInt.of(2, 4), //IntProvider -> lightningCount,
+                UniformInt.of(60, 100), //IntProvider -> castDuration,
+                UniformInt.of(80, 100), //IntProvider -> lightningDelay,
+                ConstantFloat.of(10))); //FloatProvider -> damage
+
+        this.goalSelector.addGoal(5, new StaticDischargeGoal(this,//PathfinderMob holder,
+                UniformInt.of(75, 125), //IntProvider -> cooldown,
+                4,
+                UniformInt.of(30, 50), //IntProvider -> castDuration,
+                8,
+                UniformFloat.of(8, 12))); //FloatProvider -> damage
+
+        this.goalSelector.addGoal(1, new InductionCoilGoal(this, //PathfinderMob -> holder
+                UniformInt.of(100, 150), //IntProvider -> cooldown
+                20,
+                UniformInt.of(60, 80), //IntProvider -> duration
+                UniformFloat.of(3, 5))); //FloatProvider -> damage
+
+        this.goalSelector.addGoal(5, new LightningComboAttackGoal(this, //PathfinderMob -> holder,
+                UniformInt.of(150, 200), //IntProvider -> cooldown,
+                UniformInt.of(3, 6), //IntProvider -> attackCount,
+                UniformInt.of(20, 40), //IntProvider -> castDuration,
+                UniformFloat.of(6, 8))); //FloatProvider -> damage)
     }
+
+    //private void addOldAI() {
+    //    this.targetSelector.addGoal(9, new Exp9AttacksHandle.ThunderPathway(this));
+    //    this.targetSelector.addGoal(8, new Exp9AttacksHandle.ThunderShock(this));
+    //    this.targetSelector.addGoal(5, new Exp9AttacksHandle.ThunderSpeed(this));
+    //    this.targetSelector.addGoal(5, new Exp9AttacksHandle.ThunderWave(this));
+    //    this.targetSelector.addGoal(5, new Exp9AttacksHandle.TeleportAttack(this));
+    //    this.targetSelector.addGoal(20, new Exp9AttacksHandle.RandomTeleportAttack(this));
+    //    this.targetSelector.addGoal(4, new Exp9AttacksHandle.TeleportComboGoal(this));
+    //    this.targetSelector.addGoal(4, new Exp9AttacksHandle.TeleportAirComboGoal(this));
+    //    this.targetSelector.addGoal(8, new Exp9AttacksHandle.ThunderBoltImpactAttack(this));
+    //    this.targetSelector.addGoal(7, new Exp9AttacksHandle.ThunderBoltAreaAttack(this));
+    //}
 
     @Override
     public void variantTick(Level level) {
@@ -403,8 +442,6 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
             setPhase2(tag.getBoolean("Phase2"));
         if (tag.contains("Phase3"))
             setPhase3(tag.getBoolean("Phase3"));
-        if (tag.contains("AttackCoolDown"))
-            AttackCoolDown = tag.getInt("AttackCoolDown");
         if (tag.contains("Bleeding"))
             shouldBleed = tag.getBoolean("Bleeding");
     }
@@ -414,7 +451,6 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
         super.addAdditionalSaveData(tag);
         tag.putBoolean("Phase2", isPhase2());
         tag.putBoolean("Phase3", isPhase3());
-        tag.putInt("AttackCoolDown", AttackCoolDown);
         tag.putBoolean("Bleeding", shouldBleed);
     }
 
@@ -462,9 +498,6 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
         if (this.getUnderlyingPlayer() == null) {
             if (shouldBleed && (this.computeHealthRatio() / 0.4f) > 0.25f && this.tickCount % 4 == 0) {
                 this.setHealth(this.getHealth() - 0.25f);
-            }
-            if (this.AttackCoolDown < 100) {
-                this.AttackCoolDown += this.isPhase3() ? 2 : 1;
             }
             if (this.getRandom().nextFloat() < 1 - Math.min(0.95, computeHealthRatio())) {
                 if (this.isPhase2()) {
