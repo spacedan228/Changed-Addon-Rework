@@ -11,6 +11,7 @@ import net.ltxprogrammer.changed.client.renderer.layers.TransfurCapeLayer;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleCatModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.NotNull;
 
 public class LatexWhiteSnowLeopardMaleRenderer extends AdvancedHumanoidRenderer<LatexWhiteSnowLeopardMale, LatexWhiteSnowLeopardMaleModel, ArmorLatexMaleCatModel<LatexWhiteSnowLeopardMale>> {
     public LatexWhiteSnowLeopardMaleRenderer(EntityRendererProvider.Context context) {
@@ -22,7 +23,7 @@ public class LatexWhiteSnowLeopardMaleRenderer extends AdvancedHumanoidRenderer<
     }
 
     @Override
-    public ResourceLocation getTextureLocation(LatexWhiteSnowLeopardMale p_114482_) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull LatexWhiteSnowLeopardMale latexWhiteSnowLeopardMale) {
         return ChangedAddonMod.textureLoc("textures/latex_white_snow_leopard_male/latex_white_snow_leopard_male");
     }
 }

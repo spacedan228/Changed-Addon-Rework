@@ -1,14 +1,23 @@
 package net.foxyas.changedaddon.block;
 
+import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
+import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedTags;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -21,8 +30,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Random;
 
 public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock {
@@ -45,6 +56,50 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
     }
 
     @Override
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
+        super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
+        pLevel.scheduleTick(pPos, this, 10);
+    }
+
+    @Override
+    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
+        super.tick(pState, pLevel, pPos, pRandom);
+        tryToPacifyNearbyEntities(pState, pLevel, pPos, 128);
+    }
+
+    public void tryToPacifyNearbyEntities(BlockState pState, ServerLevel pLevel, BlockPos pPos, double range) {
+        List<LivingEntity> nearChangedBeasts = pLevel.getEntitiesOfClass(LivingEntity.class,
+                this.getShape(pState, pLevel, pPos, CollisionContext.empty()).bounds().inflate(range),
+                (entity) -> FoxyasUtils.canEntitySeePosIgnoreGlass(entity, Vec3.atCenterOf(pPos)));
+        for (LivingEntity livingEntity : nearChangedBeasts) {
+            if (livingEntity instanceof ChangedEntity changedEntity) {
+                if (changedEntity instanceof LuminaraFlowerBeastEntity) {
+                    continue;
+                }
+
+                if (changedEntity.getType().is(ChangedTags.EntityTypes.LATEX)) {
+                    if (!changedEntity.hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
+                        changedEntity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 60 * 20, 0, true, false, true));
+                    }
+                }
+            } else if (livingEntity instanceof Player player) {
+                TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+                if (instance != null) {
+                    if ((instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity)) {
+                        continue;
+                    }
+
+                    if (instance.getParent().getEntityType().is(ChangedTags.EntityTypes.LATEX)) {
+                        if (!player.hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
+                            player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 60 * 20, 0, true, false, true));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public boolean canSurvive(@NotNull BlockState pState, @NotNull LevelReader pLevel, @NotNull BlockPos pPos) {
         BlockState below = pLevel.getBlockState(pPos.below());
         if (below.getBlock() instanceof AbstractLatexBlock) {
@@ -55,7 +110,7 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
 
     @Override
     public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Random random) {
-        if(random.nextFloat() >= 0.25) return;
+        if (random.nextFloat() >= 0.25) return;
 
         Vec3 offset = state.getOffset(level, pos);
         float x = (float) offset.x + pos.getX() + 0.5f + random.nextFloat(-0.3f, 0.3f);

@@ -1,0 +1,25 @@
+{
+  "type": "changed:infuser",
+  "ingredients": [
+    {
+      "item": "changed:latex_base"
+    },
+    {
+      "item": "changed:white_latex_goo"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:salmon"
+    },
+    {
+      "item": "minecraft:snowball"
+    },
+    {
+      "tag": "forge:dyes/white"
+    }
+  ],
+  "gendered": true,
+  "form": "changed_addon:form_latex_white_snow_leopard"
+}

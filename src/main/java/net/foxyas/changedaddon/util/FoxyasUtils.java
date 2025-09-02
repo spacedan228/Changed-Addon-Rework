@@ -7,6 +7,7 @@ import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,6 +29,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.*;
@@ -35,6 +38,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import static net.foxyas.changedaddon.util.DynamicClipContext.IGNORE_TRANSLUCENT;
 
 public class FoxyasUtils {
 
@@ -210,6 +215,48 @@ public class FoxyasUtils {
         HitResult result = level.clip(new ClipContext(
                 from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, eyeEntity
         ));
+
+        // Se o hit for MISS (sem blocos no caminho), ou o bloco atingido estiver além da entidade-alvo
+        return result.getType() == HitResult.Type.MISS || result.getLocation().distanceToSqr(to) < 1.0;
+    }
+
+    /**
+     * Verifica se eyeEntity consegue ver targetToSee com base na linha de visão.
+     *
+     * @param eyeEntity   A entidade que está observando.
+     * @param targetToSee A entidade que deve ser visível.
+     * @return true se for visível, false se houver obstrução.
+     */
+    public static boolean canEntitySeeOtherIgnoreGlass(LivingEntity eyeEntity, LivingEntity targetToSee) {
+        Level level = eyeEntity.level;
+        if (level != targetToSee.level) return false;
+
+        Vec3 from = eyeEntity.getEyePosition(1.0F);
+        Vec3 to = targetToSee.getEyePosition(1.0F);
+
+        HitResult result = level.clip(new DynamicClipContext(from, to,
+                IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(eyeEntity))
+        );
+
+        // Se o hit for MISS (sem blocos no caminho), ou o bloco atingido estiver além da entidade-alvo
+        return result.getType() == HitResult.Type.MISS || result.getLocation().distanceToSqr(to) < 1.0;
+    }
+
+    /**
+     * Verifica se eyeEntity consegue ver targetToSee com base na linha de visão.
+     *
+     * @param eyeEntity   A entidade que está observando.
+     * @param to Target position
+     * @return true se for visível, false se houver obstrução.
+     */
+    public static boolean canEntitySeePosIgnoreGlass(LivingEntity eyeEntity, Vec3 to) {
+        Level level = eyeEntity.level;
+
+        Vec3 from = eyeEntity.getEyePosition(1.0F);
+
+        HitResult result = level.clip(new DynamicClipContext(from, to,
+                IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(eyeEntity))
+        );
 
         // Se o hit for MISS (sem blocos no caminho), ou o bloco atingido estiver além da entidade-alvo
         return result.getType() == HitResult.Type.MISS || result.getLocation().distanceToSqr(to) < 1.0;

@@ -24,7 +24,7 @@ public class LatexWhiteSnowLeopardFemaleRenderer extends AdvancedHumanoidRendere
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull LatexWhiteSnowLeopardFemale p_114482_) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull LatexWhiteSnowLeopardFemale latexWhiteSnowLeopardFemale) {
         return ChangedAddonMod.textureLoc("textures/latex_white_snow_leopard_female/latex_white_snow_leopard_female");
     }
 }
