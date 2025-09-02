@@ -116,6 +116,7 @@ public class LightningComboAttackGoal extends Goal {
             ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, holder.getX() - 1.5, holder.getY() - 1.5 + holder.getBbHeight() / 2, holder.getZ() - 1.5,
                     50 * wasBlocked / 30, 3, 3, 3, 0.5);
 
+            if(wasBlocked == 0) pickAttackPos();
             return;
         }
 
@@ -146,9 +147,10 @@ public class LightningComboAttackGoal extends Goal {
             SummonLightningGoal.lightning(level, attackPos.x - 0.75, attackPos.y, attackPos.z + 0.75, 0);
             applyKnockbackAndHurt(6, 2, 3);
         } else {
-            pickAttackPos();
             castDuration = castDurationProvider.sample(random);
-            if(applyKnockbackAndHurt(4, 1, 1)) wasBlocked = 60;
+            if(applyKnockbackAndHurt(4, 1, 1)) {
+                wasBlocked = 60;
+            } else pickAttackPos();
         }
     }
 
