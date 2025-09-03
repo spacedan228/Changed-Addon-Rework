@@ -58,7 +58,8 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 LATEX_WIND_CAT_MALE.get(),
                 LATEX_WIND_CAT_FEMALE.get(),
                 LATEX_WHITE_SNOW_LEOPARD_MALE.get(),
-                LATEX_WHITE_SNOW_LEOPARD_FEMALE.get()
+                LATEX_WHITE_SNOW_LEOPARD_FEMALE.get(),
+                LATEX_CHEETAH_FEMALE.get()
                 );
 
         tag(ChangedTags.EntityTypes.ORGANIC_LATEX).add(

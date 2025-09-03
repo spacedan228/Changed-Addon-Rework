@@ -38,24 +38,27 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     @Shadow
     public float grabStrength;
     @Shadow
-    private int instructionTicks;
+    int instructionTicks;
     @Shadow
     public float suitTransitionO;
+
     @Unique
     private boolean safeMode = false;
     @Unique
-    private boolean alreadySnuggled = false;
+    private int snuggleCooldown = 0;
+    @Unique
+    private boolean alreadySnuggledTight = false;
 
     @Inject(method = "saveData", at = @At("TAIL"), cancellable = true)
     public void injectCustomData(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("safeMode", safeMode);
-        tag.putBoolean("alreadySnuggled", alreadySnuggled);
+        tag.putBoolean("alreadySnuggledTight", alreadySnuggledTight);
     }
 
     @Inject(method = "readData", at = @At("TAIL"), cancellable = true)
     public void readCustomData(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("safeMode")) safeMode = tag.getBoolean("safeMode");
-        if (tag.contains("alreadySnuggled")) alreadySnuggled = tag.getBoolean("alreadySnuggled");
+        if (tag.contains("alreadySnuggledTight")) alreadySnuggledTight = tag.getBoolean("alreadySnuggledTight");
     }
 
     @Override
@@ -81,6 +84,8 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     @Inject(method = "tickIdle", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F", remap = true, shift = At.Shift.AFTER), cancellable = true)
     public void cancelSuitDmg(CallbackInfo ci) {
         if (this.isSafeMode()) {
+            if (snuggleCooldown > 0) snuggleCooldown--;
+
             if (this.suitTransition >= 3.0f) {
                 ci.cancel();
 
@@ -91,30 +96,40 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
                     }
 
                     if (grabbedEntity != null) {
-                        if (!isAlreadySnuggled()) {
+                        if (!isAlreadySnuggledTight()) {
                             this.runTightHug(this.grabbedEntity);
                         }
                     }
                 } else {
-                    if (!isAlreadySnuggled()) {
+                    if (!isAlreadySnuggledTight()) {
                         this.runTightHug(player);
                     }
                 }
 
             } else {
-                this.alreadySnuggled = false;
+                this.alreadySnuggledTight = false;
             }
         }
     }
 
     @Override
     public boolean isAlreadySnuggled() {
-        return alreadySnuggled;
+        return snuggleCooldown > 0;
     }
 
     @Override
     public void setSnuggled(boolean value) {
-        this.alreadySnuggled = value;
+        this.snuggleCooldown = value ? SNUGGLED_COOLDOWN : 0;
+    }
+
+    @Override
+    public boolean isAlreadySnuggledTight() {
+        return alreadySnuggledTight;
+    }
+
+    @Override
+    public void setSnuggledTight(boolean value) {
+        this.alreadySnuggledTight = value;
     }
 
     @Inject(method = "handleInstructions", at = @At("HEAD"), cancellable = true)
@@ -149,7 +164,9 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     private boolean changedAddon$disableProgressTransfur(LivingEntity grabbedEntity, float damage, TransfurVariant variant, TransfurContext ctx) {
         if (safeMode) {
             // Safe mode -> nunca aplica transfur
-            this.runHug(grabbedEntity);
+            if (!isAlreadySnuggled()) {
+                this.runHug(grabbedEntity);
+            }
             return false;
         }
         // comportamento normal

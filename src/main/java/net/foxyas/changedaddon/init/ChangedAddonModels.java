@@ -7,10 +7,7 @@ import net.foxyas.changedaddon.client.model.armors.ArmorLatexSquidTigerSharkMode
 import net.foxyas.changedaddon.client.model.armors.ArmorLuminaraFlowerBeastModel;
 import net.foxyas.changedaddon.client.model.armors.DarkLatexCoatModel;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
-import net.foxyas.changedaddon.client.model.simple.LatexCalicoCatModel;
-import net.foxyas.changedaddon.client.model.simple.LatexWhiteSnowLeopardFemaleModel;
-import net.foxyas.changedaddon.client.model.simple.LatexWhiteSnowLeopardMaleModel;
-import net.foxyas.changedaddon.client.model.simple.MongooseModel;
+import net.foxyas.changedaddon.client.model.simple.*;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.ContainmentContainerRenderer;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.SnepPlushBlockEntityRenderer;
 import net.foxyas.changedaddon.entity.simple.LatexWhiteSnowLeopardFemale;
@@ -90,6 +87,7 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(LatexWindCatFemaleModel.LAYER_LOCATION, LatexWindCatFemaleModel::createBodyLayer);
         event.registerLayerDefinition(LatexWhiteSnowLeopardMaleModel.LAYER_LOCATION, LatexWhiteSnowLeopardMaleModel::createBodyLayer);
         event.registerLayerDefinition(LatexWhiteSnowLeopardFemaleModel.LAYER_LOCATION, LatexWhiteSnowLeopardFemaleModel::createBodyLayer);
+        event.registerLayerDefinition(LatexCheetahFemaleModel.LAYER_LOCATION, LatexCheetahFemaleModel::createBodyLayer);
         event.registerLayerDefinition(LuminaraFlowerBeastModel.LAYER_LOCATION, LuminaraFlowerBeastModel::createBodyLayer);
 
 

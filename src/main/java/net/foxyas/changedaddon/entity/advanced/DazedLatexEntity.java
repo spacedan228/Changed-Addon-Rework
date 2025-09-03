@@ -1,11 +1,9 @@
 package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -21,14 +19,12 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -43,14 +39,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
@@ -64,6 +56,8 @@ public class DazedLatexEntity extends ChangedEntity {
     public static UseItemMode PuddleForm = UseItemMode.create("PuddleForm", false, false, false, true, false);
 
     public boolean willTransfurTarget = false;
+
+    public boolean wasMorphed = false;
 
     public DazedLatexEntity(PlayMessages.SpawnEntity packet, Level world) {
         this(ChangedAddonEntities.DAZED_LATEX.get(), world);
@@ -180,15 +174,32 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     protected void setAttributes(AttributeMap attributes) {
-        Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
-        attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((26));
-        attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0f);
-        attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.075F);
-        attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(1.025F);
-        attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(3.0f);
-        attributes.getInstance(Attributes.ARMOR).setBaseValue(0);
-        attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
-        attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
+        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()),3);
+        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH),26);
+        safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE),40.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED),1.075F);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.SWIM_SPEED.get()),1.025F);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE),3.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR),0);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS),0);
+        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE),0);
+    }
+
+    protected void setMorphedAttributes(AttributeMap attributes) {
+        safeMulBaseValue(attributes.getInstance(ForgeMod.ATTACK_RANGE.get()), 0.5f);
+        safeMulBaseValue(attributes.getInstance(ForgeMod.REACH_DISTANCE.get()), 0.5f);
+    }
+
+    protected void safeSetBaseValue(@Nullable AttributeInstance instance, double value) {
+        if (instance != null) {
+            instance.setBaseValue(value);
+        }
+    }
+
+    protected void safeMulBaseValue(@Nullable AttributeInstance instance, double value) {
+        if (instance != null) {
+            instance.setBaseValue(instance.getBaseValue() * value);
+        }
     }
 
     @Override
@@ -237,6 +248,22 @@ public class DazedLatexEntity extends ChangedEntity {
     @Override
     public boolean tryTransfurTarget(Entity entity) {
         return super.tryTransfurTarget(entity);
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        if (isMorphed() && !wasMorphed) {
+            this.setMorphedAttributes(this.getAttributes());
+            wasMorphed = true;
+
+            IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+        } else if (!isMorphed() && wasMorphed) {
+            this.setAttributes(this.getAttributes());
+            wasMorphed = false;
+
+            IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+        }
     }
 
     @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
@@ -322,10 +349,6 @@ public class DazedLatexEntity extends ChangedEntity {
         this.goalSelector.addGoal(1, new RestrictSunGoal(this) {
             @Override
             public boolean canUse() {
-                double x = DazedLatexEntity.this.getX();
-                double y = DazedLatexEntity.this.getY();
-                double z = DazedLatexEntity.this.getZ();
-                Entity entity = DazedLatexEntity.this;
                 Level world = DazedLatexEntity.this.level;
                 return super.canUse() && world.getGameRules().getBoolean(ChangedAddonGameRules.DO_DAZED_LATEX_BURN);
             }
@@ -355,11 +378,11 @@ public class DazedLatexEntity extends ChangedEntity {
 
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.hurt"));
+        return SoundEvents.GENERIC_HURT;
     }
 
     @Override
     public @NotNull SoundEvent getDeathSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.death"));
+        return SoundEvents.GENERIC_DEATH;
     }
 }

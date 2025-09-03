@@ -36,36 +36,10 @@ public class CarryAbility extends SimpleAbility {
         return entity instanceof Player player && player.isSpectator();
     }
 
-    public static void SoundPlay(Player player) {
-        player.level.playSound(null, player.blockPosition(), ChangedSounds.BOW2, SoundSource.PLAYERS, 2.5f, 1.0f);
-    }
-
-    private static void syncMount(Player player) {
-        if (!player.level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.connection.send(new ClientboundSetPassengersPacket(player));
-            serverPlayer.setDeltaMovement(serverPlayer.getLookAngle().scale(1.05));
-            SoundPlay(serverPlayer);
-        }
-    }
-
-    private static void syncMount(Player player, Player player2) {
-        if (!player.level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.connection.send(new ClientboundSetPassengersPacket(player));
-            serverPlayer.setDeltaMovement(player2.getLookAngle().scale(1.05));
-            SoundPlay(serverPlayer);
-        }
-    }
-
-    private static void syncMountNoMotion(Player player) {
-        if (!player.level.isClientSide && player instanceof ServerPlayer serverPlayer) {
-            serverPlayer.connection.send(new ClientboundSetPassengersPacket(player));
-            SoundPlay(serverPlayer);
-        }
-    }
-
     public static void SafeRemove(Entity mainEntity) {
         if (mainEntity.getFirstPassenger() != null) {
             mainEntity.getFirstPassenger().stopRiding();
+            broadcastPassengers(mainEntity.getFirstPassenger());
         }
     }
 
@@ -109,7 +83,9 @@ public class CarryAbility extends SimpleAbility {
     @Override
     public void onRemove(IAbstractChangedEntity entity) {
         super.onRemove(entity);
-        SafeRemove(entity.getEntity());
+        if (entity.getEntity().getLevel() instanceof ServerLevel) {
+            SafeRemove(entity.getEntity());
+        }
     }
 
     public Entity CarryTarget(Player player) {
@@ -131,49 +107,87 @@ public class CarryAbility extends SimpleAbility {
         return GrabEntityAbility.getGrabber(entity) == null;
     }
 
+    // === Helpers de rede (broadcast correto) ===
+    private static void broadcastPassengers(Entity vehicle) {
+        if (!vehicle.level.isClientSide) {
+            ServerLevel sl = (ServerLevel) vehicle.level;
+            sl.getChunkSource().broadcastAndSend(vehicle, new ClientboundSetPassengersPacket(vehicle));
+        }
+    }
+
+    private static void broadcastMotion(Entity entity) {
+        if (!entity.level.isClientSide) {
+            ServerLevel sl = (ServerLevel) entity.level;
+            sl.getChunkSource().broadcastAndSend(entity, new ClientboundSetEntityMotionPacket(entity));
+        }
+    }
+
+    // Lança uma entidade na direção do "launcher" e sincroniza
+    private static void launchForward(Entity launcher, Entity target, double speed) {
+        target.setDeltaMovement(launcher.getLookAngle().normalize().scale(speed));
+        target.hasImpulse = true;
+        broadcastMotion(target);
+    }
+
+    // Toca o som (opcional)
+    private static void soundPlay(Player player) {
+        player.level.playSound(null, player.blockPosition(), ChangedSounds.BOW2, SoundSource.PLAYERS, 2.5f, 1.0f);
+    }
+
+
     private void Run(Entity mainEntity) {
-        if (!(mainEntity instanceof Player player))
+        if (!(mainEntity instanceof Player player) || player.level.isClientSide)
             return;
-        Entity carriedEntity = player.getFirstPassenger();
-        if (carriedEntity != null) {
-            boolean isShifting = player.isShiftKeyDown();
-            carriedEntity.stopRiding();
-            syncMount(player);
-            if (carriedEntity instanceof Player) {
-                if (isShifting) {
-                    syncMountNoMotion((Player) carriedEntity);
-                } else {
-                    syncMount((Player) carriedEntity, player);
-                }
-            }
-            if (!isShifting) {
-                carriedEntity.setDeltaMovement(player.getLookAngle().scale(1.05));
-                carriedEntity.hasImpulse = true;
-                if (!player.level.isClientSide()) {
-                    ((ServerLevel) player.level).getChunkSource().broadcast(carriedEntity, new ClientboundSetEntityMotionPacket(carriedEntity));
-                }
+
+        // Se já está carregando alguém: solta (e opcionalmente arremessa)
+        Entity carried = player.getFirstPassenger();
+        if (carried != null) {
+            boolean toss = !player.isShiftKeyDown();
+
+            // Ejetar passageiro
+            carried.stopRiding();
+
+            // Sync de passengers do veículo (player)
+            broadcastPassengers(player);
+            soundPlay(player);
+
+            // Se quiser arremessar pra frente:
+            if (toss) {
+                launchForward(player, carried, 1.05);
             }
             return;
         }
+
         if (player.isSpectator())
             return;
-        Entity carryTarget = this.CarryTarget(player);
-        if (carryTarget == null)
-            return;
-        if (carryTarget instanceof LivingEntity p && !(this.isPossibleToCarry(p))) return;
 
-        if (carryTarget instanceof WhiteLatexCentaur || (carryTarget instanceof Player p && ProcessTransfur.getPlayerTransfurVariant(p) != null && ProcessTransfur.getPlayerTransfurVariant(p).is(ChangedTransfurVariants.WHITE_LATEX_CENTAUR.get()))) {
-            player.displayClientMessage(new TranslatableComponent("changedaddon.warn.cant_carry", carryTarget.getDisplayName()), true);
+        // Selecionar alvo para carregar
+        Entity target = this.CarryTarget(player);
+        if (target == null)
+            return;
+
+        if (target instanceof LivingEntity le && !this.isPossibleToCarry(le))
+            return;
+
+        // Restrições (centauro, criativo, etc.)
+        if (target instanceof WhiteLatexCentaur ||
+                (target instanceof Player p && ProcessTransfur.getPlayerTransfurVariant(p) != null &&
+                        ProcessTransfur.getPlayerTransfurVariant(p).is(ChangedTransfurVariants.WHITE_LATEX_CENTAUR.get()))) {
+            player.displayClientMessage(new TranslatableComponent("changedaddon.warn.cant_carry", target.getDisplayName()), true);
             return;
         }
-        if (carryTarget instanceof Player carryPlayer && carryPlayer.isCreative() && !player.isCreative())
+
+        if (target instanceof Player carryPlayer && carryPlayer.isCreative() && !player.isCreative())
             return;
-        if (carryTarget.getType().is(ChangedTags.EntityTypes.HUMANOIDS) || carryTarget.getType().is(ChangedAddonTags.EntityTypes.CAN_CARRY)) {
-            if (carryTarget.startRiding(player, true)) {
-                syncMount(player);
-                if (carryTarget instanceof Player)
-                    syncMount((Player) carryTarget);
+
+        // Só permite tipos permitidos
+        if (target.getType().is(ChangedTags.EntityTypes.HUMANOIDS) || target.getType().is(ChangedAddonTags.EntityTypes.CAN_CARRY)) {
+            if (target.startRiding(player, true)) {
+                // Sync de passengers do veículo (player) para todos
+                broadcastPassengers(player);
+                soundPlay(player);
             }
         }
     }
+
 }

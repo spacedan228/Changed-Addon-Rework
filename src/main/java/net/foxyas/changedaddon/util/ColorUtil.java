@@ -17,4 +17,17 @@ public class ColorUtil {
 
         return start.lerp(transfurVariantInstance.getTransfurProgression(1), end);
     }
+
+    public static Color3 lerpTFColor(@NotNull Color3 start, @NotNull Color3 end, float partialTicks){
+        return start.lerp(partialTicks, end);
+    }
+
+    public static float getPlayerTransfurProgressSafe(@Nullable Player player, float partialTick){
+        if(player == null) return 0;
+
+        TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
+        if(transfurVariantInstance == null) return 0;
+
+        return transfurVariantInstance.getTransfurProgression(partialTick);
+    }
 }

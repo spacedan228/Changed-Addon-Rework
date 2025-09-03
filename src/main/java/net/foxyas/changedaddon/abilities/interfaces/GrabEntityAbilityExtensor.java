@@ -18,6 +18,8 @@ public interface GrabEntityAbilityExtensor {
 
     LivingEntity grabber();
 
+    int SNUGGLED_COOLDOWN = 20;
+
     default void runHug(@NotNull LivingEntity livingEntity) {
         if (grabber() instanceof Player player) {
             if (!player.getLevel().isClientSide()) {
@@ -26,6 +28,7 @@ public interface GrabEntityAbilityExtensor {
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug");
                 }
                 player.getLevel().playSound(null, player, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1, 1);
+                setSnuggled(true);
             }
             if (livingEntity instanceof Player grabbedPlayer) {
                 if (!grabbedPlayer.getLevel().isClientSide())
@@ -38,6 +41,10 @@ public interface GrabEntityAbilityExtensor {
 
     void setSnuggled(boolean value);
 
+    boolean isAlreadySnuggledTight();
+
+    void setSnuggledTight(boolean value);
+
     default void runTightHug(@NotNull LivingEntity livingEntity) {
         if (grabber() instanceof Player player) {
             if (!player.getLevel().isClientSide()) {
@@ -47,7 +54,7 @@ public interface GrabEntityAbilityExtensor {
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug_tight");
                 }
                 player.getLevel().playSound(null, player, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1, 1);
-                setSnuggled(true);
+                setSnuggledTight(true);
             }
             if (livingEntity instanceof Player grabbedPlayer) {
                 if (!grabbedPlayer.getLevel().isClientSide()) {

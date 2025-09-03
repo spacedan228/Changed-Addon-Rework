@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,7 +32,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -56,21 +57,21 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
     }
 
     @Override
-    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving) {
+    public void onPlace(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull BlockState pOldState, boolean pIsMoving) {
         super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
         pLevel.scheduleTick(pPos, this, 10);
     }
 
     @Override
-    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
+    public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull Random pRandom) {
         super.tick(pState, pLevel, pPos, pRandom);
-        tryToPacifyNearbyEntities(pState, pLevel, pPos, 128);
+        tryToPacifyNearbyEntities(pLevel, pPos, 128);
         pLevel.scheduleTick(pPos, this, 10);
     }
 
-    public void tryToPacifyNearbyEntities(BlockState pState, ServerLevel pLevel, BlockPos pPos, double range) {
+    public void tryToPacifyNearbyEntities(@NotNull ServerLevel pLevel, BlockPos pPos, double range) {
         List<LivingEntity> nearChangedBeasts = pLevel.getEntitiesOfClass(LivingEntity.class,
-                this.getShape(pState, pLevel, pPos, CollisionContext.empty()).bounds().inflate(range),
+                new AABB(pPos, pPos).inflate(range),
                 (entity) -> FoxyasUtils.canEntitySeePosIgnoreGlass(entity, Vec3.atCenterOf(pPos)));
         for (LivingEntity livingEntity : nearChangedBeasts) {
             if (livingEntity instanceof ChangedEntity changedEntity) {
@@ -119,6 +120,7 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
         float z = (float) offset.z + pos.getZ() + 0.5f + random.nextFloat(-0.3f, 0.3f);
 
         level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, x, y, z, 0, 0.01D, 0);
+        level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1, 1);
     }
 
 

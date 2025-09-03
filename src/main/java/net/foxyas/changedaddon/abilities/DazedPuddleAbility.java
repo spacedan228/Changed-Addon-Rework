@@ -24,8 +24,6 @@ import java.util.UUID;
 
 public class DazedPuddleAbility extends SimpleAbility {
 
-    public final AttributeModifier PuddleReachAttributeMod = new AttributeModifier(UUID.fromString("393f142c-fcec-4a4f-a233-6c86b64f6468"), "ReachPuddleMod", -0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
-
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
         return new TranslatableComponent("ability.changed.puddle");
@@ -47,16 +45,6 @@ public class DazedPuddleAbility extends SimpleAbility {
     public void tick(IAbstractChangedEntity entity) {
         entity.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5, 2, false, false, false));
         entity.getEntity().addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 5, 1, false, false, false));
-        if (entity.getEntity() instanceof Player player) {
-            if (player.getAttribute(ForgeMod.REACH_DISTANCE.get()) != null
-                    && !player.getAttribute(ForgeMod.REACH_DISTANCE.get()).hasModifier(PuddleReachAttributeMod)) {
-                player.getAttribute(ForgeMod.REACH_DISTANCE.get()).addTransientModifier(PuddleReachAttributeMod);
-            }
-            if (player.getAttribute(ForgeMod.ATTACK_RANGE.get()) != null
-                    && !player.getAttribute(ForgeMod.ATTACK_RANGE.get()).hasModifier(PuddleReachAttributeMod)) {
-                player.getAttribute(ForgeMod.ATTACK_RANGE.get()).addTransientModifier(PuddleReachAttributeMod);
-            }
-        }
         var TransfurDmgAttribute = entity.getEntity().getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get());
         if (TransfurDmgAttribute == null) {
             return;
@@ -78,16 +66,6 @@ public class DazedPuddleAbility extends SimpleAbility {
     public void stopUsing(IAbstractChangedEntity entity) {
         if (entity.getChangedEntity() instanceof DazedLatexEntity dazedLatexEntity) {
             dazedLatexEntity.setMorphed(false);
-        }
-        if (entity.getEntity() instanceof Player player) {
-            if (player.getAttribute(ForgeMod.REACH_DISTANCE.get()) != null
-                    && player.getAttribute(ForgeMod.REACH_DISTANCE.get()).hasModifier(PuddleReachAttributeMod)) {
-                player.getAttribute(ForgeMod.REACH_DISTANCE.get()).removeModifier(PuddleReachAttributeMod);
-            }
-            if (player.getAttribute(ForgeMod.ATTACK_RANGE.get()) != null
-                    && player.getAttribute(ForgeMod.ATTACK_RANGE.get()).hasModifier(PuddleReachAttributeMod)) {
-                player.getAttribute(ForgeMod.ATTACK_RANGE.get()).removeModifier(PuddleReachAttributeMod);
-            }
         }
     }
 

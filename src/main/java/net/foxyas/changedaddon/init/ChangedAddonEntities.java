@@ -209,6 +209,13 @@ public class ChangedAddonEntities {
                     .setCustomClientFactory(SnowLeopardFemaleOrganicEntity::new)
                     .sized(0.7f, 1.93f));
 
+    public static final RegistryObject<EntityType<SnowLeopardMaleOrganicEntity>> SNOW_LEOPARD_MALE_ORGANIC = registerChangedEntity("snow_leopard_male_organic",
+            EntityType.Builder.<SnowLeopardMaleOrganicEntity>of(SnowLeopardMaleOrganicEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(3)
+                    .setCustomClientFactory(SnowLeopardMaleOrganicEntity::new)
+                    .sized(0.7f, 1.93f));
 
     public static final RegistryObject<EntityType<MirrorWhiteTigerEntity>> MIRROR_WHITE_TIGER = registerChangedEntity("mirror_white_tiger",
             EntityType.Builder.<MirrorWhiteTigerEntity>of(MirrorWhiteTigerEntity::new, MobCategory.MONSTER)
@@ -216,14 +223,6 @@ public class ChangedAddonEntities {
                     .setTrackingRange(64)
                     .setUpdateInterval(3)
                     .setCustomClientFactory(MirrorWhiteTigerEntity::new)
-                    .sized(0.7f, 1.93f));
-
-    public static final RegistryObject<EntityType<SnowLeopardMaleOrganicEntity>> SNOW_LEOPARD_MALE_ORGANIC = registerChangedEntity("snow_leopard_male_organic",
-            EntityType.Builder.<SnowLeopardMaleOrganicEntity>of(SnowLeopardMaleOrganicEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(64)
-                    .setUpdateInterval(3)
-                    .setCustomClientFactory(SnowLeopardMaleOrganicEntity::new)
                     .sized(0.7f, 1.93f));
 
     public static final RegistryObject<EntityType<Exp2MaleEntity>> EXP_2_MALE = registerChangedEntity("exp_2_male",
@@ -568,6 +567,11 @@ public class ChangedAddonEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
+    public static final RegistryObject<EntityType<LatexCheetahFemale>> LATEX_CHEETAH_FEMALE = registerChangedEntity("latex_cheetah_female",
+            EntityType.Builder.of(LatexCheetahFemale::new, ChangedMobCategories.CHANGED)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F));
+
     public static final RegistryObject<EntityType<LuminaraFlowerBeastEntity>> LUMINARA_FLOWER_BEAST = registerChangedEntity("luminara_flower_beast",
             EntityType.Builder.<LuminaraFlowerBeastEntity>of(LuminaraFlowerBeastEntity::new, ChangedMobCategories.CHANGED)
                     .clientTrackingRange(10)
@@ -627,6 +631,7 @@ public class ChangedAddonEntities {
         event.put(LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleEntity.createLatexAttributes().build());
         event.put(LATEX_WHITE_SNOW_LEOPARD_MALE.get(), LatexWhiteSnowLeopardMale.createLatexAttributes().build());
         event.put(LATEX_WHITE_SNOW_LEOPARD_FEMALE.get(), LatexWhiteSnowLeopardFemale.createLatexAttributes().build());
+        event.put(LATEX_CHEETAH_FEMALE.get(), LatexCheetahFemale.createLatexAttributes().build());
         event.put(LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastEntity.createAttributes().build());
     }
 
@@ -686,6 +691,7 @@ public class ChangedAddonEntities {
             LatexWhiteSnowLeopardMale.init();
             LatexWhiteSnowLeopardFemale.init();
             LuminaraFlowerBeastEntity.init();
+            LatexCheetahFemale.init();
         });
     }
 
