@@ -8,7 +8,11 @@ import net.ltxprogrammer.changed.entity.beast.AbstractSnowLeopard;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeMod;
 
 public class LatexCheetahFemale extends AbstractSnowLeopard {
     public LatexCheetahFemale(EntityType<? extends LatexCheetahFemale> p_19870_, Level p_19871_) {
@@ -16,6 +20,14 @@ public class LatexCheetahFemale extends AbstractSnowLeopard {
     }
 
     public static void init() {
+    }
+
+    @Override
+    protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+        attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.4F);
+        attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(0.9);
+        attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue(20.0F);
     }
 
     @Override

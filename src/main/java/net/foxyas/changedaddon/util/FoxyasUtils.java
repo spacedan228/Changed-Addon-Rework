@@ -199,6 +199,69 @@ public class FoxyasUtils {
     }
 
     /**
+     * Checks if one entity (eyeEntity) can see another (targetToSee), using raycasting and FOV.
+     *
+     * @param eyeEntity   The entity doing the looking.
+     * @param to  The target pos to be looked at.
+     * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
+     * @return true if visible and within FOV, false otherwise.
+     */
+    public static boolean canEntitySeePos(LivingEntity eyeEntity, Vec3 to, double fovDegrees) {
+        Level level = eyeEntity.level;
+        Vec3 from = eyeEntity.getEyePosition(1.0F);
+
+        // First, check field of view using dot product
+        Vec3 lookVec = eyeEntity.getLookAngle().normalize();
+        Vec3 directionToTarget = to.subtract(from).normalize();
+
+        double dot = lookVec.dot(directionToTarget);
+        double requiredDot = Math.cos(Math.toRadians(fovDegrees / 2.0));
+        if (dot < requiredDot)
+            return false; // Outside of FOV
+
+        // Then, raycast from eyeEntity to targetToSee to check if the view is blocked
+        HitResult result = level.clip(new ClipContext(
+                from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, eyeEntity
+        ));
+
+        // If result is MISS or hit point is very close to target, it's considered visible
+        return result.getType() == HitResult.Type.MISS ||
+                result.getLocation().distanceToSqr(to) < 1.0;
+    }
+
+
+    /**
+     * Checks if one entity (eyeEntity) can see another (targetToSee), using raycasting and FOV.
+     *
+     * @param eyeEntity   The entity doing the looking.
+     * @param to  The target pos to be looked at.
+     * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
+     * @return true if visible and within FOV, false otherwise.
+     */
+    public static boolean canEntitySeePosIgnoreGlass(LivingEntity eyeEntity, Vec3 to, double fovDegrees) {
+        Level level = eyeEntity.level;
+        Vec3 from = eyeEntity.getEyePosition(1.0F);
+
+        // First, check field of view using dot product
+        Vec3 lookVec = eyeEntity.getLookAngle().normalize();
+        Vec3 directionToTarget = to.subtract(from).normalize();
+
+        double dot = lookVec.dot(directionToTarget);
+        double requiredDot = Math.cos(Math.toRadians(fovDegrees / 2.0));
+        if (dot < requiredDot)
+            return false; // Outside of FOV
+
+        // Then, raycast from eyeEntity to targetToSee to check if the view is blocked
+        HitResult result = level.clip(new DynamicClipContext(from, to,
+                IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(eyeEntity))
+        );
+
+        // If result is MISS or hit point is very close to target, it's considered visible
+        return result.getType() == HitResult.Type.MISS ||
+                result.getLocation().distanceToSqr(to) < 1.0;
+    }
+
+    /**
      * Verifica se eyeEntity consegue ver targetToSee com base na linha de visão.
      *
      * @param eyeEntity   A entidade que está observando.

@@ -14,6 +14,7 @@ import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
@@ -83,9 +84,7 @@ public class CarryAbility extends SimpleAbility {
     @Override
     public void onRemove(IAbstractChangedEntity entity) {
         super.onRemove(entity);
-        if (entity.getEntity().getLevel() instanceof ServerLevel) {
-            SafeRemove(entity.getEntity());
-        }
+        Run(entity.getEntity());
     }
 
     public Entity CarryTarget(Player player) {

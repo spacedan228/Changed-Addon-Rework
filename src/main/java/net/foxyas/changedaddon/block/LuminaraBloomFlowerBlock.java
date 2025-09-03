@@ -37,8 +37,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Random;
 
-public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock {
-    public LuminaraBloomBlock() {
+public class LuminaraBloomFlowerBlock extends FlowerBlock implements BonemealableBlock {
+    public LuminaraBloomFlowerBlock() {
         super(ChangedAddonMobEffects.UNTRANSFUR, 60,
                 BlockBehaviour.Properties.of(Material.PLANT)
                         .emissiveRendering((state, blockGetter, blockPos) -> true)
@@ -72,7 +72,7 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
     public void tryToPacifyNearbyEntities(@NotNull ServerLevel pLevel, BlockPos pPos, double range) {
         List<LivingEntity> nearChangedBeasts = pLevel.getEntitiesOfClass(LivingEntity.class,
                 new AABB(pPos, pPos).inflate(range),
-                (entity) -> FoxyasUtils.canEntitySeePosIgnoreGlass(entity, Vec3.atCenterOf(pPos)));
+                (entity) -> FoxyasUtils.canEntitySeePosIgnoreGlass(entity, Vec3.atCenterOf(pPos), 90));
         for (LivingEntity livingEntity : nearChangedBeasts) {
             if (livingEntity instanceof ChangedEntity changedEntity) {
                 if (changedEntity instanceof LuminaraFlowerBeastEntity) {

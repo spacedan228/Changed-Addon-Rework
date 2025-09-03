@@ -31,7 +31,7 @@ public class LuminaraBeastWingsConditionalLayer<T extends ChangedEntity, M exten
                     boolean hasElytra = luminaraFlowerBeastEntity.getItemBySlot(EquipmentSlot.CHEST).is(Items.ELYTRA);
                     if (!hasElytra) {
                         this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(LuminaraFlowerBeastRenderer.WING_ROOT_TEXTURE)), packedLight, overlay, 1, 1, 1, 1.0F);
-                        this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.eyes(LuminaraFlowerBeastRenderer.WING_GLOW_TEXTURE)), packedLight, overlay, 1, 1, 1, 1.0F);
+                        this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.energySwirl(LuminaraFlowerBeastRenderer.WING_GLOW_TEXTURE, 0, 0)), packedLight, overlay, 1, 1, 1, 1.0F);
                     }
                 } else {
                     this.getParentModel().renderToBuffer(poseStack, bufferSource.getBuffer(RenderType.entityTranslucent(LuminaraFlowerBeastRenderer.WING_TEXTURE)), packedLight, overlay, 1, 1, 1, 1.0F);
