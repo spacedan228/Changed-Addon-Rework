@@ -80,13 +80,32 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     @Override
     public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
-        patTarget.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600));
+        MobEffectInstance effect = getPatEffect(patter);
+        if (patTarget instanceof Player player && ProcessTransfur.isPlayerLatex(player)) {
+            patTarget.addEffect(effect, patter);
+        } else if (patTarget instanceof ChangedEntity changedEntity) {
+            changedEntity.addEffect(effect, patter);
+        }
     }
 
     @Override
     public void WhenPattedReaction(Player patter, InteractionHand hand) {
-        patter.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600));
+        if (ProcessTransfur.isPlayerLatex(patter)) {
+            MobEffectInstance effect = getPatEffect(this);
+            patter.addEffect(effect, this);
+        }
     }
+
+    private MobEffectInstance getPatEffect(LivingEntity patter) {
+        if (!this.isAwakened()) {
+            return new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600);
+        }
+        if (!patter.isShiftKeyDown()) {
+            return new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600);
+        }
+        return new MobEffectInstance(ChangedAddonMobEffects.UNTRANSFUR.get(), 600);
+    }
+
 
     @Override
     protected void defineSynchedData() {
