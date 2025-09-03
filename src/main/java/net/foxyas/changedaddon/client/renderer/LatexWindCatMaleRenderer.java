@@ -22,7 +22,7 @@ public class LatexWindCatMaleRenderer extends AdvancedHumanoidRenderer<LatexWind
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet()));
         this.addLayer(GasMaskLayer.forSnouted(this, context.getModelSet()));
-        this.addLayer(new LatexParticlesLayer<>(this));
+        this.addLayer(new LatexParticlesLayer<>(this, getModel()));
     }
 
     @Override
