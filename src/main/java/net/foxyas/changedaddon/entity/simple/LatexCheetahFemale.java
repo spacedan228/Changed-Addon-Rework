@@ -5,6 +5,7 @@ import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.beast.AbstractSnowLeopard;
+import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
@@ -28,6 +29,8 @@ public class LatexCheetahFemale extends AbstractSnowLeopard {
         attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.4F);
         attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(0.9);
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue(20.0F);
+        attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()).setBaseValue(2.5);
+        attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(2.0);
     }
 
     @Override
