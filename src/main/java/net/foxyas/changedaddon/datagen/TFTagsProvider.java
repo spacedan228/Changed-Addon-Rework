@@ -184,7 +184,7 @@ public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
 
         addAllMatching(tag(ChangedAddonTags.TransfurTypes.SHARK_LIKE), var -> var.getRegistryName().getPath().contains("shark")).add(ChangedTransfurVariants.LATEX_ORCA.get(), ChangedTransfurVariants.LATEX_MANTA_RAY_FEMALE.get(), ChangedTransfurVariants.LATEX_MANTA_RAY_MALE.get());
 
-        addAllMatching(tag(ChangedAddonTags.TransfurTypes.CAT_LIKE), var -> var.getRegistryName().getPath().contains("cat")).add(EXPERIMENT_10.get(), MIRROR_WHITE_TIGER.get(), LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get(), LYNX.get(), SNEPSI_LEOPARD.get());
+        addAllMatching(tag(ChangedAddonTags.TransfurTypes.CAT_LIKE), var -> var.getRegistryName().getPath().contains("cat")).add(EXPERIMENT_10.get(), MIRROR_WHITE_TIGER.get(), LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get(), LYNX.get(), SNEPSI_LEOPARD.get(), LATEX_CHEETAH_FEMALE.get());
 
         addAllMatching(tag(ChangedAddonTags.TransfurTypes.DRAGON_LIKE), var -> var.getRegistryName().getPath().contains("dragon")).add(LUMINARA_FLOWER_BEAST.get());
 
