@@ -162,6 +162,10 @@ public class LatexDazedModel extends AdvancedHumanoidModel<DazedLatexEntity> imp
     }
 
     public boolean isPartNotPuddle(ModelPart part) {
+        if (Puddle.visible) {
+            return Puddle.getAllParts().anyMatch(part::equals);
+        }
+
         return Puddle.getAllParts().noneMatch(part::equals);
     }
 

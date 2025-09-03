@@ -36,7 +36,7 @@ public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntit
                         CustomEyesLayer::noRender)));
         this.addLayer(new ConditionalCustomLayers<>(this,
                 TransfurCapeLayer.normalCape(this, context.getModelSet()),
-                new GasMaskLayer<>(this, context.getModelSet()),
+                GasMaskLayer.forSnouted(this, context.getModelSet()),
                 new LatexParticlesLayer<>(this, getModel(), model::isPartNotPuddle))
         );
     }
@@ -44,16 +44,6 @@ public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntit
     @Override
     public void render(@NotNull DazedLatexEntity entity, float yRot, float partialTicks, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         super.render(entity, yRot, partialTicks, poseStack, bufferSource, packedLight);
-
-//        this.layers.forEach((layer) -> {
-//            if (layer instanceof LatexHumanoidArmorLayer<DazedLatexEntity,?,?> armorLayer) {
-//                Arrays.stream(EquipmentSlot.values()).filter((equipmentSlot -> equipmentSlot.getType() == EquipmentSlot.Type.ARMOR)).toList().forEach((equipmentSlot -> {
-//                    if (entity.isMorphed()) {
-//                        armorLayer.getArmorModel(entity, equipmentSlot).setAllLimbsVisible(entity, false);
-//                    }
-//                }));
-//            }
-//        });
     }
 
     @Override
@@ -63,6 +53,12 @@ public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntit
         }
 
         return ChangedAddonMod.textureLoc("textures/entities/dazed_creature");
+    }
+
+
+    @Override
+    public boolean shouldRenderArmor(DazedLatexEntity entity) {
+        return !entity.isMorphed();
     }
 
     public static class ConditionalCustomEyesLayer<M extends AdvancedHumanoidModel<T>, T extends ChangedEntity> extends RenderLayer<T, M> {

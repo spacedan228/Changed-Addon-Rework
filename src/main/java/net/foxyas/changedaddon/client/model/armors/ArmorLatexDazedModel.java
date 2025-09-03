@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 public class ArmorLatexDazedModel<T extends ChangedEntity> extends LatexHumanoidArmorModel<T, ArmorLatexDazedModel<T>> {
     public static final ArmorModelSet<ChangedEntity, ArmorLatexDazedModel<ChangedEntity>> MODEL_SET = ArmorModelSet.of(ChangedAddonMod.resourceLoc("armor_latex_wolf_male_unified"), ArmorLatexDazedModel::createArmorLayer, ArmorLatexDazedModel::new);
@@ -77,23 +78,19 @@ public class ArmorLatexDazedModel<T extends ChangedEntity> extends LatexHumanoid
     @Override
     public void prepareMobModel(HumanoidAnimator<T, ? extends EntityModel<T>> animator, T entity, float p_102862_, float p_102863_, float partialTicks) {
         super.prepareMobModel(animator, entity, p_102862_, p_102863_, partialTicks);
-        if (entity instanceof DazedLatexEntity dazedLatexEntity) {
-            if (dazedLatexEntity.isMorphed()) {
-                this.getAllParts().forEach((partStem) -> {
-                    partStem.getRoot().visible = !dazedLatexEntity.isMorphed();
-                });
-            }
-        }
+    }
+
+    @Override
+    public void setAllLimbsVisible(T entity, boolean visible) {
+        super.setAllLimbsVisible(entity, visible);
+    }
+
+    @Override
+    public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
 
     public void renderForSlot(T entity, RenderLayerParent<? super T, ?> parent, ItemStack stack, EquipmentSlot slot, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        if (entity instanceof DazedLatexEntity dazedLatexEntity) {
-            if (dazedLatexEntity.isMorphed()) {
-                this.getAllParts().forEach((partStem) -> {
-                    partStem.getRoot().visible = !dazedLatexEntity.isMorphed();
-                });
-            }
-        }
         poseStack.pushPose();
         this.scaleForSlot(parent, slot, poseStack);
         switch (slot) {
