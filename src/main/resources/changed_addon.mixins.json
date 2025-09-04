@@ -33,6 +33,7 @@
     "entity.variant.RandomVariantFunctionMixin",
     "entity.variant.ServerTransfurVariantInstanceMixin",
     "entity.variant.TransfurVariantInstanceMixin",
+    "items.ItemMixin",
     "items.ItemStackMixin",
     "mods.changed.ChangedMixin",
     "mods.nean.NEAElytraAnimationMixin"

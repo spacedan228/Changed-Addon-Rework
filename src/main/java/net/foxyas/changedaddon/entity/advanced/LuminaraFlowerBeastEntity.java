@@ -121,11 +121,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         this.entityData.set(AWAKENED, value);
     }
 
-    @Override
-    public float extraBlockBreakSpeed() {
-        return 0;
-    }
-
     /**
      * Apply awakened buffs (stronger, faster on land, but weaker in water).
      */

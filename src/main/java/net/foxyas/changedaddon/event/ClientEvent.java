@@ -64,8 +64,7 @@ public class ClientEvent {
         if (entity.isCreative()) {
             if (!Screen.hasShiftDown()) {
                 String variantName = new TranslatableComponent(Syringe.getVariantDescriptionId(itemstack)).getString();
-                tooltip.add(new TextComponent("Hold ").append(new TextComponent("<Shift>").withStyle(style -> style.withColor(0xFFD700)))
-                        .append(" to show the stats of the " + variantName + " Transfur"));
+                tooltip.add(new TranslatableComponent("item.changed_addon.latex_syringe.tooltip", variantName));
             } else {
                 int index = Math.min(tooltip.size(), 3);
 

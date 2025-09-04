@@ -72,11 +72,6 @@ public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements Va
     }
 
     @Override
-    public float extraBlockBreakSpeed() {
-        return 0;
-    }
-
-    @Override
     public FlyType getFlyType() {
         return FlyType.ONLY_FALL;
     }

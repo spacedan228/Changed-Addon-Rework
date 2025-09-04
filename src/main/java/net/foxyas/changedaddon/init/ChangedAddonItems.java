@@ -52,6 +52,7 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> LITIX_CAMONIA = REGISTRY.register("litix_camonia", LitixCamoniaItem::new);
     public static final RegistryObject<Item> LAETHIN = REGISTRY.register("laethin", LaethinItem::new);
     public static final RegistryObject<Item> CATALYZED_DNA = REGISTRY.register("catalyzed_dna", CatalyzedDNAItem::new);
+
     public static final RegistryObject<Item> SYRINGE = REGISTRY.register("syringe", SyringeItem::new);
     public static final RegistryObject<Item> DIFFUSION_SYRINGE = REGISTRY.register("diffusion_syringe", DiffusionSyringeItem::new);
     public static final RegistryObject<Item> SYRINGE_WITH_LITIX_CAMMONIA = REGISTRY.register("syringe_with_litix_cammonia", SyringeWithLitixCammoniaItem::new);
@@ -89,10 +90,16 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> EXP_10_CONTAINMENT_VIAL = REGISTRY.register("exp_10_containment_vial", BossExperiment10SpawnEggItem::new);
     public static final RegistryObject<Item> RED_LATEX_GOO = REGISTRY.register("red_latex_goo", RedLatexGooItem::new);
 
+    // Foods and Drinks
     public static final RegistryObject<Item> ORANGE_JUICE = REGISTRY.register("orange_juice", OrangeJuiceItem::new);
     public static final RegistryObject<Item> SNEPSI = REGISTRY.register("snepsi", SnepsiItem::new);
     public static final RegistryObject<Item> FOXTA = REGISTRY.register("foxta", FoxtaItem::new);
     public static final RegistryObject<Item> GOLDEN_ORANGE = REGISTRY.register("golden_orange", GoldenOrange::new);
+    public static final RegistryObject<Item> OPENED_CANNED_SOUP = REGISTRY.register("opened_canned_soup", OpenedCannedSoupItem::new);
+
+    // Remain Items
+    public static final RegistryObject<Item> EMPTY_CAN = REGISTRY.register("empty_can", EmptyCanItem::new);
+
 
     public static final RegistryObject<BlockItem> SNEP_PLUSH = block(ChangedAddonBlocks.SNEP_PLUSH, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<BlockItem> WOLF_PLUSH = block(ChangedAddonBlocks.WOLF_PLUSH, ChangedAddonTabs.TAB_CHANGED_ADDON);

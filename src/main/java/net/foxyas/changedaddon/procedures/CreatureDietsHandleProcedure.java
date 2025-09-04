@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.process.variantsExtraStats.FormDietEvent;
+import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractLatexWolf;
 import net.ltxprogrammer.changed.entity.beast.AquaticEntity;
@@ -21,10 +22,12 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.IExtensibleEnum;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,18 +108,22 @@ public class CreatureDietsHandleProcedure {
         }
     }
 
-    private static List<DietType> determineDietTypes(ChangedEntity ChangedEntity, TransfurVariant<?> variant) {
+    private static List<DietType> determineDietTypes(ChangedEntity changedEntity, TransfurVariant<?> variant) {
         if (variant.is(ChangedAddonTags.TransfurTypes.NO_DIET)) return List.of();
 
         List<DietType> dietTypes = new ArrayList<>();
         for (DietType diet : DietType.values()) {
-            if (diet.hasDiet(ChangedEntity, variant)) dietTypes.add(diet);
+            if (diet.hasDiet(changedEntity, variant)) dietTypes.add(diet);
+        }
+
+        if (changedEntity instanceof VariantExtraStats stats) {
+            dietTypes.addAll(stats.getExtraDietTypes());
         }
 
         return dietTypes;
     }
 
-    private enum DietType {
+    public enum DietType implements IExtensibleEnum {
         AQUATIC(ChangedAddonTags.TransfurTypes.AQUATIC_DIET, ChangedAddonTags.Items.AQUATIC_DIET),
         SHARK(ChangedAddonTags.TransfurTypes.SHARK_DIET, ChangedAddonTags.Items.SHARK_DIET),
         CAT(ChangedAddonTags.TransfurTypes.CAT_DIET, ChangedAddonTags.Items.CAT_DIET),
@@ -128,10 +135,18 @@ public class CreatureDietsHandleProcedure {
 
         private final TagKey<TransfurVariant<?>> tfTag;
         private final TagKey<Item> dietTag;
+        private final List<Item> dietItems;
+
+        DietType(TagKey<TransfurVariant<?>> tfTag, TagKey<Item> dietTag, List<Item> items) {
+            this.tfTag = tfTag;
+            this.dietTag = dietTag;
+            this.dietItems = items;
+        }
 
         DietType(TagKey<TransfurVariant<?>> tfTag, TagKey<Item> dietTag) {
             this.tfTag = tfTag;
             this.dietTag = dietTag;
+            this.dietItems = List.of();
         }
 
         public boolean hasDiet(ChangedEntity entity, TransfurVariant<?> tf) {
@@ -142,7 +157,15 @@ public class CreatureDietsHandleProcedure {
         }
 
         public boolean isDietItem(ItemStack item) {
-            return item.is(dietTag);
+            return item.is(dietTag) || dietItems.contains(item.getItem());
+        }
+
+        public static DietType create(String name, TagKey<TransfurVariant<?>> tfTag, TagKey<Item> dietTag, List<Item> items) {
+            throw new NotImplementedException("Not extended");
+        }
+
+        public static DietType create(String name, TagKey<TransfurVariant<?>> tfTag, TagKey<Item> dietTag) {
+            throw new NotImplementedException("Not extended");
         }
     }
 }
