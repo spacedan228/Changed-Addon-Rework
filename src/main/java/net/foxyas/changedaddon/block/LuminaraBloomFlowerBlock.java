@@ -9,6 +9,7 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -37,8 +38,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Random;
 
-public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock {
-    public LuminaraBloomBlock() {
+public class LuminaraBloomFlowerBlock extends FlowerBlock implements BonemealableBlock {
+    public LuminaraBloomFlowerBlock() {
         super(ChangedAddonMobEffects.UNTRANSFUR, 60,
                 BlockBehaviour.Properties.of(Material.PLANT)
                         .emissiveRendering((state, blockGetter, blockPos) -> true)
@@ -65,14 +66,14 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
     @Override
     public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull Random pRandom) {
         super.tick(pState, pLevel, pPos, pRandom);
-        tryToPacifyNearbyEntities(pLevel, pPos, 128);
+        tryToPacifyNearbyEntities(pLevel, pPos, 64);
         pLevel.scheduleTick(pPos, this, 10);
     }
 
     public void tryToPacifyNearbyEntities(@NotNull ServerLevel pLevel, BlockPos pPos, double range) {
         List<LivingEntity> nearChangedBeasts = pLevel.getEntitiesOfClass(LivingEntity.class,
                 new AABB(pPos, pPos).inflate(range),
-                (entity) -> FoxyasUtils.canEntitySeePosIgnoreGlass(entity, Vec3.atCenterOf(pPos)));
+                (entity) -> FoxyasUtils.canEntitySeePosIgnoreGlass(entity, Vec3.atCenterOf(pPos), 90));
         for (LivingEntity livingEntity : nearChangedBeasts) {
             if (livingEntity instanceof ChangedEntity changedEntity) {
                 if (changedEntity instanceof LuminaraFlowerBeastEntity) {
@@ -120,7 +121,9 @@ public class LuminaraBloomBlock extends FlowerBlock implements BonemealableBlock
         float z = (float) offset.z + pos.getZ() + 0.5f + random.nextFloat(-0.3f, 0.3f);
 
         level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, x, y, z, 0, 0.01D, 0);
-        level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1, 1);
+        if (level instanceof ClientLevel clientLevel) {
+            clientLevel.playLocalSound(pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1, 1, true);
+        }
     }
 
 

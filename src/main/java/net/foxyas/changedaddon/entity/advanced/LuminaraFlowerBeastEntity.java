@@ -10,6 +10,7 @@ import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.PowderSnowWalkable;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
@@ -38,7 +39,7 @@ import net.minecraftforge.network.PlayMessages;
 
 import java.util.List;
 
-public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats, CustomPatReaction {
+public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats, CustomPatReaction, PowderSnowWalkable {
 
     private static final EntityDataAccessor<Boolean> AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
     private boolean attributesApplied;
@@ -79,13 +80,32 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     @Override
     public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
-        patTarget.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600));
+        MobEffectInstance effect = getPatEffect(patter);
+        if (patTarget instanceof Player player && ProcessTransfur.isPlayerLatex(player)) {
+            patTarget.addEffect(effect, patter);
+        } else if (patTarget instanceof ChangedEntity changedEntity) {
+            changedEntity.addEffect(effect, patter);
+        }
     }
 
     @Override
     public void WhenPattedReaction(Player patter, InteractionHand hand) {
-        patter.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600));
+        if (ProcessTransfur.isPlayerLatex(patter)) {
+            MobEffectInstance effect = getPatEffect(this);
+            patter.addEffect(effect, this);
+        }
     }
+
+    private MobEffectInstance getPatEffect(LivingEntity patter) {
+        if (!this.isAwakened()) {
+            return new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600);
+        }
+        if (!patter.isShiftKeyDown()) {
+            return new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600);
+        }
+        return new MobEffectInstance(ChangedAddonMobEffects.UNTRANSFUR.get(), 600);
+    }
+
 
     @Override
     protected void defineSynchedData() {
@@ -193,7 +213,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     public void tryToPacifyNearbyEntities(double range) {
-        List<LivingEntity> nearChangedBeasts = this.getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(range), (entity) -> FoxyasUtils.canEntitySeeOtherIgnoreGlass(entity, this));
+        List<LivingEntity> nearChangedBeasts = this.getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(range), (entity) -> FoxyasUtils.canEntitySeeOtherIgnoreGlass(entity, this, 90f));
         for (LivingEntity livingEntity : nearChangedBeasts) {
             if (livingEntity instanceof ChangedEntity changedEntity) {
                 if (changedEntity instanceof LuminaraFlowerBeastEntity) {

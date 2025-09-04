@@ -1,0 +1,24 @@
+{
+  "type": "changed:infuser",
+  "ingredients": [
+    {
+      "tag": "minecraft:fishes"
+    },
+    {
+      "item": "minecraft:phantom_membrane"
+    },
+    {
+      "item": "changed_addon:luminara_bloom"
+    },
+    {
+      "item": "changed:latex_base"
+    },
+    {
+      "tag": "forge:dyes/purple"
+    },
+    {
+      "tag": "forge:dyes/pink"
+    }
+  ],
+  "form": "changed_addon:form_luminara_flower_beast"
+}

@@ -1,0 +1,30 @@
+{
+  "type": "changed:infuser",
+  "ingredients": [
+    {
+      "item": "minecraft:beef"
+    },
+    {
+      "item": "minecraft:string"
+    },
+    {
+      "item": "minecraft:salmon"
+    },
+    {
+      "item": "changed:white_latex_goo"
+    },
+    {
+      "item": "changed:latex_base"
+    },
+    {
+      "item": "minecraft:white_dye"
+    },
+    {
+      "item": "minecraft:yellow_dye"
+    },
+    {
+      "item": "minecraft:black_dye"
+    }
+  ],
+  "form": "changed_addon:form_latex_cheetah/female"
+}

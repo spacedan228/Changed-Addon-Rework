@@ -6,13 +6,13 @@ import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class CustomInteraction extends AbstractAbility<CustomInteractionInstance> {
 
@@ -46,8 +46,9 @@ public class CustomInteraction extends AbstractAbility<CustomInteractionInstance
                 || entity.getChangedEntity() instanceof AbstractLuminarcticLeopard) {
             if (entity.getChangedEntity() instanceof LatexSnepEntity) {
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.latex_snep"));
-            } else if (entity.getChangedEntity() instanceof AvaliEntity) {
+            } else if (entity.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.avali"));
+                description.add(new TextComponent("Scale selected " + avaliEntity.getDimensionScale()));
             } else {
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminarctic_leopards"));
             }

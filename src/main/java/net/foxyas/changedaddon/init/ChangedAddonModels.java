@@ -2,15 +2,11 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.client.model.*;
 import net.foxyas.changedaddon.client.model.advanced.*;
-import net.foxyas.changedaddon.client.model.armors.ArmorLatexDragonSnowLeopardSharkModel;
-import net.foxyas.changedaddon.client.model.armors.ArmorLatexSquidTigerSharkModel;
-import net.foxyas.changedaddon.client.model.armors.ArmorLuminaraFlowerBeastModel;
-import net.foxyas.changedaddon.client.model.armors.DarkLatexCoatModel;
+import net.foxyas.changedaddon.client.model.armors.*;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
 import net.foxyas.changedaddon.client.model.simple.*;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.ContainmentContainerRenderer;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.SnepPlushBlockEntityRenderer;
-import net.foxyas.changedaddon.entity.simple.LatexWhiteSnowLeopardFemale;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,7 +33,7 @@ public class ChangedAddonModels {
         // --- CHANGED ENTITIES MODELS---
         event.registerLayerDefinition(ModelSnowFox.LAYER_LOCATION, ModelSnowFox::createBodyLayer);
         event.registerLayerDefinition(ModelFemaleSnowFox.LAYER_LOCATION, ModelFemaleSnowFox::createBodyLayer);
-        event.registerLayerDefinition(DazedLatexModel.LAYER_LOCATION, DazedLatexModel::createBodyLayer);
+        event.registerLayerDefinition(LatexDazedModel.LAYER_LOCATION, LatexDazedModel::createBodyLayer);
         event.registerLayerDefinition(PuroKindModel.LAYER_LOCATION, PuroKindModel::createBodyLayer);
         event.registerLayerDefinition(PuroKindFemaleModel.LAYER_LOCATION, PuroKindFemaleModel::createBodyLayer);
         event.registerLayerDefinition(BunyModel.LAYER_LOCATION, BunyModel::createBodyLayer);
@@ -98,6 +94,7 @@ public class ChangedAddonModels {
         ArmorLatexSquidTigerSharkModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
         ArmorLatexDragonSnowLeopardSharkModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
         ArmorLuminaraFlowerBeastModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
+        ArmorLatexDazedModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
 
 
         // --- Non Anthro Entities Model ---

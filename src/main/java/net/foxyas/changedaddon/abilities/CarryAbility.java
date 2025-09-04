@@ -14,16 +14,19 @@ import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.Optional;
 
@@ -81,11 +84,21 @@ public class CarryAbility extends SimpleAbility {
     }
 
     @Override
+    public void tick(IAbstractChangedEntity entity) {
+        LivingEntity e = entity.getEntity();
+        Level level = e.level;
+        if(!e.isVehicle()) return;
+
+        if(e.isEyeInFluid(FluidTags.WATER) && !level.getBlockState(new BlockPos(e.getX(), e.getEyeY(), e.getZ())).is(Blocks.BUBBLE_COLUMN)){
+            e.ejectPassengers();
+            broadcastPassengers(e);
+        }
+    }
+
+    @Override
     public void onRemove(IAbstractChangedEntity entity) {
         super.onRemove(entity);
-        if (entity.getEntity().getLevel() instanceof ServerLevel) {
-            SafeRemove(entity.getEntity());
-        }
+        Run(entity.getEntity());
     }
 
     public Entity CarryTarget(Player player) {

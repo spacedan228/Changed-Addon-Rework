@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class DazedLatexModel extends AdvancedHumanoidModel<DazedLatexEntity> implements AdvancedHumanoidModelInterface<DazedLatexEntity, DazedLatexModel> {
+public class LatexDazedModel extends AdvancedHumanoidModel<DazedLatexEntity> implements AdvancedHumanoidModelInterface<DazedLatexEntity, LatexDazedModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("dazed_latex"), "main");
 
@@ -36,9 +36,9 @@ public class DazedLatexModel extends AdvancedHumanoidModel<DazedLatexEntity> imp
     private final ModelPart Puddle;
     private final ModelPart Middle;
     private final ModelPart Top;
-    private final HumanoidAnimator<DazedLatexEntity, DazedLatexModel> animator;
+    private final HumanoidAnimator<DazedLatexEntity, LatexDazedModel> animator;
 
-    public DazedLatexModel(ModelPart root) {
+    public LatexDazedModel(ModelPart root) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
         this.LeftLeg = root.getChild("LeftLeg");
@@ -162,6 +162,10 @@ public class DazedLatexModel extends AdvancedHumanoidModel<DazedLatexEntity> imp
     }
 
     public boolean isPartNotPuddle(ModelPart part) {
+        if (Puddle.visible) {
+            return Puddle.getAllParts().anyMatch(part::equals);
+        }
+
         return Puddle.getAllParts().noneMatch(part::equals);
     }
 
@@ -253,7 +257,7 @@ public class DazedLatexModel extends AdvancedHumanoidModel<DazedLatexEntity> imp
     }
 
     @Override
-    public HumanoidAnimator<DazedLatexEntity, DazedLatexModel> getAnimator(DazedLatexEntity entity) {
+    public HumanoidAnimator<DazedLatexEntity, LatexDazedModel> getAnimator(DazedLatexEntity entity) {
         return animator;
     }
 }

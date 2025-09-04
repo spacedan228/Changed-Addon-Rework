@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.init;
 
-import net.foxyas.changedaddon.client.model.advanced.LuminaraFlowerBeastModel;
 import net.foxyas.changedaddon.client.renderer.*;
 import net.foxyas.changedaddon.client.renderer.advanced.*;
 import net.foxyas.changedaddon.client.renderer.basic.*;
@@ -20,7 +19,7 @@ public class ChangedAddonEntityRenderers {
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), LatexSnowFoxRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FEMALE.get(), LatexSnowFoxFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LUMINAR_CRYSTAL_SPEAR.get(), LuminarCrystalSpearRenderer::new);
-        event.registerEntityRenderer(ChangedAddonEntities.DAZED_LATEX.get(), DazedRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.DAZED_LATEX.get(), LatexDazedRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.PURO_KIND_MALE.get(), PuroKindRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.PURO_KIND_FEMALE.get(), PuroKindFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.BUNY.get(), BunyRenderer::new);

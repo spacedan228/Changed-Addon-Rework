@@ -177,16 +177,16 @@ public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
         tag(ChangedAddonTags.TransfurTypes.ABLE_TO_CARRY).add(EXP6.get());
         tag(ChangedAddonTags.TransfurTypes.CAUSE_FREEZING).add(LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get());
         tag(ChangedAddonTags.TransfurTypes.GLOWING_VARIANTS).add(EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get(), EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());
-        tag(ChangedAddonTags.TransfurTypes.HAS_CLAWS).add(LATEX_KITSUNE_FEMALE.get(), LATEX_KITSUNE_MALE.get(), FENGQI_WOLF.get());
+        tag(ChangedAddonTags.TransfurTypes.HAS_CLAWS).add(LATEX_KITSUNE_FEMALE.get(), LATEX_KITSUNE_MALE.get(), FENGQI_WOLF.get(), LUMINARA_FLOWER_BEAST.get());
 
 
         tag(ChangedAddonTags.TransfurTypes.AQUATIC_LIKE).add(LATEX_DRAGON_SNEP_SHARK.get());
 
         addAllMatching(tag(ChangedAddonTags.TransfurTypes.SHARK_LIKE), var -> var.getRegistryName().getPath().contains("shark")).add(ChangedTransfurVariants.LATEX_ORCA.get(), ChangedTransfurVariants.LATEX_MANTA_RAY_FEMALE.get(), ChangedTransfurVariants.LATEX_MANTA_RAY_MALE.get());
 
-        addAllMatching(tag(ChangedAddonTags.TransfurTypes.CAT_LIKE), var -> var.getRegistryName().getPath().contains("cat")).add(EXPERIMENT_10.get(), MIRROR_WHITE_TIGER.get(), LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get(), LYNX.get(), SNEPSI_LEOPARD.get());
+        addAllMatching(tag(ChangedAddonTags.TransfurTypes.CAT_LIKE), var -> var.getRegistryName().getPath().contains("cat")).add(EXPERIMENT_10.get(), MIRROR_WHITE_TIGER.get(), LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get(), LYNX.get(), SNEPSI_LEOPARD.get(), LATEX_CHEETAH_FEMALE.get());
 
-        addAllMatching(tag(ChangedAddonTags.TransfurTypes.DRAGON_LIKE), var -> var.getRegistryName().getPath().contains("dragon"));
+        addAllMatching(tag(ChangedAddonTags.TransfurTypes.DRAGON_LIKE), var -> var.getRegistryName().getPath().contains("dragon")).add(LUMINARA_FLOWER_BEAST.get());
 
         addAllMatching(tag(ChangedAddonTags.TransfurTypes.FOX_LIKE), var -> var.getRegistryName().getPath().contains("fox")).add(EXP1_MALE.get(), EXP1_FEMALE.get(), EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get(), LATEX_KITSUNE_MALE.get(), LATEX_KITSUNE_FEMALE.get());
 
