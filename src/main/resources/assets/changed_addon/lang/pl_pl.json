@@ -102,7 +102,7 @@
   "advancement.grab.hug.description": "Przytuliłeś się do kogoś ♥",
 
   "advancement.grab.hug_tight.title": "Mocny uścisk",
-  "advancement.grab.hug_tight.description": "Uścisnąłeś kogoś mocno ♥",//FIX
+  "advancement.grab.hug_tight.description": "Mocno kogoś uścisnąłeś ♥",
 
   "attribute.changed_addon.latex_infection": "Zarażanie latexem",
   "attribute.changed_addon.latex_resistance": "Odporność na latex",
@@ -209,8 +209,8 @@
   "ability.changed_addon.grab_entity.extender.hugged.tight": "%s mocno cię uściskał",
 
 
-  "changed_addon.compact_disc.content.experiment_009": "Eksperyment 009 musiał zostać zniszczony!! Jest potężny, bardzo potężny, nigdy nie pozwólcie mu wpaść w niewłaściwe ręce. Eksperyment 009 najwyraźniej nie może zarażać, ale nie wykazuje do tego chęci. Zamiast tego, §n§4chce zabić każdego kto wejdzie mu w drogę§r",//DEPRECATED??
-  "changed_addon.compact_disc.title.experiment_009": "§n§4Zniszczony§r §n§bEksperyment",//DEPRECATED??
+  "changed_addon.compact_disc.content.experiment_009": "Eksperyment 009 musiał zostać zniszczony!! Jest potężny, bardzo potężny, nigdy nie pozwólcie mu wpaść w niewłaściwe ręce. Eksperyment 009 najwyraźniej nie może zarażać, ale nie wykazuje do tego chęci. Zamiast tego, §n§4chce zabić każdego kto wejdzie mu w drogę§r",
+  "changed_addon.compact_disc.title.experiment_009": "§n§4Zniszczony§r §n§bEksperyment",
 
   "changed_addon.command.ultra_instinct.fail": "%s nie może używać ultra instynktu.",
   "changed_addon.command.ultra_instinct.disabled": "Ultra Instynkt wyłączony dla %s.",
@@ -223,7 +223,7 @@
   "changed_addon.entity_dialogues.exp10.pat.type_2": "§l§4Przestań!",
   "changed_addon.entity_dialogues.exp10.pat.type_3": "§l§4....czy my nie mieliśmy walczyć?",
   "changed_addon.entity_dialogues.exp10.reaction.range_attacks": "§l§o§4Myślisz że ta zabaweczka coś mi zrobi? Nie sądzę, słabiaku.",
-  "changed_addon.entity_dialogues.exp9.dead": "§o§n§l§345 Lata bycia pojedynczym orbem.. Wy ludzie, wciąż jesteście ode mnie silniejsi... Wrócę, a to jest mój podarunek dla was.",//DEPRECATED??
+  "changed_addon.entity_dialogues.exp9.dead": "§o§n§l§345 Lata bycia pojedynczym orbem.. Wy ludzie, wciąż jesteście ode mnie silniejsi... Wrócę, a to jest mój podarunek dla was.",
   "changed_addon.entity_dialogues.exp9.pat.type_1": "§l§3....czy my nie mieliśmy walczyć?",
   "changed_addon.entity_dialogues.exp9.pat.type_2": "§l§3Przestań!",
   "changed_addon.entity_dialogues.exp9.pat.type_3": "§l§3Co ty robisz?!",
@@ -254,7 +254,7 @@
   "changed_addon.jei_descriptions.laethin_syringe": "Odtransfurowuje użytkownika od razu, i nie może nie zadziałać",
   "changed_addon.jei_descriptions.latex_totem": "Może uratować stransfurowanego gracza i pozwala na pełną kontrolę nad przemianami",
   "changed_addon.jei_descriptions.litixcammonia_syringe": "44% szans, że nie zadziała przy odtransfurowaniu.",
-  "changed_addon.jei_descriptions.lunar_rose": "§f§lSzept kwiatu nocy §r#§o Wsród nocnej ciszy, kwiat ukryty, #§oSubtelny blask, jego los przesądzony. #§oZrodzony z lustra chowającego światło,#§o i zamarzniętej łzy, obojga czystych i jasnych. #§oPrzez niewidzialne ręce splecione, §ow stworzonej więzi, ich losy się łączą. #§o Żaden ogień czy piec nie ukształtuje jego formy, #§o lecz pod gwiazdami będzie narodzony. #§oWypatruj niewidzialnego, niech zaiskrzy mądrość, #§oTylko wiedzący dojrzą jego światło.",//FIX
+  "changed_addon.jei_descriptions.lunar_rose": "§f§lSzept kwiatu nocy §r#§o Wsród nocnej ciszy, kwiat ukryty, #§oSubtelny blask, jego los przesądzony. #§oZrodzony z lustra chowającego światło,#§o i zamarzniętej łzy, obojga czystych i jasnych. #§oPrzez niewidzialne ręce splecione, §ow stworzonej więzi, ich losy się łączą. #§o Żaden ogień czy piec nie ukształtuje jego formy, #§o lecz pod gwiazdami będzie narodzony. #§oWypatruj niewidzialnego, niech zaiskrzy mądrość, #§oTylko wiedzący dojrzą jego światło.",
   "changed_addon.jei_descriptions.pot_with_cammonia": "Daje efekt odtransfurowania, całkowicie odwracając przemianę po wypiciu.",
   "changed_addon.jei_descriptions.luminara.riddle": "Za krawędzią, gdzie gwiazdy cichną,\ngdzie ziemia poddaje się wiecznej nocy,\nleży ścieżka, której żaden płomień nie rozświetli.\nNie wpadaj w strach, lecz przyjmij otchłań.\nTylko rana nicości może odrodzić promienną duszę bestii.\nZ rozdartej zasłony, z cienistego upadku,\npowstaną Silniejsi.",
 
@@ -316,7 +316,7 @@
   "enchantment.changed_addon.changed_lure.desc": "Pozwala złowić latexy.",
   "enchantment.changed_addon.solvent": "Rozpuszczalnik latexu",
   "enchantment.changed_addon.solvent.desc": "Zadaje więcej obrażeń latexom",
-  "enchantment.changed_addon.solvent.jei_desc": "Zadaje %1$s T obrażeń latexom",//DEPRECATED??
+  "enchantment.changed_addon.solvent.jei_desc": "Zadaje %1$s T obrażeń latexom",
 
   "entity.changed_addon.avali": "Avali",
   "entity.changed_addon.bagel": "Bagel",
@@ -336,7 +336,7 @@
   "entity.changed_addon.exp6": "Eksperyment 6",
   "entity.changed_addon.exp_1_female": "Samica Eksperymentu 1",
   "entity.changed_addon.exp_1_male": "Samiec Eksperymentu 1",
-  "entity.changed_addon.exp_2_female": "Samiec Eksperymentu 2",
+  "entity.changed_addon.exp_2_female": "Samica Eksperymentu 2",
   "entity.changed_addon.exp_2_male": "Samiec Eksperymentu 2",
   "entity.changed_addon.exp_6": "Eksperyment 6",
   "entity.changed_addon.experiment_10": "Eksperyment 10",
@@ -349,8 +349,8 @@
   "entity.changed_addon.hayden_fennec_fox": "Fenek Haydena",
   "entity.changed_addon.experiment_009": "Eksperyment 009",
   "entity.changed_addon.experiment_009_boss": "Eksperyment 009",
-  "entity.changed_addon.latex_calico_cat": "Latex kot trikolorowy",//FIX, IF POSSIBLE
-  "entity.changed_addon.latex_dragon_snow_leopard_shark": "Fuzja latexowego smoka, śnieżnej pantery i rekina",//FIX IF POSSIBLE
+  "entity.changed_addon.latex_calico_cat": "Latexowy kot trikolorowy",
+  "entity.changed_addon.latex_dragon_snow_leopard_shark": "Fuzja latexowego smoka, śnieżnej pantery i rekina",
   "entity.changed_addon.latex_kitsune_female": "Samica kitsune",
   "entity.changed_addon.latex_kitsune_male": "Samiec kitsune",
   "entity.changed_addon.latex_puro_kind_female": "Samica gatunku Puro",
@@ -395,8 +395,8 @@
   "gamerule.doDazedLatexBurn.description": "Czy Dazed powinny się palić w dzień tak jak w grze Dazed?",
   "gamerule.doLatexInfection": "Do Latex Infection",
   "gamerule.doLatexInfection.description": "Czy jeżeli zostaniesz zainfekowany, to wskaźnik infekcji powinien rosnąć aż do jego wypełnienia? Szybkość się skaluje z siłą efektu.",
-  "gamerule.fight_to_keep_consciousness": "Fight to keep consciousness",//DEPRECATED??
-  "gamerule.fight_to_keep_consciousness.description": "Włączyć minigrę o zachowanie świadomości przy transfurze?",//DEPRECATED??
+  "gamerule.fight_to_keep_consciousness": "Fight to keep consciousness",
+  "gamerule.fight_to_keep_consciousness.description": "Włączyć minigrę o zachowanie świadomości przy transfurze?",
   "gamerule.changed_addon:fightToKeepConsciousness": "Fight to keep consciousness",
   "gamerule.changed_addon:fightToKeepConsciousness.description": "Włącz quickTimeEventy o zachowanie świadomości przy transfurze?",
   "gamerule.giveBookOnStart": "Give Book on Start? ",
@@ -438,7 +438,7 @@
   "gui.changed_addon.transfur_sounds_gui.button_7": "Zamraucz",
   "gui.changed_addon.transfur_sounds_gui.button_cooldown": "Reset Cooldownu",
   "gui.changed_addon.transfur_sounds_gui.label_transfur_sounds": "Dzwięki transfurów",
-  "gui.changed_addon.unifusergui.button_aaaaaaaaaa": "Następny",//DEPRECATED??
+  "gui.changed_addon.unifusergui.button_aaaaaaaaaa": "Następny",
   "gui.changed_addon.unifusergui.button_empty": "Następny",
   "gui.changed_addon.unifusergui.label_full": "Pełny",
   "gui.changed_addon.unifusergui.tooltip_place_a_syringe_with_dna": "Włóż strzykawkę z DNA",
@@ -521,9 +521,9 @@
   "item.changed_addon.foxta_foxy_spawn_egg": "Jajo przyzywające lisa Foxty",
   "item.changed_addon.foxyas_spawn_egg": "Jajo przyzywające Foxyasa",
   "item.changed_addon.hayden_fennec_fox_spawn_egg": "Jajo przyzywające fenka Haydena",
-  "item.changed_addon.latex_calico_cat_spawn_egg": "Jajo przyzywające latexowego kota trikolorowego",//FIX IF POSSIBLE
+  "item.changed_addon.latex_calico_cat_spawn_egg": "Jajo przyzywające latexowego kota trikolorowego",
   "item.changed_addon.latex_dazed_spawn_egg": "Jajo przyzywające latexowego Dazed",
-  "item.changed_addon.latex_dragon_snow_leopard_shark_spawn_egg": "Jajo przyzywające fuzję latexowego smoka, śnieżnej pantery i rekina",//FIX IF POSSIBLE
+  "item.changed_addon.latex_dragon_snow_leopard_shark_spawn_egg": "Jajo przyzywające fuzję latexowego smoka, śnieżnej pantery i rekina",
   "item.changed_addon.latex_kitsune_female_spawn_egg": "Jajo przyzywające samicę lisa kitsune",
   "item.changed_addon.latex_kitsune_male_spawn_egg": "Jajo przyzywające samca lisa kitsune",
   "item.changed_addon.latex_snep_spawn_egg": "Jajo przyzywające latexowego snepa",
