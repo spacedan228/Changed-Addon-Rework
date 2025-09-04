@@ -3,6 +3,8 @@ package net.foxyas.changedaddon.item;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -12,7 +14,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,10 +42,12 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
             ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
             itemStack.shrink(1);
             ItemStack closedCan = new ItemStack(ChangedBlocks.CANNED_SOUP.get().asItem(), 1);
+            pPlayer.swing(pUsedHand);
             if (!pPlayer.addItem(closedCan)) {
                 pPlayer.drop(closedCan, true);
             }
             pLevel.playSound(null, pPlayer, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.PLAYERS, 1, 2);
+            return InteractionResultHolder.pass(itemStack);
         }
         return super.use(pLevel, pPlayer, pUsedHand);
     }
@@ -59,6 +70,11 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
         return itemstack;
     }
 
+    @Override
+    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack pStack) {
+        return UseAnim.DRINK;
+    }
+
     @SubscribeEvent
     public static void onRightClickItem(PlayerInteractEvent.RightClickItem event) {
         Entity entity = event.getEntity();
@@ -72,7 +88,7 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
 
                 if (!player.level.isClientSide) {
                     stack.shrink(1);
-
+                    player.swing(event.getHand(), true);
                     ItemStack opened = new ItemStack(ChangedAddonItems.OPENED_CANNED_SOUP.get());
                     if (!player.addItem(opened)) {
                         player.drop(opened, true);
@@ -87,21 +103,33 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
     public static void onRightClickItem(PlayerInteractEvent.RightClickBlock event) {
         Player player = event.getPlayer();
         ItemStack stack = event.getItemStack();
+        Level world = event.getWorld();
+        BlockPos blockPos = event.getHitVec().getBlockPos();
+        BlockState state = event.getWorld().getBlockState(blockPos);
 
         if (stack.is(ChangedBlocks.CANNED_SOUP.get().asItem())) {
             if (player.isShiftKeyDown()) {
                 event.setCanceled(true);
-
-                /*if (!player.level.isClientSide) {
-                    stack.shrink(1);
-
-                    ItemStack opened = new ItemStack(ChangedAddonItems.OPENED_CANNED_SOUP.get());
-                    if (!player.addItem(opened)) {
-                        player.drop(opened, true);
-                    }
-                    event.getWorld().playSound(null, player, SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.PLAYERS, 1, 2);
-                }*/
             }
+        } else if (state.is(ChangedBlocks.CANNED_PEACHES.get())) {
+            if (event.getHand() == InteractionHand.MAIN_HAND) {
+                if (event.getItemStack().isEmpty() || event.getItemStack().getItem() instanceof ShovelItem) {
+                    if (player.isShiftKeyDown()) {
+                        if (!player.getFoodData().needsFood()) {
+                            return;
+                        }
+                        event.setCanceled(true);
+                        //world.addDestroyBlockEffect(blockPos, state);
+                        //world.setBlocksDirty(blockPos, state, Blocks.AIR.defaultBlockState());
+                        world.setBlock(blockPos , Blocks.AIR.defaultBlockState(), 3);
+                        world.levelEvent(player, 2001, blockPos, Block.getId(state));
+                        Block.popResource(world, blockPos, new ItemStack(ChangedAddonItems.EMPTY_CAN.get()));
+                        player.getFoodData().eat(4, 1);
+                        player.swing(event.getHand());
+                    }
+                }
+            }
+
         }
     }
 }
