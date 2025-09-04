@@ -23,7 +23,7 @@ import java.util.Random;
 public class ProcessPatFeature {
 
     public static void SpawnEmote(Player player, LivingEntity target) {
-        if(!(target instanceof ChangedEntity changedEntity) || changedEntity.getTarget() == player) return;
+        if (!(target instanceof ChangedEntity changedEntity) || changedEntity.getTarget() == player) return;
 
         if (PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
             player.getLevel().addParticle(ChangedParticles.emote(changedEntity, Emote.CONFUSED),
@@ -94,11 +94,6 @@ public class ProcessPatFeature {
             } else {
                 SpawnEmote(player, target);
             }
-
-
-
-
-
 
         }
     }

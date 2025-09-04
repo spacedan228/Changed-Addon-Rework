@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.abilities.handle;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.abilities.CarryAbility;
+import net.foxyas.changedaddon.abilities.CarryAbilityInstance;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
@@ -109,8 +110,7 @@ public class RenderHandsEventHandle {
         // Check if the player has the Carry ability and is carrying a valid entity
         if (variantInstance.hasAbility(ChangedAddonAbilities.CARRY.get())
                 && variantInstance.selectedAbility == ChangedAddonAbilities.CARRY.get()) {
-            CarryAbility carryAbility = (CarryAbility) variantInstance.getAbilityInstance(ChangedAddonAbilities.CARRY.get()).ability;
-            Entity carryTarget = carryAbility.CarryTarget(player);
+            Entity carryTarget = CarryAbilityInstance.carryTarget(player);
 
             if (carryTarget instanceof LivingEntity) {
                 boolean isHumanoidOrTagValid = carryTarget.getType().is(ChangedTags.EntityTypes.HUMANOIDS) ||
