@@ -9,8 +9,8 @@ import net.foxyas.changedaddon.entity.goals.void_fox.VoidFoxAntiFlyingAttack;
 import net.foxyas.changedaddon.entity.goals.void_fox.VoidFoxDashAttack;
 import net.foxyas.changedaddon.entity.interfaces.CrawlFeature;
 import net.foxyas.changedaddon.entity.interfaces.IHasBossMusic;
-import net.foxyas.changedaddon.entity.projectile.AbstractGenericParticleProjectile;
-import net.foxyas.changedaddon.entity.projectile.ParticleProjectile;
+import net.foxyas.changedaddon.entity.projectile.AbstractVoidFoxParticleProjectile;
+import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonSounds;
@@ -592,8 +592,8 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         float randomValue = this.getRandom().nextFloat();
         float value = this.computeHealthRatio() <= 0.5f ? 0.75f : 0.5f;
         boolean willHit = randomValue <= value;
-        if (source.getEntity() instanceof AbstractGenericParticleProjectile
-                || source.getDirectEntity() instanceof AbstractGenericParticleProjectile) {
+        if (source.getEntity() instanceof AbstractVoidFoxParticleProjectile
+                || source.getDirectEntity() instanceof AbstractVoidFoxParticleProjectile) {
             boolean f = super.hurt(source, amount * 3.5f);
             this.invulnerableTime = 0;
             this.hurtDuration = 1;
@@ -776,7 +776,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                         double py = this.getY() + dy * radius + 1.0; // leve ajuste de altura
                         double pz = this.getZ() + dz * radius;
 
-                        ParticleProjectile projectile = new ParticleProjectile(ChangedAddonEntities.PARTICLE_PROJECTILE.get(), this.level);
+                        VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(ChangedAddonEntities.PARTICLE_PROJECTILE.get(), this.level);
                         projectile.setSmoothMotion(true);
                         projectile.setPos(px, py, pz);
                         projectile.shoot(dx, dy, dz, 1.0f, 0.0f); // dispara na direção da esfera

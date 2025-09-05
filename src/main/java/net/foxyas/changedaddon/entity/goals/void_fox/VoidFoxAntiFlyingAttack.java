@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.goals.void_fox;
 
 import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
-import net.foxyas.changedaddon.entity.projectile.ParticleProjectile;
+import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -261,7 +261,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
 
             // Spawn do projétil
             if (!level.isClientSide()) {
-                ParticleProjectile projectile = getParticleProjectile(target, spawnPos);
+                VoidFoxParticleProjectile projectile = getParticleProjectile(target, spawnPos);
                 projectile.teleport = false;
 
                 Vec3 direction = target.getEyePosition(1.0F).subtract(attacker.getEyePosition(0.5f)).normalize();
@@ -285,7 +285,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
 
             // Spawn do projétil
             if (!level.isClientSide()) {
-                ParticleProjectile projectile = getParticleProjectile(target, spawnPos);
+                VoidFoxParticleProjectile projectile = getParticleProjectile(target, spawnPos);
                 projectile.teleport = false;
 
                 Vec3 direction = target.getEyePosition(1.0F).subtract(attacker.getEyePosition(0.5f)).normalize();
@@ -298,8 +298,8 @@ public class VoidFoxAntiFlyingAttack extends Goal {
         attacker.swing(InteractionHand.MAIN_HAND);
     }
 
-    private @NotNull ParticleProjectile getParticleProjectile(LivingEntity target, Vec3 spawnPos) {
-        ParticleProjectile projectile = new ParticleProjectile(projectileType, attacker, attacker.getLevel(), target) {
+    private @NotNull VoidFoxParticleProjectile getParticleProjectile(LivingEntity target, Vec3 spawnPos) {
+        VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, attacker, attacker.getLevel(), target) {
             @Override
             protected void onHitEntity(@NotNull EntityHitResult result) {
                 super.onHitEntity(result);
@@ -329,7 +329,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
 
             // Spawn do projétil
             if (!level.isClientSide()) {
-                ParticleProjectile projectile = new ParticleProjectile(projectileType, attacker, attacker.getLevel(), null) {
+                VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, attacker, attacker.getLevel(), null) {
                     @Override
                     protected void onHitEntity(@NotNull EntityHitResult result) {
                         super.onHitEntity(result);

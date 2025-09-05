@@ -153,6 +153,9 @@
   "block.changed_addon.yellow_wolf_crystal_block": "Yellow Wolf Crystal Block",
   "block.changed_addon.yellow_wolf_crystal_small": "Small Yellow Wolf Crystal",
 
+
+  "ability.changed_addon.wither_grenade": "Wither Grenade",
+
   "changed_addon.ability.advanced_hearing": "Advanced Hearing",
   "changed_addon.ability.carry": "Carry",
   "changed_addon.ability.claws": "Claws Ability",
@@ -383,6 +386,7 @@
 
   "entity.changed_addon.projectile_luminar_crystal_spear": "Luminar Crystal Spear",
   "entity.changed_addon.particle_projectile": "Light Particle",
+  "entity.changed_addon.wither_particle_projectile": "Light Particle",
 
   "entity.minecraft.villager.changed_addon.scientist": "Scientist",
   "entity.minecraft.villager.changed_addon:scientist": "Scientist",
@@ -502,6 +506,7 @@
   "item.changed_addon.laethin_syringe": "Laethin Syringe",
   "item.changed_addon.laethinminator": "Laethinminator",
   "item.changed_addon.laser_pointer": "Laser Pointer",
+  "item.changed_addon.laser_pointer.tooltip": "Color: %s",
 
   "item.changed_addon.avali_spawn_egg": "Avali Spawn Egg",
   "item.changed_addon.bagel_spawn_egg": "Bagel Spawn Egg",

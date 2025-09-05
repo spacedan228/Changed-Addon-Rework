@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.client.renderer.*;
+import net.foxyas.changedaddon.client.renderer.projectiles.*;
 import net.foxyas.changedaddon.client.renderer.advanced.*;
 import net.foxyas.changedaddon.client.renderer.basic.*;
 import net.foxyas.changedaddon.client.renderer.mobs.ErikRenderer;
@@ -76,6 +77,8 @@ public class ChangedAddonEntityRenderers {
         // --- PROJECTILE ENTITIES ---
         event.registerEntityRenderer(ChangedAddonEntities.PARTICLE_PROJECTILE.get(),
                 SimpleProjectileRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.WITHER_PARTICLE_PROJECTILE.get(),
+                WitherSimpleProjectileRenderer::new);
     }
 
 

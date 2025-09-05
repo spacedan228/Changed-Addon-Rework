@@ -1,13 +1,14 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.entity.projectile.WitherParticleProjectile;
 import net.foxyas.changedaddon.entity.simple.PinkCyanSkunkEntity;
 import net.foxyas.changedaddon.entity.advanced.*;
 import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.mobs.ErikEntity;
 import net.foxyas.changedaddon.entity.mobs.FoxyasEntity;
 import net.foxyas.changedaddon.entity.projectile.LuminarCrystalSpearEntity;
-import net.foxyas.changedaddon.entity.projectile.ParticleProjectile;
+import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
 import net.foxyas.changedaddon.entity.simple.*;
 import net.ltxprogrammer.changed.init.ChangedMobCategories;
 import net.minecraft.world.entity.Entity;
@@ -131,21 +132,36 @@ public class ChangedAddonEntities {
         return REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
     }
 
-    public static final RegistryObject<EntityType<LuminarCrystalSpearEntity>> LUMINAR_CRYSTAL_SPEAR = register("projectile_luminar_crystal_spear", EntityType.Builder.<LuminarCrystalSpearEntity>of(LuminarCrystalSpearEntity::new, MobCategory.MISC)
-            .setCustomClientFactory(LuminarCrystalSpearEntity::new).setShouldReceiveVelocityUpdates(true).setTrackingRange(64).setUpdateInterval(1).sized(0.5f, 0.5f));
-
     private static <T extends Entity> RegistryObject<EntityType<T>> register(String registryName, EntityType.Builder<T> entityTypeBuilder) {
         return REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
     }
 
     // --- PROJECTILES ---
-    public static final RegistryObject<EntityType<ParticleProjectile>> PARTICLE_PROJECTILE = register("particle_projectile",
-            EntityType.Builder.<ParticleProjectile>of(ParticleProjectile::new, MobCategory.MISC)
+    public static final RegistryObject<EntityType<VoidFoxParticleProjectile>> PARTICLE_PROJECTILE = register("particle_projectile",
+            EntityType.Builder.<VoidFoxParticleProjectile>of(VoidFoxParticleProjectile::new, MobCategory.MISC)
                     .setShouldReceiveVelocityUpdates(true)
                     .clientTrackingRange(64)
                     .updateInterval(1)
 
                     .sized(0.25F, 0.25F));
+
+    public static final RegistryObject<EntityType<WitherParticleProjectile>> WITHER_PARTICLE_PROJECTILE = register("wither_particle_projectile",
+            EntityType.Builder.of(WitherParticleProjectile::new, MobCategory.MISC)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .clientTrackingRange(64)
+                    .updateInterval(1)
+
+                    .sized(0.25F, 0.25F));
+
+    public static final RegistryObject<EntityType<LuminarCrystalSpearEntity>> LUMINAR_CRYSTAL_SPEAR = register("projectile_luminar_crystal_spear",
+            EntityType.Builder.<LuminarCrystalSpearEntity>of(LuminarCrystalSpearEntity::new, MobCategory.MISC)
+                    .setCustomClientFactory(LuminarCrystalSpearEntity::new)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(1)
+
+                    .sized(0.5f, 0.5f));
+
 
     // --- CHANGED ENTITIES ---
     public static final RegistryObject<EntityType<LatexSnowFoxMaleEntity>> LATEX_SNOW_FOX_MALE = registerChangedEntity("latex_snow_fox_male",
@@ -676,7 +692,7 @@ public class ChangedAddonEntities {
             FengQIWolfEntity.init();
             HaydenFennecFoxEntity.init();
             SnowLeopardPartialEntity.init();
-            ParticleProjectile.init();
+            VoidFoxParticleProjectile.init();
             BlueLizard.init();
             AvaliEntity.init();
             LatexKitsuneMaleEntity.init();
