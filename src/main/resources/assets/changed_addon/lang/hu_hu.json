@@ -385,6 +385,7 @@
   "entity.changed_addon.particle_projectile": "Fényrészecske",
 
   "entity.minecraft.villager.changed_addon.scientist": "Tudós",
+  "entity.minecraft.villager.changed_addon:scientist": "Tudós",
 
   "fluid.changed_addon.litix_camonia_fluid": "Folyékony litix-kamónia",
 
@@ -597,6 +598,11 @@
   "item.changed_addon.white_latex_spray": "Fehér latex szpré",
   "item.changed_addon.white_wolf_crystal_fragment": "§lFehér§r farkas kristályszilánk",
   "item.changed_addon.yellow_wolf_crystal_fragment": "§eSárga§r farkas kristályszilánk",
+  "item.changed_addon.opened_canned_soup": "Felbontott leveskonzerv",
+  "item.changed_addon.empty_can": "Üres konzerv",
+
+  "item.changed_addon.latex_syringe.tooltip": "Tartsa lenyomva a §r§6<Shift>§r billentyűt a %s transzfur statisztikáinak megjelenítéséhez",
+  
   "item.minecraft.lingering_potion.effect.litix_cammonia_effect": "Litix-kamónia időző bájitala",
   "item.minecraft.lingering_potion.effect.transfur_sickness_potion": "Transzfur betegség időző bájitala",
   "item.minecraft.potion.effect.litix_cammonia_effect": "Litix-kamónia bájitala",
