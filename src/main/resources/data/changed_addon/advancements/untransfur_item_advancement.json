@@ -19,9 +19,9 @@
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
-          { "item": "changed_addon:syringe_with_litix_cammonia" },
-          { "item": "changed_addon:pot_with_camonia" },
-          { "item": "changed_addon:diffusion_syringe" }
+          { "items": "changed_addon:syringe_with_litix_cammonia" },
+          { "items": "changed_addon:pot_with_camonia" },
+          { "items": "changed_addon:diffusion_syringe" }
         ]
       }
     }
