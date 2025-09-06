@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.WitherWave;
 import net.foxyas.changedaddon.entity.goals.exp9.LightningComboAttackGoal;
+import net.foxyas.changedaddon.entity.goals.generic.BreakBlocksAroundGoal;
 import net.foxyas.changedaddon.entity.goals.generic.BurstAttack;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.DashPunchGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.LeapSmashGoal;
@@ -160,11 +161,8 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     @Override
-    public void checkDespawn() {
-        if (true) {
-            return;
-        }
-        super.checkDespawn();
+    protected boolean shouldDespawnInPeaceful() {
+        return false;
     }
 
     @Override
@@ -223,6 +221,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
                 10));
         this.goalSelector.addGoal(10, new LeapSmashGoal(this));
         this.goalSelector.addGoal(15, new DashPunchGoal(this));
+        this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
     }
 
     @Override

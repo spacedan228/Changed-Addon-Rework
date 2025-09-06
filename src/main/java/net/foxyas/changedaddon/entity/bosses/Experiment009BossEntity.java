@@ -6,6 +6,7 @@ import net.foxyas.changedaddon.effect.particles.ChangedAddonParticles;
 import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
 import net.foxyas.changedaddon.entity.customHandle.Exp9AttacksHandle;
 import net.foxyas.changedaddon.entity.goals.exp9.*;
+import net.foxyas.changedaddon.entity.goals.generic.BreakBlocksAroundGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.entity.interfaces.BossWithMusic;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
@@ -259,6 +260,8 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
                 UniformInt.of(3, 6), //IntProvider -> attackCount,
                 UniformInt.of(20, 40), //IntProvider -> castDuration,
                 UniformFloat.of(6, 8))); //FloatProvider -> damage)
+
+        this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
     }
 
     //private void addOldAI() {
