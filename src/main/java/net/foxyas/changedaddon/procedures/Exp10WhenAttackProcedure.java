@@ -2,13 +2,13 @@ package net.foxyas.changedaddon.procedures;
 
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10Entity;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ShieldItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -24,136 +24,42 @@ public class Exp10WhenAttackProcedure {
     @SubscribeEvent
     public static void onEntityAttacked(LivingAttackEvent event) {
         Entity entity = event.getEntity();
-        if (event != null && entity != null) {
+        if (entity != null) {
             execute(event, entity.getLevel(), entity, event.getSource().getDirectEntity());
         }
     }
 
-    public static void execute(LevelAccessor world, Entity entity, Entity immediatesourceentity) {
-        execute(null, world, entity, immediatesourceentity);
+    public static void execute(LevelAccessor world, Entity entity, Entity attacker) {
+        execute(null, world, entity, attacker);
     }
 
-    private static void execute(@Nullable Event event, LevelAccessor world, Entity entity, Entity immediatesourceentity) {
-        if (entity == null || immediatesourceentity == null)
-            return;
-        if (immediatesourceentity instanceof Experiment10Entity || immediatesourceentity instanceof Experiment10BossEntity) {
-            if (entity instanceof LivingEntity _livEnt && _livEnt.isBlocking()) {
-                if (_livEnt.getMainHandItem().getItem() instanceof ShieldItem) {
-                    if (entity instanceof Player _player)
-                        _player.getCooldowns().addCooldown(_livEnt.getMainHandItem().getItem(), 150);
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(immediatesourceentity.getX(), immediatesourceentity.getY() + 1, immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.NEUTRAL, (float) 1.5, 1);
-                        } else {
-                            _level.playLocalSound((immediatesourceentity.getX()), (immediatesourceentity.getY() + 1), (immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.NEUTRAL, (float) 1.5, 1, false);
-                        }
-                    }
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(entity.getX(), entity.getY() + 1, entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5);
-                        } else {
-                            _level.playLocalSound((entity.getX()), (entity.getY() + 1), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5, false);
-                        }
-                    }
-                } else if (_livEnt.getOffhandItem().getItem() instanceof ShieldItem) {
-                    if (entity instanceof Player _player)
-                        _player.getCooldowns().addCooldown(_livEnt.getOffhandItem().getItem(), 150);
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(immediatesourceentity.getX(), immediatesourceentity.getY() + 1, immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1);
-                        } else {
-                            _level.playLocalSound((immediatesourceentity.getX()), (immediatesourceentity.getY() + 1), (immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1, false);
-                        }
-                    }
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(entity.getX(), entity.getY() + 1, entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5);
-                        } else {
-                            _level.playLocalSound((entity.getX()), (entity.getY() + 1), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5, false);
-                        }
-                    }
-                } else if (_livEnt.getMainHandItem().getItem() == ForgeRegistries.ITEMS.getValue(new ResourceLocation("changed:tsc_shield"))) {
-                    if (entity instanceof Player _player)
-                        _player.getCooldowns().addCooldown(_livEnt.getMainHandItem().getItem(), 150);
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(immediatesourceentity.getX(), immediatesourceentity.getY() + 1, immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1);
-                        } else {
-                            _level.playLocalSound((immediatesourceentity.getX()), (immediatesourceentity.getY() + 1), (immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1, false);
-                        }
-                    }
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(entity.getX(), entity.getY() + 1, entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5);
-                        } else {
-                            _level.playLocalSound((entity.getX()), (entity.getY() + 1), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5, false);
-                        }
-                    }
-                } else if (_livEnt.getOffhandItem().getItem() == ForgeRegistries.ITEMS.getValue(new ResourceLocation("changed:tsc_shield"))) {
-                    if (entity instanceof Player _player)
-                        _player.getCooldowns().addCooldown(_livEnt.getOffhandItem().getItem(), 150);
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(immediatesourceentity.getX(), immediatesourceentity.getY() + 1, immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1);
-                        } else {
-                            _level.playLocalSound((immediatesourceentity.getX()), (immediatesourceentity.getY() + 1), (immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1, false);
-                        }
-                    }
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(entity.getX(), entity.getY() + 1, entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5);
-                        } else {
-                            _level.playLocalSound((entity.getX()), (entity.getY() + 1), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5, false);
-                        }
-                    }
-                } else if ((ForgeRegistries.ITEMS.getKey(_livEnt.getMainHandItem().getItem()).toString()).contains("shield")
-                        && !(_livEnt.getMainHandItem().getItem() == ForgeRegistries.ITEMS.getValue(new ResourceLocation("changed:tsc_shield")))) {
-                    if (entity instanceof Player _player)
-                        _player.getCooldowns().addCooldown(_livEnt.getMainHandItem().getItem(), 150);
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(immediatesourceentity.getX(), immediatesourceentity.getY() + 1, immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1);
-                        } else {
-                            _level.playLocalSound((immediatesourceentity.getX()), (immediatesourceentity.getY() + 1), (immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1, false);
-                        }
-                    }
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(entity.getX(), entity.getY() + 1, entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5);
-                        } else {
-                            _level.playLocalSound((entity.getX()), (entity.getY() + 1), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5, false);
-                        }
-                    }
-                } else if ((ForgeRegistries.ITEMS.getKey(_livEnt.getOffhandItem().getItem()).toString()).contains("shield")
-                        && !(_livEnt.getOffhandItem().getItem() == ForgeRegistries.ITEMS.getValue(new ResourceLocation("changed:tsc_shield")))) {
-                    if (entity instanceof Player _player)
-                        _player.getCooldowns().addCooldown(_livEnt.getOffhandItem().getItem(), 150);
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(immediatesourceentity.getX(), immediatesourceentity.getY() + 1, immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1);
-                        } else {
-                            _level.playLocalSound((immediatesourceentity.getX()), (immediatesourceentity.getY() + 1), (immediatesourceentity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.player.attack.crit")),
-                                    SoundSource.HOSTILE, (float) 1.5, 1, false);
-                        }
-                    }
-                    if (world instanceof Level _level) {
-                        if (!_level.isClientSide()) {
-                            _level.playSound(null, new BlockPos(entity.getX(), entity.getY() + 1, entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5);
-                        } else {
-                            _level.playLocalSound((entity.getX()), (entity.getY() + 1), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.shield.break")), SoundSource.PLAYERS, (float) 1.5, (float) 0.5, false);
-                        }
-                    }
+    private static void execute(@Nullable Event event, LevelAccessor world, Entity entity, Entity attacker) {
+        if (!(entity instanceof LivingEntity living)) return;
+        if (!(attacker instanceof Experiment10Entity || attacker instanceof Experiment10BossEntity)) return;
+
+        if (living.isBlocking()) {
+            ItemStack shield = living.getUseItem(); // item sendo usado para bloquear
+
+            // Força desativar o escudo
+            if (living instanceof Player player) {
+                player.disableShield(true);
+            }
+
+            // Aplica cooldown (se for player)
+            if (living instanceof Player player && !shield.isEmpty()) {
+                player.getCooldowns().addCooldown(shield.getItem(), 150);
+            }
+
+            // Sons
+            if (world instanceof Level level) {
+                if (!level.isClientSide()) {
+                    level.playSound(null, attacker.blockPosition(),
+                            SoundEvents.PLAYER_ATTACK_CRIT,
+                            SoundSource.HOSTILE, 1.5f, 1f);
+
+                    level.playSound(null, entity.blockPosition(),
+                            SoundEvents.SHIELD_BREAK,
+                            SoundSource.PLAYERS, 1.5f, 0.5f);
                 }
             }
         }

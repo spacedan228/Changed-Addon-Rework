@@ -471,6 +471,11 @@ public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
     }
 
     @Override
+    public boolean isAttackable() {
+        return true;
+    }
+
+    @Override
     protected void onHitBlock(@NotNull BlockHitResult result) {
         //super.onHitBlock(result);
         ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);

@@ -10,7 +10,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
-public class LatexTotemKeepConcienceProcedure {
+public class LatexTotemKeepConscienceProcedure {
     @SubscribeEvent
     public static void execute(ProcessTransfur.KeepConsciousEvent event) {
         if (event.player == null)
