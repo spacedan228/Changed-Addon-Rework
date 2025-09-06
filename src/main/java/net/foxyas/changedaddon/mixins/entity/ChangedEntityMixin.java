@@ -1,27 +1,42 @@
 package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
+import net.foxyas.changedaddon.entity.interfaces.ChangedEntityExtension;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
-import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
-import net.ltxprogrammer.changed.init.ChangedTags;
-import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 @Mixin(value = ChangedEntity.class, remap = false)
-public class ChangedEntityTargetSelectorMixin {
+public abstract class ChangedEntityMixin extends Monster implements ChangedEntityExtension {
+
+    protected ChangedEntityMixin(EntityType<? extends Monster> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+    }
+
+    @Override
+    public boolean c_additions$isNeutralTo(@NotNull LivingEntity target) {
+        if(hasEffect(ChangedAddonMobEffects.PACIFIED.get())) return true;
+        //add more stuff...      mb?
+        return false;
+    }
+
+    @Inject(at = @At("HEAD"), method = "targetSelectorTest", cancellable = true)
+    private void onTargetSelectorTest(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir){
+        if(c_additions$isNeutralTo(livingEntity)) cir.setReturnValue(false);
+    }
 
     @Unique
     private static boolean isDarkLatexCoat(ItemStack itemStack) {
@@ -57,17 +72,5 @@ public class ChangedEntityTargetSelectorMixin {
                 }
             }
         }
-    }
-
-    @Inject(method = "targetSelectorTest", at = @At("HEAD"), cancellable = true)
-    private void injectTargetSelector(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
-        if (self().hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
-            cir.setReturnValue(false);
-        }
-    }
-
-    @Unique
-    private ChangedEntity self() {
-        return (ChangedEntity) (Object) this;
     }
 }

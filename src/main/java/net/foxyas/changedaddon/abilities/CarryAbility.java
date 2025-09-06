@@ -13,7 +13,6 @@ import net.minecraft.world.entity.player.Player;
 import java.util.Optional;
 
 public class CarryAbility extends AbstractAbility<CarryAbilityInstance> {
-    private CarryAbilityInstance abilityInstance;
 
     public CarryAbility() {
         super(CarryAbilityInstance::new);
@@ -26,12 +25,6 @@ public class CarryAbility extends AbstractAbility<CarryAbilityInstance> {
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
         return new ResourceLocation("changed_addon:textures/screens/carry_ability.png");
-    }
-
-    @Override
-    public CarryAbilityInstance makeInstance(IAbstractChangedEntity entity) {
-        abilityInstance = super.makeInstance(entity);
-        return abilityInstance;
     }
 
     @Override

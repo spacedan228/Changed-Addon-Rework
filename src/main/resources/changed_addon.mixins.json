@@ -18,7 +18,7 @@
     "client.renderer.WingFlyAnimationMixin",
     "enchantments.EnchantmentMixin",
     "enchantments.InfinityEnchantmentMixin",
-    "entity.ChangedEntityTargetSelectorMixin",
+    "entity.ChangedEntityMixin",
     "entity.IronGolemMixin",
     "entity.LivingEntityMixin",
     "entity.MobAccessor",

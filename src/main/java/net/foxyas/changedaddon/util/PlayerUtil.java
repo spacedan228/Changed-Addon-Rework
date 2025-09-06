@@ -1,24 +1,18 @@
 package net.foxyas.changedaddon.util;
 
-import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonSounds;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.ltxprogrammer.changed.effect.particle.ColoredParticleOption;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.beast.AbstractLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
-import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.DustColorTransitionOptions;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -28,20 +22,16 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.Objects;
-import java.util.Random;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -220,23 +210,22 @@ public class PlayerUtil {
 
     @Nullable
     public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, boolean testLineOfSight, Predicate<Entity> targetPredicate) {
-        double distance = reach * reach;
-        Vec3 eyePos = entity.getEyePosition(1.0f);
+        double reachSqr = reach * reach;
+        Vec3 eyePos = entity.getEyePosition();
 
         if (testLineOfSight) {
             HitResult hitResult = entity.pick(reach, 1.0f, false);
 
             if (hitResult.getType() != HitResult.Type.MISS) {
-                distance = hitResult.getLocation().distanceToSqr(eyePos);
-                reach = (float) Math.sqrt(distance);
+                reachSqr = hitResult.getLocation().distanceToSqr(eyePos);
+                reach = (float) Math.sqrt(reachSqr);
             }
         }
 
-        Vec3 viewVec = entity.getViewVector(1.0F);
+        Vec3 viewVec = entity.getLookAngle();
         Vec3 toVec = eyePos.add(viewVec.x * reach, viewVec.y * reach, viewVec.z * reach);
-        AABB aabb = entity.getBoundingBox().expandTowards(viewVec.scale(reach)).inflate(1.0D, 1.0D, 1.0D);
 
-        return ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, aabb, targetPredicate, distance);
+        return ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, new AABB(eyePos, toVec), targetPredicate, reachSqr);
     }
 
     public static HitResult getEntityBlockHitLookingAt(Entity entity, double reach, float deltaTicks, boolean affectByFluids) {

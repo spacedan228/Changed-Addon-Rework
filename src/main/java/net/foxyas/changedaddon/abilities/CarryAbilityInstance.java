@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 public class CarryAbilityInstance extends AbstractAbilityInstance {
 
     @Nullable
-    public Entity entityBeingCarry;
+    public Entity carriedEntity;
 
     public CarryAbilityInstance(AbstractAbility<CarryAbilityInstance> carryAbilityInstanceAbstractAbility, IAbstractChangedEntity entity) {
         super(carryAbilityInstanceAbstractAbility, entity);
@@ -51,14 +51,10 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
     }
 
     @Override
-    public void tick() {
-
-    }
+    public void tick() {}
 
     @Override
-    public void stopUsing() {
-
-    }
+    public void stopUsing() {}
 
     @Override
     public void onRemove() {
@@ -78,14 +74,14 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
             }
         }
 
-        if (entityBeingCarry == null) {
+        if (carriedEntity == null) {
             //broadcastPassengers(e);
             return;
         }
 
-        if (!e.isVehicle() || entityBeingCarry.getVehicle() != e) {
-            onPassengerLost(e, entityBeingCarry);
-            entityBeingCarry = null;
+        if (!e.isVehicle() || carriedEntity.getVehicle() != e) {
+            onPassengerLost(e, carriedEntity);
+            carriedEntity = null;
             broadcastPassengers(e);
             return;
         }
@@ -96,16 +92,16 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
             dropPassenger(e);
         }
 
-        if (entityBeingCarry.hurtMarked) {
+        if (carriedEntity.hurtMarked) {
             dropPassenger(e);
         }
     }
 
     private void dropPassenger(LivingEntity e) {
-        assert entityBeingCarry != null;
-        entityBeingCarry.stopRiding();
-        onPassengerLost(e, entityBeingCarry);
-        entityBeingCarry = null;
+        assert carriedEntity != null;
+        carriedEntity.stopRiding();
+        onPassengerLost(e, carriedEntity);
+        carriedEntity = null;
         broadcastPassengers(e);
     }
 
@@ -171,7 +167,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
 
         // Se já está carregando alguém: solta (e opcionalmente arremessa)
         Entity carried = player.getFirstPassenger();
-        setEntityBeingCarry(carried);
+        setCarriedEntity(carried);
         if (carried != null) {
             boolean toss = !player.isShiftKeyDown();
 
@@ -186,7 +182,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
             if (toss) {
                 launchForward(player, carried, 1.05);
             }
-            setEntityBeingCarry(player.getFirstPassenger());
+            setCarriedEntity(player.getFirstPassenger());
             return;
         }
 
@@ -195,7 +191,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
 
         // Selecionar alvo para carregar
         Entity target = this.carryTarget(player);
-        setEntityBeingCarry(target);
+        setCarriedEntity(target);
 
         if (target == null)
             return;
@@ -224,12 +220,12 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
         }
     }
 
-    public void setEntityBeingCarry(@Nullable Entity entityBeingCarry) {
-        this.entityBeingCarry = entityBeingCarry;
+    protected void setCarriedEntity(@Nullable Entity carriedEntity) {
+        this.carriedEntity = carriedEntity;
     }
 
-    public @Nullable Entity getEntityBeingCarry() {
-        return entityBeingCarry;
+    public @Nullable Entity getCarriedEntity() {
+        return carriedEntity;
     }
 
 }
