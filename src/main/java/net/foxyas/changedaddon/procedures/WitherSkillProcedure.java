@@ -9,7 +9,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -27,42 +26,36 @@ public class WitherSkillProcedure {
         }
     }
 
-    public static void execute(Entity entity, Entity immediatesourceentity) {
-        execute(null, entity, immediatesourceentity);
+    public static void execute(Entity entity, Entity attacker) {
+        execute(null, entity, attacker);
     }
 
-    private static void execute(@Nullable Event event, Entity entity, Entity immediatesourceentity) {
-        if (entity == null || immediatesourceentity == null)
-            return;
-        if (immediatesourceentity instanceof Experiment10Entity a && a.isPhase2()) {
-            if (a.getMainHandItem().getItem() == Blocks.AIR.asItem()) {
-                if (entity instanceof LivingEntity _entity && !_entity.level.isClientSide())
-                    _entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, 2, false, true));
+    private static void execute(@Nullable Event event, Entity entity, Entity attacker) {
+        if (!(entity instanceof LivingEntity target)) return;
+        if (attacker == null) return;
+
+        int amplifier = -1;
+
+        if (attacker instanceof Experiment10Entity e10) {
+            if (e10.getMainHandItem().isEmpty()) {
+                amplifier = e10.isPhase2() ? 2 : 0;
             }
-        } else if (immediatesourceentity instanceof Experiment10Entity a && !a.isPhase2()) {
-            if (a.getMainHandItem().getItem() == Blocks.AIR.asItem()) {
-                if (entity instanceof LivingEntity _entity && !_entity.level.isClientSide())
-                    _entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, 0, false, true));
-            }
-        }
-        if (immediatesourceentity instanceof Experiment10BossEntity a && a.isPhase2()) {
-            if (a.getMainHandItem().getItem() == Blocks.AIR.asItem()) {
-                if (entity instanceof LivingEntity _entity && !_entity.level.isClientSide())
-                    _entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, 2, false, true));
-            }
-        } else if (immediatesourceentity instanceof Experiment10BossEntity a && !a.isPhase2()) {
-            if (a.getMainHandItem().getItem() == Blocks.AIR.asItem()) {
-                if (entity instanceof LivingEntity _entity && !_entity.level.isClientSide())
-                    _entity.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, 0, false, true));
+        } else if (attacker instanceof Experiment10BossEntity e10Boss) {
+            if (e10Boss.getMainHandItem().isEmpty()) {
+                amplifier = e10Boss.isPhase2() ? 2 : 0;
             }
         }
-        if (entity instanceof Player player) {
+
+        if (amplifier >= 0 && !target.getLevel().isClientSide()) {
+            target.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, amplifier, false, true));
+        }
+
+        if (target instanceof Player player) {
             TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (instance != null) {
-                if (instance.getFormId().toString().equals("changed_addon:form_experiment_10")) {
-                    if ((immediatesourceentity instanceof LivingEntity _livEnt && _livEnt.getMainHandItem().getItem() == Blocks.AIR.asItem())) {
-                        if (!player.level.isClientSide())
-                            player.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, 0, false, true));
+            if (instance != null && instance.getFormId().toString().equals("changed_addon:form_experiment_10")) {
+                if (attacker instanceof LivingEntity living && living.getMainHandItem().isEmpty()) {
+                    if (!player.getLevel().isClientSide()) {
+                        target.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, 0, false, true));
                     }
                 }
             }
