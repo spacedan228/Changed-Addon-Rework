@@ -1,11 +1,11 @@
-package net.foxyas.changedaddon.client.renderer;
+package net.foxyas.changedaddon.client.renderer.projectiles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
-import net.foxyas.changedaddon.entity.projectile.AbstractGenericParticleProjectile;
+import net.foxyas.changedaddon.entity.projectile.AbstractVoidFoxParticleProjectile;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -49,7 +49,7 @@ public class SimpleProjectileRenderer<T extends AbstractArrow, M extends EntityM
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.eyes(TEXTURE));
 
         // Renderiza o modelo corretamente
-        if (entity instanceof AbstractGenericParticleProjectile genericParticleProjectile) {
+        if (entity instanceof AbstractVoidFoxParticleProjectile genericParticleProjectile) {
             if (genericParticleProjectile.isParryAble()) {
                 Color parryAbleColor = new Color(255, 195, 0, 255);
                 this.model.renderToBuffer(poseStack, vertexConsumer, packedLight, OverlayTexture.NO_OVERLAY, parryAbleColor.getRed() / 255f, parryAbleColor.getGreen() / 255f, parryAbleColor.getBlue() / 255f, parryAbleColor.getAlpha() / 255f);

@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.void_fox;
 
-import net.foxyas.changedaddon.entity.projectile.ParticleProjectile;
+import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -27,7 +27,7 @@ public class VoidFoxDashAttack extends Goal {
     private static final double KNOCKBACK_MULTIPLIER = 1.5;
 
     private final Mob dasher;
-    private final EntityType<? extends ParticleProjectile> projectileType;
+    private final EntityType<? extends VoidFoxParticleProjectile> projectileType;
     private LivingEntity target;
 
     private int tickCount = 0;
@@ -37,7 +37,7 @@ public class VoidFoxDashAttack extends Goal {
     private float dashSpeed = 1.0f;
     private float strength = 1.0f;
 
-    public VoidFoxDashAttack(Mob dasher, EntityType<? extends ParticleProjectile> projectileType) {
+    public VoidFoxDashAttack(Mob dasher, EntityType<? extends VoidFoxParticleProjectile> projectileType) {
         this.dasher = dasher;
         this.projectileType = projectileType;
         this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
@@ -211,7 +211,7 @@ public class VoidFoxDashAttack extends Goal {
 
             // Spawn do projétil
             if (!level.isClientSide()) {
-                ParticleProjectile projectile = new ParticleProjectile(projectileType, dasher, dasher.getLevel(), target);
+                VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, dasher, dasher.getLevel(), target);
                 projectile.setPos(spawnPos);
                 projectile.setNoGravity(true);
                 projectile.setOwner(dasher);
@@ -238,7 +238,7 @@ public class VoidFoxDashAttack extends Goal {
 
             // Spawn do projétil
             if (!level.isClientSide()) {
-                ParticleProjectile projectile = new ParticleProjectile(projectileType, dasher, dasher.getLevel(), target);
+                VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, dasher, dasher.getLevel(), target);
                 projectile.setPos(spawnPos);
                 projectile.setNoGravity(true);
                 projectile.setOwner(dasher);
@@ -265,7 +265,7 @@ public class VoidFoxDashAttack extends Goal {
 
             // Spawn do projétil
             if (!level.isClientSide()) {
-                ParticleProjectile projectile = new ParticleProjectile(projectileType, dasher, dasher.getLevel(), null);
+                VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, dasher, dasher.getLevel(), null);
                 projectile.setTargetPos(target.position());
                 projectile.setPos(spawnPos);
                 projectile.setNoGravity(true);

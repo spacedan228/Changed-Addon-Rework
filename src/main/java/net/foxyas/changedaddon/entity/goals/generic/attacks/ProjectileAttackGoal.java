@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
-import net.foxyas.changedaddon.entity.projectile.ParticleProjectile;
+import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -16,7 +16,7 @@ import java.util.EnumSet;
 public class ProjectileAttackGoal extends Goal {
 
     private final Mob mob;
-    private final EntityType<? extends ParticleProjectile> projectileType;
+    private final EntityType<? extends VoidFoxParticleProjectile> projectileType;
 
     private final int attackCooldownMax = 60;  // Ticks entre ataques (~3 segundos)
     private final int prepareDelayMax = 20;    // Tempo de "preparo" antes de atacar (~1 segundo)
@@ -24,7 +24,7 @@ public class ProjectileAttackGoal extends Goal {
     private int attackCooldown = 0;
     private int prepareDelay = 0;
 
-    public ProjectileAttackGoal(Mob mob, EntityType<? extends ParticleProjectile> projectileType) {
+    public ProjectileAttackGoal(Mob mob, EntityType<? extends VoidFoxParticleProjectile> projectileType) {
         this.mob = mob;
         this.projectileType = projectileType;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
@@ -97,7 +97,7 @@ public class ProjectileAttackGoal extends Goal {
 
             // Spawn do projétil
 
-            ParticleProjectile projectile = new ParticleProjectile(projectileType, mob, mob.getLevel(), target);
+            VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, mob, mob.getLevel(), target);
             projectile.setPos(spawnPos);
             projectile.setNoGravity(true);
             projectile.setOwner(mob);

@@ -8,9 +8,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
-public class ParticleProjectile extends AbstractGenericParticleProjectile {
+public class VoidFoxParticleProjectile extends AbstractVoidFoxParticleProjectile {
 
-    public ParticleProjectile(EntityType<? extends AbstractArrow> type, Level level) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, Level level) {
         super(type, level);
         this.setBaseDamage(1.0f);
         this.setPierceLevel((byte) 0);
@@ -19,30 +19,30 @@ public class ParticleProjectile extends AbstractGenericParticleProjectile {
         this.setNoGravity(true);
     }
 
-    public ParticleProjectile(Level level, LivingEntity target) {
+    public VoidFoxParticleProjectile(Level level, LivingEntity target) {
         this(ChangedAddonEntities.PARTICLE_PROJECTILE.get(), level);
         this.target = target;
     }
 
-    public ParticleProjectile(EntityType<? extends AbstractArrow> type, Level level, LivingEntity target) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, Level level, LivingEntity target) {
         this(type, level);
         this.target = target;
     }
 
-    public ParticleProjectile(EntityType<? extends AbstractArrow> type, double x, double y, double z, Level level) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, double x, double y, double z, Level level) {
         super(type, x, y, z, level);
     }
 
-    public ParticleProjectile(EntityType<? extends AbstractArrow> type, double x, double y, double z, Level level, LivingEntity target) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, double x, double y, double z, Level level, LivingEntity target) {
         this(type, x, y, z, level);
         this.target = target;
     }
 
-    public ParticleProjectile(EntityType<? extends AbstractArrow> type, LivingEntity shooter, Level level) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, LivingEntity shooter, Level level) {
         super(type, shooter, level);
     }
 
-    public ParticleProjectile(EntityType<? extends AbstractArrow> type, LivingEntity shooter, Level level, LivingEntity target) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, LivingEntity shooter, Level level, LivingEntity target) {
         this(type, shooter, level);
         this.target = target;
     }

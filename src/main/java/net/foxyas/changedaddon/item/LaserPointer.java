@@ -14,7 +14,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -119,7 +119,7 @@ public class LaserPointer extends Item implements SpecializedAnimations {
 
         Color color = new Color(tag.getInt("Color"));
         String hex = getHex(color);
-        tooltip.add(new TextComponent("Color: " + hex).withStyle((e) -> e.withColor(TextColor.parseColor(hex))));
+        tooltip.add(new TranslatableComponent("item.changed_addon.laser_pointer.tooltip",hex).withStyle((e) -> e.withColor(TextColor.parseColor(hex))));
     }
 
     @Override

@@ -91,7 +91,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
         );
 
         tag(EntityTypeTags.IMPACT_PROJECTILES).add(
-                PARTICLE_PROJECTILE.get());
+                PARTICLE_PROJECTILE.get(), WITHER_PARTICLE_PROJECTILE.get());
 
         tag(ChangedAddonTags.EntityTypes.CAN_USE_ACCESSORIES).add(
                 ChangedAddonEntities.canUseAccessories().toArray(new EntityType[0])
