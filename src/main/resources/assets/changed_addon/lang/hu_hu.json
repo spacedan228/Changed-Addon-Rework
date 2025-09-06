@@ -152,7 +152,10 @@
   "block.changed_addon.wolf_plush": "Plüss farkas",
   "block.changed_addon.yellow_wolf_crystal_block": "Sárga farkas kristályblokk",
   "block.changed_addon.yellow_wolf_crystal_small": "Kicsi sárga farkas kristály",
-
+  
+  
+  "ability.changed_addon.wither_grenade": "Sorvadás gránátja",
+  
   "changed_addon.ability.advanced_hearing": "Fejlett hallás",
   "changed_addon.ability.carry": "Hordozás",
   "changed_addon.ability.claws": "Karmolás",
@@ -383,6 +386,7 @@
 
   "entity.changed_addon.projectile_luminar_crystal_spear": "Fénykristály-lándzsa",
   "entity.changed_addon.particle_projectile": "Fényrészecske",
+  "entity.changed_addon.wither_particle_projectile": "Fényrészecske",
 
   "entity.minecraft.villager.changed_addon.scientist": "Tudós",
   "entity.minecraft.villager.changed_addon:scientist": "Tudós",
@@ -502,6 +506,7 @@
   "item.changed_addon.laethin_syringe": "Laethin fecskendő",
   "item.changed_addon.laethinminator": "Laethinminátor",
   "item.changed_addon.laser_pointer": "Lézermutató",
+  "item.changed_addon.laser_pointer.tooltip": "Szín: %s",
 
   "item.changed_addon.avali_spawn_egg": "Avaliidéző tojás",
   "item.changed_addon.bagel_spawn_egg": "Bagelidéző tojás",
