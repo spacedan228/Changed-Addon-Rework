@@ -1,6 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:screens/claw"
+    "layer0": "changed_addon:screens/claw",
+    "layer1": "changed_addon:screens/claw_feral"
   }
 }
