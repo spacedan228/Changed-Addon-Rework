@@ -211,7 +211,7 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(6, new SimpleAntiFlyingAttack(this,
+        this.goalSelector.addGoal(20, new SimpleAntiFlyingAttack(this,
                 UniformInt.of(60, 100),
                 3,
                 8,

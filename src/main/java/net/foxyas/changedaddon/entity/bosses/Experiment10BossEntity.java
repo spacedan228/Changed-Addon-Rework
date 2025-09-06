@@ -213,7 +213,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
 
         this.goalSelector.addGoal(6, new BurstAttack(this));
         this.goalSelector.addGoal(6, new WitherWave(this, UniformInt.of(60, 120)));
-        this.goalSelector.addGoal(6, new SimpleAntiFlyingAttack(this,
+        this.goalSelector.addGoal(20, new SimpleAntiFlyingAttack(this,
                 UniformInt.of(60, 100),
                 3,
                 8,

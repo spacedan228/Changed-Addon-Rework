@@ -20,6 +20,7 @@
     "enchantments.InfinityEnchantmentMixin",
     "entity.ChangedEntityTargetSelectorMixin",
     "entity.IronGolemMixin",
+    "entity.ItemEntityMixin",
     "entity.LivingEntityMixin",
     "entity.MobAccessor",
     "entity.PhantomAccessor",
