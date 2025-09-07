@@ -78,6 +78,8 @@ public class ChangedAddonEntities {
                 CRYSTAL_GAS_CAT_MALE.get(),
                 CRYSTAL_GAS_CAT_FEMALE.get(),
                 LATEX_CALICO_CAT.get(),
+                LATEX_CHEETAH_MALE.get(),
+                LATEX_CHEETAH_FEMALE.get(),
 
                 // Half/Partial Ones
                 SNOW_LEOPARD_PARTIAL.get(),
