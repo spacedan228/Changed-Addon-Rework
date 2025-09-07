@@ -180,6 +180,11 @@ public abstract class AbstractGenericParticleProjectile extends AbstractArrow {
     }
 
     @Override
+    public boolean isPickable() {
+        return true;
+    }
+
+    @Override
     protected void onHit(@NotNull HitResult pResult) {
         super.onHit(pResult);
     }

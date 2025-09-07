@@ -54,4 +54,9 @@ public class VoidFoxParticleProjectile extends AbstractVoidFoxParticleProjectile
     protected void onHitEntity(@NotNull EntityHitResult result) {
         super.onHitEntity(result);
     }
+
+    @Override
+    public boolean isPickable() {
+        return true;
+    }
 }
