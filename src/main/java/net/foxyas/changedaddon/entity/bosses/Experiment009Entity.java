@@ -43,7 +43,7 @@ import java.util.Objects;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment009Entity extends ChangedEntity {
+public class Experiment009Entity extends ChangedEntity implements PowderSnowWalkable{
     //private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.BLUE, ServerBossEvent.BossBarOverlay.NOTCHED_6);
     private boolean Phase2;
 

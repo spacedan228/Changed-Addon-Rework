@@ -122,7 +122,8 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
 
         level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, x, y, z, 0, 0.01D, 0);
         if (level instanceof ClientLevel clientLevel) {
-            clientLevel.playLocalSound(pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1, 1, true);
+            if (random.nextFloat() >= 0.5f) return;
+            clientLevel.playLocalSound(pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1, random.nextFloat(), true);
         }
     }
 
