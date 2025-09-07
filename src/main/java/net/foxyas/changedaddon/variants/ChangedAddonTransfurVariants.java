@@ -112,9 +112,11 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<LatexWhiteSnowLeopardFemale>> LATEX_WHITE_SNOW_LEOPARD_FEMALE = register("form_latex_white_snow_leopard/female",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WHITE_SNOW_LEOPARD_FEMALE).stepSize(0.7f).breatheMode(TransfurVariant.BreatheMode.WEAK).reducedFall().scares(Creeper.class).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).jumpStrength(1.25f).absorbing());
 
+    public static final RegistryObject<TransfurVariant<LatexCheetahMale>> LATEX_CHEETAH_MALE = register("form_latex_cheetah/male",
+            TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_CHEETAH_MALE).stepSize(0.7f).breatheMode(TransfurVariant.BreatheMode.WEAK).reducedFall().scares(Creeper.class).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).jumpStrength(1.25f));
+
     public static final RegistryObject<TransfurVariant<LatexCheetahFemale>> LATEX_CHEETAH_FEMALE = register("form_latex_cheetah/female",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_CHEETAH_FEMALE).stepSize(0.7f).breatheMode(TransfurVariant.BreatheMode.WEAK).reducedFall().scares(Creeper.class).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).jumpStrength(1.25f).absorbing());
-
 
     //Partials
     public static final RegistryObject<TransfurVariant<SnowLeopardPartialEntity>> SNOW_LEOPARD_PARTIAL = register("form_latex_snow_leopard_partial",

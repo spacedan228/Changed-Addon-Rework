@@ -36,7 +36,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
+public abstract class AbstractVoidFoxParticleProjectile extends ParriableProjectile {
 
     private static final EntityDataAccessor<Boolean> PARRY_ABLE =
             SynchedEntityData.defineId(AbstractVoidFoxParticleProjectile.class, EntityDataSerializers.BOOLEAN);
@@ -52,7 +52,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
     private UUID targetUUID;
     private boolean smoothMotion = false;
 
-    protected AbstractVoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, Level level) {
+    protected AbstractVoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, Level level) {
         super(type, level);
         this.setBaseDamage(1.0f);
         this.setPierceLevel((byte) 0);
@@ -61,11 +61,11 @@ public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
         this.setNoGravity(true);
     }
 
-    protected AbstractVoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, double x, double y, double z, Level level) {
+    protected AbstractVoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, double x, double y, double z, Level level) {
         super(type, x, y, z, level);
     }
 
-    protected AbstractVoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, LivingEntity shooter, Level level) {
+    protected AbstractVoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, LivingEntity shooter, Level level) {
         super(type, shooter, level);
     }
 
@@ -203,7 +203,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
 
         // Se só tiver posição fixa
         if (this.getTarget() == null && targetPos != null) {
-            if (this.inGround || this.onGround) {
+            if (this.onGround) {
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
             }
@@ -241,7 +241,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
             }
-            if (this.inGround || this.onGround) {
+            if (this.onGround) {
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
             }
@@ -338,67 +338,31 @@ public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
 
     @Override
     protected void onHitEntity(@NotNull EntityHitResult result) {
+        if (result.getEntity() instanceof VoidFoxEntity voidFox) {
+            voidFox.invulnerableTime = 0;
+            voidFox.hurtDuration = 1;
+            voidFox.hurtDir = 1;
+            voidFox.hurtTime = 1;
+            super.onHitEntity(result);
+            return;
+        }
+
+        if (this.isParryAble()) {
+            if (result.getEntity() instanceof LivingEntity livingEntity) {
+                livingEntity.invulnerableTime = 0;
+                livingEntity.hurtDuration = 1;
+                livingEntity.hurtDir = 1;
+                livingEntity.hurtTime = 1;
+            }
+        }
+
         if (this.isParryAble()) {
             this.HandleParry(result);
-        }
-        Entity entity = result.getEntity();
-        float f = (float) this.getDeltaMovement().length();
-        int i = Mth.ceil(Mth.clamp((double) f * this.getBaseDamage(), 0.0D, 2.147483647E9D));
-
-        if (this.isCritArrow()) {
-            long j = this.random.nextInt(i / 2 + 2);
-            i = (int) Math.min(j + (long) i, 2147483647L);
-        }
-
-        Entity entity1 = this.getOwner();
-        DamageSource damagesource;
-        if (entity1 == null) {
-            damagesource = DamageSource.arrow(this, this);
         } else {
-            damagesource = DamageSource.arrow(this, entity1);
-            if (entity1 instanceof LivingEntity) {
-                ((LivingEntity) entity1).setLastHurtMob(entity);
-            }
-        }
-
-
-        if (entity.hurt(damagesource, (float) i)) {
-            if (entity instanceof LivingEntity livingentity) {
-                if (this.getKnockback() > 0) {
-                    Vec3 vec3 = this.getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) this.getKnockback() * 0.6D);
-                    if (vec3.lengthSqr() > 0.0D) {
-                        livingentity.push(vec3.x, 0.1D, vec3.z);
-                    }
-                }
-
-                if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
-                    EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
-                }
-
-                this.doPostHurtEffects(livingentity);
-                if (livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !this.isSilent()) {
-                    ((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
-                }
-            }
-
-            this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-            this.discard();
-        } else {
-            /*if (this.random.nextFloat() >= 0.10f) {
-                this.setDeltaMovement(this.getDeltaMovement().scale(-0.1D));
-                this.setYRot(this.getYRot() + 180.0F);
-                this.yRotO += 180.0F;
-                if (!this.level.isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7D) {
-                    if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
-                        this.spawnAtLocation(this.getPickupItem(), 0.1F);
-                    }
-
-                    this.discard();
-                }
-            } else*/
-            if (!this.isParryAble()) {
-                ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 5, 0.5f);
+            ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 5, 0.5f);
+            super.onHitEntity(result);
+            if (result.getEntity().hurtMarked) {
+                ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
             }
         }

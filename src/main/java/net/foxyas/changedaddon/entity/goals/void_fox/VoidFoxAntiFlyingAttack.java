@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.goals.void_fox;
 
 import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
+import net.foxyas.changedaddon.entity.projectile.AbstractVoidFoxParticleProjectile;
 import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.minecraft.ChatFormatting;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.EntityHitResult;
@@ -33,7 +35,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
     private final float minRange;
     private final float maxRange;
     private final float damage;
-    private final EntityType<? extends AbstractArrow> projectileType = ChangedAddonEntities.PARTICLE_PROJECTILE.get();
+    private final EntityType<? extends AbstractVoidFoxParticleProjectile> projectileType = ChangedAddonEntities.PARTICLE_PROJECTILE.get();
     private LivingEntity target;
     private int ticks = 0;
 

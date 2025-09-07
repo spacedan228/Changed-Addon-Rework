@@ -588,6 +588,11 @@ public class ChangedAddonEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
+    public static final RegistryObject<EntityType<LatexCheetahMale>> LATEX_CHEETAH_MALE = registerChangedEntity("latex_cheetah_male",
+            EntityType.Builder.of(LatexCheetahMale::new, ChangedMobCategories.CHANGED)
+                    .clientTrackingRange(10)
+                    .sized(0.7F, 1.93F));
+
     public static final RegistryObject<EntityType<LuminaraFlowerBeastEntity>> LUMINARA_FLOWER_BEAST = registerChangedEntity("luminara_flower_beast",
             EntityType.Builder.<LuminaraFlowerBeastEntity>of(LuminaraFlowerBeastEntity::new, ChangedMobCategories.CHANGED)
                     .clientTrackingRange(10)
@@ -647,6 +652,7 @@ public class ChangedAddonEntities {
         event.put(LATEX_WIND_CAT_MALE.get(), LatexWindCatMaleEntity.createLatexAttributes().build());
         event.put(LATEX_WHITE_SNOW_LEOPARD_MALE.get(), LatexWhiteSnowLeopardMale.createLatexAttributes().build());
         event.put(LATEX_WHITE_SNOW_LEOPARD_FEMALE.get(), LatexWhiteSnowLeopardFemale.createLatexAttributes().build());
+        event.put(LATEX_CHEETAH_MALE.get(), LatexCheetahMale.createLatexAttributes().build());
         event.put(LATEX_CHEETAH_FEMALE.get(), LatexCheetahFemale.createLatexAttributes().build());
         event.put(LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastEntity.createAttributes().build());
     }
@@ -708,6 +714,7 @@ public class ChangedAddonEntities {
             LatexWhiteSnowLeopardFemale.init();
             LuminaraFlowerBeastEntity.init();
             LatexCheetahFemale.init();
+            LatexCheetahMale.init();
         });
     }
 

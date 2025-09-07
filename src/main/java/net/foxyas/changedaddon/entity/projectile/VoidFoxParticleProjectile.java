@@ -3,14 +3,14 @@ package net.foxyas.changedaddon.entity.projectile;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.NotNull;
 
 public class VoidFoxParticleProjectile extends AbstractVoidFoxParticleProjectile {
 
-    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, Level level) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, Level level) {
         super(type, level);
         this.setBaseDamage(1.0f);
         this.setPierceLevel((byte) 0);
@@ -24,25 +24,25 @@ public class VoidFoxParticleProjectile extends AbstractVoidFoxParticleProjectile
         this.target = target;
     }
 
-    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, Level level, LivingEntity target) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, Level level, LivingEntity target) {
         this(type, level);
         this.target = target;
     }
 
-    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, double x, double y, double z, Level level) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, double x, double y, double z, Level level) {
         super(type, x, y, z, level);
     }
 
-    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, double x, double y, double z, Level level, LivingEntity target) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, double x, double y, double z, Level level, LivingEntity target) {
         this(type, x, y, z, level);
         this.target = target;
     }
 
-    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, LivingEntity shooter, Level level) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, LivingEntity shooter, Level level) {
         super(type, shooter, level);
     }
 
-    public VoidFoxParticleProjectile(EntityType<? extends AbstractArrow> type, LivingEntity shooter, Level level, LivingEntity target) {
+    public VoidFoxParticleProjectile(EntityType<? extends AbstractVoidFoxParticleProjectile> type, LivingEntity shooter, Level level, LivingEntity target) {
         this(type, shooter, level);
         this.target = target;
     }
@@ -51,8 +51,18 @@ public class VoidFoxParticleProjectile extends AbstractVoidFoxParticleProjectile
     }
 
     @Override
+    public boolean discardOnNoDmgImpact() {
+        return true;
+    }
+
+    @Override
     protected void onHitEntity(@NotNull EntityHitResult result) {
         super.onHitEntity(result);
+    }
+
+    @Override
+    protected boolean ignoreBlock(@NotNull BlockState state) {
+        return false;
     }
 
     @Override

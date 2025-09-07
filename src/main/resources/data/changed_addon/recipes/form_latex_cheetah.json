@@ -26,5 +26,6 @@
       "item": "minecraft:black_dye"
     }
   ],
-  "form": "changed_addon:form_latex_cheetah/female"
+  "gendered": true,
+  "form": "changed_addon:form_latex_cheetah"
 }

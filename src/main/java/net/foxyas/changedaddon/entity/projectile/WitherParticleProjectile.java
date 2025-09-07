@@ -8,11 +8,14 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,11 +45,22 @@ public class WitherParticleProjectile extends AbstractGenericParticleProjectile 
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
+    protected void onHitEntity(@NotNull EntityHitResult pResult) {
         super.onHitEntity(pResult);
-        ApplyExplosionParticlesAndDamage();
+        if (pResult.getEntity().hurtMarked) {
+            ApplyExplosionParticlesAndDamage();
+        }
     }
 
+    @Override
+    protected boolean ignoreBlock(@NotNull BlockState state) {
+        return false;
+    }
+
+    @Override
+    protected boolean canHitEntity(@NotNull Entity target) {
+        return super.canHitEntity(target);
+    }
 
     public void ApplyExplosionParticlesAndDamage() {
         if (!(this.getLevel() instanceof ServerLevel serverLevel))

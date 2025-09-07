@@ -16,11 +16,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.Projectile;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public class SimpleProjectileRenderer<T extends AbstractArrow, M extends EntityModel<T>> extends EntityRenderer<T> {
+public class SimpleProjectileRenderer<T extends Projectile, M extends EntityModel<T>> extends EntityRenderer<T> {
 
     private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/white_ball_projectile");
     private final EntityModel<T> model;

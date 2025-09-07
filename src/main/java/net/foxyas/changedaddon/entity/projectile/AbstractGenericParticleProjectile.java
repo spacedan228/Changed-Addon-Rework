@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractGenericParticleProjectile extends AbstractArrow {
+public abstract class AbstractGenericParticleProjectile extends ParriableProjectile {
     protected ParticleOptions particleOptions;
 
     public AbstractGenericParticleProjectile(EntityType<? extends AbstractGenericParticleProjectile> type, Level level) {
@@ -46,6 +46,11 @@ public abstract class AbstractGenericParticleProjectile extends AbstractArrow {
     public AbstractGenericParticleProjectile(EntityType<? extends AbstractGenericParticleProjectile> type, Level level, LivingEntity shooter, ParticleOptions particle) {
         super(type, shooter, level);
         this.particleOptions = particle;
+    }
+
+    @Override
+    public boolean discardOnNoDmgImpact() {
+        return true;
     }
 
     @Override
@@ -83,78 +88,12 @@ public abstract class AbstractGenericParticleProjectile extends AbstractArrow {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult pResult) {
-        Entity entity = pResult.getEntity();
-        float f = (float)this.getDeltaMovement().length();
-        int i = Mth.ceil(Mth.clamp((double)f * this.getBaseDamage(), 0.0F, Integer.MAX_VALUE));
-
-        if (this.isCritArrow()) {
-            long j = this.random.nextInt(i / 2 + 2);
-            i = (int)Math.min(j + (long)i, 2147483647L);
-        }
-
-        Entity entity1 = this.getOwner();
-        DamageSource damagesource;
-        if (entity1 == null) {
-            damagesource = DamageSource.arrow(this, this);
-        } else {
-            damagesource = DamageSource.arrow(this, entity1);
-            if (entity1 instanceof LivingEntity) {
-                ((LivingEntity)entity1).setLastHurtMob(entity);
-            }
-        }
-
-        boolean flag = entity.getType() == EntityType.ENDERMAN;
-        int k = entity.getRemainingFireTicks();
-        if (this.isOnFire() && !flag) {
-            entity.setSecondsOnFire(5);
-        }
-
-        if (entity.hurt(damagesource, (float)i)) {
-            if (flag) {
-                return;
-            }
-
-            if (entity instanceof LivingEntity livingentity) {
-                if (this.getKnockback() > 0) {
-                    Vec3 vec3 = this.getDeltaMovement().multiply(1.0F, 0.0F, 1.0F).normalize().scale((double) this.getKnockback() * 0.6);
-                    if (vec3.lengthSqr() > (double)0.0F) {
-                        livingentity.push(vec3.x, 0.1, vec3.z);
-                    }
-                }
-
-                if (!this.level.isClientSide && entity1 instanceof LivingEntity) {
-                    EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity);
-                }
-
-                this.doPostHurtEffects(livingentity);
-                if (livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !this.isSilent()) {
-                    ((ServerPlayer)entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
-                }
-            }
-
-            this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-            if (this.getPierceLevel() <= 0) {
-                this.discard();
-            }
-        } else {
-            entity.setRemainingFireTicks(k);
-            this.setDeltaMovement(this.getDeltaMovement().scale(-0.1));
-            this.setYRot(this.getYRot() + 180.0F);
-            this.yRotO += 180.0F;
-            if (!this.level.isClientSide && this.getDeltaMovement().lengthSqr() < 1.0E-7) {
-                if (this.pickup == AbstractArrow.Pickup.ALLOWED) {
-                    this.spawnAtLocation(this.getPickupItem(), 0.1F);
-                }
-
-                this.discard();
-            }
-        }
+    protected void onHitEntity(@NotNull EntityHitResult pResult) {
+       super.onHitEntity(pResult);
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurt(@NotNull DamageSource pSource, float pAmount) {
         if (this.isInvulnerableTo(pSource)) {
             return false;
         } else {

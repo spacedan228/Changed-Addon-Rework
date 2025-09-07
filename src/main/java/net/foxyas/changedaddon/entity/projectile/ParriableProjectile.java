@@ -66,7 +66,7 @@ public abstract class ParriableProjectile extends Projectile {
     }
 
     protected ParriableProjectile(EntityType<? extends ParriableProjectile> entityType, LivingEntity shooter, Level level) {
-        this(entityType, shooter.getX(), shooter.getEyeY() - (double)0.1F, shooter.getZ(), level);
+        this(entityType, shooter.getX(), shooter.getEyeY() - (double) 0.1F, shooter.getZ(), level);
         setOwner(shooter);
     }
 
@@ -88,8 +88,8 @@ public abstract class ParriableProjectile extends Projectile {
     }
 
     protected void defineSynchedData() {
-        entityData.define(ID_FLAGS, (byte)0);
-        entityData.define(PIERCE_LEVEL, (byte)0);
+        entityData.define(ID_FLAGS, (byte) 0);
+        entityData.define(PIERCE_LEVEL, (byte) 0);
     }
 
     /**
@@ -109,8 +109,8 @@ public abstract class ParriableProjectile extends Projectile {
         Vec3 vec3 = getDeltaMovement();
         if (xRotO == 0.0F && yRotO == 0.0F) {
             double d0 = vec3.horizontalDistance();
-            setYRot((float)(Mth.atan2(vec3.x, vec3.z) * (double)(180F / (float)Math.PI)));
-            setXRot((float)(Mth.atan2(vec3.y, d0) * (double)(180F / (float)Math.PI)));
+            setYRot((float) (Mth.atan2(vec3.x, vec3.z) * (double) (180F / (float) Math.PI)));
+            setXRot((float) (Mth.atan2(vec3.y, d0) * (double) (180F / (float) Math.PI)));
             yRotO = getYRot();
             xRotO = getXRot();
         }
@@ -122,7 +122,7 @@ public abstract class ParriableProjectile extends Projectile {
             if (!voxelshape.isEmpty()) {
                 Vec3 vec31 = position();
 
-                for(AABB aabb : voxelshape.toAabbs()) {
+                for (AABB aabb : voxelshape.toAabbs()) {
                     if (aabb.move(blockpos).contains(vec31)) {
                         onHitBlock();
                         return;
@@ -138,7 +138,7 @@ public abstract class ParriableProjectile extends Projectile {
         Vec3 vec32 = position();
         Vec3 vec33 = vec32.add(vec3);
         HitResult hitresult = level.clip(new DynamicClipContext(vec32, vec33, (state, b, pos, context) -> {
-            if(ignoreBlock(state)) return Shapes.empty();
+            if (ignoreBlock(state)) return Shapes.empty();
             return ClipContext.Block.COLLIDER.get(state, b, pos, context);
         }, ClipContext.Fluid.NONE::canPick, CollisionContext.of(this)));
 
@@ -146,14 +146,14 @@ public abstract class ParriableProjectile extends Projectile {
             vec33 = hitresult.getLocation();
         }
 
-        while(!isRemoved()) {
+        while (!isRemoved()) {
             EntityHitResult entityhitresult = findHitEntity(vec32, vec33);
             if (entityhitresult != null) {
                 hitresult = entityhitresult;
             }
 
             if (hitresult != null && hitresult.getType() == HitResult.Type.ENTITY) {
-                Entity entity = ((EntityHitResult)hitresult).getEntity();
+                Entity entity = ((EntityHitResult) hitresult).getEntity();
                 Entity entity1 = getOwner();
                 if (entity instanceof Player player && entity1 instanceof Player player1 && !player1.canHarmPlayer(player)) {
                     hitresult = null;
@@ -178,8 +178,8 @@ public abstract class ParriableProjectile extends Projectile {
         double d6 = vec3.y;
         double d1 = vec3.z;
         if (isCritArrow()) {
-            for(int i = 0; i < 4; ++i) {
-                level.addParticle(ParticleTypes.CRIT, getX() + d5 * (double)i / 4.0D, getY() + d6 * (double)i / 4.0D, getZ() + d1 * (double)i / 4.0D, -d5, -d6 + 0.2D, -d1);
+            for (int i = 0; i < 4; ++i) {
+                level.addParticle(ParticleTypes.CRIT, getX() + d5 * (double) i / 4.0D, getY() + d6 * (double) i / 4.0D, getZ() + d1 * (double) i / 4.0D, -d5, -d6 + 0.2D, -d1);
             }
         }
 
@@ -188,17 +188,17 @@ public abstract class ParriableProjectile extends Projectile {
         double d3 = getZ() + d1;
         double d4 = vec3.horizontalDistance();
         if (flag) {
-            setYRot((float)(Mth.atan2(-d5, -d1) * (double)(180F / (float)Math.PI)));
+            setYRot((float) (Mth.atan2(-d5, -d1) * (double) (180F / (float) Math.PI)));
         } else {
-            setYRot((float)(Mth.atan2(d5, d1) * (double)(180F / (float)Math.PI)));
+            setYRot((float) (Mth.atan2(d5, d1) * (double) (180F / (float) Math.PI)));
         }
 
-        setXRot((float)(Mth.atan2(d6, d4) * (double)(180F / (float)Math.PI)));
+        setXRot((float) (Mth.atan2(d6, d4) * (double) (180F / (float) Math.PI)));
         setXRot(lerpRotation(xRotO, getXRot()));
         setYRot(lerpRotation(yRotO, getYRot()));
         float f = 0.99F;
         if (isInWater()) {
-            for(int j = 0; j < 4; ++j) {
+            for (int j = 0; j < 4; ++j) {
                 level.addParticle(ParticleTypes.BUBBLE, d7 - d5 * 0.25D, d2 - d6 * 0.25D, d3 - d1 * 0.25D, d5, d6, d1);
             }
 
@@ -208,14 +208,14 @@ public abstract class ParriableProjectile extends Projectile {
         setDeltaMovement(vec3.scale(f));
         if (!isNoGravity() && !flag) {
             Vec3 vec34 = getDeltaMovement();
-            setDeltaMovement(vec34.x, vec34.y - (double)0.05F, vec34.z);
+            setDeltaMovement(vec34.x, vec34.y - (double) 0.05F, vec34.z);
         }
 
         setPos(d7, d2, d3);
         checkInsideBlocks();
     }
 
-    protected DamageSource damageSource(){
+    protected DamageSource damageSource() {
         Entity owner = getOwner();
         return new IndirectEntityDamageSource("arrow", this, owner != null ? owner : this).setProjectile();
     }
@@ -226,8 +226,8 @@ public abstract class ParriableProjectile extends Projectile {
     protected void onHitEntity(@NotNull EntityHitResult pResult) {
         super.onHitEntity(pResult);
         Entity entity = pResult.getEntity();
-        float f = (float)getDeltaMovement().length();
-        int i = Mth.ceil(Mth.clamp((double)f * baseDamage, 0.0D, 2.147483647E9D));
+        float f = (float) getDeltaMovement().length();
+        int i = Mth.ceil(Mth.clamp((double) f * baseDamage, 0.0D, 2.147483647E9D));
         if (getPierceLevel() > 0) {
             if (piercingIgnoreEntityIds == null) {
                 piercingIgnoreEntityIds = new IntOpenHashSet(5);
@@ -247,7 +247,7 @@ public abstract class ParriableProjectile extends Projectile {
 
         if (isCritArrow()) {
             long j = random.nextInt(i / 2 + 2);
-            i = (int)Math.min(j + (long)i, 2147483647L);
+            i = (int) Math.min(j + (long) i, 2147483647L);
         }
 
         Entity entity1 = getOwner();
@@ -261,18 +261,14 @@ public abstract class ParriableProjectile extends Projectile {
             entity.setSecondsOnFire(5);
         }
 
-        if (entity.hurt(damageSource(), (float)i)) {
+        if (entity.hurt(damageSource(), (float) i)) {
             if (flag) {
                 return;
             }
 
             if (entity instanceof LivingEntity livingentity) {
-                if (!level.isClientSide && getPierceLevel() <= 0) {
-                    livingentity.setArrowCount(livingentity.getArrowCount() + 1);
-                }
-
                 if (knockback > 0) {
-                    Vec3 vec3 = getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double)knockback * 0.6D);
+                    Vec3 vec3 = getDeltaMovement().multiply(1.0D, 0.0D, 1.0D).normalize().scale((double) knockback * 0.6D);
                     if (vec3.lengthSqr() > 0.0D) {
                         livingentity.push(vec3.x, 0.1D, vec3.z);
                     }
@@ -280,12 +276,12 @@ public abstract class ParriableProjectile extends Projectile {
 
                 if (!level.isClientSide && entity1 instanceof LivingEntity) {
                     EnchantmentHelper.doPostHurtEffects(livingentity, entity1);
-                    EnchantmentHelper.doPostDamageEffects((LivingEntity)entity1, livingentity);
+                    EnchantmentHelper.doPostDamageEffects((LivingEntity) entity1, livingentity);
                 }
 
                 doPostHurtEffects(livingentity);
                 if (livingentity != entity1 && livingentity instanceof Player && entity1 instanceof ServerPlayer && !isSilent()) {
-                    ((ServerPlayer)entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
+                    ((ServerPlayer) entity1).connection.send(new ClientboundGameEventPacket(ClientboundGameEventPacket.ARROW_HIT_PLAYER, 0.0F));
                 }
 
                 if (!entity.isAlive() && piercedAndKilledEntities != null) {
@@ -303,9 +299,16 @@ public abstract class ParriableProjectile extends Projectile {
 
             playSound(soundEvent, 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
             if (getPierceLevel() <= 0) {
+                onDiscard();
                 discard();
             }
         } else {
+            if (discardOnNoDmgImpact()) {
+                onDiscard();
+                discard();
+                return;
+            }
+
             entity.setRemainingFireTicks(k);
             setDeltaMovement(getDeltaMovement().scale(-0.1D));
             setYRot(getYRot() + 180.0F);
@@ -317,8 +320,15 @@ public abstract class ParriableProjectile extends Projectile {
 
     protected abstract boolean ignoreBlock(@NotNull BlockState state);
 
-    protected void onHitBlock(){
-        if(!isSilent()) playSound(getHitGroundSoundEvent(), 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
+    public boolean discardOnNoDmgImpact() {
+        return false;
+    }
+
+    public void onDiscard() {
+    }
+
+    protected void onHitBlock() {
+        if (!isSilent()) playSound(getHitGroundSoundEvent(), 1.0F, 1.2F / (random.nextFloat() * 0.2F + 0.9F));
         discard();
     }
 
@@ -337,7 +347,8 @@ public abstract class ParriableProjectile extends Projectile {
         return soundEvent;
     }
 
-    protected void doPostHurtEffects(LivingEntity pTarget) {}
+    protected void doPostHurtEffects(LivingEntity pTarget) {
+    }
 
     /**
      * Gets the EntityHitResult representing the entity hit
@@ -430,9 +441,9 @@ public abstract class ParriableProjectile extends Projectile {
     private void setFlag(int pId, boolean pValue) {
         byte b0 = entityData.get(ID_FLAGS);
         if (pValue) {
-            entityData.set(ID_FLAGS, (byte)(b0 | pId));
+            entityData.set(ID_FLAGS, (byte) (b0 | pId));
         } else {
-            entityData.set(ID_FLAGS, (byte)(b0 & ~pId));
+            entityData.set(ID_FLAGS, (byte) (b0 & ~pId));
         }
 
     }
@@ -460,9 +471,9 @@ public abstract class ParriableProjectile extends Projectile {
     public void setEnchantmentEffectsFromEntity(LivingEntity pShooter, float pVelocity) {
         int i = EnchantmentHelper.getEnchantmentLevel(Enchantments.POWER_ARROWS, pShooter);
         int j = EnchantmentHelper.getEnchantmentLevel(Enchantments.PUNCH_ARROWS, pShooter);
-        setBaseDamage((double)(pVelocity * 2.0F) + random.nextGaussian() * 0.25D + (double)((float)level.getDifficulty().getId() * 0.11F));
+        setBaseDamage((double) (pVelocity * 2.0F) + random.nextGaussian() * 0.25D + (double) ((float) level.getDifficulty().getId() * 0.11F));
         if (i > 0) {
-            setBaseDamage(getBaseDamage() + (double)i * 0.5D + 0.5D);
+            setBaseDamage(getBaseDamage() + (double) i * 0.5D + 0.5D);
         }
 
         if (j > 0) {
