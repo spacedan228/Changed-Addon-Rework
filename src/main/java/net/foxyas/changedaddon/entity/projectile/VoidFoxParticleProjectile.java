@@ -1,8 +1,10 @@
 package net.foxyas.changedaddon.entity.projectile;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.EntityHitResult;
@@ -68,5 +70,13 @@ public class VoidFoxParticleProjectile extends AbstractVoidFoxParticleProjectile
     @Override
     public boolean isPickable() {
         return true;
+    }
+
+    @Override
+    public boolean isInvulnerableTo(DamageSource pSource) {
+        if (pSource.getEntity() instanceof Projectile) {
+            return true;
+        }
+        return super.isInvulnerableTo(pSource);
     }
 }

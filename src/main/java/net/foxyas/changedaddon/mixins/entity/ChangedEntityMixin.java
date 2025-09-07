@@ -48,6 +48,7 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     @Override
     public boolean c_additions$isNeutralTo(@NotNull LivingEntity target) {
         if (hasEffect(ChangedAddonMobEffects.PACIFIED.get())) return true;
+        if (this.isPacified()) return true;
         return false;
     }
 

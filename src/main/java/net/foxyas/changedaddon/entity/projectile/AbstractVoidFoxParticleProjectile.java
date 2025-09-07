@@ -431,6 +431,9 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
                 }
             }
         } else if (damageSource.getEntity() != null) {
+            if (this.isInvulnerableTo(damageSource)) {
+                return false;
+            }
             this.setDeltaMovement(this.getDeltaMovement().scale(-amount * 0.1));
             this.lifeSpamNearTarget = 0;
             this.lifeSpamWithoutTarget = 0;
