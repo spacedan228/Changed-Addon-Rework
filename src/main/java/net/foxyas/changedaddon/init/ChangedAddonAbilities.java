@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.DashAbility;
+import net.foxyas.changedaddon.abilities.DashAbility;
 import net.foxyas.changedaddon.abilities.*;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.client.ChangedClient;

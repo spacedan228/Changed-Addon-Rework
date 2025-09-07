@@ -649,7 +649,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             return false;
         }
 
-        this.setDodging(source.getEntity());
+        //this.setDodging(source.getEntity());
         return super.hurt(source, amount);
     }
 

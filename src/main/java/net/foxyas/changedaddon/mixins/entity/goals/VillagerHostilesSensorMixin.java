@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity.goals;
 
+import net.foxyas.changedaddon.entity.interfaces.ChangedEntityExtension;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedTags.EntityTypes;
@@ -18,6 +19,8 @@ public abstract class VillagerHostilesSensorMixin {
         if (hostile instanceof ChangedEntity latex) {
             if (latex.getType().is(EntityTypes.LATEX) && latex.hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
                 callback.setReturnValue(false);
+            } else if (latex.getType().is(EntityTypes.LATEX) && ChangedEntityExtension.of(latex).isPacified()) {
+                callback.setReturnValue(false);
             }
         }
     }
@@ -26,6 +29,8 @@ public abstract class VillagerHostilesSensorMixin {
     private void isHostile(LivingEntity hostile, CallbackInfoReturnable<Boolean> callback) {
         if (hostile instanceof ChangedEntity latex) {
             if (latex.getType().is(EntityTypes.LATEX) && latex.hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
+                callback.setReturnValue(false);
+            } else if (latex.getType().is(EntityTypes.LATEX) && ChangedEntityExtension.of(latex).isPacified()) {
                 callback.setReturnValue(false);
             }
         }

@@ -71,7 +71,7 @@ import java.util.UUID;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment009BossEntity extends ChangedEntity implements BossWithMusic, CustomPatReaction {
+public class Experiment009BossEntity extends ChangedEntity implements BossWithMusic, CustomPatReaction, PowderSnowWalkable {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.BOOLEAN);

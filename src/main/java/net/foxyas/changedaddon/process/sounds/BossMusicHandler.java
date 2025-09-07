@@ -11,29 +11,20 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@OnlyIn(value = Dist.CLIENT)
+import java.util.*;
+
+@OnlyIn(Dist.CLIENT)
 public class BossMusicHandler {
     private static final Minecraft mc = Minecraft.getInstance();
 
-    private static IHasBossMusic currentBoss;
-    private static FadingBossMusicSound currentSound;
+    // Agora suportando vários bosses
+    private static final Map<IHasBossMusic, FadingBossMusicSound> activeBosses = new HashMap<>();
 
     public static void tick(ClientLevel level) {
         if (mc.player == null || level == null) return;
 
-        if (currentBoss != null && currentSound != null) {
-            if (currentBoss.getSelf().isDeadOrDying() && (mc.getSoundManager().isActive(currentSound) || !currentSound.isStopped())) {
-                stopMusic();
-            }
-
-            if (currentBoss != null && currentSound != null && currentSound.getLocation() != currentBoss.getBossMusic()) {
-                stopMusic();
-                playMusic(currentBoss);
-            }
-        }
-
-        IHasBossMusic closestBoss = null;
-        double closestDistanceSq = Double.MAX_VALUE;
+        // Guardar os bosses que estão ativos nesse tick
+        Set<IHasBossMusic> nearbyBosses = new HashSet<>();
 
         for (Entity entity : level.entitiesForRendering()) {
             if (!(entity instanceof IHasBossMusic boss)) continue;
@@ -41,44 +32,57 @@ public class BossMusicHandler {
             if (!entity.isAlive()) continue;
 
             double distSq = entity.distanceToSqr(mc.player);
-            if (distSq <= boss.getMusicRange() * boss.getMusicRange() && distSq < closestDistanceSq) {
-                closestDistanceSq = distSq;
-                closestBoss = boss;
+            if (distSq <= boss.getMusicRange() * boss.getMusicRange()) {
+                nearbyBosses.add(boss);
+
+                // Se não temos som ativo para esse boss, toca
+                if (!activeBosses.containsKey(boss)) {
+                    playMusic(boss);
+                } else {
+                    FadingBossMusicSound sound = activeBosses.get(boss);
+
+                    // Retoca caso tenha parado
+                    if (!mc.getSoundManager().isActive(sound) || sound.isStopped()) {
+                        playMusic(boss);
+                    }
+                    // Se a música mudou (ex: fase nova)
+                    else if (sound.getLocation() != boss.getBossMusic()) {
+                        stopMusic(boss);
+                        playMusic(boss);
+                    }
+                }
             }
         }
 
-        if (closestBoss != null) {
-            if (closestBoss != currentBoss) {
-                stopMusic();
-                playMusic(closestBoss);
-            } else if (currentSound != null && (!mc.getSoundManager().isActive(currentSound) || currentSound.isStopped())) {
-                // Retoca a música caso ela tenha parado
-                playMusic(closestBoss);
+        // Agora vamos limpar bosses que não estão mais válidos
+        Iterator<Map.Entry<IHasBossMusic, FadingBossMusicSound>> it = activeBosses.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<IHasBossMusic, FadingBossMusicSound> entry = it.next();
+            IHasBossMusic boss = entry.getKey();
+            FadingBossMusicSound sound = entry.getValue();
+
+            if (!nearbyBosses.contains(boss) || boss.getSelf().isDeadOrDying()) {
+                stopMusic(boss);
+                it.remove();
             }
-        } else if (currentBoss != null) {
-            stopMusic();
         }
     }
 
     private static void playMusic(IHasBossMusic boss) {
-        if (boss == null) {
-            return;
-        }
+        if (boss == null) return;
         ResourceLocation music = boss.getBossMusic();
         SoundEvent event = ForgeRegistries.SOUND_EVENTS.getValue(music);
-
         if (event == null) return;
 
-        currentSound = new FadingBossMusicSound(event, boss.getSelf());
-        mc.getSoundManager().play(currentSound);
-        currentBoss = boss;
+        FadingBossMusicSound sound = new FadingBossMusicSound(event, boss.getSelf());
+        mc.getSoundManager().play(sound);
+        activeBosses.put(boss, sound);
     }
 
-    public static void stopMusic() {
-        if (currentSound != null) {
-            currentSound.startFadeOut();
+    private static void stopMusic(IHasBossMusic boss) {
+        FadingBossMusicSound sound = activeBosses.get(boss);
+        if (sound != null) {
+            sound.startFadeOut();
         }
-        currentSound = null;
-        currentBoss = null;
     }
 }

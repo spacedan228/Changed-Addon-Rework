@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon;
+package net.foxyas.changedaddon.abilities;
 
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;

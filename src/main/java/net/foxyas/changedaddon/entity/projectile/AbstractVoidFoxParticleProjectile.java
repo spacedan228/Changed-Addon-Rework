@@ -451,7 +451,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
                     this.setOwner(oTarget);
                     this.setTarget(oOwner);
                     this.setBaseDamage(5d);
-                    if (!oTarget.level.isClientSide() && oTarget.getLevel() instanceof ServerLevel serverLevel) {
+                    if (!oTarget.getLevel().isClientSide() && oTarget.getLevel() instanceof ServerLevel serverLevel) {
                         serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 1.0F, 1.0F);
                         serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.ANVIL_LAND, SoundSource.MASTER, 0.5F, 1.2F);
                         for (EquipmentSlot itemBySlot : EquipmentSlot.values()) {
@@ -466,12 +466,27 @@ public abstract class AbstractVoidFoxParticleProjectile extends AbstractArrow {
                     return true;
                 }
             }
+        } else if (damageSource.getEntity() != null) {
+            this.setDeltaMovement(this.getDeltaMovement().scale(-amount * 0.1));
+            this.lifeSpamNearTarget = 0;
+            this.lifeSpamWithoutTarget = 0;
+            this.markHurt();
+            if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
+                serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 1.0F, 1.0F);
+                serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.ANVIL_LAND, SoundSource.MASTER, 0.5F, 1.2F);
+            }
+            return true;
         }
         return super.hurt(damageSource, amount);
     }
 
     @Override
     public boolean isAttackable() {
+        return true;
+    }
+
+    @Override
+    public boolean isPickable() {
         return true;
     }
 
