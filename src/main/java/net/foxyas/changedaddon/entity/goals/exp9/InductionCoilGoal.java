@@ -53,16 +53,19 @@ public class InductionCoilGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if(cooldown > 0){
-            cooldown--;
-            return false;
-        }
-
         target = holder.getTarget();
         if(target == null || !target.isAlive()) return false;
 
         Path path = holder.getNavigation().getPath();
-        return (path != null && !path.canReach()) || holder.distanceToSqr(target) > tooFarSqr;
+        boolean stuck = (path != null && !path.canReach()) || holder.distanceToSqr(target) > tooFarSqr;
+
+        if(cooldown > 0){
+            cooldown--;
+            if(stuck) cooldown--;
+            return false;
+        }
+
+        return stuck;
     }
 
     @Override

@@ -1,7 +1,8 @@
 package net.foxyas.changedaddon.entity.goals.exp10;
 
+import com.mojang.math.Vector3f;
 import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -97,9 +98,9 @@ public class ClawsComboAttackGoal extends Goal {
 
     protected void pickAttackPos() {
         attackPos = target.position();
-        Level level = holder.level;
-        BlockPos pos = new BlockPos(attackPos);
     }
+
+    private static final DustParticleOptions PARTICLE = new DustParticleOptions(new Vector3f(1, 1, 1), 1);
 
     @Override
     public void tick() {
@@ -107,6 +108,16 @@ public class ClawsComboAttackGoal extends Goal {
 
         if (target != null) {
             holder.getLookControl().setLookAt(target, 30, 30);
+        }
+
+        if (wasBlocked > 0) {
+            wasBlocked--;
+
+            ((ServerLevel) holder.level).sendParticles(PARTICLE, holder.getX() - 1, holder.getY() - 1 + holder.getBbHeight() / 2, holder.getZ() - 1,
+                    30 * wasBlocked / 30, 2, 2, 2, 0.3);
+
+            if (wasBlocked == 0) pickAttackPos();
+            return;
         }
 
         if (castDuration > 0) {
