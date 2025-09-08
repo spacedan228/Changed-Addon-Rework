@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.ltxprogrammer.changed.entity.Gender;
+import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.init.ChangedMobCategories;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Difficulty;
@@ -52,5 +53,10 @@ public class LatexCheetahMale extends AbstractCheetahEntity {
     @Override
     public Gender getGender() {
         return Gender.MALE;
+    }
+
+    @Override
+    public TransfurMode getTransfurMode() {
+        return TransfurMode.REPLICATION;
     }
 }

@@ -65,4 +65,9 @@ public class LatexCheetahFemale extends AbstractCheetahEntity {
     public Gender getGender() {
         return Gender.FEMALE;
     }
+
+    @Override
+    public TransfurMode getTransfurMode() {
+        return TransfurMode.ABSORPTION;
+    }
 }

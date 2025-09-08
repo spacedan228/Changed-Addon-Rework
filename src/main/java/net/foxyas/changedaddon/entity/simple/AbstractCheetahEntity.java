@@ -72,14 +72,9 @@ public abstract class AbstractCheetahEntity extends AbstractSnowLeopard {
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         SpawnGroupData returnValue = super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
-        if (this.getRandom().nextFloat() >= 0.45) {
+        if (this.getRandom().nextFloat() >= 0.75) {
             ChangedEntityExtension.of(this).setPacified(true);
         }
         return returnValue;
-    }
-
-    @Override
-    public TransfurMode getTransfurMode() {
-        return TransfurMode.ABSORPTION;
     }
 }
