@@ -128,6 +128,7 @@ public class ClawsComboAttackGoal extends Goal {
         attacks--;
 
         holder.teleportTo(attackPos.x, attackPos.y, attackPos.z);
+        this.doDashEffect(); // Effect stuff
         holder.swing(InteractionHand.MAIN_HAND);
 
         holder.level.playSound(null, holder, ChangedSounds.BOW2, SoundSource.HOSTILE, 1.0f, 1.0f);
@@ -192,6 +193,13 @@ public class ClawsComboAttackGoal extends Goal {
             serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK, holder.getX() + d0, holder.getY(0.6), holder.getZ() + d1, 0, d0, 0.0, d1, 0.0);
             serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK, holder.getX() + d0, holder.getY(0.7), holder.getZ() + d1, 0, d0, 0.0, d1, 0.0);
             holder.level.playSound(null, holder.getX(), holder.getY(), holder.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1f, 0.75f);
+        }
+    }
+
+    public void doDashEffect() {// Efeito visual
+        if (holder.level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(PARTICLE, holder.getX(), holder.getY(0.5f), holder.getZ(), 4, 0.25, 0.25f, 0.25f, 0.05);
+            holder.level.playSound(null, holder.getX(), holder.getY(), holder.getZ(), ChangedSounds.BOW2, SoundSource.PLAYERS, 1f, 0.75f);
         }
     }
 

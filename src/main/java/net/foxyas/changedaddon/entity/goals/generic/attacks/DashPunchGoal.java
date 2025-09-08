@@ -8,6 +8,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
@@ -108,6 +109,7 @@ public class DashPunchGoal extends Goal {
 
     private void handleDashing() {
         dashTicks++;
+        mob.getLookControl().setLookAt(target);
         Vec3 direction = mob.getDeltaMovement().add(target.position().subtract(mob.position()).normalize().scale(0.6));
         mob.setDeltaMovement(direction.x, direction.y, direction.z);
         mob.hurtMarked = true;  // Forces client update
@@ -151,6 +153,9 @@ public class DashPunchGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
+        if (target.isSpectator() || target.isInvulnerable() || (target instanceof Player player && player.isCreative())) {
+            return false;
+        }
         return phase != Phase.IDLE;
     }
 

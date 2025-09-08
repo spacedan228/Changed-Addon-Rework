@@ -79,6 +79,11 @@ public class ThrowWitherProjectileGoal extends Goal {
         }
     }
 
+    @Override
+    public boolean isInterruptable() {
+        return false;
+    }
+
     private @NotNull WitherParticleProjectile getWitherParticleProjectile(ServerLevel level, LivingEntity target) {
         holder.getLookControl().setLookAt(target.getEyePosition());
         Vec3 motion = holder.getViewVector(1);

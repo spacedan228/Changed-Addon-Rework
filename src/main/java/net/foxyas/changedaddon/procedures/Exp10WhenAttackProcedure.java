@@ -2,13 +2,20 @@ package net.foxyas.changedaddon.procedures;
 
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10Entity;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -29,12 +36,16 @@ public class Exp10WhenAttackProcedure {
         }
     }
 
-    public static void execute(LevelAccessor world, Entity entity, Entity attacker) {
-        execute(null, world, entity, attacker);
-    }
-
-    private static void execute(@Nullable Event event, LevelAccessor world, Entity entity, Entity attacker) {
+    private static void execute(@Nullable LivingAttackEvent event, LevelAccessor world, Entity entity, Entity attacker) {
         if (!(entity instanceof LivingEntity living)) return;
+        if (attacker instanceof Player player) {
+            TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (instance != null && (instance.is(ChangedAddonTransfurVariants.EXPERIMENT_10) || instance.is(ChangedAddonTransfurVariants.EXPERIMENT_10_BOSS))) {
+                living.addEffect(new MobEffectInstance(MobEffects.WITHER, 200, 0 , true, true, true));
+                return;
+            }
+        }
+        
         if (!(attacker instanceof Experiment10Entity || attacker instanceof Experiment10BossEntity)) return;
 
         if (living.isBlocking()) {
@@ -42,7 +53,9 @@ public class Exp10WhenAttackProcedure {
 
             // Força desativar o escudo
             if (living instanceof Player player) {
-                player.disableShield(true);
+                if (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, player.getUseItem()) <= 0) {
+                    player.disableShield(true);
+                }
             }
 
             // Aplica cooldown (se for player)
