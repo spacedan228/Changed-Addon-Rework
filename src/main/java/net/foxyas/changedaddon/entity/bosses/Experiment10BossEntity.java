@@ -297,8 +297,8 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata, tag);
         this.getBasicPlayerInfo().setSize(1f);
         this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
-        this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#edbd25"));
-        this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#edbd25"));
+        this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#880015"));
+        this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#880015"));
         this.getBasicPlayerInfo().setScleraColor(Color3.getColor("#edd725"));
         return retval;
     }
