@@ -9,6 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 
 import java.util.EnumSet;
@@ -24,6 +25,11 @@ public class BreakBlocksAroundGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (!mob.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+            return false;
+        }
+
+
         if (mob instanceof Experiment009BossEntity experiment009BossEntity) {
             if (experiment009BossEntity.isPhase2()) {
                 if (!mob.isAlive() || breakCooldown > 0) {
@@ -39,7 +45,7 @@ public class BreakBlocksAroundGoal extends Goal {
                         return true;
                     }
                 }
-            }
+            } else return false;
         } else if (mob instanceof Experiment10BossEntity experiment10BossEntity) {
             if (experiment10BossEntity.isPhase2()) {
                 if (!mob.isAlive() || breakCooldown > 0) {
@@ -55,7 +61,7 @@ public class BreakBlocksAroundGoal extends Goal {
                         return true;
                     }
                 }
-            }
+            } else return false;
         }
 
         if (!mob.isAlive() || breakCooldown > 0) {
