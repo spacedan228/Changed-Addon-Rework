@@ -73,5 +73,11 @@ public class CommonMod {
                 ClientboundOpenFTKCScreenPacket::new,
                 (packet, contextSupplier) -> ClientPacketHandler.handleOpenFTKCScreenPacket(packet, contextSupplier),
                 NetworkDirection.PLAY_TO_CLIENT);
+
+        ChangedAddonMod.addNetworkMessage(ClientboundSonarUpdatePacket.class,
+                ClientboundSonarUpdatePacket::encode,
+                ClientboundSonarUpdatePacket::new,
+                (packet, contextSupplier) -> ClientPacketHandler.handleSonarUpdatePacket(packet, contextSupplier),
+                NetworkDirection.PLAY_TO_CLIENT);
     }
 }
