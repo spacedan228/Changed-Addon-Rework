@@ -60,7 +60,7 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
             r = 1.0f; g = 1.0f; b = 0.2f;
         }
 
-        RenderType outline = ChangedAddonRenderTypes.outline(getTextureLocation(livingEntity));
+        RenderType outline = ChangedAddonRenderTypes.outlineWithTranslucency(getTextureLocation(livingEntity));
         getParentModel().renderToBuffer(
                 poseStack,
                 buffer.getBuffer(outline),

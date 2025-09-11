@@ -188,7 +188,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                 rendertype$compositestate);
     });
 
-    public static final BiFunction<ResourceLocation, RenderStateShard.CullStateShard, RenderType> OUTLINE_WITH_TRANSPARENCY = Util.memoize((resourceLocation, cullStateShard) ->
+    public static final BiFunction<ResourceLocation, RenderStateShard.CullStateShard, RenderType> OUTLINE_WITH_TRANSLUCENCY = Util.memoize((resourceLocation, cullStateShard) ->
             create(ChangedAddonMod.resourceLocString("outline_with_deep_test"),
                     DefaultVertexFormat.POSITION_COLOR_TEX,
                     VertexFormat.Mode.QUADS,
@@ -258,7 +258,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
         return OUTLINE_WITH_DEPTH.apply(location, NO_CULL);
     }
 
-    public static RenderType outlineWithTransparency(ResourceLocation location) {
-        return OUTLINE_WITH_TRANSPARENCY.apply(location, NO_CULL);
+    public static RenderType outlineWithTranslucency(ResourceLocation location) {
+        return OUTLINE_WITH_TRANSLUCENCY.apply(location, NO_CULL);
     }
 }
