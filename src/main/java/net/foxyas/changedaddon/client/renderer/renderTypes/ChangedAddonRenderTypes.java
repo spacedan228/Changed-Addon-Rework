@@ -8,19 +8,33 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterShadersEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.util.function.BiFunction;
 
 import static net.minecraft.client.renderer.RenderType.OutlineProperty.IS_OUTLINE;
 
 // BlakeBr0 Code
 // https://github.com/BlakeBr0/Cucumber/blob/1.18/src/main/java/com/blakebr0/cucumber/client/ModRenderTypes.java
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ChangedAddonRenderTypes extends RenderType {
+
+    private static ShaderInstance TRANSLUCENT_OUTLINE_SHADER;
+
+    @SubscribeEvent
+    public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
+        event.registerShader(new ShaderInstance(event.getResourceManager(), ChangedAddonMod.resourceLoc("translucent_outline"), DefaultVertexFormat.POSITION_COLOR_TEX), shader -> TRANSLUCENT_OUTLINE_SHADER = shader);
+    }
 
     public static final RenderType QUADS_WITH_TRANSPARENCY = RenderType.create(
             ChangedAddonMod.resourceLocString("quads"),
@@ -182,7 +196,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     false,
                     false,
                     RenderType.CompositeState.builder()
-                            .setShaderState(RENDERTYPE_OUTLINE_SHADER)
+                            .setShaderState(new ShaderStateShard(() -> TRANSLUCENT_OUTLINE_SHADER))
                             .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
                             .setCullState(cullStateShard)
                             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
