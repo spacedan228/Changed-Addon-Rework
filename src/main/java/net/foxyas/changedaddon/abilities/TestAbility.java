@@ -24,7 +24,7 @@ public class TestAbility extends SimpleAbility {
         super.startUsing(entity);
 
         if (entity.getEntity() instanceof ServerPlayer serverPlayer) {
-            ClientboundSonarUpdatePacket.update(serverPlayer, 200, 10, 10, 16, RenderMode.SONAR);
+            ClientboundSonarUpdatePacket.update(serverPlayer, 400, 10, 50, 32, RenderMode.SONAR);
         }
     }
 }
