@@ -174,6 +174,22 @@ public final class ChangedAddonRenderTypes extends RenderType {
                 rendertype$compositestate);
     });
 
+    public static final BiFunction<ResourceLocation, RenderStateShard.CullStateShard, RenderType> OUTLINE_WITH_TRANSPARENCY = Util.memoize((resourceLocation, cullStateShard) ->
+            create(ChangedAddonMod.resourceLocString("outline_with_deep_test"),
+                    DefaultVertexFormat.POSITION_COLOR_TEX,
+                    VertexFormat.Mode.QUADS,
+                    256,
+                    false,
+                    false,
+                    RenderType.CompositeState.builder()
+                            .setShaderState(RENDERTYPE_OUTLINE_SHADER)
+                            .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
+                            .setCullState(cullStateShard)
+                            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+                            .setDepthTestState(RenderStateShard.LEQUAL_DEPTH_TEST)
+                            .setOutputState(OUTLINE_TARGET)
+                            .createCompositeState(IS_OUTLINE)));
+
     public static final BiFunction<ResourceLocation, RenderStateShard.CullStateShard, RenderType> OUTLINE_WITH_DEPTH = Util.memoize((resourceLocation, cullStateShard) ->
             create(ChangedAddonMod.resourceLocString("outline_with_deep_test"),
                     DefaultVertexFormat.POSITION_COLOR_TEX,
@@ -223,7 +239,12 @@ public final class ChangedAddonRenderTypes extends RenderType {
         return OUTLINE_WITH_DEPTH.apply(location, OUTLINE_CULL_STATE);
     }
 
+
     public static RenderType outlineWithDepthFull(ResourceLocation location) {
         return OUTLINE_WITH_DEPTH.apply(location, NO_CULL);
+    }
+
+    public static RenderType outlineWithTransparency(ResourceLocation location) {
+        return OUTLINE_WITH_TRANSPARENCY.apply(location, NO_CULL);
     }
 }

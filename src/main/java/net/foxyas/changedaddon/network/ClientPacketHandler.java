@@ -18,7 +18,7 @@ public class ClientPacketHandler {
 
     public static void handleSonarUpdatePacket(ClientboundSonarUpdatePacket packet, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> SonarOutlineLayer.ClientState.setTicksToRenderEntities(packet.ticks(), packet.fadeInTicks(), packet.maxDist(), packet.mode()));
+        context.enqueueWork(() -> SonarOutlineLayer.ClientState.setTicksToRenderEntities(packet.ticks(), packet.lastTicks(), packet.fadeInTicks(), packet.fadeOutTicks(), packet.maxDist(), packet.mode()));
         context.setPacketHandled(true);
     }
 }

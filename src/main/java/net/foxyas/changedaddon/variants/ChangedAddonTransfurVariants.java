@@ -211,7 +211,7 @@ public class ChangedAddonTransfurVariants {
 
     //Experiments
     public static final RegistryObject<TransfurVariant<Exp1MaleEntity>> EXP1_MALE = register("form_exp1/male",
-            () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_1_MALE).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).extraJumps(2).addAbility(ChangedAddonAbilities.PSYCHIC_PULSE).addAbility(ChangedAddonAbilities.PSYCHIC_HOLD).addAbility(ChangedAddonAbilities.PSYCHIC_GRAB).addAbility(ChangedAbilities.SWITCH_GENDER).transfurMode(TransfurMode.NONE));
+            () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_1_MALE).addAbility(ChangedAddonAbilities.TEST).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).extraJumps(2).addAbility(ChangedAddonAbilities.PSYCHIC_PULSE).addAbility(ChangedAddonAbilities.PSYCHIC_HOLD).addAbility(ChangedAddonAbilities.PSYCHIC_GRAB).addAbility(ChangedAbilities.SWITCH_GENDER).transfurMode(TransfurMode.NONE));
     public static final RegistryObject<TransfurVariant<Exp1FemaleEntity>> EXP1_FEMALE = register("form_exp1/female",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_1_FEMALE).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).extraJumps(2).addAbility(ChangedAddonAbilities.PSYCHIC_PULSE).addAbility(ChangedAddonAbilities.PSYCHIC_HOLD).addAbility(ChangedAddonAbilities.PSYCHIC_GRAB).addAbility(ChangedAbilities.SWITCH_GENDER).transfurMode(TransfurMode.NONE));
     public static final RegistryObject<TransfurVariant<Exp2MaleEntity>> EXP2_MALE = register("form_exp2/male",

@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
 import net.foxyas.changedaddon.process.sounds.BossMusicHandler;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
@@ -32,6 +33,7 @@ public class ClientEvent {
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().level != null) {
             BossMusicHandler.tick(Minecraft.getInstance().level);
+            SonarOutlineLayer.ClientState.tick();
         }
     }
 

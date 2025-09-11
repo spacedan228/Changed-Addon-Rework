@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.client.renderer.layers.features;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -59,7 +60,7 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
             r = 1.0f; g = 1.0f; b = 0.2f;
         }
 
-        RenderType outline = RenderType.outline(getTextureLocation(livingEntity));
+        RenderType outline = ChangedAddonRenderTypes.outlineWithTransparency(getTextureLocation(livingEntity));
         getParentModel().renderToBuffer(
                 poseStack,
                 buffer.getBuffer(outline),
@@ -73,18 +74,19 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
     public static class ClientState {
 
         private static int ticksToRenderEntities = 0;
-        private static int fadeDuration = 10; // ticks de fade in/out
+        private static int fadeInDuration = 10;   // duração do fade in
+        private static int fadeOutDuration = 10;  // duração do fade out
         private static float maxDistSqr;
         private static RenderMode renderMode = RenderMode.SONAR;
-
         private static int lastTicks = 0;
 
-        public static void setTicksToRenderEntities(int ticks, int fadeInTicks, float maxDist, RenderMode mode) {
+        public static void setTicksToRenderEntities(int ticks, int iLastTicks, int fadeIn, int fadeOut, float maxDist, RenderMode mode) {
             ticksToRenderEntities = ticks;
-            fadeDuration = fadeInTicks;
+            fadeInDuration = fadeIn;
+            fadeOutDuration = fadeOut;
             maxDistSqr = maxDist * maxDist;
             renderMode = mode;
-            lastTicks = ticks;
+            lastTicks = iLastTicks;
         }
 
         public static void tick() {
@@ -93,21 +95,40 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
             }
         }
 
+        /**
+         * Calcula o alpha (0f-1f) baseado no tempo restante.
+         */
         public static float getAlpha(float partialTicks) {
             if (lastTicks <= 0) return 0f;
             int ticks = ticksToRenderEntities;
 
-            if (ticks > lastTicks - fadeDuration) {
-                // fade in
-                float progress = (lastTicks - ticks + partialTicks) / (float) fadeDuration;
-                return Mth.clamp(progress, 0f, 1f);
-            } else if (ticks < fadeDuration) {
-                // fade out
-                float progress = (ticks - partialTicks) / (float) fadeDuration;
-                return Mth.clamp(progress, 0f, 1f);
+            // --- FADE IN ---
+            if (ticks >= lastTicks - fadeInDuration) {
+                float elapsed = (lastTicks - ticks) + partialTicks;
+                return Mth.clamp(elapsed / fadeInDuration, 0f, 1f);
             }
 
-            return 1f; // estado normal (full visible)
+            // --- FADE OUT ---
+            if (ticks <= fadeOutDuration) {
+                float remaining = (ticks - partialTicks);
+                return Mth.clamp(remaining / fadeOutDuration, 0f, 1f);
+            }
+
+            // --- VISIBILIDADE TOTAL ---
+            return 1f;
+        }
+
+        public static boolean isActive() {
+            return ticksToRenderEntities > 0;
+        }
+
+        public static RenderMode getRenderMode() {
+            return renderMode;
+        }
+
+        public static float getMaxDistSqr() {
+            return maxDistSqr;
         }
     }
+
 }
