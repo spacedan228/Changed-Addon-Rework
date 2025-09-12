@@ -55,6 +55,7 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     public static final RegistryObject<WindPassiveAbility> WIND_PASSIVE = REGISTRY.register("wind_control_passive", WindPassiveAbility::new);
     public static final RegistryObject<WitherGrenadeAbility> WITHER_GRENADE = REGISTRY.register("wither_grenade", WitherGrenadeAbility::new);
     public static final RegistryObject<SonarAbility> SONAR = REGISTRY.register("sonar", SonarAbility::new);
+    public static final RegistryObject<LuminarFireballAbility> LUMINAR_FIREBALL = REGISTRY.register("luminar_fireball", LuminarFireballAbility::new);
 
 
     public static List<EntityType<?>> getCanGlideEntities() {
