@@ -84,14 +84,14 @@ public class Exp6Entity extends AbstractCanTameSnepChangedEntity {
                 if (!player.getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
-                boolean istransfur = ProcessTransfur.isPlayerTransfurred(player);
+                boolean isTransfur = ProcessTransfur.isPlayerTransfurred(player);
 
-                if (!istransfur && this.random.nextInt(2) == 0) { // One in 2 chance
+                if (!isTransfur && this.random.nextInt(2) == 0) { // One in 2 chance
                     this.tame(player);
                     this.navigation.stop();
                     this.setTarget(null);
                     this.level.broadcastEntityEvent(this, (byte) 7);
-                } else if (istransfur && this.random.nextInt(12) == 0) { //One in 12
+                } else if (isTransfur && this.random.nextInt(12) == 0) { //One in 12
                     this.tame(player);
                     this.navigation.stop();
                     this.setTarget(null);

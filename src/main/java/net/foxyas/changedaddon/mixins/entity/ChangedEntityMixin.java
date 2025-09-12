@@ -36,6 +36,11 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     }
 
     @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return !isPacified();
+    }
+
+    @Override
     public boolean isPacified() {
         return pacified;
     }
