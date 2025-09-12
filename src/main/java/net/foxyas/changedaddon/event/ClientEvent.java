@@ -33,7 +33,7 @@ public class ClientEvent {
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END && Minecraft.getInstance().level != null) {
             BossMusicHandler.tick(Minecraft.getInstance().level);
-            SonarOutlineLayer.ClientState.tick();
+            SonarOutlineLayer.SonarClientState.tick();
         }
     }
 

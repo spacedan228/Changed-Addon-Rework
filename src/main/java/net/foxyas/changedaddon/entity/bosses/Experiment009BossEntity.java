@@ -11,6 +11,7 @@ import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAtta
 import net.foxyas.changedaddon.entity.interfaces.BossWithMusic;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.ParticlesUtil;
@@ -31,6 +32,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -702,9 +704,13 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
 
     @Override
     public void WhenPattedReaction(Player player, InteractionHand hand) {
-        if (!player.getLevel().isClientSide) {
-            return;
+        if (!(player.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (player instanceof ServerPlayer serverPlayer) {
+            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, this, "pats_on_the_beast");
         }
+
+
+
         List<TranslatableComponent> translatableComponentList = new ArrayList<>();
         translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp9.pat.type_1"));
         translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp9.pat.type_2"));

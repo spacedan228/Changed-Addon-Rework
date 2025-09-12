@@ -261,4 +261,8 @@ public final class ChangedAddonRenderTypes extends RenderType {
     public static RenderType outlineWithTranslucency(ResourceLocation location) {
         return OUTLINE_WITH_TRANSLUCENCY.apply(location, NO_CULL);
     }
+
+    public static RenderType outlineWithTranslucencyCull(ResourceLocation location) {
+        return OUTLINE_WITH_TRANSLUCENCY.apply(location, CULL);
+    }
 }

@@ -1,7 +1,10 @@
 package net.foxyas.changedaddon.entity.bosses;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
+import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
+import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.ComboAbilityGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.KnockBackBurstGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleComboAbilityGoal;
@@ -23,6 +26,12 @@ import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -48,6 +57,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -59,7 +70,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBossMusic {
+public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable {
     public static final int MAX_1_COOLDOWN = 120;
     public static final int MAX_2_COOLDOWN = 120;
     private static final int MAX_COOLDOWN = 120;
@@ -887,12 +898,10 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     @Override
     public ResourceLocation getBossMusic() {
         if (this.computeHealthRatio() <= 0.5f) {
-            assert ChangedAddonSounds.EXP10_THEME != null;
             return ChangedAddonSounds.EXP10_THEME.getLocation();
         }
 
 
-        assert ChangedAddonSounds.EXP9_THEME != null;
         return ChangedAddonSounds.EXP9_THEME.getLocation();
     }
 
@@ -908,6 +917,46 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
 
     public int getAttackInUse() {
         return AttackInUse;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public boolean handleSonarRender(@NotNull SonarOutlineLayer<?, ?> sonarOutlineLayer, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float alpha) {
+        // Default colors: white
+        float r = 1.0f, g = 1.0f, b = 1.0f;
+
+        Minecraft minecraft = Minecraft.getInstance();
+        EntityRenderDispatcher entityRenderDispatcher = minecraft.getEntityRenderDispatcher();
+        EntityRenderer<? super VoidFoxEntity> renderer = entityRenderDispatcher.getRenderer(this);
+        RenderType outline = ChangedAddonRenderTypes.outlineWithTranslucencyCull(renderer.getTextureLocation(this));
+        sonarOutlineLayer.getParentModel().renderToBuffer(
+                poseStack,
+                buffer.getBuffer(outline),
+                packedLight,
+                OverlayTexture.NO_OVERLAY,
+                r, g, b, alpha
+        );
+        return true;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public boolean handleSonarRenderForCamera(@NotNull SonarOutlineLayer<?, ?> sonarOutlineLayer, @NotNull LivingEntity livingEntity, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float alpha) {
+        // Default colors: white
+        float r = 1.0f, g = 1, b = 1;
+
+        Minecraft minecraft = Minecraft.getInstance();
+        EntityRenderDispatcher entityRenderDispatcher = minecraft.getEntityRenderDispatcher();
+        EntityRenderer<? super LivingEntity> renderer = entityRenderDispatcher.getRenderer(livingEntity);
+        RenderType outline = ChangedAddonRenderTypes.outlineWithTranslucencyCull(renderer.getTextureLocation(livingEntity));
+        sonarOutlineLayer.getParentModel().renderToBuffer(
+                poseStack,
+                buffer.getBuffer(outline),
+                packedLight,
+                OverlayTexture.NO_OVERLAY,
+                r, g, b, alpha
+        );
+        return true;
     }
 
     @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)

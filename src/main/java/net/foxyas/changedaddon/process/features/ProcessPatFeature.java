@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.process.features;
 
+import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Emote;
@@ -7,6 +8,7 @@ import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -77,6 +79,9 @@ public class ProcessPatFeature {
                         Random random = changedEntity.getRandom();
                         if (random.nextFloat() <= 0.0001f) {
                             changedEntity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600, 0, true, false, true), player);
+                            if (player instanceof ServerPlayer serverPlayer) {
+                                ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, changedEntity, "paticifier");
+                            }
                         }
                     }
                 }

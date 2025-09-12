@@ -13,6 +13,7 @@ import net.foxyas.changedaddon.entity.goals.generic.attacks.LeapSmashGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.entity.interfaces.BossWithMusic;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
+import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
@@ -30,6 +31,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -224,7 +226,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         this.goalSelector.addGoal(10, new LeapSmashGoal(this));
         this.goalSelector.addGoal(15, new DashPunchGoal(this));
         this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
-        this.goalSelector.addGoal(10 , new ThrowWitherProjectileGoal(this, UniformInt.of(60, 120), UniformInt.of(1,8), 36));
+        this.goalSelector.addGoal(10, new ThrowWitherProjectileGoal(this, UniformInt.of(60, 120), UniformInt.of(1, 8), 36));
     }
 
     @Override
@@ -527,9 +529,11 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
 
     @Override
     public void WhenPattedReaction(Player player, InteractionHand hand) {
-        if (!player.getLevel().isClientSide) {
-            return;
+        if (!(player.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (player instanceof ServerPlayer serverPlayer) {
+            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, this, "pats_on_the_beast");
         }
+
         List<TranslatableComponent> translatableComponentList = new ArrayList<>();
         translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp10.pat.type_0"));
         translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp10.pat.type_1"));

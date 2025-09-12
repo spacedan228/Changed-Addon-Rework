@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 
@@ -26,6 +27,17 @@ public class PacketUtil {
         soundSource = event.getCategory();
         volume = event.getVolume();
 
+        broadcast(level, send.and(distance(x, y, z, volume > 1 ? volume * 16 : 16)), level.dimension(), new ClientboundSoundPacket(sound, soundSource, x, y, z, volume, pitch));
+    }
+
+    public static void playSound(ServerLevel level, Predicate<ServerPlayer> send, Vec3 position, SoundEvent sound, SoundSource soundSource, float volume, float pitch) {
+        PlaySoundAtEntityEvent event = ForgeEventFactory.onPlaySoundAtEntity(null, sound, soundSource, volume, pitch);
+        if (event.isCanceled() || event.getSound() == null) return;
+
+        sound = event.getSound();
+        soundSource = event.getCategory();
+        volume = event.getVolume();
+        double x = position.x, y = position.y, z = position.z;
         broadcast(level, send.and(distance(x, y, z, volume > 1 ? volume * 16 : 16)), level.dimension(), new ClientboundSoundPacket(sound, soundSource, x, y, z, volume, pitch));
     }
 

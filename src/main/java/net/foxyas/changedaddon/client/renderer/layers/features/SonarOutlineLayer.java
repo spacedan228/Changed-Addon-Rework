@@ -2,6 +2,9 @@ package net.foxyas.changedaddon.client.renderer.layers.features;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
+import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,6 +15,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -19,48 +23,78 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
 
+    private final RenderLayerParent<T, M> parent;
+
     public SonarOutlineLayer(RenderLayerParent<T, M> parent) {
         super(parent);
+        this.parent = parent;
     }
 
     public interface CustomSonarRenderable {
         /**
          * Called when rendering with sonar outline.
-         * Implementors can modify poseStack, choose color, etc.
-         * Return true if you handled rendering yourself (skip default).
+         * Implementors can override rendering (pose, color, etc.).
+         * Return true if you fully handled rendering yourself (skips default).
          */
-        boolean handleSonarRender(PoseStack poseStack, MultiBufferSource buffer, int packedLight,
+        boolean handleSonarRender(@NotNull SonarOutlineLayer<?, ?> sonarOutlineLayer, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight,
                                   float limbSwing, float limbSwingAmount, float partialTicks,
                                   float ageInTicks, float netHeadYaw, float headPitch, float alpha);
+
+        /**
+         * Same as handleSonarRender but specifically for the camera entity.
+         * Return true if you fully handled rendering yourself (skips default).
+         */
+        boolean handleSonarRenderForCamera(@NotNull SonarOutlineLayer<?, ?> sonarOutlineLayer, @NotNull LivingEntity livingEntity, @NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight,
+                                           float limbSwing, float limbSwingAmount, float partialTicks,
+                                           float ageInTicks, float netHeadYaw, float headPitch, float alpha);
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, MultiBufferSource buffer, int packedLight,
+    public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource buffer, int packedLight,
                        @NotNull T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks,
                        float ageInTicks, float netHeadYaw, float headPitch) {
-        if (ClientState.ticksToRenderEntities <= 0) return;
+        if (SonarClientState.ticksToRenderEntities <= 0) return;
 
-        Entity camera = Minecraft.getInstance().cameraEntity;
-        if(camera == null || camera.distanceToSqr(livingEntity) > ClientState.maxDistSqr) return;
+        Minecraft minecraft = Minecraft.getInstance();
+        Entity camera = minecraft.cameraEntity;
+        if (camera == null || camera.distanceToSqr(livingEntity) > SonarClientState.maxDistSqr) return;
 
-        float alpha = ClientState.getAlpha(partialTicks);
+        Player player = minecraft.player;
+        if (player == null) return;
+        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+        if (instance == null) return;
+        if (!instance.hasAbility(ChangedAddonAbilities.SONAR.get())) return;
+
+        float alpha = SonarClientState.getAlpha(partialTicks);
         if (alpha <= 0.01f) return;
 
-        // se a entity tiver um comportamento customizado
+        // If the entity itself provides custom sonar rendering
         if (livingEntity instanceof CustomSonarRenderable custom) {
-            if (custom.handleSonarRender(poseStack, buffer, packedLight, limbSwing, limbSwingAmount,
-                    partialTicks, ageInTicks, netHeadYaw, headPitch, alpha)) {
-                return; // custom handle → skip default
+            if (custom.handleSonarRender(this, poseStack, buffer, packedLight,
+                    limbSwing, limbSwingAmount, partialTicks,
+                    ageInTicks, netHeadYaw, headPitch, alpha)) {
+                return; // custom handled → skip default
             }
         }
 
-        // cor padrão: branco (Sonar) ou amarelo (Echo)
-        float r = 1.0f, g = 1.0f, b = 1.0f;
-        if (ClientState.renderMode == RenderMode.ECHO_LOCATION) {
-            r = 1.0f; g = 1.0f; b = 0.2f;
+        // If the transformed entity (variant) provides custom sonar rendering
+        if (instance.getChangedEntity() instanceof CustomSonarRenderable custom) {
+            if (custom.handleSonarRenderForCamera(this, livingEntity, poseStack, buffer, packedLight,
+                    limbSwing, limbSwingAmount, partialTicks,
+                    ageInTicks, netHeadYaw, headPitch, alpha)) {
+                return; // custom handled → skip default
+            }
         }
 
-        RenderType outline = ChangedAddonRenderTypes.outlineWithTranslucency(getTextureLocation(livingEntity));
+        // Default colors: white (Sonar) or yellowish (Echo)
+        float r = 1.0f, g = 1.0f, b = 1.0f;
+        if (SonarClientState.renderMode == RenderMode.ECHO_LOCATION) {
+            r = 1.0f;
+            g = 1.0f;
+            b = 0.2f;
+        }
+
+        RenderType outline = ChangedAddonRenderTypes.outlineWithTranslucencyCull(getTextureLocation(livingEntity));
         getParentModel().renderToBuffer(
                 poseStack,
                 buffer.getBuffer(outline),
@@ -71,7 +105,7 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
     }
 
     // estado global do cliente
-    public static class ClientState {
+    public static class SonarClientState {
 
         private static int ticksToRenderEntities = 0;
         private static int fadeInDuration = 10;   // duração do fade in
@@ -90,9 +124,20 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
         }
 
         public static void tick() {
-            if (ticksToRenderEntities > 0) {
-                ticksToRenderEntities--;
+            Minecraft minecraft = Minecraft.getInstance();
+            Player player = minecraft.player;
+            if (player == null) return;
+            TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (instance == null) {
+                ticksToRenderEntities = 0;
+                return;
+            } else if (!instance.hasAbility(ChangedAddonAbilities.SONAR.get())) {
+                ticksToRenderEntities = 0;
+                return;
             }
+
+
+            if (ticksToRenderEntities > 0) ticksToRenderEntities--;
         }
 
         /**
@@ -128,6 +173,15 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
 
         public static float getMaxDistSqr() {
             return maxDistSqr;
+        }
+
+        public static void resetData() {
+            ticksToRenderEntities = 0;
+            fadeInDuration = 0;
+            fadeOutDuration = 0;
+            maxDistSqr = 0;
+            renderMode = RenderMode.SONAR;
+            lastTicks = 0;
         }
     }
 
