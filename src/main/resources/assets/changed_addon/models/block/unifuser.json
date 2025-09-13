@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "down": "changed_addon:blocks/unfuser_bottom",
-    "up": "changed_addon:blocks/unfuser_oficial_animation_texture",
-    "north": "changed_addon:blocks/unifuser_front",
-    "east": "changed_addon:blocks/unifuser_sidea",
-    "south": "changed_addon:blocks/newunifuser_back",
-    "west": "changed_addon:blocks/unifuser_sidea",
-    "particle": "changed_addon:blocks/unfuser_bottom"
+    "down": "changed_addon:block/unfuser_bottom",
+    "up": "changed_addon:block/unfuser_oficial_animation_texture",
+    "north": "changed_addon:block/unifuser_front",
+    "east": "changed_addon:block/unifuser_sidea",
+    "south": "changed_addon:block/newunifuser_back",
+    "west": "changed_addon:block/unifuser_sidea",
+    "particle": "changed_addon:block/unfuser_bottom"
   }
 }

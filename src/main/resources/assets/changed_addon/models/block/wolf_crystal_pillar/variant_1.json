@@ -1,6 +1,6 @@
 {
 	"textures": {
-		"0": "changed_addon:blocks/wolf_crystal_pillar",
+		"0": "changed_addon:block/wolf_crystal_pillar",
 		"particle": "#0"
 	},
 	"elements": [

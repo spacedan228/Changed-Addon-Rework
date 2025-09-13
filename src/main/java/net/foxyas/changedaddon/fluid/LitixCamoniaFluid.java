@@ -16,7 +16,7 @@ public abstract class LitixCamoniaFluid extends ForgeFlowingFluid {
 
     public static final ForgeFlowingFluid.Properties PROPERTIES = new ForgeFlowingFluid.Properties(ChangedAddonFluids.LITIX_CAMONIA_FLUID,
             ChangedAddonFluids.FLOWING_LITIX_CAMONIA_FLUID,
-            FluidAttributes.builder(ChangedAddonMod.resourceLoc("blocks/ammoniafluid"), ChangedAddonMod.resourceLoc("blocks/ammoniafluid"))
+            FluidAttributes.builder(ChangedAddonMod.resourceLoc("block/ammoniafluid"), ChangedAddonMod.resourceLoc("block/ammoniafluid"))
                     .sound(SoundEvents.BUCKET_EMPTY))
             .explosionResistance(100f)
             .slopeFindDistance(2)

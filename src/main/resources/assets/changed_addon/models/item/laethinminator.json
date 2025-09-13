@@ -1,7 +1,7 @@
 {
   "parent": "changed_addon:custom/laethinminator",
   "textures": {
-    "0": "changed_addon:blocks/laethinminator",
+    "0": "changed_addon:block/laethinminator",
     "particle": "changed_addon:item/air"
   }
 }

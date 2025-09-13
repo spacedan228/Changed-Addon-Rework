@@ -1,7 +1,7 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "changed_addon:blocks/painite_ore_block",
-    "particle": "changed_addon:blocks/painite_ore_block"
+    "all": "changed_addon:block/painite_ore_block",
+    "particle": "changed_addon:block/painite_ore_block"
   }
 }

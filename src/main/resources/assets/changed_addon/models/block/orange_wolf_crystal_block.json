@@ -1,7 +1,7 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "changed_addon:blocks/orange_wolf_crystal",
-    "particle": "changed_addon:blocks/orange_wolf_crystal"
+    "all": "changed_addon:block/orange_wolf_crystal",
+    "particle": "changed_addon:block/orange_wolf_crystal"
   }
 }

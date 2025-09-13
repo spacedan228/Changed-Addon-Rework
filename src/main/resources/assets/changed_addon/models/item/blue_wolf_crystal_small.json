@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "changed_addon:blocks/blue_wolf_crystal_small"
+    "layer0": "changed_addon:block/blue_wolf_crystal_small"
   }
 }

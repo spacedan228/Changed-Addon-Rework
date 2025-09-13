@@ -21,7 +21,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
 
     static final TagKey<Item> forgeRawIridium = ItemTags.create(new ResourceLocation("forge", "raw_materials/iridium"));
     static final TagKey<Item> forgeIngotsIridium = ItemTags.create(new ResourceLocation("forge", "ingots/iridium"));
-    static final TagKey<Item> forgeStorageBlocksIridium = ItemTags.create(new ResourceLocation("forge", "storage_blocks/iridium"));
+    static final TagKey<Item> forgeStorageBlocksIridium = ItemTags.create(new ResourceLocation("forge", "storage_block/iridium"));
 
     public ItemTagsProvider(DataGenerator generator, BlockTagsProvider blocks, @Nullable ExistingFileHelper existingFileHelper) {
         super(generator, blocks, ChangedAddonMod.MODID, existingFileHelper);

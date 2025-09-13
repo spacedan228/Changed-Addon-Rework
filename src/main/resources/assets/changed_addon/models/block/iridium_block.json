@@ -1,7 +1,7 @@
 {
   "parent": "block/cube_all",
   "textures": {
-    "all": "changed_addon:blocks/iridium_block",
-    "particle": "changed_addon:blocks/iridium_block"
+    "all": "changed_addon:block/iridium_block",
+    "particle": "changed_addon:block/iridium_block"
   }
 }

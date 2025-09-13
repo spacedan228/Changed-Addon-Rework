@@ -19,7 +19,7 @@ import static net.foxyas.changedaddon.init.ChangedAddonBlocks.*;
 public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider {
 
     private static final TagKey<Block> forgeOresIridium = BlockTags.create(new ResourceLocation("forge", "ores/iridium"));
-    private static final TagKey<Block> forgeStorageBlocksIridium = BlockTags.create(new ResourceLocation("forge", "storage_blocks/iridium"));
+    private static final TagKey<Block> forgeStorageBlocksIridium = BlockTags.create(new ResourceLocation("forge", "storage_block/iridium"));
 
     public BlockTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
         super(generator, ChangedAddonMod.MODID, existingFileHelper);
