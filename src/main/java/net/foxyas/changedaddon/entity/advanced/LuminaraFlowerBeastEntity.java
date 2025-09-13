@@ -202,6 +202,12 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         Player player = this.getUnderlyingPlayer();
         if (player != null) {
             if (this.isAwakened()) {
+
+                if (isHyperAwakened()) {
+                    spawnHyperAwakenedParticles();
+                }
+
+
                 tryToPacifyNearbyEntities(128);
             }
             if (this.isAwakened() && !attributesApplied) {
@@ -256,7 +262,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
-    
+
     @Override
     public void baseTick() {
         super.baseTick();
