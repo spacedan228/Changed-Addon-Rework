@@ -69,6 +69,10 @@
   "advancements.pants_dyer.title": "Z dotykiem koloru",
   "advancements.pat_advancement.descr": "Pogłaskałeś kogoś tak dobrze, że aż zrobiło mu się lepiej",
   "advancements.pat_advancement.title": "Czekaj to coś daje?!",
+  "advancements.pats_on_the_beast.descr": "Gratulacje!!!, właśnie wzmocniłeś potwora!, Prawdopodobnie teraz nie będzie miał już litości twojej duszy, powodzenia!",
+  "advancements.pats_on_the_beast.title": "Zły pomysł?...czy zupełnie tego wart?",
+  "advancements.paticifier.descr": "Nie tylko pogłaskałeś, ty aż go §ouspokoiłeś§r.§5 Nietrwale uspokoiłeś latexa poprzez pogłaskanie go.",
+  "advancements.paticifier.title": "§oUspokajacz§r",
   "advancements.pot_with_litix_camonia_use.descr": "Wypileś płyn zrobiony z roztworu litix-camonii. Smak nie był zły, poza tym że smakował jak czereśnie!",
   "advancements.pot_with_litix_camonia_use.title": "Pychota?",
   "advancements.snepsi_addictive.descr": "Bierzemy duży łyk, wypiłeś 100 puszek Snepsi!!!",
@@ -95,6 +99,8 @@
   "advancements.untransfur_advancement_2.title": "Nie sądzę, że to tak już zostanie!!",
   "advancements.untransfur_item_advancement.descr": "Stworzyłeś przedmiot odtransfurujący",
   "advancements.untransfur_item_advancement.title": "Odtransfurowanie?!",
+  "advancements.wolfy_transfur.title": "Certyfikowany włóczęga",
+  "advancements.wolfy_transfur.descr": "Gratulacje, teraz już oficjalnie jesteś Wolfym. Mam nadzieję, że było warto.",
   "advancements.main.rock_fish.title": "Ryba skalna",
   "advancements.main.rock_fish.description": "Użyj mikstury ognioodporności i popływaj w lawie będąc stransfurowanym w formę wodną.",
 
@@ -197,6 +203,10 @@
   "changed_addon.ability.wind_control_passive.desc": "Pozwala graczowi używać wiatru, żeby chodzić po cieczach. Ale uważaj, bo wciąż dotniesz tej cieczy.",
   "changed_addon.ability.passive.toggle.on": "Umiejętność pasywna włączona",
   "changed_addon.ability.passive.toggle.off": "Umiejętność pasywna wyłączona",
+  "changed_addon.ability.sonar": "Sonar",
+  "changed_addon.ability.sonar.desc": "Uwolnij rezonującą falę która odkrywa żyjące istoty przez ściany.",
+
+  "ability.changed_addon.wither_grenade": "Wither Grenade",
 
   "ability.changed_addon.toggle_climb": "Przełącz wspinaczkę",
   "ability.changed_addon.passive_regeneration": "Pasywna regeneracja",
@@ -362,6 +372,10 @@
   "entity.changed_addon.latex_squid_tiger_shark": "Fuzja latexowego rekina tygrysiego i squid doga",
   "entity.changed_addon.latex_wind_cat_male": "Samiec latexowego kota wiatru",
   "entity.changed_addon.latex_wind_cat_female": "Samica latexowego kota wiatru",
+  "entity.changed_addon.latex_white_snow_leopard_male": "Samiec białej śnieżnej pantery",
+  "entity.changed_addon.latex_white_snow_leopard_female": "Samica białej śnieżnej pantery",
+  "entity.changed_addon.latex_cheetah_female": "Samica latexowego geparda",
+  "entity.changed_addon.latex_cheetah_male": "Samiec latexowego geparda",
   "entity.changed_addon.luminara_flower_beast": "Bestia świetlistego kwiatu",
   "entity.changed_addon.lynx": "Ryś",
   "entity.changed_addon.mirror_white_tiger": "Biały tygrys",
@@ -380,8 +394,10 @@
 
   "entity.changed_addon.projectile_luminar_crystal_spear": "Włócznia z świetlistego kryształu",
   "entity.changed_addon.particle_projectile": "Cząsteczka światła",
+  "entity.changed_addon.wither_particle_projectile": "Cząsteczka withera",
 
   "entity.minecraft.villager.changed_addon.scientist": "Naukowiec",
+  "entity.minecraft.villager.changed_addon:scientist": "Naukowiec",
 
   "fluid.changed_addon.litix_camonia_fluid": "Ciekła litix-camonia",
 
@@ -498,6 +514,7 @@
   "item.changed_addon.laethin_syringe": "Strzykawka z letyną",
   "item.changed_addon.laethinminator": "Letynoinator",
   "item.changed_addon.laser_pointer": "Wskaźnik laserowy",
+  "item.changed_addon.laser_pointer.tooltip": "Kolor: %s",
 
   "item.changed_addon.avali_spawn_egg": "Jajo przyzywające avalego",
   "item.changed_addon.bagel_spawn_egg": "Jajo przyzywające Bagela",
@@ -533,6 +550,10 @@
   "item.changed_addon.latex_squid_tiger_shark_spawn_egg": "Jajo przyzywające fuzję latexowego rekina tygrysiego i squid doga",
   "item.changed_addon.latex_wind_cat_female_spawn_egg": "Jajo przyzywające samicę latexowego kota wiatru",
   "item.changed_addon.latex_wind_cat_male_spawn_egg": "Jajo przyzywające samca latexowego kota wiatru",
+  "item.changed_addon.latex_white_snow_leopard_male_spawn_egg": "Jajo przyzywające samca białej pantery śnieżnej",
+  "item.changed_addon.latex_white_snow_leopard_female_spawn_egg": "Jajo przyzywające samicę białej pantery śnieżnej",
+  "item.changed_addon.latex_cheetah_female_spawn_egg": "Jajo przyzywające samicę latexowego geparda",
+  "item.changed_addon.latex_cheetah_male_spawn_egg": "Jajo przyzywające samca latexowego geparda",
   "item.changed_addon.luminara_flower_beast_spawn_egg": "Jajo przyzywające bestię świetlistego kwiatu",
   "item.changed_addon.luminarctic_leopard_female_spawn_egg": "Jajo przyzywające samicę świetlistoarktycznej pantery",
   "item.changed_addon.luminarctic_leopard_male_spawn_egg": "Jajo przyzywające samca świetlistoarktycznej pantery",
@@ -591,6 +612,11 @@
   "item.changed_addon.white_latex_spray": "Biały latex w sprayu",
   "item.changed_addon.white_wolf_crystal_fragment": "Kawałek §lbiałego§r wilczego kryształu",
   "item.changed_addon.yellow_wolf_crystal_fragment": "Kawałek §eżółtego§r wilczego kryształu",
+  "item.changed_addon.opened_canned_soup": "Otwarta puszkowana zupa",
+  "item.changed_addon.empty_can": "Pusta puszka",
+  
+  "item.changed_addon.latex_syringe.tooltip": "Przytrzymaj §r§6<Shift>§r aby zobaczyć statystyki transfura %s",
+
   "item.minecraft.lingering_potion.effect.litix_cammonia_effect": "Trwała mikstura z litix-camonii",
   "item.minecraft.lingering_potion.effect.transfur_sickness_potion": "Trwała mikstura transfurowych mdłości ",
   "item.minecraft.potion.effect.litix_cammonia_effect": "Mikstura z litix-camonii",
