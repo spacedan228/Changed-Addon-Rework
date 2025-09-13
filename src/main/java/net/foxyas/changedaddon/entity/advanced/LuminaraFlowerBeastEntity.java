@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.FoxyasUtils;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -17,6 +18,7 @@ import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -30,6 +32,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
@@ -42,6 +45,7 @@ import java.util.List;
 public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats, CustomPatReaction, PowderSnowWalkable {
 
     private static final EntityDataAccessor<Boolean> AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> HYPER_AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
     private boolean attributesApplied;
     private boolean attributesAppliedEntity;
 
@@ -51,6 +55,10 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     public LuminaraFlowerBeastEntity(EntityType<? extends ChangedEntity> type, Level level) {
         super(type, level);
+    }
+
+    public Vec3 getMouthPosition() {
+        return this.getEyePosition().subtract(0, 0.25, 0);
     }
 
     @Override
@@ -64,6 +72,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 0.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 0.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE), 0.0f);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.REACH_DISTANCE.get()), 4.5F);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.ATTACK_RANGE.get()), 3.0F);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_KNOCKBACK), 0.0f);
     }
 
     public void setAttributesAwakened(AttributeMap attributes) {
@@ -72,10 +83,20 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE), 126.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED), 1.25f);
         safeSetBaseValue(attributes.getInstance(ForgeMod.SWIM_SPEED.get()), 1.25f);
-        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE), 5.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE), 4.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 0.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 0.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE), 0.0f);
+    }
+
+    public void setAttributesHyperAwakened(AttributeMap attributes) {
+        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()), 7.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE), 6.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 10.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 6.0f);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.REACH_DISTANCE.get()), 6.0F);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.ATTACK_RANGE.get()), 4.0F);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_KNOCKBACK), 2.0f);
     }
 
     @Override
@@ -111,6 +132,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(AWAKENED, false);
+        this.entityData.define(HYPER_AWAKENED, false);
     }
 
     public boolean isAwakened() {
@@ -121,12 +143,23 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         this.entityData.set(AWAKENED, value);
     }
 
+    public boolean isHyperAwakened() {
+        return this.entityData.get(HYPER_AWAKENED);
+    }
+
+    public void setHyperAwakened(boolean value) {
+        this.entityData.set(HYPER_AWAKENED, value);
+    }
+
     /**
      * Apply awakened buffs (stronger, faster on land, but weaker in water).
      */
 
     public void applyAwakenedBuffs() {
         setAttributesAwakened(getAttributes());
+        if (isHyperAwakened()) {
+            setAttributesHyperAwakened(getAttributes());
+        }
         attributesApplied = true;
         var instance = IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).orElse(null);
         if (instance != null) {
@@ -186,9 +219,52 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
+    private void spawnHyperAwakenedParticles() {
+        ParticlesUtil.sendParticlesWithMotion(
+                this,
+                ParticleTypes.SOUL_FIRE_FLAME,
+                new Vec3(0, this.getBbHeight() * 0.5, 0), // meio do corpo
+                Vec3.ZERO,
+                4,
+                0.05f
+        );
+
+        if (this.random.nextInt(5) == 0) {
+            ParticlesUtil.sendParticlesWithMotion(
+                    this,
+                    ParticleTypes.ELECTRIC_SPARK,
+                    new Vec3(0, this.getBbHeight() * 0.7, 0),
+                    new Vec3(
+                            (this.random.nextDouble() - 0.5) * 0.3,
+                            (this.random.nextDouble() - 0.5) * 0.3,
+                            (this.random.nextDouble() - 0.5) * 0.3
+                    ),
+                    2,
+                    0.2f
+            );
+        }
+
+        if (this.random.nextInt(3) == 0) {
+            ParticlesUtil.sendParticlesWithMotion(
+                    this,
+                    ParticleTypes.END_ROD,
+                    new Vec3(0, this.getBbHeight() * 0.8, 0),
+                    new Vec3(0, 0.05, 0),
+                    2,
+                    0.05f
+            );
+        }
+    }
+
+
+
     @Override
     public void baseTick() {
         super.baseTick();
+
+        if (isHyperAwakened()) {
+            spawnHyperAwakenedParticles();
+        }
 
         AttributeInstance attributeInstance = this.getAttribute(Attributes.FOLLOW_RANGE);
         double range = 32;
@@ -199,6 +275,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
         if (this.isAwakened() && !attributesAppliedEntity) {
             this.setAttributesAwakened(this.getAttributes());
+            if (this.isHyperAwakened()) {
+                this.setAttributesHyperAwakened(this.getAttributes());
+            }
             this.attributesAppliedEntity = true;
         } else if (!this.isAwakened() && attributesAppliedEntity) {
             this.setAttributes(this.getAttributes());
@@ -245,6 +324,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     public void saveExtraData(CompoundTag tag) {
         tag.putBoolean("Awakened", this.isAwakened());
+        tag.putBoolean("HyperAwakened", this.isHyperAwakened());
     }
 
     @Override
@@ -255,6 +335,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     public void readExtraData(CompoundTag tag) {
         if (tag.contains("Awakened")) this.setAwakened(tag.getBoolean("Awakened"));
+        if (tag.contains("HyperAwakened")) this.setHyperAwakened(tag.getBoolean("HyperAwakened"));
     }
 
     @Override

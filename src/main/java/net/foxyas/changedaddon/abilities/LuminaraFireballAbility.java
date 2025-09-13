@@ -75,7 +75,7 @@ public class LuminaraFireballAbility extends SimpleAbility {
             level.playSound(null, eyesPosition.x, eyesPosition.y, eyesPosition.z, SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 1, 1);
         }
 
-        fireball.moveTo(holder.getX(), holder.getY() + 1, holder.getZ());
+        fireball.moveTo(holder.getMouthPosition().add(view.scale(0.25f))); //Mouth position
         level.addFreshEntity(fireball);
     }
 

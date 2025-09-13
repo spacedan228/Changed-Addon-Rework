@@ -14,6 +14,8 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 
@@ -62,6 +64,9 @@ public class VoidTransformationHandler {
         if (instance != null && instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
             if (!luminaraFlowerBeastEntity.isAwakened()) {
                 luminaraFlowerBeastEntity.setAwakened(true);
+                if (player.getInventory().contains(new ItemStack(Items.DRAGON_BREATH))) {
+                    luminaraFlowerBeastEntity.setHyperAwakened(true);
+                }
 
                 // Cancel fall/void velocity and launch player upwards
                 player.setDeltaMovement(0, 8.0, 0); // strong vertical push
