@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/darklaethinsyringe"
+    "layer0": "changed_addon:item/darklaethinsyringe"
   },
   "display": {
     "thirdperson_lefthand": {

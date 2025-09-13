@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/stealth_pat_icon"
+    "layer0": "changed_addon:item/stealth_pat_icon"
   }
 }

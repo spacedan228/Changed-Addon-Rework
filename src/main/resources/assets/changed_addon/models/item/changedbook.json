@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/changed_addon_book"
+    "layer0": "changed_addon:item/changed_addon_book"
   }
 }

@@ -3,6 +3,6 @@
   "textures": {
     "0": "changed_addon:blocks/base_energy_katana",
     "1": "changed_addon:blocks/red_katana_energy",
-    "particle": "changed_addon:items/red_katana"
+    "particle": "changed_addon:item/red_katana"
   }
 }

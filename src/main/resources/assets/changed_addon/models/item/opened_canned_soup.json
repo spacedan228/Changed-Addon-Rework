@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/opened_canned_soup"
+    "layer0": "changed_addon:item/opened_canned_soup"
   }
 }

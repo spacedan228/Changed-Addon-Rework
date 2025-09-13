@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/exp9_latex_base"
+    "layer0": "changed_addon:item/exp9_latex_base"
   }
 }

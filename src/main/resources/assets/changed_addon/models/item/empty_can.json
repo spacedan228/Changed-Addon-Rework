@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/empty_can"
+    "layer0": "changed_addon:item/empty_can"
   }
 }

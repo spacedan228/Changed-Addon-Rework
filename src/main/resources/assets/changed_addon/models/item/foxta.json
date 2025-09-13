@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/foxta_item"
+    "layer0": "changed_addon:item/foxta_item"
   }
 }

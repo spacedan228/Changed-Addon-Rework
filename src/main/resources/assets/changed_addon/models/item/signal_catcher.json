@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/signal_catcher_1"
+    "layer0": "changed_addon:item/signal_catcher_1"
   },
   "overrides": [
     {

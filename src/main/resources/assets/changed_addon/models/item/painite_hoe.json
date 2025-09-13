@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "changed_addon:items/painite_hoe"
+    "layer0": "changed_addon:item/painite_hoe"
   }
 }

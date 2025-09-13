@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "changed_addon:items/crowbar_texture"
+    "layer0": "changed_addon:item/crowbar_texture"
   }
 }

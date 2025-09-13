@@ -1,6 +1,6 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "changed_addon:items/painite_sword_v2"
+    "layer0": "changed_addon:item/painite_sword_v2"
   }
 }

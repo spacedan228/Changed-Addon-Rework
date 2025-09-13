@@ -2,6 +2,6 @@
   "parent": "changed_addon:custom/crystal_dagger",
   "textures": {
     "0": "changed_addon:blocks/redaddager",
-    "particle": "changed_addon:items/redaddager"
+    "particle": "changed_addon:item/redaddager"
   }
 }

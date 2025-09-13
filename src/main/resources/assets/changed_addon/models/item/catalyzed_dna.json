@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/catalyzed_dna"
+    "layer0": "changed_addon:item/catalyzed_dna"
   },
   "display": {
     "thirdperson_lefthand": {

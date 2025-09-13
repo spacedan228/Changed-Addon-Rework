@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/anti_latex_base"
+    "layer0": "changed_addon:item/anti_latex_base"
   }
 }

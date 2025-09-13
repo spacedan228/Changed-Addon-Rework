@@ -2,6 +2,6 @@
   "parent": "changed_addon:custom/snepsilow",
   "textures": {
     "0": "changed_addon:blocks/foxsilow",
-    "particle": "changed_addon:items/foxtaparticle"
+    "particle": "changed_addon:item/foxtaparticle"
   }
 }

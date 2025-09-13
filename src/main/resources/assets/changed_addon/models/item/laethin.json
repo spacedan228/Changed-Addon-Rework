@@ -1,7 +1,7 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/laethin_white"
+    "layer0": "changed_addon:item/laethin_white"
   },
   "overrides": [
     {

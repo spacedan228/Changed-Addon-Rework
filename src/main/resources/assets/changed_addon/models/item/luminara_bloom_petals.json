@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:items/luminara_bloom_petals"
+    "layer0": "changed_addon:item/luminara_bloom_petals"
   }
 }
