@@ -189,7 +189,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
     });
 
     public static final BiFunction<ResourceLocation, RenderStateShard.CullStateShard, RenderType> OUTLINE_WITH_TRANSLUCENCY = Util.memoize((resourceLocation, cullStateShard) ->
-            create(ChangedAddonMod.resourceLocString("outline_with_deep_test"),
+            create(ChangedAddonMod.resourceLocString("outline_with_translucenty"),
                     DefaultVertexFormat.POSITION_COLOR_TEX,
                     VertexFormat.Mode.QUADS,
                     256,
