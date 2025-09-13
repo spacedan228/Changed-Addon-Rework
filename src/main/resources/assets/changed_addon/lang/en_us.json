@@ -205,6 +205,8 @@
   "changed_addon.ability.passive.toggle.off": "Your passive is now Disabled",
   "changed_addon.ability.sonar": "Sonar",
   "changed_addon.ability.sonar.desc": "Unleash a resonant pulse that reveals living beings through walls and obstacles.",
+  "changed_addon.ability.fireball": "Luminara Fireball",
+  "changed_addon.ability.fireball.desc": "Unleash a blazing fireball fueled by your current power state — the greater your strength, the more devastating the flames.",
 
   "ability.changed_addon.wither_grenade": "Wither Grenade",
 

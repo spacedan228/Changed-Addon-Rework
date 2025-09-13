@@ -55,7 +55,7 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     public static final RegistryObject<WindPassiveAbility> WIND_PASSIVE = REGISTRY.register("wind_control_passive", WindPassiveAbility::new);
     public static final RegistryObject<WitherGrenadeAbility> WITHER_GRENADE = REGISTRY.register("wither_grenade", WitherGrenadeAbility::new);
     public static final RegistryObject<SonarAbility> SONAR = REGISTRY.register("sonar", SonarAbility::new);
-    public static final RegistryObject<LuminarFireballAbility> LUMINAR_FIREBALL = REGISTRY.register("luminar_fireball", LuminarFireballAbility::new);
+    public static final RegistryObject<LuminaraFireballAbility> LUMINARA_FIREBALL = REGISTRY.register("luminara_fireball", LuminaraFireballAbility::new);
 
 
     public static List<EntityType<?>> getCanGlideEntities() {
@@ -86,6 +86,7 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
         ChangedClient.abilityColors.getOrThrow().register(WingFlapAbility::getColor, WING_FLAP_ABILITY.get());
         ChangedClient.abilityColors.getOrThrow().register(UnfuseAbility::getColor, UNFUSE.get());
         ChangedClient.abilityColors.getOrThrow().register(ClawsAbility::getColor, CLAWS.get());
+        ChangedClient.abilityColors.getOrThrow().register(LuminaraFireballAbility::getColor, LUMINARA_FIREBALL.get());
     }
 
 }

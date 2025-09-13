@@ -1,8 +1,12 @@
 package net.foxyas.changedaddon.abilities;
 
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
+import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
+import net.ltxprogrammer.changed.client.AbilityColors;
+import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;
+import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
@@ -16,10 +20,11 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
-public class LuminarFireballAbility extends SimpleAbility {
+public class LuminaraFireballAbility extends SimpleAbility {
 
-    public LuminarFireballAbility() {
+    public LuminaraFireballAbility() {
         super();
     }
 
@@ -63,5 +68,28 @@ public class LuminarFireballAbility extends SimpleAbility {
         level.playSound(null, holder, SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 1, 1);
         fireball.moveTo(holder.getX(), holder.getY() + 1, holder.getZ());
         level.addFreshEntity(fireball);
+    }
+
+    /**
+     * Returns the ability color depending on which fireball would be spawned.
+     */
+    public static Optional<Integer> getColor(AbstractAbilityInstance abilityInstance, int layer) {
+        AbstractRadialScreen.ColorScheme scheme = AbilityColors.getAbilityColors(abilityInstance);
+        IAbstractChangedEntity entity = abilityInstance.entity;
+
+        if (!(entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity holder)) return Optional.of(scheme.foreground().toInt());
+
+        // Same decision tree as createFireball()
+        if (holder.isAwakened()) {
+            if (holder.isCrouching() && layer == 0) {
+                return Optional.of(scheme.foreground().toInt());
+            } else if (layer == 1 && !holder.isCrouching()) {
+                return Optional.of(scheme.foreground().toInt());
+            }
+        } else {
+            return Optional.of(scheme.foreground().toInt());
+        }
+
+        return Optional.empty();
     }
 }

@@ -1,0 +1,7 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "changed_addon:abilities/fireball/fireball",
+    "layer1": "changed_addon:abilities/fireball/dragon_fireball"
+  }
+}
