@@ -20,11 +20,9 @@
     "transfur_in_wolfy": {
       "trigger": "changed:transfur",
       "conditions": {
-        "form": {
-          "forms": [
-            "changed_addon:form_wolfy"
-          ]
-        }
+        "forms": [
+          "changed_addon:form_wolfy"
+        ]
       }
     }
   },
