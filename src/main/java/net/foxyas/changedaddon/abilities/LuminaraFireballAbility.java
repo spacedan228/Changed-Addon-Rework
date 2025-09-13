@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.abilities;
 
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
+import net.foxyas.changedaddon.network.PacketUtil;
+import net.foxyas.changedaddon.network.packets.utils.PacketsUtils;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
@@ -9,6 +11,7 @@ import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
@@ -52,20 +55,26 @@ public class LuminaraFireballAbility extends SimpleAbility {
 
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
-        if(!(entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity holder)) return;
+        if (!(entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity holder)) return;
 
         Level level = entity.getLevel();
         AbstractHurtingProjectile fireball;
 
         Vec3 view = holder.getLookAngle();
 
-        if(holder.isAwakened()){
-            if(holder.isCrouching()){
+        if (holder.isAwakened()) {
+            if (holder.isShiftKeyDown()) {
                 fireball = new LargeFireball(level, holder, view.x, view.y, view.z, 1);
             } else fireball = new DragonFireball(level, holder, view.x, view.y, view.z);
         } else fireball = new SmallFireball(level, entity.getEntity(), view.x, view.y, view.z);
+        Vec3 eyesPosition = holder.getEyePosition();
 
-        level.playSound(null, holder, SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 1, 1);
+        if (level instanceof ServerLevel serverLevel) {
+            PacketUtil.playSound(serverLevel, (serverPlayer -> true), eyesPosition, SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 1, 1);
+        } else {
+            level.playSound(null, eyesPosition.x, eyesPosition.y, eyesPosition.z, SoundEvents.GHAST_SHOOT, SoundSource.NEUTRAL, 1, 1);
+        }
+
         fireball.moveTo(holder.getX(), holder.getY() + 1, holder.getZ());
         level.addFreshEntity(fireball);
     }
@@ -77,17 +86,20 @@ public class LuminaraFireballAbility extends SimpleAbility {
         AbstractRadialScreen.ColorScheme scheme = AbilityColors.getAbilityColors(abilityInstance);
         IAbstractChangedEntity entity = abilityInstance.entity;
 
-        if (!(entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity holder)) return Optional.of(scheme.foreground().toInt());
+        if (!(entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity holder))
+            return Optional.of(scheme.foreground().toInt());
 
         // Same decision tree as createFireball()
         if (holder.isAwakened()) {
-            if (holder.isCrouching() && layer == 0) {
+            if (holder.isShiftKeyDown() && layer == 0) {
                 return Optional.of(scheme.foreground().toInt());
             } else if (layer == 1 && !holder.isCrouching()) {
                 return Optional.of(scheme.foreground().toInt());
             }
         } else {
-            return Optional.of(scheme.foreground().toInt());
+            if (layer == 0) {
+                return Optional.of(scheme.foreground().toInt());
+            }
         }
 
         return Optional.empty();
