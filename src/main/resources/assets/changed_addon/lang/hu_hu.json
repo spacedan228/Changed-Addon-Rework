@@ -69,6 +69,10 @@
   "advancements.pants_dyer.title": "Egy kis festékkel",
   "advancements.pat_advancement.descr": "Annyira jól esett a simogatása, hogy segített valakinek jobban lenni",
   "advancements.pat_advancement.title": "Ez csinál valamit?!",
+  "advancements.pats_on_the_beast.descr": "Gratulálok!!!, most erősítetted meg a szörnyet!, valószínűleg most már nem lesznek kegyelmesek a lelkedhez!, Sok szerencsét!",
+  "advancements.pats_on_the_beast.title": "Rossz ötlet?...vagy egyáltalán megéri?",
+  "advancements.paticifier.descr": "Nem csak megsimogattad, §omegnyugtattad.§r§5, egy latex lényt a simogatásaiddal megnyugtattál, azonban ez nem állandó.",
+  "advancements.paticifier.title": "§oBékéltető§r vagy.", 
   "advancements.pot_with_litix_camonia_use.descr": "Ittál egy folyadékot, amit litix-kamónia hígításából készítettél. Az íze nem rossz, ráadásul cseresznye íze van!",
   "advancements.pot_with_litix_camonia_use.title": "Finom?",
   "advancements.snepsi_addictive.descr": "Nagy kortyot ittunk, te 100 Snepsit ittál!",
@@ -95,6 +99,8 @@
   "advancements.untransfur_advancement_2.title": "Nem hiszem, hogy ez olyan végleges lenne!!",
   "advancements.untransfur_item_advancement.descr": "Készíts egy visszatranszfur tárgyat",
   "advancements.untransfur_item_advancement.title": "Visszatranszfur?!",
+  "advancements.wolfy_transfur.title": "Tanúsított tróger",
+  "advancements.wolfy_transfur.descr": "Gratulálok, most már hivatalosan is Wolfy vagy. Remélem, megérte.",
   "advancements.main.rock_fish.title": "Kőhal",
   "advancements.main.rock_fish.description": "Használj egy tűzállóság bájitalát, és ússz a lávában vízi formaként.",
 
@@ -153,9 +159,6 @@
   "block.changed_addon.yellow_wolf_crystal_block": "Sárga farkas kristályblokk",
   "block.changed_addon.yellow_wolf_crystal_small": "Kicsi sárga farkas kristály",
   
-  
-  "ability.changed_addon.wither_grenade": "Sorvadás gránátja",
-  
   "changed_addon.ability.advanced_hearing": "Fejlett hallás",
   "changed_addon.ability.carry": "Hordozás",
   "changed_addon.ability.claws": "Karmolás",
@@ -200,6 +203,10 @@
   "changed_addon.ability.wind_control_passive.desc": "Lehetővé teszi a játékos számára, hogy a szél segítségével folyadékokon járjon. De légy óvatos, mert így is hozzáérsz a folyadékhoz.",
   "changed_addon.ability.passive.toggle.on": "A passzív képességed mostantól engedélyezve van", 
   "changed_addon.ability.passive.toggle.off": "A passzív képességed mostantól le van tiltva",
+  "changed_addon.ability.sonar": "Hanglokátor",
+  "changed_addon.ability.sonar.desc": "Engedj szabadjára egy rezonáns impulzust, amely élőlényeket tár fel falakon és akadályokon keresztül.",
+
+  "ability.changed_addon.wither_grenade": "Sorvadás gránátja",
 
   "ability.changed_addon.toggle_climb": "Mászás kapcsolása",
   "ability.changed_addon.passive_regeneration": "Passzív regeneráció",
@@ -587,12 +594,12 @@
   "item.changed_addon.painite_pickaxe": "Painitcsákány",
   "item.changed_addon.painite_shovel": "Painitásó",
   "item.changed_addon.painite_sword": "Painitkard",
-  "item.changed_addon.pat_icon": "Fejlesztői tárgy 7",
+  "item.changed_addon.pat_icon": "Simogatás ikonja",
   "item.changed_addon.pot_with_camonia": "Litix-kamóniás edény",
   "item.changed_addon.raw_iridium": "Nyersirídium",
   "item.changed_addon.red_latex_goo": "§4Vörös latex ragacs",
   "item.changed_addon.signal_catcher": "Jelfogó",
-  "item.changed_addon.snep_icon": "Fejlesztői tárgy 6",
+  "item.changed_addon.snep_icon": "Hópárduc ikon",
   "item.changed_addon.snepsi": "Snepsi",
   "item.changed_addon.snepsi.desc": "Figyel-macska? Nem azt írják, hogy figyelem? Azt mondja, NE idd meg. Ragacsot tartalmaz?",
   "item.changed_addon.spawneggoffoxyas": "Foxyasidéző tojás",
