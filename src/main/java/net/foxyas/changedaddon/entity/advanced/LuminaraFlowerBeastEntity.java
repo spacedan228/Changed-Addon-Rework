@@ -256,8 +256,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
-
-
+    
     @Override
     public void baseTick() {
         super.baseTick();
