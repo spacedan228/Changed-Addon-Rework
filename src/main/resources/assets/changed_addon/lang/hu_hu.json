@@ -205,6 +205,8 @@
   "changed_addon.ability.passive.toggle.off": "A passzív képességed mostantól le van tiltva",
   "changed_addon.ability.sonar": "Hanglokátor",
   "changed_addon.ability.sonar.desc": "Engedj szabadjára egy rezonáns impulzust, amely élőlényeket tár fel falakon és akadályokon keresztül.",
+  "changed_addon.ability.fireball": "Luminara tűzgolyó",
+  "changed_addon.ability.fireball.desc": "Engedj szabadjára egy lángoló tűzgolyót, amelyet az aktuális energiaszinted táplál – minél nagyobb az erőd, annál pusztítóbbak a lángok.",
 
   "ability.changed_addon.wither_grenade": "Sorvadás gránátja",
 
