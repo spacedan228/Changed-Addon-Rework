@@ -324,7 +324,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        this.saveExtraData(tag);
     }
 
     public void saveExtraData(CompoundTag tag) {
@@ -335,6 +334,18 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
+    }
+
+    @Override
+    public CompoundTag savePlayerVariantData() {
+        CompoundTag tag = super.savePlayerVariantData();
+        this.saveExtraData(tag);
+        return tag;
+    }
+
+    @Override
+    public void readPlayerVariantData(CompoundTag tag) {
+        super.readPlayerVariantData(tag);
         this.readExtraData(tag);
     }
 

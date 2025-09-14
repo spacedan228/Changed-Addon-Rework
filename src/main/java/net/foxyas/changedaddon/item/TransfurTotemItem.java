@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -38,6 +39,13 @@ public class TransfurTotemItem extends Item {
         super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(1).fireResistant().rarity(Rarity.RARE));
     }
 
+    @Override
+    public @NotNull ItemStack getDefaultInstance() {
+        ItemStack defaultInstance = super.getDefaultInstance();
+        defaultInstance.getOrCreateTag().putString("form", "");
+        return defaultInstance;
+    }
+
     private static void tryLinkForm(Level level, Player player, ItemStack itemstack) {
         TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
         ResourceLocation latexFormRes = tf == null ? null : tf.getFormId();
@@ -58,7 +66,12 @@ public class TransfurTotemItem extends Item {
 
     private static void linkForm(Level level, Player player, ItemStack stack, TransfurVariantInstance<?> tf, String form) {
         stack.getOrCreateTag().putString("form", form);
-        stack.getOrCreateTag().put("TransfurVariantData", tf.save());
+        CompoundTag variantData = tf.save();
+        variantData.remove("previousAttributes");
+        variantData.remove("newAttributes");
+        variantData.remove("transfurProgressionO");
+        variantData.remove("transfurProgression");
+        stack.getOrCreateTag().put("TransfurVariantData", variantData);
         activateVisuals(level, player, stack, null, 100, SoundEvents.BEACON_ACTIVATE);
     }
 
@@ -129,6 +142,7 @@ public class TransfurTotemItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         InteractionResultHolder<ItemStack> ar = super.use(level, player, hand);
         ItemStack stack = ar.getObject();
+        if (!(level instanceof ServerLevel serverLevel)) return ar;
 
         boolean isValidUse = (player.getOffhandItem().is(stack.getItem()) && (player.getMainHandItem().is(stack.getItem())))
                 || (player.getOffhandItem().is(stack.getItem()) && player.getMainHandItem().isEmpty())
@@ -142,6 +156,9 @@ public class TransfurTotemItem extends Item {
         if (player.isShiftKeyDown()) {
             if (!form.isEmpty()) {
                 stack.getOrCreateTag().putString("form", "");
+                if (stack.getOrCreateTag().contains("TransfurVariantData")) {
+                    stack.getOrCreateTag().remove("TransfurVariantData");
+                }
                 activateVisuals(level, player, stack, null, 50, SoundEvents.BEACON_DEACTIVATE);
                 return ar;
             }
@@ -188,19 +205,6 @@ public class TransfurTotemItem extends Item {
         super.inventoryTick(itemstack, level, entity, slot, selected);
 
         if (!(entity instanceof Player player)) return;
-
-        /*if ((itemstack.getOrCreateTag().getString("form")).equals("changed_addon:form_puro_kind/female")) {
-            itemstack.getOrCreateTag().putString("form", "changed_addon:form_latex_puro_kind/female");
-        }
-        if ((itemstack.getOrCreateTag().getString("form")).equals("changed_addon:form_snow_leopard/male_organic")) {
-            itemstack.getOrCreateTag().putString("form", "changed_addon:form_biosynth_snow_leopard/male");
-        }
-        if ((itemstack.getOrCreateTag().getString("form")).equals("changed_addon:form_snow_leopard/female_organic")) {
-            itemstack.getOrCreateTag().putString("form", "changed_addon:form_biosynth_snow_leopard/female");
-        }
-        if ((itemstack.getOrCreateTag().getString("form")).equals("changed_addon:form_exp_6")) {
-            itemstack.getOrCreateTag().putString("form", "changed_addon:form_exp6");
-        }*/
 
         if (!player.getMainHandItem().is(itemstack.getItem()) && !player.getOffhandItem().is(itemstack.getItem()))
             return;

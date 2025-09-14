@@ -91,6 +91,19 @@ public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements Va
     }
 
     @Override
+    public CompoundTag savePlayerVariantData() {
+        CompoundTag tag = super.savePlayerVariantData();
+        saveColors(tag);
+        return tag;
+    }
+
+    @Override
+    public void readPlayerVariantData(CompoundTag tag) {
+        super.readPlayerVariantData(tag);
+        readColors(tag);
+    }
+
+    @Override
     public @NotNull EntityDimensions getDimensions(Pose pose) {
         return super.getDimensions(pose).scale(this.getDimensionScale());
     }
