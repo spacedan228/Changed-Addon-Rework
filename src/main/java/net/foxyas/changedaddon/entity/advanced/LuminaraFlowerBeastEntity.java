@@ -101,6 +101,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     @Override
     public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
+        if (patter.getLevel().isClientSide()) return;
         MobEffectInstance effect = getPatEffect(patter);
         if (patTarget instanceof Player player && ProcessTransfur.isPlayerLatex(player)) {
             patTarget.addEffect(effect, patter);
@@ -111,6 +112,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     @Override
     public void WhenPattedReaction(Player patter, InteractionHand hand) {
+        if (patter.getLevel().isClientSide()) return;
         if (ProcessTransfur.isPlayerLatex(patter)) {
             MobEffectInstance effect = getPatEffect(this);
             patter.addEffect(effect, this);
