@@ -133,6 +133,7 @@
   "block.changed_addon.latex_insulator": "Latex Insulator",
   "block.changed_addon.litix_camonia_fluid": "Litix Camonia Fluid",
   "block.changed_addon.luminara_bloom": "Luminara Bloom",
+  "block.changed_addon.potted_luminara_bloom": "Flower Pot with Luminara Bloom",
   "block.changed_addon.luminar_crystal_block": "Luminar Crystal Block",
   "block.changed_addon.luminar_crystal_small": "Luminar Crystal Small",
   "block.changed_addon.orange_wolf_crystal_block": "Orange Wolf Crystal Block",
@@ -396,7 +397,7 @@
 
   "entity.changed_addon.projectile_luminar_crystal_spear": "Luminar Crystal Spear",
   "entity.changed_addon.particle_projectile": "Light Particle",
-  "entity.changed_addon.wither_particle_projectile": "Light Particle",
+  "entity.changed_addon.wither_particle_projectile": "Wither Particle",
 
   "entity.minecraft.villager.changed_addon.scientist": "Scientist",
   "entity.minecraft.villager.changed_addon:scientist": "Scientist",

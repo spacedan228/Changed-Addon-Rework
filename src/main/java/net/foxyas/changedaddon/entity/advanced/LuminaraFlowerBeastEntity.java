@@ -4,7 +4,10 @@ import net.foxyas.changedaddon.entity.advanced.handle.VoidTransformationHandler;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.procedures.CreatureDietsHandleProcedure;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
@@ -15,6 +18,7 @@ import net.ltxprogrammer.changed.entity.PowderSnowWalkable;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
@@ -31,6 +35,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
@@ -97,6 +102,13 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         safeSetBaseValue(attributes.getInstance(ForgeMod.REACH_DISTANCE.get()), 6.0F);
         safeSetBaseValue(attributes.getInstance(ForgeMod.ATTACK_RANGE.get()), 4.0F);
         safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_KNOCKBACK), 2.0f);
+    }
+
+    public static final CreatureDietsHandleProcedure.DietType LUMINARA_DIET = CreatureDietsHandleProcedure.DietType.create("LUMINARA", ChangedAddonTags.TransfurTypes.DRAGON_LIKE, ChangedAddonTags.Items.DRAGON_DIET, List.of(Items.CHORUS_FRUIT, ChangedItems.ORANGE.get()));
+
+    @Override
+    public List<CreatureDietsHandleProcedure.DietType> getExtraDietTypes() {
+        return List.of(LUMINARA_DIET);
     }
 
     @Override
@@ -204,11 +216,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         Player player = this.getUnderlyingPlayer();
         if (player != null) {
             if (this.isAwakened()) {
-
                 if (isHyperAwakened()) {
                     spawnHyperAwakenedParticles();
                 }
-
 
                 tryToPacifyNearbyEntities(128);
             }
@@ -228,36 +238,54 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     private void spawnHyperAwakenedParticles() {
-        ParticlesUtil.sendParticlesWithMotion(
-                this,
-                ParticleTypes.SOUL_FIRE_FLAME,
-                new Vec3(0, this.getBbHeight() * 0.5, 0), // meio do corpo
-                Vec3.ZERO,
-                4,
-                0.05f
-        );
+        // Soul fire flame - espalhado pelo corpo
+        for (int i = 0; i < 4; i++) {
+            double offsetX = (this.random.nextDouble() - 0.5) * this.getBbWidth();  // espalha lateralmente
+            double offsetY = this.random.nextDouble() * this.getBbHeight();         // em qualquer altura do corpo
+            double offsetZ = (this.random.nextDouble() - 0.5) * this.getBbWidth();
 
+            ParticlesUtil.sendParticlesWithMotion(
+                    this,
+                    ParticleTypes.SOUL_FIRE_FLAME,
+                    new Vec3(offsetX, offsetY, offsetZ),
+                    Vec3.ZERO,
+                    1,
+                    0.05f
+            );
+        }
+
+        // Electric sparks - mais caóticos
         if (this.random.nextInt(5) == 0) {
+            double offsetX = (this.random.nextDouble() - 0.5) * this.getBbWidth();
+            double offsetY = this.getBbHeight() * 0.5 + (this.random.nextDouble() - 0.5) * 0.5;
+            double offsetZ = (this.random.nextDouble() - 0.5) * this.getBbWidth();
+
+            Vec3 motion = new Vec3(
+                    (this.random.nextDouble() - 0.5) * 0.4,
+                    (this.random.nextDouble() - 0.3) * 0.5,
+                    (this.random.nextDouble() - 0.5) * 0.4
+            );
+
             ParticlesUtil.sendParticlesWithMotion(
                     this,
                     ParticleTypes.ELECTRIC_SPARK,
-                    new Vec3(0, this.getBbHeight() * 0.7, 0),
-                    new Vec3(
-                            (this.random.nextDouble() - 0.5) * 0.3,
-                            (this.random.nextDouble() - 0.5) * 0.3,
-                            (this.random.nextDouble() - 0.5) * 0.3
-                    ),
+                    new Vec3(offsetX, offsetY, offsetZ),
+                    motion,
                     2,
                     0.2f
             );
         }
 
+        // End rod - mais altos, tipo energia subindo
         if (this.random.nextInt(3) == 0) {
+            double offsetX = (this.random.nextDouble() - 0.5) * (this.getBbWidth() * 0.6);
+            double offsetZ = (this.random.nextDouble() - 0.5) * (this.getBbWidth() * 0.6);
+
             ParticlesUtil.sendParticlesWithMotion(
                     this,
                     ParticleTypes.END_ROD,
-                    new Vec3(0, this.getBbHeight() * 0.8, 0),
-                    new Vec3(0, 0.05, 0),
+                    new Vec3(offsetX, this.getBbHeight() * 0.9, offsetZ),
+                    new Vec3(0, 0.08 + this.random.nextDouble() * 0.05, 0),
                     2,
                     0.05f
             );

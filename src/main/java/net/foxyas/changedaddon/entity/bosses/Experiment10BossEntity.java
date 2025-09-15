@@ -15,11 +15,15 @@ import net.foxyas.changedaddon.entity.interfaces.BossWithMusic;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.util.ColorUtil;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -70,6 +74,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
 public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, BossWithMusic, CustomPatReaction, PowderSnowWalkable {
@@ -110,6 +115,22 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(PHASE2, false);
+    }
+
+    @Override
+    public void variantTick(Level level) {
+        super.variantTick(level);
+        if (this.getUnderlyingPlayer() != null) {
+            Player playerInControl = this.getUnderlyingPlayer();
+            TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(playerInControl);
+            if (transfurVariantInstance != null) {
+                if (playerInControl.getLevel().getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.NEED_PERMISSION_FOR_BOSS_TRANSFUR)) {
+                    if (!getPlayerVars(playerInControl).Exp10TransfurAllowed) {
+                        ProcessTransfur.setPlayerTransfurVariant(playerInControl, ChangedAddonTransfurVariants.EXPERIMENT_10.get(), TransfurContext.hazard(TransfurCause.GRAB_ABSORB), 1, false);
+                    }
+                }
+            }
+        }
     }
 
     protected void setAttributes(AttributeMap attributes) {
