@@ -83,9 +83,6 @@ public abstract class TransfurVariantInstanceMixin {
 
     @Inject(method = "save", at = @At("RETURN"), cancellable = true)
     private void InjectData(CallbackInfoReturnable<CompoundTag> cir) {
-        if (this.getChangedEntity() instanceof AvaliEntity avaliEntity) {
-            avaliEntity.saveColors(cir.getReturnValue());
-        }
         if (this.getChangedEntity() instanceof VariantExtraStats stats) {
             stats.saveExtraData(cir.getReturnValue());
         }
@@ -99,9 +96,6 @@ public abstract class TransfurVariantInstanceMixin {
 
     @Unique
     private void loadTransfurColorData(CompoundTag tag) {
-        if (this.getChangedEntity() instanceof AvaliEntity avaliEntity) {
-            avaliEntity.readColors(tag);
-        }
         if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
             variantExtraStats.readExtraData(tag);
         }

@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -25,6 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -40,9 +42,23 @@ public class PrunOrangeLeavesEvent {
         BlockPos position = blockHitResult.getBlockPos();
         BlockState state = world.getBlockState(position);
         InteractionHand hand = rightClickBlockEvent.getHand();
+        boolean hasShearsLikeItemInHand = usedItem.getItem() instanceof HoeItem || usedItem.is(Tags.Items.SHEARS);
+
+        if (world.isClientSide()) {
+            if (state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
+                if (hasShearsLikeItemInHand) {
+                    rightClickBlockEvent.setCancellationResult(InteractionResult.SUCCESS);
+                    rightClickBlockEvent.setResult(Event.Result.ALLOW);
+                    //rightClickBlockEvent.setCanceled(true);
+                    return;
+                }
+                return;
+            }
+            return;
+        }
+
         if (world instanceof ServerLevel serverLevel) {
             if (state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
-                boolean hasShearsLikeItemInHand = usedItem.getItem() instanceof HoeItem || usedItem.is(Tags.Items.SHEARS);
 
                 if (hasShearsLikeItemInHand) {
                     BlockState newState = Blocks.OAK_LEAVES.defaultBlockState();

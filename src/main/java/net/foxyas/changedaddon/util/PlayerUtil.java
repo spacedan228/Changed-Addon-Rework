@@ -55,10 +55,11 @@ public class PlayerUtil {
         ResourceLocation form = ResourceLocation.tryParse(id);
         TransfurVariant<?> latexVariant = form == null ? null : ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
         if (latexVariant == null) return;
-
         var tf = ProcessTransfur.setPlayerTransfurVariant(player, latexVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), progress);
         if (tf != null) {
-            tf.load(data);
+            CompoundTag save = tf.save();
+            save.merge(data);
+            tf.load(save);
         }
     }
 
