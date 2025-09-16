@@ -1,19 +1,21 @@
 package net.foxyas.changedaddon.entity.mobs;
 
-import io.netty.buffer.Unpooled;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.procedures.*;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.world.inventory.FoxyasGuiMenu;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -30,6 +32,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -39,19 +44,17 @@ import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FoxyasEntity extends Monster {
-    private final ItemStackHandler inventory = new ItemStackHandler(9) {
-        @Override
-        public int getSlotLimit(int slot) {
-            return 64;
-        }
-    };
+
+    private final ItemStackHandler inventory = new ItemStackHandler(9);
     private final CombinedInvWrapper combined = new CombinedInvWrapper(inventory, new EntityHandsInvWrapper(this), new EntityArmorInvWrapper(this));
 
     public FoxyasEntity(PlayMessages.SpawnEntity packet, Level world) {
@@ -98,43 +101,23 @@ public class FoxyasEntity extends Monster {
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1) {
             @Override
             public boolean canUse() {
-                double x = FoxyasEntity.this.getX();
-                double y = FoxyasEntity.this.getY();
-                double z = FoxyasEntity.this.getZ();
-                Entity entity = FoxyasEntity.this;
-                Level world = FoxyasEntity.this.level;
-                return super.canUse() && IfnotInWaterProcedure.execute(entity);
+                return super.canUse() && !isInWater();
             }
 
             @Override
             public boolean canContinueToUse() {
-                double x = FoxyasEntity.this.getX();
-                double y = FoxyasEntity.this.getY();
-                double z = FoxyasEntity.this.getZ();
-                Entity entity = FoxyasEntity.this;
-                Level world = FoxyasEntity.this.level;
-                return super.canContinueToUse() && IfnotInWaterProcedure.execute(entity);
+                return super.canContinueToUse() && !isInWater();
             }
         });
         this.goalSelector.addGoal(7, new RandomSwimmingGoal(this, 1, 40) {
             @Override
             public boolean canUse() {
-                double x = FoxyasEntity.this.getX();
-                double y = FoxyasEntity.this.getY();
-                double z = FoxyasEntity.this.getZ();
-                Entity entity = FoxyasEntity.this;
-                Level world = FoxyasEntity.this.level;
-                return super.canUse() && IfInWaterProcedure.execute(entity);
+                return super.canUse() && isInWater();
             }
 
             @Override
             public boolean canContinueToUse() {
-                double x = FoxyasEntity.this.getX();
-                double y = FoxyasEntity.this.getY();
-                double z = FoxyasEntity.this.getZ();
-                Entity entity = FoxyasEntity.this;
-                Level world = FoxyasEntity.this.level;
-                return super.canContinueToUse() && IfInWaterProcedure.execute(entity);
+                return super.canContinueToUse() && isInWater();
             }
         });
         this.targetSelector.addGoal(8, new HurtByTargetGoal(this));
@@ -156,18 +139,45 @@ public class FoxyasEntity extends Monster {
 
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.hurt"));
+        return SoundEvents.GENERIC_HURT;
     }
 
     @Override
     public @NotNull SoundEvent getDeathSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.death"));
+        return SoundEvents.GENERIC_DEATH;
     }
 
     @Override
     public void die(@NotNull DamageSource source) {
         super.die(source);
-        FoxyasEntityDiesProcedure.execute(source.getEntity());
+
+        if (source.getEntity() instanceof ServerPlayer player) {
+            Advancement _adv = player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:foxyas_advancement"));
+            AdvancementProgress _ap = player.getAdvancements().getOrStartProgress(_adv);
+            if (!_ap.isDone()) {
+                for (String s : _ap.getRemainingCriteria()) player.getAdvancements().award(_adv, s);
+            }
+        }
+    }
+
+    public void doTrade(){
+        ItemStack oranges = combined.getStackInSlot(0);
+        if(oranges.getCount() < 2) return;
+
+        ItemStack bottles = combined.getStackInSlot(1);
+        if(bottles.getCount() < 1) return;
+
+        ItemStack tmp = oranges.copy();
+        tmp.setCount(oranges.getCount() - 2);
+        combined.setStackInSlot(0, tmp);
+
+        tmp = bottles.copy();
+        tmp.setCount(bottles.getCount() - 1);
+        combined.setStackInSlot(1, tmp);
+
+        tmp = new ItemStack(ChangedAddonItems.ORANGE_JUICE.get());
+        tmp = combined.insertItem(2, tmp, false);
+        if(!tmp.isEmpty()) Block.popResource(level, blockPosition(), tmp);
     }
 
     @Override
@@ -204,7 +214,6 @@ public class FoxyasEntity extends Monster {
 
     @Override
     public @NotNull InteractionResult mobInteract(Player sourceentity, @NotNull InteractionHand hand) {
-        ItemStack itemstack = sourceentity.getItemInHand(hand);
         InteractionResult retval = InteractionResult.sidedSuccess(this.level.isClientSide());
         if (sourceentity instanceof ServerPlayer serverPlayer) {
             NetworkHooks.openGui(serverPlayer, new MenuProvider() {
@@ -215,32 +224,53 @@ public class FoxyasEntity extends Monster {
 
                 @Override
                 public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
-                    FriendlyByteBuf packetBuffer = new FriendlyByteBuf(Unpooled.buffer());
-                    packetBuffer.writeBlockPos(sourceentity.blockPosition());
-                    packetBuffer.writeByte(0);
-                    packetBuffer.writeVarInt(FoxyasEntity.this.getId());
-                    return new FoxyasGuiMenu(id, inventory, packetBuffer);
+                    return new FoxyasGuiMenu(id, inventory, FoxyasEntity.this);
                 }
-            }, buf -> {
-                buf.writeBlockPos(sourceentity.blockPosition());
-                buf.writeByte(0);
-                buf.writeVarInt(this.getId());
-            });
+            }, buf -> buf.writeVarInt(getId()));
         }
         super.mobInteract(sourceentity, hand);
-        double x = this.getX();
-        double y = this.getY();
-        double z = this.getZ();
-        Entity entity = this;
-        Level world = this.level;
 
-        FoxyasRightClickedOnEntityProcedure.execute(world, x, y, z, entity, sourceentity);
+        getNavigation().moveTo(sourceentity.getX(), sourceentity.getY(), sourceentity.getZ(), 1);
         return retval;
     }
 
     @Override
     public void baseTick() {
         super.baseTick();
-        FoxyasOnEntityTickUpdateProcedure.execute(this.level, this);
+
+        final Vec3 _center = new Vec3(getX(), getY(), getZ());
+        List<Entity> _entfound = level.getEntitiesOfClass(Entity.class, new AABB(_center, _center).inflate(20 / 2d), e -> true).stream().sorted(Comparator.comparingDouble(_entcnd -> _entcnd.distanceToSqr(_center))).collect(Collectors.toList());
+        for (Entity entityiterator : _entfound) {
+            if (entityiterator.getPersistentData().getBoolean("FoxyasGui_open")) {
+                getNavigation().moveTo((entityiterator.getX()), (entityiterator.getY()), (entityiterator.getZ()), 0.8);
+                break;
+            }
+        }
+
+        if (isInWater() && isUnderWater() && !isOnGround()) {
+            setPose(Pose.SWIMMING);
+        } else if (isInWater() && !isUnderWater() && isOnGround()) {
+            setPose(Pose.STANDING);
+        } else if (!isInWater() && !isUnderWater() && isOnGround()) {
+            setPose(Pose.STANDING);
+        }
+        if (isInWater()) {
+            LivingEntity target = getTarget();
+            if(target == null) return;
+
+            float deltaX = (float) (target.getX() - getX());
+            float deltaY = (float) (target.getY() - getY());
+            float deltaZ = (float) (target.getZ() - getZ());
+            float distance = (float) Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+
+            if (distance > 0) {
+                float speed = 0.04f;
+                float motionX = deltaX / distance * speed;
+                float motionY = deltaY / distance * speed;
+                float motionZ = deltaZ / distance * speed;
+                lookAt(EntityAnchorArgument.Anchor.EYES, new Vec3(target.getX(), target.getY(), target.getZ()));
+                setDeltaMovement(getDeltaMovement().add(motionX, motionY, motionZ));
+            }
+        }
     }
 }

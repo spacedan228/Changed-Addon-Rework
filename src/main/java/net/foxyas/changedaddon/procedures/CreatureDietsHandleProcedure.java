@@ -137,6 +137,7 @@ public class CreatureDietsHandleProcedure {
         private final TagKey<Item> dietTag;
         private final List<Item> dietItems;
 
+        @SuppressWarnings("unused")
         DietType(TagKey<TransfurVariant<?>> tfTag, TagKey<Item> dietTag, List<Item> items) {
             this.tfTag = tfTag;
             this.dietTag = dietTag;

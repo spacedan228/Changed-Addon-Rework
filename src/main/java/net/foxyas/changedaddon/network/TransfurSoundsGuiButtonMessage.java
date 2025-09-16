@@ -1,8 +1,7 @@
 package net.foxyas.changedaddon.network;
 
-import net.foxyas.changedaddon.procedures.IfCatLatexProcedure;
-import net.foxyas.changedaddon.procedures.IfDogLatexProcedure;
 import net.foxyas.changedaddon.util.DelayedTask;
+import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -23,14 +22,14 @@ import java.util.function.Supplier;
 
 public record TransfurSoundsGuiButtonMessage(int buttonId) {
 
-    private static final List<Triple<ResourceLocation, Predicate<Entity>, Integer>> sounds = List.of(
-            Triple.of(new ResourceLocation("entity.cat.purr"), IfCatLatexProcedure::execute, 60),
-            Triple.of(new ResourceLocation("entity.cat.ambient"), IfCatLatexProcedure::execute, 10),
-            Triple.of(new ResourceLocation("entity.wolf.growl"), IfDogLatexProcedure::execute, 60),
-            Triple.of(new ResourceLocation("entity.wolf.ambient"), IfDogLatexProcedure::execute, 10),
-            Triple.of(new ResourceLocation("entity.wolf.howl"), IfDogLatexProcedure::execute, 80),
-            Triple.of(new ResourceLocation("entity.cat.hiss"), IfCatLatexProcedure::execute, 40),
-            Triple.of(new ResourceLocation("entity.cat.purreow"), IfCatLatexProcedure::execute, 20)
+    private static final List<Triple<ResourceLocation, Predicate<Player>, Integer>> sounds = List.of(
+            Triple.of(new ResourceLocation("entity.cat.purr"), PlayerUtil::isCatTransfur, 60),
+            Triple.of(new ResourceLocation("entity.cat.ambient"), PlayerUtil::isCatTransfur, 10),
+            Triple.of(new ResourceLocation("entity.wolf.growl"), PlayerUtil::isWolfTransfur, 60),
+            Triple.of(new ResourceLocation("entity.wolf.ambient"), PlayerUtil::isWolfTransfur, 10),
+            Triple.of(new ResourceLocation("entity.wolf.howl"), PlayerUtil::isWolfTransfur, 80),
+            Triple.of(new ResourceLocation("entity.cat.hiss"), PlayerUtil::isCatTransfur, 40),
+            Triple.of(new ResourceLocation("entity.cat.purreow"), PlayerUtil::isCatTransfur, 20)
     );
 
     public TransfurSoundsGuiButtonMessage(FriendlyByteBuf buf) {
@@ -58,7 +57,7 @@ public record TransfurSoundsGuiButtonMessage(int buttonId) {
         switch (buttonID) {
             case 0, 1, 2, 3, 4, 5, 6 -> {
                 if (vars.actCooldown) break;
-                Triple<ResourceLocation, Predicate<Entity>, Integer> triple = sounds.get(buttonID);
+                Triple<ResourceLocation, Predicate<Player>, Integer> triple = sounds.get(buttonID);
                 if (triple.getMiddle().test(player))
                     playSound(player.level, player, ForgeRegistries.SOUND_EVENTS.getValue(triple.getLeft()), vars, triple.getRight());
             }

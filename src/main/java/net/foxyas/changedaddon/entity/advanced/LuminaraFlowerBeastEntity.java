@@ -4,7 +4,6 @@ import net.foxyas.changedaddon.entity.advanced.handle.VoidTransformationHandler;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.procedures.CreatureDietsHandleProcedure;
@@ -175,10 +174,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
             setAttributesHyperAwakened(getAttributes());
         }
         attributesApplied = true;
-        var instance = IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).orElse(null);
-        if (instance != null) {
-            instance.refreshAttributes();
-        }
+        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
     /**
@@ -187,10 +183,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     public void removeAwakenedBuffs() {
         setAttributes(getAttributes());
         attributesApplied = false;
-        var instance = IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).orElse(null);
-        if (instance != null) {
-            instance.refreshAttributes();
-        }
+        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
     @Mod.EventBusSubscriber
@@ -351,19 +344,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
-    @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-    }
-
     public void saveExtraData(CompoundTag tag) {
         tag.putBoolean("Awakened", this.isAwakened());
         tag.putBoolean("HyperAwakened", this.isHyperAwakened());
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
     }
 
     @Override

@@ -98,19 +98,20 @@ public class PlayerUtil {
         });
     }
 
-    public static boolean IsCatTransfur(Player player) {
+    public static boolean isCatTransfur(Player player) {
         TransfurVariant<?> variant = ProcessTransfur.getPlayerTransfurVariant(player).getParent();
         return variant.is(ChangedAddonTags.TransfurTypes.CAT_LIKE) ||
                 variant.is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE);
     }
 
-    public static boolean IsWolfTransfur(Player player) {
+    public static boolean isWolfTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
+        if(variant.is(ChangedAddonTags.TransfurTypes.WOLF_LIKE)) return true;
+
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return Objects.requireNonNull(entity.getType().getRegistryName()).toString().contains("dog") ||
                 entity.getType().getRegistryName().toString().contains("wolf") ||
-                entity instanceof AbstractLatexWolf ||
-                variant.is(ChangedAddonTags.TransfurTypes.WOLF_LIKE);
+                entity instanceof AbstractLatexWolf;
     }
 
     @Nullable

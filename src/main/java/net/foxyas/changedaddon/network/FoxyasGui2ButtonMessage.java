@@ -14,34 +14,23 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record FoxyasGui2ButtonMessage(int buttonId, int x, int y, int z) {
+public record FoxyasGui2ButtonMessage(int buttonId) {
 
     public FoxyasGui2ButtonMessage(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
+        this(buf.readVarInt());
     }
 
     public static void buffer(FoxyasGui2ButtonMessage message, FriendlyByteBuf buf) {
         buf.writeVarInt(message.buttonId);
-        buf.writeVarInt(message.x);
-        buf.writeVarInt(message.y);
-        buf.writeVarInt(message.z);
     }
 
     public static void handler(FoxyasGui2ButtonMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            Player entity = context.getSender();
-            int x = message.x;
-            int y = message.y;
-            int z = message.z;
-            handleButtonAction(entity, message.buttonId, x, y, z);
-        });
+        context.enqueueWork(() -> handleButtonAction(context.getSender(), message.buttonId));
         context.setPacketHandled(true);
     }
 
-    public static void handleButtonAction(Player player, int buttonID, int x, int y, int z) {
-        if (player == null) return;
-
+    public static void handleButtonAction(Player player, int buttonID) {
         if (buttonID == 0) {
 
             player.getPersistentData().putBoolean("Deal", true);

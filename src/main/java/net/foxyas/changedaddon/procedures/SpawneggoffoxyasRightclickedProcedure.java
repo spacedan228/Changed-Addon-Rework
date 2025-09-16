@@ -20,58 +20,51 @@ public class SpawneggoffoxyasRightclickedProcedure {
             return;
         if (direction == Direction.UP) {
             if (world instanceof ServerLevel _level) {
-                Entity entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 0.5), (y + 1), (z + 0.5), world.getRandom().nextFloat() * 360F, 0);
-                if (entityToSpawn instanceof Mob _mobToSpawn)
-                    _mobToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.DOWN) {
             if (world instanceof ServerLevel _level) {
-                Entity entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 0.5), (y - 1.5), (z + 0.5), world.getRandom().nextFloat() * 360F, 0);
-                if (entityToSpawn instanceof Mob _mobToSpawn)
-                    _mobToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.NORTH) {
             if (world instanceof ServerLevel _level) {
-                Entity entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 0.5), y, (z - 0.5), world.getRandom().nextFloat() * 360F, 0);
-                if (entityToSpawn instanceof Mob _mobToSpawn)
-                    _mobToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.SOUTH) {
             if (world instanceof ServerLevel _level) {
-                Entity entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 0.5), y, (z + 1.5), world.getRandom().nextFloat() * 360F, 0);
-                if (entityToSpawn instanceof Mob _mobToSpawn)
-                    _mobToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.WEST) {
             if (world instanceof ServerLevel _level) {
-                Entity entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x - 0.5), y, (z + 0.5), world.getRandom().nextFloat() * 360F, 0);
-                if (entityToSpawn instanceof Mob _mobToSpawn)
-                    _mobToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.EAST) {
             if (world instanceof ServerLevel _level) {
-                Entity entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 1.5), y, (z + 0.5), world.getRandom().nextFloat() * 360F, 0);
-                if (entityToSpawn instanceof Mob _mobToSpawn)
-                    _mobToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else {
             if (world instanceof ServerLevel _level) {
-                Entity entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
                 entityToSpawn.moveTo((entity.getX()), (entity.getY()), (entity.getZ()), world.getRandom().nextFloat() * 360F, 0);
-                if (entityToSpawn instanceof Mob _mobToSpawn)
-                    _mobToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         }
@@ -95,8 +88,7 @@ public class SpawneggoffoxyasRightclickedProcedure {
             }
         }.checkGamemode(entity))) {
             if (entity instanceof Player _player) {
-                ItemStack _stktoremove = itemstack;
-                _player.getInventory().clearOrCountMatchingItems(p -> _stktoremove.getItem() == p.getItem(), 1, _player.inventoryMenu.getCraftSlots());
+                _player.getInventory().clearOrCountMatchingItems(p -> itemstack.getItem() == p.getItem(), 1, _player.inventoryMenu.getCraftSlots());
             }
         }
     }

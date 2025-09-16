@@ -4,13 +4,11 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
-import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.sounds.MusicManager;
 import net.minecraft.client.sounds.SoundManager;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
@@ -27,7 +25,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -150,89 +147,4 @@ public class MusicPlayerProcedure {
 
         return false;
     }
-
-    private static List<LivingEntity> getNearbyBosses(LevelAccessor world, Vec3 position, double radius) {
-        return world.getEntitiesOfClass(LivingEntity.class, AABB.ofSize(position, radius, radius, radius))
-                .stream()
-                .sorted(Comparator.comparingDouble(e -> e.distanceToSqr(position)))
-                .toList();
-    }
-
-    private static void handleBossMusic(String musicKey, Entity boss) {
-        Minecraft minecraft = Minecraft.getInstance();
-        MusicManager musicManager = minecraft.getMusicManager();
-        SoundManager soundManager = minecraft.getSoundManager();
-
-        ResourceLocation musicResource = ChangedAddonMod.resourceLoc(musicKey);
-        SoundEvent soundEvent = ForgeRegistries.SOUND_EVENTS.getValue(musicResource);
-
-        if (soundEvent == null) {
-            return; // Se o evento de som não existir, sai.
-        }
-
-        Music bossMusic = new Music(soundEvent, 0, 0, true);
-
-        // Se o boss está vivo e a música não está tocando, começa a tocar
-        if (boss.isAlive() && !musicManager.isPlayingMusic(bossMusic)) {
-            musicManager.startPlaying(bossMusic);
-        } else if (!boss.isAlive()) { // Para a música se o boss morrer
-            soundManager.stop(musicResource, SoundSource.MUSIC);
-        }
-    }
-
-    private static void stopAllBossMusic() {
-        Minecraft minecraft = Minecraft.getInstance();
-        SoundManager soundManager = minecraft.getSoundManager();
-
-        // Lista de músicas para parar
-        String[] bossMusicKeys = {
-                "experiment009_theme",
-                "experiment009_theme_phase2",
-                "experiment10_theme"
-        };
-
-        for (String musicKey : bossMusicKeys) {
-            ResourceLocation musicResource = ChangedAddonMod.resourceLoc(musicKey);
-            soundManager.stop(musicResource, SoundSource.MUSIC);
-        }
-    }
-
-    private static void stopAllBossMusic(SoundManager soundManager) {
-        // Itera pelos temas registrados nos enums e interrompe qualquer música de boss
-        for (BossMusicTheme theme : BossMusicTheme.values()) {
-            ResourceLocation resource = ForgeRegistries.SOUND_EVENTS.getKey(theme.getAsSoundEvent());
-            if (resource != null) {
-                soundManager.stop(resource, SoundSource.MUSIC);
-            }
-        }
-    }
-
-    /**
-     * Verifica se alguma música dos temas de boss está tocando.
-     *
-     * @param musicManager Gerenciador de música.
-     * @param themes       Lista de temas.
-     * @return Verdadeiro se alguma música estiver tocando.
-     */
-    private static boolean isAnyBossMusicPlaying(MusicManager musicManager, BossMusicTheme[] themes) {
-        for (BossMusicTheme theme : themes) {
-            Music musicInstance = theme.getAsMusic();
-            if (musicManager.isPlayingMusic(musicInstance)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
-    public static boolean checkGameMode(Player _player) {
-        if (_player instanceof ServerPlayer _serverPlayer) {
-            return _serverPlayer.gameMode.getGameModeForPlayer() == GameType.SPECTATOR;
-        } else if (_player.level.isClientSide()) {
-            return Objects.requireNonNull(Minecraft.getInstance().getConnection()).getPlayerInfo(_player.getGameProfile().getId()) != null
-                    && Objects.requireNonNull(Minecraft.getInstance().getConnection().getPlayerInfo(_player.getGameProfile().getId())).getGameMode() == GameType.SPECTATOR;
-        }
-        return false;
-    }
-
 }

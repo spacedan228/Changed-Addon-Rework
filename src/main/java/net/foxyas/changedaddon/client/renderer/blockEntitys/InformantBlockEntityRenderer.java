@@ -77,7 +77,6 @@ public class InformantBlockEntityRenderer implements BlockEntityRenderer<Informa
         poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
         poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
 
-        //This stuff was used when i try render only the model
         AdvancedHumanoidModel model = renderer.getModel();
         ResourceLocation texture = ((LivingEntityRenderer) renderer).getTextureLocation(entity);
         var vertexConsumer = bufferSource.getBuffer(ChangedAddonRenderTypes.hologramCull(texture, true));

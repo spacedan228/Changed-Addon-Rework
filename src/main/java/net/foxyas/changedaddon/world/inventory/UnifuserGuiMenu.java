@@ -1,12 +1,10 @@
 package net.foxyas.changedaddon.world.inventory;
 
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
-import net.foxyas.changedaddon.procedures.UnifuserguiDisableItemstackPlacementProcedure;
-import net.foxyas.changedaddon.procedures.UnifuserguiDisableItemstackPlacementslot0Procedure;
+import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -21,89 +19,57 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Supplier;
+public class UnifuserGuiMenu extends AbstractContainerMenu {
 
-public class UnifuserGuiMenu extends AbstractContainerMenu implements Supplier<Map<Integer, Slot>> {
-    public final static HashMap<String, Object> guistate = new HashMap<>();
     public final Level world;
     public final Player entity;
-    private final Map<Integer, Slot> customSlots = new HashMap<>();
     public int x, y, z;
-    private ContainerLevelAccess access = ContainerLevelAccess.NULL;
-    private IItemHandler internal;
-    private boolean bound = false;
-    private Supplier<Boolean> boundItemMatcher = null;
-    private Entity boundEntity = null;
-    private BlockEntity boundBlockEntity = null;
+    private final ContainerLevelAccess access;
+    private final BlockEntity boundBlockEntity;
 
     public UnifuserGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         super(ChangedAddonMenus.UNIFUSER_GUI, id);
         this.entity = inv.player;
         this.world = inv.player.level;
-        this.internal = new ItemStackHandler(4);
-        BlockPos pos = null;
-        if (extraData != null) {
-            pos = extraData.readBlockPos();
-            this.x = pos.getX();
-            this.y = pos.getY();
-            this.z = pos.getZ();
-            access = ContainerLevelAccess.create(world, pos);
-        }
-        if (pos != null) {
-            if (extraData.readableBytes() == 1) { // bound to item
-                byte hand = extraData.readByte();
-                ItemStack itemstack = hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem();
-                this.boundItemMatcher = () -> itemstack == (hand == 0 ? this.entity.getMainHandItem() : this.entity.getOffhandItem());
-                itemstack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
-                    this.internal = capability;
-                    this.bound = true;
-                });
-            } else if (extraData.readableBytes() > 1) { // bound to entity
-                extraData.readByte(); // drop padding
-                boundEntity = world.getEntity(extraData.readVarInt());
-                if (boundEntity != null)
-                    boundEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
-                        this.internal = capability;
-                        this.bound = true;
-                    });
-            } else { // might be bound to block
-                boundBlockEntity = this.world.getBlockEntity(pos);
-                if (boundBlockEntity != null)
-                    boundBlockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(capability -> {
-                        this.internal = capability;
-                        this.bound = true;
-                    });
-            }
-        }
-        this.customSlots.put(0, this.addSlot(new SlotItemHandler(internal, 0, 15, 45) {
-            private final int slot = 0;
+        IItemHandler internal = new ItemStackHandler(4);
+
+        BlockPos pos = extraData.readBlockPos();
+        this.x = pos.getX();
+        this.y = pos.getY();
+        this.z = pos.getZ();
+        access = ContainerLevelAccess.create(world, pos);
+
+        boundBlockEntity = this.world.getBlockEntity(pos);
+        if (boundBlockEntity != null)
+            internal = boundBlockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).resolve().orElseThrow();
+
+        addSlot(new SlotItemHandler(internal, 0, 15, 45) {
 
             @Override
             public boolean mayPlace(@NotNull ItemStack itemstack) {
-                return !UnifuserguiDisableItemstackPlacementslot0Procedure.execute(itemstack);
+                //if (itemstack.getItem() == ChangedAddonItems.AMMONIA.get() || itemstack.getItem() == ChangedAddonItems.LITIX_CAMONIA.get() || itemstack.getItem() == ChangedAddonItems.LAETHIN.get()
+                //        || itemstack.getItem() == Blocks.TINTED_GLASS.asItem() || itemstack.getItem() == ChangedAddonItems.ANTI_LATEX_BASE.get()) {
+                //    return true;
+                //}
+                return true;
             }
-        }));
-        this.customSlots.put(3, this.addSlot(new SlotItemHandler(internal, 3, 155, 57) {
-            private final int slot = 3;
+        });
+        addSlot(new SlotItemHandler(internal, 3, 155, 57) {
 
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return false;
             }
-        }));
-        this.customSlots.put(2, this.addSlot(new SlotItemHandler(internal, 2, 50, 57) {
-            private final int slot = 2;
+        });
+        addSlot(new SlotItemHandler(internal, 2, 50, 57) {
 
             @Override
             public boolean mayPlace(@NotNull ItemStack itemstack) {
-                return !UnifuserguiDisableItemstackPlacementProcedure.execute(itemstack);
+                return itemstack.getItem() == ChangedAddonItems.CATALYZED_DNA.get() || itemstack.is(ChangedItems.BLOOD_SYRINGE.get())
+                        || itemstack.is(ChangedItems.LATEX_SYRINGE.get());
             }
-        }));
-        this.customSlots.put(1, this.addSlot(new SlotItemHandler(internal, 1, 15, 70) {
-            private final int slot = 1;
-        }));
+        });
+        addSlot(new SlotItemHandler(internal, 1, 15, 70));
         for (int si = 0; si < 3; ++si)
             for (int sj = 0; sj < 9; ++sj)
                 this.addSlot(new Slot(inv, sj + (si + 1) * 9, 12 + 8 + sj * 18, 21 + 84 + si * 18));
@@ -111,17 +77,13 @@ public class UnifuserGuiMenu extends AbstractContainerMenu implements Supplier<M
             this.addSlot(new Slot(inv, si, 12 + 8 + si * 18, 21 + 142));
     }
 
+    public boolean isSlotEmpty(int slot){
+        return getSlot(slot).getItem().isEmpty();
+    }
+
     @Override
     public boolean stillValid(@NotNull Player player) {
-        if (this.bound) {
-            if (this.boundItemMatcher != null)
-                return this.boundItemMatcher.get();
-            else if (this.boundBlockEntity != null)
-                return AbstractContainerMenu.stillValid(this.access, player, this.boundBlockEntity.getBlockState().getBlock());
-            else if (this.boundEntity != null)
-                return this.boundEntity.isAlive();
-        }
-        return true;
+        return AbstractContainerMenu.stillValid(this.access, player, this.boundBlockEntity.getBlockState().getBlock());
     }
 
     @Override
@@ -235,25 +197,5 @@ public class UnifuserGuiMenu extends AbstractContainerMenu implements Supplier<M
             }
         }
         return flag;
-    }
-
-    @Override
-    public void removed(@NotNull Player playerIn) {
-        super.removed(playerIn);
-        if (!bound && playerIn instanceof ServerPlayer serverPlayer) {
-            if (!serverPlayer.isAlive() || serverPlayer.hasDisconnected()) {
-                for (int j = 0; j < internal.getSlots(); ++j) {
-                    playerIn.drop(internal.extractItem(j, internal.getStackInSlot(j).getCount(), false), false);
-                }
-            } else {
-                for (int i = 0; i < internal.getSlots(); ++i) {
-                    playerIn.getInventory().placeItemBackInInventory(internal.extractItem(i, internal.getStackInSlot(i).getCount(), false));
-                }
-            }
-        }
-    }
-
-    public Map<Integer, Slot> get() {
-        return customSlots;
     }
 }

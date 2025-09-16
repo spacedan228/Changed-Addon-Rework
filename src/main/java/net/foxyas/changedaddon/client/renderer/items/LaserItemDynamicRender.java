@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 
 public class LaserItemDynamicRender {
+
     public static void DynamicLaserColor(RegistryObject<Item> item) {
         Minecraft.getInstance().getItemColors().register(
                 (stack, tintIndex) -> {
@@ -20,17 +21,4 @@ public class LaserItemDynamicRender {
                 item.get()
         );
     }
-
-    public static void DynamicLaserColor(Item item) {
-        Minecraft.getInstance().getItemColors().register(
-                (stack, tintIndex) -> {
-                    if (tintIndex == 0) { // Só aplica a cor no layer certo
-                        return LaserPointer.getAWTColor(stack).getRGB();
-                    }
-                    return -1; // Cor padrão (branco)
-                },
-                item
-        );
-    }
-
 }

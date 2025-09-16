@@ -23,7 +23,7 @@ import java.util.Map;
 public class RightClickWithIridiumProcedure {
 
     // Mapeamento de blocos para substituição
-    public static final Map<Block, Block> CONVERSION() {
+    public static Map<Block, Block> CONVERSION() {
         Map<Block, Block> BASE_CONVERSION = new HashMap<>();
 
         BASE_CONVERSION.put(ChangedBlocks.WALL_WHITE.get(),

@@ -1,7 +1,8 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.foxyas.changedaddon.procedures.BiomassPlayerFinishesUsingItemProcedure;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,6 +12,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class BiomassItem extends Item {
+
     public BiomassItem() {
         super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(64).rarity(Rarity.RARE));
     }
@@ -31,13 +33,16 @@ public class BiomassItem extends Item {
     }
 
     @Override
-    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull LivingEntity entity) {
-        super.finishUsingItem(itemstack, world, entity);
-        if (entity instanceof Player player && !player.isCreative()) {
-            itemstack.shrink(1); // Consome uma unidade do item
+    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack, @NotNull Level level, @NotNull LivingEntity entity) {
+        if (entity instanceof Player player) {
+            if(!player.isCreative()){
+                itemstack.shrink(1); // Consome uma unidade do item
+                player.causeFoodExhaustion((float) (4 * 4));
+            }
+
+            if(!level.isClientSide) player.displayClientMessage(new TextComponent((new TranslatableComponent("item.changed_addon.biomass.eat").getString())), true);
         }
 
-        BiomassPlayerFinishesUsingItemProcedure.execute(entity); // Executa a função desejada
         return itemstack.isEmpty() ? ItemStack.EMPTY : itemstack; // Retorna vazio se all o item foi consumido
     }
 }

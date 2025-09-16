@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.procedures;
 
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10Entity;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -10,29 +11,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import javax.annotation.Nullable;
-
 @Mod.EventBusSubscriber
-public class WitherSkillProcedure {
+public class HurtByExp10Event {
+
     @SubscribeEvent
     public static void onEntityAttacked(LivingHurtEvent event) {
-        Entity entity = event.getEntity();
-        if (entity != null) {
-            execute(event, entity, event.getSource().getDirectEntity());
-        }
-    }
-
-    public static void execute(Entity entity, Entity attacker) {
-        execute(null, entity, attacker);
-    }
-
-    private static void execute(@Nullable Event event, Entity entity, Entity attacker) {
-        if (!(entity instanceof LivingEntity target)) return;
-        if (attacker == null) return;
+        Entity attacker = event.getSource().getDirectEntity();
+        if (!(event.getEntity() instanceof LivingEntity target) || target.level.isClientSide || attacker == null) return;
 
         int amplifier = -1;
 
@@ -44,21 +32,19 @@ public class WitherSkillProcedure {
             if (e10Boss.getMainHandItem().isEmpty()) {
                 amplifier = e10Boss.isPhase2() ? 2 : 0;
             }
-        }
+        } else {
+            if(!(target instanceof Player player)) return;
 
-        if (amplifier >= 0 && !target.getLevel().isClientSide()) {
-            target.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, amplifier, false, true));
-        }
-
-        if (target instanceof Player player) {
             TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (instance != null && instance.getFormId().toString().equals("changed_addon:form_experiment_10")) {
-                if (attacker instanceof LivingEntity living && living.getMainHandItem().isEmpty()) {
-                    if (!player.getLevel().isClientSide()) {
-                        target.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, 0, false, true));
-                    }
-                }
+            if(instance == null || !instance.is(ChangedAddonTransfurVariants.EXPERIMENT_10)) return;
+
+            if (attacker instanceof LivingEntity living && living.getMainHandItem().isEmpty()) {
+                target.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, 0, false, true));
             }
+        }
+
+        if (amplifier >= 0) {
+            target.addEffect(new MobEffectInstance(MobEffects.WITHER, 90, amplifier, false, true));
         }
     }
 }
