@@ -50,6 +50,7 @@
     "client.renderer.LatexHumanoidArmorModelMixin",
     "client.renderer.LivingEntityRendererAccessor",
     "client.renderer.LivingEntityRendererMixin",
+    "client.renderer.PaintingRendererMixin",
     "client.renderer.PostChainMixin"
   ]
 }

@@ -26,11 +26,6 @@ public class DiffusionSyringeItem extends AbstractSyringeItem implements Special
         );
     }
 
-    @Override
-    public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack) {
-        return UseAnim.NONE;
-    }
-
     public int getUseDuration(@NotNull ItemStack itemstack) {
         return super.getUseDuration(itemstack);
     }

@@ -3,11 +3,11 @@ package net.foxyas.changedaddon.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.entity.mobs.FoxyasEntity;
 import net.foxyas.changedaddon.network.FoxyasGuiButtonMessage;
-import net.foxyas.changedaddon.procedures.IfPlayerArentTransfuredProcedure;
 import net.foxyas.changedaddon.world.inventory.FoxyasGuiMenu;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -15,27 +15,21 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
 public class FoxyasguiScreen extends AbstractContainerScreen<FoxyasGuiMenu> {
-    private final static HashMap<String, Object> guistate = FoxyasGuiMenu.guistate;
+
     private static final ResourceLocation texture = new ResourceLocation("changed_addon:textures/screens/foxyasgui.png");
-    private final Level world;
-    private final int x, y, z;
-    private final Player entity;
+
+    private final Player player;
+    private final FoxyasEntity entity;
     Button button_trade;
     Button button_i_want_be_transfured_by_you;
 
     public FoxyasguiScreen(FoxyasGuiMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
-        this.world = container.world;
-        this.x = container.x;
-        this.y = container.y;
-        this.z = container.z;
-        this.entity = container.entity;
+        player = container.player;
+        entity = container.entity;
         this.imageWidth = 345;
         this.imageHeight = 177;
     }
@@ -55,15 +49,6 @@ public class FoxyasguiScreen extends AbstractContainerScreen<FoxyasGuiMenu> {
         RenderSystem.setShaderTexture(0, texture);
         blit(ms, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
         RenderSystem.disableBlend();
-    }
-
-    @Override
-    public boolean keyPressed(int key, int b, int c) {
-        if (key == 256) {
-            this.minecraft.player.closeContainer();
-            return true;
-        }
-        return super.keyPressed(key, b, c);
     }
 
     @Override
@@ -87,28 +72,22 @@ public class FoxyasguiScreen extends AbstractContainerScreen<FoxyasGuiMenu> {
     @Override
     public void init() {
         super.init();
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        button_trade = new Button(this.leftPos + 224, this.topPos + 115, 51, 20, new TranslatableComponent("gui.changed_addon.foxyasgui.button_trade"), e -> {
-            if (true) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new FoxyasGuiButtonMessage(0, x, y, z));
-                FoxyasGuiButtonMessage.handleButtonAction(entity, 0, x, y, z);
-            }
-        });
-        guistate.put("button:button_trade", button_trade);
-        this.addRenderableWidget(button_trade);
+        minecraft.keyboardHandler.setSendRepeatsToGui(true);
+        button_trade = new Button(this.leftPos + 224, this.topPos + 115, 51, 20, new TranslatableComponent("gui.changed_addon.foxyasgui.button_trade"), e ->
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new FoxyasGuiButtonMessage(0, entity.getId())));
+
+        addRenderableWidget(button_trade);
         button_i_want_be_transfured_by_you = new Button(this.leftPos + 13, this.topPos + 66, 165, 20, new TranslatableComponent("gui.changed_addon.foxyasgui.button_i_want_be_transfured_by_you"), e -> {
-            if (IfPlayerArentTransfuredProcedure.execute(entity)) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new FoxyasGuiButtonMessage(1, x, y, z));
-                FoxyasGuiButtonMessage.handleButtonAction(entity, 1, x, y, z);
+            if (!ProcessTransfur.isPlayerTransfurred(player)) {
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new FoxyasGuiButtonMessage(1, entity.getId()));
             }
         }) {
             @Override
             public void render(@NotNull PoseStack ms, int gx, int gy, float ticks) {
-                if (IfPlayerArentTransfuredProcedure.execute(entity))
-                    super.render(ms, gx, gy, ticks);
+                if (!ProcessTransfur.isPlayerTransfurred(player)) super.render(ms, gx, gy, ticks);
             }
         };
-        guistate.put("button:button_i_want_be_transfured_by_you", button_i_want_be_transfured_by_you);
-        this.addRenderableWidget(button_i_want_be_transfured_by_you);
+
+        addRenderableWidget(button_i_want_be_transfured_by_you);
     }
 }

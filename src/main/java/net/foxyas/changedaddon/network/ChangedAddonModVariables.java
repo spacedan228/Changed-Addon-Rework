@@ -77,7 +77,6 @@ public class ChangedAddonModVariables {
         public boolean actCooldown = false;
         public boolean areDarkLatex = false;
         public boolean Exp009TransfurAllowed = false;
-        public boolean Exp009Buff = false;
         public boolean Exp10TransfurAllowed = false;
 
         /**
@@ -105,7 +104,6 @@ public class ChangedAddonModVariables {
             other.areDarkLatex = areDarkLatex;
             other.untransfurProgress = untransfurProgress;
             other.Exp009TransfurAllowed = Exp009TransfurAllowed;
-            other.Exp009Buff = Exp009Buff;
             other.Exp10TransfurAllowed = Exp10TransfurAllowed;
             if (!wasDeath) {
                 other.consciousnessFightProgress = consciousnessFightProgress;
@@ -126,7 +124,6 @@ public class ChangedAddonModVariables {
             nbt.putDouble("LatexInfectionCooldown", LatexInfectionCooldown);
             nbt.putDouble("UntransfurProgress", untransfurProgress);
             nbt.putBoolean("Exp009TransfurAllowed", Exp009TransfurAllowed);
-            nbt.putBoolean("Exp009Buff", Exp009Buff);
             nbt.putBoolean("Exp10TransfurAllowed", Exp10TransfurAllowed);
             return nbt;
         }
@@ -148,7 +145,6 @@ public class ChangedAddonModVariables {
             LatexInfectionCooldown = nbt.getDouble("LatexInfectionCooldown");
             untransfurProgress = nbt.getDouble("UntransfurProgress");
             Exp009TransfurAllowed = nbt.getBoolean("Exp009TransfurAllowed");
-            Exp009Buff = nbt.getBoolean("Exp009Buff");
             Exp10TransfurAllowed = nbt.getBoolean("Exp10TransfurAllowed");
         }
     }
@@ -186,7 +182,6 @@ public class ChangedAddonModVariables {
                 variables.LatexInfectionCooldown = message.data.LatexInfectionCooldown;
                 variables.untransfurProgress = message.data.untransfurProgress;
                 variables.Exp009TransfurAllowed = message.data.Exp009TransfurAllowed;
-                variables.Exp009Buff = message.data.Exp009Buff;
                 variables.Exp10TransfurAllowed = message.data.Exp10TransfurAllowed;
             });
         }

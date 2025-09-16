@@ -1,10 +1,13 @@
 package net.foxyas.changedaddon.item;
 
+import com.google.common.collect.Multimap;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSounds;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -21,8 +24,15 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,9 +41,19 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+import java.util.UUID;
+
 public class TransfurTotemItem extends Item {
+
+    public static final AttributeModifier TOTEM_BUFF_ATTACK = new AttributeModifier(UUID.fromString("17c5b5cf-bdae-4191-84d1-433db7cba751"), "transfur_stats", 4, AttributeModifier.Operation.ADDITION);
+    public static final AttributeModifier TOTEM_BUFF_DEFENSE = new AttributeModifier(UUID.fromString("17c5b5cf-bdae-4191-84d1-433db7cba752"), "transfur_stats", 8, AttributeModifier.Operation.ADDITION);
+    public static final AttributeModifier TOTEM_BUFF_ARMOR = new AttributeModifier(UUID.fromString("17c5b5cf-bdae-4191-84d1-433db7cba753"), "transfur_stats", 6, AttributeModifier.Operation.ADDITION);
 
     public TransfurTotemItem() {
         super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(1).fireResistant().rarity(Rarity.RARE));
@@ -44,6 +64,11 @@ public class TransfurTotemItem extends Item {
         ItemStack defaultInstance = super.getDefaultInstance();
         defaultInstance.getOrCreateTag().putString("form", "");
         return defaultInstance;
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        return super.getAttributeModifiers(slot, stack);
     }
 
     private static void tryLinkForm(Level level, Player player, ItemStack itemstack) {
@@ -201,13 +226,105 @@ public class TransfurTotemItem extends Item {
     }
 
     @Override
+    public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack pStack, @NotNull Player player, @NotNull LivingEntity targetEntity, @NotNull InteractionHand pUsedHand) {
+        if (pUsedHand != player.getUsedItemHand()) return InteractionResult.PASS;
+
+        Level level = player.level;
+
+        ItemStack totem = player.getMainHandItem();
+        if(!totem.is(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !totem.getOrCreateTag().getString("form").isEmpty()) totem = player.getOffhandItem();
+        if(!totem.is(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !totem.getOrCreateTag().getString("form").isEmpty()) return InteractionResult.PASS;
+
+        if(player.getCooldowns().isOnCooldown(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !player.isShiftKeyDown()) return InteractionResult.PASS;
+
+        if (targetEntity instanceof Player target) {
+            if(!ProcessTransfur.isPlayerTransfurred(target)) return InteractionResult.PASS;
+
+            String transfurId = ProcessTransfur.getPlayerTransfurVariant(target).getFormId().toString();
+            if (ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() == false) {
+                if (transfurId.startsWith("changed:form")) {
+                    player.getCooldowns().addCooldown(totem.getItem(), 20);
+
+                    if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
+
+                    totem.getOrCreateTag().putString("form", transfurId);
+
+                    level.playSound(null, player, SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 1, 1);
+                } else if (transfurId.startsWith("changed_addon:form")) {
+                    player.getCooldowns().addCooldown(totem.getItem(), 50);
+
+                    if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
+
+                    level.playSound(null, player, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1, 0);
+
+                    if (!target.level.isClientSide())
+                        target.displayClientMessage(new TextComponent((new TranslatableComponent("changed_addon.latex_totem.notvalid").getString())), true);
+                }
+            } else {
+                player.getCooldowns().addCooldown(totem.getItem(), 20);
+
+                if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
+
+                totem.getOrCreateTag().putString("form", transfurId);
+
+                level.playSound(null, player, SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 1, 1);
+            }
+        } else {
+            if (targetEntity instanceof ChangedEntity changedEntity) {
+                String string = changedEntity.getSelfVariant() != null ? changedEntity.getSelfVariant().getFormId().toString() : "";
+
+                player.getCooldowns().addCooldown(totem.getItem(), 20);
+
+                if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
+
+                totem.getOrCreateTag().putString("form", string);
+
+                level.playSound(null, player, SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 1, 1);
+            }
+        }
+
+        return InteractionResult.CONSUME;
+    }
+
+    private static void addModifier(LivingEntity entity, Attribute attribute, AttributeModifier modifier) {
+        if (!Objects.requireNonNull(entity.getAttribute(attribute)).hasModifier(modifier)) {
+            Objects.requireNonNull(entity.getAttribute(attribute)).addTransientModifier(modifier);
+        }
+    }
+
+    private static void removeModifier(LivingEntity entity, Attribute attribute, AttributeModifier modifier) {
+        if (Objects.requireNonNull(entity.getAttribute(attribute)).hasModifier(modifier)) {
+            Objects.requireNonNull(entity.getAttribute(attribute)).removeModifier(modifier);
+        }
+    }
+
+    @Override
     public void inventoryTick(@NotNull ItemStack itemstack, @NotNull Level level, @NotNull Entity entity, int slot, boolean selected) {
         super.inventoryTick(itemstack, level, entity, slot, selected);
 
         if (!(entity instanceof Player player)) return;
 
+        if (player instanceof ServerPlayer serverPlayer) {
+            TransfurVariantInstance<?> variant = ProcessTransfur.getPlayerTransfurVariant(player);
+
+            boolean isTransfurred = variant != null;
+            boolean holdingTotem = serverPlayer.getMainHandItem().getItem() == ChangedAddonItems.TRANSFUR_TOTEM.get()
+                    || serverPlayer.getOffhandItem().getItem() == ChangedAddonItems.TRANSFUR_TOTEM.get();
+
+            if (isTransfurred && holdingTotem) {
+                addModifier(serverPlayer, Attributes.ATTACK_DAMAGE, TOTEM_BUFF_ATTACK);
+                addModifier(serverPlayer, Attributes.ARMOR, TOTEM_BUFF_DEFENSE);
+                addModifier(serverPlayer, Attributes.ARMOR_TOUGHNESS, TOTEM_BUFF_ARMOR);
+            } else {
+                removeModifier(serverPlayer, Attributes.ATTACK_DAMAGE, TOTEM_BUFF_ATTACK);
+                removeModifier(serverPlayer, Attributes.ARMOR, TOTEM_BUFF_DEFENSE);
+                removeModifier(serverPlayer, Attributes.ARMOR_TOUGHNESS, TOTEM_BUFF_ARMOR);
+            }
+        }
+
         if (!player.getMainHandItem().is(itemstack.getItem()) && !player.getOffhandItem().is(itemstack.getItem()))
             return;
+
 
         if (player.getCooldowns().isOnCooldown(itemstack.getItem()) || !ProcessTransfur.isPlayerTransfurred(player)
                 || !ProcessTransfur.getPlayerTransfurVariant(player).is(ChangedTransfurVariants.LATEX_BENIGN_WOLF.get()))
@@ -228,6 +345,28 @@ public class TransfurTotemItem extends Item {
             AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
             if (!_ap.isDone()) {
                 for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);
+            }
+        }
+    }
+
+    public static float itemPropertyFunc(Entity entity) {
+        if(!(entity instanceof Player player)) return 0;
+
+        var instance = ProcessTransfur.getPlayerTransfurVariant(player);
+        if (instance == null || !instance.is(ChangedTransfurVariants.LATEX_BENIGN_WOLF)) return 0;
+
+        return  0.5f;
+    }
+
+    @Mod.EventBusSubscriber
+    public static class TransfurTotemItemIsStruckByLighting {
+
+        @SubscribeEvent
+        public static void onLightning(EntityStruckByLightningEvent event) {
+            if (!(event.getEntity() instanceof ItemEntity itemEntity)) return;
+
+            if (itemEntity.getItem().is(ChangedAddonItems.TRANSFUR_TOTEM.get())) {
+                event.setCanceled(true);
             }
         }
     }

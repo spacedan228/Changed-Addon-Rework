@@ -5,6 +5,8 @@ import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.procedures.CreatureDietsHandleProcedure;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
@@ -15,6 +17,7 @@ import net.ltxprogrammer.changed.entity.PowderSnowWalkable;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
@@ -31,6 +34,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
@@ -99,6 +103,13 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_KNOCKBACK), 2.0f);
     }
 
+    public static final CreatureDietsHandleProcedure.DietType LUMINARA_DIET = CreatureDietsHandleProcedure.DietType.create("LUMINARA", ChangedAddonTags.TransfurTypes.DRAGON_LIKE, ChangedAddonTags.Items.DRAGON_DIET, List.of(Items.CHORUS_FRUIT, ChangedItems.ORANGE.get()));
+
+    @Override
+    public List<CreatureDietsHandleProcedure.DietType> getExtraDietTypes() {
+        return List.of(LUMINARA_DIET);
+    }
+
     @Override
     public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
         if (patter.getLevel().isClientSide()) return;
@@ -163,10 +174,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
             setAttributesHyperAwakened(getAttributes());
         }
         attributesApplied = true;
-        var instance = IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).orElse(null);
-        if (instance != null) {
-            instance.refreshAttributes();
-        }
+        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
     /**
@@ -175,10 +183,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     public void removeAwakenedBuffs() {
         setAttributes(getAttributes());
         attributesApplied = false;
-        var instance = IAbstractChangedEntity.forEitherSafe(this.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).orElse(null);
-        if (instance != null) {
-            instance.refreshAttributes();
-        }
+        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
     @Mod.EventBusSubscriber
@@ -204,11 +209,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         Player player = this.getUnderlyingPlayer();
         if (player != null) {
             if (this.isAwakened()) {
-
                 if (isHyperAwakened()) {
                     spawnHyperAwakenedParticles();
                 }
-
 
                 tryToPacifyNearbyEntities(128);
             }
@@ -228,36 +231,40 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     private void spawnHyperAwakenedParticles() {
-        ParticlesUtil.sendParticlesWithMotion(
-                this,
-                ParticleTypes.SOUL_FIRE_FLAME,
-                new Vec3(0, this.getBbHeight() * 0.5, 0), // meio do corpo
-                Vec3.ZERO,
-                4,
-                0.05f
-        );
+        double offsetX = 0.25d;
+        double offsetY = 0.25d;
+        double offsetZ = 0.25d;
 
-        if (this.random.nextInt(5) == 0) {
-            ParticlesUtil.sendParticlesWithMotion(
-                    this,
-                    ParticleTypes.ELECTRIC_SPARK,
-                    new Vec3(0, this.getBbHeight() * 0.7, 0),
-                    new Vec3(
-                            (this.random.nextDouble() - 0.5) * 0.3,
-                            (this.random.nextDouble() - 0.5) * 0.3,
-                            (this.random.nextDouble() - 0.5) * 0.3
-                    ),
-                    2,
-                    0.2f
-            );
-        }
+        Vec3 offset = new Vec3(offsetX, offsetY, offsetZ);
+
+        double x = random.nextGaussian() * offset.x;
+        double y = random.nextGaussian() * offset.y;
+        double z = random.nextGaussian() * offset.z;
+
+        Vec3 pos = this.position().add(0, 0.5, 0).add(x, y, z);
+
+        Vec3 motion = this.getEyePosition().subtract(pos);
 
         if (this.random.nextInt(3) == 0) {
             ParticlesUtil.sendParticlesWithMotion(
                     this,
+                    ParticleTypes.REVERSE_PORTAL,
+                    pos,
+                    Vec3.ZERO,
+                    motion,
+                    6,
+                    0.05f
+            );
+        }
+
+        // End rod - mais altos, tipo energia subindo
+        if (this.random.nextInt(3) == 0) {
+            ParticlesUtil.sendParticlesWithMotion(
+                    this,
                     ParticleTypes.END_ROD,
-                    new Vec3(0, this.getBbHeight() * 0.8, 0),
-                    new Vec3(0, 0.05, 0),
+                    position().add(0, 0.5, 0),
+                    new Vec3(offsetX, offsetY, offsetZ),
+                    new Vec3(0, 0.08 + this.random.nextDouble() * 0.05, 0),
                     2,
                     0.05f
             );
@@ -323,19 +330,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
-    @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-    }
-
     public void saveExtraData(CompoundTag tag) {
         tag.putBoolean("Awakened", this.isAwakened());
         tag.putBoolean("HyperAwakened", this.isHyperAwakened());
-    }
-
-    @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
     }
 
     @Override

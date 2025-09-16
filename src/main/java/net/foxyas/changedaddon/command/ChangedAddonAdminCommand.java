@@ -10,6 +10,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
@@ -51,7 +52,7 @@ public class ChangedAddonAdminCommand {
                         )
                 )
                 .then(Commands.literal("allow_boss_transfur")
-                        .then(Commands.literal("Ket_Exp_009")
+                        .then(Commands.literal("Exp9")
                                 .then(Commands.literal("get")
                                         .then(Commands.argument("player", EntityArgument.player())
                                                 .executes(arguments -> {
@@ -85,7 +86,7 @@ public class ChangedAddonAdminCommand {
                                         )
                                 )
                         )
-                        .then(Commands.literal("Exp_10")
+                        .then(Commands.literal("Exp10")
                                 .then(Commands.literal("get")
                                         .then(Commands.argument("player", EntityArgument.player())
                                                 .executes(arguments -> {

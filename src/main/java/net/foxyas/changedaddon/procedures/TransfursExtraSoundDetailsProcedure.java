@@ -1,485 +1,104 @@
 package net.foxyas.changedaddon.procedures;
 
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.util.DelayedTask;
+import net.foxyas.changedaddon.util.PlayerUtil;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.ServerChatEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
-
-import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber
 public class TransfursExtraSoundDetailsProcedure {
+
     @SubscribeEvent
     public static void onChat(ServerChatEvent event) {
-        execute(event, event.getPlayer().level, event.getPlayer(), event.getMessage());
-    }
+        ServerPlayer player = event.getPlayer();
+        String text = event.getMessage();
+        if (text == null || !ProcessTransfur.isPlayerTransfurred(player)) return;
 
-    public static void execute(LevelAccessor world, Entity entity, String text) {
-        execute(null, world, entity, text);
-    }
+        ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.nonNullOf(player);
+        if(vars.actCooldown) return;
 
-    private static void execute(@Nullable Event event, LevelAccessor world, Entity entity, String text) {
-        if (entity == null || text == null)
-            return;
-        if (entity instanceof Player player && ProcessTransfur.isPlayerTransfurred(player)) {
-            var formId = ProcessTransfur.getPlayerTransfurVariant(player).getFormId().toString();
-            if (formId.contains("tiger_shark")) {
-                if (text.contains("roar")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        {
-                            Entity _ent = entity;
-                            if (!_ent.level.isClientSide() && _ent.getServer() != null)
-                                _ent.getServer().getCommands().performCommand(_ent.createCommandSourceStack().withSuppressedOutput().withPermission(4), "playsound changed:monster2 hostile @a ~ ~ ~ 5 1");
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
-            }
-            if (formId.contains("experiment009")) {
-                if (text.contains("roar")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        {
-                            Entity _ent = entity;
-                            if (!_ent.level.isClientSide() && _ent.getServer() != null)
-                                _ent.getServer().getCommands().performCommand(_ent.createCommandSourceStack().withSuppressedOutput().withPermission(4), "playsound changed:monster2 hostile @a ~ ~ ~ 35 0 0");
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
-            }
-            if (IfCatLatexProcedure.execute(entity)) {
-                if (text.contains("meow")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        if (world instanceof Level _level) {
-                            if (!_level.isClientSide()) {
-                                _level.playSound(null, new BlockPos(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.cat.ambient")), SoundSource.PLAYERS, 2, 1);
-                            } else {
-                                _level.playLocalSound((entity.getX()), (entity.getY()), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.cat.ambient")), SoundSource.PLAYERS, 2, 1, false);
-                            }
-                        }
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
-                if (text.contains("purreow")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        if (world instanceof Level _level) {
-                            if (!_level.isClientSide()) {
-                                _level.playSound(null, new BlockPos(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.cat.purreow")), SoundSource.PLAYERS, 2, 1);
-                            } else {
-                                _level.playLocalSound((entity.getX()), (entity.getY()), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.cat.purreow")), SoundSource.PLAYERS, 2, 1, false);
-                            }
-                        }
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
-                if (text.contains("hiss")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        if (world instanceof Level _level) {
-                            if (!_level.isClientSide()) {
-                                _level.playSound(null, new BlockPos(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.cat.hiss")), SoundSource.PLAYERS, 2, 1);
-                            } else {
-                                _level.playLocalSound((entity.getX()), (entity.getY()), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.cat.hiss")), SoundSource.PLAYERS, 2, 1, false);
-                            }
-                        }
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
-                if (text.contains("purr")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        if (world instanceof Level _level) {
-                            if (!_level.isClientSide()) {
-                                _level.playSound(null, new BlockPos(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.cat.purr")), SoundSource.PLAYERS, 2, 1);
-                            } else {
-                                _level.playLocalSound((entity.getX()), (entity.getY()), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.cat.purr")), SoundSource.PLAYERS, 2, 1, false);
-                            }
-                        }
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
-            }
-            if (IfDogLatexProcedure.execute(entity)) {
-                if (text.contains("growl")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        if (world instanceof Level _level) {
-                            if (!_level.isClientSide()) {
-                                _level.playSound(null, new BlockPos(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.wolf.growl")), SoundSource.PLAYERS, 2, 1);
-                            } else {
-                                _level.playLocalSound((entity.getX()), (entity.getY()), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.wolf.growl")), SoundSource.PLAYERS, 2, 1, false);
-                            }
-                        }
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
-                if (text.contains("bark")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        if (world instanceof Level _level) {
-                            if (!_level.isClientSide()) {
-                                _level.playSound(null, new BlockPos(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.wolf.ambient")), SoundSource.PLAYERS, 2, 1);
-                            } else {
-                                _level.playLocalSound((entity.getX()), (entity.getY()), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.wolf.ambient")), SoundSource.PLAYERS, 2, 1, false);
-                            }
-                        }
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
-                if (text.contains("howl")) {
-                    if (!(entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).actCooldown) {
-                        if (world instanceof Level _level) {
-                            if (!_level.isClientSide()) {
-                                _level.playSound(null, new BlockPos(entity.getX(), entity.getY(), entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.wolf.howl")), SoundSource.PLAYERS, 2, 1);
-                            } else {
-                                _level.playLocalSound((entity.getX()), (entity.getY()), (entity.getZ()), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.wolf.howl")), SoundSource.PLAYERS, 2, 1, false);
-                            }
-                        }
-                        {
-                            boolean _setval = true;
-                            entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                capability.actCooldown = _setval;
-                                capability.syncPlayerVariables(entity);
-                            });
-                        }
-                        new Object() {
-                            private int ticks = 0;
-                            private float waitTicks;
-                            private LevelAccessor world;
-
-                            public void start(LevelAccessor world, int waitTicks) {
-                                this.waitTicks = waitTicks;
-                                MinecraftForge.EVENT_BUS.register(this);
-                                this.world = world;
-                            }
-
-                            @SubscribeEvent
-                            public void tick(TickEvent.ServerTickEvent event) {
-                                if (event.phase == TickEvent.Phase.END) {
-                                    this.ticks += 1;
-                                    if (this.ticks >= this.waitTicks)
-                                        run();
-                                }
-                            }
-
-                            private void run() {
-                                {
-                                    boolean _setval = false;
-                                    entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(capability -> {
-                                        capability.actCooldown = _setval;
-                                        capability.syncPlayerVariables(entity);
-                                    });
-                                }
-                                MinecraftForge.EVENT_BUS.unregister(this);
-                            }
-                        }.start(world, 60);
-                    }
-                }
+        Level level = player.level;
+        TransfurVariant<?> var = ProcessTransfur.getPlayerTransfurVariant(player).getParent();
+        if(var.is(ChangedTransfurVariants.LATEX_TIGER_SHARK)){
+            if(text.contains("roar")) {
+                level.playSound(null, player, ChangedSounds.MONSTER2, SoundSource.HOSTILE, 5, 1);
+                setCooldown(vars, player);
+                return;
             }
         }
+
+        if(var.is(ChangedAddonTransfurVariants.EXPERIMENT_009) || var.is(ChangedAddonTransfurVariants.EXPERIMENT_009_BOSS)){
+            if(text.contains("roar")) {
+                level.playSound(null, player, ChangedSounds.MONSTER2, SoundSource.HOSTILE, 35, 1);
+                setCooldown(vars, player);
+                return;
+            }
+        }
+
+        if(PlayerUtil.isCatTransfur(player)){
+            if(text.contains("meow")){
+                level.playSound(null, player, SoundEvents.CAT_AMBIENT, SoundSource.PLAYERS, 2, 1);
+                setCooldown(vars, player);
+                return;
+            }
+
+            if(text.contains("purreow")){
+                level.playSound(null, player, SoundEvents.CAT_PURREOW, SoundSource.PLAYERS, 2, 1);
+                setCooldown(vars, player);
+                return;
+            }
+
+            if(text.contains("hiss")){
+                level.playSound(null, player, SoundEvents.CAT_HISS, SoundSource.PLAYERS, 2, 1);
+                setCooldown(vars, player);
+                return;
+            }
+
+            if(text.contains("purr")){
+                level.playSound(null, player, SoundEvents.CAT_PURR, SoundSource.PLAYERS, 2, 1);
+                setCooldown(vars, player);
+                return;
+            }
+        }
+
+        if (PlayerUtil.isWolfTransfur(player)) {
+            if (text.contains("growl")) {
+                level.playSound(null, player, SoundEvents.WOLF_GROWL, SoundSource.PLAYERS, 2, 1);
+                setCooldown(vars, player);
+                return;
+            }
+
+            if (text.contains("bark")) {
+                level.playSound(null, player, SoundEvents.WOLF_AMBIENT, SoundSource.PLAYERS, 2, 1);
+                setCooldown(vars, player);
+                return;
+            }
+
+            if (text.contains("howl")) {
+                level.playSound(null, player, SoundEvents.WOLF_HOWL, SoundSource.PLAYERS, 2, 1);
+                setCooldown(vars, player);
+            }
+        }
+    }
+
+    private static void setCooldown(ChangedAddonModVariables.PlayerVariables vars, ServerPlayer player){
+        vars.actCooldown = true;
+        vars.syncPlayerVariables(player);
+
+        DelayedTask.schedule(60, () -> {
+            vars.actCooldown = false;
+            vars.syncPlayerVariables(player);
+        });
     }
 }

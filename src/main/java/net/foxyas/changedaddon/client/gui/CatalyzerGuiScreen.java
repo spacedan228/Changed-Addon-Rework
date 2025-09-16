@@ -2,7 +2,10 @@ package net.foxyas.changedaddon.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.foxyas.changedaddon.procedures.*;
+import net.foxyas.changedaddon.procedures.BlockstartinfoProcedure;
+import net.foxyas.changedaddon.procedures.CatalyzerGuiValueProcedure;
+import net.foxyas.changedaddon.procedures.IfBlockisfullProcedure;
+import net.foxyas.changedaddon.procedures.RecipeProgressProcedure;
 import net.foxyas.changedaddon.world.inventory.CatalyzerGuiMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
@@ -10,16 +13,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu> {
+
     private static final ResourceLocation texture = new ResourceLocation("changed_addon:textures/screens/catalyzer_gui_new.png");
+
     private final Level world;
     private final int x, y, z;
-    private final Player entity;
+    private final CatalyzerGuiMenu menu;
 
     public CatalyzerGuiScreen(CatalyzerGuiMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
@@ -27,7 +31,7 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         this.x = container.x;
         this.y = container.y;
         this.z = container.z;
-        this.entity = container.entity;
+        menu = container;
         this.imageWidth = 200;
         this.imageHeight = 170;
     }
@@ -37,7 +41,7 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         this.renderBackground(ms);
         super.render(ms, mouseX, mouseY, partialTicks);
         this.renderTooltip(ms, mouseX, mouseY);
-        if (IfisEmptyProcedure.execute(entity))
+        if (menu.isSlotEmpty(0))
             if (mouseX > leftPos + 18 && mouseX < leftPos + 42 && mouseY > topPos + 40 && mouseY < topPos + 64)
                 this.renderTooltip(ms, new TranslatableComponent("gui.changed_addon.catalyzer_gui.tooltip_put_the_powders_or_syringe"), mouseX, mouseY);
     }
@@ -74,17 +78,6 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         blit(ms, this.leftPos + 23, this.topPos + yOffset, 0, 0, 16, 16, 16, 16);
 
         RenderSystem.disableBlend();
-    }
-
-    @Override
-    public boolean keyPressed(int key, int b, int c) {
-        if (key == 256) {
-            assert this.minecraft != null;
-            assert this.minecraft.player != null;
-            this.minecraft.player.closeContainer();
-            return true;
-        }
-        return super.keyPressed(key, b, c);
     }
 
     @Override

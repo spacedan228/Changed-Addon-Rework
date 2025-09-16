@@ -6,11 +6,14 @@ import net.foxyas.changedaddon.block.advanced.HandScanner;
 import net.foxyas.changedaddon.block.advanced.PawsScanner;
 import net.foxyas.changedaddon.block.advanced.TimedKeypad;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -63,6 +66,7 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> HAND_SCANNER = REGISTRY.register("hand_scanner", HandScanner::new);
     public static final RegistryObject<Block> PAWS_SCANNER = REGISTRY.register("paws_scanner", PawsScanner::new);
     public static final RegistryObject<Block> LUMINARA_BLOOM = REGISTRY.register("luminara_bloom", LuminaraBloomFlowerBlock::new);
+    public static final RegistryObject<Block> POTTED_LUMINARA_BLOOM = REGISTRY.register("potted_luminara_bloom", PottedLuminaraBloomFlowerBlock::new);
 
     public static final RegistryObject<WolfCrystalPillar> WOLF_CRYSTAL_PILLAR = REGISTRY.register("wolf_crystal_pillar", WolfCrystalPillar::new);
 
@@ -87,7 +91,21 @@ public class ChangedAddonBlocks {
             HandScanner.registerRenderLayer();
             LuminarCrystalBlock.registerRenderLayer();
             LuminaraBloomFlowerBlock.registerRenderLayer();
+            PottedLuminaraBloomFlowerBlock.registerRenderLayer();
             WolfCrystalPillar.registerRenderLayer();
+        }
+    }
+
+    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+    public static class CommonSideHandler {
+        @SubscribeEvent
+        public static void commonSetup(FMLCommonSetupEvent event) {
+            event.enqueueWork(() -> {
+                if (LUMINARA_BLOOM.getId() != null) {
+                    ((FlowerPotBlock) Blocks.FLOWER_POT)
+                            .addPlant(LUMINARA_BLOOM.getId(), POTTED_LUMINARA_BLOOM);
+                }
+            });
         }
     }
 }

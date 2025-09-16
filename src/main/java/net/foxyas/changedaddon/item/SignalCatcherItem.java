@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.procedures.SignalBlockFeatureProcedure;
-import net.foxyas.changedaddon.procedures.SignalCatcherOnPlayerStoppedUsingProcedure;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -26,10 +26,6 @@ public class SignalCatcherItem extends Item {
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player entity, @NotNull InteractionHand hand) {
         InteractionResultHolder<ItemStack> ar = super.use(world, entity, hand);
-        ItemStack itemstack = ar.getObject();
-        double x = entity.getX();
-        double y = entity.getY();
-        double z = entity.getZ();
         entity.startUsingItem(hand);
         return ar;
     }
@@ -47,6 +43,9 @@ public class SignalCatcherItem extends Item {
 
     @Override
     public void releaseUsing(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull LivingEntity entity, int time) {
-        SignalCatcherOnPlayerStoppedUsingProcedure.execute(entity, itemstack);
+        if (!itemstack.getOrCreateTag().getBoolean("set")) {
+            if (entity instanceof Player player && !player.level.isClientSide())
+                player.displayClientMessage(new TextComponent("§o§bNo Location Found §l[Not Close Enough]"), false);
+        }
     }
 }

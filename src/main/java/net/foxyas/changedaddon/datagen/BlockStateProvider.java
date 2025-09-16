@@ -63,6 +63,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         horizontalBlock(WOLF_PLUSH);
         simpleBlock(YELLOW_WOLF_CRYSTAL_BLOCK);
         simpleBlock(YELLOW_WOLF_CRYSTAL_SMALL);
+        simpleBlock(POTTED_LUMINARA_BLOOM);
 
         timedKeypad();
 

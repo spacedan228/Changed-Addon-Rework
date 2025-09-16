@@ -21,13 +21,11 @@ public class SleepWithUntransfurEffectProcedure {
         if (!level.isDay() || !(entity instanceof Player player)
                 || !player.hasEffect(ChangedAddonMobEffects.UNTRANSFUR.get())) return;
 
-        new DelayedTask(5, () -> {
-            player.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(cap -> {
-                if (ProcessTransfur.isPlayerTransfurred(player) && player.isSleepingLongEnough()) {
-                    cap.untransfurProgress += 50;
-                    cap.syncPlayerVariables(player);
-                }
-            });
-        });
+        new DelayedTask(5, () -> player.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(cap -> {
+            if (ProcessTransfur.isPlayerTransfurred(player) && player.isSleepingLongEnough()) {
+                cap.untransfurProgress += 50;
+                cap.syncPlayerVariables(player);
+            }
+        }));
     }
 }

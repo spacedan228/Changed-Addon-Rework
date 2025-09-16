@@ -10,10 +10,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 public class HazmatSuitTickUsedProcedure {
     public static void execute(Entity entity, ItemStack itemstack) {
-        if (entity == null)
-            return;
-        ItemStack item;
-        item = itemstack;
+        if (entity == null) return;
+
         if (entity instanceof Player player) {
             TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
 
@@ -22,11 +20,9 @@ public class HazmatSuitTickUsedProcedure {
                     entity.hurt(((new EntityDamageSource("latex_solvent" + ".player", entity)).bypassArmor()), 2);
                 }
                 if (entity instanceof Player _player) {
-                    _player.getInventory().clearOrCountMatchingItems(p -> item.getItem() == p.getItem(), 1, _player.inventoryMenu.getCraftSlots());
-                }
-                if (entity instanceof Player _player) {
-                    item.setCount(1);
-                    ItemHandlerHelper.giveItemToPlayer(_player, item);
+                    _player.getInventory().clearOrCountMatchingItems(p -> itemstack.getItem() == p.getItem(), 1, _player.inventoryMenu.getCraftSlots());
+                    itemstack.setCount(1);
+                    ItemHandlerHelper.giveItemToPlayer(_player, itemstack);
                 }
             }
         }
