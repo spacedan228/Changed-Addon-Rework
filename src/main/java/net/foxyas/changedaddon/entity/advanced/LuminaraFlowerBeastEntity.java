@@ -241,9 +241,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         double y = random.nextGaussian() * offset.y;
         double z = random.nextGaussian() * offset.z;
 
-        Vec3 pos = this.position().add(x, y, z);
+        Vec3 pos = this.position().add(0, 0.5, 0).add(x, y, z);
 
-        Vec3 motion = this.position().subtract(pos);
+        Vec3 motion = this.getEyePosition().subtract(pos);
 
         if (this.random.nextInt(3) == 0) {
             ParticlesUtil.sendParticlesWithMotion(
@@ -262,6 +262,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
             ParticlesUtil.sendParticlesWithMotion(
                     this,
                     ParticleTypes.END_ROD,
+                    position().add(0, 0.5, 0),
                     new Vec3(offsetX, offsetY, offsetZ),
                     new Vec3(0, 0.08 + this.random.nextDouble() * 0.05, 0),
                     2,
