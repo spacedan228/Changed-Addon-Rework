@@ -231,53 +231,38 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     private void spawnHyperAwakenedParticles() {
-        // Soul fire flame - espalhado pelo corpo
-        for (int i = 0; i < 4; i++) {
-            double offsetX = (this.random.nextDouble() - 0.5) * this.getBbWidth();  // espalha lateralmente
-            double offsetY = this.random.nextDouble() * this.getBbHeight();         // em qualquer altura do corpo
-            double offsetZ = (this.random.nextDouble() - 0.5) * this.getBbWidth();
+        double offsetX = 0.25d;
+        double offsetY = 0.25d;
+        double offsetZ = 0.25d;
 
+        Vec3 offset = new Vec3(offsetX, offsetY, offsetZ);
+
+        double x = random.nextGaussian() * offset.x;
+        double y = random.nextGaussian() * offset.y;
+        double z = random.nextGaussian() * offset.z;
+
+        Vec3 pos = this.position().add(x, y, z);
+
+        Vec3 motion = this.position().subtract(pos);
+
+        if (this.random.nextInt(3) == 0) {
             ParticlesUtil.sendParticlesWithMotion(
                     this,
-                    ParticleTypes.SOUL_FIRE_FLAME,
-                    new Vec3(offsetX, offsetY, offsetZ),
+                    ParticleTypes.REVERSE_PORTAL,
+                    pos,
                     Vec3.ZERO,
-                    1,
-                    0.05f
-            );
-        }
-
-        // Electric sparks - mais caóticos
-        if (this.random.nextInt(5) == 0) {
-            double offsetX = (this.random.nextDouble() - 0.5) * this.getBbWidth();
-            double offsetY = this.getBbHeight() * 0.5 + (this.random.nextDouble() - 0.5) * 0.5;
-            double offsetZ = (this.random.nextDouble() - 0.5) * this.getBbWidth();
-
-            Vec3 motion = new Vec3(
-                    (this.random.nextDouble() - 0.5) * 0.4,
-                    (this.random.nextDouble() - 0.3) * 0.5,
-                    (this.random.nextDouble() - 0.5) * 0.4
-            );
-
-            ParticlesUtil.sendParticlesWithMotion(
-                    this,
-                    ParticleTypes.ELECTRIC_SPARK,
-                    new Vec3(offsetX, offsetY, offsetZ),
                     motion,
-                    2,
-                    0.2f
+                    6,
+                    0.05f
             );
         }
 
         // End rod - mais altos, tipo energia subindo
         if (this.random.nextInt(3) == 0) {
-            double offsetX = (this.random.nextDouble() - 0.5) * (this.getBbWidth() * 0.6);
-            double offsetZ = (this.random.nextDouble() - 0.5) * (this.getBbWidth() * 0.6);
-
             ParticlesUtil.sendParticlesWithMotion(
                     this,
                     ParticleTypes.END_ROD,
-                    new Vec3(offsetX, this.getBbHeight() * 0.9, offsetZ),
+                    new Vec3(offsetX, offsetY, offsetZ),
                     new Vec3(0, 0.08 + this.random.nextDouble() * 0.05, 0),
                     2,
                     0.05f
