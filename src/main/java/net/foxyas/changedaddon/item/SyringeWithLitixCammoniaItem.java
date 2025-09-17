@@ -18,10 +18,9 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
     }
 
     @Override
-    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull LivingEntity entity) {
-        ItemStack retval = super.finishUsingItem(itemstack, world, entity);
-        SyringeWithLitixCammoniaPlayerFinishesUsingItem.run(world, entity);
-        return retval;
+    public void applyEffectsAfterUse(@NotNull ItemStack pStack, Level level, LivingEntity entity) {
+        super.applyEffectsAfterUse(pStack, level, entity);
+        SyringeWithLitixCammoniaPlayerFinishesUsingItem.run(level, entity);
     }
 
     @Override

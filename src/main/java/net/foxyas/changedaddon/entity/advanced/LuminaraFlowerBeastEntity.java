@@ -52,6 +52,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     private static final EntityDataAccessor<Boolean> HYPER_AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
     private boolean attributesApplied;
     private boolean attributesAppliedEntity;
+    public boolean spawnParticles = true;
 
     public LuminaraFlowerBeastEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), world);
@@ -210,7 +211,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         if (player != null) {
             if (this.isAwakened()) {
                 if (isHyperAwakened()) {
-                    spawnHyperAwakenedParticles();
+                    if (spawnParticles) {
+                        spawnHyperAwakenedParticles();
+                    }
                 }
 
                 tryToPacifyNearbyEntities(128);
@@ -245,24 +248,24 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
         Vec3 motion = this.getEyePosition().subtract(pos);
 
-        if (this.random.nextInt(3) == 0) {
-            ParticlesUtil.sendParticlesWithMotion(
-                    this,
-                    ParticleTypes.REVERSE_PORTAL,
-                    pos,
-                    Vec3.ZERO,
-                    motion,
+        if (this.random.nextInt(10) == 0) {
+            ParticlesUtil.sendParticles(
+                    this.getLevel(),
+                    ParticleTypes.PORTAL, this.position().add(0, this.getBbHeight() / 2, 0),
+                    (float) offsetX,
+                    (float) offsetY,
+                    (float) offsetZ,
                     6,
-                    0.05f
+                    1
             );
         }
 
         // End rod - mais altos, tipo energia subindo
-        if (this.random.nextInt(3) == 0) {
+        if (this.random.nextInt(20) == 0) {
             ParticlesUtil.sendParticlesWithMotion(
                     this,
                     ParticleTypes.END_ROD,
-                    position().add(0, 0.5, 0),
+                    getEyePosition(),
                     new Vec3(offsetX, offsetY, offsetZ),
                     new Vec3(0, 0.08 + this.random.nextDouble() * 0.05, 0),
                     2,
@@ -277,7 +280,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         super.baseTick();
 
         if (isHyperAwakened()) {
-            spawnHyperAwakenedParticles();
+            if (spawnParticles) {
+                spawnHyperAwakenedParticles();
+            }
         }
 
         AttributeInstance attributeInstance = this.getAttribute(Attributes.FOLLOW_RANGE);

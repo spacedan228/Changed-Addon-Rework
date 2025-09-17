@@ -74,7 +74,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
             }
         }
 
-        return UseType.CHARGE_RELEASE;
+        return UseType.INSTANT;
     }
 
     @Override
@@ -169,11 +169,29 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
                 }
             }
 
+            if (entity.getEntity() instanceof Player player) {
+                if (!player.isOnGround() && !player.getAbilities().flying && !player.isFallFlying()) {
+                    return false;
+                }
+            }
+
             return this.entity.getSelfVariant() != null && this.entity.getSelfVariant().canGlide;
         }
 
         @Override
         public boolean canKeepUsing() {
+            if (this.entity.getChangedEntity() instanceof VariantExtraStats extraStats) {
+                if (extraStats.getFlyType() == VariantExtraStats.FlyType.NONE) {
+                    return false;
+                }
+            }
+
+            if (entity.getEntity() instanceof Player player) {
+                if (!player.isOnGround() && !player.getAbilities().flying && !player.isFallFlying()) {
+                    return false;
+                }
+            }
+
             return this.entity.getSelfVariant() != null && this.entity.getSelfVariant().canGlide;
         }
 

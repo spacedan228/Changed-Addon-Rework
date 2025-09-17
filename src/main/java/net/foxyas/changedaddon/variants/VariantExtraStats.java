@@ -28,7 +28,14 @@ public interface VariantExtraStats {
     }
 
     default FlyType getFlyType() {
-        return FlyType.BOTH;
+        if (this instanceof ChangedEntity changedEntity) {
+            if (changedEntity.getSelfVariant() != null) {
+                var variant = changedEntity.getSelfVariant();
+                return variant.canGlide ? FlyType.BOTH : FlyType.NONE;
+            }
+        }
+
+        return FlyType.NONE;
     }
 
     default void readExtraData(CompoundTag tag) {

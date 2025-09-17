@@ -42,6 +42,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -570,5 +571,19 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
                 0.0f
         );
         player.displayClientMessage(translatableComponentList.get(this.getRandom().nextInt(translatableComponentList.size())), false);
+        applyRampage();
+    }
+
+    private void applyRampage() {
+        MobEffectInstance thisEffect = this.getEffect(MobEffects.DAMAGE_BOOST);
+        MobEffectInstance mobEffectInstance;
+        if (thisEffect != null) {
+            int pDuration = thisEffect.getDuration() + 10;
+            int pAmplifier = Mth.clamp(thisEffect.getAmplifier() + 1, 0, 5);
+            mobEffectInstance = new MobEffectInstance(MobEffects.DAMAGE_BOOST, pDuration, pAmplifier, thisEffect.isAmbient(), thisEffect.isVisible(), thisEffect.showIcon());
+        } else {
+            mobEffectInstance = new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20, 0, true, true, true);
+        }
+        this.addEffect(mobEffectInstance);
     }
 }
