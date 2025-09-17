@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(value = Enchantment.class, remap = true)
+@Mixin(value = Enchantment.class)
 public abstract class InfinityEnchantmentMixin {
 
 
