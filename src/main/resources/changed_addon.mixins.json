@@ -16,7 +16,6 @@
     "client.renderer.AnimationsMixin",
     "client.renderer.WingFallFlyAnimationMixin",
     "client.renderer.WingFlyAnimationMixin",
-    "enchantments.EnchantmentMixin",
     "enchantments.InfinityEnchantmentMixin",
     "entity.ChangedEntityMixin",
     "entity.IronGolemMixin",

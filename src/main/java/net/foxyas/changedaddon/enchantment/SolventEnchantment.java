@@ -5,7 +5,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -30,7 +29,7 @@ public class SolventEnchantment extends Enchantment {
 
     @Override
     public boolean canApplyAtEnchantingTable(@NotNull ItemStack itemstack) {
-        return Ingredient.of(ChangedAddonTags.Items.LATEX_SOLVENT_APPLICABLE).test(itemstack)
+        return itemstack.is(ChangedAddonTags.Items.LATEX_SOLVENT_APPLICABLE)
                 || itemstack.getItem() instanceof SwordItem
                 || itemstack.getItem() instanceof AxeItem;
     }
