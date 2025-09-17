@@ -33,6 +33,7 @@ public class ChangedAddonMod {
         ChangedAddonTabs.load();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ChangedAddonBlocks.REGISTRY.register(bus);
+        ChangedAddonPaintingTypes.PAINTING_TYPES.register(bus);
         ChangedAddonItems.REGISTRY.register(bus);
         ChangedAddonEntities.REGISTRY.register(bus);
         ChangedAddonBlockEntities.REGISTRY.register(bus);

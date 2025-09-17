@@ -21,6 +21,7 @@ import org.lwjgl.opengl.GL14;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static net.minecraft.client.renderer.RenderType.OutlineProperty.IS_OUTLINE;
 
@@ -34,6 +35,54 @@ public final class ChangedAddonRenderTypes extends RenderType {
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
         event.registerShader(new ShaderInstance(event.getResourceManager(), ChangedAddonMod.resourceLoc("translucent_outline"), DefaultVertexFormat.POSITION_COLOR_TEX), shader -> TRANSLUCENT_OUTLINE_SHADER = shader);
+    }
+
+    private static final Function<ResourceLocation, RenderType> GLOW_WITH_NO_TRANSLUCED = Util.memoize((p_173255_) -> {
+        RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173255_,
+                false,
+                false);
+
+        return create(ChangedAddonMod.resourceLocString("glow_with_no_transluced"),
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS,
+                256,
+                false,
+                true,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RENDERTYPE_EYES_SHADER)
+                        .setTextureState(renderstateshard$texturestateshard)
+                        .setTransparencyState(NO_TRANSPARENCY)
+                        .setWriteMaskState(COLOR_WRITE)
+                        .createCompositeState(false));
+    });
+
+    private static final Function<ResourceLocation, RenderType> GLOW_WITH_NO_TRANSLUCED_CULL = Util.memoize((p_173255_) -> {
+        RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173255_,
+                false,
+                false);
+
+        return create(ChangedAddonMod.resourceLocString("glow_with_no_transluced_cull"),
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS,
+                256,
+                false,
+                true,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RENDERTYPE_EYES_SHADER)
+                        .setTextureState(renderstateshard$texturestateshard)
+                        .setTransparencyState(NO_TRANSPARENCY)
+                        .setWriteMaskState(COLOR_WRITE)
+                        .setCullState(RenderStateShard.CULL)
+                        .createCompositeState(false));
+    });
+
+
+    public static RenderType glowWithNoTransluced(ResourceLocation location) {
+        return GLOW_WITH_NO_TRANSLUCED.apply(location);
+    }
+
+    public static RenderType glowWithNoTranslucedCull(ResourceLocation location) {
+        return GLOW_WITH_NO_TRANSLUCED_CULL.apply(location);
     }
 
     public static final RenderType QUADS_WITH_TRANSPARENCY = RenderType.create(
@@ -252,7 +301,6 @@ public final class ChangedAddonRenderTypes extends RenderType {
     public static RenderType outlineWithDepth(ResourceLocation location) {
         return OUTLINE_WITH_DEPTH.apply(location, OUTLINE_CULL_STATE);
     }
-
 
     public static RenderType outlineWithDepthFull(ResourceLocation location) {
         return OUTLINE_WITH_DEPTH.apply(location, NO_CULL);
