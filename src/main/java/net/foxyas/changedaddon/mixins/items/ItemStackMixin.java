@@ -26,7 +26,7 @@ public abstract class ItemStackMixin implements IForgeItemStack {
         ItemStack self = (ItemStack)(IForgeItemStack)this;
         boolean variantCanFly = ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(entity))
                 .map(latexVariant -> {
-                    if (latexVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+                    if (latexVariant.canGlide && latexVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
                         return variantExtraStats.getFlyType().canGlide();
                     }
                     return latexVariant.getParent().canGlide;
