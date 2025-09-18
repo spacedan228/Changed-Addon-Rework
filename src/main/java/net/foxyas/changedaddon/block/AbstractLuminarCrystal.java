@@ -545,7 +545,7 @@ public class AbstractLuminarCrystal {
                             if (level.getBlockState(spawnPos).isAir() &&
                                     level.getBlockState(spawnPos.above()).isAir()) {
 
-                                spawnPos = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawnPos);
+                                spawnPos = new BlockPos(spawnPos.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawnPos.getX(), spawnPos.getZ()), spawnPos.getZ());
 
                                 newLeopard.setPos(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
                                 level.addFreshEntity(newLeopard);

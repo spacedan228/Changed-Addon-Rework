@@ -18,6 +18,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -232,7 +233,21 @@ public class ThunderDiveGoal extends Goal {
             double x = center.getX() + 0.5 + radius * Math.cos(angle);
             double z = center.getZ() + 0.5 + radius * Math.sin(angle);
 
-            int topY = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(Mth.floor(x), 0, Mth.floor(z))).getY();
+            int topY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(x), Mth.floor(z));
+
+            if (level.dimensionType().hasCeiling()) {
+                // Começa do teto e desce até achar espaço
+                int maxY = level.getHeight() - 1;
+                for (int y = maxY; y > 0; y--) {
+                    BlockPos checkPos = new BlockPos(x, y, z);
+                    // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
+                    if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(checkPos.above())) {
+                        topY = y;
+                        break;
+                    }
+                }
+            }
+
             BlockPos strikePos = new BlockPos(Mth.floor(x), topY, Mth.floor(z));
 
             LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);

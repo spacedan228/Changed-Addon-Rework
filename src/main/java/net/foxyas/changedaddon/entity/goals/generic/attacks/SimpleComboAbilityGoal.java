@@ -20,6 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
@@ -133,6 +134,21 @@ public class SimpleComboAbilityGoal extends Goal {
         if (!attacker.isOnGround()) {
             BlockPos pos = attacker.blockPosition();
             int groundY = attacker.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
+
+            Level world = attacker.level;
+            if (world.dimensionType().hasCeiling()) {
+                // Começa do teto e desce até achar espaço
+                int maxY = world.getHeight() - 1;
+                for (int y = maxY; y > 0; y--) {
+                    BlockPos checkPos = new BlockPos(pos.getX(), y, pos.getZ());
+                    // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
+                    if (world.isEmptyBlock(checkPos) && world.isEmptyBlock(checkPos.above())) {
+                        groundY = y;
+                        break;
+                    }
+                }
+            }
+
             attacker.teleportTo(pos.getX() + 0.5, groundY + 0.5, pos.getZ() + 0.5);
             spawnImpactEffect(attacker.position(), 3);
             spawnImpactParticleEffect(target.position(), 2);

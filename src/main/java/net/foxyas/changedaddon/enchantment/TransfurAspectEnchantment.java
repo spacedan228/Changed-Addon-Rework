@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.enchantment;
 
+import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
@@ -9,6 +10,8 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -16,13 +19,17 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class TransfurAspectEnchantment extends Enchantment {
 
@@ -124,6 +131,38 @@ public class TransfurAspectEnchantment extends Enchantment {
         // Apply transfur progress
         ProcessTransfur.progressTransfur(livingEntity, transfurDamage, variant.getParent(), context);
     }
+
+    @Mod.EventBusSubscriber
+    public static class ShowTransfurDmg {
+
+        @SubscribeEvent
+        public static void onItemTooltip(ItemTooltipEvent event) {
+            ItemStack stack = event.getItemStack();
+            List<Component> tooltip = event.getToolTip();
+
+            // Get the Transfur Aspect enchantment level from the item
+            int enchantLevel = EnchantmentHelper.getItemEnchantmentLevel(
+                    ChangedAddonEnchantments.TRANSFUR_ASPECT.get(), stack
+            );
+            if (enchantLevel <= 0) return; // Exit if the item doesn't have the enchantment
+
+            // Display detailed tooltip only when Shift is held
+            if (Screen.hasShiftDown()) {
+                // Use base value of 1.0 here; can be dynamically adjusted for the actual player stats
+                double baseValue = getTransfurDamage(event.getEntityLiving(), null, enchantLevel);
+
+                // Calculate the Transfur Damage using the same formula as in doPostAttack
+                double damage = baseValue * 0.75 * enchantLevel / 4.0;
+
+                // Add tooltip showing the damage
+                tooltip.add(new TextComponent("§r§e+" + String.format("%.2f", damage) + "§r Transfur Damage to Humanoids"));
+            } else {
+                // If Shift not held, show hint
+                tooltip.add(new TextComponent("Press §e<Shift>§r for show tooltip"));
+            }
+        }
+    }
+
 
     public static float getTransfurDamage(@NotNull LivingEntity attacker, @Nullable Entity target, int enchantLevel) {
         AttributeInstance instance = attacker.getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get());
