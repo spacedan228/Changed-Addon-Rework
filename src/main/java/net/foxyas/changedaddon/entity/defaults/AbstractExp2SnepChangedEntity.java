@@ -144,9 +144,9 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
         tag.putBoolean("FollowOwner", this.isFollowingOwner());
     }
 
-    @Override
+     @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return livingEntity != this.getOwner();
+        return super.targetSelectorTest(livingEntity) && livingEntity != this.getOwner();
     }
 
     @Nullable

@@ -624,8 +624,11 @@
   "item.changed_addon.syringe": "Medical Syringe",
   "item.changed_addon.syringe_with_litix_cammonia": "Syringe with Litix-Camonia",
   "item.changed_addon.the_decimator": "The Decimator",
+
   "item.changed_addon.transfur_totem": "Latex Totem",
+  "item.changed_addon.transfur_totem.no_form_linked": "§6No Form Linked",
   "item.changed_addon.transfur_totem.desc_1": "§oThe power of fluffy milk pudding compels you",
+
   "item.changed_addon.unifuser_block_illustrative_item": "Unifuser Recipes Information's",
   "item.changed_addon.white_latex_spray": "White Latex Spray",
   "item.changed_addon.white_wolf_crystal_fragment": "§lWhite§r Wolf Crystal Fragment",

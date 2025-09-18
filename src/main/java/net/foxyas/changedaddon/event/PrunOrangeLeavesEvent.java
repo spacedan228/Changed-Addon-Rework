@@ -48,7 +48,6 @@ public class PrunOrangeLeavesEvent {
             if (state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
                 if (hasShearsLikeItemInHand) {
                     rightClickBlockEvent.setCancellationResult(InteractionResult.SUCCESS);
-                    //rightClickBlockEvent.setResult(Event.Result.ALLOW);
                     rightClickBlockEvent.setCanceled(true);
                     return;
                 }

@@ -76,7 +76,6 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
 
         Vec3 center = new Vec3(x, y, z);
 
-        //if (be.getTileData().getByte("cooldown") > 0) return; fixme
         if (cooldown > 0) return;
 
         // Reproduz som para dark latex próximos
@@ -87,8 +86,6 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
         darkLatexPuddleBlockEntity.cooldown = 30;
         darkLatexPuddleBlockEntity.setChanged();
 
-        //be.getTileData().putByte("cooldown", (byte) 30); fixme
-        //be.setChanged(); fixme
 
         // Atração de dark latex
         AABB area = AABB.ofSize(center, 20, 20, 20); // raio de 10 blocos
@@ -147,9 +144,6 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
 
         level.scheduleTick(pos, this, 1);
 
-        //BlockEntity blockEntity = level.getBlockEntity(pos);  fixme
-        //if (blockEntity != null)  fixme
-        //    blockEntity.getTileData().putByte("cooldown", (byte) 0);   fixme
     }
 
     @Override
@@ -160,8 +154,6 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
 
         byte cooldown = darkLatexPuddleBlockEntity.cooldown;//blockEntity.getTileData().getByte("cooldown");
         if (cooldown > 0) {
-            //blockEntity.getTileData().putByte("cooldown", (byte) Math.max(0, cooldown - 1)); fixme
-            //blockEntity.setChanged(); fixme
             darkLatexPuddleBlockEntity.cooldown = (byte) Math.max(0, cooldown - 1);
             darkLatexPuddleBlockEntity.setChanged();
         }

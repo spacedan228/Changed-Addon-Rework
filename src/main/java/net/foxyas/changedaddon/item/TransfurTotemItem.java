@@ -8,13 +8,19 @@ import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
+import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.TagUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -34,19 +40,21 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TransfurTotemItem extends Item {
@@ -71,6 +79,36 @@ public class TransfurTotemItem extends Item {
         return super.getAttributeModifiers(slot, stack);
     }
 
+    @Mod.EventBusSubscriber(value = Dist.CLIENT)
+    public static class ShowTransfurTotemItemTip {
+
+        @SubscribeEvent
+        public static void onItemTooltip(ItemTooltipEvent event) {
+            ItemStack stack = event.getItemStack();
+            List<Component> tooltip = event.getToolTip();
+
+            if (stack.getItem() == ChangedAddonItems.TRANSFUR_TOTEM.get()) {
+                CompoundTag itemTag = stack.getOrCreateTag();
+                if ((itemTag.getString("form")).isEmpty()) tooltip.add((new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
+                else {
+                    TransfurVariant<?> variant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(TagUtil.getResourceLocation(itemTag, "form"));
+                    if (variant == null) {
+                        tooltip.add((new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
+                        return;
+                    }
+                    if (Screen.hasShiftDown() && !Screen.hasAltDown() && !Screen.hasControlDown())
+                        tooltip.add(new TextComponent(("§6Form=" + itemTag.getString("form"))));
+                    else if (Screen.hasAltDown() && Screen.hasControlDown())
+                        tooltip.add((new TranslatableComponent("item.changed_addon.transfur_totem.desc_1")));
+                    else {
+                        String ID = Syringe.getVariantDescriptionId(stack);
+                        tooltip.add(new TextComponent(("§6(" + new TranslatableComponent(ID).getString() + ")")));
+                    }
+                }
+            }
+        }
+    }
+
     private static void tryLinkForm(Level level, Player player, ItemStack itemstack) {
         TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
         ResourceLocation latexFormRes = tf == null ? null : tf.getFormId();
@@ -78,15 +116,14 @@ public class TransfurTotemItem extends Item {
 
         String latexForm = latexFormRes.toString();
 
-        if (ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() || latexForm.startsWith("changed:form")) {
+        if (ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() || latexForm.startsWith("changed:form"))
             linkForm(level, player, itemstack, tf, latexForm);
-        } else if (latexForm.startsWith("changed_addon:form")) {
+        else if (latexForm.startsWith("changed_addon:form")) {
             cooldown(player, itemstack, 50);
             visualActivate(level, player, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR);
             player.displayClientMessage(new TranslatableComponent("changed_addon.latex_totem.not_valid"), true);
-        } else if (latexForm.startsWith("changed:special")) {
+        } else if (latexForm.startsWith("changed:special"))
             linkForm(level, player, itemstack, tf, "changed:form_light_latex_wolf");
-        }
     }
 
     private static void linkForm(Level level, Player player, ItemStack stack, TransfurVariantInstance<?> tf, String form) {
@@ -101,9 +138,7 @@ public class TransfurTotemItem extends Item {
     }
 
     private static void cooldown(Player entity, ItemStack itemstack, int ticks) {
-        if (!entity.getAbilities().instabuild) {
-            entity.getCooldowns().addCooldown(itemstack.getItem(), ticks);
-        }
+        if (!entity.getAbilities().instabuild) entity.getCooldowns().addCooldown(itemstack.getItem(), ticks);
     }
 
     private static void activateVisuals(Level level, Player entity, ItemStack itemstack, String advancement, int cooldown, SoundEvent soundEvent) {
@@ -128,11 +163,8 @@ public class TransfurTotemItem extends Item {
         if (adv == null) return;
 
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(adv);
-        if (!progress.isDone()) {
-            for (String criterion : progress.getRemainingCriteria()) {
-                player.getAdvancements().award(adv, criterion);
-            }
-        }
+        if (!progress.isDone())
+            for (String criterion : progress.getRemainingCriteria()) player.getAdvancements().award(adv, criterion);
     }
 
     @Override
@@ -154,11 +186,8 @@ public class TransfurTotemItem extends Item {
     @OnlyIn(Dist.CLIENT)
     public boolean isFoil(@NotNull ItemStack itemstack) {
         String form = itemstack.getOrCreateTag().getString("form");
-        if (form.isEmpty()) {
-            return false;
-        } else if (form.startsWith("changed:form")) {
-            return true;
-        }
+        if (form.isEmpty()) return false;
+        else if (form.startsWith("changed:form")) return true;
 
         return form.startsWith("changed_addon:form") && ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() == true;
     }
@@ -181,9 +210,8 @@ public class TransfurTotemItem extends Item {
         if (player.isShiftKeyDown()) {
             if (!form.isEmpty()) {
                 stack.getOrCreateTag().putString("form", "");
-                if (stack.getOrCreateTag().contains("TransfurVariantData")) {
+                if (stack.getOrCreateTag().contains("TransfurVariantData"))
                     stack.getOrCreateTag().remove("TransfurVariantData");
-                }
                 activateVisuals(level, player, stack, null, 50, SoundEvents.BEACON_DEACTIVATE);
                 return ar;
             }
@@ -215,9 +243,7 @@ public class TransfurTotemItem extends Item {
             CompoundTag data = stack.getOrCreateTag().getCompound("TransfurVariantData");
             PlayerUtil.TransfurPlayerAndLoadData(player, form, data, 0.85f);
             // 0.85f to avoid issues with the transfur animation and because is design choice
-        } else {
-            PlayerUtil.TransfurPlayer(player, form, 0.85f);
-        }
+        } else PlayerUtil.TransfurPlayer(player, form, 0.85f);
 
         activateVisuals(level, player, stack, "changed_addon:transfur_totem_advancement_1", 100, null);
 
@@ -243,15 +269,16 @@ public class TransfurTotemItem extends Item {
             String transfurId = ProcessTransfur.getPlayerTransfurVariant(target).getFormId().toString();
             if (ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() == false) {
                 if (transfurId.startsWith("changed:form")) {
-                    player.getCooldowns().addCooldown(totem.getItem(), 20);
+                    cooldown(player, totem, 20);
 
                     if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
 
                     totem.getOrCreateTag().putString("form", transfurId);
 
                     level.playSound(null, player, SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 1, 1);
+                    return InteractionResult.SUCCESS;
                 } else if (transfurId.startsWith("changed_addon:form")) {
-                    player.getCooldowns().addCooldown(totem.getItem(), 50);
+                    cooldown(player, totem, 50);
 
                     if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
 
@@ -259,43 +286,45 @@ public class TransfurTotemItem extends Item {
 
                     if (!target.level.isClientSide())
                         target.displayClientMessage(new TextComponent((new TranslatableComponent("changed_addon.latex_totem.not_valid").getString())), true);
+
+                    return InteractionResult.SUCCESS;
                 }
             } else {
-                player.getCooldowns().addCooldown(totem.getItem(), 20);
+                cooldown(player, totem, 20);
+
 
                 if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
 
                 totem.getOrCreateTag().putString("form", transfurId);
 
                 level.playSound(null, player, SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 1, 1);
+                return InteractionResult.SUCCESS;
             }
-        } else {
-            if (targetEntity instanceof ChangedEntity changedEntity) {
-                String string = changedEntity.getSelfVariant() != null ? changedEntity.getSelfVariant().getFormId().toString() : "";
+        } else if (targetEntity instanceof ChangedEntity changedEntity) {
+            String string = changedEntity.getSelfVariant() != null ? changedEntity.getSelfVariant().getFormId().toString() : "";
 
-                player.getCooldowns().addCooldown(totem.getItem(), 20);
+            cooldown(player, totem, 20);
 
-                if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
 
-                totem.getOrCreateTag().putString("form", string);
+            if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(totem);
 
-                level.playSound(null, player, SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 1, 1);
-            }
+            totem.getOrCreateTag().putString("form", string);
+
+            level.playSound(null, player, SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 1, 1);
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.CONSUME;
     }
 
     private static void addModifier(LivingEntity entity, Attribute attribute, AttributeModifier modifier) {
-        if (!Objects.requireNonNull(entity.getAttribute(attribute)).hasModifier(modifier)) {
+        if (!Objects.requireNonNull(entity.getAttribute(attribute)).hasModifier(modifier))
             Objects.requireNonNull(entity.getAttribute(attribute)).addTransientModifier(modifier);
-        }
     }
 
     private static void removeModifier(LivingEntity entity, Attribute attribute, AttributeModifier modifier) {
-        if (Objects.requireNonNull(entity.getAttribute(attribute)).hasModifier(modifier)) {
+        if (Objects.requireNonNull(entity.getAttribute(attribute)).hasModifier(modifier))
             Objects.requireNonNull(entity.getAttribute(attribute)).removeModifier(modifier);
-        }
     }
 
     @Override
@@ -343,9 +372,7 @@ public class TransfurTotemItem extends Item {
 
             Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:transfur_totem_advancement_2"));
             AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
-            if (!_ap.isDone()) {
-                for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);
-            }
+            if (!_ap.isDone()) for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);
         }
     }
 
@@ -365,9 +392,7 @@ public class TransfurTotemItem extends Item {
         public static void onLightning(EntityStruckByLightningEvent event) {
             if (!(event.getEntity() instanceof ItemEntity itemEntity)) return;
 
-            if (itemEntity.getItem().is(ChangedAddonItems.TRANSFUR_TOTEM.get())) {
-                event.setCanceled(true);
-            }
+            if (itemEntity.getItem().is(ChangedAddonItems.TRANSFUR_TOTEM.get())) event.setCanceled(true);
         }
     }
 }

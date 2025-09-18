@@ -123,7 +123,7 @@ public abstract class AbstractCanTameSnepChangedEntity extends AbstractSnowLeopa
 
     @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return livingEntity != this.getOwner();
+        return super.targetSelectorTest(livingEntity) && livingEntity != this.getOwner();
     }
 
     @Nullable
