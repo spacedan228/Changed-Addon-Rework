@@ -41,7 +41,7 @@ public record TurnOffTransfurMessage(int type, int pressedMs) {
 
             tf.transfurMode = mode == TransfurMode.NONE ? tf.getParent().transfurMode : TransfurMode.NONE;
             if (player.getLevel().isClientSide()) {
-                player.displayClientMessage(new TranslatableComponent("key.changed_addon.turn_off_transfur.safe_mode", tf.transfurMode == TransfurMode.NONE), false);
+                player.displayClientMessage(new TranslatableComponent("key.changed_addon.turn_off_transfur.safe_mode", tf.transfurMode != TransfurMode.NONE), false);
             }
 
             if (tf.getSelectedAbility() instanceof GrabEntityAbilityInstance grabEntityAbilityInstance) {

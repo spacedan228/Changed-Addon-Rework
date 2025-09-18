@@ -326,7 +326,7 @@
   "effect.changed_addon.latex_solvent.description": "Damages latex-based entities. The stronger the effect, the more damage is inflicted.",
   "effect.changed_addon.latex_contamination": "Latex Contamination",
   "effect.changed_addon.latex_contamination.description": "Gradually increases infection in humanoid entities. The higher the effect's level, the faster the infection spreads.",
-  "effect.changed_addon.latex_strength": "§o§cTransfur Strength",
+  "effect.changed_addon.latex_strength": "Transfur Strength",
   "effect.changed_addon.latex_strength.description": "Increases the damage of Changed entities when attacking humanoid targets. Higher levels amplify transfur effectiveness.",
   "effect.changed_addon.transfur_sickness": "§o§cTransfur Sickness",
   "effect.changed_addon.transfur_sickness.description": "Decreases Changed entities’ ability to transfur humanoids. Higher levels make transfur attempts slower and less effective.",
