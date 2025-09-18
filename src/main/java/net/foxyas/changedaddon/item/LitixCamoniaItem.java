@@ -26,7 +26,6 @@ public class LitixCamoniaItem extends Item {
     @Override
     public void appendHoverText(@NotNull ItemStack itemstack, Level world, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TextComponent("Made From Ammonia"));
     }
 
     private static final ResourceLocation advLocation = ChangedAddonMod.resourceLoc("craft_litix_camonia");
