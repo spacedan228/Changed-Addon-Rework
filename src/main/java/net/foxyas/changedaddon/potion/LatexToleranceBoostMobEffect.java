@@ -6,9 +6,9 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexExposureMobEffect extends MobEffect {
+public class LatexToleranceBoostMobEffect extends MobEffect {
 
-    public LatexExposureMobEffect() {
+    public LatexToleranceBoostMobEffect() {
         super(MobEffectCategory.HARMFUL, -1118482);
         addAttributeModifier(ChangedAttributes.TRANSFUR_TOLERANCE.get(), "3a4a0a56-72e9-438e-b0d3-8e4b02b2f7ae", -2, AttributeModifier.Operation.ADDITION);
     }

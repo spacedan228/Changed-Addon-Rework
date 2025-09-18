@@ -83,7 +83,7 @@ public class TransfurTotemItem extends Item {
         } else if (latexForm.startsWith("changed_addon:form")) {
             cooldown(player, itemstack, 50);
             visualActivate(level, player, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR);
-            player.displayClientMessage(new TranslatableComponent("changed_addon.latex_totem.notvalid"), true);
+            player.displayClientMessage(new TranslatableComponent("changed_addon.latex_totem.not_valid"), true);
         } else if (latexForm.startsWith("changed:special")) {
             linkForm(level, player, itemstack, tf, "changed:form_light_latex_wolf");
         }
@@ -258,7 +258,7 @@ public class TransfurTotemItem extends Item {
                     level.playSound(null, player, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1, 0);
 
                     if (!target.level.isClientSide())
-                        target.displayClientMessage(new TextComponent((new TranslatableComponent("changed_addon.latex_totem.notvalid").getString())), true);
+                        target.displayClientMessage(new TextComponent((new TranslatableComponent("changed_addon.latex_totem.not_valid").getString())), true);
                 }
             } else {
                 player.getCooldowns().addCooldown(totem.getItem(), 20);

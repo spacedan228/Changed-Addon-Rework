@@ -232,7 +232,7 @@ public class ThunderDiveGoal extends Goal {
             double x = center.getX() + 0.5 + radius * Math.cos(angle);
             double z = center.getZ() + 0.5 + radius * Math.sin(angle);
 
-            int topY = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, new BlockPos(Mth.floor(x), 0, Mth.floor(z))).getY();
+            int topY = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new BlockPos(Mth.floor(x), 0, Mth.floor(z))).getY();
             BlockPos strikePos = new BlockPos(Mth.floor(x), topY, Mth.floor(z));
 
             LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);

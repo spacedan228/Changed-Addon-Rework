@@ -259,18 +259,18 @@
 
   "changed_addon.jei_descriptions.diffusion_syringe": "Odtransfurowuje cię z powrotem do ludzkiej postaci, pozostawiając twojego poprzedniego transfura tam, gdzie byłeś.",
   "changed_addon.jei_descriptions.exp9_dna": "Można znaleźć w pewnym specjalnym pomieszczeniu w §lplacówce§r.",
-  "changed_addon.jei_descriptions.informantblock": "Pokazuje statystyki dla transfurów, i przedmiotów z nbt tagiem \"form\", pozwala również podejrzeć statystyki gdy znajduje się w ekwipunku",
+  "changed_addon.jei_descriptions.informant_block": "Pokazuje statystyki dla transfurów, i przedmiotów z nbt tagiem \"form\", pozwala również podejrzeć statystyki gdy znajduje się w ekwipunku",
   "changed_addon.jei_descriptions.iridium_use": "Może zostać użyte na niektórych blokach, aby je wzmocnić.",
   "changed_addon.jei_descriptions.laethin_syringe": "Odtransfurowuje użytkownika od razu, i nie może nie zadziałać",
   "changed_addon.jei_descriptions.latex_totem": "Może uratować stransfurowanego gracza i pozwala na pełną kontrolę nad przemianami",
-  "changed_addon.jei_descriptions.litixcammonia_syringe": "44% szans, że nie zadziała przy odtransfurowaniu.",
+  "changed_addon.jei_descriptions.litix_cammonia_syringe": "44% szans, że nie zadziała przy odtransfurowaniu.",
   "changed_addon.jei_descriptions.lunar_rose": "§f§lSzept kwiatu nocy §r#§o Wsród nocnej ciszy, kwiat ukryty, #§oSubtelny blask, jego los przesądzony. #§oZrodzony z lustra chowającego światło,#§o i zamarzniętej łzy, obojga czystych i jasnych. #§oPrzez niewidzialne ręce splecione, §ow stworzonej więzi, ich losy się łączą. #§o Żaden ogień czy piec nie ukształtuje jego formy, #§o lecz pod gwiazdami będzie narodzony. #§oWypatruj niewidzialnego, niech zaiskrzy mądrość, #§oTylko wiedzący dojrzą jego światło.",
   "changed_addon.jei_descriptions.pot_with_cammonia": "Daje efekt odtransfurowania, całkowicie odwracając przemianę po wypiciu.",
   "changed_addon.jei_descriptions.luminara.riddle": "Za krawędzią, gdzie gwiazdy cichną,\ngdzie ziemia poddaje się wiecznej nocy,\nleży ścieżka, której żaden płomień nie rozświetli.\nNie wpadaj w strach, lecz przyjmij otchłań.\nTylko rana nicości może odrodzić promienną duszę bestii.\nZ rozdartej zasłony, z cienistego upadku,\npowstaną Silniejsi.",
 
   "changed_addon.latex_syringe.not_valid": "Wahasz się. Coś mówi ci, żeby nie wypuszczać tego co jest w środku.",
 
-  "changed_addon.latex_totem.notvalid": "Totem zareagował §cnegatywnie§r na twoje §bDNA§r",
+  "changed_addon.latex_totem.not_valid": "Totem zareagował §cnegatywnie§r na twoje §bDNA§r",
   "changed_addon.latex_totem.tittle.text_1": "§o§n§l§3⚡ Artefakt rezonuje ⚡",
   "changed_addon.latex_totem.tittle.text_2": "§o§l§3Chroniąc twój umysł, nie pozwala ci popaść w zapomnienie.",
 

@@ -1,8 +1,13 @@
 package net.foxyas.changedaddon.potion;
 
+import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import org.jetbrains.annotations.NotNull;
 
 public class PacifiedMobEffect extends MobEffect {
@@ -12,8 +17,17 @@ public class PacifiedMobEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public void applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
         super.applyEffectTick(pLivingEntity, pAmplifier);
+    }
+
+    @Override
+    public void addAttributeModifiers(@NotNull LivingEntity pLivingEntity, @NotNull AttributeMap pAttributeMap, int pAmplifier) {
+        super.addAttributeModifiers(pLivingEntity, pAttributeMap, pAmplifier);
+        if (pLivingEntity instanceof ChangedEntity changedEntity) {
+            if (changedEntity.getType().is(ChangedAddonTags.EntityTypes.PACIFY_HANDLE_IMMUNE)) return;
+            changedEntity.setTarget(null);
+        }
     }
 
     @Override

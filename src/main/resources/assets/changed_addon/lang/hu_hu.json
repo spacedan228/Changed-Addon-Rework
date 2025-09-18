@@ -262,18 +262,18 @@
 
   "changed_addon.jei_descriptions.diffusion_syringe": "Visszatranszfurál emberi formába, miközben megidézi korábbi transzfurált formáját.",
   "changed_addon.jei_descriptions.exp9_dna": "Egy §llétesítmény§r egy meghatározott helyiségében található, dobozokban tárolt vegyi anyagok.",
-  "changed_addon.jei_descriptions.informantblock": "Mutassa meg bármely transzfurtartó tárgy (vagy csak bármely, \"form\" nbt-vel rendelkező tárgy) transzfuráltjának statisztikáit, és lehetővé teszi a statisztikák megtekintését a felszerelésben is",
+  "changed_addon.jei_descriptions.informant_block": "Mutassa meg bármely transzfurtartó tárgy (vagy csak bármely, \"form\" nbt-vel rendelkező tárgy) transzfuráltjának statisztikáit, és lehetővé teszi a statisztikák megtekintését a felszerelésben is",
   "changed_addon.jei_descriptions.iridium_use": "Alkalmazható bizonyos blokkokra, hogy azok megerősödjenek.",
   "changed_addon.jei_descriptions.laethin_syringe": "Visszatranszfur használata azonnali, és nincs esély a kudarcra",
   "changed_addon.jei_descriptions.latex_totem": "A transzfurált változatokat elmentheti, és teljes ellenőrzést kaphat a transzformációk felett",
-  "changed_addon.jei_descriptions.litixcammonia_syringe": "A visszatranszfur során 44% az esély a kudarcra.",
+  "changed_addon.jei_descriptions.litix_cammonia_syringe": "A visszatranszfur során 44% az esély a kudarcra.",
   "changed_addon.jei_descriptions.lunar_rose": "§f§lA holdvirág suttogása§r#§oA szürkület csendjében egy virág rejtőzik,#§oCsendes ragyogás, sorsa megpecsételődött.#§oA fényt elrejtő tükörből született,#§oÉs egy fagyos könnyből, tiszta és ragyogó.#§oLáthatatlan kezek által összefonódnak, §oKézműves kötelékben, sorsuk egybefonódik.#§oSem láng, sem kovácsműhely nem formálja alakját,#§oDe a csillagok alatt megszületik. #§oKeresd a láthatatlant, hagyd, hogy a bölcsesség lángra gyúljon,#§oMert csak a tudók pillanthatnak meg fényét.",
   "changed_addon.jei_descriptions.pot_with_cammonia": "Elég visszatranszfurálási hatást biztosít ahhoz, hogy elfogyasztásakor teljesen visszafordítsa az átalakulást.",
   "changed_addon.jei_descriptions.luminara.riddle": "A csillagok elcsendesedésének peremén túl, \nahol a föld megadja magát a végtelen éjszakának, \nott fekszik az ösvény, melyet semmilyen láng nem világíthat meg. \nNe félelemmel zuhanj alá, hanem a mélység ölelésében. \nMert csak a semmi sebében születhet újjá a szörnyeteg ragyogó lelke. \nÍgy szakad szét a fátyol – az árnyékos alászállásból \na Fejlődöttek emelkednek fel.",
 
   "changed_addon.latex_syringe.not_valid": "Habozol. Valami benned figyelmeztet, hogy ne engedd el, ami benne van.",
 
-  "changed_addon.latex_totem.notvalid": "Totem §cnegatívan§r reagált a §bDNS§r-edre",
+  "changed_addon.latex_totem.not_valid": "Totem §cnegatívan§r reagált a §bDNS§r-edre",
   "changed_addon.latex_totem.tittle.text_1": "§o§n§l§3⚡ A műtárgy rezonál ⚡",
   "changed_addon.latex_totem.tittle.text_2": "§o§l§3Megvédve elmédet, eszméleted visszahúzódik a szakadék széléről, nem hagyva, hogy a feledésbe merülj.",
 

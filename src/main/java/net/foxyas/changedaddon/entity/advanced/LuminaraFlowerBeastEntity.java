@@ -309,6 +309,10 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         List<LivingEntity> nearChangedBeasts = this.getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(range), (entity) -> FoxyasUtils.canEntitySeeOtherIgnoreGlass(entity, this, 90f));
         for (LivingEntity livingEntity : nearChangedBeasts) {
             if (livingEntity instanceof ChangedEntity changedEntity) {
+                if (changedEntity.getType().is(ChangedAddonTags.EntityTypes.PACIFY_IMMUNE)) {
+                    continue;
+                }
+
                 if (changedEntity instanceof LuminaraFlowerBeastEntity) {
                     continue;
                 }
@@ -321,6 +325,10 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
             } else if (livingEntity instanceof Player player) {
                 TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
                 if (instance != null) {
+                    if (instance.getChangedEntity().getType().is(ChangedAddonTags.EntityTypes.PACIFY_IMMUNE)) {
+                        continue;
+                    }
+
                     if ((instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity)) {
                         continue;
                     }

@@ -105,7 +105,7 @@ public class WolfPlushBlock extends HorizontalDirectionalBlock implements Entity
         if (blockEntity instanceof WolfPlushBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
-                    plushBlockEntity.squeezedTicks = 4;
+                    //plushBlockEntity.squeezedTicks = 4;
                     world.playSound(null, hitX, hitY, hitZ, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
                 }
             }

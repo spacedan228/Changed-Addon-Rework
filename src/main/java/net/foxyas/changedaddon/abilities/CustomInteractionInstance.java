@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.abilities;
 
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
+import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
@@ -59,6 +60,9 @@ public class CustomInteractionInstance extends AbstractAbilityInstance {
             } else {
                 avaliEntity.setDimensionScale(AvaliEntity.SizeScaling.NORMAL.getScale());
             }
+        } else if (entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
+            if (!luminaraFlowerBeast.isHyperAwakened()) return;
+            luminaraFlowerBeast.spawnParticles = !luminaraFlowerBeast.spawnParticles;
         }
     }
 

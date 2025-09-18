@@ -6,6 +6,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.foxyas.changedaddon.enchantment.TransfurAspectEnchantment;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
@@ -15,6 +16,7 @@ import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -72,12 +74,12 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             // Item Information
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.TRANSFUR_TOTEM.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.latex_totem"));
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.EXPERIMENT_009_DNA.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.exp9_dna"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.SYRINGE_WITH_LITIX_CAMMONIA.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.litixcammonia_syringe"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.SYRINGE_WITH_LITIX_CAMMONIA.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.litix_cammonia_syringe"));
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LAETHIN_SYRINGE.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.laethin_syringe"));
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.POT_WITH_CAMONIA.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.pot_with_cammonia"));
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.DIFFUSION_SYRINGE.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.diffusion_syringe"));
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.IRIDIUM.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.iridium_use"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.INFORMANT_BLOCK.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.informantblock"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.INFORMANT_BLOCK.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.informant_block"));
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LUNAR_ROSE_HELMET.get()), VanillaTypes.ITEM_STACK, new TextComponent(new TranslatableComponent("changed_addon.jei_descriptions.lunar_rose").getString().replace("#", "\n")));
 
             ItemStack stack = new ItemStack(ChangedItems.LATEX_SYRINGE.get());
@@ -94,6 +96,7 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             // Enchant Information
             registerSolventDescriptions(registration);
             registerChangedLureDescriptions(registration);
+            registerTransfurAspectDescriptions(registration);
         }
 
         private static void registerSolventDescriptions(IRecipeRegistration registration) {
@@ -106,6 +109,15 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             }
         }
 
+        private static void registerTransfurAspectDescriptions(IRecipeRegistration registration) {
+            ItemStack enchantedBookWithEnchantment = new ItemStack(Items.ENCHANTED_BOOK);
+            for (int i = 1; i < 6; i++) { // Começa em 1 para ignorar o nível 0
+                float math = TransfurAspectMath(i);
+                EnchantmentHelper.setEnchantments(Map.of(ChangedAddonEnchantments.TRANSFUR_ASPECT.get(), i), enchantedBookWithEnchantment);
+                registration.addIngredientInfo(enchantedBookWithEnchantment, VanillaTypes.ITEM_STACK, new TranslatableComponent("enchantment.changed_addon.transfur_aspect.jei_desc", math));
+            }
+        }
+
         private static void registerChangedLureDescriptions(IRecipeRegistration registration) {
             ItemStack enchantedBookWithChangedLure = new ItemStack(Items.ENCHANTED_BOOK);
             for (int i = 1; i < 6; i++) { // Começa em 1 para ignorar o nível 0
@@ -114,23 +126,16 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             }
         }
 
-        private static float SolventMath(float EnchantLevel) {
-            /*if (EnchantLevel == 1) {
-                return 1.5f;
-            } else if (EnchantLevel == 0) {
-                return 1f;
-            } else if (EnchantLevel == 2) {
-                return 3f;
-            } else if (EnchantLevel == 3) {
-                return 4f;
-            } else if (EnchantLevel == 4) {
-                return 4.5f;
-            } else if (EnchantLevel == 5) {
-                return 5f;
-            } else {
-                return EnchantLevel - 0.5f;
-            }*/
+        private static float SolventMath(int EnchantLevel) {
             return 1.0f + (EnchantLevel) * 0.20f;
+        }
+
+        private static float TransfurAspectMath(int EnchantLevel) {
+            LocalPlayer player = Minecraft.getInstance().player;
+            if (player != null) {
+                return TransfurAspectEnchantment.getTransfurDamage(player, null, EnchantLevel);
+            }
+            return 0.0f;
         }
 
         private static void addSharedDescriptions(IRecipeRegistration registration, List<Item> items, String translationKey) {

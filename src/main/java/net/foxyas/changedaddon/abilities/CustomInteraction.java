@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.abilities;
 
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
+import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -48,7 +49,19 @@ public class CustomInteraction extends AbstractAbility<CustomInteractionInstance
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.latex_snep"));
             } else if (entity.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.avali"));
-                description.add(new TextComponent("Scale selected " + avaliEntity.getDimensionScale()));
+                description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.avali.extra", avaliEntity.getDimensionScale()));
+            } else if (entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
+                TranslatableComponent luminaraBeastDescription = new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminara_beast");
+
+                description.add(new TextComponent(luminaraBeastDescription.getString()).withStyle((style -> {
+                    style.withObfuscated(!luminaraFlowerBeast.isHyperAwakened());
+                    return style;
+                })));
+
+                if (luminaraFlowerBeast.isHyperAwakened()) {
+                    TranslatableComponent luminaraBeastDescriptionExtra = new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminara_beast.extra", luminaraFlowerBeast.spawnParticles);
+                    description.add(luminaraBeastDescriptionExtra);
+                }
             } else {
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminarctic_leopards"));
             }
