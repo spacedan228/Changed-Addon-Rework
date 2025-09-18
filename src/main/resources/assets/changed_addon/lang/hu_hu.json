@@ -232,14 +232,14 @@
 
 
   "changed_addon.entity_dialogues.exp10.pat.type_0": "§l§4Igen, VÉGET VETEK A KIBASZOTT ÉLETEDNEK",
-  "changed_addon.entity_dialogues.exp10.pat.type_1": "§l§4Mit csinálsz?!",
-  "changed_addon.entity_dialogues.exp10.pat.type_2": "§l§4Hagyd abba!",
-  "changed_addon.entity_dialogues.exp10.pat.type_3": "§l§4....nem kellene harcolnunk?",
+  "changed_addon.entity_dialogues.exp10.pat.type_1": "§l§4Nem fogod sokáig megbánni – meghalsz érte.",
+  "changed_addon.entity_dialogues.exp10.pat.type_2": "§l§4Érj meg újra, és gyorsan csinálom... neked.",
+  "changed_addon.entity_dialogues.exp10.pat.type_3": "§l§4Mersz velem játszani? Ez volt az utolsó hibád.",
   "changed_addon.entity_dialogues.exp10.reaction.range_attacks": "§l§o§4Mit fog azzal a fúvócsővel csinálni, bántani? Nem hiszem, te gyenge teremtmény...",
   "changed_addon.entity_dialogues.exp9.dead": "§o§n§l§345 év egyetlen gömbként... Ti, emberek, még mindig nagyobb hatalmatok van, mint nekem... Visszajövök, itt van az ajándékom neked.",
-  "changed_addon.entity_dialogues.exp9.pat.type_1": "§l§3....nem kellene harcolnunk?",
-  "changed_addon.entity_dialogues.exp9.pat.type_2": "§l§3Hagyd abba!",
-  "changed_addon.entity_dialogues.exp9.pat.type_3": "§l§3Mit csinálsz?!",
+  "changed_addon.entity_dialogues.exp9.pat.type_1": "§l§3...Így merészelsz gúnyolódni velem?! Széttéplek!",
+  "changed_addon.entity_dialogues.exp9.pat.type_2": "§l§3Vedd le rólam a mocskos kezeidet!",
+  "changed_addon.entity_dialogues.exp9.pat.type_3": "§l§3Simogass meg még egyszer, és addig zúzlak össze, amíg semmi sem marad belőled!",
   "changed_addon.entity_dialogues.exp9.reaction.range_attacks": "§l§o§3GYÁVA VAGY! Csak a távolságra tudsz támaszkodni? Milyen SZÁNALMAS!!!",
 
   "changed_addon.form_dialogues.exp1.death.text1": "§7§lÉn... én mindent megtettem, hogy megvédjelek... Nagyon sajnálom...§r",
