@@ -25,17 +25,17 @@ public class DragonBigWingInitAnimator<T extends ChangedEntity, M extends Advanc
 
         if (!entity.isFallFlying()) {
             if (entity.isFlying()) {
+                this.rightWingRoot.z = (DEBUG.HeadPosZ);
+                this.leftWingRoot.z = (DEBUG.HeadPosZ);
+                this.leftWingRoot.y = (DEBUG.HeadPosY);
+                this.rightWingRoot.y = (DEBUG.HeadPosY);
+            } else {
                 this.rightWingRoot.z = -0.5f;
                 this.leftWingRoot.z = -0.5f;
-            } else {
-                this.rightWingRoot.z = -1.5f;
-                this.leftWingRoot.z = -1.5f;
             }
 
             this.leftWingRoot.y = -3.5f;
             this.rightWingRoot.y = -3.5f;
-            this.rightWingRoot.z += (DEBUG.HeadPosZ);
-            this.leftWingRoot.z += (DEBUG.HeadPosZ);
         } else {
             this.rightWingRoot.y = -4;
             this.leftWingRoot.y = -4;
