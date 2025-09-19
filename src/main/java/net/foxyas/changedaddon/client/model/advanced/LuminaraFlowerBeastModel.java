@@ -108,7 +108,7 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
         this.LeftFoot = this.LeftLowerLeg.getChild("LeftFoot");
         this.LeftPad = this.LeftFoot.getChild("LeftPad");
 
-        this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).addPreset(ChangedAddonAnimationsPresets.wingedDragonLike(this.Head,
+        this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).addPreset(ChangedAddonAnimationsPresets.bigWingedDragonLike(this.Head,
                         this.Torso,
                         this.LeftArm,
                         this.RightArm,

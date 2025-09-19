@@ -24,7 +24,7 @@ import net.minecraftforge.network.PacketDistributor;
 public class DEBUG {
 
     public static boolean DEBUG = true;
-    public static float HeadPosT, HeadPosV, HeadPosB, HeadPosK = 40, HeadPosL, HeadPosJ = 40;
+    public static float HeadPosT, HeadPosV, HeadPosB = 0, HeadPosK = 40, HeadPosL, HeadPosJ = 40;
     public static float HeadPosX, HeadPosY, HeadPosZ;
 
     public static boolean PARTICLETEST = false;

@@ -32,10 +32,10 @@ public class DragonBigWingInitAnimator<T extends ChangedEntity, M extends Advanc
             } else {
                 this.rightWingRoot.z = -0.5f;
                 this.leftWingRoot.z = -0.5f;
+                this.leftWingRoot.y = -3.5f;
+                this.rightWingRoot.y = -3.5f;
             }
 
-            this.leftWingRoot.y = -3.5f;
-            this.rightWingRoot.y = -3.5f;
         } else {
             this.rightWingRoot.y = -4;
             this.leftWingRoot.y = -4;

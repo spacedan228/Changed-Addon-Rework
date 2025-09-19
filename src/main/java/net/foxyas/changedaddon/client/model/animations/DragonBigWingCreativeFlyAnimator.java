@@ -9,7 +9,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class DragonBigWingCreativeFlyAnimator<T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> extends AbstractWingAnimatorV2<T, M> {
-    public static final float WING_FLAP_RATE = 10.2F;
+    public static final float WING_FLAP_RATE = 0.2F;
     public static final float BODY_FLY_SCALE = 0.5F;
 
     public DragonBigWingCreativeFlyAnimator(ModelPart leftWingRoot, ModelPart leftWingBone1, ModelPart leftWingBone2, ModelPart rightWingRoot, ModelPart rightWingBone1, ModelPart rightWingBone2) {
@@ -41,7 +41,7 @@ public class DragonBigWingCreativeFlyAnimator<T extends ChangedEntity, M extends
         this.rightWingBone2.zRot = Mth.lerp(this.core.flyAmount, this.rightWingBone2.zRot, 0.959931F);
         float flapAmount = Mth.cos(ageInTicks * WING_FLAP_RATE);
         flapAmount *= flapAmount;
-        float flapRotate = Mth.map(flapAmount, 0.0F, 1.0F, -0.34906584F, 0.436332F); // 0.55850536F old
+        float flapRotate = Mth.map(flapAmount, 0.0F, 1.0F, -0.174533f, 0.55850536F); // -0.34906584F, 0.55850536F old
         this.leftWingRoot.yRot = Mth.lerp(this.core.flyAmount, this.leftWingRoot.yRot, -flapRotate);
         this.rightWingRoot.yRot = Mth.lerp(this.core.flyAmount, this.rightWingRoot.yRot, flapRotate);
         this.leftWingRoot.zRot = Mth.lerp(this.core.flyAmount, this.leftWingRoot.zRot, -flapRotate);

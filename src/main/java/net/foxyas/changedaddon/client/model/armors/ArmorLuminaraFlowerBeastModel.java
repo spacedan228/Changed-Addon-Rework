@@ -3,8 +3,8 @@ package net.foxyas.changedaddon.client.model.armors;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
-import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModelSet;
@@ -58,7 +58,7 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
         ModelPart rightFoot = rightLowerLeg.getChild("RightFoot");
         ModelPart leftWingRoot = this.LeftWing.getChild("leftWingRoot");
         ModelPart rightWingRoot = this.RightWing.getChild("rightWingRoot");
-        this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).addPreset(AnimatorPresets.wingedDragonLike(this.Head, this.Torso, this.LeftArm, this.RightArm, this.Tail, List.of(tailPrimary, tailSecondary), this.LeftLeg, leftLowerLeg, leftFoot, leftFoot.getChild("LeftPad"), this.RightLeg, rightLowerLeg, rightFoot, rightFoot.getChild("RightPad"), leftWingRoot, leftWingRoot.getChild("leftSecondaries"), leftWingRoot.getChild("leftSecondaries").getChild("leftTertiaries"), rightWingRoot, rightWingRoot.getChild("rightSecondaries"), rightWingRoot.getChild("rightSecondaries").getChild("rightTertiaries")));
+        this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).addPreset(ChangedAddonAnimationsPresets.bigWingedDragonLike(this.Head, this.Torso, this.LeftArm, this.RightArm, this.Tail, List.of(tailPrimary, tailSecondary), this.LeftLeg, leftLowerLeg, leftFoot, leftFoot.getChild("LeftPad"), this.RightLeg, rightLowerLeg, rightFoot, rightFoot.getChild("RightPad"), leftWingRoot, leftWingRoot.getChild("leftSecondaries"), leftWingRoot.getChild("leftSecondaries").getChild("leftTertiaries"), rightWingRoot, rightWingRoot.getChild("rightSecondaries"), rightWingRoot.getChild("rightSecondaries").getChild("rightTertiaries")));
     }
 
     public static LayerDefinition createArmorLayer(ArmorModel layer) {
