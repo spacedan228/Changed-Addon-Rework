@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.client.model.animations;
 
-import net.foxyas.changedaddon.process.DEBUG;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator.AnimateStage;
 import net.ltxprogrammer.changed.client.renderer.animate.wing.AbstractWingAnimatorV2;
@@ -8,6 +7,7 @@ import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Pose;
 import org.jetbrains.annotations.NotNull;
 
 public class DragonBigWingInitAnimator<T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> extends AbstractWingAnimatorV2<T, M> {
@@ -25,15 +25,22 @@ public class DragonBigWingInitAnimator<T extends ChangedEntity, M extends Advanc
 
         if (!entity.isFallFlying()) {
             if (entity.isFlying()) {
-                this.rightWingRoot.z = (DEBUG.HeadPosZ);
-                this.leftWingRoot.z = (DEBUG.HeadPosZ);
-                this.leftWingRoot.y = (DEBUG.HeadPosY);
-                this.rightWingRoot.y = (DEBUG.HeadPosY);
+                this.rightWingRoot.z = 0.85f;
+                this.leftWingRoot.z = 0.85f;
+                this.leftWingRoot.y = -4;
+                this.rightWingRoot.y = -4;
             } else {
-                this.rightWingRoot.z = -0.5f;
-                this.leftWingRoot.z = -0.5f;
-                this.leftWingRoot.y = -3.5f;
-                this.rightWingRoot.y = -3.5f;
+                if (entity.getPose() == Pose.CROUCHING) {
+                    this.rightWingRoot.z = 0f;
+                    this.leftWingRoot.z = 0f;
+                    this.leftWingRoot.y = -1.5f;
+                    this.rightWingRoot.y = -1.5f;
+                } else {
+                    this.rightWingRoot.z = -0.5f;
+                    this.leftWingRoot.z = -0.5f;
+                    this.leftWingRoot.y = -3.5f;
+                    this.rightWingRoot.y = -3.5f;
+                }
             }
 
         } else {
