@@ -63,6 +63,8 @@ public abstract class TransfurVariantInstanceMixin {
         }
     }
 
+    //Todo make a mixin in tickFlying to tweak the fly speed and food Exhaustion
+
     @Inject(method = "tick", at = @At("TAIL"), cancellable = true)
     private void negateFlyInTick(CallbackInfo cir) {
         if (this.parent.canGlide && this.shouldApplyAbilities()) {
