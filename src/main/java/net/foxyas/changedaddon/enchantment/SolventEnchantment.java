@@ -23,13 +23,14 @@ public class SolventEnchantment extends Enchantment {
     }
 
     @Override
-    protected boolean checkCompatibility(@NotNull Enchantment ench) {
-        return this != ench && !Objects.equals(Enchantments.SHARPNESS, ench);
+    protected boolean checkCompatibility(@NotNull Enchantment enchantment) {
+        return this != enchantment && !Objects.equals(Enchantments.SHARPNESS, enchantment);
     }
 
     @Override
     public boolean canApplyAtEnchantingTable(@NotNull ItemStack itemstack) {
-        return itemstack.is(ChangedAddonTags.Items.LATEX_SOLVENT_APPLICABLE)
+        return  super.canApplyAtEnchantingTable(itemstack)
+                || itemstack.is(ChangedAddonTags.Items.LATEX_SOLVENT_APPLICABLE)
                 || itemstack.getItem() instanceof SwordItem
                 || itemstack.getItem() instanceof AxeItem;
     }

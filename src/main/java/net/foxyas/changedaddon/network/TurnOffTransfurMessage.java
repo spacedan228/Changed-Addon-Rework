@@ -39,9 +39,11 @@ public record TurnOffTransfurMessage(int type, int pressedMs) {
             TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
             TransfurMode mode = tf.transfurMode;
 
-            tf.transfurMode = mode == TransfurMode.NONE ? tf.getParent().transfurMode : TransfurMode.NONE;
-            if (player.getLevel().isClientSide()) {
-                player.displayClientMessage(new TranslatableComponent("key.changed_addon.turn_off_transfur.safe_mode", tf.transfurMode == TransfurMode.NONE), false);
+            if (tf.getParent().transfurMode != TransfurMode.NONE) {
+                tf.transfurMode = mode == TransfurMode.NONE ? tf.getParent().transfurMode : TransfurMode.NONE;
+                if (player.getLevel().isClientSide()) {
+                    player.displayClientMessage(new TranslatableComponent("key.changed_addon.turn_off_transfur.safe_mode", tf.transfurMode != TransfurMode.NONE), false);
+                }
             }
 
             if (tf.getSelectedAbility() instanceof GrabEntityAbilityInstance grabEntityAbilityInstance) {

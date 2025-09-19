@@ -70,18 +70,22 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
         BlockPos pos = new BlockPos(x, y, z);
         BlockEntity be = level.getBlockEntity(pos);
         if (be == null) return;
+        if (!(be instanceof DarkLatexPuddleBlockEntity darkLatexPuddleBlockEntity)) return;
+
+        byte cooldown = darkLatexPuddleBlockEntity.cooldown;
 
         Vec3 center = new Vec3(x, y, z);
 
-        if (be.getTileData().getByte("cooldown") > 0) return;
+        if (cooldown > 0) return;
 
         // Reproduz som para dark latex próximos
         PacketUtil.playSound(sLevel, DarkLatexPuddleBlock::isPlayerDLOrPuro,
                 x, y, z, ChangedAddonSounds.WARN, SoundSource.BLOCKS, 1, 1);
 
         // Aplica cooldown no bloco
-        be.getTileData().putByte("cooldown", (byte) 30);
-        be.setChanged();
+        darkLatexPuddleBlockEntity.cooldown = 30;
+        darkLatexPuddleBlockEntity.setChanged();
+
 
         // Atração de dark latex
         AABB area = AABB.ofSize(center, 20, 20, 20); // raio de 10 blocos
@@ -140,20 +144,18 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
 
         level.scheduleTick(pos, this, 1);
 
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (blockEntity != null)
-            blockEntity.getTileData().putByte("cooldown", (byte) 0);
     }
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity == null) return;
+        if (!(blockEntity instanceof DarkLatexPuddleBlockEntity darkLatexPuddleBlockEntity)) return;
 
-        byte cooldown = blockEntity.getTileData().getByte("cooldown");
+        byte cooldown = darkLatexPuddleBlockEntity.cooldown;//blockEntity.getTileData().getByte("cooldown");
         if (cooldown > 0) {
-            blockEntity.getTileData().putByte("cooldown", (byte) Math.max(0, cooldown - 1));
-            blockEntity.setChanged();
+            darkLatexPuddleBlockEntity.cooldown = (byte) Math.max(0, cooldown - 1);
+            darkLatexPuddleBlockEntity.setChanged();
         }
 
         level.scheduleTick(pos, this, 1);

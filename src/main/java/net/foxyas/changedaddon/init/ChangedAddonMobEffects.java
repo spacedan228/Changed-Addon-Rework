@@ -17,7 +17,9 @@ public class ChangedAddonMobEffects {
     public static final RegistryObject<MobEffect> UNTRANSFUR = REGISTRY.register("untransfur", UntransfurMobEffect::new);
     public static final RegistryObject<MobEffect> LATEX_SOLVENT = REGISTRY.register("latex_solvent", LatexSolventMobEffect::new);
     public static final RegistryObject<MobEffect> LATEX_CONTAMINATION = REGISTRY.register("latex_contamination", LatexContaminationMobEffect::new);
+    public static final RegistryObject<MobEffect> TRANSFUR_DAMAGE_BOOST = REGISTRY.register("latex_strength", LatexStrengthMobEffect::new);
     public static final RegistryObject<MobEffect> TRANSFUR_SICKNESS = REGISTRY.register("transfur_sickness", TransfurSicknessMobEffect::new);
-    public static final RegistryObject<MobEffect> LATEX_EXPOSURE = REGISTRY.register("latex_exposure", LatexExposureMobEffect::new);
+    public static final RegistryObject<MobEffect> LATEX_TOLERANCE_BOOST = REGISTRY.register("latex_tolerance_boost", LatexToleranceBoostMobEffect::new);
+    public static final RegistryObject<MobEffect> LATEX_EXPOSURE = REGISTRY.register("latex_exposure", LatexResistanceBoostMobEffect::new);
     public static final RegistryObject<MobEffect> PACIFIED = REGISTRY.register("pacified", PacifiedMobEffect::new);
 }

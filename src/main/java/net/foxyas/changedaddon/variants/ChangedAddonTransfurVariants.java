@@ -104,7 +104,7 @@ public class ChangedAddonTransfurVariants {
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_SQUID_TIGER_SHARK).extraHands().addAbility(ChangedAbilities.CREATE_INKBALL).gills().addAbility(ChangedAbilities.SUMMON_SHARKS));
 
     public static final RegistryObject<TransfurVariant<LuminaraFlowerBeastEntity>> LUMINARA_FLOWER_BEAST = register("form_luminara_flower_beast",
-            TransfurVariant.Builder.of(ChangedAddonEntities.LUMINARA_FLOWER_BEAST).addAbility(ChangedAddonAbilities.LUMINARA_FIREBALL).addAbility(ChangedAddonAbilities.TELEPORT).addAbility(ChangedAddonAbilities.TELEPORT_DODGE).glide().stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
+            TransfurVariant.Builder.of(ChangedAddonEntities.LUMINARA_FLOWER_BEAST).addAbility(ChangedAddonAbilities.LUMINARA_FIREBALL).addAbility(ChangedAddonAbilities.TELEPORT).addAbility(ChangedAddonAbilities.TELEPORT_DODGE).addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION).glide().stepSize(0.7F).sound(ChangedSounds.SOUND3.getLocation()));
 
     public static final RegistryObject<TransfurVariant<LatexWhiteSnowLeopardMale>> LATEX_WHITE_SNOW_LEOPARD_MALE = register("form_latex_white_snow_leopard/male",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WHITE_SNOW_LEOPARD_MALE).stepSize(0.7f).breatheMode(TransfurVariant.BreatheMode.WEAK).reducedFall().scares(Creeper.class).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).jumpStrength(1.25f));
