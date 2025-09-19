@@ -318,7 +318,7 @@
   "death.attack.untransfur_fail": "%1$s meghalt, amikor a visszatranszfurálási kísérlet sikertelen lett",
   "death.attack.untransfur_fail.player": "%1$s meghalt, amikor a visszatranszfurálási kísérlet sikertelen lett, miközben vele harcolt: %2$s",
 
-  "effect.changed_addon.fadigue": "Kimerültség",
+  "effect.changed_addon.fatigue": "Kimerültség",
   "effect.changed_addon.fatigue.description": "Ideiglenesen korlátozza a képességeidet, ami egy visszatöltési időt okoz, mielőtt újra cselekedhetnél.",
   "effect.changed_addon.untransfur": "§7Visszatranszfur",
   "effect.changed_addon.untransfur.description": "Átfedésben jeleníti meg a visszatranszfur folyamatát. A haladás felgyorsul alvás közben. Amikor befejeződött, a visszatranszfur érvénybe lép.",
