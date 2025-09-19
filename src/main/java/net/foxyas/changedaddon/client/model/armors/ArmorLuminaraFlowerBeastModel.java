@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
-import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
@@ -38,6 +37,7 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
     private final ModelPart RightWing;
     private final ModelPart LeftWing;
     private final HumanoidAnimator<T, ArmorLuminaraFlowerBeastModel<T>> animator;
+    public boolean shouldHaveBigWings = false;
 
     public ArmorLuminaraFlowerBeastModel(ModelPart modelPart, ArmorModel model) {
         super(modelPart, model);
@@ -110,6 +110,7 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
             Tail.visible = luminaraFlowerBeastEntity.isAwakened();
             LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
             RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
+            this.shouldHaveBigWings = luminaraFlowerBeastEntity.isHyperAwakened();
         }
 
         switch (slot) {
@@ -117,7 +118,15 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
                 this.Head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
                 break;
             case CHEST:
-                this.Torso.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+                if (!this.shouldHaveBigWings) {
+                    Torso.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+                } else {
+                    setWingsVisibility(false);
+                    Torso.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+                    setWingsVisibility(true);
+
+                    renderBigWings(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+                }
                 this.LeftArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
                 this.RightArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
                 break;
@@ -132,6 +141,34 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
         }
 
         poseStack.popPose();
+    }
+
+    private void renderBigWings(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        poseStack.pushPose();
+        poseStack.scale(1.5f, 1.5f, 1.5f);
+
+        poseStack.pushPose();
+        /*poseStack.translate(0, -0.05f, -0.1f);
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(45f));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(0));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(0));*/
+        LeftWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        poseStack.popPose();
+
+        poseStack.pushPose();
+        /*poseStack.translate(0, -0.05f, -0.1f);
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(45f));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(0));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(0));*/
+        RightWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        poseStack.popPose();
+
+        poseStack.popPose();
+    }
+
+    private void setWingsVisibility(boolean wingsVisibility) {
+        LeftWing.visible = wingsVisibility;
+        RightWing.visible = wingsVisibility;
     }
 
     @Override
@@ -153,6 +190,7 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
             LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
             RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
             Tail.visible = luminaraFlowerBeastEntity.isAwakened();
+            this.shouldHaveBigWings = luminaraFlowerBeastEntity.isHyperAwakened();
         }
     }
 
@@ -163,6 +201,7 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
             LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
             RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
             Tail.visible = luminaraFlowerBeastEntity.isAwakened();
+            this.shouldHaveBigWings = luminaraFlowerBeastEntity.isHyperAwakened();
         }
     }
 
@@ -183,6 +222,7 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
             LeftWing.visible &= luminaraFlowerBeastEntity.isAwakened();
             RightWing.visible &= luminaraFlowerBeastEntity.isAwakened();
             Tail.visible &= luminaraFlowerBeastEntity.isAwakened();
+            this.shouldHaveBigWings = luminaraFlowerBeastEntity.isHyperAwakened();
         }
     }
 

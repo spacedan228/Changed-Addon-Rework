@@ -7,9 +7,10 @@ package net.foxyas.changedaddon.client.model.advanced;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
+import net.foxyas.changedaddon.client.model.animations.DragonBigWingCreativeFlyAnimator;
 import net.foxyas.changedaddon.client.renderer.layers.animation.CarryAbilityAnimation;
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
-import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.tail.DragonTailCreativeFlyAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
@@ -65,6 +66,7 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
     private final ModelPart LeftFoot;
     private final ModelPart LeftPad;
     private final HumanoidAnimator<LuminaraFlowerBeastEntity, LuminaraFlowerBeastModel> animator;
+    public boolean shouldHaveBigWings = false;
 
     public LuminaraFlowerBeastModel(ModelPart root) {
         super(root);
@@ -106,7 +108,7 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
         this.LeftFoot = this.LeftLowerLeg.getChild("LeftFoot");
         this.LeftPad = this.LeftFoot.getChild("LeftPad");
 
-        this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).addPreset(AnimatorPresets.wingedDragonLike(this.Head,
+        this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).addPreset(ChangedAddonAnimationsPresets.wingedDragonLike(this.Head,
                         this.Torso,
                         this.LeftArm,
                         this.RightArm,
@@ -143,7 +145,12 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
                         TipFlowerTailPrimary,
                         TipFlowerTailSecondary,
                         TipFlowerTailTertiary))
-                );
+                ).addAnimator(new DragonBigWingCreativeFlyAnimator<>(leftWingRoot,
+                        leftSecondaries,
+                        leftTertiaries,
+                        rightWingRoot,
+                        rightSecondaries,
+                        rightTertiaries));
     }
 
     @SuppressWarnings("unused")
@@ -405,7 +412,7 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
     }
 
     public List<ModelPart> hiddenPartsByDefault() {
-        return List.of(this.BigTail,this.RightWing, this.LeftWing);
+        return List.of(this.BigTail, this.RightWing, this.LeftWing);
     }
 
     public @NotNull ModelPart getArm(HumanoidArm p_102852) {
@@ -434,6 +441,7 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         CarryAbilityAnimation.playAnimation(entity, this);
+        this.shouldHaveBigWings = entity.isHyperAwakened();
     }
 
     @Override
@@ -446,17 +454,54 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
         this.BigTail.visible = entity.isAwakened();
         this.LeftWing.visible = entity.isAwakened();
         this.RightWing.visible = entity.isAwakened();
-		this.Tail.visible = !entity.isAwakened();
+        this.Tail.visible = !entity.isAwakened();
+        this.shouldHaveBigWings = entity.isHyperAwakened();
     }
 
-	@Override
+    @Override
     public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         Head.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
-        Torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        if (!this.shouldHaveBigWings) {
+            Torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        } else {
+            setWingsVisibility(false);
+            Torso.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+            setWingsVisibility(true);
+
+            renderBigWings(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+        }
         RightArm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         LeftArm.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         RightLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
         LeftLeg.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+    }
+
+    private void renderBigWings(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        poseStack.pushPose();
+        poseStack.scale(1.5f, 1.5f, 1.5f);
+
+        poseStack.pushPose();
+        /*poseStack.translate(0, -0.05f, -0.1f);
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(45f));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(0));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(0));*/
+        LeftWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        poseStack.popPose();
+
+        poseStack.pushPose();
+        /*poseStack.translate(0, -0.05f, -0.1f);
+        poseStack.mulPose(Vector3f.XP.rotationDegrees(45f));
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(0));
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(0));*/
+        RightWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        poseStack.popPose();
+
+        poseStack.popPose();
+    }
+
+    private void setWingsVisibility(boolean wingsVisibility) {
+        LeftWing.visible = wingsVisibility;
+        RightWing.visible = wingsVisibility;
     }
 
     @Override

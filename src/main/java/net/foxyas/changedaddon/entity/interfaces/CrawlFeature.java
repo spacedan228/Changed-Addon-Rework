@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 public interface CrawlFeature {
@@ -30,7 +31,13 @@ public interface CrawlFeature {
             setCrawlingPoseIfNeeded(livingEntity, target);
             crawlToTarget(livingEntity, target);
         } else {
-            if (!livingEntity.isSwimming() && !livingEntity.level.getBlockState(new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ())).isAir()) {
+            BlockPos above = new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ()).above();
+            BlockState blockState = livingEntity.level.getBlockState(above);
+            if (livingEntity.getPose() == Pose.SWIMMING && !livingEntity.isInWater() && (blockState.isAir() || !blockState.isSuffocating(livingEntity.level, above) || !blockState.isSolidRender(livingEntity.level, above))) {
+                livingEntity.setPose(Pose.STANDING);
+            }
+
+            if (!livingEntity.isSwimming() && (!blockState.isAir() || blockState.isSuffocating(livingEntity.level, above) || blockState.isSolidRender(livingEntity.level, above))) {
                 livingEntity.setPose(Pose.SWIMMING);
             }
         }
@@ -72,8 +79,12 @@ public interface CrawlFeature {
                 livingEntity.setPose(Pose.STANDING);
                 livingEntity.setSwimming(false);
             }
-        } else if (livingEntity.getPose() == Pose.SWIMMING && !livingEntity.isInWater() && livingEntity.level.getBlockState(new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ()).above()).isAir()) {
-            livingEntity.setPose(Pose.STANDING);
+        } else {
+            BlockPos above = new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ()).above();
+            BlockState blockState = livingEntity.level.getBlockState(above);
+            if (livingEntity.getPose() == Pose.SWIMMING && !livingEntity.isInWater() && (blockState.isAir() || !blockState.isSuffocating(livingEntity.level, above) || !blockState.isSolidRender(livingEntity.level, above))) {
+                livingEntity.setPose(Pose.STANDING);
+            }
         }
     }
 }
