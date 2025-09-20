@@ -54,16 +54,18 @@ public abstract class TransfurVariantInstanceMixin {
     @Inject(method = "tickFlying", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;getFoodLevel()I", ordinal = 0),
             cancellable = true)
     private void negateFly(CallbackInfo cir) {
-        if (getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-            if (!variantExtraStats.getFlyType().canFly()) {
-                if (host.getAbilities().flying || host.getAbilities().mayfly) {
-                    host.getAbilities().mayfly = false;
-                    host.getAbilities().flying = false;
-                    host.onUpdateAbilities();
-                }
+        if (!this.host.isCreative() && !this.host.isSpectator()) {
+            if (getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+                if (!variantExtraStats.getFlyType().canFly()) {
+                    if (host.getAbilities().flying || host.getAbilities().mayfly) {
+                        host.getAbilities().mayfly = false;
+                        host.getAbilities().flying = false;
+                        host.onUpdateAbilities();
+                    }
 
-                ticksFlying = 0;
-                cir.cancel();
+                    ticksFlying = 0;
+                    cir.cancel();
+                }
             }
         }
     }
