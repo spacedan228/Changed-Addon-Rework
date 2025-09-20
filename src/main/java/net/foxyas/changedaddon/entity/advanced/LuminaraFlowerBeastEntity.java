@@ -132,18 +132,8 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     @Override
-    public float flightSpeedYMul() {
-        return 1.5f;
-    }
-
-    @Override
-    public float flightSpeedXZMul() {
-        return 1.5f;
-    }
-
-    @Override
-    public float flightFoodExhaustionMul() {
-        return VariantExtraStats.super.flightFoodExhaustionMul();
+    public float getAdditionalFlySpeed() {
+        return 1;
     }
 
     private MobEffectInstance getPatEffect(LivingEntity patter) {

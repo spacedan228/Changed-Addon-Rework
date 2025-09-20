@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.variants;
 
+import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.procedures.CreatureDietsHandleProcedure.DietType;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.nbt.CompoundTag;
@@ -18,16 +19,8 @@ public interface VariantExtraStats {
         return this.extraBlockBreakSpeed() + 1;
     }
 
-    default float flightSpeedXZMul(){
-        return 1;
-    }
-
-    default float flightSpeedYMul(){
-        return 1;
-    }
-
-    default float flightFoodExhaustionMul(){
-        return 1;
+    default float getAdditionalFlySpeed(){
+        return 0;
     }
 
     default FlyType getFlyType() {

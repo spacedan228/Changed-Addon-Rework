@@ -8,4 +8,6 @@ public class AttributesHandle {
     public static AttributeMap DefaultPlayerAttributes() {
         return new AttributeMap(Player.createAttributes().build());
     }
+
+    public static final float DefaultPlayerFlySpeed = 0.05F;
 }

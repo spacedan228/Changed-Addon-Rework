@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.mixins.entity.variant;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazmatSuitItem;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
@@ -31,6 +32,7 @@ public abstract class TransfurVariantInstanceMixin {
     @Shadow
     @Final
     private Player host;
+    private boolean appliedFlySpeed;
 
     @Shadow
     public abstract TransfurVariant<?> getParent();
@@ -70,26 +72,7 @@ public abstract class TransfurVariantInstanceMixin {
         }
     }
 
-    @WrapOperation(at = @At(value = "FIELD", target = "Lnet/minecraft/world/entity/player/Abilities;flying:Z", ordinal = 3),
-            method = "tickFlying")
-    private boolean modifyFlySpeed(Abilities instance, Operation<Boolean> original){
-        boolean isFlying = original.call(instance);
-        if(!(getChangedEntity() instanceof VariantExtraStats extraStats) || !isFlying) return isFlying;
-
-        Vec3 delta = host.getDeltaMovement();
-        if(extraStats.flightSpeedXZMul() != 1 || extraStats.flightSpeedYMul() != 1) delta = delta.multiply(extraStats.flightSpeedXZMul(), extraStats.flightSpeedYMul(), extraStats.flightSpeedXZMul());
-
-        float horizontalPenalty = host.isSprinting() ? 0.825F : 0.8F;
-        float verticalPenalty = delta.y > (double)0.0F ? 0.45F : 0.8F;
-        host.setDeltaMovement(delta.multiply(horizontalPenalty, verticalPenalty, horizontalPenalty));
-
-        float foodExhaustion = host.isSprinting() ? 0.05f : 0.025f;
-        if(extraStats.flightFoodExhaustionMul() != 1) foodExhaustion *= extraStats.flightFoodExhaustionMul();
-        host.causeFoodExhaustion(foodExhaustion);
-        return false;
-    }
-
-    @Inject(method = "tick", at = @At("TAIL"))//seems unnecessary
+    @Inject(method = "tick", at = @At("TAIL")) //seems unnecessary
     private void negateFlyInTick(CallbackInfo cir) {
         if (this.parent.canGlide && this.shouldApplyAbilities()) {
             if (!this.host.isCreative() && !this.host.isSpectator()) {
@@ -103,8 +86,31 @@ public abstract class TransfurVariantInstanceMixin {
                     }
                 }
             }
-        }
 
+            if (getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+                if (variantExtraStats.getAdditionalFlySpeed() == 0) return;
+                if (variantExtraStats.getFlyType().canFly()) {
+                    if (!this.appliedFlySpeed) {
+                        this.appliedFlySpeed = true;
+                        this.host.getAbilities().setFlyingSpeed(host.getAbilities().getFlyingSpeed() + variantExtraStats.getAdditionalFlySpeed());
+                        this.host.onUpdateAbilities();
+                        //this.host.flyingSpeed += variantExtraStats.getAdditionalFlySpeed();
+                    }
+                }
+            }
+        }
+    }
+
+    @Inject(method = "unhookAll", at = @At("TAIL"), cancellable = true)
+    private void injectUnHookALl(Player player, CallbackInfo ci) {
+        if (this.getChangedEntity() instanceof VariantExtraStats stats) {
+            if (this.appliedFlySpeed) {
+                this.appliedFlySpeed = false;
+                //this.host.flyingSpeed -= stats.getAdditionalFlySpeed();
+                this.host.getAbilities().setFlyingSpeed(AttributesHandle.DefaultPlayerFlySpeed);
+                this.host.onUpdateAbilities();
+            }
+        }
     }
 
     @Inject(method = "save", at = @At("RETURN"), cancellable = true)
