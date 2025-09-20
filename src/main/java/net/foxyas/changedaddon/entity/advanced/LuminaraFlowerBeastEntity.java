@@ -131,6 +131,21 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
+    @Override
+    public float flightSpeedYMul() {
+        return 1.5f;
+    }
+
+    @Override
+    public float flightSpeedXZMul() {
+        return 1.5f;
+    }
+
+    @Override
+    public float flightFoodExhaustionMul() {
+        return VariantExtraStats.super.flightFoodExhaustionMul();
+    }
+
     private MobEffectInstance getPatEffect(LivingEntity patter) {
         if (!this.isAwakened()) {
             return new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600);
