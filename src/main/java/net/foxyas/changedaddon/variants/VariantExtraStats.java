@@ -21,11 +21,7 @@ public interface VariantExtraStats {
 
     float defaultPlayerFlySpeed = AttributesHandle.DefaultPlayerFlySpeed;
 
-    default float getFlySpeedMultiplier() {
-        return 1;
-    }
-
-    default float getAdditionalFlySpeed(){
+    default float getFlySpeed(){
         return 0;
     }
 

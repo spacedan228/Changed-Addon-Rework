@@ -132,8 +132,8 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     @Override
-    public float getFlySpeedMultiplier() {
-        return 1.5f;
+    public float getFlySpeed() {
+        return defaultPlayerFlySpeed * 1.5f;
     }
 
     private MobEffectInstance getPatEffect(LivingEntity patter) {
