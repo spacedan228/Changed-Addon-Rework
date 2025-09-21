@@ -88,13 +88,29 @@ public abstract class TransfurVariantInstanceMixin {
             }
 
             if (getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                if (variantExtraStats.getAdditionalFlySpeed() == 0) return;
-                if (variantExtraStats.getFlyType().canFly()) {
-                    if (!this.appliedFlySpeed) {
-                        this.appliedFlySpeed = true;
-                        this.host.getAbilities().setFlyingSpeed(host.getAbilities().getFlyingSpeed() + variantExtraStats.getAdditionalFlySpeed());
-                        this.host.onUpdateAbilities();
-                        //this.host.flyingSpeed += variantExtraStats.getAdditionalFlySpeed();
+                if (variantExtraStats.getAdditionalFlySpeed() != 0) {
+                    if (variantExtraStats.getFlyType().canFly()) {
+                        if (!this.appliedFlySpeed) {
+                            this.appliedFlySpeed = true;
+                            this.host.getAbilities().setFlyingSpeed(
+                                    host.getAbilities().getFlyingSpeed()
+                                            + variantExtraStats.getAdditionalFlySpeed()
+                            );
+                            this.host.onUpdateAbilities();
+                        }
+                    }
+                }
+
+                if (variantExtraStats.getFlySpeedMultiplier() != 1) {
+                    if (variantExtraStats.getFlyType().canFly()) {
+                        if (!this.appliedFlySpeed) {
+                            this.appliedFlySpeed = true;
+                            this.host.getAbilities().setFlyingSpeed(
+                                    host.getAbilities().getFlyingSpeed()
+                                            * variantExtraStats.getFlySpeedMultiplier()
+                            );
+                            this.host.onUpdateAbilities();
+                        }
                     }
                 }
             }
@@ -106,7 +122,6 @@ public abstract class TransfurVariantInstanceMixin {
         if (this.getChangedEntity() instanceof VariantExtraStats stats) {
             if (this.appliedFlySpeed) {
                 this.appliedFlySpeed = false;
-                //this.host.flyingSpeed -= stats.getAdditionalFlySpeed();
                 this.host.getAbilities().setFlyingSpeed(AttributesHandle.DefaultPlayerFlySpeed);
                 this.host.onUpdateAbilities();
             }

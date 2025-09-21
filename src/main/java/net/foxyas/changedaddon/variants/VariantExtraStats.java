@@ -19,6 +19,12 @@ public interface VariantExtraStats {
         return this.extraBlockBreakSpeed() + 1;
     }
 
+    float defaultPlayerFlySpeed = AttributesHandle.DefaultPlayerFlySpeed;
+
+    default float getFlySpeedMultiplier() {
+        return 1;
+    }
+
     default float getAdditionalFlySpeed(){
         return 0;
     }
