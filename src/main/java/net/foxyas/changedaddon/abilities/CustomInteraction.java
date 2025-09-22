@@ -42,10 +42,7 @@ public class CustomInteraction extends AbstractAbility<CustomInteractionInstance
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         ArrayList<Component> description = new ArrayList<>(super.getAbilityDescription(entity));
-        if (entity.getChangedEntity() instanceof LatexSnepEntity
-                || entity.getChangedEntity() instanceof AvaliEntity
-                || entity.getChangedEntity() instanceof AbstractLuminarcticLeopard) {
-            if (entity.getChangedEntity() instanceof LatexSnepEntity) {
+        if (entity.getChangedEntity() instanceof LatexSnepEntity) {
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.latex_snep"));
             } else if (entity.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.avali"));
@@ -58,10 +55,9 @@ public class CustomInteraction extends AbstractAbility<CustomInteractionInstance
                     TranslatableComponent luminaraBeastDescriptionExtra = new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminara_beast.extra", luminaraFlowerBeast.spawnParticles);
                     description.add(luminaraBeastDescriptionExtra);
                 }
-            } else {
+            } else if (entity.getChangedEntity() instanceof AbstractLuminarcticLeopard) {
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminarctic_leopards"));
             }
-        }
         return description;
     }
 
