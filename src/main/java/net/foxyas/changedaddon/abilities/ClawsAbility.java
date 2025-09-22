@@ -53,9 +53,10 @@ public class ClawsAbility extends SimpleAbility {
     public static Optional<Integer> getColor(AbstractAbilityInstance abilityInstance, int layer) {
         AbstractRadialScreen.ColorScheme scheme = AbilityColors.getAbilityColors(abilityInstance);
         if (abilityInstance.ability instanceof ClawsAbility) {
-            if (layer == 0
-                    && abilityInstance.entity.getAccessorySlots().stream().anyMatch((accessorySlots -> accessorySlots.hasSlot(ChangedAccessorySlots.BODY.get())))) {
-                return Optional.of(scheme.foreground().toInt());
+            if (abilityInstance.entity.getAccessorySlots().stream().anyMatch((accessorySlots -> accessorySlots.hasSlot(ChangedAccessorySlots.BODY.get())))) {
+                if (layer == 0) {
+                    return Optional.of(scheme.foreground().toInt());
+                }
             } else if (abilityInstance.entity.getAccessorySlots().stream().noneMatch((accessorySlots -> accessorySlots.hasSlot(ChangedAccessorySlots.BODY.get())))) {
                 if (layer == 1) {
                     if (abilityInstance.entity.getChangedEntity() instanceof IDynamicPawColor dynamicPawColor) {

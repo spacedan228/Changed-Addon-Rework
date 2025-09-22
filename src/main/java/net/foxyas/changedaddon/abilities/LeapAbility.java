@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.abilities;
 
+import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -34,10 +35,6 @@ public class LeapAbility extends SimpleAbility {
 
         if (!player.isShiftKeyDown()) {
             // Normal Leap
-            /*motionX = -Math.sin(Math.toRadians(player.getYRot())) * speed;
-            motionY = -Math.sin(Math.toRadians(player.getXRot())) * speed;
-            motionZ = Math.cos(Math.toRadians(player.getYRot())) * speed;
-            player.setDeltaMovement(player.getDeltaMovement().add(motionX, motionY, motionZ));*/
             player.setDeltaMovement(player.getDeltaMovement().add(player.getViewVector(1).multiply(speed, speed, speed)));
             playSound(player);
             exhaustPlayer(player, 0.5F);
@@ -118,6 +115,9 @@ public class LeapAbility extends SimpleAbility {
 
     @Override
     public UseType getUseType(IAbstractChangedEntity entity) {
+        if (entity.getChangedEntity() instanceof LatexSnepEntity) {
+            return UseType.INSTANT;
+        }
         return UseType.CHARGE_RELEASE;
     }
 
