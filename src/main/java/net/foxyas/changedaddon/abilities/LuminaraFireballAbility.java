@@ -93,7 +93,7 @@ public class LuminaraFireballAbility extends SimpleAbility {
         if (holder.isAwakened()) {
             if (holder.isShiftKeyDown() && layer == 0) {
                 return Optional.of(scheme.foreground().toInt());
-            } else if (layer == 1 && !holder.isCrouching()) {
+            } else if (layer == 1 && !holder.isShiftKeyDown()) {
                 return Optional.of(scheme.foreground().toInt());
             }
         } else {

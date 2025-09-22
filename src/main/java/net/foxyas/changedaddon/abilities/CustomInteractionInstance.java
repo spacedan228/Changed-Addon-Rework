@@ -8,6 +8,7 @@ import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 
 
@@ -62,6 +63,7 @@ public class CustomInteractionInstance extends AbstractAbilityInstance {
         } else if (entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
             if (!luminaraFlowerBeast.isHyperAwakened()) return;
             luminaraFlowerBeast.spawnParticles = !luminaraFlowerBeast.spawnParticles;
+            entity.displayClientMessage(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminara_beast.action", luminaraFlowerBeast.spawnParticles), true);
         }
     }
 
