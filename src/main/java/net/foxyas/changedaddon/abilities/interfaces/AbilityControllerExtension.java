@@ -1,8 +1,6 @@
 package net.foxyas.changedaddon.abilities.interfaces;
 
-import net.foxyas.changedaddon.entity.interfaces.ChangedEntityExtension;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
 
 public interface AbilityControllerExtension {
 
@@ -12,7 +10,7 @@ public interface AbilityControllerExtension {
 
     void resetCooldown();
 
-    default boolean shouldReallyApplyCooldown() {
+    default boolean shouldApplyCooldown() {
         return true;
     }
 }

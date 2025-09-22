@@ -110,6 +110,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
 
         public boolean readyToDash = false;
         public float dashPower = 0;
+        private float lastDashPower = dashPower;
 
         public AbilityInstance(AbstractAbility<?> ability, IAbstractChangedEntity entity) {
             super(ability, entity);
@@ -237,7 +238,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
 
         @Override
         public boolean shouldApplyCooldown() {
-            return this.dashPower > 0;
+            return this.lastDashPower > 0;
         }
 
         @Override
@@ -271,7 +272,8 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
         @Override
         public void tickIdle() {
             super.tickIdle();
-            this.entity.displayClientMessage(new TextComponent("VALUE =" + this.dashPower) , true);
+            this.lastDashPower = dashPower;
+            this.entity.displayClientMessage(new TextComponent("VALUE = " + this.lastDashPower) , true);
         }
     }
 }

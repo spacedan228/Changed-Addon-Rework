@@ -24,16 +24,16 @@ public class AbilityControllerMixin implements AbilityControllerExtension {
     }
 
     @Override
-    public boolean shouldReallyApplyCooldown() {
+    public boolean shouldApplyCooldown() {
         if (abilityInstance instanceof AbilityExtension abilityExtension) {
             return abilityExtension.shouldApplyCooldown();
         }
-        return AbilityControllerExtension.super.shouldReallyApplyCooldown();
+        return AbilityControllerExtension.super.shouldApplyCooldown();
     }
 
     @Inject(method = "applyCoolDown", at = @At("TAIL"), cancellable = true)
     public void injectApplyCooldown(CallbackInfo ci) {
-        if (!this.shouldReallyApplyCooldown()) {
+        if (!this.shouldApplyCooldown()) {
             resetCooldown();
         }
     }
