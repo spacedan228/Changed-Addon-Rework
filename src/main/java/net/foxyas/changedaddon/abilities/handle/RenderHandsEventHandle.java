@@ -48,22 +48,19 @@ public class RenderHandsEventHandle {
         AbstractClientPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
 
-        boolean shouldRenderHand = ProcessTransfur.ifPlayerTransfurred(player, variant -> {
-            if (shouldRenderBothHands(player, variant)) {
-                extraHandShowProgress = Mth.clamp(extraHandShowProgress - 0.005f, 0, 1);
-                return true;
-            } else {
-                extraHandShowProgress = Mth.clamp(extraHandShowProgress + 0.005f, 0, 1);
-                return false;
-            }
-        }, () -> {
+        boolean shouldRenderHand = ProcessTransfur.ifPlayerTransfurred(player, variant -> shouldRenderBothHands(player, variant), () -> {
             extraHandShowProgress = DISABLE_HAND_SHOW_PROGRESS;
             return false;
         });
 
-        if (extraHandShowProgress >= DISABLE_HAND_SHOW_PROGRESS && !shouldRenderHand) return;
-
-        extraHandShowProgress = Mth.clamp(extraHandShowProgress, 0, DISABLE_HAND_SHOW_PROGRESS);
+        if (!shouldRenderHand) {
+            extraHandShowProgress = Mth.clamp(extraHandShowProgress + 0.005f, 0, DISABLE_HAND_SHOW_PROGRESS);
+            if (extraHandShowProgress >= DISABLE_HAND_SHOW_PROGRESS) {
+                return;
+            }
+        } else {
+            extraHandShowProgress = Mth.clamp(extraHandShowProgress - 0.005f, 0, DISABLE_HAND_SHOW_PROGRESS);
+        }
 
         if (shouldShow()) {
             PoseStack stack = event.getPoseStack();
