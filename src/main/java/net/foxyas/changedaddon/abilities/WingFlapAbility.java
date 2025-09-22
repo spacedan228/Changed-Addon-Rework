@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.abilities;
 
+import net.foxyas.changedaddon.abilities.interfaces.AbilityExtension;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
@@ -31,11 +32,11 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
     public static Optional<Integer> getColor(AbstractAbilityInstance abilityInstance, int layer) {
         AbstractRadialScreen.ColorScheme scheme = AbilityColors.getAbilityColors(abilityInstance);
         if (abilityInstance instanceof WingFlapAbility.AbilityInstance Instance) {
-            if (Instance.DashPower < 0.3f && layer == 0) {
+            if (Instance.dashPower < 0.3f && layer == 0) {
                 return Optional.of(scheme.foreground().toInt());
-            } else if (Instance.DashPower >= 0.3f && Instance.DashPower < 0.95F && layer == 1) {
+            } else if (Instance.dashPower >= 0.3f && Instance.dashPower < 0.95F && layer == 1) {
                 return Optional.of(scheme.foreground().toInt());
-            } else if (Instance.DashPower >= 0.95F && layer == 2) {
+            } else if (Instance.dashPower >= 0.95F && layer == 2) {
                 return Optional.of(scheme.foreground().toInt());
             }
         }
@@ -45,11 +46,11 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
         if (entity.getEntity() instanceof Player player) {
             AbilityInstance Instance = ProcessTransfur.getPlayerTransfurVariant(player).getAbilityInstance(this);
-            if (Instance.DashPower <= 0.1f) {
+            if (Instance.dashPower <= 0.1f) {
                 return new ResourceLocation("changed_addon:textures/screens/wing_flap_ability_start.png");
-            } else if (Instance.DashPower >= 0.3f && Instance.DashPower < 0.95F) {
+            } else if (Instance.dashPower >= 0.3f && Instance.dashPower < 0.95F) {
                 return new ResourceLocation("changed_addon:textures/screens/wing_flap_ability_mid.png");
-            } else if (Instance.DashPower >= 0.95F) {
+            } else if (Instance.dashPower >= 0.95F) {
                 return new ResourceLocation("changed_addon:textures/screens/wing_flap_ability_final.png");
             }
         }
@@ -105,11 +106,10 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
         return 15;
     }
 
-    public static class AbilityInstance extends AbstractAbilityInstance {
+    public static class AbilityInstance extends AbstractAbilityInstance implements AbilityExtension {
 
-        public boolean ReadytoDash = false;
-        public int LastTick = 0;
-        public float DashPower = 0;
+        public boolean readyToDash = false;
+        public float dashPower = 0;
 
         public AbilityInstance(AbstractAbility<?> ability, IAbstractChangedEntity entity) {
             super(ability, entity);
@@ -219,13 +219,13 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
                 return;
             }
 
-            this.DashPower = capLevel((float) getController().getHoldTicks() / MAX_TICK_HOLD, 0, 1);
+            this.dashPower = capLevel((float) getController().getHoldTicks() / MAX_TICK_HOLD, 0, 1);
             if (getController().getHoldTicks() >= TICK_HOLD_NEED) {
-                this.ReadytoDash = true;
+                this.readyToDash = true;
             }
 
 
-            if (this.DashPower >= 1 && getController().getHoldTicks() == MAX_TICK_HOLD) {
+            if (this.dashPower >= 1 && getController().getHoldTicks() == MAX_TICK_HOLD) {
                 player.playSound(SoundEvents.ENDER_DRAGON_FLAP, 1, 2F);
             }
 
@@ -233,6 +233,11 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
             if (player.level.isClientSide() && ChangedAddonClientConfiguration.WING_FLAP_INFO.get()) {
                 player.displayClientMessage(new TextComponent("Ticks = " + getController().getHoldTicks()), true);
             }
+        }
+
+        @Override
+        public boolean shouldApplyCooldown() {
+            return this.dashPower > 0;
         }
 
         @Override
@@ -244,23 +249,29 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
             if (player.isInWater() || player.isSpectator()) {
                 return;
             }
-            if (player.isFallFlying() && !player.getAbilities().flying && ReadytoDash) {
-                this.ReadytoDash = false;
-                double speed = 2 * DashPower;
+            if (player.isFallFlying() && !player.getAbilities().flying && readyToDash) {
+                this.readyToDash = false;
+                double speed = 2 * dashPower;
                 player.setDeltaMovement(player.getDeltaMovement().add(player.getViewVector(1).multiply(speed, speed, speed)));
                 playFlapSound(player);
-                exhaustPlayer(player, 4F * DashPower);
-                this.DashPower = 0;
-            } else if (player.isOnGround() && player.getXRot() <= -45 && ReadytoDash) {
-                this.ReadytoDash = false;
-                double speed = 2 * DashPower;
+                exhaustPlayer(player, 4F * dashPower);
+                this.dashPower = 0;
+            } else if (player.isOnGround() && player.getXRot() <= -45 && readyToDash) {
+                this.readyToDash = false;
+                double speed = 2 * dashPower;
                 player.setDeltaMovement(player.getDeltaMovement().add(player.getViewVector(1).multiply(0, speed, 0)));
                 playFlapSound(player, 0.5F);
-                exhaustPlayer(player, 4F * DashPower);
-                this.DashPower = 0;
+                exhaustPlayer(player, 4F * dashPower);
+                this.dashPower = 0;
             }
 
-            this.DashPower = 0;
+            this.dashPower = 0;
+        }
+
+        @Override
+        public void tickIdle() {
+            super.tickIdle();
+            this.entity.displayClientMessage(new TextComponent("VALUE =" + this.dashPower) , true);
         }
     }
 }
