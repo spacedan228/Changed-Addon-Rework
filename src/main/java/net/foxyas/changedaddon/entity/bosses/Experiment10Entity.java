@@ -488,7 +488,7 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
     }
 
     @Override
-    public Color getPawColor() {
+    public Color getPawBeansColor() {
         return Color.decode("#070607");
     }
 }

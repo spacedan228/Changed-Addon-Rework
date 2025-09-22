@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.entity.defaults.AbstractCanTameSnepChangedEntity;
 import net.foxyas.changedaddon.entity.goals.simple.SleepingWithOwnerGoal;
+import net.foxyas.changedaddon.entity.interfaces.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.Gender;
@@ -31,10 +32,11 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Objects;
 
-public class LatexSnepEntity extends AbstractCanTameSnepChangedEntity {
+public class LatexSnepEntity extends AbstractCanTameSnepChangedEntity implements IDynamicPawColor {
 
     public boolean WantLoaf = false; //Lol the cat don't WANT LOAF!
     public Gender gender = Gender.MALE;
@@ -233,4 +235,13 @@ public class LatexSnepEntity extends AbstractCanTameSnepChangedEntity {
     }
 
 
+    @Override
+    public Color getPawBeansColor() {
+        return Color.decode("#fdfdfd");
+    }
+
+    @Override
+    public Color getPawColor() {
+        return Color.decode("#969696");
+    }
 }

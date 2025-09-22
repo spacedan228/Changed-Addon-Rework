@@ -746,7 +746,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     }
 
     @Override
-    public Color getPawColor() {
+    public Color getPawBeansColor() {
         return Color.CYAN;
     }
 

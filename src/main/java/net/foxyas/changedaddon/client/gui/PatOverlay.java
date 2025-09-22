@@ -84,7 +84,7 @@ public class PatOverlay {
 
                                     if (instance != null) {
                                         if (instance.getChangedEntity() instanceof IDynamicPawColor iDynamicPawColor) {
-                                            Color pawColor = iDynamicPawColor.getPawColor();
+                                            Color pawColor = iDynamicPawColor.getPawBeansColor();
                                             RenderSystem.setShaderColor(pawColor.getRed() / 255f, pawColor.getGreen() / 255f, pawColor.getBlue() / 255f, pawColor.getAlpha() / 255f);
                                             // Renderiza a imagem na tela
                                             GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);

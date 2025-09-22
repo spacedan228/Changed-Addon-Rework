@@ -67,20 +67,6 @@ public abstract class AbstractCanTameSnepChangedEntity extends AbstractSnowLeopa
         this.entityData.define(DATA_OWNERUUID_ID, Optional.empty());
     }
 
-    @Override
-    public void stopSleeping() {
-        super.stopSleeping();
-        //if (this.getPose() == Pose.SLEEPING) {
-        //    this.setPose(Pose.STANDING);
-        //}
-    }
-
-    @Override
-    public void startSleeping(@NotNull BlockPos blockPos) {
-        super.startSleeping(blockPos);
-        //this.setPose(Pose.SLEEPING);
-    }
-
     public boolean isBiped() {
         return true;
     }
