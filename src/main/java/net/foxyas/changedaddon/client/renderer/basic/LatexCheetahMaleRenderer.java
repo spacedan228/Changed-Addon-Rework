@@ -8,14 +8,14 @@ import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.GasMaskLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.LatexParticlesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.TransfurCapeLayer;
-import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexFemaleCatModel;
+import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleCatModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexCheetahMaleRenderer extends AdvancedHumanoidRenderer<LatexCheetahMale, LatexCheetahMaleModel, ArmorLatexFemaleCatModel<LatexCheetahMale>> {
+public class LatexCheetahMaleRenderer extends AdvancedHumanoidRenderer<LatexCheetahMale, LatexCheetahMaleModel, ArmorLatexMaleCatModel<LatexCheetahMale>> {
     public LatexCheetahMaleRenderer(EntityRendererProvider.Context context) {
-        super(context, new LatexCheetahMaleModel(context.bakeLayer(LatexCheetahMaleModel.LAYER_LOCATION)), ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);
+        super(context, new LatexCheetahMaleModel(context.bakeLayer(LatexCheetahMaleModel.LAYER_LOCATION)), ArmorLatexMaleCatModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet()));
