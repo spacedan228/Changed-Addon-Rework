@@ -22,7 +22,6 @@ public class CustomInteractionInstance extends AbstractAbilityInstance {
         return true;
     }
 
-
     @Override
     public AbstractAbility.UseType getUseType() {
         return AbstractAbility.UseType.INSTANT;

@@ -52,12 +52,8 @@ public class CustomInteraction extends AbstractAbility<CustomInteractionInstance
                 description.add(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.avali.extra", avaliEntity.getDimensionScale()));
             } else if (entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
                 TranslatableComponent luminaraBeastDescription = new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminara_beast");
-
-                description.add(new TextComponent(luminaraBeastDescription.getString()).withStyle((style -> {
-                    style.withObfuscated(!luminaraFlowerBeast.isHyperAwakened());
-                    return style;
-                })));
-
+                String string = luminaraBeastDescription.getString();
+                description.add(new TextComponent(string).withStyle((style -> style.withObfuscated(!luminaraFlowerBeast.isHyperAwakened()))));
                 if (luminaraFlowerBeast.isHyperAwakened()) {
                     TranslatableComponent luminaraBeastDescriptionExtra = new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminara_beast.extra", luminaraFlowerBeast.spawnParticles);
                     description.add(luminaraBeastDescriptionExtra);
