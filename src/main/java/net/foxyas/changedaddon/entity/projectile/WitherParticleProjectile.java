@@ -39,16 +39,16 @@ public class WitherParticleProjectile extends AbstractGenericParticleProjectile 
 
     @Override
     protected void onHitBlock(@NotNull BlockHitResult pResult) {
-        super.onHitBlock(pResult);
         ApplyExplosionParticlesAndDamage();
+        super.onHitBlock(pResult);
     }
 
     @Override
     protected void onHitEntity(@NotNull EntityHitResult pResult) {
-        super.onHitEntity(pResult);
         if (pResult.getEntity().hurtMarked) {
             ApplyExplosionParticlesAndDamage();
         }
+        super.onHitEntity(pResult);
     }
 
     @Override
