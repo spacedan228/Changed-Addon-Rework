@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.mixins.entity.variant;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazmatSuitItem;
-import net.foxyas.changedaddon.process.DEBUG;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
@@ -50,8 +49,8 @@ public abstract class TransfurVariantInstanceMixin {
         }
     }
 
-    @Inject(method = "tickFlying", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/food/FoodData;getFoodLevel()I", ordinal = 0),
-            cancellable = true)
+    @Inject(method = "tickFlying", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;onUpdateAbilities()V")
+    )
     private void negateFly(CallbackInfo cir) {
         if (!this.host.isCreative() && !this.host.isSpectator()) {
             if (getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
@@ -63,7 +62,6 @@ public abstract class TransfurVariantInstanceMixin {
                     }
 
                     ticksFlying = 0;
-                    cir.cancel();
                 }
             }
         }

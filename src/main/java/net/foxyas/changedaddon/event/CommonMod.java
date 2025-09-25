@@ -1,8 +1,11 @@
 package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.item.tooltip.ClientTransfurTotemTooltipComponent;
+import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
 import net.foxyas.changedaddon.network.*;
 import net.foxyas.changedaddon.network.packets.*;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,8 +23,11 @@ public class CommonMod {
 
         ChangedAddonMod.addNetworkMessage(RequestMovementCheckPacket.class, RequestMovementCheckPacket::encode, RequestMovementCheckPacket::decode, RequestMovementCheckPacket::handle);
         ChangedAddonMod.addNetworkMessage(ConfirmMovementPacket.class, ConfirmMovementPacket::encode, ConfirmMovementPacket::decode, ConfirmMovementPacket::handle);
+    }
 
-
+    @SubscribeEvent
+    public static void registerToolTips(FMLConstructModEvent event) {
+        MinecraftForgeClient.registerTooltipComponentFactory(TransfurTotemTooltipComponent.class, ClientTransfurTotemTooltipComponent::new);
     }
 
     @SubscribeEvent

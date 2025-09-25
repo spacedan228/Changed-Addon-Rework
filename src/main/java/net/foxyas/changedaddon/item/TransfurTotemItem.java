@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSounds;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
+import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -75,6 +76,14 @@ public class TransfurTotemItem extends Item {
     }
 
     @Override
+    public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack pStack) {
+        if (Syringe.getVariant(pStack) == null) {
+            return super.getTooltipImage(pStack);
+        }
+        return Optional.of(new TransfurTotemTooltipComponent(pStack));
+    }
+
+    @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return super.getAttributeModifiers(slot, stack);
     }
@@ -89,20 +98,21 @@ public class TransfurTotemItem extends Item {
 
             if (stack.getItem() == ChangedAddonItems.TRANSFUR_TOTEM.get()) {
                 CompoundTag itemTag = stack.getOrCreateTag();
-                if ((itemTag.getString("form")).isEmpty()) tooltip.add((new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
+                if ((itemTag.getString("form")).isEmpty())
+                    tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
                 else {
                     TransfurVariant<?> variant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(TagUtil.getResourceLocation(itemTag, "form"));
                     if (variant == null) {
-                        tooltip.add((new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
+                        tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
                         return;
                     }
                     if (Screen.hasShiftDown() && !Screen.hasAltDown() && !Screen.hasControlDown())
-                        tooltip.add(new TextComponent(("§6Form=" + itemTag.getString("form"))));
+                        tooltip.add(1, new TextComponent(("§6Form=" + itemTag.getString("form"))));
                     else if (Screen.hasAltDown() && Screen.hasControlDown())
-                        tooltip.add((new TranslatableComponent("item.changed_addon.transfur_totem.desc_1")));
+                        tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.desc_1")));
                     else {
                         String ID = Syringe.getVariantDescriptionId(stack);
-                        tooltip.add(new TextComponent(("§6(" + new TranslatableComponent(ID).getString() + ")")));
+                        tooltip.add(1, new TextComponent(("§6(" + new TranslatableComponent(ID).getString() + ")")));
                     }
                 }
             }
@@ -258,13 +268,16 @@ public class TransfurTotemItem extends Item {
         Level level = player.level;
 
         ItemStack totem = player.getMainHandItem();
-        if(!totem.is(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !totem.getOrCreateTag().getString("form").isEmpty()) totem = player.getOffhandItem();
-        if(!totem.is(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !totem.getOrCreateTag().getString("form").isEmpty()) return InteractionResult.PASS;
+        if (!totem.is(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !totem.getOrCreateTag().getString("form").isEmpty())
+            totem = player.getOffhandItem();
+        if (!totem.is(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !totem.getOrCreateTag().getString("form").isEmpty())
+            return InteractionResult.PASS;
 
-        if(player.getCooldowns().isOnCooldown(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !player.isShiftKeyDown()) return InteractionResult.PASS;
+        if (player.getCooldowns().isOnCooldown(ChangedAddonItems.TRANSFUR_TOTEM.get()) || !player.isShiftKeyDown())
+            return InteractionResult.PASS;
 
         if (targetEntity instanceof Player target) {
-            if(!ProcessTransfur.isPlayerTransfurred(target)) return InteractionResult.PASS;
+            if (!ProcessTransfur.isPlayerTransfurred(target)) return InteractionResult.PASS;
 
             String transfurId = ProcessTransfur.getPlayerTransfurVariant(target).getFormId().toString();
             if (ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() == false) {
@@ -377,12 +390,12 @@ public class TransfurTotemItem extends Item {
     }
 
     public static float itemPropertyFunc(Entity entity) {
-        if(!(entity instanceof Player player)) return 0;
+        if (!(entity instanceof Player player)) return 0;
 
         var instance = ProcessTransfur.getPlayerTransfurVariant(player);
         if (instance == null || !instance.is(ChangedTransfurVariants.LATEX_BENIGN_WOLF)) return 0;
 
-        return  0.5f;
+        return 0.5f;
     }
 
     @Mod.EventBusSubscriber
