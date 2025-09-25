@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.entity.SnepPlushBlockEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -13,10 +12,8 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -25,16 +22,13 @@ import org.jetbrains.annotations.NotNull;
 
 public class SnepPlushBlockEntityRenderer implements BlockEntityRenderer<SnepPlushBlockEntity> {
 
-    private final BlockRenderDispatcher blockRenderer;
     private final SnepPlushExtraModel snepPlushExtraModel;
 
     public SnepPlushBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        this.blockRenderer = Minecraft.getInstance().getBlockRenderer();
         this.snepPlushExtraModel = new SnepPlushExtraModel(context.bakeLayer(SnepPlushExtraModel.LAYER_LOCATION));
     }
 
     public void render(SnepPlushBlockEntity blockEntity, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int light, int overlay) {
-        BlockPos pos = blockEntity.getBlockPos();
         BlockState state = blockEntity.getBlockState();
 
         poseStack.pushPose();
@@ -87,10 +81,10 @@ public class SnepPlushBlockEntityRenderer implements BlockEntityRenderer<SnepPlu
             PartDefinition partDefinition = meshDefinition.getRoot();
 
             // Defina o modelo aqui
-            PartDefinition glowEye = partDefinition.addOrReplaceChild("glowEye",
+            partDefinition.addOrReplaceChild("glowEye",
                     CubeListBuilder.create()
                             .texOffs(0, 0)
-                            .addBox(-12.0F, -19.0F, 4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(-0.9F)),
+                            .addBox(-11.85F, -22.7F, 4.7F, 6.8F, 7.0F, 8.0F, new CubeDeformation(-0.9F)),
                     PartPose.offset(8.0F, 24.0F, -8.0F)
             );
 

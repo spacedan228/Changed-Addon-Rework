@@ -1,8 +1,6 @@
 {
-  "parent": "changed_addon:block/snep_plush_with_cans",
+  "parent": "changed_addon:block/snep_plush_base",
   "textures": {
-    "all": "changed_addon:block/gray_wool_particle",
-    "particle": "changed_addon:block/gray_wool_particle",
-    "0": "changed_addon:block/snow_leopard_plush_with_both_can"
+    "soda_middle": "changed_addon:block/empty"
   }
 }
