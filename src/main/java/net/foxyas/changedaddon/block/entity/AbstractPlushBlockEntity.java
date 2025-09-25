@@ -5,15 +5,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class SnepPlushBlockEntity extends BlockEntity {
+public abstract class AbstractPlushBlockEntity extends BlockEntity {
     private static final String SQUEEZED_TAG = "squeezedTicks";
     public int squeezedTicks;
 
-    public SnepPlushBlockEntity(BlockPos position, BlockState state) {
-        super(ChangedAddonBlockEntities.SNEP_PLUSH.get(), position, state);
+    public AbstractPlushBlockEntity(BlockEntityType<?> type, BlockPos position, BlockState state) {
+        super(type, position, state);
         this.squeezedTicks = 0;
     }
 

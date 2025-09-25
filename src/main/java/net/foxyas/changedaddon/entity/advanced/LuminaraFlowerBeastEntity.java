@@ -115,7 +115,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
         if (patter.getLevel().isClientSide()) return;
         MobEffectInstance effect = getPatEffect(patter);
-        if (patTarget instanceof Player player && ProcessTransfur.isPlayerLatex(player)) {
+        if (patTarget instanceof Player player) {
             patTarget.addEffect(effect, patter);
         } else if (patTarget instanceof ChangedEntity changedEntity) {
             changedEntity.addEffect(effect, patter);
@@ -125,10 +125,8 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     @Override
     public void WhenPattedReaction(Player patter, InteractionHand hand) {
         if (patter.getLevel().isClientSide()) return;
-        if (ProcessTransfur.isPlayerLatex(patter)) {
-            MobEffectInstance effect = getPatEffect(this);
-            patter.addEffect(effect, this);
-        }
+        MobEffectInstance effect = getPatEffect(this);
+        patter.addEffect(effect, this);
     }
 
     @Override
@@ -348,11 +346,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
     }
 
-    public void saveExtraData(CompoundTag tag) {
-        tag.putBoolean("Awakened", this.isAwakened());
-        tag.putBoolean("HyperAwakened", this.isHyperAwakened());
-    }
-
     @Override
     public CompoundTag savePlayerVariantData() {
         CompoundTag tag = super.savePlayerVariantData();
@@ -361,9 +354,26 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        this.saveExtraData(tag);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.readExtraData(tag);
+    }
+
+    @Override
     public void readPlayerVariantData(CompoundTag tag) {
         super.readPlayerVariantData(tag);
         this.readExtraData(tag);
+    }
+
+    public void saveExtraData(CompoundTag tag) {
+        tag.putBoolean("Awakened", this.isAwakened());
+        tag.putBoolean("HyperAwakened", this.isHyperAwakened());
     }
 
     public void readExtraData(CompoundTag tag) {

@@ -21,17 +21,21 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class ClientTransfurTotemTooltipComponent implements ClientTooltipComponent {
     private final TransfurVariant<?> variant;
+    private final ItemStack transfurTotemStack;
     private final ChangedEntity entity;
 
     public ClientTransfurTotemTooltipComponent(TransfurTotemTooltipComponent component) {
         this.variant = component.getVariant();
         this.entity = InformantBlockEntityRenderer.getDisplayEntity(variant);
+        this.transfurTotemStack = component.getTransfurTotemStack();
     }
 
     @Override
@@ -58,6 +62,16 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
 
             this.entity.setCustomName(entity.getType().getDescription());
             this.entity.setCustomNameVisible(true);
+
+            CompoundTag transfurTotemStackDataTag = this.transfurTotemStack.getOrCreateTag();
+            if (transfurTotemStackDataTag.contains("TransfurVariantData")) {
+                CompoundTag transfurVariantData = transfurTotemStackDataTag.getCompound("TransfurVariantData");
+                this.entity.readAdditionalSaveData(transfurVariantData);
+                if (transfurTotemStackDataTag.contains("entityData")) {
+                    CompoundTag entityData = transfurVariantData.getCompound("entityData");
+                    this.entity.readPlayerVariantData(entityData);
+                }
+            }
         }
     }
 
@@ -118,8 +132,10 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
 
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-        quaternion1.conj();
-        dispatcher.overrideCameraOrientation(Vector3f.XP.rotationDegrees(0));
+        quaternion.conj();
+        quaternion.mul(Vector3f.ZP.rotationDegrees(180.0F));
+
+        dispatcher.overrideCameraOrientation(quaternion);
         dispatcher.setRenderShadow(false);
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
