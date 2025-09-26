@@ -8,13 +8,14 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 
 // Made with Blockbench 4.10.4
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
-public class ModelHazmat_Suit<T extends Entity> extends EntityModel<T> {
+public class ModelHazmatSuit<T extends Entity> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in
     // the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("model_hazmat_suit"), "main");
@@ -25,7 +26,8 @@ public class ModelHazmat_Suit<T extends Entity> extends EntityModel<T> {
     public final ModelPart RightLeg;
     public final ModelPart LeftLeg;
 
-    public ModelHazmat_Suit(ModelPart root) {
+    public ModelHazmatSuit(ModelPart root) {
+        super(RenderType::entityTranslucent);
         this.Head = root.getChild("Head");
         this.Body = root.getChild("Body");
         this.RightArm = root.getChild("RightArm");

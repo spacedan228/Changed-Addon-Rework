@@ -35,7 +35,7 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<InformantBlock> INFORMANT_BLOCK = REGISTRY.register("informant_block", InformantBlock::new);
     public static final RegistryObject<Block> DORMANT_DARK_LATEX = REGISTRY.register("dormant_dark_latex", DormantDarkLatexBlock::new);
     public static final RegistryObject<Block> DORMANT_WHITE_LATEX = REGISTRY.register("dormant_white_latex", DormantWhiteLatexBlock::new);
-    public static final RegistryObject<Block> SNEP_PLUSH = REGISTRY.register("snep_plush", SnepPlushBlock::new);
+    public static final RegistryObject<SnepPlushBlock> SNEP_PLUSH = REGISTRY.register("snep_plush", SnepPlushBlock::new);
     public static final RegistryObject<WolfPlushBlock> WOLF_PLUSH = REGISTRY.register("wolf_plush", WolfPlushBlock::new);
     public static final RegistryObject<DarkLatexWolfPlushBlock> DARK_LATEX_WOLF_PLUSH = REGISTRY.register("dark_latex_wolf_plush", DarkLatexWolfPlushBlock::new);
     public static final RegistryObject<Block> CONTAINMENT_CONTAINER = REGISTRY.register("containment_container", ContainmentContainerBlock::new);

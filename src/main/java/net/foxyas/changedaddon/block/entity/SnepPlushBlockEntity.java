@@ -12,7 +12,7 @@ public class SnepPlushBlockEntity extends BlockEntity {
     private static final String SQUEEZED_TAG = "squeezedTicks";
     private static final String GLOWING_TAG = "glowingEyes";
     public int squeezedTicks;
-    public boolean glowingEyes = true;
+    public boolean glowingEyes = false;
 
     public SnepPlushBlockEntity(BlockPos position, BlockState state) {
         super(ChangedAddonBlockEntities.SNEP_PLUSH.get(), position, state);
