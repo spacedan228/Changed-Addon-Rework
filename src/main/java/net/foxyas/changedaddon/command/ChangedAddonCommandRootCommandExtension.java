@@ -62,11 +62,11 @@ public class ChangedAddonCommandRootCommandExtension {
                                                                 TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
                                                                 if (transfur != null && transfur.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                                                                     avaliEntity.setColor(layer, color3);
-                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), true);
+                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), false);
                                                                     return 1;
                                                                 } else if (transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors dynamicColors) {
                                                                     dynamicColors.setColor(layer, color3);
-                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), true);
+                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), false);
                                                                     return 1;
                                                                 }
                                                             }
@@ -92,11 +92,11 @@ public class ChangedAddonCommandRootCommandExtension {
                                                         TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
                                                         if (transfur != null && transfur.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                                                             avaliEntity.setStyleOfColor(style);
-                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), true);
+                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), false);
                                                             return 1;
                                                         } else if (transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors dynamicColor) {
                                                             dynamicColor.setStyleOfColor(style);
-                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), true);
+                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), false);
                                                             return 1;
                                                         }
                                                     }
