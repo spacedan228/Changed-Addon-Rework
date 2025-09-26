@@ -81,7 +81,7 @@ public class DarkLatexWolfPlushBlock extends AbstractPlushBlock {
                     && canSeePlayer(pos, world, playerBlockPos, player))) {
                 if (!event.updateWorld()) {
                     if (!ProcessTransfur.isPlayerTransfurred(player)) {
-                        if (random.nextFloat() <= 0.01f) {
+                        if (random.nextFloat() <= 0.25f + player.getLuck()) {
                             ProcessTransfur.transfur(player, world, getTransfurVariant(world), false, TransfurContext.hazard(TransfurCause.FACE_HAZARD));
                         }
                     }
