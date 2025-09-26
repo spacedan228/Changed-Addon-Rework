@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.util;
 
-import com.ibm.icu.impl.Pair;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix4f;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -414,8 +414,8 @@ public class FoxyasUtils {
 
         while (!toVisit.isEmpty()) {
             Pair<BlockPos, Integer> entry = toVisit.poll();
-            BlockPos current = entry.first;
-            int depth = entry.second;
+            BlockPos current = entry.getFirst();
+            int depth = entry.getSecond();
 
             if (depth > maxDepth) {
                 continue;
@@ -448,8 +448,8 @@ public class FoxyasUtils {
 
         while (!toVisit.isEmpty()) {
             Pair<BlockPos, Integer> entry = toVisit.poll();
-            BlockPos current = entry.first;
-            int depth = entry.second;
+            BlockPos current = entry.getFirst();
+            int depth = entry.getSecond();
 
             if (depth > maxDepth) {
                 continue;
@@ -483,8 +483,8 @@ public class FoxyasUtils {
 
         while (!queue.isEmpty()) {
             var current = queue.poll();
-            BlockPos pos = current.first;
-            int depth = current.second;
+            BlockPos pos = current.getFirst();
+            int depth = current.getSecond();
 
             if (depth > maxDepth) continue;
 

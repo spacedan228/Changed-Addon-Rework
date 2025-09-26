@@ -1,5 +1,5 @@
 {
-  "parent": "changed_addon:block/snep_plush_base",
+  "parent": "changed_addon:custom/snep_plush_base",
   "textures": {
     "soda_middle": "changed_addon:block/empty"
   }

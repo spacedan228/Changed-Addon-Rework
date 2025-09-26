@@ -1,8 +1,7 @@
 {
-  "parent": "changed_addon:custom/wolflikeplushemodel",
+  "parent": "changed_addon:custom/wolf_plush_base.json",
   "textures": {
-    "all": "changed_addon:block/white_wool_particle",
     "particle": "changed_addon:block/white_wool_particle",
-    "0": "changed_addon:block/snow_fox_plush"
+    "skin": "changed_addon:block/snow_fox_plush/white_wolf_plush.png"
   }
 }
