@@ -3,17 +3,22 @@ package net.foxyas.changedaddon.block;
 import net.foxyas.changedaddon.block.entity.SnepPlushBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -133,8 +138,23 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
-        super.use(blockstate, world, pos, entity, hand, hit);
+    public @NotNull InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        var retValue = super.use(blockstate, world, pos, player, hand, hit);
+
+        ItemStack itemInHand = player.getItemInHand(hand);
+        if (!world.isClientSide() && itemInHand.is(Items.GLOW_INK_SAC)) {
+            if (!player.isCreative()) {
+                itemInHand.shrink(1);
+            }
+
+            world.playSound(null, hit.getBlockPos(), SoundEvents.GLOW_INK_SAC_USE, SoundSource.BLOCKS, 1, 1);
+            if (player instanceof ServerPlayer serverPlayer) {
+                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, itemInHand);
+            }
+
+            return InteractionResult.SUCCESS;
+        }
+
         double hitX = hit.getLocation().x;
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
@@ -145,9 +165,10 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
                     //plushBlockEntity.squeezedTicks = 4;
                     world.playSound(null, hitX, hitY, hitZ, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
                 }
+                return InteractionResult.sidedSuccess(world.isClientSide());
             }
         }
-        return InteractionResult.SUCCESS;
+        return retValue;
     }
 
     @Override

@@ -146,7 +146,6 @@
   "block.changed_addon.reinforced_wall_silver_striped": "Reinforced Wall Silver Striped",
   "block.changed_addon.reinforced_wall_silver_tiled": "Reinforced Wall Silver Tiled",
   "block.changed_addon.signal_block": "Signal Block",
-  "block.changed_addon.snep_plush": "Snep Plush",
   "block.changed_addon.snepsi_can": "§bSnepsi Can§r",
   "block.changed_addon.timed_keypad": "Timed Keypad",
   "block.changed_addon.unifuser": "Unifuser",
@@ -156,7 +155,9 @@
   "block.changed_addon.white_wolf_crystal_block": "White Wolf Crystal Block",
   "block.changed_addon.white_wolf_crystal_small": "Small White Wolf Crystal",
   "block.changed_addon.wolf_crystal_pillar": "Wolf Crystal Pillar",
+  "block.changed_addon.snep_plush": "Snep Plush",
   "block.changed_addon.wolf_plush": "Wolf Plush",
+  "block.changed_addon.dark_latex_wolf_plush": "Dark Latex Wolf Plush",
   "block.changed_addon.yellow_wolf_crystal_block": "Yellow Wolf Crystal Block",
   "block.changed_addon.yellow_wolf_crystal_small": "Small Yellow Wolf Crystal",
 

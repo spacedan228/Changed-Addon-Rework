@@ -96,8 +96,8 @@ public class WolfPlushBlock extends HorizontalDirectionalBlock implements Entity
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
-        super.use(blockstate, world, pos, entity, hand, hit);
+    public @NotNull InteractionResult use(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player entity, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+        InteractionResult retValue = super.use(blockstate, world, pos, entity, hand, hit);
         double hitX = hit.getLocation().x;
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
@@ -105,12 +105,13 @@ public class WolfPlushBlock extends HorizontalDirectionalBlock implements Entity
         if (blockEntity instanceof WolfPlushBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
-                    //plushBlockEntity.squeezedTicks = 4;
                     world.playSound(null, hitX, hitY, hitZ, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
                 }
+                return InteractionResult.sidedSuccess(world.isClientSide());
             }
         }
-        return InteractionResult.SUCCESS;
+
+        return retValue;
     }
 
     @Override

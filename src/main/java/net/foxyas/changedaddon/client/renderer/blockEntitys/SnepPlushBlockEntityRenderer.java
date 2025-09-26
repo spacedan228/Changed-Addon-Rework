@@ -30,6 +30,7 @@ public class SnepPlushBlockEntityRenderer implements BlockEntityRenderer<SnepPlu
 
     public void render(SnepPlushBlockEntity blockEntity, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int light, int overlay) {
         BlockState state = blockEntity.getBlockState();
+        if (!blockEntity.glowingEyes) return;
 
         poseStack.pushPose();
 

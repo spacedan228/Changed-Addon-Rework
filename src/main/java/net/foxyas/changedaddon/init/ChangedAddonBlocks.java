@@ -37,6 +37,7 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> DORMANT_WHITE_LATEX = REGISTRY.register("dormant_white_latex", DormantWhiteLatexBlock::new);
     public static final RegistryObject<Block> SNEP_PLUSH = REGISTRY.register("snep_plush", SnepPlushBlock::new);
     public static final RegistryObject<WolfPlushBlock> WOLF_PLUSH = REGISTRY.register("wolf_plush", WolfPlushBlock::new);
+    public static final RegistryObject<DarkLatexWolfPlushBlock> DARK_LATEX_WOLF_PLUSH = REGISTRY.register("dark_latex_wolf_plush", DarkLatexWolfPlushBlock::new);
     public static final RegistryObject<Block> CONTAINMENT_CONTAINER = REGISTRY.register("containment_container", ContainmentContainerBlock::new);
     public static final RegistryObject<AdvancedUnifuserBlock> ADVANCED_UNIFUSER = REGISTRY.register("advanced_unifuser", AdvancedUnifuserBlock::new);
     public static final RegistryObject<AdvancedCatalyzerBlock> ADVANCED_CATALYZER = REGISTRY.register("advanced_catalyzer", AdvancedCatalyzerBlock::new);
@@ -46,8 +47,6 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> REINFORCED_WALL_CAUTION = REGISTRY.register("reinforced_wall_caution", ReinforcedWallCautionBlock::new);
     public static final RegistryObject<Block> REINFORCED_CROSS_BLOCK = REGISTRY.register("reinforced_cross_block", ReinforcedCrossBlock::new);
     public static final RegistryObject<Block> WALL_WHITE_CRACKED = REGISTRY.register("wall_white_cracked", WallWhiteCrackedBlock::new);
-    //public static final RegistryObject<Block> WALL_WHITE_STAIR = REGISTRY.register("wall_white_stair", WallWhiteStairBlock::new);
-    //public static final RegistryObject<Block> WALL_WHITE_SLAB = REGISTRY.register("wall_white_slab", WallWhiteSlabBlock::new);
     public static final RegistryObject<Block> BLUE_WOLF_CRYSTAL_BLOCK = REGISTRY.register("blue_wolf_crystal_block", BlueWolfCrystalBlockBlock::new);
     public static final RegistryObject<Block> ORANGE_WOLF_CRYSTAL_BLOCK = REGISTRY.register("orange_wolf_crystal_block", OrangeWolfCrystalBlockBlock::new);
     public static final RegistryObject<Block> YELLOW_WOLF_CRYSTAL_BLOCK = REGISTRY.register("yellow_wolf_crystal_block", YellowWolfCrystalBlockBlock::new);
@@ -79,6 +78,7 @@ public class ChangedAddonBlocks {
             SignalBlockBlock.registerRenderLayer();
             SnepPlushBlock.registerRenderLayer();
             WolfPlushBlock.registerRenderLayer();
+            DarkLatexWolfPlushBlock.registerRenderLayer();
             ContainmentContainerBlock.registerRenderLayer();
             LuminarCrystalSmallBlock.registerRenderLayer();
             YellowWolfCrystalSmallBlock.registerRenderLayer();

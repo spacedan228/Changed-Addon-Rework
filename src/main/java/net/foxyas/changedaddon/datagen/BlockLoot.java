@@ -52,6 +52,7 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
         dropSelf(INFORMANT_BLOCK.get());
         dropSelf(SNEP_PLUSH.get());
         dropSelf(WOLF_PLUSH.get());
+        dropSelf(DARK_LATEX_WOLF_PLUSH.get());
         dropSelf(CONTAINMENT_CONTAINER.get());
         dropSelf(REINFORCED_WALL.get());
         dropSelf(REINFORCED_WALL_SILVER_STRIPED.get());

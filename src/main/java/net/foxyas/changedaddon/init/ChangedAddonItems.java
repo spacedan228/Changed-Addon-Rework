@@ -102,6 +102,7 @@ public class ChangedAddonItems {
 
     public static final RegistryObject<BlockItem> SNEP_PLUSH = block(ChangedAddonBlocks.SNEP_PLUSH, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<BlockItem> WOLF_PLUSH = block(ChangedAddonBlocks.WOLF_PLUSH, ChangedAddonTabs.TAB_CHANGED_ADDON);
+    public static final RegistryObject<BlockItem> DARK_LATEX_WOLF_PLUSH = block(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<BlockItem> CATALYZER = block(ChangedAddonBlocks.CATALYZER, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<BlockItem> UNIFUSER = block(ChangedAddonBlocks.UNIFUSER, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<BlockItem> ADVANCED_UNIFUSER = block(ChangedAddonBlocks.ADVANCED_UNIFUSER, ChangedAddonTabs.TAB_CHANGED_ADDON);
