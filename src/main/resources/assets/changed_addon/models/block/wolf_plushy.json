@@ -1,0 +1,7 @@
+{
+  "parent": "changed_addon:custom/wolf_plushy_base",
+  "textures": {
+    "particle": "changed_addon:block/white_wool_particle",
+    "skin": "changed_addon:block/white_wolf_plushy/white_wolf_plushy"
+  }
+}

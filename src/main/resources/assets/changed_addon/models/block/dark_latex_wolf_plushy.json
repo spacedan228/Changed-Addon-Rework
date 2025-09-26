@@ -1,8 +1,8 @@
 {
-  "parent": "changed_addon:custom/dark_latex_wolf_plush_base",
+  "parent": "changed_addon:custom/dark_latex_wolf_plushy_base",
   "textures": {
     "particle": "changed_addon:block/white_wool_particle",
-    "skin": "changed_addon:block/dark_latex_plush/dark_latex_wolf_plush",
+    "skin": "changed_addon:block/dark_latex_plush/dark_latex_wolf_plushy",
     "crystal_mask": "changed_addon:block/dark_latex_plush/crystal_mask"
   }
 }

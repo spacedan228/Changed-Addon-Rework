@@ -31,9 +31,9 @@ public class ChangedAddonBlockEntities {
     public static final RegistryObject<BlockEntityType<?>> ADVANCED_CATALYZER = register("advanced_catalyzer_block_entity", ChangedAddonBlocks.ADVANCED_CATALYZER, AdvancedCatalyzerBlockEntity::new);
     public static final RegistryObject<BlockEntityType<?>> GENERATOR = register("generator_block_entity", ChangedAddonBlocks.GENERATOR, GeneratorBlockEntity::new);
 
-    public static final RegistryObject<BlockEntityType<SnepPlushBlockEntity>> SNEP_PLUSH = REGISTRY.register("snep_plush_block_entity", () -> BlockEntityType.Builder.of(SnepPlushBlockEntity::new, ChangedAddonBlocks.SNEP_PLUSH.get()).build(null));
-    public static final RegistryObject<BlockEntityType<WolfPlushBlockEntity>> WOLF_PLUSH = REGISTRY.register("wolf_plush_block_entity", () -> BlockEntityType.Builder.of(WolfPlushBlockEntity::new, ChangedAddonBlocks.WOLF_PLUSH.get()).build(null));
-    public static final RegistryObject<BlockEntityType<DarkLatexWolfPlushBlockEntity>> DARK_LATEX_WOLF_PLUSH = REGISTRY.register("dark_latex_wolf_plush_block_entity", () -> BlockEntityType.Builder.of(DarkLatexWolfPlushBlockEntity::new, ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get()).build(null));
+    public static final RegistryObject<BlockEntityType<SnepPlushBlockEntity>> SNEP_PLUSH = REGISTRY.register("snep_plushy_block_entity", () -> BlockEntityType.Builder.of(SnepPlushBlockEntity::new, ChangedAddonBlocks.SNEP_PLUSH.get()).build(null));
+    public static final RegistryObject<BlockEntityType<WolfPlushBlockEntity>> WOLF_PLUSH = REGISTRY.register("wolf_plushy_block_entity", () -> BlockEntityType.Builder.of(WolfPlushBlockEntity::new, ChangedAddonBlocks.WOLF_PLUSH.get()).build(null));
+    public static final RegistryObject<BlockEntityType<DarkLatexWolfPlushBlockEntity>> DARK_LATEX_WOLF_PLUSH = REGISTRY.register("dark_latex_wolf_plushy_block_entity", () -> BlockEntityType.Builder.of(DarkLatexWolfPlushBlockEntity::new, ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<InformantBlockEntity>> INFORMANT_BLOCK = REGISTRY.register("informant_block_block_entity", () -> BlockEntityType.Builder.of(InformantBlockEntity::new, ChangedAddonBlocks.INFORMANT_BLOCK.get()).build(null));
     public static final RegistryObject<BlockEntityType<ContainmentContainerBlockEntity>> CONTAINMENT_CONTAINER = REGISTRY.register("containment_container_block_entity", () -> BlockEntityType.Builder.of(ContainmentContainerBlockEntity::new, ChangedAddonBlocks.CONTAINMENT_CONTAINER.get()).build(null));
