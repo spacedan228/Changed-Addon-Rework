@@ -82,10 +82,10 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(FACING)) {
-            case NORTH -> box(4, 0, 3.5, 12, 18, 12);
-            case EAST -> box(4, 0, 4, 12.5, 18, 12);
-            case WEST -> box(3.5, 0, 4, 12, 18, 12);
-            default -> box(4, 0, 4, 12, 18, 12.5);
+            case NORTH -> box(4, 0, 3.5, 12, 16, 12);
+            case EAST -> box(4, 0, 4, 12.5, 16, 12);
+            case WEST -> box(3.5, 0, 4, 12, 16, 12);
+            default -> box(4, 0, 4, 12, 16, 12.5);
         };
     }
 
