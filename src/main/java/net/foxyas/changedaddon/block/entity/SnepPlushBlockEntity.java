@@ -43,6 +43,11 @@ public class SnepPlushBlockEntity extends BlockEntity {
         return this.saveWithFullMetadata();
     }
 
+    @Override
+    public void handleUpdateTag(CompoundTag tag) {
+        super.handleUpdateTag(tag);
+    }
+
     public boolean isSqueezed() {
         return this.squeezedTicks > 0;
     }

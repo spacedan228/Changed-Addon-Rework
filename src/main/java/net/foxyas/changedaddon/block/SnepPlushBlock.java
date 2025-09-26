@@ -55,8 +55,13 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
     public static final EnumProperty<CansEnum> CANS = EnumProperty.create("cans", CansEnum.class);
 
     public SnepPlushBlock() {
-        super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(0.5f, 5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false).setValue(CANS, CansEnum.NONE));
+        super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(0.5f, 5f)
+                .noOcclusion()
+                .isRedstoneConductor((bs, br, bp) -> false));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(WATERLOGGED, false)
+                .setValue(CANS, CansEnum.NONE));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -142,23 +147,29 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
         var retValue = super.use(blockstate, world, pos, player, hand, hit);
 
         ItemStack itemInHand = player.getItemInHand(hand);
-        if (!world.isClientSide() && itemInHand.is(Items.GLOW_INK_SAC)) {
-            if (!player.isCreative()) {
-                itemInHand.shrink(1);
-            }
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (!world.isClientSide() && blockEntity instanceof SnepPlushBlockEntity snepPlushBlockEntity) {
+            if (itemInHand.is(Items.GLOW_INK_SAC) && !snepPlushBlockEntity.glowingEyes) {
+                if (!player.isCreative()) {
+                    itemInHand.shrink(1);
+                }
 
-            world.playSound(null, hit.getBlockPos(), SoundEvents.GLOW_INK_SAC_USE, SoundSource.BLOCKS, 1, 1);
-            if (player instanceof ServerPlayer serverPlayer) {
-                CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, itemInHand);
-            }
+                snepPlushBlockEntity.glowingEyes = true;
+                world.sendBlockUpdated(pos, blockstate, blockstate, 1);
+                snepPlushBlockEntity.setChanged();
 
-            return InteractionResult.SUCCESS;
+                world.playSound(null, hit.getBlockPos(), SoundEvents.GLOW_INK_SAC_USE, SoundSource.BLOCKS, 1, 1);
+                if (player instanceof ServerPlayer serverPlayer) {
+                    CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, itemInHand);
+                }
+
+                return InteractionResult.SUCCESS;
+            }
         }
 
         double hitX = hit.getLocation().x;
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
-        BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof SnepPlushBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {

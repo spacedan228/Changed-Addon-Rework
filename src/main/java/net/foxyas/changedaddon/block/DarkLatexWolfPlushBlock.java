@@ -26,6 +26,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -45,7 +47,10 @@ import java.util.stream.Stream;
 
 public class DarkLatexWolfPlushBlock extends AbstractPlushBlock {
     public DarkLatexWolfPlushBlock() {
-        super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(0.5f, 5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
+        super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL)
+                .strength(0.5f, 5f)
+                .noOcclusion()
+                .isRedstoneConductor((bs, br, bp) -> false));
         this.registerDefaultState(this.stateDefinition.any()
                 .setValue(FACING, Direction.NORTH)
                 .setValue(WATERLOGGED, false));
@@ -73,7 +78,7 @@ public class DarkLatexWolfPlushBlock extends AbstractPlushBlock {
             BlockPos playerBlockPos = player.blockPosition();
             Stream<BlockPos> posStream = FoxyasUtils.betweenClosedStreamSphere(playerBlockPos, 3, 2);
             if (posStream.anyMatch((pos) -> (world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get()))
-                            && canSeePlayer(pos, world, playerBlockPos, player))){
+                    && canSeePlayer(pos, world, playerBlockPos, player))) {
                 if (!event.updateWorld()) {
                     if (!ProcessTransfur.isPlayerTransfurred(player)) {
                         if (random.nextFloat() <= 0.01f) {
@@ -90,11 +95,10 @@ public class DarkLatexWolfPlushBlock extends AbstractPlushBlock {
         }
 
         private static @NotNull DynamicClipContext getClipContext(BlockPos pos, BlockPos playerBlockPos, Player player) {
-            return new DynamicClipContext(Vec3.atCenterOf(pos), Vec3.atCenterOf(playerBlockPos), DynamicClipContext.IGNORE_TRANSLUCENT,
+            return new DynamicClipContext(Vec3.atCenterOf(pos), Vec3.atCenterOf(playerBlockPos), ClipContext.Block.COLLIDER,
                     ClipContext.Fluid.NONE::canPick, CollisionContext.of(player));
         }
     }
-
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> pBuilder) {

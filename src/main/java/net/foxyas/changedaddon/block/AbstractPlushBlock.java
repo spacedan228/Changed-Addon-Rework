@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -42,9 +44,10 @@ public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock impl
     }
 
     @Override
-    public boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos) {
-        return true;
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+        return state.getFluidState().isEmpty();
     }
+
 
     @Override
     public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
@@ -73,11 +76,17 @@ public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock impl
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        boolean flag = context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER;
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite())
+                .setValue(WATERLOGGED, flag);
     }
 
     @Override
     public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
+        if (state.getValue(WATERLOGGED)) {
+            return 0;
+        }
         return 20;
     }
 
@@ -98,6 +107,11 @@ public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock impl
         }
 
         return retValue;
+    }
+
+    @Override
+    public @NotNull FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
