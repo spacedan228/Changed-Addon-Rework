@@ -56,7 +56,7 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     public static final RegistryObject<WitherGrenadeAbility> WITHER_GRENADE = REGISTRY.register("wither_grenade", WitherGrenadeAbility::new);
     public static final RegistryObject<SonarAbility> SONAR = REGISTRY.register("sonar", SonarAbility::new);
     public static final RegistryObject<LuminaraFireballAbility> LUMINARA_FIREBALL = REGISTRY.register("luminara_fireball", LuminaraFireballAbility::new);
-
+    public static final RegistryObject<PollenCarryAbility> POLLEN_CARRY = REGISTRY.register("pollen_carry", PollenCarryAbility::new);
 
     public static List<EntityType<?>> getCanGlideEntities() {
         //["form_dark_dragon", "form_dark_latex_yufeng", "form_latex_pink_yuin_dragon", "form_latex_red_dragon"]
