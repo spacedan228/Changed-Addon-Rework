@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.foxyas.changedaddon.block.advanced.TimedKeypad;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
+import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.variants.IDynamicCoatColors;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -34,7 +35,7 @@ public class ChangedAddonCommandRootCommandExtension {
                         .then(Commands.literal("TransfurColors")
                                 .then(Commands.literal("setColor")
                                         .then(Commands.argument("colorOrHex", StringArgumentType.string())
-                                                .then(Commands.argument("layer", IntegerArgumentType.integer(0, 2)) // Supondo máx 3 layers
+                                                .then(Commands.argument("layer", IntegerArgumentType.integer(0, 2))
                                                         .executes(context -> {
                                                             Player player = context.getSource().getPlayerOrException();
                                                             if (!IDynamicCoatColors.playerHasTransfurWithExtraColors(player)) {
@@ -55,18 +56,18 @@ public class ChangedAddonCommandRootCommandExtension {
                                                                     return 0;
                                                                 }
                                                             }
-
+                                                            //String layerString = StringArgumentType.getString(context, "layer");
                                                             int layer = IntegerArgumentType.getInteger(context, "layer");
 
                                                             if (IDynamicCoatColors.playerHasTransfurWithExtraColors(player)) {
                                                                 TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
                                                                 if (transfur != null && transfur.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                                                                     avaliEntity.setColor(layer, color3);
-                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), true);
+                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), false);
                                                                     return 1;
                                                                 } else if (transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors dynamicColors) {
                                                                     dynamicColors.setColor(layer, color3);
-                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), true);
+                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), false);
                                                                     return 1;
                                                                 }
                                                             }
@@ -92,11 +93,11 @@ public class ChangedAddonCommandRootCommandExtension {
                                                         TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
                                                         if (transfur != null && transfur.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                                                             avaliEntity.setStyleOfColor(style);
-                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), true);
+                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), false);
                                                             return 1;
                                                         } else if (transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors dynamicColor) {
                                                             dynamicColor.setStyleOfColor(style);
-                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), true);
+                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), false);
                                                             return 1;
                                                         }
                                                     }
@@ -135,10 +136,34 @@ public class ChangedAddonCommandRootCommandExtension {
                             CompoundTag tag = heldItem.getOrCreateTag();
                             tag.putInt("TimerValue", timerValue);
 
-                            source.sendSuccess(new TextComponent("Timer set to " + timerValue + "."), true);
+                            source.sendSuccess(new TextComponent("Timer set to " + timerValue + "."), false);
                             return 1;
                         })
                 )
         );
+    }
+
+    public static double stringToDouble(String s) {
+        try {
+            return Double.parseDouble(s.trim());
+        } catch (Exception ignored) {
+        }
+        return 0d;
+    }
+
+    public static float stringToFloat(String s) {
+        try {
+            return Float.parseFloat(s.trim());
+        } catch (Exception ignored) {
+        }
+        return 0f;
+    }
+
+    public static int stringToInt(String s) {
+        try {
+            return Integer.parseInt(s.trim());
+        } catch (Exception ignored) {
+        }
+        return 0;
     }
 }

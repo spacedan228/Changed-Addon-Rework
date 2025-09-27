@@ -1,7 +1,3 @@
-
-/*
- * MCreator note: This file will be REGENERATED on each build.
- */
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;

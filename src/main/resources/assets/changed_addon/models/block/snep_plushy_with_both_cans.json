@@ -1,0 +1,6 @@
+{
+  "parent": "changed_addon:custom/snep_plushy_base",
+  "textures": {
+    "soda_middle": "changed_addon:block/empty"
+  }
+}

@@ -19,7 +19,7 @@ public class ChangedAddonModels {
 
         // --- ARMORS MODELS ---
         event.registerLayerDefinition(ModelAccessories.LAYER_LOCATION, ModelAccessories::createBodyLayer);
-        event.registerLayerDefinition(ModelHazmat_Suit.LAYER_LOCATION, ModelHazmat_Suit::createBodyLayer);
+        event.registerLayerDefinition(ModelHazmatSuit.LAYER_LOCATION, ModelHazmatSuit::createBodyLayer);
         event.registerLayerDefinition(ModelHazardArmorCustomArms.LAYER_LOCATION, ModelHazardArmorCustomArms::createBodyLayer);
         event.registerLayerDefinition(ModelNewHyperFlower.LAYER_LOCATION, ModelNewHyperFlower::createBodyLayer);
         event.registerLayerDefinition(DarkLatexCoatModel.LAYER_LOCATION, DarkLatexCoatModel::createBodyLayer);

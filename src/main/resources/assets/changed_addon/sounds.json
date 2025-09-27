@@ -52,7 +52,7 @@
     "subtitle": "subtitles.block.plushes.sfx",
     "sounds": [
       {
-        "name": "changed_addon:plush_sfx",
+        "name": "changed_addon:plushy_sfx",
         "stream": false
       }
     ]

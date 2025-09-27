@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.item.armor;
 
-import net.foxyas.changedaddon.client.model.ModelHazmat_Suit;
+import net.foxyas.changedaddon.client.model.ModelHazmatSuit;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.procedures.HazmatSuitTickUsedProcedure;
 import net.minecraft.client.Minecraft;
@@ -79,7 +79,7 @@ public abstract class HazmatSuitItem extends ArmorItem {
                 @Override
                 public HumanoidModel getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
                     HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(),
-                            Map.of("head", new ModelHazmat_Suit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmat_Suit.LAYER_LOCATION)).Head, "hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "body",
+                            Map.of("head", new ModelHazmatSuit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmatSuit.LAYER_LOCATION)).Head, "hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "body",
                                     new ModelPart(Collections.emptyList(), Collections.emptyMap()), "right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "left_arm",
                                     new ModelPart(Collections.emptyList(), Collections.emptyMap()), "right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "left_leg",
                                     new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
@@ -112,9 +112,9 @@ public abstract class HazmatSuitItem extends ArmorItem {
                 @Override
                 @OnlyIn(Dist.CLIENT)
                 public HumanoidModel getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
-                    HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(), Map.of("body", new ModelHazmat_Suit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmat_Suit.LAYER_LOCATION)).Body, "left_arm",
-                            new ModelHazmat_Suit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmat_Suit.LAYER_LOCATION)).LeftArm, "right_arm",
-                            new ModelHazmat_Suit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmat_Suit.LAYER_LOCATION)).RightArm, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
+                    HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(), Map.of("body", new ModelHazmatSuit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmatSuit.LAYER_LOCATION)).Body, "left_arm",
+                            new ModelHazmatSuit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmatSuit.LAYER_LOCATION)).LeftArm, "right_arm",
+                            new ModelHazmatSuit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmatSuit.LAYER_LOCATION)).RightArm, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
                             new ModelPart(Collections.emptyList(), Collections.emptyMap()), "right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "left_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
                     armorModel.crouching = living.isShiftKeyDown();
                     armorModel.riding = defaultModel.riding;
@@ -146,8 +146,8 @@ public abstract class HazmatSuitItem extends ArmorItem {
                 @OnlyIn(Dist.CLIENT)
                 public HumanoidModel getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
                     HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(),
-                            Map.of("left_leg", new ModelHazmat_Suit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmat_Suit.LAYER_LOCATION)).RightLeg, "right_leg",
-                                    new ModelHazmat_Suit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmat_Suit.LAYER_LOCATION)).LeftLeg, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
+                            Map.of("left_leg", new ModelHazmatSuit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmatSuit.LAYER_LOCATION)).RightLeg, "right_leg",
+                                    new ModelHazmatSuit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmatSuit.LAYER_LOCATION)).LeftLeg, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
                                     new ModelPart(Collections.emptyList(), Collections.emptyMap()), "body", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
                                     "left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
                     armorModel.crouching = living.isShiftKeyDown();
@@ -180,8 +180,8 @@ public abstract class HazmatSuitItem extends ArmorItem {
                 @OnlyIn(Dist.CLIENT)
                 public HumanoidModel getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
                     HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(),
-                            Map.of("left_leg", new ModelHazmat_Suit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmat_Suit.LAYER_LOCATION)).LeftLeg, "right_leg",
-                                    new ModelHazmat_Suit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmat_Suit.LAYER_LOCATION)).RightLeg, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
+                            Map.of("left_leg", new ModelHazmatSuit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmatSuit.LAYER_LOCATION)).LeftLeg, "right_leg",
+                                    new ModelHazmatSuit(Minecraft.getInstance().getEntityModels().bakeLayer(ModelHazmatSuit.LAYER_LOCATION)).RightLeg, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
                                     new ModelPart(Collections.emptyList(), Collections.emptyMap()), "body", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "right_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
                                     "left_arm", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
                     armorModel.crouching = living.isShiftKeyDown();

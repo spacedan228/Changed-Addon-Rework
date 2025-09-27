@@ -19,6 +19,12 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -29,14 +35,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock implements EntityBlock {
+
+    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+
     protected AbstractPlushBlock(Properties pProperties) {
         super(pProperties);
     }
 
     @Override
-    public boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos) {
-        return true;
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+        return state.getFluidState().isEmpty();
     }
+
 
     @Override
     public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
@@ -64,23 +75,24 @@ public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock impl
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
-    }
-
-    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        boolean flag = context.getLevel().getFluidState(context.getClickedPos()).getType() == Fluids.WATER;
+        return this.defaultBlockState()
+                .setValue(FACING, context.getHorizontalDirection().getOpposite())
+                .setValue(WATERLOGGED, flag);
     }
 
     @Override
     public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
+        if (state.getValue(WATERLOGGED)) {
+            return 0;
+        }
         return 20;
     }
 
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player entity, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        super.use(blockstate, world, pos, entity, hand, hit);
+        InteractionResult retValue = super.use(blockstate, world, pos, entity, hand, hit);
         double hitX = hit.getLocation().x;
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
@@ -90,9 +102,16 @@ public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock impl
                 if (!world.isClientSide()) {
                     world.playSound(null, hitX, hitY, hitZ, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
                 }
+                return InteractionResult.sidedSuccess(world.isClientSide());
             }
         }
-        return InteractionResult.SUCCESS;
+
+        return retValue;
+    }
+
+    @Override
+    public @NotNull FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
     }
 
     @Override
