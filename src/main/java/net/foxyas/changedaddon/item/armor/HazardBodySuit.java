@@ -158,9 +158,6 @@ public class HazardBodySuit extends ClothingItem {
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         if (entity instanceof ChangedEntity) {
             ResourceLocation itemId = stack.getItem().getRegistryName();
-            if (slot == EquipmentSlot.LEGS) {
-                return String.format("%s:textures/models/hazard_suit/%s_boots_tf.png", itemId.getNamespace(), itemId.getPath());
-            }
             return String.format("%s:textures/models/hazard_suit/%s_%s_tf.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
         }
         if (entity instanceof Player player) {
