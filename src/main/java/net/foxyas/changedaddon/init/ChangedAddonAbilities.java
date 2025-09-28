@@ -22,6 +22,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.List;
 
 import static net.ltxprogrammer.changed.init.ChangedRegistry.ABILITY;
+import static net.minecraft.core.Registry.register;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
@@ -69,10 +70,12 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     }
 
 
+    //@SubscribeEvent
     public static void addUniversalAbilities(TransfurVariant.UniversalAbilitiesEvent event) {
         event.addAbility(event.isOfTag(ChangedTags.EntityTypes.LATEX).and(event.isNotOfTag(ChangedTags.EntityTypes.PARTIAL_LATEX)), SOFTEN_ABILITY);
         //event.addAbility(entityType -> getCanGlideEntities().contains(entityType), WING_FLAP_ABILITY);
         event.addAbility(event.isOfTag(ChangedAddonTags.EntityTypes.DRAGON_ENTITIES), WING_FLAP_ABILITY);
+        event.addAbility(entityType -> entityType.equals(ChangedEntities.LATEX_BEE.get()), POLLEN_CARRY);
 
     }
 
