@@ -188,6 +188,7 @@
   "changed_addon.ability.dash": "Iramodás",
   "changed_addon.ability.dash.desc": "Lehetővé teszi a játékos számára, hogy iramodjon",
   "changed_addon.ability.leap": "Szökkenés",
+  "changed_addon.ability.pollen_carry": "Pollenszállítás",
   "changed_addon.ability.psychic_grab": "Telepatikus megragadás",
   "changed_addon.ability.psychic_grab.description": "Lehetővé teszi a felhasználó számára, hogy telepatikusan megragadjon egy közeli entitást – élőlényt vagy tárgyat – és irányítsa annak mozgását. A nyílgombokkal állíthatod be a tartott pozíciót (a Shift billentyű lenyomva tartásával előre vagy hátra mozgathatod), így közelebb húzhatod, felemelheted vagy oldalra tolhatod a célt. ⚠ Ez a képesség alacsony teljesítményű rendszereken vagy laggos környezetben inkonzisztensen működhet vagy akadozhat.",
   "changed_addon.ability.psychic_hold": "Telepatikus tartás",
