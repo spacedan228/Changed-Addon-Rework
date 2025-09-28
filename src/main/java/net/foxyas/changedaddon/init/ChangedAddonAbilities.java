@@ -68,9 +68,7 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
         //["form_dark_dragon", "form_dark_latex_yufeng", "form_latex_pink_yuin_dragon", "form_latex_red_dragon"]
         return getCanGlideEntities().toArray(new EntityType[0]);
     }
-
-
-    //@SubscribeEvent
+    
     public static void addUniversalAbilities(TransfurVariant.UniversalAbilitiesEvent event) {
         event.addAbility(event.isOfTag(ChangedTags.EntityTypes.LATEX).and(event.isNotOfTag(ChangedTags.EntityTypes.PARTIAL_LATEX)), SOFTEN_ABILITY);
         //event.addAbility(entityType -> getCanGlideEntities().contains(entityType), WING_FLAP_ABILITY);
