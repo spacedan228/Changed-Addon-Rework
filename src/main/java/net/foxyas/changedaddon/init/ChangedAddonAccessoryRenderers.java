@@ -22,11 +22,11 @@ public class ChangedAddonAccessoryRenderers {
             AccessoryLayer.registerRenderer(ChangedAddonItems.DYEABLE_TSHIRT.get(), SimpleColorfulClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.CHEST));
             AccessoryLayer.registerRenderer(ChangedAddonItems.DYEABLE_SHORTS.get(), SimpleColorfulClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.LEGS));
             AccessoryLayer.registerRenderer(ChangedAddonItems.HAZARD_BODY_SUIT.get(),
-                    TransfurAwareClothingRenderer.of(ArmorModel.CLOTHING_OUTER,
-                            Set.of(new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.HEAD),
+                    TransfurAwareClothingRenderer.of(ArmorModel.CLOTHING_MIDDLE,
+                            Set.of(new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_INNER, EquipmentSlot.HEAD),
                                     new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.CHEST),
                                     new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_MIDDLE, EquipmentSlot.LEGS),
-                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.FEET)
+                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.LEGS)
                             )
                     )
             );

@@ -15,7 +15,9 @@ import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.item.Clothing;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -130,6 +132,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
             EntityModel layer = renderLayerParent.getModel();
             if (layer instanceof HumanoidModel<?> baseModel) {
                 this.playerClothingModel = getPlayerModel(entity);
+                if (playerClothingModel == null) return;
                 baseModel.copyPropertiesTo(this.playerClothingModel);
                 this.playerClothingModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
                 this.playerClothingModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
@@ -145,6 +148,9 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
         boolean slim = false;
 
         if (entity instanceof AbstractClientPlayer player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfurVariant != null && transfurVariant.isTransfurring()) return clothingModel;
+
             // Verifica se o jogador está usando o skin tipo "slim" (Alex)
             slim = player.getModelName().equals("slim");
             if (slim) layer = HazardBodySuitLayers.PLAYER_SLIM;
@@ -179,7 +185,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                             LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
                             model.prepareMobModel(changedEntity, 0.0F, 0.0F, partialTicks);
                             model.prepareVisibility(component.renderAs, stack);
-                            ModelPart armPart = arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm;
+                            ModelPart armPart = model.getArm(arm);
                             armPart.loadPose(armPose);
                             FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                             model.unprepareVisibility(component.renderAs, stack);
@@ -193,10 +199,11 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
             EntityModel layer = renderLayerParent.getModel();
             if (layer instanceof HumanoidModel<?> baseModel) {
                 this.playerClothingModel = getPlayerModel(entity);
+                if (this.playerClothingModel == null) return;
                 baseModel.copyPropertiesTo(this.playerClothingModel);
                 ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
                 armPart.loadPose(armPose);
-                FormRenderHandler.renderVanillaModelPartWithTexture(arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             }
         }
 

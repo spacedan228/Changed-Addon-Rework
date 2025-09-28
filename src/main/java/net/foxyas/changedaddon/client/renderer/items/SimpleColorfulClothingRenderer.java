@@ -156,7 +156,7 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
                             LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
                             model.prepareMobModel(changedEntity, 0.0F, 0.0F, partialTicks);
                             model.prepareVisibility(component.renderAs, stack);
-                            ModelPart armPart = arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm;
+                            ModelPart armPart = model.getArm(arm);
                             armPart.loadPose(armPose);
                             FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                             model.unprepareVisibility(component.renderAs, stack);
@@ -172,7 +172,7 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
                 baseModel.copyPropertiesTo(this.clothingModel);
                 ModelPart armPart = arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm;
                 armPart.loadPose(armPose);
-                FormRenderHandler.renderVanillaModelPartWithTexture(arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             }
 
         }

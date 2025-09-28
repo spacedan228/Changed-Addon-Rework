@@ -7,10 +7,12 @@ import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedTabs;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.ltxprogrammer.changed.item.ClothingState;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -23,6 +25,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -155,7 +158,17 @@ public class HazardBodySuit extends ClothingItem {
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         if (entity instanceof ChangedEntity) {
             ResourceLocation itemId = stack.getItem().getRegistryName();
+            if (slot == EquipmentSlot.LEGS) {
+                return String.format("%s:textures/models/hazard_suit/%s_boots_tf.png", itemId.getNamespace(), itemId.getPath());
+            }
             return String.format("%s:textures/models/hazard_suit/%s_%s_tf.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
+        }
+        if (entity instanceof Player player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfurVariant != null && transfurVariant.isTransfurring()) {
+                ResourceLocation itemId = stack.getItem().getRegistryName();
+                return String.format("%s:textures/models/hazard_suit/%s_%s_tf.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
+            }
         }
 
 
