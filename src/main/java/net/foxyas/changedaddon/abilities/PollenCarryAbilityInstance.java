@@ -80,7 +80,7 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
     private void growNearbyCrops(ServerLevel serverLevel, LivingEntity entity) {
         BlockPos basePos = entity.blockPosition();
 
-        for (int i = 0; i <= 2; i++) {
+        for (int i = -1; i <= 2; i++) {
             BlockPos pos = basePos.below(i);
             BlockState state = serverLevel.getBlockState(pos);
 
