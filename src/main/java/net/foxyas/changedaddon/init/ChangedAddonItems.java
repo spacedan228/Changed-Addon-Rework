@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.renderer.items.LaserItemDynamicRender;
 import net.foxyas.changedaddon.item.*;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
+import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.foxyas.changedaddon.item.armor.HazardSuitItem;
 import net.foxyas.changedaddon.item.armor.HazmatSuitItem;
 import net.foxyas.changedaddon.item.clothes.DyeableShorts;
@@ -251,6 +252,7 @@ public class ChangedAddonItems {
     //public static final RegistryObject<Item> DYEABLE_SPORTS_BRA = REGISTRY.register("dyeable_sports_bra", DyeableSportsBra::new);
     public static final RegistryObject<Item> DYEABLE_TSHIRT = REGISTRY.register("dyeable_tshirt", TShirtClothing::new);
     public static final RegistryObject<Item> DYEABLE_SHORTS = REGISTRY.register("dyeable_shorts", DyeableShorts::new);
+    public static final RegistryObject<Item> HAZARD_BODY_SUIT = REGISTRY.register("hazard_body_suit", HazardBodySuit::new);
     public static final RegistryObject<Item> TIMED_KEYPAD = RegisterBlockItem(REGISTRY, ChangedAddonBlocks.TIMED_KEYPAD, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<Item> HAND_SCANNER = RegisterBlockItem(REGISTRY, ChangedAddonBlocks.HAND_SCANNER, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<Item> PAWS_SCANNER = RegisterBlockItem(REGISTRY, ChangedAddonBlocks.PAWS_SCANNER, ChangedAddonTabs.TAB_CHANGED_ADDON);

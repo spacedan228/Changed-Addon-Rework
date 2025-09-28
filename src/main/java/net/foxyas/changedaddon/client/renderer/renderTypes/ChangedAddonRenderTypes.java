@@ -281,6 +281,11 @@ public final class ChangedAddonRenderTypes extends RenderType {
         }
     };
 
+    private static final Function<ResourceLocation, RenderType> ARMOR_WITH_TRANSPARENCY_CUTOUT_NO_CULL = Util.memoize((p_173206_) -> {
+        RenderType.CompositeState rendertype$compositestate = RenderType.CompositeState.builder().setShaderState(RENDERTYPE_ARMOR_CUTOUT_NO_CULL_SHADER).setTextureState(new RenderStateShard.TextureStateShard(p_173206_, false, false)).setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY).setCullState(NO_CULL).setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).setLayeringState(VIEW_OFFSET_Z_LAYERING).createCompositeState(true);
+        return create("armor_cutout_no_cull", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, false, rendertype$compositestate);
+    });
+
     // unused, just needed to extend RenderType for protected constants
     private ChangedAddonRenderTypes(String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_, Runnable p_173184_, Runnable p_173185_) {
         super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
@@ -312,5 +317,9 @@ public final class ChangedAddonRenderTypes extends RenderType {
 
     public static RenderType outlineWithTranslucencyCull(ResourceLocation location) {
         return OUTLINE_WITH_TRANSLUCENCY.apply(location, CULL);
+    }
+
+    public static RenderType armorWithTransparencyCutoutNoCull(ResourceLocation pLocation) {
+        return ARMOR_WITH_TRANSPARENCY_CUTOUT_NO_CULL.apply(pLocation);
     }
 }

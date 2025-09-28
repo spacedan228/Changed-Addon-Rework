@@ -3,10 +3,16 @@ package net.foxyas.changedaddon.init;
 import net.foxyas.changedaddon.client.model.*;
 import net.foxyas.changedaddon.client.model.advanced.*;
 import net.foxyas.changedaddon.client.model.armors.*;
+import net.foxyas.changedaddon.client.model.clothes.HazardBodySuitLayers;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
 import net.foxyas.changedaddon.client.model.simple.*;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.ContainmentContainerRenderer;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.SnepPlushBlockEntityRenderer;
+import net.foxyas.changedaddon.item.armor.HazardBodySuit;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -23,6 +29,11 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(ModelHazardArmorCustomArms.LAYER_LOCATION, ModelHazardArmorCustomArms::createBodyLayer);
         event.registerLayerDefinition(ModelNewHyperFlower.LAYER_LOCATION, ModelNewHyperFlower::createBodyLayer);
         event.registerLayerDefinition(DarkLatexCoatModel.LAYER_LOCATION, DarkLatexCoatModel::createBodyLayer);
+
+        // --- CLOTHING MODELS ---
+        event.registerLayerDefinition(HazardBodySuitLayers.PLAYER, () -> LayerDefinition.create(PlayerModel.createMesh(new CubeDeformation(0.05f), false), 64, 64));
+        event.registerLayerDefinition(HazardBodySuitLayers.PLAYER_SLIM, () -> LayerDefinition.create(PlayerModel.createMesh(new CubeDeformation(0.05f), true), 64, 64));
+
 
 
         event.registerLayerDefinition(ModelLuminarCrystalSpearModel.LAYER_LOCATION, ModelLuminarCrystalSpearModel::createBodyLayer);
