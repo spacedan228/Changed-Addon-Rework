@@ -3,7 +3,11 @@ package net.foxyas.changedaddon.abilities;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+
+import java.util.Collection;
+import java.util.List;
 
 public class PollenCarryAbility extends AbstractAbility<PollenCarryAbilityInstance> {
 
@@ -14,6 +18,11 @@ public class PollenCarryAbility extends AbstractAbility<PollenCarryAbilityInstan
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
         return new TranslatableComponent("changed_addon.ability.pollen_carry");
+    }
+
+    @Override
+    public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
+        return List.of(new TranslatableComponent("changed_addon.ability.pollen_carry.description"));
     }
 
     @Override

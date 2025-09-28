@@ -1,23 +1,34 @@
 package net.foxyas.changedaddon.abilities;
 
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
 public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
 
     private int withPollenTicks;
+
+    private int idleTicks;
 
     public PollenCarryAbilityInstance(AbstractAbility<PollenCarryAbilityInstance> ability, IAbstractChangedEntity entity) {
         super(ability, entity);
@@ -36,14 +47,15 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
         HitResult entityBlockHitLookingAt = PlayerUtil.getEntityBlockHitLookingAt(livingEntity, livingEntity instanceof Player player ? player.getReachDistance() : 4, 1, false);
         if (entityBlockHitLookingAt.getType() != HitResult.Type.MISS && entityBlockHitLookingAt instanceof BlockHitResult blockHitResult) {
             Level level = livingEntity.getLevel();
-            Item item = level.getBlockState(blockHitResult.getBlockPos()).getBlock().asItem();
+            BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());
+            Item item = blockState.getBlock().asItem();
             ItemStack itemStack = new ItemStack(item);
-            if (itemStack.is(ItemTags.FLOWERS)) {
+            if (itemStack.is(ItemTags.FLOWERS) || blockState.is(BlockTags.FLOWER_POTS)) {
                 withPollenTicks = 120;
+                livingEntity.swing(InteractionHand.MAIN_HAND);
+                entity.displayClientMessage(new TranslatableComponent("changed_addon.ability.pollen_carry.display.can"), true);
             } else {
-                /// TODO: Add Info About Showing why it don't work
-                /// Info Should me in first person. like "i don't thing that i can get pollen from that"
-                entity.displayClientMessage(new TranslatableComponent("todo"), true);
+                entity.displayClientMessage(new TranslatableComponent("changed_addon.ability.pollen_carry.display.cant"), true);
             }
         }
     }
@@ -51,11 +63,79 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
     @Override
     public void tickIdle() {
         super.tickIdle();
-
+        idleTicks++;
         if (withPollenTicks > 0) {
-            // TODO : Pollen particles should fall from the player
+            LivingEntity livingEntity = this.entity.getEntity();
+            Level level = livingEntity.getLevel();
+            if (level instanceof ServerLevel serverLevel) {
+                if (idleTicks % 10 == 0) {
+                    ParticlesUtil.sendParticles(serverLevel, ParticleTypes.FALLING_NECTAR, livingEntity.position().add(0, 1, 0), 0.3f, 0.3f, 0.3f, 5, 1);
+                    growNearbyCrops(serverLevel, livingEntity);
+                    withPollenTicks--;
+                }
+            }
         }
     }
+
+    private void growNearbyCrops(ServerLevel serverLevel, LivingEntity entity) {
+        BlockPos basePos = entity.blockPosition();
+
+        for (int i = 0; i <= 2; i++) {
+            BlockPos pos = basePos.below(i);
+            BlockState state = serverLevel.getBlockState(pos);
+
+            if (!state.is(BlockTags.BEE_GROWABLES)) continue;
+
+            boolean grown = tryGrowCrop(serverLevel, pos, state)
+                    || tryGrowStem(serverLevel, pos, state)
+                    || tryGrowBerryBush(serverLevel, pos, state)
+                    || tryGrowCaveVine(serverLevel, pos, state);
+
+            if (grown) {
+                serverLevel.levelEvent(2005, pos, 0); // Partículas tipo bone meal
+            }
+        }
+    }
+
+    private boolean tryGrowCrop(ServerLevel level, BlockPos pos, BlockState state) {
+        if (state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state)) {
+            IntegerProperty age = crop.getAgeProperty();
+            level.setBlockAndUpdate(pos, state.setValue(age, state.getValue(age) + 1));
+            return true;
+        }
+        return false;
+    }
+
+    private boolean tryGrowStem(ServerLevel level, BlockPos pos, BlockState state) {
+        if (state.getBlock() instanceof StemBlock stem) {
+            int age = state.getValue(StemBlock.AGE);
+            if (age < 7) {
+                level.setBlockAndUpdate(pos, state.setValue(StemBlock.AGE, age + 1));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean tryGrowBerryBush(ServerLevel level, BlockPos pos, BlockState state) {
+        if (state.is(Blocks.SWEET_BERRY_BUSH)) {
+            int age = state.getValue(SweetBerryBushBlock.AGE);
+            if (age < 3) {
+                level.setBlockAndUpdate(pos, state.setValue(SweetBerryBushBlock.AGE, age + 1));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean tryGrowCaveVine(ServerLevel level, BlockPos pos, BlockState state) {
+        if (state.is(Blocks.CAVE_VINES) || state.is(Blocks.CAVE_VINES_PLANT)) {
+            ((BonemealableBlock) state.getBlock()).performBonemeal(level, level.getRandom(), pos, state);
+            return true;
+        }
+        return false;
+    }
+
 
     public void tick() {
         this.ability.tick(this.entity);
