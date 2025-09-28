@@ -111,7 +111,7 @@ public class ClientEvent {
                 index++;
                 tooltip.add(index, new TranslatableComponent("text.changed_addon.canGlide/Fly")
                         .append("")
-                        .append(TransfurVariantUtils.CanGlideandFly(tf)
+                        .append(TransfurVariantUtils.CanGlideAndFly(tf)
                                 ? new TextComponent("§aTrue§r")
                                 : new TextComponent("§cFalse§r")));
             }

@@ -8,7 +8,6 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -16,15 +15,33 @@ import java.util.List;
 
 public class PsychicHoldAbility extends SimpleAbility {
 
-    public static boolean Spectator(Entity entity) {
-        if (entity instanceof Player player1) {
-            return player1.isSpectator();
-        }
-        return true;
+    @Override
+    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+        return new TranslatableComponent("changed_addon.ability.psychic_hold");
     }
 
-    public static void execute(LevelAccessor world, Entity IAbstractChangedEntity) {
-        if (!(IAbstractChangedEntity instanceof Player player)) {
+    public ResourceLocation getTexture(IAbstractChangedEntity entity) {
+        return new ResourceLocation("changed_addon:textures/screens/psychic_hold.png"); //Place holder
+    }
+
+    @Override
+    public boolean canUse(IAbstractChangedEntity entity) {
+        return !entity.getEntity().isSpectator();
+    }
+
+    public UseType getUseType(IAbstractChangedEntity entity) {
+        return UseType.HOLD;
+    }
+
+    @Override
+    public void startUsing(IAbstractChangedEntity entity) {
+        super.startUsing(entity);
+        //execute(entity.getLevel(),entity);
+    }
+
+    @Override
+    public void tick(IAbstractChangedEntity entity_) {
+        if (!(entity_.getEntity() instanceof Player player)) {
             return;
         }
 
@@ -34,7 +51,7 @@ public class PsychicHoldAbility extends SimpleAbility {
         final double stopSpeedThreshold = 0.5; // Velocidade limite para parar projéteis
 
         // Selecionar apenas entidades relevantes
-        List<Entity> nearbyEntities = world.getEntitiesOfClass(Entity.class,
+        List<Entity> nearbyEntities = player.level.getEntitiesOfClass(Entity.class,
                 new AABB(playerPos, playerPos).inflate(maxRange / 2.0),
                 e -> e instanceof FallingBlockEntity || e.getType().is(EntityTypeTags.IMPACT_PROJECTILES) && !e.isOnGround());
 
@@ -77,35 +94,5 @@ public class PsychicHoldAbility extends SimpleAbility {
                 }
             }
         }
-    }
-
-    @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.psychic_hold");
-    }
-
-    public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/psychic_hold.png"); //Place holder
-    }
-
-    @Override
-    public boolean canUse(IAbstractChangedEntity entity) {
-        return !Spectator(entity.getEntity());
-    }
-
-    public UseType getUseType(IAbstractChangedEntity entity) {
-        return UseType.HOLD;
-    }
-
-    @Override
-    public void startUsing(IAbstractChangedEntity entity) {
-        super.startUsing(entity);
-        //execute(entity.getLevel(),entity);
-    }
-
-    @Override
-    public void tick(IAbstractChangedEntity entity) {
-        super.tick(entity);
-        execute(entity.getLevel(), entity.getEntity());
     }
 }

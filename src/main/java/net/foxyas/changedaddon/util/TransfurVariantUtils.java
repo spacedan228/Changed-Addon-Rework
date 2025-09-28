@@ -60,7 +60,7 @@ public class TransfurVariantUtils {
 //        }
 //    }
 
-    public static boolean CanGlideandFly(TransfurVariant<?> variant) {
+    public static boolean CanGlideAndFly(TransfurVariant<?> variant) {
         return variant != null && variant.canGlide;
     }
 

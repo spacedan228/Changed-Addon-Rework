@@ -22,6 +22,7 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.List;
 
 import static net.ltxprogrammer.changed.init.ChangedRegistry.ABILITY;
+import static net.minecraft.core.Registry.register;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
@@ -56,7 +57,7 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     public static final RegistryObject<WitherGrenadeAbility> WITHER_GRENADE = REGISTRY.register("wither_grenade", WitherGrenadeAbility::new);
     public static final RegistryObject<SonarAbility> SONAR = REGISTRY.register("sonar", SonarAbility::new);
     public static final RegistryObject<LuminaraFireballAbility> LUMINARA_FIREBALL = REGISTRY.register("luminara_fireball", LuminaraFireballAbility::new);
-
+    public static final RegistryObject<PollenCarryAbility> POLLEN_CARRY = REGISTRY.register("pollen_carry", PollenCarryAbility::new);
 
     public static List<EntityType<?>> getCanGlideEntities() {
         //["form_dark_dragon", "form_dark_latex_yufeng", "form_latex_pink_yuin_dragon", "form_latex_red_dragon"]
@@ -69,10 +70,12 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     }
 
 
+    //@SubscribeEvent
     public static void addUniversalAbilities(TransfurVariant.UniversalAbilitiesEvent event) {
         event.addAbility(event.isOfTag(ChangedTags.EntityTypes.LATEX).and(event.isNotOfTag(ChangedTags.EntityTypes.PARTIAL_LATEX)), SOFTEN_ABILITY);
         //event.addAbility(entityType -> getCanGlideEntities().contains(entityType), WING_FLAP_ABILITY);
         event.addAbility(event.isOfTag(ChangedAddonTags.EntityTypes.DRAGON_ENTITIES), WING_FLAP_ABILITY);
+        event.addAbility(entityType -> entityType.equals(ChangedEntities.LATEX_BEE.get()), POLLEN_CARRY);
 
     }
 
