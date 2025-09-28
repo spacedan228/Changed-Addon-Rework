@@ -22,6 +22,8 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -131,7 +133,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                 baseModel.copyPropertiesTo(this.playerClothingModel);
                 this.playerClothingModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
                 this.playerClothingModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                this.playerClothingModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, ChangedAddonRenderTypes.armorWithTransparencyCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                this.playerClothingModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             }
 
         }
@@ -153,7 +155,8 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
 
 
     @SuppressWarnings("unchecked")
-    public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PoseStack stackCorrector, float partialTicks) {
+    @Override
+    public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTicks) {
         ItemStack stack = slotContext.stack();
         Item var11 = stack.getItem();
         if (var11 instanceof Clothing clothing) {
@@ -175,9 +178,9 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                         if (component.renderAs == EquipmentSlot.CHEST) {
                             LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
                             model.prepareMobModel(changedEntity, 0.0F, 0.0F, partialTicks);
-                            model.setupAnim(changedEntity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-                            model.setupHand(changedEntity);
                             model.prepareVisibility(component.renderAs, stack);
+                            ModelPart armPart = arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm;
+                            armPart.loadPose(armPose);
                             FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                             model.unprepareVisibility(component.renderAs, stack);
                         }
@@ -191,6 +194,8 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
             if (layer instanceof HumanoidModel<?> baseModel) {
                 this.playerClothingModel = getPlayerModel(entity);
                 baseModel.copyPropertiesTo(this.playerClothingModel);
+                ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
+                armPart.loadPose(armPose);
                 FormRenderHandler.renderVanillaModelPartWithTexture(arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             }
         }

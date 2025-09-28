@@ -18,6 +18,8 @@ import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -129,7 +131,8 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PoseStack stackCorrector, float partialTicks) {
+    @Override
+    public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTicks) {
         ItemStack stack = slotContext.stack();
         Item var11 = stack.getItem();
         if (var11 instanceof Clothing clothing) {
@@ -152,10 +155,10 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
                         if (component.renderAs == EquipmentSlot.CHEST) {
                             LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
                             model.prepareMobModel(changedEntity, 0.0F, 0.0F, partialTicks);
-                            model.setupAnim(changedEntity, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-                            model.setupHand(changedEntity);
                             model.prepareVisibility(component.renderAs, stack);
-                            FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, matrixStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                            ModelPart armPart = arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm;
+                            armPart.loadPose(armPose);
+                            FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                             model.unprepareVisibility(component.renderAs, stack);
                         }
                     }
@@ -167,7 +170,9 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
             EntityModel layer = renderLayerParent.getModel();
             if (layer instanceof HumanoidModel<?> baseModel) {
                 baseModel.copyPropertiesTo(this.clothingModel);
-                FormRenderHandler.renderVanillaModelPartWithTexture(arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm, stackCorrector, matrixStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                ModelPart armPart = arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm;
+                armPart.loadPose(armPose);
+                FormRenderHandler.renderVanillaModelPartWithTexture(arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             }
 
         }
