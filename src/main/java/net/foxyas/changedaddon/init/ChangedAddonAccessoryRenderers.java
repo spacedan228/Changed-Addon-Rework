@@ -26,8 +26,8 @@ public class ChangedAddonAccessoryRenderers {
                             Set.of(new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_INNER, EquipmentSlot.HEAD),
                                     new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.CHEST),
                                     new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_MIDDLE, EquipmentSlot.LEGS),
-                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.LEGS),
-                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.FEET)
+                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.FEET),
+                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_INNER, EquipmentSlot.FEET)
                             )
                     )
             );

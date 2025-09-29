@@ -15,6 +15,8 @@ import net.ltxprogrammer.changed.item.ClothingState;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -154,6 +156,14 @@ public class HazardBodySuit extends ClothingItem {
         return flag ? "helmeted" : "no_helmet";
     }
 
+
+    private <T extends Entity> String getPlayerModelStyle(T entity) {
+        if (entity instanceof AbstractClientPlayer player) {
+            return player.getModelName();
+        }
+        return "default";
+    }
+
     @Override
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         if (entity instanceof ChangedEntity) {
@@ -170,6 +180,6 @@ public class HazardBodySuit extends ClothingItem {
 
 
         ResourceLocation itemId = stack.getItem().getRegistryName();
-        return String.format("%s:textures/models/hazard_suit/%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
+        return String.format("%s:textures/models/hazard_suit/%s_%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack), getPlayerModelStyle(entity));
     }
 }
