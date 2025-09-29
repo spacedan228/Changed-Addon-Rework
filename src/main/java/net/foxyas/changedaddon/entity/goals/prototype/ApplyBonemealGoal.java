@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.goals.prototype;
 
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.minecraft.core.BlockPos;
@@ -61,7 +61,7 @@ public class ApplyBonemealGoal extends Goal {
     public void start() {
         if (targetPos == null) return;
 
-        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSounds.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
+        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
 
         if (entity.getLevel().isClientSide) {
             entity.getLevel().addParticle(

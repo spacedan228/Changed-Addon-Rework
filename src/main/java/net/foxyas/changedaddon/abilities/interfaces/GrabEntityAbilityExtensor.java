@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.abilities.interfaces;
 
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
@@ -27,7 +27,7 @@ public interface GrabEntityAbilityExtensor {
                 if (player instanceof ServerPlayer serverPlayer) {
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug");
                 }
-                player.getLevel().playSound(null, player, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1, 1);
+                player.getLevel().playSound(null, player, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1, 1);
                 setSnuggled(true);
             }
             if (livingEntity instanceof Player grabbedPlayer) {
@@ -53,7 +53,7 @@ public interface GrabEntityAbilityExtensor {
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug");
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug_tight");
                 }
-                player.getLevel().playSound(null, player, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1, 1);
+                player.getLevel().playSound(null, player, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1, 1);
                 setSnuggledTight(true);
             }
             if (livingEntity instanceof Player grabbedPlayer) {

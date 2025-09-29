@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.item;
 import com.google.common.collect.Multimap;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
@@ -51,7 +51,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -239,7 +238,7 @@ public class TransfurTotemItem extends Item {
             SummonDripParticlesProcedure.execute(player);
             PlayerUtil.UnTransfurPlayer(player);
             cooldown(player, stack, 100);
-            visualActivate(level, player, ChangedAddonSounds.UNTRANSFUR);
+            visualActivate(level, player, ChangedAddonSoundEvents.UNTRANSFUR);
             grantAdvancement(player, "changed_addon:transfur_totem_advancement_1");
             return ar;
         }

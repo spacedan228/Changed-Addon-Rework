@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.AbstractPlushBlockEntity;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -13,16 +13,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -100,7 +97,7 @@ public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock impl
         if (blockEntity instanceof AbstractPlushBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
-                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
+                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide());
             }

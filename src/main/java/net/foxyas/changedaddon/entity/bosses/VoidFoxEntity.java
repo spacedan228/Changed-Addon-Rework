@@ -16,7 +16,7 @@ import net.foxyas.changedaddon.entity.projectile.AbstractVoidFoxParticleProjecti
 import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -898,11 +898,11 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     @Override
     public ResourceLocation getBossMusic() {
         if (this.computeHealthRatio() <= 0.5f) {
-            return ChangedAddonSounds.EXP10_THEME.getLocation();
+            return ChangedAddonSoundEvents.EXP10_THEME.getLocation();
         }
 
 
-        return ChangedAddonSounds.EXP9_THEME.getLocation();
+        return ChangedAddonSoundEvents.EXP9_THEME.getLocation();
     }
 
     @Override

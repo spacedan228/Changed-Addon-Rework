@@ -69,8 +69,6 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
         return getCanGlideEntities().toArray(new EntityType[0]);
     }
 
-
-    //@SubscribeEvent
     public static void addUniversalAbilities(TransfurVariant.UniversalAbilitiesEvent event) {
         event.addAbility(event.isOfTag(ChangedTags.EntityTypes.LATEX).and(event.isNotOfTag(ChangedTags.EntityTypes.PARTIAL_LATEX)), SOFTEN_ABILITY);
         //event.addAbility(entityType -> getCanGlideEntities().contains(entityType), WING_FLAP_ABILITY);

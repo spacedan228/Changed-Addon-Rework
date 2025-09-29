@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.DarkLatexPuddleBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.network.PacketUtil;
 import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -80,7 +80,7 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
 
         // Reproduz som para dark latex próximos
         PacketUtil.playSound(sLevel, DarkLatexPuddleBlock::isPlayerDLOrPuro,
-                x, y, z, ChangedAddonSounds.WARN, SoundSource.BLOCKS, 1, 1);
+                x, y, z, ChangedAddonSoundEvents.WARN, SoundSource.BLOCKS, 1, 1);
 
         // Aplica cooldown no bloco
         darkLatexPuddleBlockEntity.cooldown = 30;

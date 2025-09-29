@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -107,8 +107,8 @@ public class TheDecimatorItem extends Item {
                 }
             }
             // 💥 Partículas para indicar o ataque em área
-            if (ChangedAddonSounds.HAMMER_SWING != null) {
-                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSounds.HAMMER_SWING, SoundSource.PLAYERS, 1f, 1f);
+            if (ChangedAddonSoundEvents.HAMMER_SWING != null) {
+                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.HAMMER_SWING, SoundSource.PLAYERS, 1f, 1f);
             }
             double d0 = (double) (-Mth.sin(player.getYRot() * 0.017453292F)) * 1;
             double d1 = (double) Mth.cos(player.getYRot() * 0.017453292F) * 1;
@@ -162,8 +162,8 @@ public class TheDecimatorItem extends Item {
                 }
             }
             // 🔊 Reproduzir som de explosão no local
-            if (ChangedAddonSounds.HAMMER_GUN_SHOT != null) {
-                world.playSound(null, pos, ChangedAddonSounds.HAMMER_GUN_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
+            if (ChangedAddonSoundEvents.HAMMER_GUN_SHOT != null) {
+                world.playSound(null, pos, ChangedAddonSoundEvents.HAMMER_GUN_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
             }
             // 💥 Criar uma partícula de explosão centralizada
             Vec3 center = Vec3.atCenterOf(pos);

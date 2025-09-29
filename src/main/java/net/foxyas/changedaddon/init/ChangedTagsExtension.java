@@ -10,6 +10,7 @@ public class ChangedTagsExtension extends ChangedTags {
 
     //Accessories Tags [is a ITEM TAG]
     public static class AccessoryItemsTags {
+        public static final TagKey<Item> FULL_BODY = create("full_body");
         public static final TagKey<Item> BODY = create("body");
         public static final TagKey<Item> LEGS = create("legs");
 

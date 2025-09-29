@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.SnepPlushBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -174,7 +174,7 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
                     //plushBlockEntity.squeezedTicks = 4;
-                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSounds.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
+                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide());
             }

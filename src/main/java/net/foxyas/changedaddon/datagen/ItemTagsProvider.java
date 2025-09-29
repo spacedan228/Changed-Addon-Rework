@@ -39,6 +39,8 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
         tag(forgeStorageBlocksIridium).add(IRIDIUM_BLOCK.get());
 
 
+        tag(ChangedTagsExtension.AccessoryItemsTags.FULL_BODY)
+                .add(HAZARD_BODY_SUIT.get());
         tag(ChangedTagsExtension.AccessoryItemsTags.BODY).add(
                 DYEABLE_TSHIRT.get());
         tag(ChangedTagsExtension.AccessoryItemsTags.LEGS).add(

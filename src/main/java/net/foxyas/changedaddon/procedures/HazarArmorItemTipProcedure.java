@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -26,7 +27,7 @@ public class HazarArmorItemTipProcedure {
         if (event.getSlotType() == EquipmentSlot.HEAD) {
             if (stack.getItem() == ChangedAddonItems.HAZARD_SUIT_HELMET.get()) {
                 event.addModifier(ChangedAddonAttributes.LATEX_RESISTANCE.get(), HazardArmor3);
-                event.addModifier(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, HazardDebuff);
+                event.addModifier(Attributes.MOVEMENT_SPEED, HazardDebuff);
             }
         }
 
@@ -37,8 +38,8 @@ public class HazarArmorItemTipProcedure {
 
                 event.addModifier(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("changed:transfur_damage")), HazardDebuff3);
                 event.addModifier(ChangedAddonAttributes.LATEX_RESISTANCE.get(), HazardArmor);
-                event.addModifier(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, HazardDebuff);
-                event.addModifier(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_SPEED, HazardDebuff2);
+                event.addModifier(Attributes.MOVEMENT_SPEED, HazardDebuff);
+                event.addModifier(Attributes.ATTACK_SPEED, HazardDebuff2);
             }
         }
 
@@ -47,15 +48,15 @@ public class HazarArmorItemTipProcedure {
                 AttributeModifier HazardArmor2 = new AttributeModifier(UUID.fromString("0-0-0-0-1"), "Hazard Armor Buff", 0.15, AttributeModifier.Operation.ADDITION);
 
                 event.addModifier(ChangedAddonAttributes.LATEX_RESISTANCE.get(), HazardArmor2);
-                event.addModifier(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, HazardDebuff);
-                event.addModifier(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_SPEED, HazardDebuff2);
+                event.addModifier(Attributes.MOVEMENT_SPEED, HazardDebuff);
+                event.addModifier(Attributes.ATTACK_SPEED, HazardDebuff2);
             }
         }
 
         if (event.getSlotType() == EquipmentSlot.FEET) {
             if (stack.getItem() == ChangedAddonItems.HAZARD_SUIT_BOOTS.get()) {
                 event.addModifier(ChangedAddonAttributes.LATEX_RESISTANCE.get(), HazardArmor3);
-                event.addModifier(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, HazardDebuff);
+                event.addModifier(Attributes.MOVEMENT_SPEED, HazardDebuff);
             }
         }
     }
