@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
@@ -73,7 +73,7 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
         }
 
         // Play sound
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSounds.UNTRANSFUR, SoundSource.NEUTRAL, 1, 1);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR, SoundSource.NEUTRAL, 1, 1);
     }
 
     protected void applyMobEffect(Player entity, MobEffect effect, int duration) {

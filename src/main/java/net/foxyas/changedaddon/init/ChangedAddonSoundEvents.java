@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ChangedAddonSounds {
+public class ChangedAddonSoundEvents {
 
     private static final Map<ResourceLocation, SoundEvent> REGISTRY = new HashMap<>();
 

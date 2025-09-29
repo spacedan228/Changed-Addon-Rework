@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.util;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
@@ -92,7 +92,7 @@ public class PlayerUtil {
                 player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
                 player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
                 if (player.getLevel() instanceof ServerLevel serverLevel) {
-                    serverLevel.playSound(null, player.getX(), player.getEyeY(), player.getZ(), ChangedAddonSounds.UNTRANSFUR, SoundSource.PLAYERS, 1, 1);
+                    serverLevel.playSound(null, player.getX(), player.getEyeY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR, SoundSource.PLAYERS, 1, 1);
                 }
             }
         });

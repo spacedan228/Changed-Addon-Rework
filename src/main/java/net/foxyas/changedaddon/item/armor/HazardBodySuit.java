@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.item.armor;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
@@ -16,7 +16,6 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -52,7 +51,7 @@ public class HazardBodySuit extends ClothingItem {
 
     @Override
     public SoundEvent getEquipSound() {
-        return ChangedAddonSounds.ARMOR_EQUIP;
+        return ChangedAddonSoundEvents.ARMOR_EQUIP;
     }
 
     @Override

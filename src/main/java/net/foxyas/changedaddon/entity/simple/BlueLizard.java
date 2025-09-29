@@ -4,7 +4,7 @@ import net.foxyas.changedaddon.entity.defaults.AbstractBasicChangedEntity;
 import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
 import net.foxyas.changedaddon.entity.interfaces.ExtraConditions;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.HairStyle;
@@ -101,6 +101,6 @@ public class BlueLizard extends AbstractBasicChangedEntity implements ExtraCondi
     @Override
     public void WhenPattedReactionSpecific(Player patter, InteractionHand hand, Vec3 pattedLocation) {
         CustomPatReaction.super.WhenPattedReactionSpecific(patter, hand, pattedLocation);
-        this.level.playSound(null, this, ChangedAddonSounds.GECKO_BEEP, SoundSource.AMBIENT, 1, 1);
+        this.level.playSound(null, this, ChangedAddonSoundEvents.GECKO_BEEP, SoundSource.AMBIENT, 1, 1);
     }
 }

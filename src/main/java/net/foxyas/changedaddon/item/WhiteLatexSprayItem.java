@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.LatexType;
@@ -45,7 +45,7 @@ public class WhiteLatexSprayItem extends Item {
         }
 
         Level level = player.level;
-        level.playSound(null, player, ChangedAddonSounds.SPRAY_SOUND, SoundSource.PLAYERS, 1, 1);
+        level.playSound(null, player, ChangedAddonSoundEvents.SPRAY_SOUND, SoundSource.PLAYERS, 1, 1);
 
         int horizontalRadiusSphere = 2 - 1;
         int verticalRadiusSphere = 2 - 1;

@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.goals.prototype;
 
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -70,7 +70,7 @@ public class TryGrabItemsGoal extends Goal {
                 .orElse(null);
 
         if (closestItem != null) {
-            prototype.getLevel().playSound(null, prototype.blockPosition(), ChangedAddonSounds.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
+            prototype.getLevel().playSound(null, prototype.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
             prototype.getNavigation().moveTo(closestItem, 0.25f);
             // Make entity look at a target position
             prototype.getLookControl().setLookAt(

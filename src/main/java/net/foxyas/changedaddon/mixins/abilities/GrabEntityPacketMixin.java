@@ -2,8 +2,7 @@ package net.foxyas.changedaddon.mixins.abilities;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
-import net.foxyas.changedaddon.init.ChangedAddonSounds;
-import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
@@ -46,7 +45,7 @@ public class GrabEntityPacketMixin {
             GrabEntityAbilityInstance ability = variant.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
             if (ability instanceof GrabEntityAbilityExtensor abilityExtensor && abilityExtensor.isSafeMode()) {
                 ci.cancel();
-                ChangedSounds.broadcastSound(sender, ChangedAddonSounds.PLUSHY_SOUND, 1.0F, 1.0F);
+                ChangedSounds.broadcastSound(sender, ChangedAddonSoundEvents.PLUSHY_SOUND, 1.0F, 1.0F);
             }
         }
     }
