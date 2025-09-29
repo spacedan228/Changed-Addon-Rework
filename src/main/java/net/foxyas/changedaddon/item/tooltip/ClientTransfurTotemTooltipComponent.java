@@ -56,9 +56,11 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         Player player = Minecraft.getInstance().player;
         if (player != null) {
             BasicPlayerInfo basicPlayerInfo = Changed.config.client.basicPlayerInfo;
-            this.entity.getBasicPlayerInfo().setEyeStyle(basicPlayerInfo.getEyeStyle());
-            this.entity.getBasicPlayerInfo().setLeftIrisColor(basicPlayerInfo.getLeftIrisColor());
-            this.entity.getBasicPlayerInfo().setRightIrisColor(basicPlayerInfo.getRightIrisColor());
+            BasicPlayerInfo basicEntityInfo = this.entity.getBasicPlayerInfo();
+            basicEntityInfo.setEyeStyle(basicPlayerInfo.getEyeStyle());
+            basicEntityInfo.setLeftIrisColor(basicPlayerInfo.getLeftIrisColor());
+            basicEntityInfo.setRightIrisColor(basicPlayerInfo.getRightIrisColor());
+            basicEntityInfo.setSize(1f);
 
             this.entity.setCustomName(entity.getType().getDescription());
             this.entity.setCustomNameVisible(true);
