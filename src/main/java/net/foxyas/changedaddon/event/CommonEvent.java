@@ -166,7 +166,7 @@ public class CommonEvent {
         float tolerance = (float) ProcessTransfur.getEntityTransfurTolerance(player);
 
         boolean infectionWins = infection > latexRes;
-        boolean resistanceWins = latexRes > infection;
+        boolean resistanceWins = latexRes >= infection;
 
 
         // --- Resistance Wins
