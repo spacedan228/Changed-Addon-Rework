@@ -22,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -103,6 +105,25 @@ public class HazardBodySuit extends ClothingItem {
     @Override
     public boolean isDamageable(ItemStack stack) {
         return true;
+    }
+
+    public void accessoryDamaged(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
+        if (!source.isBypassArmor()) this.applyDamage(source, amount, slotContext);
+    }
+
+    public void applyDamage(DamageSource damageSource, float amount, AccessorySlotContext<?> slotContext) {
+        if (!(amount <= 0.0F)) {
+            amount /= 4.0F;
+            if (amount < 1.0F) {
+                amount = 1.0F;
+            }
+            ItemStack itemStack = slotContext.stack();
+            LivingEntity player = slotContext.wearer();
+            if ((!damageSource.isFire() || !itemStack.getItem().isFireResistant()) && itemStack.getItem() instanceof ArmorItem) {
+                itemStack.hurtAndBreak((int)amount, player, (livingEntity) -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST));
+            }
+
+        }
     }
 
     @Override
