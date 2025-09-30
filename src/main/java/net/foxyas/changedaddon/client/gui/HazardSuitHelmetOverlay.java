@@ -56,12 +56,12 @@ public class HazardSuitHelmetOverlay {
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
                 // --- Breath Sound
-                if (breathingSound == null || breathingSound.isStopped()) {
+                if ((breathingSound == null || breathingSound.isStopped())) {
                     breathingSound = new HelmetBreathingSound(SoundEvents.PLAYER_BREATH, player);
                     Minecraft.getInstance().getSoundManager().play(breathingSound);
                 }
             } else {
-                if (breathingSound != null && !breathingSound.isStopped()) {
+                if (breathingSound != null) {
                     breathingSound.forceStop();
                 }
             }

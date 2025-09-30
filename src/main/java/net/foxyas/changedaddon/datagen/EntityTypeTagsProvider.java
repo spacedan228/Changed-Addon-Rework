@@ -91,6 +91,10 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 ChangedAddonAbilities.getCanGlideEntitiesArray()
         );
 
+        tag(ChangedAddonTags.EntityTypes.BEE_ENTITIES).add(
+                ChangedAddonAbilities.getBeeEntities()
+        );
+
         tag(ChangedAddonTags.EntityTypes.PACIFY_HANDLE_IMMUNE)
                 .add(EXPERIMENT_009.get())
                 .add(EXPERIMENT_10.get())

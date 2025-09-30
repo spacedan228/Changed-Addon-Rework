@@ -36,6 +36,7 @@
     "entity.variant.TransfurVariantInstanceMixin",
     "items.ItemStackMixin",
     "mods.changed.ChangedMixin",
+    "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin"
   ],
   "injectors": {

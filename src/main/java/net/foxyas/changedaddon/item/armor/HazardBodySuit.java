@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.item.armor;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
@@ -9,6 +10,7 @@ import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
+import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedTabs;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.ltxprogrammer.changed.item.ClothingState;
@@ -114,11 +116,31 @@ public class HazardBodySuit extends ClothingItem {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 
             builder.put(
+                    ChangedAttributes.TRANSFUR_TOLERANCE.get(),
+                    new AttributeModifier(
+                            UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                            "Hazard Transfur Tolerance Buff",
+                            1,
+                            AttributeModifier.Operation.MULTIPLY_TOTAL
+                    )
+            );
+
+            builder.put(
+                    ChangedAddonAttributes.LATEX_RESISTANCE.get(),
+                    new AttributeModifier(
+                            UUID.fromString("00000000-0000-0000-0000-000000000001"),
+                            "Hazard Armor Speed Debuff",
+                            0.05,
+                            AttributeModifier.Operation.ADDITION
+                    )
+            );
+
+            builder.put(
                     Attributes.ARMOR,
                     new AttributeModifier(
                             UUID.fromString("00000000-0000-0000-0000-000000000002"),
                             "Hazard Armor Buff",
-                            0.05,
+                            2,
                             AttributeModifier.Operation.ADDITION
                     )
             );
