@@ -98,7 +98,7 @@ public class TryGrabItemsGoal extends Goal {
                 .orElse(null);
 
         if (closestItem != null) {
-            if (closestItem.distanceTo(prototype) >= 0.05f) {
+            if (closestItem.distanceTo(prototype) >= 0.005f) {
                 prototype.getNavigation().moveTo(closestItem, 0.25f);
                 // Place the crop block at target position
                 this.prototype.getLookControl().setLookAt(

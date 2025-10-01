@@ -2,15 +2,23 @@ package net.foxyas.changedaddon.item.armor;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.event.ProgressTransfurEvents;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
+import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.TransfurContext;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedDamageSources;
 import net.ltxprogrammer.changed.init.ChangedTabs;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.ltxprogrammer.changed.item.ClothingState;
@@ -35,9 +43,14 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
@@ -108,7 +121,11 @@ public class HazardBodySuit extends ClothingItem {
     }
 
     public void accessoryDamaged(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
-        if (!source.isBypassArmor()) this.applyDamage(source, amount, slotContext);
+        if (!source.isBypassArmor() && !(source instanceof ChangedDamageSources.TransfurDamageSource)) {
+            this.applyDamage(source, amount, slotContext);
+        } else if (source instanceof ChangedDamageSources.TransfurDamageSource) {
+            this.applyDamage(source, amount, slotContext);
+        }
     }
 
     public void applyDamage(DamageSource damageSource, float amount, AccessorySlotContext<?> slotContext) {
@@ -124,6 +141,44 @@ public class HazardBodySuit extends ClothingItem {
             }
 
         }
+    }
+
+    @Mod.EventBusSubscriber
+    public static class EventsHandle {
+
+        /*
+        @SubscribeEvent
+        public static void whenEntityIsAttacked(ProgressTransfurEvents.ProgressTransfurEvent event) {
+            LivingEntity target = event.livingEntity;
+            TransfurContext context = event.context;
+            IAbstractChangedEntity source = context.source;
+            TransfurVariant<?> transfurVariant = event.transfurVariant;
+
+            float amount = event.getAmount();
+            boolean hit = event.isHit();
+
+            AccessorySlots.getForEntity(target).ifPresent((accessorySlots) -> {
+                Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
+                item.ifPresent(stack -> stack.hurtAndBreak(Math.max((int) amount / 4, 1), target, (livingEntity) -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST)));
+            });
+        }*/
+
+        @SubscribeEvent
+        public static void whenEntityIsAttacked(LivingAttackEvent event) {
+            LivingEntity target = event.getEntityLiving();
+            var amount = event.getAmount();
+            /*
+            AccessorySlots.getForEntity(target).ifPresent((accessorySlots) -> {
+                Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
+                item.ifPresent(stack -> {
+                    if (!stack.is(ChangedAddonItems.HAZARD_BODY_SUIT.get())) {
+                        return;
+                    }
+                    stack.hurtAndBreak(Math.max((int) amount / 4, 1), target, (livingEntity) -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST))
+                });
+            });*/
+        }
+
     }
 
     @Override
@@ -194,7 +249,7 @@ public class HazardBodySuit extends ClothingItem {
     }
 
     public String getHelmetState(ItemStack stack) {
-        var flag = this.getClothingState(stack).getValue(HELMET);
+        Boolean flag = this.getClothingState(stack).getValue(HELMET);
         return flag ? "helmeted" : "no_helmet";
     }
 
