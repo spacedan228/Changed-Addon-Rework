@@ -7,7 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.IEventBusInvokeDispatcher;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.IModBusEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
@@ -18,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -68,6 +72,20 @@ public class ChangedAddonMod {
     public static <T extends Event> boolean postEvent(T event) {
         return MinecraftForge.EVENT_BUS.post(event);
     }
+
+    public static <T extends Event> boolean postEvent(T event, IEventBusInvokeDispatcher dispatcher) {
+        return MinecraftForge.EVENT_BUS.post(event, dispatcher);
+    }
+
+    public static <T extends Event & IModBusEvent> void postModLoadingEvent(T event) {
+        ModLoader.get().postEvent(event);
+    }
+
+    public static <T extends Event> void addEventListener(Consumer<T> listener) {
+        MinecraftForge.EVENT_BUS.addListener(listener);
+    }
+
+
 
     public static <T> void addNetworkMessage(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder, Function<FriendlyByteBuf, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
         PACKET_HANDLER.registerMessage(messageID, messageType, encoder, decoder, messageConsumer);

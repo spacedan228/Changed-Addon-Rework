@@ -13,7 +13,7 @@ public class HelmetBreathingSound extends AbstractTickableSoundInstance {
         super(sound, SoundSource.PLAYERS);
         this.player = player;
         this.looping = true;
-        this.delay = 0;
+        this.delay = 20;
         this.volume = 0.6f;
     }
 

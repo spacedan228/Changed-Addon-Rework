@@ -34,7 +34,6 @@ public class LuminarcticLeopardMaleEntity extends AbstractLuminarcticLeopard {
     public LuminarcticLeopardMaleEntity(EntityType<LuminarcticLeopardMaleEntity> type, Level world) {
         super(type, world);
         xpReward = XP_REWARD_HUGE;
-        this.setAttributes(this.getAttributes());
         setNoAi(false);
         setPersistenceRequired();
     }
@@ -130,16 +129,6 @@ public class LuminarcticLeopardMaleEntity extends AbstractLuminarcticLeopard {
             return super.getPassengersRidingOffset() + this.getTorsoYOffset(this) + (this.isCrouching() ? 1.2 : 1.15);
         }
         return getTorsoYOffsetForFallFly(this);
-    }
-
-    @Override
-    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.hurt"));
-    }
-
-    @Override
-    public @NotNull SoundEvent getDeathSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.death"));
     }
 
     @Override

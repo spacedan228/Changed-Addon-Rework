@@ -178,6 +178,7 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> SNEP_ICON = REGISTRY.register("snep_icon", SnepIconItem::new);
     public static final RegistryObject<Item> FRIENDLY_GOEY_ICON = REGISTRY.register("friendly_goey_icon", FriendlyGoeyIconItem::new);
     public static final RegistryObject<Item> PAT_ICON = REGISTRY.register("pat_icon", PatIconItem::new);
+    public static final RegistryObject<BlockItem> COVER_ITEM = REGISTRY.register("cover", ()-> new BlockItem(ChangedAddonBlocks.COVER_BLOCK.get(), new Item.Properties()));
 
     public static final RegistryObject<BlockItem> WOLF_CRYSTAL_PILLAR = block(ChangedAddonBlocks.WOLF_CRYSTAL_PILLAR, ChangedAddonTabs.TAB_CHANGED_ADDON);
 

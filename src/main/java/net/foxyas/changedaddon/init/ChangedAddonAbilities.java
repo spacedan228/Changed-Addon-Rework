@@ -1,12 +1,12 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.abilities.DashAbility;
 import net.foxyas.changedaddon.abilities.*;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.client.ChangedClient;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedEntities;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -17,12 +17,15 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static net.ltxprogrammer.changed.init.ChangedRegistry.ABILITY;
-import static net.minecraft.core.Registry.register;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
@@ -59,21 +62,44 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     public static final RegistryObject<LuminaraFireballAbility> LUMINARA_FIREBALL = REGISTRY.register("luminara_fireball", LuminaraFireballAbility::new);
     public static final RegistryObject<PollenCarryAbility> POLLEN_CARRY = REGISTRY.register("pollen_carry", PollenCarryAbility::new);
 
-    public static List<EntityType<?>> getCanGlideEntities() {
-        //["form_dark_dragon", "form_dark_latex_yufeng", "form_latex_pink_yuin_dragon", "form_latex_red_dragon"]
-        return List.of(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), ChangedEntities.DARK_LATEX_DOUBLE_YUFENG.get(), ChangedEntities.DARK_LATEX_YUFENG.get(), ChangedEntities.LATEX_PINK_YUIN_DRAGON.get(), ChangedEntities.DARK_DRAGON.get(), ChangedEntities.LATEX_RED_DRAGON.get());
+    public static EntityType<?>[] getCanGlideEntitiesArray() {
+        List<EntityType<?>> canGlideEntities = new ArrayList<>();
+        Collection<TransfurVariant<?>> transfurVariants = ChangedRegistry.TRANSFUR_VARIANT.get().getValues();
+        transfurVariants.forEach((transfurVariant) -> {
+            if (transfurVariant.canGlide) {
+                canGlideEntities.add(transfurVariant.getEntityType());
+            }
+        });
+
+        return canGlideEntities.toArray(new EntityType[0]);
     }
 
-    public static EntityType<?>[] getCanGlideEntitiesArray() {
-        //["form_dark_dragon", "form_dark_latex_yufeng", "form_latex_pink_yuin_dragon", "form_latex_red_dragon"]
-        return getCanGlideEntities().toArray(new EntityType[0]);
+    public static EntityType<?>[] getBeeEntities() {
+        Stream<EntityType<?>> beeEntities = ForgeRegistries.ENTITIES.getValues().stream().filter((entityType) -> entityType.getRegistryName().toString().contains("latex_bee"));
+        List<EntityType<?>> canGlideEntities = new ArrayList<>(beeEntities.toList());
+        return canGlideEntities.toArray(new EntityType[0]);
+    }
+
+    /**
+    * Util Method To Get All the EntityTypes that can Glide in a List
+    */
+    public static List<EntityType<?>> getAllEntityTypesThatCanGlide() {
+        List<EntityType<?>> canGlideEntities = new ArrayList<>();
+        Collection<TransfurVariant<?>> transfurVariants = ChangedRegistry.TRANSFUR_VARIANT.get().getValues();
+        transfurVariants.forEach((transfurVariant) -> {
+            if (transfurVariant.canGlide) {
+                canGlideEntities.add(transfurVariant.getEntityType());
+            }
+        });
+
+        return canGlideEntities;
     }
 
     public static void addUniversalAbilities(TransfurVariant.UniversalAbilitiesEvent event) {
         event.addAbility(event.isOfTag(ChangedTags.EntityTypes.LATEX).and(event.isNotOfTag(ChangedTags.EntityTypes.PARTIAL_LATEX)), SOFTEN_ABILITY);
         //event.addAbility(entityType -> getCanGlideEntities().contains(entityType), WING_FLAP_ABILITY);
         event.addAbility(event.isOfTag(ChangedAddonTags.EntityTypes.DRAGON_ENTITIES), WING_FLAP_ABILITY);
-        event.addAbility(entityType -> entityType.equals(ChangedEntities.LATEX_BEE.get()), POLLEN_CARRY);
+        event.addAbility(entityType -> entityType.equals(ChangedEntities.LATEX_BEE.get()) || entityType.is(ChangedAddonTags.EntityTypes.BEE_ENTITIES), POLLEN_CARRY);
 
     }
 

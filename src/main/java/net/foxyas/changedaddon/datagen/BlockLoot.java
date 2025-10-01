@@ -1,13 +1,16 @@
 package net.foxyas.changedaddon.datagen;
 
+import net.foxyas.changedaddon.block.CoverBlock;
 import net.foxyas.changedaddon.block.LuminarCrystalSmallBlock;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.minecraft.advancements.critereon.*;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -104,6 +107,19 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
         dropSelf(LUMINARA_BLOOM.get());
 
         add(WOLF_CRYSTAL_PILLAR.get(), createSilkTouchOnlyTable(WOLF_CRYSTAL_PILLAR.get()));
+
+        coverBlockDrop(COVER_BLOCK.get());
+    }
+
+    private void coverBlockDrop(CoverBlock cover){
+        LootTable.Builder table = LootTable.lootTable();
+        for(Direction direction : Direction.values()){
+            table.withPool(LootPool.lootPool().add(LootItem.lootTableItem(cover))
+                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(cover)
+                            .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeBlock.PROPERTY_BY_DIRECTION.get(direction), true))));
+        }
+
+        add(cover, table);
     }
 
     @Override

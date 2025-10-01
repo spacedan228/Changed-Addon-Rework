@@ -85,11 +85,16 @@ public class CommonEvent {
 
         maskTransfur(player, player.level);
 
-        tickInfectionAndRes(player);
+        //tickInfectionAndRes(player);
 
         tickUntransfur(player);
 
         triggerSwimRegret(player);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerProgressTransfurTick(ProgressTransfurEvents.TickPlayerTransfurProgressEvent tickPlayerTransfurProgressEvent) {
+        tickInfectionAndRes(tickPlayerTransfurProgressEvent);
     }
 
     private static void maskTransfur(Player player, Level level) {
@@ -148,27 +153,48 @@ public class CommonEvent {
         player.getPersistentData().remove("HoldingDarkLatexMask");
     }
 
-    private static void tickInfectionAndRes(Player player) {
+    public static void tickInfectionAndRes(ProgressTransfurEvents.TickPlayerTransfurProgressEvent event) {
+        Player player = event.getPlayer();
         if (ProcessTransfur.isPlayerTransfurred(player)) return;
 
         float progress = ProcessTransfur.getPlayerTransfurProgress(player);
+        if (progress < 0) return;
         float newProgress = progress;
 
         float latexRes = (float) player.getAttributeValue(ChangedAddonAttributes.LATEX_RESISTANCE.get());
-        if (latexRes > 0) newProgress -= .5f * latexRes;
+        float infection = (float) player.getAttributeValue(ChangedAddonAttributes.LATEX_INFECTION.get());
+        float tolerance = (float) ProcessTransfur.getEntityTransfurTolerance(player);
 
-        if (!player.isCreative() && !player.isSpectator()) {
-            float TransfurInfectionAttribute = (float) player.getAttributeValue(ChangedAddonAttributes.LATEX_INFECTION.get());
-            if (TransfurInfectionAttribute > 0) {
-                newProgress += progress * TransfurInfectionAttribute / 100;
-                newProgress = Mth.clamp(newProgress, 0f, (float) ProcessTransfur.getEntityTransfurTolerance(player) * 0.995f);
+        boolean infectionWins = infection > latexRes;
+        boolean resistanceWins = latexRes >= infection;
+
+
+        // --- Resistance Wins
+        if (resistanceWins) {
+            newProgress -= 0.5f * latexRes;
+        }
+
+        // --- Infection Wins
+        else if (infectionWins) {
+            newProgress += progress * (infection / 50f);
+
+            // Block the natural Tick
+            event.setCanceled(true);
+        }
+
+        if (player.tickCount % 20 == 0) { // only process after 1 second
+            if (!player.isCreative() && !player.isSpectator()) {
+
+                newProgress = Mth.clamp(newProgress, 0f, tolerance * 0.998f);
+
+                // Apply only if there is chances
+                if (newProgress != progress) {
+                    ProcessTransfur.setPlayerTransfurProgress(player, newProgress);
+                }
             }
         }
-
-        if (progress != newProgress) {
-            ProcessTransfur.setPlayerTransfurProgress(player, newProgress);
-        }
     }
+
 
     private static void tickUntransfur(Player player) {
         ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.of(player);

@@ -28,8 +28,6 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
 
     private int withPollenTicks;
 
-    private int idleTicks;
-
     public PollenCarryAbilityInstance(AbstractAbility<PollenCarryAbilityInstance> ability, IAbstractChangedEntity entity) {
         super(ability, entity);
     }
@@ -62,17 +60,15 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
 
     @Override
     public void tickIdle() {
-        super.tickIdle();
-        idleTicks++;
-        if (withPollenTicks > 0) {
-            LivingEntity livingEntity = this.entity.getEntity();
-            Level level = livingEntity.getLevel();
-            if (level instanceof ServerLevel serverLevel) {
-                if (idleTicks % 10 == 0) {
-                    ParticlesUtil.sendParticles(serverLevel, ParticleTypes.FALLING_NECTAR, livingEntity.position().add(0, 1, 0), 0.3f, 0.3f, 0.3f, 5, 1);
-                    growNearbyCrops(serverLevel, livingEntity);
-                    withPollenTicks--;
-                }
+        if(withPollenTicks <= 0) return;
+
+        LivingEntity livingEntity = entity.getEntity();
+        Level level = livingEntity.getLevel();
+        if (level instanceof ServerLevel serverLevel) {
+            if (livingEntity.tickCount % 10 == 0) {
+                ParticlesUtil.sendParticles(serverLevel, ParticleTypes.FALLING_NECTAR, livingEntity.position().add(0, 1, 0), 0.3f, 0.3f, 0.3f, 5, 1);
+                growNearbyCrops(serverLevel, livingEntity);
+                withPollenTicks--;
             }
         }
     }

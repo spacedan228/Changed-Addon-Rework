@@ -22,6 +22,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
@@ -77,10 +78,12 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     public DodgeAbilityInstance dodgeAbilityInstance = null;
     private boolean isBoss = false;
     private boolean Aggro = false;
+    private boolean attributesApplied = false;
 
     //public int DEVATTACKTESTTICK = 0;
     public AbstractLuminarcticLeopard(EntityType<? extends AbstractSnowLeopard> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
+        this.setAttributes(this.getAttributes());
         this.dodgeAbilityInstance = this.registerAbility((this::canDodge), new DodgeAbilityInstance(ChangedAddonAbilities.DODGE.get(), IAbstractChangedEntity.forEntity(this)));
     }
 
@@ -151,6 +154,21 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     }
 
     @Override
+    protected boolean targetSelectorTest(LivingEntity livingEntity) {
+        return this.isAggro() && !(livingEntity instanceof AbstractLuminarcticLeopard);
+    }
+
+    @Override
+    protected @NotNull SoundEvent getHurtSound(@NotNull DamageSource pDamageSource) {
+        return SoundEvents.GENERIC_HURT;
+    }
+
+    @Override
+    protected @NotNull SoundEvent getDeathSound() {
+        return SoundEvents.GENERIC_DEATH;
+    }
+
+    @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(GLOW_STAGE, 0);
@@ -184,13 +202,23 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     }
 
     @Override
+    public void variantTick(Level level) {
+        super.variantTick(level);
+
+        if (this.isBoss() && !attributesApplied) {
+            handleBoss();
+        } else if (!this.isBoss() && attributesApplied) {
+            handleNonBoss();
+        }
+    }
+
+    @Override
     public void baseTick() {
         super.baseTick();
-        if (tickCount < 4) {
-            if (this.isBoss()) {
-                handleBoss();
-            }
+        if (this.isBoss() && !attributesApplied) {
+            handleBoss();
         }
+
         if (this.getUnderlyingPlayer() == null) {
             if (!this.isNoAi()) {
                 if (this.dodgeAbilityInstance != null && this.dodgeAbilityInstance.isDodgeActive()) {
@@ -312,14 +340,19 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     @Override
     public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor p_21434_, @NotNull DifficultyInstance p_21435_, @NotNull MobSpawnType p_21436_, @Nullable SpawnGroupData p_21437_, @Nullable CompoundTag p_21438_) {
         if (p_21438_ != null && p_21438_.contains("isBoss") && p_21438_.getBoolean("isBoss")) {
-            handleBoss();
+            if (!attributesApplied) {
+                handleBoss();
+            }
         } else if (this.isBoss()) {
-            handleBoss();
+            if (!attributesApplied) {
+                handleBoss();
+            }
         }
         return super.finalizeSpawn(p_21434_, p_21435_, p_21436_, p_21437_, p_21438_);
     }
 
     public void handleBoss() {
+        attributesApplied = true;
         Objects.requireNonNull(this.getAttribute(Attributes.MAX_HEALTH)).setBaseValue(500f);
         Objects.requireNonNull(this.getAttribute(Attributes.ATTACK_DAMAGE)).setBaseValue(17.5f);
         Objects.requireNonNull(this.getAttribute(Attributes.ARMOR)).setBaseValue(10f);
@@ -327,6 +360,13 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         this.setHealth(500f);
         //this.setAbsorptionAmount(75f);
         this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
+        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+    }
+
+    public void handleNonBoss() {
+        attributesApplied = false;
+        this.setAttributes(this.getAttributes());
+        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
     public boolean isDashing() {

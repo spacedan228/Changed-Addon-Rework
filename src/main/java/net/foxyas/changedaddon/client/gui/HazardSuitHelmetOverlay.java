@@ -8,8 +8,10 @@ import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.foxyas.changedaddon.process.sounds.HelmetBreathingSound;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -56,12 +58,12 @@ public class HazardSuitHelmetOverlay {
                 RenderSystem.setShaderColor(1, 1, 1, 1);
 
                 // --- Breath Sound
-                if (breathingSound == null || breathingSound.isStopped()) {
+                if ((breathingSound == null || breathingSound.isStopped())) {
                     breathingSound = new HelmetBreathingSound(SoundEvents.PLAYER_BREATH, player);
                     Minecraft.getInstance().getSoundManager().play(breathingSound);
                 }
             } else {
-                if (breathingSound != null && !breathingSound.isStopped()) {
+                if (breathingSound != null) {
                     breathingSound.forceStop();
                 }
             }
@@ -73,10 +75,14 @@ public class HazardSuitHelmetOverlay {
         if (entity == null) {
             return false;
         }
+
         if (!minecraft.options.getCameraType().isFirstPerson()) return false;
-        assert minecraft.player != null;
-        if (AccessorySlots.getForEntity(minecraft.player).isPresent()) {
-            AccessorySlots accessorySlots = AccessorySlots.getForEntity(minecraft.player).get();
+        LocalPlayer player = minecraft.player;
+        assert player != null;
+        if (ProcessTransfur.isPlayerTransfurred(player)) return false;
+
+        if (AccessorySlots.getForEntity(player).isPresent()) {
+            AccessorySlots accessorySlots = AccessorySlots.getForEntity(player).get();
             Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
             if (item.isPresent()) {
                 ItemStack stack = item.get();
@@ -87,7 +93,7 @@ public class HazardSuitHelmetOverlay {
         }
 
 
-        return minecraft.player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZARD_SUIT_HELMET.get())
-                || minecraft.player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZMAT_SUIT_HELMET.get());
+        return player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZARD_SUIT_HELMET.get())
+                || player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZMAT_SUIT_HELMET.get());
     }
 }
