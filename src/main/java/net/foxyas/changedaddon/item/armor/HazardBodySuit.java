@@ -116,15 +116,16 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     }
 
     public void accessoryDamaged(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
-        if (slotContext.wearer() instanceof Player player) {
+        LivingEntity wearer = slotContext.wearer();
+        /*if (wearer instanceof Player player) {
             player.displayClientMessage(new TextComponent("Iframes =" + player.invulnerableTime + "\n"
                     + player.hurtDir + "\n"
                     + player.hurtDuration + "\n"
                     + player.hurtMarked + "\n"
                     + player.hurtTime + "\n"), false);
-        }
-
-        if (slotContext.wearer().hurtMarked) return;
+        }*/
+        boolean nonHurtFrame = wearer.hurtTime <= 10 && wearer.invulnerableTime <= 10;
+        if (wearer.hurtMarked || !nonHurtFrame) return;
 
         if (!source.isBypassArmor() && !(source instanceof ChangedDamageSources.TransfurDamageSource)) {
             this.applyDamage(source, amount, slotContext);
@@ -154,16 +155,11 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                 itemStack.hurtAndBreak((int) amount, player, (livingEntity) -> {
                     if (!itemStack.isEmpty()) {
                         if (!livingEntity.isSilent()) {
-                            livingEntity.level.playLocalSound(livingEntity.getX(),
-                                    livingEntity.getY(),
-                                    livingEntity.getZ(),
-                                    itemStack.getItem() instanceof ExtendedItemProperties extendedItemProperties ?
-                                            extendedItemProperties.getBreakSound(itemStack)
-                                            : SoundEvents.ITEM_BREAK,
+                            livingEntity.level.playSound(null, livingEntity,
+                                    this.getBreakSound(itemStack),
                                     livingEntity.getSoundSource(),
                                     0.8F,
-                                    0.8F + livingEntity.level.random.nextFloat() * 0.4F,
-                                    false);
+                                    0.8F + livingEntity.level.random.nextFloat() * 0.4F);
                         }
 
                         //livingEntity.spawnItemParticles(pStack, 5);
@@ -177,10 +173,10 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                             vec31 = vec31.xRot(-livingEntity.getXRot() * ((float) Math.PI / 180F));
                             vec31 = vec31.yRot(-livingEntity.getYRot() * ((float) Math.PI / 180F));
                             vec31 = vec31.add(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ());
-                            if (livingEntity.level instanceof ServerLevel) //Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server specific variant
-                                ((ServerLevel) livingEntity.level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, itemStack), vec31.x, vec31.y, vec31.z, 1, vec3.x, vec3.y + 0.05D, vec3.z, 0.0D);
-                            else
-                                livingEntity.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, itemStack), vec31.x, vec31.y, vec31.z, vec3.x, vec3.y + 0.05D, vec3.z);
+                            if (livingEntity.level instanceof ServerLevel serverLevel) //Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server specific variant
+                            {
+                                serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, itemStack), vec31.x, vec31.y, vec31.z, 1, vec3.x, vec3.y + 0.05D, vec3.z, 0.0D);
+                            }
                         }
 
                     }
