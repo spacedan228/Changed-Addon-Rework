@@ -28,7 +28,7 @@ public class ChangedAddonParticleTypes {
     public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, ChangedAddonMod.MODID);
     public static final RegistryObject<ParticleType<SimpleParticleType>> SOLVENT_PARTICLE = REGISTRY.register("solvent_particle", () -> new SimpleParticleType(true));
 
-    public static final RegistryObject<ParticleType<ThunderSparkOption>> THUNDER_SPARK = register("thunderSpark", ThunderSparkOption.DESERIALIZER, ThunderSparkOption::codec);
+    public static final RegistryObject<ParticleType<ThunderSparkOption>> THUNDER_SPARK = register("thunder_spark", ThunderSparkOption.DESERIALIZER, ThunderSparkOption::codec);
     public static final RegistryObject<ParticleType<LaserPointParticle.Option>> LASER_POINT = register("laser_point", LaserPointParticle.Option.DESERIALIZER, LaserPointParticle.Option::codec);
 
     public static ThunderSparkOption thunderSpark(int lifeSpam) {
