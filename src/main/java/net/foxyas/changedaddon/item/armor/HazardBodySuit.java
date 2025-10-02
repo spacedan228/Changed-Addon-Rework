@@ -2,19 +2,13 @@ package net.foxyas.changedaddon.item.armor;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.event.ProgressTransfurEvents;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
-import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
-import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.TransfurContext;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
@@ -22,14 +16,20 @@ import net.ltxprogrammer.changed.init.ChangedDamageSources;
 import net.ltxprogrammer.changed.init.ChangedTabs;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.ltxprogrammer.changed.item.ClothingState;
+import net.ltxprogrammer.changed.item.ExtendedItemProperties;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -38,23 +38,18 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-public class HazardBodySuit extends ClothingItem {
+public class HazardBodySuit extends ClothingItem implements AccessoryItemExtension {
     public static final BooleanProperty HELMET = BooleanProperty.create("helmet");
 
     public HazardBodySuit() {
@@ -121,11 +116,30 @@ public class HazardBodySuit extends ClothingItem {
     }
 
     public void accessoryDamaged(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
+        if (slotContext.wearer() instanceof Player player) {
+            player.displayClientMessage(new TextComponent("Iframes =" + player.invulnerableTime + "\n"
+                    + player.hurtDir + "\n"
+                    + player.hurtDuration + "\n"
+                    + player.hurtMarked + "\n"
+                    + player.hurtTime + "\n"), false);
+        }
+
+        if (slotContext.wearer().hurtMarked) return;
+
         if (!source.isBypassArmor() && !(source instanceof ChangedDamageSources.TransfurDamageSource)) {
             this.applyDamage(source, amount, slotContext);
         } else if (source instanceof ChangedDamageSources.TransfurDamageSource) {
             this.applyDamage(source, amount, slotContext);
         }
+    }
+
+    @Override
+    public SoundEvent getBreakSound(ItemStack itemStack) {
+        return super.getBreakSound(itemStack);
+    }
+
+    public boolean IsAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
+        return true;
     }
 
     public void applyDamage(DamageSource damageSource, float amount, AccessorySlotContext<?> slotContext) {
@@ -136,8 +150,42 @@ public class HazardBodySuit extends ClothingItem {
             }
             ItemStack itemStack = slotContext.stack();
             LivingEntity player = slotContext.wearer();
-            if ((!damageSource.isFire() || !itemStack.getItem().isFireResistant()) && itemStack.getItem() instanceof ArmorItem) {
-                itemStack.hurtAndBreak((int)amount, player, (livingEntity) -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST));
+            if ((!damageSource.isFire() || !itemStack.getItem().isFireResistant())) {
+                itemStack.hurtAndBreak((int) amount, player, (livingEntity) -> {
+                    if (!itemStack.isEmpty()) {
+                        if (!livingEntity.isSilent()) {
+                            livingEntity.level.playLocalSound(livingEntity.getX(),
+                                    livingEntity.getY(),
+                                    livingEntity.getZ(),
+                                    itemStack.getItem() instanceof ExtendedItemProperties extendedItemProperties ?
+                                            extendedItemProperties.getBreakSound(itemStack)
+                                            : SoundEvents.ITEM_BREAK,
+                                    livingEntity.getSoundSource(),
+                                    0.8F,
+                                    0.8F + livingEntity.level.random.nextFloat() * 0.4F,
+                                    false);
+                        }
+
+                        //livingEntity.spawnItemParticles(pStack, 5);
+
+                        for (int i = 0; i < 5; ++i) {
+                            Vec3 vec3 = new Vec3(((double) livingEntity.getRandom().nextFloat() - 0.5D) * 0.1D, Math.random() * 0.1D + 0.1D, 0.0D);
+                            vec3 = vec3.xRot(-livingEntity.getXRot() * ((float) Math.PI / 180F));
+                            vec3 = vec3.yRot(-livingEntity.getYRot() * ((float) Math.PI / 180F));
+                            double d0 = (double) (-livingEntity.getRandom().nextFloat()) * 0.6D - 0.3D;
+                            Vec3 vec31 = new Vec3(((double) livingEntity.getRandom().nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
+                            vec31 = vec31.xRot(-livingEntity.getXRot() * ((float) Math.PI / 180F));
+                            vec31 = vec31.yRot(-livingEntity.getYRot() * ((float) Math.PI / 180F));
+                            vec31 = vec31.add(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ());
+                            if (livingEntity.level instanceof ServerLevel) //Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server specific variant
+                                ((ServerLevel) livingEntity.level).sendParticles(new ItemParticleOption(ParticleTypes.ITEM, itemStack), vec31.x, vec31.y, vec31.z, 1, vec3.x, vec3.y + 0.05D, vec3.z, 0.0D);
+                            else
+                                livingEntity.level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, itemStack), vec31.x, vec31.y, vec31.z, vec3.x, vec3.y + 0.05D, vec3.z);
+                        }
+
+                    }
+                    //livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST);
+                });
             }
 
         }
