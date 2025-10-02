@@ -143,44 +143,6 @@ public class HazardBodySuit extends ClothingItem {
         }
     }
 
-    @Mod.EventBusSubscriber
-    public static class EventsHandle {
-
-        /*
-        @SubscribeEvent
-        public static void whenEntityIsAttacked(ProgressTransfurEvents.ProgressTransfurEvent event) {
-            LivingEntity target = event.livingEntity;
-            TransfurContext context = event.context;
-            IAbstractChangedEntity source = context.source;
-            TransfurVariant<?> transfurVariant = event.transfurVariant;
-
-            float amount = event.getAmount();
-            boolean hit = event.isHit();
-
-            AccessorySlots.getForEntity(target).ifPresent((accessorySlots) -> {
-                Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
-                item.ifPresent(stack -> stack.hurtAndBreak(Math.max((int) amount / 4, 1), target, (livingEntity) -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST)));
-            });
-        }*/
-
-        @SubscribeEvent
-        public static void whenEntityIsAttacked(LivingAttackEvent event) {
-            LivingEntity target = event.getEntityLiving();
-            var amount = event.getAmount();
-            /*
-            AccessorySlots.getForEntity(target).ifPresent((accessorySlots) -> {
-                Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
-                item.ifPresent(stack -> {
-                    if (!stack.is(ChangedAddonItems.HAZARD_BODY_SUIT.get())) {
-                        return;
-                    }
-                    stack.hurtAndBreak(Math.max((int) amount / 4, 1), target, (livingEntity) -> livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST))
-                });
-            });*/
-        }
-
-    }
-
     @Override
     public boolean allowedInSlot(ItemStack itemStack, LivingEntity wearer, AccessorySlotType slot) {
         return slot == ChangedAccessorySlots.FULL_BODY.get();

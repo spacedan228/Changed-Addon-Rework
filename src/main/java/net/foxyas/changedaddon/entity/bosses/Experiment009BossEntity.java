@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
-import net.foxyas.changedaddon.effect.particles.ChangedAddonParticles;
+import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
 import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
 import net.foxyas.changedaddon.entity.customHandle.Exp9AttacksHandle;
 import net.foxyas.changedaddon.entity.goals.exp9.*;
@@ -524,15 +524,15 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
                 if (this.isPhase2()) {
                     if (this.shouldBleed) {
                         ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.01f);
-                        ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.05f);
+                        ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.05f);
                     } else {
                         if (this.getRandom().nextFloat() > 0.95) {
                             ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 10, 0.01f);
                         }
-                        ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 10, 1);
+                        ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 10, 1);
                     }
                 } else {
-                    ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticles.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 5, 1);
+                    ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 5, 1);
                 }
             }
 
