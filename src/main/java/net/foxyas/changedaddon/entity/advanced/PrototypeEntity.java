@@ -34,7 +34,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.*;
 import net.minecraft.world.damagesource.DamageSource;
@@ -67,6 +66,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -326,11 +326,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     }
 
     @Override
-    public void die(@NotNull DamageSource pDamageSource) {
-        super.die(pDamageSource);
-    }
-
-    @Override
     public boolean isTameItem(ItemStack stack) {
         return stack.is(Tags.Items.INGOTS_IRON);
     }
@@ -370,6 +365,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     // Inventory related methods
     @Override
     public boolean canTakeItem(@NotNull ItemStack pItemstack) {
+        if(pItemstack.isEmpty()) return false;
         if (this.pickAbleItems().contains(pItemstack.getItem())
                 || (pItemstack.is(Tags.Items.CROPS) || (pItemstack.is(tag("fruits")) || pItemstack.is(Tags.Items.SHEARS) || pItemstack.is(Tags.Items.SEEDS)))) {
             return true;
@@ -596,14 +592,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
             double dist = eyePos.distanceToSqr(Vec3.atCenterOf(pos));
             if (dist >= bestDist) continue;
 
-            // Raycast: do olho até o centro do bloco
-            /*ClipContext ctx = new ClipContext(
-                    eyePos,
-                    Vec3.atCenterOf(pos),
-                    ClipContext.Block.COLLIDER, // considera colisões de bloco reais
-                    ClipContext.Fluid.NONE,
-                    viewer
-            );*/
             BlockHitResult hit = level.clip(eyeContext(pos));
 
             if (hit.getType() == HitResult.Type.BLOCK &&
@@ -618,7 +606,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
     private @NotNull ClipContext eyeContext(BlockPos pos) {
         return new DynamicClipContext(
-                this.getEyePosition(),
+                getEyePosition(),
                 Vec3.atCenterOf(pos),
                 DynamicClipContext.IGNORE_TRANSLUCENT,
                 ClipContext.Fluid.ANY::canPick,
@@ -643,58 +631,61 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         BlockState state = level.getBlockState(chestPos);
         BlockEntity be = level.getBlockEntity(chestPos);
 
-        if (be instanceof ChestBlockEntity chest) {
-            for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-                if (equipmentSlot.getType() == EquipmentSlot.Type.HAND) {
-                    ItemStack stack = this.getItemBySlot(equipmentSlot);
-                    if (!isChestFull(chest)) {
-                        if (!stack.isEmpty() && (this.depositeType.isRightType(stack))) {
-                            this.lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(chestPos.getX(), chestPos.getY() - 1, chestPos.getZ()));
-                            this.swing(this.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-                            ItemStack remaining = HopperBlockEntity.addItem(null, chest, stack, null);
-                            chest.setChanged();
-                            this.setItemSlot(equipmentSlot, remaining);
-                            this.getInventory().setChanged();
-                            chest.triggerEvent(1, 1);
-                            if (state.getBlock() instanceof ChestBlock chestBlock) {
-                                this.level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
-                                this.setHarvestsTimes(0);
-                            }
-                        }
-                    } else {
-                        targetChestPos = tryFindNearbyChest(getLevel(), this.blockPosition(), 8);
-                    }
-                }
-            }
+        if(!(be instanceof ChestBlockEntity chest)) {
+            setTargetChestPos(null);
+            return;
+        }
 
-            for (int i = 0; i < this.getInventory().getContainerSize(); i++) {
-                ItemStack stack = this.getInventory().getItem(i);
+        chest.startOpen(FakePlayerFactory.getMinecraft(level));
+
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            if (equipmentSlot.getType() == EquipmentSlot.Type.HAND) {
+                ItemStack stack = getItemBySlot(equipmentSlot);
                 if (!isChestFull(chest)) {
-                    if (!stack.isEmpty() && (this.depositeType.isRightType(stack))) {
-                        // Make entity look at a target position
-                        this.getLookControl().setLookAt(
-                                chestPos.getX(), chestPos.getY(), chestPos.getZ(),
-                                30.0F, // yaw change speed (degrees per tick)
-                                30.0F  // pitch change speed
-                        );
-                        //this.lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(chestPos.getX(), chestPos.getY() - 1, chestPos.getZ()));
-                        this.swing(this.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+                    if (!stack.isEmpty() && (depositeType.isRightType(stack))) {
+                        lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(chestPos.getX(), chestPos.getY() - 1, chestPos.getZ()));
+                        swing(isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
                         ItemStack remaining = HopperBlockEntity.addItem(null, chest, stack, null);
                         chest.setChanged();
-                        this.getInventory().setItem(i, remaining);
-                        this.getInventory().setChanged();
-                        if ((i == 0 || i == this.inventory.getContainerSize()) && state.getBlock() instanceof ChestBlock chestBlock) {
-                            this.level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
-                            this.setHarvestsTimes(0);
+                        setItemSlot(equipmentSlot, remaining);
+                        getInventory().setChanged();
+                        chest.triggerEvent(1, 1);
+                        if (state.getBlock() instanceof ChestBlock) {
+                            level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
+                            setHarvestsTimes(0);
                         }
-                        this.setTargetChestPos(null);
                     }
                 } else {
-                    targetChestPos = tryFindNearbyChest(getLevel(), this.blockPosition(), 8);
+                    targetChestPos = tryFindNearbyChest(getLevel(), blockPosition(), 8);
                 }
             }
-        } else {
-            this.setTargetChestPos(null);
+        }
+
+        for (int i = 0; i < getInventory().getContainerSize(); i++) {
+            ItemStack stack = getInventory().getItem(i);
+            if (!isChestFull(chest)) {
+                if (!stack.isEmpty() && (depositeType.isRightType(stack))) {
+                    // Make entity look at a target position
+                    getLookControl().setLookAt(
+                            chestPos.getX(), chestPos.getY(), chestPos.getZ(),
+                            30.0F, // yaw change speed (degrees per tick)
+                            30.0F  // pitch change speed
+                    );
+
+                    swing(isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+                    ItemStack remaining = HopperBlockEntity.addItem(null, chest, stack, null);
+                    chest.setChanged();
+                    getInventory().setItem(i, remaining);
+                    getInventory().setChanged();
+                    if ((i == 0 || i == inventory.getContainerSize()) && state.getBlock() instanceof ChestBlock) {
+                        level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
+                        setHarvestsTimes(0);
+                    }
+                    setTargetChestPos(null);
+                }
+            } else {
+                targetChestPos = tryFindNearbyChest(getLevel(), blockPosition(), 8);
+            }
         }
     }
 
