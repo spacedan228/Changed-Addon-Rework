@@ -1,6 +1,9 @@
 package net.foxyas.changedaddon.block;
 
+import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -17,6 +20,8 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,6 +53,11 @@ public class CoverBlock extends Block implements NonLatexCoverableBlock {
                 .setValue(DOWN, false));
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public static void registerRenderLayer() {
+        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
+    }
+
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
         return SHAPE_CACHE.computeIfAbsent(state, s -> {
@@ -62,11 +72,6 @@ public class CoverBlock extends Block implements NonLatexCoverableBlock {
 
             return res;
         });
-    }
-
-    @Override
-    public @NotNull RenderShape getRenderShape(@NotNull BlockState pState) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;//TODO replace with proper model
     }
 
     @Override

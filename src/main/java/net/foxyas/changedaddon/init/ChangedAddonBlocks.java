@@ -95,6 +95,7 @@ public class ChangedAddonBlocks {
             LuminaraBloomFlowerBlock.registerRenderLayer();
             PottedLuminaraBloomFlowerBlock.registerRenderLayer();
             WolfCrystalPillar.registerRenderLayer();
+            CoverBlock.registerRenderLayer();
         }
     }
 

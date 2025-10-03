@@ -179,13 +179,10 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         ResourceLocation loc = blockLoc(block.getId());
 
         BlockState state = block.get().defaultBlockState();
+        ModelFile model = models().getExistingFile(loc);
         for (Direction dir : Direction.values()) {
             BooleanProperty prop = PipeBlock.PROPERTY_BY_DIRECTION.get(dir);
             if (!state.hasProperty(prop)) continue;
-
-            ResourceLocation modelLoc = withSuffix(loc, "_" + dir.getName());
-            //ModelFile model = new ModelFile.UncheckedModelFile(modelLoc);
-            ModelFile model = models().getExistingFile(modelLoc);
 
             builder.part()
                     .modelFile(model)
@@ -194,14 +191,14 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
                     .addModel()
                     .condition(prop, true);
         }
-        //simpleBlockItem(block, new ModelFile.UncheckedModelFile(withSuffix(loc, "_west")));
-        simpleBlockItem(block.get(), models().getExistingFile(withSuffix(loc, "_west")));
+
+        itemModels().getBuilder(block.get().asItem().getRegistryName().getPath()).parent(model);
     }
 
     private static int getXRotation(Direction dir) {
         return switch (dir) {
-            case DOWN -> 90;
-            case UP -> -90;
+            case DOWN -> -90;
+            case UP -> 90;
             default -> 0;
         };
     }
