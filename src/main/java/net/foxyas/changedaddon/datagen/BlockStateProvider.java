@@ -3,16 +3,21 @@ package net.foxyas.changedaddon.datagen;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.advanced.TimedKeypad;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -69,6 +74,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         timedKeypad();
 
         pillarBlockWithVariants(WOLF_CRYSTAL_PILLAR, 2, 0);
+        createMultiface(COVER_BLOCK);
     }
 
     private final Property<?>[] IGNORE_LATEX = new Property[]{AbstractLatexBlock.COVERED};
@@ -166,5 +172,46 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
             out[i] = config.apply(models[i]);
         }
         return out;
+    }
+
+    private void createMultiface(RegistryObject<? extends Block> block) {
+        MultiPartBlockStateBuilder builder = getMultipartBuilder(block.get());
+        ResourceLocation loc = blockLoc(block.getId());
+
+        BlockState state = block.get().defaultBlockState();
+        for (Direction dir : Direction.values()) {
+            BooleanProperty prop = PipeBlock.PROPERTY_BY_DIRECTION.get(dir);
+            if (!state.hasProperty(prop)) continue;
+
+            ResourceLocation modelLoc = withSuffix(loc, "_" + dir.getName());
+            //ModelFile model = new ModelFile.UncheckedModelFile(modelLoc);
+            ModelFile model = models().getExistingFile(modelLoc);
+
+            builder.part()
+                    .modelFile(model)
+                    .rotationX(getXRotation(dir))
+                    .rotationY(getYRotation(dir))
+                    .addModel()
+                    .condition(prop, true);
+        }
+        //simpleBlockItem(block, new ModelFile.UncheckedModelFile(withSuffix(loc, "_west")));
+        simpleBlockItem(block.get(), models().getExistingFile(withSuffix(loc, "_west")));
+    }
+
+    private static int getXRotation(Direction dir) {
+        return switch (dir) {
+            case DOWN -> 90;
+            case UP -> -90;
+            default -> 0;
+        };
+    }
+
+    private static int getYRotation(Direction dir) {
+        return switch (dir) {
+            case NORTH -> 180;
+            case EAST -> 270;
+            case WEST -> 90;
+            default -> 0;
+        };
     }
 }
