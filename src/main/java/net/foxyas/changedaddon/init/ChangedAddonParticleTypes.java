@@ -3,7 +3,10 @@ package net.foxyas.changedaddon.init;
 import com.mojang.serialization.Codec;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.particle.SolventParticleParticle;
-import net.foxyas.changedaddon.effect.particles.*;
+import net.foxyas.changedaddon.effect.particles.LaserPointParticle;
+import net.foxyas.changedaddon.effect.particles.ParticleProviderHolder;
+import net.foxyas.changedaddon.effect.particles.ThunderSparkOption;
+import net.foxyas.changedaddon.effect.particles.ThunderSparkParticle;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleOptions;
@@ -11,7 +14,6 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
@@ -25,6 +27,7 @@ import java.util.function.Function;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonParticleTypes {
+
     public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, ChangedAddonMod.MODID);
     public static final RegistryObject<ParticleType<SimpleParticleType>> SOLVENT_PARTICLE = REGISTRY.register("solvent_particle", () -> new SimpleParticleType(true));
 

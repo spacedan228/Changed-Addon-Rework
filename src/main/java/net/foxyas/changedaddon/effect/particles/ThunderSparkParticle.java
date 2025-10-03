@@ -54,9 +54,9 @@ public class ThunderSparkParticle extends TextureSheetParticle {
             int delay = this.delay; // Define um delay antes de mudar o sprite
             int spriteIndex = (this.age / delay) % 9; // Alterna baseado no delay
             this.setSprite(this.spriteSet.get(spriteIndex, 9));
+            alpha = 1 - ((float) age / lifetime);
         }
     }
-
 
     @Override
     public int getLightColor(float p_105562_) {
@@ -65,7 +65,7 @@ public class ThunderSparkParticle extends TextureSheetParticle {
 
     @Override
     public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_LIT;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public static class Provider implements ParticleProvider<ThunderSparkOption> {
