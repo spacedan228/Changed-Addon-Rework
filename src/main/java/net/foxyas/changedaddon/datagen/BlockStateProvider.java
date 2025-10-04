@@ -75,6 +75,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
 
         pillarBlockWithVariants(WOLF_CRYSTAL_PILLAR, 2, 0);
         createMultiface(COVER_BLOCK);
+        createMultiface(DARK_LATEX_COVER_BLOCK);
     }
 
     private final Property<?>[] IGNORE_LATEX = new Property[]{AbstractLatexBlock.COVERED};

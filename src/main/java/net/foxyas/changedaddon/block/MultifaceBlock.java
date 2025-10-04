@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.block;
 
+import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -16,13 +17,15 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MultifaceBlock extends Block {
+public class MultifaceBlock extends Block implements RenderLayerProvider {
 
     public static final BooleanProperty UP = PipeBlock.UP;
     public static final BooleanProperty NORTH = PipeBlock.NORTH;
@@ -45,6 +48,11 @@ public class MultifaceBlock extends Block {
         registerDefaultState(defaultBlockState().setValue(UP, false)
                 .setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false)
                 .setValue(DOWN, false));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void registerRenderLayer() {
     }
 
     @Override
