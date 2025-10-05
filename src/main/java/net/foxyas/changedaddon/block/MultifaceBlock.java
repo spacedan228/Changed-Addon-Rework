@@ -17,8 +17,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,11 +46,6 @@ public class MultifaceBlock extends Block implements RenderLayerProvider {
         registerDefaultState(defaultBlockState().setValue(UP, false)
                 .setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false)
                 .setValue(DOWN, false));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void registerRenderLayer() {
     }
 
     @Override

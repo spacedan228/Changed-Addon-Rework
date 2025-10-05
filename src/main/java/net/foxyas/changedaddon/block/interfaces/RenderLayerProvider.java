@@ -6,5 +6,5 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public interface RenderLayerProvider {
 
     @OnlyIn(Dist.CLIENT)
-    void registerRenderLayer();
+    default void registerRenderLayer(){}
 }
