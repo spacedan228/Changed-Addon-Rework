@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
+
     public SyringeWithLitixCammoniaItem() {
         super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).durability(2)
                 .rarity(Rarity.UNCOMMON)

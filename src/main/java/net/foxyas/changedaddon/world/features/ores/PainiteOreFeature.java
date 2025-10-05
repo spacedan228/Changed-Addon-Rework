@@ -1,7 +1,8 @@
 package net.foxyas.changedaddon.world.features.ores;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import net.foxyas.changedaddon.procedures.PainiteOreAdditionalGenerationConditionProcedure;
+import net.foxyas.changedaddon.init.ChangedAddonGameRules;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.FeatureUtils;
@@ -9,6 +10,7 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,6 +34,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class PainiteOreFeature extends OreFeature {
+
     public static final Set<ResourceLocation> GENERATE_BIOMES = null;
     public static PainiteOreFeature FEATURE = null;
     public static Holder<ConfiguredFeature<OreConfiguration, ?>> CONFIGURED_FEATURE = null;
@@ -61,9 +64,17 @@ public class PainiteOreFeature extends OreFeature {
         int x = context.origin().getX();
         int y = context.origin().getY();
         int z = context.origin().getZ();
-        if (!PainiteOreAdditionalGenerationConditionProcedure.execute(world, x, y, z))
+        if (!execute(world, x, y, z))
             return false;
         return super.place(context);
+    }
+
+    private static boolean execute(LevelAccessor world, int x, int y, int z) {
+        if (world.getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.PAINITE_GENERATION)) {
+            return !(world.isEmptyBlock(new BlockPos(x + 1, y, z)) && world.isEmptyBlock(new BlockPos(x - 1, y, z)) && world.isEmptyBlock(new BlockPos(x, y + 1, z)) && world.isEmptyBlock(new BlockPos(x, y - 1, z))
+                    && world.isEmptyBlock(new BlockPos(x, y, z + 1)) && world.isEmptyBlock(new BlockPos(x, y, z - 1)));
+        }
+        return false;
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

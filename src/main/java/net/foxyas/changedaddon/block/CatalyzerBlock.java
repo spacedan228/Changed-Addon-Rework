@@ -53,14 +53,12 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
-        super.onPlace(blockstate, world, pos, oldState, moving);
         world.scheduleTick(pos, this, 5);
-        UnifuserBlockAddedProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
+        UnifuserBlockAddedProcedure.execute(world, pos, blockstate);
     }
 
     @Override
     public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, Random random) {
-        super.tick(blockstate, world, pos, random);
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
@@ -70,7 +68,6 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     public @NotNull InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
-        super.use(blockstate, world, pos, entity, hand, hit);
         int x = pos.getX();
         int y = pos.getY();
         int z = pos.getZ();
@@ -91,7 +88,6 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     public boolean triggerEvent(BlockState state, Level world, BlockPos pos, int eventID, int eventParam) {
-        super.triggerEvent(state, world, pos, eventID, eventParam);
         BlockEntity blockEntity = world.getBlockEntity(pos);
         return blockEntity != null && blockEntity.triggerEvent(eventID, eventParam);
     }

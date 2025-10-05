@@ -1,13 +1,11 @@
 package net.foxyas.changedaddon.block.entity;
 
-import io.netty.buffer.Unpooled;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.foxyas.changedaddon.world.inventory.UnifuserGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -81,13 +79,8 @@ public class AdvancedUnifuserBlockEntity extends RandomizableContainerBlockEntit
     }
 
     @Override
-    public int getMaxStackSize() {
-        return 64;
-    }
-
-    @Override
     public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory) {
-        return new UnifuserGuiMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+        return new UnifuserGuiMenu(id, inventory, worldPosition);
     }
 
     @Override

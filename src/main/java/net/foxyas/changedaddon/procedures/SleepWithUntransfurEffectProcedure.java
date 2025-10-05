@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class SleepWithUntransfurEffectProcedure {
+
     @SubscribeEvent
     public static void onEntityEndSleep(PlayerWakeUpEvent event) {
         Entity entity = event.getEntity();

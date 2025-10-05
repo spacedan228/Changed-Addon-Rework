@@ -20,17 +20,15 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Objects;
-
 @Mod.EventBusSubscriber
 public class SodaCanBlockAddProcedure {
 
     @SubscribeEvent
     public static void UseItem(LivingEntityUseItemEvent.Start event) {
-        if (event.getEntity().isCrouching()) {
-            if (event.getItem().is(ChangedAddonItems.SNEPSI.get()) || event.getItem().is(ChangedAddonItems.FOXTA.get())) {
-                event.setCanceled(true);
-            }
+        if(!event.getEntity().isCrouching()) return;
+
+        if (event.getItem().is(ChangedAddonItems.SNEPSI.get()) || event.getItem().is(ChangedAddonItems.FOXTA.get())) {
+            event.setCanceled(true);
         }
     }
 
@@ -41,6 +39,8 @@ public class SodaCanBlockAddProcedure {
         }
 
         Direction direction = event.getFace();
+        if(direction == null) return;
+
         DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
         BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
@@ -53,46 +53,22 @@ public class SodaCanBlockAddProcedure {
 
         BlockState blockState = block.defaultBlockState().setValue(FACING, event.getPlayer().getDirection().getOpposite());
 
-        Level world = event.getWorld();
-        BlockPos pos = event.getPos();
-        BlockPos targetPos;
+        Level level = event.getWorld();
+        BlockPos targetPos = event.getPos().relative(direction);
 
-        switch (Objects.requireNonNull(direction)) {
-            case UP:
-                targetPos = pos.above();
-                break;
-            case DOWN:
-                targetPos = pos.below();
-                break;
-            case NORTH:
-                targetPos = pos.north();
-                break;
-            case SOUTH:
-                targetPos = pos.south();
-                break;
-            case WEST:
-                targetPos = pos.west();
-                break;
-            case EAST:
-                targetPos = pos.east();
-                break;
-            default:
-                return;
-        }
-
-        if (!world.getBlockState(targetPos).isAir() && !world.getBlockState(targetPos).is(Blocks.WATER)) {
+        if (!level.getBlockState(targetPos).isAir() && !level.getBlockState(targetPos).is(Blocks.WATER)) {
             return;
         }
 
-        if (!world.getBlockState(targetPos.below()).isFaceSturdy(world, targetPos.below(), Direction.UP)) {
+        if (!level.getBlockState(targetPos.below()).isFaceSturdy(level, targetPos.below(), Direction.UP)) {
             return;
         }
 
-        boolean isWater = world.getBlockState(targetPos).getFluidState().is(FluidTags.WATER) && world.getBlockState(targetPos).getFluidState().isSource();
+        boolean isWater = level.getBlockState(targetPos).getFluidState().is(FluidTags.WATER) && level.getBlockState(targetPos).getFluidState().isSource();
         blockState = blockState.setValue(WATERLOGGED, isWater);
 
-        if (world.setBlock(targetPos, blockState, 3)) {
-            world.playSound(event.getPlayer(), targetPos, blockState.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (level.setBlock(targetPos, blockState, 3)) {
+            level.playSound(event.getPlayer(), targetPos, blockState.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
             event.getPlayer().swing(event.getHand());
             if (event.getPlayer() instanceof ServerPlayer serverPlayer && serverPlayer.gameMode.getGameModeForPlayer().isSurvival()) {
                 event.getItemStack().shrink(1);

@@ -6,9 +6,10 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.TransfurSoundsGuiButtonMessage;
 import net.foxyas.changedaddon.procedures.CanRoarProcedure;
 import net.foxyas.changedaddon.procedures.CooldownResetProcedure;
-import net.foxyas.changedaddon.procedures.ReturnTypeTransfurSoundProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.foxyas.changedaddon.world.inventory.TransfurSoundsGuiMenu;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -76,9 +77,19 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
     @Override
     protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
         this.font.draw(poseStack, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.label_transfur_sounds"), 49, -24, -1);
-        this.font.draw(poseStack,
+        this.font.draw(poseStack, execute(), 36, -11, -12829636);
+    }
 
-                ReturnTypeTransfurSoundProcedure.execute(entity), 36, -11, -12829636);
+    public String execute() {
+        TransfurVariantInstance<?> variant = ProcessTransfur.getPlayerTransfurVariant(entity);
+        if (variant == null)
+            return "§fYou are a Transfur";
+
+        if(PlayerUtil.isCatTransfur(entity)) return "§fYou are a Cat Transfur";
+
+        if(PlayerUtil.isWolfTransfur(entity)) return "§fYou are a Dog Transfur";
+
+        return "§fYou are a Transfur";
     }
 
     @Override

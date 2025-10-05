@@ -193,7 +193,9 @@ public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
                 LYNX.get(),
                 SNEPSI_LEOPARD.get(),
                 LATEX_CHEETAH_MALE.get(),
-                LATEX_CHEETAH_FEMALE.get());
+                LATEX_CHEETAH_FEMALE.get(),
+                ChangedTransfurVariants.LATEX_STIGER.get(),
+                ChangedTransfurVariants.LATEX_WHITE_TIGER.get());
 
         addAllMatching(tag(ChangedAddonTags.TransfurTypes.DRAGON_LIKE), var -> var.getRegistryName().getPath().contains("dragon")).add(LUMINARA_FLOWER_BEAST.get());
 
