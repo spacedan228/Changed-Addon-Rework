@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -74,7 +75,7 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> PAWS_SCANNER = REGISTRY.register("paws_scanner", PawsScanner::new);
     public static final RegistryObject<Block> LUMINARA_BLOOM = REGISTRY.register("luminara_bloom", LuminaraBloomFlowerBlock::new);
     public static final RegistryObject<Block> POTTED_LUMINARA_BLOOM = REGISTRY.register("potted_luminara_bloom", PottedLuminaraBloomFlowerBlock::new);
-    public static final RegistryObject<MultifaceBlock> COVER_BLOCK = REGISTRY.register("cover_block", () -> new MultifaceBlock(BlockBehaviour.Properties.copy(Blocks.VINE)) {
+    public static final RegistryObject<MultifaceBlock> COVER_BLOCK = REGISTRY.register("cover_block", () -> new MultifaceBlock(BlockBehaviour.Properties.copy(Blocks.VINE).color(MaterialColor.TERRACOTTA_BLACK)) {
         @Override
         public boolean skipRendering(@NotNull BlockState pState, @NotNull BlockState pAdjacentBlockState, @NotNull Direction pSide) {
             return pAdjacentBlockState.is(this) || super.skipRendering(pState, pAdjacentBlockState, pSide);
@@ -86,9 +87,10 @@ public class ChangedAddonBlocks {
             ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
         }
     });
-    public static final RegistryObject<LatexCoverBlock> DARK_LATEX_COVER_BLOCK = REGISTRY.register("dark_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(Material.GRASS)
+    public static final RegistryObject<LatexCoverBlock> DARK_LATEX_COVER_BLOCK = REGISTRY.register("dark_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(ChangedAddonMaterials.LATEX_COVER)
             .noOcclusion()
             .dynamicShape()
+            .color(MaterialColor.COLOR_BLACK)
             .sound(SoundType.SLIME_BLOCK), LatexType.DARK_LATEX) {
         @OnlyIn(Dist.CLIENT)
         @Override
@@ -97,9 +99,10 @@ public class ChangedAddonBlocks {
         }
     });
 
-    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(Material.GRASS)
+    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(ChangedAddonMaterials.LATEX_COVER)
             .noOcclusion()
             .dynamicShape()
+            .color(MaterialColor.TERRACOTTA_WHITE)
             .sound(SoundType.SLIME_BLOCK), LatexType.WHITE_LATEX) {
         @OnlyIn(Dist.CLIENT)
         @Override
