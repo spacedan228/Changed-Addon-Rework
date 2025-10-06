@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.block;
 
-import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
+import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class CoverBlock extends Block implements NonLatexCoverableBlock {
+public class MultifaceBlock extends Block implements RenderLayerProvider {
 
     public static final BooleanProperty UP = PipeBlock.UP;
     public static final BooleanProperty NORTH = PipeBlock.NORTH;
@@ -41,7 +41,7 @@ public class CoverBlock extends Block implements NonLatexCoverableBlock {
 
     private static final Map<BlockState, VoxelShape> SHAPE_CACHE = new HashMap<>();
 
-    public CoverBlock(Properties pProperties) {
+    public MultifaceBlock(Properties pProperties) {
         super(pProperties);
         registerDefaultState(defaultBlockState().setValue(UP, false)
                 .setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false)
@@ -65,11 +65,6 @@ public class CoverBlock extends Block implements NonLatexCoverableBlock {
     }
 
     @Override
-    public @NotNull RenderShape getRenderShape(@NotNull BlockState pState) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;//TODO replace with proper model
-    }
-
-    @Override
     public @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor level, @NotNull BlockPos currentPos, @NotNull BlockPos neighborPos) {
         BooleanProperty prop;
         boolean empty = true;
@@ -78,7 +73,7 @@ public class CoverBlock extends Block implements NonLatexCoverableBlock {
             if(!state.getValue(prop)) continue;
 
             BlockPos rel = currentPos.relative(dir);
-            if(!Block.isFaceFull(level.getBlockState(rel).getShape(level, rel), dir.getOpposite())){
+            if(!canAttachTo(level, rel, level.getBlockState(rel), dir.getOpposite())){
                 state = state.setValue(prop, false);
                 if(level instanceof Level l) Block.popResource(l, currentPos, new ItemStack(this));
                 continue;
@@ -88,6 +83,10 @@ public class CoverBlock extends Block implements NonLatexCoverableBlock {
         }
 
         return empty ? Blocks.AIR.defaultBlockState() :  state;
+    }
+
+    protected boolean canAttachTo(LevelAccessor level, BlockPos attachToPos, BlockState attachTo, Direction attachToFace){
+        return Block.isFaceFull(attachTo.getShape(level, attachToPos), attachToFace);
     }
 
     @Override
@@ -101,17 +100,18 @@ public class CoverBlock extends Block implements NonLatexCoverableBlock {
             if(state.getValue(prop)) return null;
 
             BlockPos rel = context.getClickedPos().relative(dir.getOpposite());
-            if(Block.isFaceFull(level.getBlockState(rel).getShape(level, rel), dir)) state = state.setValue(prop, true);
+            if(canAttachTo(level, rel, level.getBlockState(rel), dir)) state = state.setValue(prop, true);
             return state;
         }
 
         BlockPos rel = context.getClickedPos().relative(dir.getOpposite());
-        if(!Block.isFaceFull(level.getBlockState(rel).getShape(level, rel), dir)) return null;
+        if(!canAttachTo(level, rel, level.getBlockState(rel), dir)) return null;
 
         return super.getStateForPlacement(context).setValue(prop, true);
     }
 
     public boolean canBeReplaced(@NotNull BlockState state, BlockPlaceContext context) {
+        if(super.canBeReplaced(state, context)) return true;
         if(!context.getItemInHand().is(asItem())) return false;
 
         return !state.getValue(PipeBlock.PROPERTY_BY_DIRECTION.get(context.getClickedFace().getOpposite()));

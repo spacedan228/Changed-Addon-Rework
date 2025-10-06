@@ -13,6 +13,7 @@ public class ThunderSparkParticle extends TextureSheetParticle {
     public ThunderSparkParticle(ClientLevel level, double x, double y, double z, double dx, double dy, double dz, ThunderSparkOption sparkData, SpriteSet sprites) {
         super(level, x, y, z, dx, dy, dz);
         this.spriteSet = sprites;
+        this.age = 0;
 
         this.setSize(0.3f, 0.3f);
 
@@ -50,12 +51,12 @@ public class ThunderSparkParticle extends TextureSheetParticle {
         if (this.age++ >= this.lifetime) {
             this.remove();
         } else {
-            int delay = this.delay; // Define um delay de 3 ticks antes de mudar o sprite
+            int delay = this.delay; // Define um delay antes de mudar o sprite
             int spriteIndex = (this.age / delay) % 9; // Alterna baseado no delay
             this.setSprite(this.spriteSet.get(spriteIndex, 9));
+            alpha = 1 - ((float) age / lifetime);
         }
     }
-
 
     @Override
     public int getLightColor(float p_105562_) {
@@ -64,7 +65,7 @@ public class ThunderSparkParticle extends TextureSheetParticle {
 
     @Override
     public @NotNull ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_LIT;
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     public static class Provider implements ParticleProvider<ThunderSparkOption> {

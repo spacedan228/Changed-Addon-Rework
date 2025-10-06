@@ -16,6 +16,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class SolventHitTickProcedure {
+
     @SubscribeEvent
     public static void onEntityAttacked(LivingHurtEvent event) {
         Entity target = event.getEntity();
@@ -23,34 +24,30 @@ public class SolventHitTickProcedure {
 
         // Verifica se o atacante possui o encantamento Solvent
         if (source == ChangedAddonDamageSources.SOLVENT || (source.getMsgId().equals("latex_solvent") || source.getMsgId().startsWith("latex_solvent"))) {
-            playSoundAndParticles(target);
-        }
-    }
+            Level level = target.level;
 
-    private static void playSoundAndParticles(Entity entity) {
-        Level level = entity.level;
-
-        // Toca som de extinção de fogo
-        if (entity instanceof Player player) {
-            if (level instanceof ServerLevel serverLevel) {
-                serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.5f, 0);
+            // Toca som de extinção de fogo
+            if (target instanceof Player player) {
+                if (level instanceof ServerLevel serverLevel) {
+                    serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.5f, 0);
+                } else {
+                    level.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.5f, 0, true);
+                }
             } else {
-                level.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.5f, 0, true);
+                target.playSound(SoundEvents.FIRE_EXTINGUISH, 0.5f, 0);
             }
-        } else {
-            entity.playSound(SoundEvents.FIRE_EXTINGUISH, 0.5f, 0);
-        }
 
-        // Emite partículas
-        if (level instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(
-                    (SimpleParticleType) ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(),
-                    entity.getX(),
-                    entity.getY() + 1,
-                    entity.getZ(),
-                    10,
-                    0.2, 0.3, 0.2, 0.1
-            );
+            // Emite partículas
+            if (level instanceof ServerLevel serverLevel) {
+                serverLevel.sendParticles(
+                        (SimpleParticleType) ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(),
+                        target.getX(),
+                        target.getY() + 1,
+                        target.getZ(),
+                        10,
+                        0.2, 0.3, 0.2, 0.1
+                );
+            }
         }
     }
 }

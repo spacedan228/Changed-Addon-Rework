@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
@@ -29,16 +28,12 @@ public class SignalBlockFeatureProcedure {
     private static final int SMALL_SEARCH_RADIUS = 33;
     private static final int MAX_FOUND_BLOCKS = 10;
 
-    public static void execute(LevelAccessor world, double x, double y, double z, Entity entity, ItemStack itemstack) {
-        if (entity == null)
-            return;
-
+    public static void execute(LevelAccessor world, Entity entity, ItemStack itemstack) {
         if (isSignalCatcherInHand(entity)) {
             Player player = (Player) entity;
             if (!player.getCooldowns().isOnCooldown(ChangedAddonItems.SIGNAL_CATCHER.get())) {
                 int radius = player.isShiftKeyDown() ? LARGE_SEARCH_RADIUS : SMALL_SEARCH_RADIUS;
                 int cooldown = player.isShiftKeyDown() ? 225 : 75;
-                //searchSignalBlock(world, x, y, z, player, itemstack, radius, cooldown);
                 searchSignalBlockUsingChunks(world, player.getOnPos(), player, itemstack, radius, cooldown);
             }
         }
@@ -47,46 +42,6 @@ public class SignalBlockFeatureProcedure {
     private static boolean isSignalCatcherInHand(Entity entity) {
         LivingEntity livingEntity = (LivingEntity) entity;
         return livingEntity.getMainHandItem().getItem() == ChangedAddonItems.SIGNAL_CATCHER.get() || livingEntity.getOffhandItem().getItem() == ChangedAddonItems.SIGNAL_CATCHER.get();
-    }
-
-    private static void searchSignalBlockUsingChunks(LevelAccessor world, double x, double y, double z, Player player, ItemStack itemstack, int radius, int cooldown) {
-        int chunkRadius = (radius >> 4) + 1; // Raio em chunks (16 blocos por chunk)
-        int chunkX = (int) x >> 4;
-        int chunkZ = (int) z >> 4;
-
-        List<BlockPos> foundPositions = new ArrayList<>();
-
-        world.getBlockStatesIfLoaded(new AABB(x, y, z, x, y, z).inflate(radius));
-
-        for (int cx = chunkX - chunkRadius; cx <= chunkX + chunkRadius; cx++) {
-            for (int cz = chunkZ - chunkRadius; cz <= chunkZ + chunkRadius; cz++) {
-                if (world instanceof Level level) {
-                    var chunk = level.getChunk(cx, cz);
-                    chunk.getBlockEntities().forEach((pos, entity) -> {
-                        // Verifique se a posição está no raio
-                        if (entity.getBlockState().getBlock() == ChangedAddonBlocks.SIGNAL_BLOCK.get() &&
-                                pos.distSqr(new Vec3i(x, y, z)) <= radius * radius) {
-                            foundPositions.add(pos);
-                            if (foundPositions.size() >= MAX_FOUND_BLOCKS) {
-                                // Limite alcançado
-                            }
-                        }
-                    });
-                }
-            }
-        }
-
-        // Resultado da busca
-        if (!foundPositions.isEmpty()) {
-            BlockPos firstFound = foundPositions.get(0);
-            updatePlayerState(player, itemstack, firstFound.getX(), firstFound.getY(), firstFound.getZ(), cooldown);
-            if (player.level.isClientSide()) {
-                displayFoundLocations(player, foundPositions);
-            }
-            playSounds(world, x, y, z, firstFound);
-        } else if (!player.level.isClientSide()) {
-            player.displayClientMessage(new TextComponent("No Signal Block Found"), false);
-        }
     }
 
     private static void searchSignalBlockUsingChunks(LevelAccessor world, BlockPos pos, Player player, ItemStack itemstack, int radius, int cooldown) {
@@ -126,56 +81,6 @@ public class SignalBlockFeatureProcedure {
                 displayFoundLocations(player, foundPositions);
             }
             playSounds(world, player.getX(), player.getY(), player.getZ(), firstFound);
-        } else if (!player.level.isClientSide()) {
-            player.displayClientMessage(new TextComponent("No Signal Block Found"), false);
-        }
-    }
-
-
-    private static void searchSignalBlock(LevelAccessor world, double x, double y, double z, Player player, ItemStack itemstack, int radius, int cooldown) {
-        int startX = (int) x - radius;
-        int endX = (int) x + radius;
-        int startY = (int) y - radius;
-        int endY = (int) y + radius;
-        int startZ = (int) z - radius;
-        int endZ = (int) z + radius;
-
-        List<BlockPos> foundPositions = new ArrayList<>();
-
-        if (cooldown > 100) {
-            player.getCooldowns().addCooldown(itemstack.getItem(), cooldown / 2);
-        }
-
-        if (!world.isClientSide()) {
-            for (int sx = startX; sx <= endX; sx++) {
-                for (int sy = startY; sy <= endY; sy++) {
-                    for (int sz = startZ; sz <= endZ; sz++) {
-                        BlockPos currentPos = new BlockPos(sx, sy, sz);
-                        if (world.getBlockState(currentPos).getBlock() == ChangedAddonBlocks.SIGNAL_BLOCK.get()) {
-                            foundPositions.add(currentPos);
-                            // Only update player state for the first found block
-                            if (foundPositions.size() == 1) {
-                                updatePlayerState(player, itemstack, sx, sy, sz, cooldown);
-                            }
-                            // Break loop if the number of found blocks exceeds MAX_FOUND_BLOCKS
-                            if (foundPositions.size() >= MAX_FOUND_BLOCKS) {
-                                break;
-                            }
-                        }
-                    }
-                    if (foundPositions.size() == MAX_FOUND_BLOCKS) {
-                        break;
-                    }
-                }
-                if (foundPositions.size() == MAX_FOUND_BLOCKS) {
-                    break;
-                }
-            }
-        }
-
-        if (!foundPositions.isEmpty()) {
-            displayFoundLocations(player, foundPositions);
-            playSounds(world, x, y, z, foundPositions.get(0));
         } else if (!player.level.isClientSide()) {
             player.displayClientMessage(new TextComponent("No Signal Block Found"), false);
         }

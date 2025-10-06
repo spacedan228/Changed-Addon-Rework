@@ -1,7 +1,11 @@
 package net.foxyas.changedaddon.item;
 
+import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.foxyas.changedaddon.procedures.PotwithcamoniaPlayerFinishesUsingItemProcedure;
+import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -10,10 +14,9 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class PotWithCamoniaItem extends Item {
-    public PotWithCamoniaItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(64).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(4).saturationMod(2f).alwaysEat()
 
-                .build()));
+    public PotWithCamoniaItem() {
+        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(64).rarity(Rarity.UNCOMMON).food((new FoodProperties.Builder()).nutrition(4).saturationMod(2f).alwaysEat().build()));
     }
 
     @Override
@@ -22,14 +25,29 @@ public class PotWithCamoniaItem extends Item {
     }
 
     @Override
-    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull LivingEntity entity) {
+    public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack, @NotNull Level level, @NotNull LivingEntity entity) {
         ItemStack retval = new ItemStack(Items.GLASS_BOTTLE);
-        super.finishUsingItem(itemstack, world, entity);
-        double x = entity.getX();
-        double y = entity.getY();
-        double z = entity.getZ();
+        super.finishUsingItem(itemstack, level, entity);
 
-        PotwithcamoniaPlayerFinishesUsingItemProcedure.execute(entity);
+        if (entity instanceof Player player) {
+            boolean transfurred = ProcessTransfur.isPlayerTransfurred(player);
+            boolean organic = ProcessTransfur.isPlayerNotLatex(player);
+            if (transfurred && !organic) {
+                if (!player.level.isClientSide())
+                    player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.UNTRANSFUR.get(), 1200, 0, false, false));
+            }
+            if (organic) {
+                if (transfurred) {
+                    if (!player.level.isClientSide())
+                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.UNTRANSFUR.get(), 1800, 0, false, false));
+                    if ((entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables())).showWarns) {
+                        if (entity instanceof Player _player && !_player.level.isClientSide())
+                            _player.displayClientMessage(new TextComponent("for some reason this seems to have slowed effect"), true);
+                    }
+                }
+            }
+        }
+
         if (itemstack.isEmpty()) {
             return retval;
         } else {

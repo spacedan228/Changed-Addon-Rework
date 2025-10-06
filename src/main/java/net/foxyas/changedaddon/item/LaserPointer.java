@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.effect.particles.ChangedAddonParticles;
+import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
 import net.foxyas.changedaddon.entity.goals.simple.FollowAndLookAtLaser;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.util.DynamicClipContext;
@@ -208,7 +208,7 @@ public class LaserPointer extends Item implements SpecializedAnimations {
     private void spawnLaserParticle(Level level, Player player, ItemStack stack, Vec3 pos) {
         ParticlesUtil.sendParticles(
                 level,
-                ChangedAddonParticles.laserPoint(player, LaserPointer.getAWTColor(stack)),
+                ChangedAddonParticleTypes.laserPoint(player, LaserPointer.getAWTColor(stack)),
                 pos.x, pos.y, pos.z,
                 0.0, 0.0, 0.0,
                 1, 0

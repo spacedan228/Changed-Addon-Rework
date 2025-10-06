@@ -134,10 +134,6 @@ public class SyringeWithLitixCammoniaPlayerFinishesUsingItem {
         return getGameMode(player) == GameType.SURVIVAL || getGameMode(player) == GameType.ADVENTURE;
     }
 
-    private static boolean isCreativeOrSpectator(Player player) {
-        return getGameMode(player) == GameType.CREATIVE || getGameMode(player) == GameType.SPECTATOR;
-    }
-
     private static GameType getGameMode(Player player) {
         if (player instanceof ServerPlayer sp) {
             return sp.gameMode.getGameModeForPlayer();

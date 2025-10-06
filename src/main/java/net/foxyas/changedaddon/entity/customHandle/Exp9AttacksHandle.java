@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.entity.customHandle;
 
-import net.foxyas.changedaddon.effect.particles.ChangedAddonParticles;
+import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.ParticlesUtil;
@@ -152,7 +152,7 @@ public class Exp9AttacksHandle {
                 Vec3 spawnPos = this.boss.getEyePosition().add(posDifference.scale(ratio));
                 ParticlesUtil.sendParticles(
                         this.boss.getLevel(),
-                        ChangedAddonParticles.thunderSpark(1),
+                        ChangedAddonParticleTypes.thunderSpark(1),
                         spawnPos,
                         0.25f, 0.25f, 0.25f,
                         5, // quantidade por ponto
@@ -380,7 +380,7 @@ public class Exp9AttacksHandle {
                 Vec3 spawnPos = this.boss.getEyePosition().add(posDifference.scale(ratio));
                 ParticlesUtil.sendParticles(
                         this.boss.getLevel(),
-                        ChangedAddonParticles.thunderSpark(1),
+                        ChangedAddonParticleTypes.thunderSpark(1),
                         spawnPos,
                         0.25f, 0.25f, 0.25f,
                         5, // quantidade por ponto

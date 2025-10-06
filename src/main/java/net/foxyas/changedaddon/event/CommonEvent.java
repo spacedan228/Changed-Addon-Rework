@@ -4,15 +4,15 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
+import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
+import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
@@ -21,15 +21,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.List;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
 public class CommonEvent {
@@ -48,6 +50,22 @@ public class CommonEvent {
         Player player = event.getPlayer();
         if (!player.level.isClientSide())
             ChangedAddonModVariables.PlayerVariables.ofOrDefault(player).syncPlayerVariables(player);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerPickupXp(PlayerXpEvent.PickupXp event) {
+        Player player = event.getPlayer();
+        ExperienceOrb experienceOrb = event.getOrb();
+        AccessorySlots.getForEntity(player).ifPresent((slots) -> {
+            slots.forEachSlot((slotType, itemStack) -> {
+                if (itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension) {
+                    if (accessoryItemExtension.IsAffectedByMending(slotType, itemStack) && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, itemStack) > 0) {
+                        int i = Math.min((int) (experienceOrb.getValue() * itemStack.getXpRepairRatio()), itemStack.getDamageValue());
+                        itemStack.setDamageValue(itemStack.getDamageValue() - i);
+                    }
+                }
+            });
+        });
     }
 
     @SubscribeEvent

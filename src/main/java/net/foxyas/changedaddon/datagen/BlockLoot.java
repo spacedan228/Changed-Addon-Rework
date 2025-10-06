@@ -1,7 +1,8 @@
 package net.foxyas.changedaddon.datagen;
 
-import net.foxyas.changedaddon.block.CoverBlock;
+import net.foxyas.changedaddon.block.LatexCoverBlock;
 import net.foxyas.changedaddon.block.LuminarCrystalSmallBlock;
+import net.foxyas.changedaddon.block.MultifaceBlock;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.minecraft.advancements.critereon.*;
@@ -109,9 +110,10 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
         add(WOLF_CRYSTAL_PILLAR.get(), createSilkTouchOnlyTable(WOLF_CRYSTAL_PILLAR.get()));
 
         coverBlockDrop(COVER_BLOCK.get());
+        coverBlockDrop(DARK_LATEX_COVER_BLOCK.get());
     }
 
-    private void coverBlockDrop(CoverBlock cover){
+    private void coverBlockDrop(MultifaceBlock cover){
         LootTable.Builder table = LootTable.lootTable();
         for(Direction direction : Direction.values()){
             table.withPool(LootPool.lootPool().add(LootItem.lootTableItem(cover))

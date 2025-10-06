@@ -11,6 +11,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class LatexTotemKeepConscienceProcedure {
+
     @SubscribeEvent
     public static void execute(ProcessTransfur.KeepConsciousEvent event) {
         if (event.player == null)
@@ -21,7 +22,6 @@ public class LatexTotemKeepConscienceProcedure {
                 if (event.player instanceof ServerPlayer serverPlayer) {
                     TranslatableComponent text = new TranslatableComponent("changed_addon.latex_totem.tittle.text_1");
                     TranslatableComponent text2 = new TranslatableComponent("changed_addon.latex_totem.tittle.text_2");
-                    //serverPlayer.sendMessage(text, ChatType.CHAT,serverPlayer.getUUID());
                     serverPlayer.displayClientMessage(text, true);
                     serverPlayer.sendMessage(text, ChatType.CHAT, serverPlayer.getUUID());
                     serverPlayer.sendMessage(text2, ChatType.CHAT, serverPlayer.getUUID());

@@ -14,6 +14,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class SignalCatcherItem extends Item {
+
     public SignalCatcherItem() {
         super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(64).rarity(Rarity.COMMON));
     }
@@ -33,11 +34,8 @@ public class SignalCatcherItem extends Item {
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull LivingEntity entity) {
         ItemStack retval = super.finishUsingItem(itemstack, world, entity);
-        double x = entity.getX();
-        double y = entity.getY();
-        double z = entity.getZ();
 
-        SignalBlockFeatureProcedure.execute(world, x, y, z, entity, itemstack);
+        SignalBlockFeatureProcedure.execute(world, entity, itemstack);
         return retval;
     }
 

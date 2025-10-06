@@ -2,15 +2,19 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.*;
+import net.foxyas.changedaddon.block.MultifaceBlock;
 import net.foxyas.changedaddon.block.advanced.HandScanner;
 import net.foxyas.changedaddon.block.advanced.PawsScanner;
 import net.foxyas.changedaddon.block.advanced.TimedKeypad;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FlowerPotBlock;
-import net.minecraft.world.level.block.LiquidBlock;
+import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
+import net.ltxprogrammer.changed.entity.LatexType;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -67,7 +71,20 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> PAWS_SCANNER = REGISTRY.register("paws_scanner", PawsScanner::new);
     public static final RegistryObject<Block> LUMINARA_BLOOM = REGISTRY.register("luminara_bloom", LuminaraBloomFlowerBlock::new);
     public static final RegistryObject<Block> POTTED_LUMINARA_BLOOM = REGISTRY.register("potted_luminara_bloom", PottedLuminaraBloomFlowerBlock::new);
-    public static final RegistryObject<CoverBlock> COVER_BLOCK = REGISTRY.register("cover_block", () -> new CoverBlock(BlockBehaviour.Properties.copy(Blocks.VINE)));
+    public static final RegistryObject<MultifaceBlock> COVER_BLOCK = REGISTRY.register("cover_block", () -> new MultifaceBlock(BlockBehaviour.Properties.copy(Blocks.VINE)) {
+        @OnlyIn(Dist.CLIENT)
+        @Override
+        public void registerRenderLayer() {
+            ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
+        }
+    });
+    public static final RegistryObject<LatexCoverBlock> DARK_LATEX_COVER_BLOCK = REGISTRY.register("dark_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(Material.GRASS).sound(SoundType.SLIME_BLOCK), LatexType.DARK_LATEX) {
+        @OnlyIn(Dist.CLIENT)
+        @Override
+        public void registerRenderLayer() {
+            ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.DARK_LATEX_COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
+        }
+    });
 
     public static final RegistryObject<WolfCrystalPillar> WOLF_CRYSTAL_PILLAR = REGISTRY.register("wolf_crystal_pillar", WolfCrystalPillar::new);
 
@@ -95,6 +112,11 @@ public class ChangedAddonBlocks {
             LuminaraBloomFlowerBlock.registerRenderLayer();
             PottedLuminaraBloomFlowerBlock.registerRenderLayer();
             WolfCrystalPillar.registerRenderLayer();
+            REGISTRY.getEntries().forEach((registryObject) -> {
+                if (registryObject.isPresent() && registryObject.get() instanceof RenderLayerProvider renderLayerProvider) {
+                    renderLayerProvider.registerRenderLayer();
+                }
+            });
         }
     }
 

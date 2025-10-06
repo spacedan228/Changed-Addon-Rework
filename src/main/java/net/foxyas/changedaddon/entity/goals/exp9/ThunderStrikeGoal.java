@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.exp9;
 
-import net.foxyas.changedaddon.effect.particles.ChangedAddonParticles;
+import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -87,7 +87,7 @@ public class ThunderStrikeGoal extends Goal {
                         lightning.setCause((ServerPlayer) changedEntity.getUnderlyingPlayer());
                     }
                     lightning.setDamage(10);
-                    ParticlesUtil.sendParticles(pathfinderMob.getLevel(), ChangedAddonParticles.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
+                    ParticlesUtil.sendParticles(pathfinderMob.getLevel(), ChangedAddonParticleTypes.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
                     pathfinderMob.getLookControl().setLookAt(lightning, 30, 30);
                     DelayedTask.schedule(10, () -> {
                         pathfinderMob.getLevel().addFreshEntity(lightning);

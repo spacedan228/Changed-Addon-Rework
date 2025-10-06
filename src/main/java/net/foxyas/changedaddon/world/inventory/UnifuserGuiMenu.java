@@ -28,15 +28,18 @@ public class UnifuserGuiMenu extends AbstractContainerMenu {
     private final BlockEntity boundBlockEntity;
 
     public UnifuserGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
+        this(id, inv, extraData.readBlockPos());
+    }
+
+    public UnifuserGuiMenu(int id, Inventory inv, BlockPos pos) {
         super(ChangedAddonMenus.UNIFUSER_GUI, id);
         this.entity = inv.player;
         this.world = inv.player.level;
         IItemHandler internal = new ItemStackHandler(4);
 
-        BlockPos pos = extraData.readBlockPos();
-        this.x = pos.getX();
-        this.y = pos.getY();
-        this.z = pos.getZ();
+        x = pos.getX();
+        y = pos.getY();
+        z = pos.getZ();
         access = ContainerLevelAccess.create(world, pos);
 
         boundBlockEntity = this.world.getBlockEntity(pos);
@@ -90,7 +93,7 @@ public class UnifuserGuiMenu extends AbstractContainerMenu {
     public @NotNull ItemStack quickMoveStack(@NotNull Player playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
         Slot slot = this.slots.get(index);
-        if (slot != null && slot.hasItem()) {
+        if (slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
             if (index < 4) {

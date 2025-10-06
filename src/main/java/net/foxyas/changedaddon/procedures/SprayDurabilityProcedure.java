@@ -18,13 +18,8 @@ public class SprayDurabilityProcedure {
         ItemStack stack = event.getItemStack();
         List<Component> tooltip = event.getToolTip();
 
-        if (stack.getItem() == ChangedAddonItems.LITIX_CAMONIA_SPRAY.get()) {
-            tooltip.add(new TextComponent(((stack).getDamageValue() + "/" + (stack).getMaxDamage() + " Uses")));
-        }
-        if (stack.getItem() == ChangedAddonItems.DARK_LATEX_SPRAY.get()) {
-            tooltip.add(new TextComponent(((stack).getDamageValue() + "/" + (stack).getMaxDamage() + " Uses")));
-        }
-        if (stack.getItem() == ChangedAddonItems.WHITE_LATEX_SPRAY.get()) {
+        if (stack.is(ChangedAddonItems.LITIX_CAMONIA_SPRAY.get())
+                || stack.is(ChangedAddonItems.DARK_LATEX_SPRAY.get()) || stack.is(ChangedAddonItems.WHITE_LATEX_SPRAY.get())) {
             tooltip.add(new TextComponent(((stack).getDamageValue() + "/" + (stack).getMaxDamage() + " Uses")));
         }
     }

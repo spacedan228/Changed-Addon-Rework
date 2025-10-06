@@ -31,7 +31,6 @@ public class TickentitySolventEnchantmenthitProcedure {
     @SubscribeEvent
     public static void onEntityAttacked(LivingHurtEvent event) {
         Entity target = event.getEntity();
-        Entity sourceEntity = event.getSource().getEntity();
         Entity directEntity = event.getSource().getDirectEntity();
 
         if (target == null || directEntity == null) {
