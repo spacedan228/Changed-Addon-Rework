@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.entity.partials.SnowLeopardPartialEntity;
 import net.foxyas.changedaddon.entity.projectile.WitherParticleProjectile;
 import net.foxyas.changedaddon.entity.simple.PinkCyanSkunkEntity;
 import net.foxyas.changedaddon.entity.advanced.*;

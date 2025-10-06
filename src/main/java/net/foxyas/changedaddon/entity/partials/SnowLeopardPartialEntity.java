@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.advanced;
+package net.foxyas.changedaddon.entity.partials;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.ltxprogrammer.changed.entity.*;
