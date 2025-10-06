@@ -1,0 +1,57 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "down": "true"
+      },
+      "apply": {
+        "model": "changed_addon:block/white_latex_cover_block",
+        "x": -90
+      }
+    },
+    {
+      "when": {
+        "up": "true"
+      },
+      "apply": {
+        "model": "changed_addon:block/white_latex_cover_block",
+        "x": 90
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "changed_addon:block/white_latex_cover_block",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "changed_addon:block/white_latex_cover_block"
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "changed_addon:block/white_latex_cover_block",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "changed_addon:block/white_latex_cover_block",
+        "y": 270
+      }
+    }
+  ]
+}

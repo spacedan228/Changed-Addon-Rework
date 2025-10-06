@@ -179,7 +179,8 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> FRIENDLY_GOEY_ICON = REGISTRY.register("friendly_goey_icon", FriendlyGoeyIconItem::new);
     public static final RegistryObject<Item> PAT_ICON = REGISTRY.register("pat_icon", PatIconItem::new);
     public static final RegistryObject<BlockItem> COVER_ITEM = REGISTRY.register("cover", ()-> new BlockItem(ChangedAddonBlocks.COVER_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<BlockItem> DARK_LATEX_COVER_ITEM = REGISTRY.register("dark_latex_cover", ()-> new BlockItem(ChangedAddonBlocks.DARK_LATEX_COVER_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<BlockItem> DARK_LATEX_COVER_ITEM = REGISTRY.register("dark_latex_cover", ()-> new BlockItem(ChangedAddonBlocks.DARK_LATEX_COVER_BLOCK.get(), new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
+    public static final RegistryObject<BlockItem> WHITE_LATEX_COVER_ITEM = REGISTRY.register("white_latex_cover", ()-> new BlockItem(ChangedAddonBlocks.WHITE_LATEX_COVER_BLOCK.get(), new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
 
     public static final RegistryObject<BlockItem> WOLF_CRYSTAL_PILLAR = block(ChangedAddonBlocks.WOLF_CRYSTAL_PILLAR, ChangedAddonTabs.TAB_CHANGED_ADDON);
 

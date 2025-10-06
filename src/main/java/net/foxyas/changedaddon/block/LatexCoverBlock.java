@@ -1,14 +1,23 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
+import net.foxyas.changedaddon.fluid.LitixCamoniaFluid;
 import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -35,6 +44,34 @@ public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverable
     public boolean isRandomlyTicking(@NotNull BlockState state) {
         return true;
     }
+
+    @Override
+    public @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull Direction direction,
+                                           @NotNull BlockState neighborState, @NotNull LevelAccessor level,
+                                           @NotNull BlockPos currentPos, @NotNull BlockPos neighborPos) {
+        return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
+    }
+    @Override
+    public void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block blockFrom, @NotNull BlockPos fromPos, boolean isMoving) {
+        super.neighborChanged(state, level, pos, blockFrom, fromPos, isMoving);
+
+        // Verifica se o bloco vizinho tem água
+        BlockState neighborState = level.getBlockState(fromPos);
+        if (neighborState.getFluidState().isSource()
+                || neighborState.getFluidState().is(Fluids.WATER)
+                || neighborState.getFluidState().getType() instanceof LitixCamoniaFluid) {
+            // Efeito visual opcional
+            level.levelEvent(2001, pos, Block.getId(state)); // partículas de quebra
+            if (neighborState.getFluidState().getType() instanceof LitixCamoniaFluid) {
+                level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH,
+                       SoundSource.BLOCKS, 0.5f, 1.0f);
+            }
+
+            // Remove o bloco sem dropar item
+            level.destroyBlock(pos, false);
+        }
+    }
+
 
     private static final Direction[] DIRECTIONS = Direction.values();
 

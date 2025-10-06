@@ -111,6 +111,7 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
 
         coverBlockDrop(COVER_BLOCK.get());
         coverBlockDrop(DARK_LATEX_COVER_BLOCK.get());
+        coverBlockDrop(WHITE_LATEX_COVER_BLOCK.get());
     }
 
     private void coverBlockDrop(MultifaceBlock cover){

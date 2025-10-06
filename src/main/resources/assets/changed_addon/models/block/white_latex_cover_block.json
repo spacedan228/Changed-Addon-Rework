@@ -2,8 +2,8 @@
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
 	"textures": {
-		"particle": "changed_addon:block/cover_blocks/cover_block",
-		"cover": "changed_addon:block/cover_blocks/cover_block"
+		"particle": "changed_addon:block/cover_blocks/white_latex_cover_block",
+		"cover": "changed_addon:block/cover_blocks/white_latex_cover_block"
 	},
 	"elements": [
 		{

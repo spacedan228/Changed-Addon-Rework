@@ -74,8 +74,9 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         timedKeypad();
 
         pillarBlockWithVariants(WOLF_CRYSTAL_PILLAR, 2, 0);
-        createMultiface(COVER_BLOCK);
-        createMultiface(DARK_LATEX_COVER_BLOCK);
+        createMultiface(COVER_BLOCK, false);
+        createMultiface(DARK_LATEX_COVER_BLOCK, false);
+        createMultiface(WHITE_LATEX_COVER_BLOCK, false);
     }
 
     private final Property<?>[] IGNORE_LATEX = new Property[]{AbstractLatexBlock.COVERED};
@@ -194,6 +195,27 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         }
 
         itemModels().getBuilder(block.get().asItem().getRegistryName().getPath()).parent(model);
+    }
+
+    private void createMultiface(RegistryObject<? extends Block> block, boolean generatedItem) {
+        MultiPartBlockStateBuilder builder = getMultipartBuilder(block.get());
+        ResourceLocation loc = blockLoc(block.getId());
+
+        BlockState state = block.get().defaultBlockState();
+        ModelFile model = models().getExistingFile(loc);
+        for (Direction dir : Direction.values()) {
+            BooleanProperty prop = PipeBlock.PROPERTY_BY_DIRECTION.get(dir);
+            if (!state.hasProperty(prop)) continue;
+
+            builder.part()
+                    .modelFile(model)
+                    .rotationX(getXRotation(dir))
+                    .rotationY(getYRotation(dir))
+                    .addModel()
+                    .condition(prop, true);
+        }
+
+        if (generatedItem) itemModels().getBuilder(block.get().asItem().getRegistryName().getPath()).parent(model);
     }
 
     private static int getXRotation(Direction dir) {

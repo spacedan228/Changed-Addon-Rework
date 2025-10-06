@@ -86,11 +86,25 @@ public class ChangedAddonBlocks {
             ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
         }
     });
-    public static final RegistryObject<LatexCoverBlock> DARK_LATEX_COVER_BLOCK = REGISTRY.register("dark_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(Material.GRASS).sound(SoundType.SLIME_BLOCK), LatexType.DARK_LATEX) {
+    public static final RegistryObject<LatexCoverBlock> DARK_LATEX_COVER_BLOCK = REGISTRY.register("dark_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(Material.GRASS)
+            .noOcclusion()
+            .dynamicShape()
+            .sound(SoundType.SLIME_BLOCK), LatexType.DARK_LATEX) {
         @OnlyIn(Dist.CLIENT)
         @Override
         public void registerRenderLayer() {
             ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.DARK_LATEX_COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
+        }
+    });
+
+    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(Material.GRASS)
+            .noOcclusion()
+            .dynamicShape()
+            .sound(SoundType.SLIME_BLOCK), LatexType.WHITE_LATEX) {
+        @OnlyIn(Dist.CLIENT)
+        @Override
+        public void registerRenderLayer() {
+            ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.WHITE_LATEX_COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
         }
     });
 
