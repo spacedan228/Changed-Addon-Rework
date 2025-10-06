@@ -14,9 +14,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.UUID;
 
-@Mod.EventBusSubscriber
+
+//@Mod.EventBusSubscriber
 public class HazarArmorItemTipProcedure {
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void addAttributeModifier(ItemAttributeModifierEvent event) {
         ItemStack stack = event.getItemStack();
 
@@ -59,5 +60,5 @@ public class HazarArmorItemTipProcedure {
                 event.addModifier(Attributes.MOVEMENT_SPEED, HazardDebuff);
             }
         }
-    }
+    }*/
 }

@@ -93,7 +93,7 @@ public class HazardSuitHelmetOverlay {
         }
 
 
-        return player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZARD_SUIT_HELMET.get())
-                || player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZMAT_SUIT_HELMET.get());
+        return false; /*player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZARD_SUIT_HELMET.get())
+                || player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZMAT_SUIT_HELMET.get());*/
     }
 }

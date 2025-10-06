@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.block.entity.SnepPlushBlockEntity;
+import net.foxyas.changedaddon.block.entity.SnepPlushyBlockEntity;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -20,15 +20,15 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class SnepPlushBlockEntityRenderer implements BlockEntityRenderer<SnepPlushBlockEntity> {
+public class SnepPlushyBlockEntityRenderer implements BlockEntityRenderer<SnepPlushyBlockEntity> {
 
     private final SnepPlushExtraModel snepPlushExtraModel;
 
-    public SnepPlushBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+    public SnepPlushyBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.snepPlushExtraModel = new SnepPlushExtraModel(context.bakeLayer(SnepPlushExtraModel.LAYER_LOCATION));
     }
 
-    public void render(SnepPlushBlockEntity blockEntity, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int light, int overlay) {
+    public void render(SnepPlushyBlockEntity blockEntity, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int light, int overlay) {
         BlockState state = blockEntity.getBlockState();
         if (!blockEntity.glowingEyes) return;
 

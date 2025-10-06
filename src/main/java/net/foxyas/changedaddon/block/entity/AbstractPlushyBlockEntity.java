@@ -1,36 +1,34 @@
 package net.foxyas.changedaddon.block.entity;
 
-import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class SnepPlushBlockEntity extends BlockEntity {
+public abstract class AbstractPlushyBlockEntity extends BlockEntity {
     private static final String SQUEEZED_TAG = "squeezedTicks";
-    private static final String GLOWING_TAG = "glowingEyes";
     public int squeezedTicks;
-    public boolean glowingEyes = false;
 
-    public SnepPlushBlockEntity(BlockPos position, BlockState state) {
-        super(ChangedAddonBlockEntities.SNEP_PLUSH.get(), position, state);
+    public AbstractPlushyBlockEntity(BlockEntityType<?> type, BlockPos position, BlockState state) {
+        super(type, position, state);
         this.squeezedTicks = 0;
     }
 
     @Override
     public void load(@NotNull CompoundTag compound) {
         super.load(compound);
-        if (compound.contains(SQUEEZED_TAG)) this.squeezedTicks = compound.getInt(SQUEEZED_TAG);
-        if (compound.contains(GLOWING_TAG)) this.glowingEyes = compound.getBoolean(GLOWING_TAG);
+        if (compound.contains(SQUEEZED_TAG)) {
+            this.squeezedTicks = compound.getInt(SQUEEZED_TAG);
+        }
     }
 
     @Override
     public void saveAdditional(@NotNull CompoundTag compound) {
         super.saveAdditional(compound);
         compound.putInt(SQUEEZED_TAG, this.squeezedTicks);
-        compound.putBoolean(GLOWING_TAG, this.glowingEyes);
     }
 
     @Override
@@ -41,11 +39,6 @@ public class SnepPlushBlockEntity extends BlockEntity {
     @Override
     public @NotNull CompoundTag getUpdateTag() {
         return this.saveWithFullMetadata();
-    }
-
-    @Override
-    public void handleUpdateTag(CompoundTag tag) {
-        super.handleUpdateTag(tag);
     }
 
     public boolean isSqueezed() {

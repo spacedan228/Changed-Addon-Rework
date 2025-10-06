@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.entity.WolfPlushBlockEntity;
+import net.foxyas.changedaddon.block.entity.WolfPlushyBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -38,9 +38,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class WolfPlushBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class WolfPlushyBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
-    public WolfPlushBlock() {
+    public WolfPlushyBlock() {
         super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(0.5f, 5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
@@ -102,7 +102,7 @@ public class WolfPlushBlock extends HorizontalDirectionalBlock implements Entity
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof WolfPlushBlockEntity plushBlockEntity) {
+        if (blockEntity instanceof WolfPlushyBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
                     world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
@@ -116,7 +116,7 @@ public class WolfPlushBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new WolfPlushBlockEntity(pos, state);
+        return new WolfPlushyBlockEntity(pos, state);
     }
 
     @Override
@@ -129,8 +129,8 @@ public class WolfPlushBlock extends HorizontalDirectionalBlock implements Entity
     public void tick(BlockState state, ServerLevel serverLevel, BlockPos pos, Random p_60465_) {
         super.tick(state, serverLevel, pos, p_60465_);
         BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
-        if (blockEntity instanceof WolfPlushBlockEntity WolfPlushBlockEntity && WolfPlushBlockEntity.isSqueezed()) {
-            WolfPlushBlockEntity.subSqueezedTicks(1);
+        if (blockEntity instanceof WolfPlushyBlockEntity WolfPlushyBlockEntity && WolfPlushyBlockEntity.isSqueezed()) {
+            WolfPlushyBlockEntity.subSqueezedTicks(1);
         }
         serverLevel.scheduleTick(pos, this, 10);
     }

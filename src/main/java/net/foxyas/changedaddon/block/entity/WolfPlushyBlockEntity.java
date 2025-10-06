@@ -8,12 +8,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-public class WolfPlushBlockEntity extends BlockEntity {
+public class WolfPlushyBlockEntity extends BlockEntity {
     private static final String SQUEEZED_TAG = "squeezedTicks";
     public int squeezedTicks;
 
-    public WolfPlushBlockEntity(BlockPos position, BlockState state) {
-        super(ChangedAddonBlockEntities.WOLF_PLUSH.get(), position, state);
+    public WolfPlushyBlockEntity(BlockPos position, BlockState state) {
+        super(ChangedAddonBlockEntities.WOLF_PLUSHY.get(), position, state);
         this.squeezedTicks = 0;
     }
 

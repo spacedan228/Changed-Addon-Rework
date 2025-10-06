@@ -15,8 +15,9 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-@Mod.EventBusSubscriber
+//@Mod.EventBusSubscriber
 public class HazmatSuitItemtipProcedure {
+    /*
     @SubscribeEvent
     public static void addAttributeModifier(ItemAttributeModifierEvent event) {
         execute(event, event.getItemStack());
@@ -73,5 +74,5 @@ public class HazmatSuitItemtipProcedure {
                 _event.addModifier(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED, HazardDebuff);
             }
         }
-    }
+    }*/
 }

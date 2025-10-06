@@ -7,10 +7,8 @@ import net.foxyas.changedaddon.client.model.clothes.HazardBodySuitLayers;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
 import net.foxyas.changedaddon.client.model.simple.*;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.ContainmentContainerRenderer;
-import net.foxyas.changedaddon.client.renderer.blockEntitys.SnepPlushBlockEntityRenderer;
-import net.foxyas.changedaddon.item.armor.HazardBodySuit;
+import net.foxyas.changedaddon.client.renderer.blockEntitys.SnepPlushyBlockEntityRenderer;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraftforge.api.distmarker.Dist;
@@ -113,7 +111,7 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(LatexSnepModel.LAYER_LOCATION, LatexSnepModel::createBodyLayer);
 
         // --- Block Entities Custom Models ---
-        event.registerLayerDefinition(SnepPlushBlockEntityRenderer.SnepPlushExtraModel.LAYER_LOCATION, SnepPlushBlockEntityRenderer.SnepPlushExtraModel::createBodyLayer);
+        event.registerLayerDefinition(SnepPlushyBlockEntityRenderer.SnepPlushExtraModel.LAYER_LOCATION, SnepPlushyBlockEntityRenderer.SnepPlushExtraModel::createBodyLayer);
         event.registerLayerDefinition(ContainmentContainerRenderer.FluidModelPart.LAYER_LOCATION, ContainmentContainerRenderer.FluidModelPart::createBodyLayer);
     }
 }

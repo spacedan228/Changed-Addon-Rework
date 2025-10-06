@@ -5,7 +5,7 @@ import net.foxyas.changedaddon.block.advanced.TimedKeypadBlockEntity;
 import net.foxyas.changedaddon.block.entity.*;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.ContainmentContainerRenderer;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.InformantBlockEntityRenderer;
-import net.foxyas.changedaddon.client.renderer.blockEntitys.SnepPlushBlockEntityRenderer;
+import net.foxyas.changedaddon.client.renderer.blockEntitys.SnepPlushyBlockEntityRenderer;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.TimedKeypadBlockEntityRenderer;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -31,9 +31,9 @@ public class ChangedAddonBlockEntities {
     public static final RegistryObject<BlockEntityType<?>> ADVANCED_CATALYZER = register("advanced_catalyzer_block_entity", ChangedAddonBlocks.ADVANCED_CATALYZER, AdvancedCatalyzerBlockEntity::new);
     public static final RegistryObject<BlockEntityType<?>> GENERATOR = register("generator_block_entity", ChangedAddonBlocks.GENERATOR, GeneratorBlockEntity::new);
 
-    public static final RegistryObject<BlockEntityType<SnepPlushBlockEntity>> SNEP_PLUSH = REGISTRY.register("snep_plushy_block_entity", () -> BlockEntityType.Builder.of(SnepPlushBlockEntity::new, ChangedAddonBlocks.SNEP_PLUSH.get()).build(null));
-    public static final RegistryObject<BlockEntityType<WolfPlushBlockEntity>> WOLF_PLUSH = REGISTRY.register("wolf_plushy_block_entity", () -> BlockEntityType.Builder.of(WolfPlushBlockEntity::new, ChangedAddonBlocks.WOLF_PLUSH.get()).build(null));
-    public static final RegistryObject<BlockEntityType<DarkLatexWolfPlushBlockEntity>> DARK_LATEX_WOLF_PLUSH = REGISTRY.register("dark_latex_wolf_plushy_block_entity", () -> BlockEntityType.Builder.of(DarkLatexWolfPlushBlockEntity::new, ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get()).build(null));
+    public static final RegistryObject<BlockEntityType<SnepPlushyBlockEntity>> SNEP_PLUSHY = REGISTRY.register("snep_plushy_block_entity", () -> BlockEntityType.Builder.of(SnepPlushyBlockEntity::new, ChangedAddonBlocks.SNEP_PLUSH.get()).build(null));
+    public static final RegistryObject<BlockEntityType<WolfPlushyBlockEntity>> WOLF_PLUSHY = REGISTRY.register("wolf_plushy_block_entity", () -> BlockEntityType.Builder.of(WolfPlushyBlockEntity::new, ChangedAddonBlocks.WOLF_PLUSH.get()).build(null));
+    public static final RegistryObject<BlockEntityType<DarkLatexWolfPlushyBlockEntity>> DARK_LATEX_WOLF_PLUSHY = REGISTRY.register("dark_latex_wolf_plushy_block_entity", () -> BlockEntityType.Builder.of(DarkLatexWolfPlushyBlockEntity::new, ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get()).build(null));
 
     public static final RegistryObject<BlockEntityType<InformantBlockEntity>> INFORMANT_BLOCK = REGISTRY.register("informant_block_block_entity", () -> BlockEntityType.Builder.of(InformantBlockEntity::new, ChangedAddonBlocks.INFORMANT_BLOCK.get()).build(null));
     public static final RegistryObject<BlockEntityType<ContainmentContainerBlockEntity>> CONTAINMENT_CONTAINER = REGISTRY.register("containment_container_block_entity", () -> BlockEntityType.Builder.of(ContainmentContainerBlockEntity::new, ChangedAddonBlocks.CONTAINMENT_CONTAINER.get()).build(null));
@@ -49,7 +49,7 @@ public class ChangedAddonBlockEntities {
     @SubscribeEvent
     public static void registerBlockEntitiesRender(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(CONTAINMENT_CONTAINER.get(), ContainmentContainerRenderer::new);
-        event.registerBlockEntityRenderer(SNEP_PLUSH.get(), SnepPlushBlockEntityRenderer::new);
+        event.registerBlockEntityRenderer(SNEP_PLUSHY.get(), SnepPlushyBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(CONTAINMENT_CONTAINER.get(), ContainmentContainerRenderer::new);
         event.registerBlockEntityRenderer(TIMED_KEYPAD_BLOCK_ENTITY.get(), TimedKeypadBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(INFORMANT_BLOCK.get(), InformantBlockEntityRenderer::new);

@@ -1,7 +1,9 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.entity.DarkLatexWolfPlushBlockEntity;
+import net.foxyas.changedaddon.block.entity.DarkLatexWolfPlushyBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
+import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
@@ -15,6 +17,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -26,8 +29,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -45,8 +46,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-public class DarkLatexWolfPlushBlock extends AbstractPlushBlock {
-    public DarkLatexWolfPlushBlock() {
+public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
+    public DarkLatexWolfPlushyBlock() {
         super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL)
                 .strength(0.5f, 5f)
                 .noOcclusion()
@@ -77,17 +78,23 @@ public class DarkLatexWolfPlushBlock extends AbstractPlushBlock {
             Random random = player.getRandom();
             BlockPos playerBlockPos = player.blockPosition();
             Stream<BlockPos> posStream = FoxyasUtils.betweenClosedStreamSphere(playerBlockPos, 3, 2);
-            if (posStream.anyMatch((pos) -> (world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get()))
-                    && canSeePlayer(pos, world, playerBlockPos, player))) {
-                if (!event.updateWorld()) {
-                    if (!ProcessTransfur.isPlayerTransfurred(player)) {
-                        if (random.nextFloat() <= 0.25f + player.getLuck()) {
-                            ProcessTransfur.transfur(player, world, getTransfurVariant(world), false, TransfurContext.hazard(TransfurCause.FACE_HAZARD));
+            float intensity = 1 + (player.getInventory().items.stream().filter((itemStack -> itemStack.is(ChangedAddonItems.DARK_LATEX_WOLF_PLUSH.get()))).count() / 100f);
+            posStream.forEach((pos) -> {
+                if ((world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get())
+                        && canSeePlayer(pos, world, playerBlockPos, player))) {
+                    if (!event.updateWorld()) {
+                        if (!ProcessTransfur.isPlayerTransfurred(player)) {
+                            if (random.nextFloat() <= (0.25f + (player.getLuck() / 100))
+                                    / ((player.position().distanceTo(Vec3.atCenterOf(pos))) * intensity)) {
+                                ProcessTransfur.transfur(player, world, getTransfurVariant(world), false, TransfurContext.hazard(TransfurCause.FACE_HAZARD));
+                                if (player instanceof ServerPlayer serverPlayer) {
+                                    ChangedAddonCriteriaTriggers.SLEEP_NEXT_A_PLUSHY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "dark_latex_plushy", true);
+                                }
+                            }
                         }
                     }
                 }
-            }
-
+            });
         }
 
         private static boolean canSeePlayer(BlockPos pos, Level world, BlockPos playerBlockPos, Player player) {
@@ -113,7 +120,7 @@ public class DarkLatexWolfPlushBlock extends AbstractPlushBlock {
 
     @Override
     public @Nullable BlockEntity newBlockEntity(@NotNull BlockPos pPos, @NotNull BlockState pState) {
-        return new DarkLatexWolfPlushBlockEntity(pPos, pState);
+        return new DarkLatexWolfPlushyBlockEntity(pPos, pState);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.entity.AbstractPlushBlockEntity;
+import net.foxyas.changedaddon.block.entity.AbstractPlushyBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,12 +31,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
 
-public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
-    protected AbstractPlushBlock(Properties pProperties) {
+    protected AbstractPlushyBlock(Properties pProperties) {
         super(pProperties);
     }
 
@@ -94,7 +94,7 @@ public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock impl
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof AbstractPlushBlockEntity plushBlockEntity) {
+        if (blockEntity instanceof AbstractPlushyBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
                     world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
@@ -121,8 +121,8 @@ public abstract class AbstractPlushBlock extends HorizontalDirectionalBlock impl
     public void tick(@NotNull BlockState state, @NotNull ServerLevel serverLevel, @NotNull BlockPos pos, @NotNull Random p_60465_) {
         super.tick(state, serverLevel, pos, p_60465_);
         BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
-        if (blockEntity instanceof AbstractPlushBlockEntity abstractPlushBlockEntity && abstractPlushBlockEntity.isSqueezed()) {
-            abstractPlushBlockEntity.subSqueezedTicks(1);
+        if (blockEntity instanceof AbstractPlushyBlockEntity abstractPlushyBlockEntity && abstractPlushyBlockEntity.isSqueezed()) {
+            abstractPlushyBlockEntity.subSqueezedTicks(1);
         }
         serverLevel.scheduleTick(pos, this, 10);
     }

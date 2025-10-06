@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.entity.SnepPlushBlockEntity;
+import net.foxyas.changedaddon.block.entity.SnepPlushyBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -48,13 +48,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
+public class SnepPlushyBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
 
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final EnumProperty<CansEnum> CANS = EnumProperty.create("cans", CansEnum.class);
 
-    public SnepPlushBlock() {
+    public SnepPlushyBlock() {
         super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(0.5f, 5f)
                 .noOcclusion()
                 .isRedstoneConductor((bs, br, bp) -> false));
@@ -148,15 +148,15 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
 
         ItemStack itemInHand = player.getItemInHand(hand);
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (!world.isClientSide() && blockEntity instanceof SnepPlushBlockEntity snepPlushBlockEntity) {
-            if (itemInHand.is(Items.GLOW_INK_SAC) && !snepPlushBlockEntity.glowingEyes) {
+        if (!world.isClientSide() && blockEntity instanceof SnepPlushyBlockEntity snepPlushyBlockEntity) {
+            if (itemInHand.is(Items.GLOW_INK_SAC) && !snepPlushyBlockEntity.glowingEyes) {
                 if (!player.isCreative()) {
                     itemInHand.shrink(1);
                 }
 
-                snepPlushBlockEntity.glowingEyes = true;
+                snepPlushyBlockEntity.glowingEyes = true;
                 world.sendBlockUpdated(pos, blockstate, blockstate, 1);
-                snepPlushBlockEntity.setChanged();
+                snepPlushyBlockEntity.setChanged();
 
                 world.playSound(null, hit.getBlockPos(), SoundEvents.GLOW_INK_SAC_USE, SoundSource.BLOCKS, 1, 1);
                 if (player instanceof ServerPlayer serverPlayer) {
@@ -170,7 +170,7 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
         double hitX = hit.getLocation().x;
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
-        if (blockEntity instanceof SnepPlushBlockEntity plushBlockEntity) {
+        if (blockEntity instanceof SnepPlushyBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
                     //plushBlockEntity.squeezedTicks = 4;
@@ -184,7 +184,7 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new SnepPlushBlockEntity(pos, state);
+        return new SnepPlushyBlockEntity(pos, state);
     }
 
     @Override
@@ -213,8 +213,8 @@ public class SnepPlushBlock extends Block implements SimpleWaterloggedBlock, Ent
     public void tick(BlockState state, ServerLevel serverLevel, BlockPos pos, Random p_60465_) {
         super.tick(state, serverLevel, pos, p_60465_);
         BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
-        if (blockEntity instanceof SnepPlushBlockEntity snepPlushBlockEntity && snepPlushBlockEntity.isSqueezed()) {
-            snepPlushBlockEntity.subSqueezedTicks(1);
+        if (blockEntity instanceof SnepPlushyBlockEntity snepPlushyBlockEntity && snepPlushyBlockEntity.isSqueezed()) {
+            snepPlushyBlockEntity.subSqueezedTicks(1);
         }
         serverLevel.scheduleTick(pos, this, 10);
     }

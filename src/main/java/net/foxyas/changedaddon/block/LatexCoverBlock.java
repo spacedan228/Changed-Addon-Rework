@@ -22,6 +22,11 @@ public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverable
         this.latexType = latexType;
     }
 
+    @Override
+    public boolean skipRendering(@NotNull BlockState pState, BlockState pAdjacentBlockState, @NotNull Direction pSide) {
+        return pAdjacentBlockState.is(this) || super.skipRendering(pState, pAdjacentBlockState, pSide);
+    }
+
     public LatexType getLatexType() {
         return latexType;
     }
