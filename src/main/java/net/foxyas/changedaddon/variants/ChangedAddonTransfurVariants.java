@@ -32,10 +32,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -344,6 +341,23 @@ public class ChangedAddonTransfurVariants {
 
     public static List<TransfurVariant<?>> getBossesVariantsList() {
         return List.of(EXPERIMENT_009_BOSS.get(), EXPERIMENT_10_BOSS.get(), EXPERIMENT_009.get(), EXPERIMENT_10.get(), VOID_FOX.get());
+    }
+
+
+    public static Map<TransfurVariant<?>, TransfurVariant<?>> bossesVariants() {
+        HashMap<TransfurVariant<?>, TransfurVariant<?>> VariantsMap = new HashMap<>();
+        VariantsMap.put(EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get());
+        VariantsMap.put(EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());
+        return VariantsMap;
+    }
+
+    public static boolean isAnBossVariant(TransfurVariant<?> transfurVariant) {
+        return bossesVariants().containsValue(transfurVariant);
+    }
+
+    public static TransfurVariant<?> getBossVersionOf(TransfurVariant<?> transfurVariant) {
+        TransfurVariant<?> variant = bossesVariants().get(transfurVariant);
+        return variant != null ? variant : transfurVariant;
     }
 
     protected static List<TransfurVariant<?>> getOcVariantList() {

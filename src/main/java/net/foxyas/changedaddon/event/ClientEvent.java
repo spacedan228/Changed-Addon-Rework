@@ -121,8 +121,7 @@ public class ClientEvent {
             }
         }
 
-        if (ChangedAddonTransfurVariants.getBossesVariantsList().stream().anyMatch(variant ->
-                variant.getFormId().equals(loc))) {
+        if (ChangedAddonTransfurVariants.isAnBossVariant(tf)) {
             tooltip.add(new TextComponent("§8Boss Version"));
         }
     }
