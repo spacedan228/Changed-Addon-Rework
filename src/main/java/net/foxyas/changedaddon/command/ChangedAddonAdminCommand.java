@@ -74,7 +74,9 @@ public class ChangedAddonAdminCommand {
                                     ArrayList<ResourceLocation> list = TransfurVariant.getPublicTransfurVariants().map(ForgeRegistryEntry::getRegistryName).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
                                     list.add(TransfurVariant.SPECIAL_LATEX);
                                     TreeSet<String> set = list.stream().map(ResourceLocation::getNamespace).collect(Collectors.toCollection(TreeSet::new));
-                                    if (namespaceFormId.startsWith("$")) {
+                                    if (namespaceFormId.isBlank()) {
+                                        list.stream().map(ResourceLocation::toString).toList().forEach(builder::suggest);
+                                    } else if (namespaceFormId.startsWith("$")) {
                                         set.forEach(builder::suggest);
                                     } else {
                                         list.stream().map(ResourceLocation::toString).toList().forEach(builder::suggest);
@@ -320,7 +322,7 @@ public class ChangedAddonAdminCommand {
 
     private static int showTransfursSlots(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
-        String namespaceFormId = StringArgumentType.getString(context, "NamespaceFormId").toLowerCase();
+        String namespaceFormId = StringArgumentType.getString(context, "NamespaceFormId").toLowerCase().replace("$", "");
         String filter = "";
         try {
             filter = StringArgumentType.getString(context, "FilterWithSlots").toLowerCase();
