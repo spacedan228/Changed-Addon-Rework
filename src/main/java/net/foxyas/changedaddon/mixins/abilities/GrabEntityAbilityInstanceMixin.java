@@ -1,14 +1,20 @@
 package net.foxyas.changedaddon.mixins.abilities;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 @Mixin(value = GrabEntityAbilityInstance.class, remap = false)
 public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor {
@@ -79,6 +86,25 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     @Override
     public LivingEntity grabber() {
         return getSelf().entity.getEntity();
+    }
+
+    @Redirect(
+            method = "tickIdle",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/ltxprogrammer/changed/entity/ChangedEntity;tryAbsorbTarget(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;FLjava/util/List;)Z"
+            )
+    )
+    private boolean changedaddon$customAbsorb(ChangedEntity instance, LivingEntity target, IAbstractChangedEntity loserPlayer, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions) {
+        GrabEntityAbilityInstance selfThis = (GrabEntityAbilityInstance) (Object) this;
+        AttributeInstance attribute = instance.maybeGetUnderlying().getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get());
+        if (attribute == null) {
+            return instance.tryAbsorbTarget(this.grabbedEntity, selfThis.entity, amount, possibleMobFusions);
+        }
+        double attributeValue = attribute.getValue();
+        float dmg = Mth.ceil((float) attributeValue * 1.33f);
+        boolean result = instance.tryAbsorbTarget(this.grabbedEntity, selfThis.entity, dmg, possibleMobFusions);
+        return result;
     }
 
     @Inject(method = "tickIdle", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F", remap = true, shift = At.Shift.AFTER), cancellable = true)

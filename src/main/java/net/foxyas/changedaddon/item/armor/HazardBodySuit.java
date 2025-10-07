@@ -194,7 +194,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot == EquipmentSlot.CHEST) { // ou FULL_BODY se quiser aplicar só nesse caso
+        if (slot == EquipmentSlot.CHEST) {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 
             builder.put(
@@ -203,6 +203,16 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                             UUID.fromString("00000000-0000-0000-0000-000000000000"),
                             "Hazard Transfur Tolerance Buff",
                             1,
+                            AttributeModifier.Operation.MULTIPLY_TOTAL
+                    )
+            );
+
+            builder.put(
+                    ChangedAttributes.TRANSFUR_DAMAGE.get(),
+                    new AttributeModifier(
+                            UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                            "Hazard Transfur Tolerance Buff",
+                            -1,
                             AttributeModifier.Operation.MULTIPLY_TOTAL
                     )
             );

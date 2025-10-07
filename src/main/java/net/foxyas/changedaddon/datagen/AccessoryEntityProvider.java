@@ -8,6 +8,7 @@ import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.init.ChangedTagsExtension;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.minecraft.data.DataGenerator;
@@ -79,8 +80,8 @@ public class AccessoryEntityProvider implements DataProvider {
 
     protected void registerEntityAccessories() {
         this.add(ChangedTagsExtension.AccessoryEntityTags.HUMANOIDS)
-                .entities(ChangedAddonEntities.canUseAccessories().toArray(new EntityType[0]))
-                //.entityTypesTag(ChangedAddonTags.EntityTypes.CAN_USE_ACCESSORIES)
+                //.entities(ChangedAddonEntities.canUseAccessories().toArray(new EntityType[0]))
+                .entityTypesTag(ChangedAddonTags.EntityTypes.CAN_USE_ACCESSORIES)
                 .slots(getHumanoidSlots());
     }
 

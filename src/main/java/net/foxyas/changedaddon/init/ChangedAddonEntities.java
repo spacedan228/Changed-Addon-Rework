@@ -66,6 +66,8 @@ public class ChangedAddonEntities {
                 // Leopards
                 SNOW_LEOPARD_FEMALE_ORGANIC.get(),
                 SNOW_LEOPARD_MALE_ORGANIC.get(),
+                LATEX_WHITE_SNOW_LEOPARD_MALE.get(),
+                LATEX_WHITE_SNOW_LEOPARD_FEMALE.get(),
                 SNOW_LEOPARD_PARTIAL.get(),
                 LUMINARCTIC_LEOPARD_MALE.get(),
                 LUMINARCTIC_LEOPARD_FEMALE.get(),

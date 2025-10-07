@@ -1,16 +1,20 @@
 package net.foxyas.changedaddon.mixins.entity;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.entity.defaults.AbstractExp2SnepChangedEntity;
 import net.foxyas.changedaddon.entity.interfaces.ChangedEntityExtension;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
+import net.foxyas.changedaddon.item.armor.HazardBodySuit;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.ltxprogrammer.changed.data.AccessorySlotType;
+import net.ltxprogrammer.changed.data.AccessorySlots;
+import net.ltxprogrammer.changed.entity.AccessoryEntities;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -18,15 +22,24 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
+import java.util.Optional;
+
 @Mixin(value = ChangedEntity.class, remap = false)
 public abstract class ChangedEntityMixin extends Monster implements ChangedEntityExtension {
+
+    @Shadow
+    public abstract LivingEntity maybeGetUnderlying();
 
     @Unique
     protected boolean pacified = false;
@@ -60,6 +73,22 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     @Inject(at = @At("HEAD"), method = "targetSelectorTest", cancellable = true)
     private void onTargetSelectorTest(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
         if (c_additions$isNeutralTo(livingEntity)) cir.setReturnValue(false);
+    }
+
+    @Inject(at = @At("HEAD"), method = "tryAbsorbTarget", cancellable = true)
+    private void tryAbsorbTargetInjector(LivingEntity target, IAbstractChangedEntity source, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions, CallbackInfoReturnable<Boolean> cir) {
+        Optional<AccessorySlots> forEntity = AccessorySlots.getForEntity(maybeGetUnderlying());
+        if (forEntity.isPresent()) {
+            AccessorySlots accessorySlots = forEntity.get();
+            Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
+            if (item.isPresent()) {
+                ItemStack stack = item.get();
+                if (stack.getItem() instanceof HazardBodySuit) {
+                    ChangedAddonMod.LOGGER.info("Event Canceled Happened, value has been set to:{}", false);
+                    cir.setReturnValue(false);
+                }
+            }
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "addAdditionalSaveData", remap = true)

@@ -4,18 +4,24 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -28,14 +34,16 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber
 public class ChangedAddonAdminCommand {
@@ -49,6 +57,11 @@ public class ChangedAddonAdminCommand {
                                 .then(Commands.argument("value", BoolArgumentType.bool())
                                         .executes(ChangedAddonAdminCommand::setUltraInstinctDodge)
                                 )
+                        )
+                )
+                .then(Commands.literal("showTransfursSlots")
+                        .then(Commands.argument("NameSpace", StringArgumentType.string())
+                                .executes(ChangedAddonAdminCommand::showTransfursSlots)
                         )
                 )
                 .then(Commands.literal("allow_boss_transfur")
@@ -238,7 +251,7 @@ public class ChangedAddonAdminCommand {
 
     private static int setUltraInstinctDodge(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
-        var entitiesList = EntityArgument.getEntities(context, "targets");
+        Collection<? extends Entity> entitiesList = EntityArgument.getEntities(context, "targets");
         boolean value = BoolArgumentType.getBool(context, "value");
 
         List<Component> successMessages = new ArrayList<>();
@@ -250,7 +263,7 @@ public class ChangedAddonAdminCommand {
             if (entity instanceof ChangedEntity changedEntity) {
                 dodgeAbilityInstance = changedEntity.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
             } else if (entity instanceof Player player) {
-                var transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
+                TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
                 if (transfurVariantInstance != null) {
                     dodgeAbilityInstance = transfurVariantInstance.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
                 }
@@ -273,6 +286,54 @@ public class ChangedAddonAdminCommand {
 
         return 1;
     }
+
+    private static int showTransfursSlots(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        CommandSourceStack source = context.getSource();
+        String namespace = StringArgumentType.getString(context, "NameSpace");
+
+        ServerLevel level = source.getLevel();
+
+        // Cria o mapa entre EntityType e TransfurVariant
+        Map<EntityType<?>, TransfurVariant<?>> variantMap = ChangedRegistry.TRANSFUR_VARIANT.get()
+                .getValues().stream()
+                .filter(variant -> namespace.isEmpty() || variant.getFormId().getNamespace().equals(namespace))
+                .collect(Collectors.toMap(TransfurVariant::getEntityType, variant -> variant, (a, b) -> a));
+
+        for (Map.Entry<EntityType<?>, TransfurVariant<?>> entry : variantMap.entrySet()) {
+            EntityType<?> entityType = entry.getKey();
+            TransfurVariant<?> variant = entry.getValue();
+
+            Entity tempEntity = entityType.create(level);
+            if (!(tempEntity instanceof LivingEntity livingEntity)) continue;
+
+            // Verifica os slots
+            Optional<AccessorySlots> optionalSlots = AccessorySlots.getForEntity(livingEntity);
+
+            Component header = ComponentUtil.literal("EntityType: ")
+                    .append(ComponentUtil.literal(entityType.toShortString()).withStyle(ChatFormatting.AQUA))
+                    .append(ComponentUtil.literal("\nTransfurVariant: "))
+                    .append(ComponentUtil.literal(variant.getFormId().toString()).withStyle(ChatFormatting.GOLD));
+
+            if (optionalSlots.isPresent()) {
+                AccessorySlots slots = optionalSlots.get();
+                List<String> slotNames = slots.getSlotTypes().filter((accessorySlotType) -> accessorySlotType.getRegistryName() != null).map((accessorySlotType) -> accessorySlotType.getRegistryName().toString()).toList();
+                if (!slotNames.isEmpty()) {
+                    Component slotText = ComponentUtil.literal("\nSlots: ")
+                            .append(ComponentUtil.literal(String.join(", ", slotNames)).withStyle(ChatFormatting.GREEN));
+                    source.sendSuccess(header.copy().append(slotText), false);
+                } else {
+                    Component noSlots = ComponentUtil.literal("\nSlots: None").withStyle(ChatFormatting.DARK_GRAY);
+                    source.sendSuccess(header.copy().append(noSlots), false);
+                }
+            } else {
+                Component noSlotInfo = ComponentUtil.literal("\nSlots: [No AccessorySlots]").withStyle(ChatFormatting.RED);
+                source.sendSuccess(header.copy().append(noSlotInfo), false);
+            }
+        }
+
+        return 1;
+    }
+
 
     private static void sendCondensedMessage(CommandSourceStack source, List<Component> messages, boolean success) {
         int maxLines = 6;
