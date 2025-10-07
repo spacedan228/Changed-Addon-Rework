@@ -17,10 +17,13 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,8 +36,10 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -78,33 +83,64 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
             Random random = player.getRandom();
             BlockPos playerBlockPos = player.blockPosition();
             Stream<BlockPos> posStream = FoxyasUtils.betweenClosedStreamSphere(playerBlockPos, 3, 2);
+            Vec3 position = player.getEyePosition();
             float intensity = 1 + (player.getInventory().items.stream().filter((itemStack -> itemStack.is(ChangedAddonItems.DARK_LATEX_WOLF_PLUSH.get()))).count() / 100f);
-            posStream.forEach((pos) -> {
-                if ((world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get())
-                        && canSeePlayer(pos, world, playerBlockPos, player))) {
+            for (BlockPos plushyPos : posStream.filter((pos) -> world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get())).toList()) {
+                boolean canSeePlayer = canPlushySeePlayer(player, Vec3.atCenterOf(plushyPos), 360);
+                if (canSeePlayer) {
                     if (!event.updateWorld()) {
                         if (!ProcessTransfur.isPlayerTransfurred(player)) {
-                            if (random.nextFloat() <= (0.25f + (player.getLuck() / 100))
-                                    / ((player.position().distanceTo(Vec3.atCenterOf(pos))) * intensity)) {
+                            float randomValue = random.nextFloat();
+                            float luck = player.getLuck() / 100f;
+                            double distance = (position.distanceTo(Vec3.atCenterOf(plushyPos)));
+                            float value = (float) ((0.25f + luck) / (distance * intensity));
+                            if (randomValue <= value) {
                                 ProcessTransfur.transfur(player, world, getTransfurVariant(world), false, TransfurContext.hazard(TransfurCause.FACE_HAZARD));
                                 if (player instanceof ServerPlayer serverPlayer) {
                                     ChangedAddonCriteriaTriggers.SLEEP_NEXT_A_PLUSHY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "dark_latex_plushy", true);
                                 }
+                                break;
                             }
                         }
                     }
                 }
-            });
+            }
         }
 
-        private static boolean canSeePlayer(BlockPos pos, Level world, BlockPos playerBlockPos, Player player) {
-            return world.clip(getClipContext(pos, playerBlockPos, player)).getType() == HitResult.Type.MISS;
+        /**
+         * Checks if one entity (targetEntity) can be seen by (plushyPos), using rayCasting and FOV.
+         *
+         * @param targetEntity   The entity doing the looking.
+         * @param plushyPos  The target pos to be looked at.
+         * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
+         * @return true if visible and within FOV, false otherwise.
+         */
+        public static boolean canPlushySeePlayer(LivingEntity targetEntity, Vec3 plushyPos, double fovDegrees) {
+            Level level = targetEntity.level;
+            Vec3 from = targetEntity.getEyePosition(1.0F);
+
+            // First, check field of view using dot product
+            Vec3 lookVec = targetEntity.getLookAngle().normalize();
+            Vec3 directionToTarget = plushyPos.subtract(from).normalize();
+
+            double dot = lookVec.dot(directionToTarget);
+            double requiredDot = Math.cos(Math.toRadians(fovDegrees / 2.0));
+            if (dot < requiredDot)
+                return false; // Outside of FOV
+
+            // Then, raycast from eyeEntity to targetToSee to check if the view is blocked
+            HitResult result = level.clip(new DynamicClipContext(from, plushyPos, IGNORE_BED,
+                    ClipContext.Fluid.NONE::canPick, CollisionContext.of(targetEntity)));
+
+            // If result is MISS or hit point is very close to target, it's considered visible
+            return result.getType() == HitResult.Type.MISS ||
+                    result.getLocation().distanceToSqr(plushyPos) < 1.0;
         }
 
-        private static @NotNull DynamicClipContext getClipContext(BlockPos pos, BlockPos playerBlockPos, Player player) {
-            return new DynamicClipContext(Vec3.atCenterOf(pos), Vec3.atCenterOf(playerBlockPos), ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE::canPick, CollisionContext.of(player));
-        }
+        public static final ClipContext.ShapeGetter IGNORE_BED = (state, b, pos, context) -> {
+            if(state.getBlock() instanceof BedBlock) return Shapes.empty();
+            return ClipContext.Block.COLLIDER.get(state, b, pos, context);
+        };
     }
 
     @Override

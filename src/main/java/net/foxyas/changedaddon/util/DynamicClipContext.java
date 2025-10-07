@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.util;
 
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.core.BlockPos;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,6 +31,13 @@ public class DynamicClipContext extends ClipContext {
 
     public DynamicClipContext(Vec3 from, Vec3 to, ShapeGetter block, Predicate<FluidState> canPick, CollisionContext collisionContext) {
         super(from, to, Block.COLLIDER, Fluid.NONE, null);
+        this.block = block;
+        this.canPick = canPick;
+        this.context = collisionContext;
+    }
+
+    public DynamicClipContext(Vec3 from, Vec3 to, ShapeGetter block, Predicate<FluidState> canPick, Entity entity, CollisionContext collisionContext) {
+        super(from, to, Block.COLLIDER, Fluid.NONE, entity);
         this.block = block;
         this.canPick = canPick;
         this.context = collisionContext;
