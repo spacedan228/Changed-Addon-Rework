@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
+import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
 import net.foxyas.changedaddon.util.ComponentUtil;
@@ -61,7 +62,14 @@ public class ChangedAddonAdminCommand {
                 )
                 .then(Commands.literal("showTransfursSlots")
                         .then(Commands.argument("NameSpace", StringArgumentType.string())
-                                .executes(ChangedAddonAdminCommand::showTransfursSlots)
+                                .then(Commands.argument("FilterWithSlots", StringArgumentType.string())
+                                        .suggests(((commandContext, suggestionsBuilder) -> {
+                                            List<String> suggestions = List.of("\"\"", "no_slots", "none_slots", "with_slots");
+                                            suggestions.forEach((suggestionsBuilder::suggest));
+                                            return suggestionsBuilder.buildFuture();
+                                        }))
+                                        .executes(ChangedAddonAdminCommand::showTransfursSlots)
+                                )
                         )
                 )
                 .then(Commands.literal("allow_boss_transfur")
@@ -290,6 +298,11 @@ public class ChangedAddonAdminCommand {
     private static int showTransfursSlots(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         String namespace = StringArgumentType.getString(context, "NameSpace");
+        String filter = StringArgumentType.getString(context, "FilterWithSlots").toLowerCase();
+        List<String> suggestions = List.of("\"\"", "no_slots", "none_slots", "with_slots");
+        if (!suggestions.contains(filter)) {
+            filter = "";
+        }
 
         ServerLevel level = source.getLevel();
 
@@ -315,21 +328,35 @@ public class ChangedAddonAdminCommand {
                     .append(ComponentUtil.literal(variant.getFormId().toString()).withStyle(ChatFormatting.GOLD));
 
             if (optionalSlots.isPresent()) {
+                if (filter.contains("no_slots")) {
+                    Component noSlotInfo = ComponentUtil.literal("⚠️ ")
+                            .append(ComponentUtil.literal("No entities found having no slots, try using 'none_slots'."))
+                            .withStyle(ChatFormatting.RED)
+                            .append(ComponentUtil.literal("\n---"));
+                    source.sendSuccess(header.copy().append(noSlotInfo), false);
+                }
                 AccessorySlots slots = optionalSlots.get();
                 List<String> slotNames = slots.getSlotTypes().filter((accessorySlotType) -> accessorySlotType.getRegistryName() != null).map((accessorySlotType) -> accessorySlotType.getRegistryName().toString()).toList();
                 if (!slotNames.isEmpty()) {
-                    Component slotText = ComponentUtil.literal("\nSlots: ")
-                            .append(ComponentUtil.literal(String.join(", ", slotNames)).withStyle(ChatFormatting.GREEN));
-                    source.sendSuccess(header.copy().append(slotText), false);
+                    if (filter.contains("with_slots") || filter.isBlank()) {
+                        Component slotText = ComponentUtil.literal("\nSlots: ")
+                                .append(ComponentUtil.literal(String.join(", ", slotNames)).withStyle(ChatFormatting.GREEN)).append("\n");
+                        source.sendSuccess(header.copy().append(slotText), false);
+                    }
                 } else {
-                    Component noSlots = ComponentUtil.literal("\nSlots: None").withStyle(ChatFormatting.DARK_GRAY);
-                    source.sendSuccess(header.copy().append(noSlots), false);
+                    if (filter.contains("none_slots") || filter.isBlank()) {
+                        Component noSlots = ComponentUtil.literal("\nSlots: None").withStyle(ChatFormatting.DARK_GRAY).append("\n");
+                        source.sendSuccess(header.copy().append(noSlots), false);
+                    }
                 }
             } else {
-                Component noSlotInfo = ComponentUtil.literal("\nSlots: [No AccessorySlots]").withStyle(ChatFormatting.RED);
-                source.sendSuccess(header.copy().append(noSlotInfo), false);
+                if (filter.contains("no_slots") || filter.isBlank()) {
+                    Component noSlotInfo = ComponentUtil.literal("\nSlots: [No AccessorySlots]").withStyle(ChatFormatting.RED).append("\n---");
+                    source.sendSuccess(header.copy().append(noSlotInfo), false);
+                }
             }
         }
+        variantMap.clear();
 
         return 1;
     }
