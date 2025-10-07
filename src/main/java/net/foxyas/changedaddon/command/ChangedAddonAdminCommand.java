@@ -13,7 +13,9 @@ import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
 import net.foxyas.changedaddon.util.ComponentUtil;
+import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.ltxprogrammer.changed.command.CommandTransfur;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
@@ -26,12 +28,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -42,9 +46,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static net.ltxprogrammer.changed.init.ChangedLootItemFunctions.RANDOM_VARIANT;
 
 @Mod.EventBusSubscriber
 public class ChangedAddonAdminCommand {
@@ -61,15 +68,29 @@ public class ChangedAddonAdminCommand {
                         )
                 )
                 .then(Commands.literal("showTransfursSlots")
-                        .then(Commands.argument("NameSpace", StringArgumentType.string())
+                        .then(Commands.argument("NamespaceFormId", StringArgumentType.greedyString())
+                                .suggests((context, builder) -> {
+                                    String namespaceFormId = StringArgumentType.getString(context, "NamespaceFormId").toLowerCase();
+                                    ArrayList<ResourceLocation> list = TransfurVariant.getPublicTransfurVariants().map(ForgeRegistryEntry::getRegistryName).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+                                    list.add(TransfurVariant.SPECIAL_LATEX);
+                                    TreeSet<String> set = list.stream().map(ResourceLocation::getNamespace).collect(Collectors.toCollection(TreeSet::new));
+                                    if (namespaceFormId.startsWith("$")) {
+                                        set.forEach(builder::suggest);
+                                    } else {
+                                        list.stream().map(ResourceLocation::toString).toList().forEach(builder::suggest);
+                                    }
+
+                                    return builder.buildFuture();
+                                })
                                 .then(Commands.argument("FilterWithSlots", StringArgumentType.string())
-                                        .suggests(((commandContext, suggestionsBuilder) -> {
+                                        .suggests((context, builder) -> {
                                             List<String> suggestions = List.of("\"\"", "no_slots", "none_slots", "with_slots");
-                                            suggestions.forEach((suggestionsBuilder::suggest));
-                                            return suggestionsBuilder.buildFuture();
-                                        }))
+                                            suggestions.forEach(builder::suggest);
+                                            return builder.buildFuture();
+                                        })
                                         .executes(ChangedAddonAdminCommand::showTransfursSlots)
                                 )
+                                .executes(ChangedAddonAdminCommand::showTransfursSlots)
                         )
                 )
                 .then(Commands.literal("allow_boss_transfur")
@@ -295,31 +316,57 @@ public class ChangedAddonAdminCommand {
         return 1;
     }
 
+    private static final int MAX_OUTPUT = 20; // max lines to show
+
     private static int showTransfursSlots(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
-        String namespace = StringArgumentType.getString(context, "NameSpace");
-        String filter = StringArgumentType.getString(context, "FilterWithSlots").toLowerCase();
-        List<String> suggestions = List.of("\"\"", "no_slots", "none_slots", "with_slots");
-        if (!suggestions.contains(filter)) {
-            filter = "";
+        String namespaceFormId = StringArgumentType.getString(context, "NamespaceFormId").toLowerCase();
+        String filter = "";
+        try {
+            filter = StringArgumentType.getString(context, "FilterWithSlots").toLowerCase();
+        } catch (IllegalArgumentException ignored) {
         }
+
+        List<String> validFilters = List.of("\"\"", "no_slots", "none_slots", "with_slots");
+        if (!validFilters.contains(filter)) filter = "";
+
+        String namespace = "";
+        String formIdFilter = "";
+
+        String[] parts = namespaceFormId.split(":", 2);
+        if (parts.length > 0) namespace = parts[0];
+        if (parts.length > 1) formIdFilter = parts[1];
+
+        final String finalNamespace = namespace;
+        final String finalFormIdFilter = formIdFilter;
 
         ServerLevel level = source.getLevel();
 
-        // Cria o mapa entre EntityType e TransfurVariant
         Map<EntityType<?>, TransfurVariant<?>> variantMap = ChangedRegistry.TRANSFUR_VARIANT.get()
                 .getValues().stream()
-                .filter(variant -> namespace.isEmpty() || variant.getFormId().getNamespace().equals(namespace))
-                .collect(Collectors.toMap(TransfurVariant::getEntityType, variant -> variant, (a, b) -> a));
+                .filter(variant -> finalNamespace.isEmpty() || variant.getFormId().getNamespace().equalsIgnoreCase(finalNamespace))
+                .filter(variant -> finalFormIdFilter.isEmpty() || variant.getFormId().getPath().toLowerCase().contains(finalFormIdFilter))
+                .sorted(Comparator.comparing(variant -> variant.getFormId().toString()))
+                .collect(Collectors.toMap(
+                        TransfurVariant::getEntityType,
+                        variant -> variant,
+                        (a, b) -> a,
+                        LinkedHashMap::new
+                ));
 
+        int count = 0;
         for (Map.Entry<EntityType<?>, TransfurVariant<?>> entry : variantMap.entrySet()) {
+            if (count >= MAX_OUTPUT) {
+                source.sendSuccess(ComponentUtil.literal("⚠ Data too large for chat, showing only " + MAX_OUTPUT + " entries.").withStyle(ChatFormatting.YELLOW), false);
+                break;
+            }
+
             EntityType<?> entityType = entry.getKey();
             TransfurVariant<?> variant = entry.getValue();
 
             Entity tempEntity = entityType.create(level);
             if (!(tempEntity instanceof LivingEntity livingEntity)) continue;
 
-            // Verifica os slots
             Optional<AccessorySlots> optionalSlots = AccessorySlots.getForEntity(livingEntity);
 
             Component header = ComponentUtil.literal("EntityType: ")
@@ -328,36 +375,30 @@ public class ChangedAddonAdminCommand {
                     .append(ComponentUtil.literal(variant.getFormId().toString()).withStyle(ChatFormatting.GOLD));
 
             if (optionalSlots.isPresent()) {
-                if (filter.contains("no_slots")) {
-                    Component noSlotInfo = ComponentUtil.literal("\n⚠️ ")
-                            .append(ComponentUtil.literal("No entities found having no slots, try using 'none_slots'."))
-                            .withStyle(ChatFormatting.RED)
-                            .append(ComponentUtil.literal("\n---"));
-                    source.sendSuccess(header.copy().append(noSlotInfo), false);
-                }
                 AccessorySlots slots = optionalSlots.get();
-                List<String> slotNames = slots.getSlotTypes().filter((accessorySlotType) -> accessorySlotType.getRegistryName() != null).map((accessorySlotType) -> accessorySlotType.getRegistryName().toString()).toList();
-                if (!slotNames.isEmpty()) {
-                    if (filter.contains("with_slots") || filter.isBlank()) {
-                        Component slotText = ComponentUtil.literal("\nSlots: ")
-                                .append(ComponentUtil.literal(String.join(", ", slotNames)).withStyle(ChatFormatting.GREEN)).append("\n");
-                        source.sendSuccess(header.copy().append(slotText), false);
-                    }
-                } else {
-                    if (filter.contains("none_slots") || filter.isBlank()) {
-                        Component noSlots = ComponentUtil.literal("\nSlots: None").withStyle(ChatFormatting.DARK_GRAY).append("\n");
-                        source.sendSuccess(header.copy().append(noSlots), false);
-                    }
-                }
-            } else {
-                if (filter.contains("no_slots") || filter.isBlank()) {
-                    Component noSlotInfo = ComponentUtil.literal("\nSlots: [No AccessorySlots]").withStyle(ChatFormatting.RED).append("\n---");
-                    source.sendSuccess(header.copy().append(noSlotInfo), false);
-                }
-            }
-        }
-        variantMap.clear();
+                List<String> slotNames = slots.getSlotTypes()
+                        .filter(s -> s.getRegistryName() != null)
+                        .map(s -> s.getRegistryName().toString())
+                        .toList();
 
+                if (!slotNames.isEmpty() && (filter.contains("with_slots") || filter.isBlank())) {
+                    Component slotText = ComponentUtil.literal("\nSlots: ")
+                            .append(ComponentUtil.literal(String.join(", ", slotNames)).withStyle(ChatFormatting.GREEN))
+                            .append("\n");
+                    source.sendSuccess(header.copy().append(slotText), false);
+                } else if (slotNames.isEmpty() && (filter.contains("none_slots") || filter.isBlank())) {
+                    Component noSlots = ComponentUtil.literal("\nSlots: None").withStyle(ChatFormatting.DARK_GRAY).append("\n");
+                    source.sendSuccess(header.copy().append(noSlots), false);
+                }
+            } else if (filter.contains("no_slots") || filter.isBlank()) {
+                Component noSlotInfo = ComponentUtil.literal("\nSlots: [No AccessorySlots]").withStyle(ChatFormatting.RED).append("\n---");
+                source.sendSuccess(header.copy().append(noSlotInfo), false);
+            }
+
+            count++;
+        }
+
+        variantMap.clear();
         return 1;
     }
 

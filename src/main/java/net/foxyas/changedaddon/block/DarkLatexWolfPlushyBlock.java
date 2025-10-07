@@ -143,12 +143,6 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
         };
     }
 
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder);
-        pBuilder.add(FACING, WATERLOGGED);
-    }
-
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
         ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get(), renderType -> renderType == RenderType.cutoutMipped());

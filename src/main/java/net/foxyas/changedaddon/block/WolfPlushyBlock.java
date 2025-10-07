@@ -24,6 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.BlockHitResult;
@@ -38,11 +40,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class WolfPlushyBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class WolfPlushyBlock extends AbstractPlushyBlock {
 
     public WolfPlushyBlock() {
         super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(0.5f, 5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
-        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+        this.registerDefaultState(this.stateDefinition.any()
+                .setValue(FACING, Direction.NORTH)
+                .setValue(WATERLOGGED, false));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -81,21 +85,6 @@ public class WolfPlushyBlock extends HorizontalDirectionalBlock implements Entit
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
-    }
-
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-    }
-
-    @Override
-    public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-        return 20;
-    }
-
-    @Override
     public @NotNull InteractionResult use(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player entity, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         InteractionResult retValue = super.use(blockstate, world, pos, entity, hand, hit);
         double hitX = hit.getLocation().x;
@@ -117,28 +106,5 @@ public class WolfPlushyBlock extends HorizontalDirectionalBlock implements Entit
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new WolfPlushyBlockEntity(pos, state);
-    }
-
-    @Override
-    public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
-        super.onPlace(blockstate, world, pos, oldState, moving);
-        world.scheduleTick(pos, this, 10);
-    }
-
-    @Override
-    public void tick(BlockState state, ServerLevel serverLevel, BlockPos pos, Random p_60465_) {
-        super.tick(state, serverLevel, pos, p_60465_);
-        BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
-        if (blockEntity instanceof WolfPlushyBlockEntity WolfPlushyBlockEntity && WolfPlushyBlockEntity.isSqueezed()) {
-            WolfPlushyBlockEntity.subSqueezedTicks(1);
-        }
-        serverLevel.scheduleTick(pos, this, 10);
-    }
-
-    @Override
-    public boolean triggerEvent(BlockState state, Level world, BlockPos pos, int eventID, int eventParam) {
-        super.triggerEvent(state, world, pos, eventID, eventParam);
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        return blockEntity != null && blockEntity.triggerEvent(eventID, eventParam);
     }
 }

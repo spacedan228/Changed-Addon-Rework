@@ -197,12 +197,14 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         if (slot == EquipmentSlot.CHEST) {
             ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 
+            Boolean helmeted = this.getClothingState(stack).getValue(HELMET);
+            float multiplier = helmeted ? 1f : 0.75f;
             builder.put(
                     ChangedAttributes.TRANSFUR_TOLERANCE.get(),
                     new AttributeModifier(
                             UUID.fromString("00000000-0000-0000-0000-000000000000"),
                             "Hazard Transfur Tolerance Buff",
-                            1,
+                            multiplier,
                             AttributeModifier.Operation.MULTIPLY_TOTAL
                     )
             );
@@ -222,7 +224,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                     new AttributeModifier(
                             UUID.fromString("00000000-0000-0000-0000-000000000001"),
                             "Hazard Armor Speed Debuff",
-                            0.05,
+                            0.05 * multiplier,
                             AttributeModifier.Operation.ADDITION
                     )
             );
@@ -232,7 +234,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                     new AttributeModifier(
                             UUID.fromString("00000000-0000-0000-0000-000000000002"),
                             "Hazard Armor Buff",
-                            2,
+                            2 * multiplier,
                             AttributeModifier.Operation.ADDITION
                     )
             );

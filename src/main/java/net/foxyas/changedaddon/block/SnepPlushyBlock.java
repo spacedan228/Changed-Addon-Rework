@@ -48,10 +48,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class SnepPlushyBlock extends Block implements SimpleWaterloggedBlock, EntityBlock {
+public class SnepPlushyBlock extends AbstractPlushyBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
-    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final EnumProperty<CansEnum> CANS = EnumProperty.create("cans", CansEnum.class);
 
     public SnepPlushyBlock() {

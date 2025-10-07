@@ -2,7 +2,9 @@ package net.foxyas.changedaddon.client.renderer.items;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.client.model.clothes.HazardBodySuitLayers;
+import net.foxyas.changedaddon.client.model.clothes.PlayerModelVisibilityModifier;
 import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
+import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.ltxprogrammer.changed.client.FormRenderHandler;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.accessory.AccessoryRenderer;
@@ -14,8 +16,10 @@ import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorHumanModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
+import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.item.Clothing;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
@@ -27,6 +31,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -37,6 +42,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +54,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @SuppressWarnings("ALL")
-public class TransfurAwareClothingRenderer implements AccessoryRenderer, TransitionalAccessory {
+public class TransfurAwareClothingRenderer implements AccessoryRenderer, TransitionalAccessory, PlayerModelVisibilityModifier {
     protected final HumanoidModel clothingModel;
     protected HumanoidModel playerClothingModel;
     protected final Set<ModelComponent> components;
@@ -143,6 +149,26 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
 
     }
 
+    public static boolean shouldHideHat(LivingEntity entity) {
+        if (entity instanceof Player player) {
+            if (ProcessTransfur.isPlayerTransfurred(player)) return false;
+
+            if (AccessorySlots.getForEntity(player).isPresent()) {
+                AccessorySlots accessorySlots = AccessorySlots.getForEntity(player).get();
+                Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
+                if (item.isPresent()) {
+                    ItemStack stack = item.get();
+                    if (stack.getItem() instanceof HazardBodySuit hazardBodySuit) {
+                        return hazardBodySuit.getClothingState(stack).getValue(HazardBodySuit.HELMET);
+                    }
+                }
+            }
+        }
+
+
+        return false;
+    }
+
     private <T extends LivingEntity> HumanoidModel<?> getPlayerModel(T entity) {
         ModelLayerLocation layer = HazardBodySuitLayers.PLAYER;
         boolean slim = false;
@@ -203,10 +229,38 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                 baseModel.copyPropertiesTo(this.playerClothingModel);
                 ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
                 armPart.loadPose(armPose);
+                /*if (baseModel instanceof PlayerModel<?> playerModel) {
+                    playerModel.rightSleeve.visible = false;
+                    playerModel.leftSleeve.visible = false;
+                    playerModel.rightPants.visible = false;
+                    playerModel.leftPants.visible = false;
+                    playerModel.jacket.visible = false;
+                    playerModel.hat.visible = !shouldHideHat(entity);
+                }*/
                 FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             }
         }
 
+    }
+
+    @Override
+    public void setPlayerModelProperties(AbstractClientPlayer clientPlayer, PlayerModel<AbstractClientPlayer> playerModel) {
+        if (!ProcessTransfur.isPlayerTransfurred(clientPlayer)) {
+            if (!clientPlayer.isSpectator()) {
+                playerModel.setAllVisible(true);
+                playerModel.hat.visible = !shouldHideHat(clientPlayer);
+                playerModel.jacket.visible = false;
+                playerModel.leftPants.visible = false;
+                playerModel.rightPants.visible = false;
+                playerModel.leftSleeve.visible = false;
+                playerModel.rightSleeve.visible = false;
+            }
+        }
+    }
+
+    @Override
+    public boolean isVisible() {
+        return PlayerModelVisibilityModifier.super.isVisible();
     }
 
     public static record ModelComponent(ArmorModel armorModel, EquipmentSlot renderAs) {

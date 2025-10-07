@@ -45,6 +45,7 @@
   },
   "client": [
     "client.MouseHandlerAccessor",
+    "client.PlayerRendererMixin",
     "client.renderer.AdvancedHumanoidModelMixin",
     "client.renderer.AdvancedHumanoidRendererMixin",
     "client.renderer.GameRendererMixin",
