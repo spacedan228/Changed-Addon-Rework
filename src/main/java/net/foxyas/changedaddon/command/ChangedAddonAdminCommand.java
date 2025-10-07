@@ -329,7 +329,7 @@ public class ChangedAddonAdminCommand {
 
             if (optionalSlots.isPresent()) {
                 if (filter.contains("no_slots")) {
-                    Component noSlotInfo = ComponentUtil.literal("⚠️ ")
+                    Component noSlotInfo = ComponentUtil.literal("\n⚠️ ")
                             .append(ComponentUtil.literal("No entities found having no slots, try using 'none_slots'."))
                             .withStyle(ChatFormatting.RED)
                             .append(ComponentUtil.literal("\n---"));

@@ -7,7 +7,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "changed_addon:white_latex_cover"
         }
       ],
       "conditions": [
@@ -26,7 +26,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "changed_addon:white_latex_cover"
         }
       ],
       "conditions": [
@@ -45,7 +45,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "changed_addon:white_latex_cover"
         }
       ],
       "conditions": [
@@ -64,7 +64,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "changed_addon:white_latex_cover"
         }
       ],
       "conditions": [
@@ -83,7 +83,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "changed_addon:white_latex_cover"
         }
       ],
       "conditions": [
@@ -102,7 +102,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "changed_addon:white_latex_cover"
         }
       ],
       "conditions": [
