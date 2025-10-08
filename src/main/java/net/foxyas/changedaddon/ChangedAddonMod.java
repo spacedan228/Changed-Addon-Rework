@@ -40,6 +40,7 @@ public class ChangedAddonMod {
         ChangedAddonPaintingTypes.PAINTING_TYPES.register(bus);
 
         ChangedAddonItemTiers.init();
+        ChangedAddonAttributes.ATTRIBUTES.register(bus);
         ChangedAddonItems.REGISTRY.register(bus);
 
         ChangedAddonEntities.REGISTRY.register(bus);

@@ -21,11 +21,6 @@ public class ChangedAddonAttributes {
     public static final RegistryObject<Attribute> LATEX_INFECTION = ATTRIBUTES.register("latex_infection", () -> (new RangedAttribute("attribute." + ChangedAddonMod.MODID + ".latex_infection", 0, 0, 100)).setSyncable(true));
 
     @SubscribeEvent
-    public static void register(FMLConstructModEvent event) {
-        event.enqueueWork(() -> ATTRIBUTES.register(FMLJavaModLoadingContext.get().getModEventBus()));
-    }
-
-    @SubscribeEvent
     public static void addAttributes(EntityAttributeModificationEvent event) {
         event.add(EntityType.PLAYER, LATEX_RESISTANCE.get());
         event.add(EntityType.PLAYER, LATEX_INFECTION.get());
