@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class MultifaceBlock extends Block implements RenderLayerProvider {
 
@@ -39,7 +40,7 @@ public class MultifaceBlock extends Block implements RenderLayerProvider {
     private static final VoxelShape SOUTH_AABB = Block.box(0.0D, 0.0D, 15.0D, 16.0D, 16.0D, 16.0D);
     private static final VoxelShape DOWN_AABB = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
 
-    private static final Map<BlockState, VoxelShape> SHAPE_CACHE = new HashMap<>();
+    private static final Map<BlockState, VoxelShape> SHAPE_CACHE = new ConcurrentHashMap<>(); //Changed To ConcurrentHashMap to fix `ConcurrentModificationException : null`
 
     public MultifaceBlock(Properties pProperties) {
         super(pProperties);
