@@ -67,6 +67,7 @@ public class SimpleClothingItem extends Item implements Wearable, Clothing, Exte
         return this.defaultClothingState;
     }
 
+    @SuppressWarnings("rawtypes")
     public ClothingState getClothingState(ItemStack stack) {
         CompoundTag compoundTag = stack.getTag();
         if (compoundTag == null) {
@@ -75,7 +76,7 @@ public class SimpleClothingItem extends Item implements Wearable, Clothing, Exte
             CompoundTag stateData = compoundTag.getCompound("state");
             AtomicReference<ClothingState> evaluatedState = new AtomicReference<>(this.defaultClothingState());
             stateData.getAllKeys().forEach((propertyName) -> {
-                Property<?> property = this.stateDefinition.getProperty(propertyName);
+                Property property = this.stateDefinition.getProperty(propertyName);
                 if (property != null) {
                     property.getValue(stateData.getString(propertyName)).ifPresent((value) -> evaluatedState.set(evaluatedState.get().setValue(property, (Comparable) value)));
                 }
