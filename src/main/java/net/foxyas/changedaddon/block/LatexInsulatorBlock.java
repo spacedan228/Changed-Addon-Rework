@@ -3,7 +3,8 @@ package net.foxyas.changedaddon.block;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
-import net.foxyas.changedaddon.procedures.LatexInsulatorUpdateTickProcedure;
+import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -39,8 +40,6 @@ import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class LatexInsulatorBlock extends Block {
-
-    public static final VoxelShape SHAPE_WHOLE = Block.box(1.0, 0.0, 1.0, 15.0, 16.0, 15.0);
 
     public LatexInsulatorBlock() {
         super(BlockBehaviour.Properties.of(Material.CLAY).sound(SoundType.SLIME_BLOCK).strength(0.05f, 10f).speedFactor(0.5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
@@ -92,29 +91,33 @@ public class LatexInsulatorBlock extends Block {
 
     @Override
     public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
-        super.onPlace(blockstate, world, pos, oldState, moving);
         world.scheduleTick(pos, this, 10);
     }
 
     @Override
-    public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, Random random) {
-        super.tick(blockstate, world, pos, random);
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        LatexInsulatorUpdateTickProcedure.execute(world, x, y, z);
-        world.scheduleTick(pos, this, 10);
+    public void tick(BlockState blockstate, ServerLevel level, BlockPos origin, Random random) {
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        BlockState bs = level.getBlockState(pos);
+        if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
+            level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
+
+        for(Direction dir : Direction.values()){
+            pos.set(origin).relative(dir);
+            bs = level.getBlockState(pos);
+            if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
+                level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
+        }
+
+        level.scheduleTick(pos, this, 10);
     }
 
     @Override
     public void attack(BlockState blockstate, Level world, BlockPos pos, Player entity) {
-        super.attack(blockstate, world, pos, entity);
         execute(entity);
     }
 
     @Override
     public void entityInside(BlockState blockstate, Level world, BlockPos pos, Entity entity) {
-        super.entityInside(blockstate, world, pos, entity);
         execute(entity);
     }
 

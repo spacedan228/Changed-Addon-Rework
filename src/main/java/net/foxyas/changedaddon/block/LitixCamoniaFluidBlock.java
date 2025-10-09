@@ -3,10 +3,12 @@ package net.foxyas.changedaddon.block;
 import net.foxyas.changedaddon.init.ChangedAddonFluids;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.network.ChangedAddonModVariables;
-import net.foxyas.changedaddon.procedures.LitixCamoniaFluidUpdateTickProcedure;
+import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
@@ -28,6 +30,7 @@ import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class LitixCamoniaFluidBlock extends LiquidBlock {
+
     public LitixCamoniaFluidBlock() {
         super(() -> (FlowingFluid) ChangedAddonFluids.LITIX_CAMONIA_FLUID.get(),
                 BlockBehaviour.Properties.of(Material.WATER, MaterialColor.SNOW).strength(100f)
@@ -46,9 +49,21 @@ public class LitixCamoniaFluidBlock extends LiquidBlock {
     }
 
     @Override
-    public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, Random random) {
-        LitixCamoniaFluidUpdateTickProcedure.execute(world, pos.getX(), pos.getY(), pos.getZ());
-        world.scheduleTick(pos, this, 10);
+    public void tick(BlockState blockstate, ServerLevel level, BlockPos origin, Random random) {
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
+        BlockState bs = level.getBlockState(pos);
+        if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
+            level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
+
+        for(Direction dir : Direction.values()){
+            pos.set(origin).relative(dir);
+            bs = level.getBlockState(pos);
+            if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
+                level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
+        }
+
+        level.scheduleTick(pos, this, 10);
     }
 
     @Override
