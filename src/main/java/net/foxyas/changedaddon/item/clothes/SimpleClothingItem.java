@@ -39,8 +39,8 @@ public class SimpleClothingItem extends Item implements Wearable, Clothing, Exte
     public StateDefinition<SimpleClothingItem, ClothingState> stateDefinition;
     public ClothingState defaultClothingState;
 
-    public SimpleClothingItem() {
-        super((new Item.Properties()).tab(ChangedTabs.TAB_CHANGED_ITEMS).durability(5));
+    public SimpleClothingItem(Item.Properties properties) {
+        super(properties);
         StateDefinition.Builder<SimpleClothingItem, ClothingState> builder = new StateDefinition.Builder<>(this);
         this.createClothingStateDefinition(builder);
         this.stateDefinition = builder.create(SimpleClothingItem::defaultClothingState, ClothingState::new);
