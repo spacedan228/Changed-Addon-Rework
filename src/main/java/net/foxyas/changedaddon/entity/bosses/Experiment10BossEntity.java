@@ -5,7 +5,6 @@ import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.ThrowWitherProjectileGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.WitherWave;
-import net.foxyas.changedaddon.entity.goals.exp9.LightningComboAttackGoal;
 import net.foxyas.changedaddon.entity.goals.generic.BreakBlocksAroundGoal;
 import net.foxyas.changedaddon.entity.goals.generic.BurstAttack;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.DashPunchGoal;
@@ -43,7 +42,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
-import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
@@ -79,6 +77,7 @@ import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
 public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, BossWithMusic, CustomPatReaction, PowderSnowWalkable {
+
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment10BossEntity.class, EntityDataSerializers.BOOLEAN);
     private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.RED, ServerBossEvent.BossBarOverlay.NOTCHED_6);
@@ -411,11 +410,8 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     public void setCrawlingPoseIfNeeded(LivingEntity target) {
-        double targetEyeY = target.getEyeY();
-        double entityEyeY = this.getEyeY();
-
         if (target.getPose() == Pose.SWIMMING && !(this.getPose() == Pose.SWIMMING)) {
-            if (target.getY() < entityEyeY && !(target.level.getBlockState(new BlockPos(target.getX(), target.getEyeY(), target.getZ()).above()).isAir())) {
+            if (target.getY() < getEyeY() && !(target.level.getBlockState(new BlockPos(target.getX(), target.getEyeY(), target.getZ()).above()).isAir())) {
                 this.setPose(Pose.SWIMMING);
             }
         } else {
@@ -530,7 +526,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
                 } else {
                     if (Targets != null && !(Targets instanceof ServerPlayer)) {
                         entity.setTarget(Targets);
-                    } else if (Targets != null && Targets instanceof ServerPlayer serverPlayer) {
+                    } else if (Targets instanceof ServerPlayer serverPlayer) {
                         if (serverPlayer.gameMode.getGameModeForPlayer() != GameType.CREATIVE && serverPlayer.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
                             entity.setTarget(Targets);
                         }
@@ -551,7 +547,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
 
     @Override
     public void WhenPattedReaction(Player player, InteractionHand hand) {
-        if (!(player.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (!(player.getLevel() instanceof ServerLevel)) return;
         if (player instanceof ServerPlayer serverPlayer) {
             ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, this, "pats_on_the_beast");
         }

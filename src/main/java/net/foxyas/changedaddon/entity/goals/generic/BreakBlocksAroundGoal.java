@@ -8,7 +8,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
 
@@ -108,10 +107,6 @@ public class BreakBlocksAroundGoal extends Goal {
             }
         }
         breakCooldown = suppedCooldown;
-    }
-
-    @Override
-    public void stop() {
     }
 
     public void tickCooldown() {

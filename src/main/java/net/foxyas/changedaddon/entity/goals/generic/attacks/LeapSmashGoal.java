@@ -20,6 +20,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class LeapSmashGoal extends Goal {
+
     private final Mob mob;
     public int cooldown;
     private LivingEntity target;

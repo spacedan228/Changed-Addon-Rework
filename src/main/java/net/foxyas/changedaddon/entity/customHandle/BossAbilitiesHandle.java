@@ -49,9 +49,6 @@ public record BossAbilitiesHandle(AbstractLuminarcticLeopard boss) {
             return;
         }
 
-        int radius = 3; // Raio da explosão
-        int radiusY = 3;
-        BlockPos center = boss.blockPosition();
         Level world = boss.getLevel();
 
         world.explode(boss, boss.getX(), boss.getY(), boss.getZ(), 1, Explosion.BlockInteraction.DESTROY);
@@ -61,7 +58,6 @@ public record BossAbilitiesHandle(AbstractLuminarcticLeopard boss) {
             }
             entity.knockback(1.5, boss.getX() - entity.getX(), boss.getZ() - entity.getZ());
         }
-
     }
 
     private static List<EntityType<?>> ImmuneEntities() {

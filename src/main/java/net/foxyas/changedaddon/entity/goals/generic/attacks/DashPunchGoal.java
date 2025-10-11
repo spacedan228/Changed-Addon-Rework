@@ -15,6 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 public class DashPunchGoal extends Goal {
+
     private final Mob mob;
     private Phase phase = Phase.IDLE;
     private int chargeTicks = 0;

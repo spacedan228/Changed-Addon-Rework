@@ -16,6 +16,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class WitherWave extends Goal {
+
     private final Mob mob;
     private final UniformInt cooldownProvider;
     private int cooldown;

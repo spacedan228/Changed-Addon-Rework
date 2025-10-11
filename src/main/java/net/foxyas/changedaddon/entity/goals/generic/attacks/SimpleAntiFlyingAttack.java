@@ -18,10 +18,10 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 
 public class SimpleAntiFlyingAttack extends Goal {
+
     private final Mob attacker;
     private final int delay;
     private final IntProvider cooldownProvider;
@@ -147,28 +147,19 @@ public class SimpleAntiFlyingAttack extends Goal {
 
     @Override
     public void stop() {
-        if (!attacker.isOnGround()) {
-            BlockPos pos = attacker.blockPosition();
-            int groundY = attacker.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
+        if (!attacker.isOnGround() && !attacker.getFeetBlockState().getFluidState().isEmpty()) {
+            Level level = attacker.level;
+            BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+            pos.set(attacker.blockPosition());
 
-            Level world = attacker.level;
-            if (world.dimensionType().hasCeiling()) {
-                // Começa do teto e desce até achar espaço
-                int maxY = world.getHeight() - 1;
-                for (int y = maxY; y > 0; y--) {
-                    BlockPos checkPos = new BlockPos(pos.getX(), y, pos.getZ());
-                    // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
-                    if (world.isEmptyBlock(checkPos) && world.isEmptyBlock(checkPos.above())) {
-                        groundY = y;
-                        break;
-                    }
-                }
+            while (level.isEmptyBlock(pos)){
+                pos.move(0, -1, 0);
             }
+            pos.move(0, 1, 0);
 
-            attacker.teleportTo(pos.getX() + 0.5, groundY + 0.5, pos.getZ() + 0.5);
+            attacker.teleportTo(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
             spawnImpactSoundEffect();
             spawnImpactParticleEffect(target.position());
-            //target.teleportTo(attacker.getX(), attacker.getY(), attacker.getZ());
         }
         ticks = 0;
         cooldown = cooldownProvider.sample(this.attacker.getRandom());

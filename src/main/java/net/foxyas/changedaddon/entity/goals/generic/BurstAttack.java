@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 public class BurstAttack extends Goal {
+
     private final Mob boss;
 
     public BurstAttack(Mob boss) {
@@ -18,7 +19,6 @@ public class BurstAttack extends Goal {
         if (target == null) return false;
 
         boolean isClose = boss.distanceTo(target) <= 3;
-        boolean lastHitTimeHigher = boss.getLastHurtByMobTimestamp() > target.getLastHurtByMobTimestamp();
         boolean attackedByAnother = boss.getLastHurtByMob() != null && boss.getLastHurtByMob() != target;
 
         return isClose && (attackedByAnother);
