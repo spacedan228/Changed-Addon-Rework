@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.client.model.animations.parameters.PatReactionAnimationParameters;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicChangedEntity;
-import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.CustomPatReaction;
 import net.foxyas.changedaddon.init.ChangedAddonAnimationEvents;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
@@ -20,7 +20,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.PlayMessages;
-import org.jetbrains.annotations.NotNull;
 
 public class MongooseEntity extends AbstractBasicChangedEntity implements CustomPatReaction {
     public MongooseEntity(EntityType<? extends ChangedEntity> type, Level level) {

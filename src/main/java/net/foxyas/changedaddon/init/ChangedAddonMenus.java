@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.init;
 
+import net.foxyas.changedaddon.menu.CustomMerchantMenu;
 import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.world.inventory.*;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ChangedAddonMenus {
+public class ChangedAddonMenus {//TODO use actual registry?
     private static final List<MenuType<?>> REGISTRY = new ArrayList<>();
 
     private static <T extends AbstractContainerMenu> MenuType<T> register(String registryname, IContainerFactory<T> containerFactory) {
@@ -39,7 +40,7 @@ public class ChangedAddonMenus {
 
     public static final MenuType<PrototypeMenu> PROTOTYPE_MENU = register("prototype_menu", PrototypeMenu::new);
 
-
+    public static final MenuType<CustomMerchantMenu> MERCHANT_MENU = register("merchant_menu", CustomMerchantMenu::new);
 
 
 }

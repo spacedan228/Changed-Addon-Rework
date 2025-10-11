@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity.goals;
 
-import net.foxyas.changedaddon.entity.interfaces.ChangedEntityExtension;
+import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedTags.EntityTypes;

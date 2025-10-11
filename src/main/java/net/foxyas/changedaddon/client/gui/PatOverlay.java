@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
-import net.foxyas.changedaddon.entity.interfaces.IDynamicPawColor;
+import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonKeyMappings;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.util.PlayerUtil;

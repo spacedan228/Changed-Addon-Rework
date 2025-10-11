@@ -2,14 +2,12 @@ package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.entity.interfaces.ChangedEntityExtension;
+import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
-import net.ltxprogrammer.changed.entity.AccessoryEntities;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
@@ -28,7 +26,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 

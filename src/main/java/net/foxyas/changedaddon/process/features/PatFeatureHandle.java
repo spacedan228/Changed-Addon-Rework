@@ -1,8 +1,8 @@
 package net.foxyas.changedaddon.process.features;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
-import net.foxyas.changedaddon.entity.interfaces.SpecialPatLatex;
+import net.foxyas.changedaddon.entity.api.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.SpecialPatLatex;
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonTags;

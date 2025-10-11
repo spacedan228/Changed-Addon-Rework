@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.interfaces;
+package net.foxyas.changedaddon.entity.api;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;

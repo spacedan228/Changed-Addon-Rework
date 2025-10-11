@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.interfaces;
+package net.foxyas.changedaddon.entity.api;
 
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TamableLatexEntity;

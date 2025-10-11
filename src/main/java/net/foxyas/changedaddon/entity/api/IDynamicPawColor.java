@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.interfaces;
+package net.foxyas.changedaddon.entity.api;
 
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;

@@ -1,9 +1,7 @@
 package net.foxyas.changedaddon.abilities;
 
-import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
-import net.foxyas.changedaddon.entity.interfaces.IDynamicPawColor;
+import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
@@ -17,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 public class ClawsAbility extends SimpleAbility {

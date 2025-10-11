@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.abilities;
 
-import net.foxyas.changedaddon.entity.interfaces.ExtraConditions;
+import net.foxyas.changedaddon.entity.api.ExtraConditions;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;

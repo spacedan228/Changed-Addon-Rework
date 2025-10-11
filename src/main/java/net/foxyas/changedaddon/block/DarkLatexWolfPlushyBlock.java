@@ -17,21 +17,18 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -39,7 +36,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -78,6 +74,7 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
         @SubscribeEvent
         public static void onPlayerWakeUp(PlayerWakeUpEvent event) {
             if (event.getPlayer().getLevel().isClientSide) return;
+
             Player player = event.getPlayer();
             Level world = player.getLevel();
             Random random = player.getRandom();
@@ -87,22 +84,18 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
             float intensity = 1 + (player.getInventory().items.stream().filter((itemStack -> itemStack.is(ChangedAddonItems.DARK_LATEX_WOLF_PLUSH.get()))).count() / 100f);
             for (BlockPos plushyPos : posStream.filter((pos) -> world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get())).toList()) {
                 boolean canSeePlayer = canPlushySeePlayer(player, Vec3.atCenterOf(plushyPos), 360);
-                if (canSeePlayer) {
-                    if (!event.updateWorld()) {
-                        if (!ProcessTransfur.isPlayerTransfurred(player)) {
-                            float randomValue = random.nextFloat();
-                            float luck = player.getLuck() / 100f;
-                            double distance = (position.distanceTo(Vec3.atCenterOf(plushyPos)));
-                            float value = (float) ((0.25f + luck) / (distance * intensity));
-                            if (randomValue <= value) {
-                                ProcessTransfur.transfur(player, world, getTransfurVariant(world), false, TransfurContext.hazard(TransfurCause.FACE_HAZARD));
-                                if (player instanceof ServerPlayer serverPlayer) {
-                                    ChangedAddonCriteriaTriggers.SLEEP_NEXT_A_PLUSHY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "dark_latex_plushy", true);
-                                }
-                                break;
-                            }
-                        }
+                if(!canSeePlayer || event.updateWorld() || ProcessTransfur.isPlayerTransfurred(player)) continue;
+
+                float randomValue = random.nextFloat();
+                float luck = player.getLuck() / 100f;
+                double distance = (position.distanceTo(Vec3.atCenterOf(plushyPos)));
+                float value = (float) ((0.25f + luck) / (distance * intensity));
+                if (randomValue <= value) {
+                    ProcessTransfur.transfur(player, world, getTransfurVariant(world), false, TransfurContext.hazard(TransfurCause.FACE_HAZARD));
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        ChangedAddonCriteriaTriggers.SLEEP_NEXT_A_PLUSHY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "dark_latex_plushy", true);
                     }
+                    break;
                 }
             }
         }

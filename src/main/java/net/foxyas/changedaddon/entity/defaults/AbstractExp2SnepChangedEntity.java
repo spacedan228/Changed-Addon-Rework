@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.defaults;
 
-import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
-import net.foxyas.changedaddon.entity.interfaces.ICoatLikeEntity;
+import net.foxyas.changedaddon.entity.api.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.ICoatLikeEntity;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;

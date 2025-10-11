@@ -1,19 +1,13 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.entity.defaults.AbstractCanTameSnepChangedEntity;
-import net.foxyas.changedaddon.entity.interfaces.ChangedEntityExtension;
-import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.util.ColorUtil;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.TransfurCause;
-import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.beast.AbstractSnowLeopard;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
-import net.ltxprogrammer.changed.init.ChangedMobCategories;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
@@ -26,17 +20,10 @@ import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.Biomes;
-import net.minecraft.world.level.biome.MobSpawnSettings;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

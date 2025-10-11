@@ -2,14 +2,12 @@ package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
-import net.foxyas.changedaddon.entity.interfaces.IDynamicPawColor;
+import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -42,7 +40,6 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

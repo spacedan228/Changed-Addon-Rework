@@ -4,7 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
 import net.foxyas.changedaddon.block.AbstractLuminarCrystal;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
-import net.foxyas.changedaddon.entity.interfaces.CrawlFeature;
+import net.foxyas.changedaddon.entity.api.CrawlFeature;
 import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;

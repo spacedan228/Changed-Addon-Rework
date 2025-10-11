@@ -1,8 +1,8 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicChangedEntity;
-import net.foxyas.changedaddon.entity.interfaces.CustomPatReaction;
-import net.foxyas.changedaddon.entity.interfaces.ExtraConditions;
+import net.foxyas.changedaddon.entity.api.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.ExtraConditions;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.util.ColorUtil;

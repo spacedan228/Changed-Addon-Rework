@@ -1,19 +1,16 @@
 package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.item.tooltip.ClientTransfurTotemTooltipComponent;
-import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
+import net.foxyas.changedaddon.menu.CustomMerchantMenu;
 import net.foxyas.changedaddon.network.*;
 import net.foxyas.changedaddon.network.packets.*;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonMod {
@@ -26,7 +23,6 @@ public class CommonMod {
         ChangedAddonMod.addNetworkMessage(RequestMovementCheckPacket.class, RequestMovementCheckPacket::encode, RequestMovementCheckPacket::decode, RequestMovementCheckPacket::handle);
         ChangedAddonMod.addNetworkMessage(ConfirmMovementPacket.class, ConfirmMovementPacket::encode, ConfirmMovementPacket::decode, ConfirmMovementPacket::handle);
     }
-
 
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
@@ -83,5 +79,21 @@ public class CommonMod {
                 ClientboundSonarUpdatePacket::new,
                 (packet, contextSupplier) -> ClientPacketHandler.handleSonarUpdatePacket(packet, contextSupplier),
                 NetworkDirection.PLAY_TO_CLIENT);
+
+        ChangedAddonMod.addNetworkMessage(ServerboundCustomSelectTradePacket.class,
+                ServerboundCustomSelectTradePacket::encode,
+                ServerboundCustomSelectTradePacket::new,
+                (packet, context) -> {
+                    NetworkEvent.Context ctx = context.get();
+                    if(ctx.getSender() == null) return;
+                    ctx.enqueueWork(()-> {
+                        if (ctx.getSender().containerMenu instanceof CustomMerchantMenu menu) {
+                            int i = packet.shopItem();
+                            menu.setSelectionHint(i);
+                            menu.tryMoveItems(i);
+                        }
+                    });
+                }, NetworkDirection.PLAY_TO_SERVER
+        );
     }
 }
