@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.client.model.advanced;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
 import net.foxyas.changedaddon.client.renderer.layers.animation.CarryAbilityAnimation;
 import net.foxyas.changedaddon.entity.advanced.Protogen0senia0Entity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
@@ -78,7 +79,7 @@ public class Protogen0senia0Model extends AdvancedHumanoidModel<Protogen0senia0E
         this.LeftPad = this.LeftFoot.getChild("LeftPad");
 
         animator = HumanoidAnimator.of(this).hipOffset(-1.5f)
-                .addPreset(AnimatorPresets.catLike(
+                .addPreset(ChangedAddonAnimationsPresets.catLikeWolfTail(
                         Head, Head.getChild("LeftEar"), Head.getChild("RightEar"),
                         Torso, LeftArm, RightArm,
                         Tail, List.of(TailPrimary, TailSecondary, TailTertiary, TailQuaternary),
@@ -226,6 +227,7 @@ public class Protogen0senia0Model extends AdvancedHumanoidModel<Protogen0senia0E
     public void setupAnim(@NotNull Protogen0senia0Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        this.Tail.xRot += 20f * ((float) Math.PI / 180F);
         CarryAbilityAnimation.playAnimation(entity, this);
     }
 
