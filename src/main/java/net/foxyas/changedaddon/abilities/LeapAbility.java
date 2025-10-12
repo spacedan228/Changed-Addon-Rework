@@ -17,6 +17,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 
 public class LeapAbility extends SimpleAbility {
+
     public LeapAbility() {
         super();
     }
@@ -133,9 +134,6 @@ public class LeapAbility extends SimpleAbility {
 
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
-        super.startUsing(entity);
-        if (entity.getEntity() != null) {
-            leapAbility(entity.getEntity(), entity);
-        }
+        leapAbility(entity.getEntity(), entity);
     }
 }

@@ -24,10 +24,7 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +40,7 @@ public class ChangedAddonTransfurVariants {
     //this is For Not Show The Hot Bar
     //.itemUseMode(ABO)
 
-    //Basics
+    // =========================================================== Basics =========================================================== //
     public static final RegistryObject<TransfurVariant<PuroKindMaleEntity>> PURO_KIND_MALE = register("form_puro_kind/male",
             TransfurVariant.Builder.of(ChangedAddonEntities.PURO_KIND_MALE)
                     .transfurMode(TransfurMode.REPLICATION)
@@ -326,12 +323,18 @@ public class ChangedAddonTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
-    //OCs
+
+
+    // ============================================================ OCs ============================================================ //
     public static final RegistryObject<TransfurVariant<Protogen0senia0Entity>> PROTOGEN_0SENIA0 = register("form_protogen_0senia0",
             TransfurVariant.Builder.of(ChangedAddonEntities.PROTOGEN_0SENIA0)
+                    .addAbility(ChangedAddonAbilities.CLAWS)
                     .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                    .addAbility(ChangedAddonAbilities.DASH)
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                    .addAbility(ChangedAddonAbilities.SONAR)
                     .nightVision()
+                    .transfurMode(TransfurMode.NONE)
                     .jumpStrength(1.25f)
                     .scares(List.of(Creeper.class))
                     .reducedFall()
@@ -492,7 +495,7 @@ public class ChangedAddonTransfurVariants {
                     .stepSize(0.7F)
                     .sound(ChangedSounds.SOUND3.getLocation()));
 
-    //Experiments
+    // ======================================================== Experiments ======================================================== //
     public static final RegistryObject<TransfurVariant<Exp1MaleEntity>> EXP1_MALE = register("form_exp1/male",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_1_MALE)
                     .nightVision()
@@ -591,7 +594,7 @@ public class ChangedAddonTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
-    //Boss Transfurs
+    // ======================================================= Boss Transfurs ======================================================= //
     //public static UseItemMode Ket_Boss = UseItemMode.create("Ket_Boss", false, true, true, true, true);
     public static final RegistryObject<TransfurVariant<Experiment009BossEntity>> EXPERIMENT_009_BOSS = register("form_experiment009_boss",
             TransfurVariant.Builder.of(ChangedAddonEntities.EXPERIMENT_009_BOSS)

@@ -20,8 +20,8 @@ public class ColorUtil {
         return start.lerp(transfurVariantInstance.getTransfurProgression(1), end);
     }
 
-    public static Color3 lerpTFColor(@NotNull Color3 start, @NotNull Color3 end, float partialTicks){
-        return start.lerp(partialTicks, end);
+    public static Color3 lerpTFColor(@NotNull Color3 start, @NotNull Color3 end, float delta){
+        return start.lerp(delta, end);
     }
 
     public static float getPlayerTransfurProgressSafe(@Nullable Player player, float partialTick){
@@ -41,12 +41,10 @@ public class ColorUtil {
         if (colors.length == 1)
             return colors[0]; // só uma cor, nada pra interpolar
 
-        int amountOfColors = colors.length;
-        float progress = 0.0f;
+        if(!(livingEntity instanceof Player player)) return colors[0];
 
-        if (livingEntity instanceof Player player) {
-            progress = getPlayerTransfurProgressSafe(player, partialTicks);
-        }
+        int amountOfColors = colors.length;
+        float progress = getPlayerTransfurProgressSafe(player, partialTicks);
 
         // Garante que o valor fique entre 0 e 1
         progress = Mth.clamp(progress, 0.0f, 1.0f);
@@ -62,12 +60,6 @@ public class ColorUtil {
         float localProgress = (progress - (index * segment)) / segment;
 
         // Faz o lerp entre as duas cores do segmento atual
-        Color3 start = colors[index];
-        Color3 end = colors[index + 1];
-        return new Color3(
-                Mth.lerp(localProgress, start.red(), end.red()),
-                Mth.lerp(localProgress, start.green(), end.green()),
-                Mth.lerp(localProgress, start.blue(), end.blue())
-        );
+        return lerpTFColor(colors[index], colors[index + 1], localProgress);
     }
 }

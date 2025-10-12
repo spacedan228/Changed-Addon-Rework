@@ -1,16 +1,12 @@
 package net.foxyas.changedaddon.entity.defaults;
 
-import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.HairStyle;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.TransfurMode;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -23,7 +19,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -39,7 +34,7 @@ public abstract class AbstractBasicOrganicChangedEntity extends ChangedEntity {
     public static void init() {
     }
 
-    protected void safeSetBaseValue(@org.jetbrains.annotations.Nullable AttributeInstance instance, double value) {
+    protected void safeSetBaseValue(@Nullable AttributeInstance instance, double value) {
         if (instance != null) {
             instance.setBaseValue(value);
         }

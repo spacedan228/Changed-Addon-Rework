@@ -36,7 +36,7 @@ public class DashAbility extends SimpleAbility {
 
     @Override
     public boolean canUse(IAbstractChangedEntity entity) {
-        return entity.getEntity().isOnGround();
+        return true;
     }
 
     @Override

@@ -49,6 +49,7 @@ public abstract class CustomMerchantTemplate extends Mob implements CustomMercha
     protected CustomMerchantOffers makeOffers(){
         return CustomMerchantUtil.makeOffers(this, buyOffers, 2, sellOffers, 2);
     }
+
     protected void calculateNextReset(){
         nextOfferReset = level.getGameTime() + 48000;
     }
