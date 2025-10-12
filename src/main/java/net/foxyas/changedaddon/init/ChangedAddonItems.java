@@ -146,8 +146,10 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> BLUE_WOLF_CRYSTAL_FRAGMENT = REGISTRY.register("blue_wolf_crystal_fragment", BlueWolfCrystalFragmentItem::new);
     public static final RegistryObject<BlockItem> BLUE_WOLF_CRYSTAL_SMALL = block(ChangedAddonBlocks.BLUE_WOLF_CRYSTAL_SMALL, ChangedAddonTabs.TAB_CHANGED_ADDON);
     public static final RegistryObject<BlockItem> BLUE_WOLF_CRYSTAL_BLOCK = block(ChangedAddonBlocks.BLUE_WOLF_CRYSTAL_BLOCK, ChangedAddonTabs.TAB_CHANGED_ADDON);
-    public static final RegistryObject<Item> GOO_CORE_FRAGMENT = REGISTRY.register("goo_core_fragment", GooCoreFragmentItem::new);    public static final RegistryObject<Item> ELECTRIC_KATANA = REGISTRY.register("electric_katana", ElectricKatanaItem::new);
-    public static final RegistryObject<BlockItem> GOO_CORE = block(ChangedAddonBlocks.GOO_CORE, ChangedAddonTabs.TAB_CHANGED_ADDON);    public static final RegistryObject<Item> ELECTRIC_KATANA_RED = REGISTRY.register("electric_katana_red", ElectricKatanaRedItem::new);
+    public static final RegistryObject<Item> GOO_CORE_FRAGMENT = REGISTRY.register("goo_core_fragment", GooCoreFragmentItem::new);
+    public static final RegistryObject<Item> ELECTRIC_KATANA = REGISTRY.register("electric_katana", ElectricKatanaItem::new);
+    public static final RegistryObject<BlockItem> GOO_CORE = block(ChangedAddonBlocks.GOO_CORE, ChangedAddonTabs.TAB_CHANGED_ADDON);
+    public static final RegistryObject<Item> ELECTRIC_KATANA_RED = REGISTRY.register("electric_katana_red", ElectricKatanaRedItem::new);
     public static final RegistryObject<Item> MEANINGLESS_STRAFE_MUSIC_DISC = REGISTRY.register("meaningless_strafe_music_disc", MeaninglessStrafeMusicDiscItem::new);
     public static final RegistryObject<Item> LUMINAR_CRYSTAL_SPEAR = REGISTRY.register("luminar_crystal_spear", LuminarCrystalSpearItem::new);
     public static final RegistryObject<Item> THE_DECIMATOR = REGISTRY.register("the_decimator", TheDecimatorItem::new);
@@ -178,9 +180,9 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> SNEP_ICON = REGISTRY.register("snep_icon", SnepIconItem::new);
     public static final RegistryObject<Item> FRIENDLY_GOEY_ICON = REGISTRY.register("friendly_goey_icon", FriendlyGoeyIconItem::new);
     public static final RegistryObject<Item> PAT_ICON = REGISTRY.register("pat_icon", PatIconItem::new);
-    public static final RegistryObject<BlockItem> COVER_ITEM = REGISTRY.register("cover", ()-> new BlockItem(ChangedAddonBlocks.COVER_BLOCK.get(), new Item.Properties()));
-    public static final RegistryObject<BlockItem> DARK_LATEX_COVER_ITEM = REGISTRY.register("dark_latex_cover", ()-> new BlockItem(ChangedAddonBlocks.DARK_LATEX_COVER_BLOCK.get(), new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
-    public static final RegistryObject<BlockItem> WHITE_LATEX_COVER_ITEM = REGISTRY.register("white_latex_cover", ()-> new BlockItem(ChangedAddonBlocks.WHITE_LATEX_COVER_BLOCK.get(), new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
+    public static final RegistryObject<BlockItem> COVER_ITEM = REGISTRY.register("cover", () -> new BlockItem(ChangedAddonBlocks.COVER_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<BlockItem> DARK_LATEX_COVER_ITEM = REGISTRY.register("dark_latex_cover", () -> new BlockItem(ChangedAddonBlocks.DARK_LATEX_COVER_BLOCK.get(), new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
+    public static final RegistryObject<BlockItem> WHITE_LATEX_COVER_ITEM = REGISTRY.register("white_latex_cover", () -> new BlockItem(ChangedAddonBlocks.WHITE_LATEX_COVER_BLOCK.get(), new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
 
     public static final RegistryObject<BlockItem> WOLF_CRYSTAL_PILLAR = block(ChangedAddonBlocks.WOLF_CRYSTAL_PILLAR, ChangedAddonTabs.TAB_CHANGED_ADDON);
 
@@ -247,6 +249,13 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> LATEX_CHEETAH_MALE_SPAWN_EGG = REGISTRY.register("latex_cheetah_male_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LATEX_CHEETAH_MALE, Color3.getColor("#d8b270").toInt(), Color3.getColor("#634927").toInt(), new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
     public static final RegistryObject<Item> LUMINARA_FLOWER_BEAST_SPAWN_EGG = REGISTRY.register("luminara_flower_beast_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LUMINARA_FLOWER_BEAST, Color3.getColor("#f5d4ef").toInt(), Color3.getColor("#241942").toInt(), new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
 
+    public static final RegistryObject<Item> PROTOGEN_0SENIA0_SPAWN_EGG = REGISTRY.register("protogen_0senia0_spawn_egg",
+            () -> new ForgeSpawnEggItem(ChangedAddonEntities.PROTOGEN_0SENIA0,
+                    Color3.getColor("#4d0ddb").toInt(),
+                    Color3.getColor("#4d0ddb").toInt(),
+                    new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
+
+    // MISC ITEMS
     public static final RegistryObject<Item> DARK_LATEX_COAT = REGISTRY.register("dark_latex_coat",
             () -> new DarkLatexCoatItem(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
     public static final RegistryObject<Item> DARK_LATEX_HEAD_CAP = REGISTRY.register("dark_latex_coat_cap",
@@ -306,10 +315,6 @@ public class ChangedAddonItems {
     private static RegistryObject<Item> RegisterBlockItem(RegistryObject<Block> block, CreativeModeTab tab) {
         return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
     }
-
-
-
-
 
 
 }

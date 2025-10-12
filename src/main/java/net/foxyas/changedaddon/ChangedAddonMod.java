@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon;
 
 import net.foxyas.changedaddon.init.*;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -44,6 +45,7 @@ public class ChangedAddonMod {
         ChangedAddonItems.REGISTRY.register(bus);
 
         ChangedAddonEntities.REGISTRY.register(bus);
+        ChangedAddonTransfurVariants.REGISTRY.register(bus);
         ChangedAddonBlockEntities.REGISTRY.register(bus);
         ChangedAddonFeatures.REGISTRY.register(bus);
         ChangedAddonEnchantments.REGISTRY.register(bus);

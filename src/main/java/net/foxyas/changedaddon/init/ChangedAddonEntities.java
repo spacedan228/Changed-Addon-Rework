@@ -538,31 +538,6 @@ public class ChangedAddonEntities {
                     .clientTrackingRange(10)
                     .sized(0.7f, 1.93f));
 
-    // --- MONSTER/MOB ENTITIES ---
-    public static final RegistryObject<EntityType<PrototypeEntity>> PROTOTYPE = registerMob("prototype",
-            EntityType.Builder.<PrototypeEntity>of(PrototypeEntity::new, ChangedMobCategories.CHANGED)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(64)
-                    .setUpdateInterval(3)
-                    .setCustomClientFactory(PrototypeEntity::new)
-                    .sized(0.7f, 1.93f));
-
-    public static final RegistryObject<EntityType<FoxyasEntity>> FOXYAS = registerMob("foxyas",
-            EntityType.Builder.<FoxyasEntity>of(FoxyasEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(64)
-                    .setUpdateInterval(3)
-                    .setCustomClientFactory(FoxyasEntity::new)
-                    .sized(0.7f, 1.9f));
-
-    public static final RegistryObject<EntityType<ErikEntity>> ERIK = registerChangedEntity("erik",
-            EntityType.Builder.<ErikEntity>of(ErikEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(64)
-                    .setUpdateInterval(3)
-                    .setCustomClientFactory(ErikEntity::new)
-                    .sized(0.6f, 1.8f));
-
     public static final RegistryObject<EntityType<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = registerChangedEntity("pink_cyan_skunk",
             EntityType.Builder.of(PinkCyanSkunkEntity::new, ChangedMobCategories.CHANGED)
                     .clientTrackingRange(10)
@@ -602,6 +577,40 @@ public class ChangedAddonEntities {
             EntityType.Builder.<LuminaraFlowerBeastEntity>of(LuminaraFlowerBeastEntity::new, ChangedMobCategories.CHANGED)
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
+
+    public static final RegistryObject<EntityType<Protogen0senia0Entity>> PROTOGEN_0SENIA0 = registerChangedEntity("protogen_0senia0",
+            EntityType.Builder.<Protogen0senia0Entity>of(Protogen0senia0Entity::new, ChangedMobCategories.CHANGED)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(3)
+                    .setCustomClientFactory(Protogen0senia0Entity::new)
+                    .clientTrackingRange(10)
+                    .sized(0.7f, 1.93f));
+
+    // --- MONSTER/MOB ENTITIES ---
+    public static final RegistryObject<EntityType<PrototypeEntity>> PROTOTYPE = registerMob("prototype",
+            EntityType.Builder.<PrototypeEntity>of(PrototypeEntity::new, ChangedMobCategories.CHANGED)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(3)
+                    .setCustomClientFactory(PrototypeEntity::new)
+                    .sized(0.7f, 1.93f));
+
+    public static final RegistryObject<EntityType<FoxyasEntity>> FOXYAS = registerMob("foxyas",
+            EntityType.Builder.<FoxyasEntity>of(FoxyasEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(3)
+                    .setCustomClientFactory(FoxyasEntity::new)
+                    .sized(0.7f, 1.9f));
+
+    public static final RegistryObject<EntityType<ErikEntity>> ERIK = registerChangedEntity("erik",
+            EntityType.Builder.<ErikEntity>of(ErikEntity::new, MobCategory.MONSTER)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(3)
+                    .setCustomClientFactory(ErikEntity::new)
+                    .sized(0.6f, 1.8f));
 
     @SubscribeEvent
     public static void registerAttributes(@NotNull EntityAttributeCreationEvent event) {
@@ -660,6 +669,7 @@ public class ChangedAddonEntities {
         event.put(LATEX_CHEETAH_MALE.get(), LatexCheetahMale.createLatexAttributes().build());
         event.put(LATEX_CHEETAH_FEMALE.get(), LatexCheetahFemale.createLatexAttributes().build());
         event.put(LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastEntity.createAttributes().build());
+        event.put(PROTOGEN_0SENIA0.get(), Protogen0senia0Entity.createAttributes().build());
     }
 
     @SubscribeEvent
@@ -720,6 +730,7 @@ public class ChangedAddonEntities {
             LuminaraFlowerBeastEntity.init();
             LatexCheetahFemale.init();
             LatexCheetahMale.init();
+            Protogen0senia0Entity.init();
         });
     }
 
