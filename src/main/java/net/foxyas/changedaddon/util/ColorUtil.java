@@ -34,9 +34,12 @@ public class ColorUtil {
     }
 
 
-    public static Color3 lerpTFColors(LivingEntity livingEntity, float partialTicks, Color3[] colors) {
+    public static Color3 lerpTFColors(LivingEntity livingEntity, float partialTicks, Color3... colors) {
         if (colors == null || colors.length == 0)
-            return new Color3(1.0f, 1.0f, 1.0f); // fallback
+            return new Color3(1.0f, 1.0f, 1.0f); // fallback branco
+
+        if (colors.length == 1)
+            return colors[0]; // só uma cor, nada pra interpolar
 
         int amountOfColors = colors.length;
         float progress = 0.0f;
@@ -53,6 +56,7 @@ public class ColorUtil {
 
         // Identifica entre quais cores o progresso atual está
         int index = (int) Math.floor(progress / segment);
+        if (index < 0) index = 0;
         if (index >= amountOfColors - 1) index = amountOfColors - 2;
 
         float localProgress = (progress - (index * segment)) / segment;

@@ -76,7 +76,9 @@ public class TransfurTotemItem extends Item {
 
     @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack pStack) {
-        if (Syringe.getVariant(pStack) == null) {
+        if (Syringe.getVariant(pStack) == null
+                || !pStack.getOrCreateTag().contains("form")
+                || pStack.getOrCreateTag().getString("form").isBlank()) {
             return super.getTooltipImage(pStack);
         }
         return Optional.of(new TransfurTotemTooltipComponent(pStack));
