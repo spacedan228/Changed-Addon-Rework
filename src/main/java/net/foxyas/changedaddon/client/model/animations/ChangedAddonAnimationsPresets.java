@@ -48,6 +48,26 @@ public class ChangedAddonAnimationsPresets {
         };
     }
 
+    public static <T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> Consumer<HumanoidAnimator<T, M>> catLikeWolfTail(
+            ModelPart head,
+            ModelPart leftEar, ModelPart rightEar,
+            ModelPart torso,
+            ModelPart leftArm, ModelPart rightArm,
+            ModelPart tail, List<ModelPart> tailSegments,
+            ModelPart leftLeg, ModelPart leftLegLower, ModelPart leftFoot, ModelPart leftPad,
+            ModelPart rightLeg, ModelPart rightLegLower, ModelPart rightFoot, ModelPart rightPad
+    ) {
+        return (animator) -> animator
+                .addPreset(catBipedal(leftLeg, leftLegLower, leftFoot, leftPad, rightLeg, rightLegLower, rightFoot, rightPad))
+                .addPreset(catUpperBody(head, torso, leftArm, rightArm))
+                .addPreset(catEars(leftEar, rightEar))
+                .addAnimator(new CatHeadInitAnimator<>(head))
+                .addAnimator(new ArmSwimAnimator<>(leftArm, rightArm))
+                .addAnimator(new ArmBobAnimator<>(leftArm, rightArm))
+                .addAnimator(new ArmRideAnimator<>(leftArm, rightArm))
+                .addPreset(wolfTail(tail, tailSegments));
+    }
+
     public static <T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> Consumer<HumanoidAnimator<T, M>> bigWingedDragonLike(ModelPart head, ModelPart torso, ModelPart leftArm, ModelPart rightArm, ModelPart tail, List<ModelPart> tailJoints, ModelPart leftLeg, ModelPart leftLegLower, ModelPart leftFoot, ModelPart leftPad, ModelPart rightLeg, ModelPart rightLegLower, ModelPart rightFoot, ModelPart rightPad, ModelPart leftWingRoot, ModelPart leftWingBone1, ModelPart leftWingBone2, ModelPart rightWingRoot, ModelPart rightWingBone1, ModelPart rightWingBone2) {
         return (animator) -> animator
                 .addPreset(dragonBipedal(leftLeg, leftLegLower, leftFoot, leftPad, rightLeg, rightLegLower, rightFoot, rightPad))

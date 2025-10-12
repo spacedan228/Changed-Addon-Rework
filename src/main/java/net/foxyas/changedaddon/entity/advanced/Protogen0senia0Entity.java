@@ -42,7 +42,7 @@ public class Protogen0senia0Entity extends AbstractProtogenEntity {
 
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {
-        return ColorUtil.lerpTFColors(this.maybeGetUnderlying(), 1, Color3.parseHex("#4d0ddb"), Color3.parseHex("#4d0ddb"));
+        return ColorUtil.lerpTFColors(this.maybeGetUnderlying(), 1, Color3.parseHex("#4d0ddb"));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
