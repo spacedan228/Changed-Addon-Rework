@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.datagen;
 
-import net.foxyas.changedaddon.block.LatexCoverBlock;
 import net.foxyas.changedaddon.block.LuminarCrystalSmallBlock;
 import net.foxyas.changedaddon.block.MultifaceBlock;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;

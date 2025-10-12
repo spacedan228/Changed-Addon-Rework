@@ -30,6 +30,9 @@ public class LootTableProvider extends net.minecraft.data.loot.LootTableProvider
 
     @Override
     protected @NotNull List<Pair<Supplier<Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>>, LootContextParamSet>> getTables() {
-        return List.of(Pair.of(BlockLoot::new, LootContextParamSets.BLOCK));
+        return List.of(
+                Pair.of(BlockLoot::new, LootContextParamSets.BLOCK)
+                //,Pair.of(EntityLootProvider::new, LootContextParamSets.ENTITY)
+        );
     }
 }

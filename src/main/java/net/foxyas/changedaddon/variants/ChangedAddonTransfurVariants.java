@@ -84,7 +84,7 @@ public class ChangedAddonTransfurVariants {
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_CALICO_CAT).stepSize(0.7F).breatheMode(TransfurVariant.BreatheMode.NORMAL).addAbility(ChangedAddonAbilities.CLAWS).scares(List.of(Creeper.class)).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
     public static final RegistryObject<TransfurVariant<LatexDragonSnowLeopardSharkEntity>> LATEX_DRAGON_SNEP_SHARK = register("form_latex_dragon_snow_leopard_shark",
-            () -> TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_DRAGON_SNOW_LEOPARD_SHARK).glide().gills().nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION).addAbility(entityType -> ChangedAddonAbilities.WING_FLAP_ABILITY.get()));
+            () -> TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_DRAGON_SNOW_LEOPARD_SHARK).glide().gills().nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
     public static final RegistryObject<TransfurVariant<LatexSnepEntity>> LATEX_SNEP = register("form_latex_snep",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_SNEP).transfurMode(TransfurMode.NONE).breatheMode(TransfurVariant.BreatheMode.NORMAL).addAbility(ChangedAddonAbilities.CLAWS).addAbility(ChangedAddonAbilities.LEAP).addAbility(ChangedAddonAbilities.DODGE).addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION).itemUseMode(UseItemMode.MOUTH).reducedFall().jumpStrength(1.5F).scares(List.of(Creeper.class)).nightVision().addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
