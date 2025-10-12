@@ -3,13 +3,13 @@ package net.foxyas.changedaddon.client.renderer.advanced;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.advanced.Protogen0senia0Model;
+import net.foxyas.changedaddon.client.model.armors.ArmorProtogen0senia0;
 import net.foxyas.changedaddon.client.renderer.layers.ProtogenDisplay;
 import net.foxyas.changedaddon.entity.advanced.Protogen0senia0Entity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.GasMaskLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.TransfurCapeLayer;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleWolfModel;
-import net.ltxprogrammer.changed.entity.BasicPlayerInfo;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -18,8 +18,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class Protogen0senia0Renderer extends AdvancedHumanoidRenderer<Protogen0senia0Entity, Protogen0senia0Model, ArmorLatexMaleWolfModel<Protogen0senia0Entity>> {
+
     public Protogen0senia0Renderer(EntityRendererProvider.Context context) {
-        super(context, new Protogen0senia0Model(context.bakeLayer(Protogen0senia0Model.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
+        super(context, new Protogen0senia0Model(context.bakeLayer(Protogen0senia0Model.LAYER_LOCATION)), ArmorProtogen0senia0.ARMOR, 0.5f);
         this.addLayer(new ProtogenDisplay<>(this, getModel(),
                 ChangedAddonMod.textureLoc("textures/entities/0senia0/protogen_display_eyes"),
                 ChangedAddonMod.textureLoc("textures/entities/0senia0/protogen_display")) {

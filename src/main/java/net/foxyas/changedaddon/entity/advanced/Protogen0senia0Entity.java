@@ -6,15 +6,12 @@ import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.PlayMessages;
-
-import javax.annotation.Nullable;
 
 public class Protogen0senia0Entity extends AbstractProtogenEntity {
 
@@ -49,18 +46,6 @@ public class Protogen0senia0Entity extends AbstractProtogenEntity {
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
-    }
-
-    protected void safeSetBaseValue(@Nullable AttributeInstance instance, double value) {
-        if (instance != null) {
-            instance.setBaseValue(value);
-        }
-    }
-
-    protected void safeMulBaseValue(@Nullable AttributeInstance instance, double value) {
-        if (instance != null) {
-            instance.setBaseValue(instance.getBaseValue() * value);
-        }
     }
 
     public static void init() {
