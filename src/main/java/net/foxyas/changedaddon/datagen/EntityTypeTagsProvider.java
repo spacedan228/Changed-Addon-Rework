@@ -12,6 +12,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
+import java.util.function.Supplier;
+
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
 
 public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTagsProvider {
@@ -25,7 +28,9 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
         tag(ChangedTags.EntityTypes.HUMANOIDS).add(
                 ERIK.get());
 
-        tag(ChangedTags.EntityTypes.LATEX).add(
+        tag(ChangedTags.EntityTypes.LATEX).add(LatexEntities.stream().map(Supplier::get)
+                .sorted(Comparator.comparing(entityType -> entityType.getRegistryName().getPath()))
+                .toList().toArray(new EntityType[0])); /*.add(
                 DAZED_LATEX.get(),
                 PURO_KIND_MALE.get(),
                 PURO_KIND_FEMALE.get(),
@@ -61,7 +66,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 LATEX_WHITE_SNOW_LEOPARD_FEMALE.get(),
                 LATEX_CHEETAH_MALE.get(),
                 LATEX_CHEETAH_FEMALE.get()
-                );
+                );*/
 
         tag(ChangedTags.EntityTypes.ORGANIC_LATEX).add(
                 BUNY.get(),

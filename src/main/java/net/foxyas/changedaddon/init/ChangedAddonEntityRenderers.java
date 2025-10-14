@@ -70,6 +70,7 @@ public class ChangedAddonEntityRenderers {
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), LatexCheetahMaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.PROTOGEN_0SENIA0.get(), Protogen0senia0Renderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.LATEX_KAYLA_SHARK.get(), LatexKaylaSharkRenderer::new);
 
         // --- MONSTER/MOB ENTITIES ---
         event.registerEntityRenderer(ChangedAddonEntities.PROTOTYPE.get(), PrototypeRenderer::new);

@@ -36,6 +36,7 @@
     "entity.variant.ServerTransfurVariantInstanceMixin",
     "entity.variant.TransfurVariantInstanceMixin",
     "items.ItemStackMixin",
+    "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",
     "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin"

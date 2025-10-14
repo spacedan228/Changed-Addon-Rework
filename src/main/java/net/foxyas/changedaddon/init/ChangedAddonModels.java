@@ -96,6 +96,7 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(LatexCheetahMaleModel.LAYER_LOCATION, LatexCheetahMaleModel::createBodyLayer);
         event.registerLayerDefinition(LuminaraFlowerBeastModel.LAYER_LOCATION, LuminaraFlowerBeastModel::createBodyLayer);
         event.registerLayerDefinition(Protogen0senia0Model.LAYER_LOCATION, Protogen0senia0Model::createBodyLayer);
+        event.registerLayerDefinition(LatexKaylaSharkModel.LAYER_LOCATION, LatexKaylaSharkModel::createBodyLayer);
 
 
 

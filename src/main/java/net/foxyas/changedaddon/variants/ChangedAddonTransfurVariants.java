@@ -6,7 +6,10 @@ import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.partials.SnowLeopardPartialEntity;
 import net.foxyas.changedaddon.entity.simple.*;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
+
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.beast.AquaticEntity;
@@ -340,6 +343,18 @@ public class ChangedAddonTransfurVariants {
                     .reducedFall()
                     .stepSize(0.7F)
                     .sound(ChangedSounds.SOUND3.getLocation()));
+
+    public static final RegistryObject<TransfurVariant<LatexKaylaSharkEntity>> LATEX_KAYLA_SHARK = register("form_latex_kayla_shark",
+            () -> TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_KAYLA_SHARK)
+                    .addAbility((entityType) -> ChangedAbilities.TOGGLE_NIGHT_VISION.get())
+                    .addAbility((entityType) -> ChangedAddonAbilities.CUSTOM_INTERACTION.get())
+                    .addAbility((entityType) -> ChangedAddonAbilities.CLAWS.get())
+                    .addAbility((entityType) -> ChangedAddonAbilities.LEAP.get())
+                    .addAbility((entityType) -> ChangedAbilities.HYPNOSIS.get())
+                    .jumpStrength(1.35f)
+                    .nightVision()
+                    .reducedFall()
+    );
 
     public static final RegistryObject<TransfurVariant<WolfyEntity>> WOLFY = register("form_wolfy",
             TransfurVariant.Builder.of(ChangedAddonEntities.WOLFY)

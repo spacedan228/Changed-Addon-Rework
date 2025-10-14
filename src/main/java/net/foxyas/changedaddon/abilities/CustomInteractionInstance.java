@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
+import net.foxyas.changedaddon.entity.simple.LatexKaylaSharkEntity;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -64,6 +65,10 @@ public class CustomInteractionInstance extends AbstractAbilityInstance {
             if (!luminaraFlowerBeast.isHyperAwakened()) return;
             luminaraFlowerBeast.spawnParticles = !luminaraFlowerBeast.spawnParticles;
             entity.displayClientMessage(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.luminara_beast.action", luminaraFlowerBeast.spawnParticles), true);
+        } else if (entity.getChangedEntity() instanceof LatexKaylaSharkEntity latexKaylaSharkEntity) {
+            boolean value = !latexKaylaSharkEntity.getGlowingState();
+            latexKaylaSharkEntity.setGlowingState(value);
+            entity.displayClientMessage(new TranslatableComponent("changed_addon.ability.custom_interaction.have_interaction.latex_kayla_shark.action", value), true);
         }
     }
 
