@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -39,7 +39,7 @@ public class TransfurEvents {
         }
     }
 
-    public static ChangedAddonModVariables.PlayerVariables getPlayerVars(LivingEntity entity) {
-        return entity.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonModVariables.PlayerVariables());
+    public static ChangedAddonVariables.PlayerVariables getPlayerVars(LivingEntity entity) {
+        return entity.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonVariables.PlayerVariables());
     }
 }

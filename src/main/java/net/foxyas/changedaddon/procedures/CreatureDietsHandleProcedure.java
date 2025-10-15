@@ -161,10 +161,12 @@ public class CreatureDietsHandleProcedure {
             return item.is(dietTag) || dietItems.contains(item.getItem());
         }
 
+        @SuppressWarnings("unused")
         public static DietType create(String name, TagKey<TransfurVariant<?>> tfTag, TagKey<Item> dietTag, List<Item> items) {
             throw new NotImplementedException("Not extended");
         }
 
+        @SuppressWarnings("unused")
         public static DietType create(String name, TagKey<TransfurVariant<?>> tfTag, TagKey<Item> dietTag) {
             throw new NotImplementedException("Not extended");
         }

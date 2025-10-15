@@ -51,7 +51,7 @@ public record TransfurSoundsGuiButtonMessage(int buttonId) {
 
         if (!ProcessTransfur.isPlayerTransfurred(player)) return;
 
-        ChangedAddonModVariables.PlayerVariables vars = player.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
+        ChangedAddonVariables.PlayerVariables vars = player.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
         if (vars == null) return;
 
         switch (buttonID) {
@@ -89,7 +89,7 @@ public record TransfurSoundsGuiButtonMessage(int buttonId) {
         }
     }
 
-    private static void playSound(Level level, Entity entity, SoundEvent sound, ChangedAddonModVariables.PlayerVariables vars, int cooldown) {
+    private static void playSound(Level level, Entity entity, SoundEvent sound, ChangedAddonVariables.PlayerVariables vars, int cooldown) {
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 2, 1);
 
         vars.actCooldown = true;

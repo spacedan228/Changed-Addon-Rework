@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.procedures;
 
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
@@ -25,7 +25,7 @@ public class TransfursExtraSoundDetailsProcedure {
         String text = event.getMessage();
         if (text == null || !ProcessTransfur.isPlayerTransfurred(player)) return;
 
-        ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.nonNullOf(player);
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.nonNullOf(player);
         if(vars.actCooldown) return;
 
         Level level = player.level;
@@ -92,7 +92,7 @@ public class TransfursExtraSoundDetailsProcedure {
         }
     }
 
-    private static void setCooldown(ChangedAddonModVariables.PlayerVariables vars, ServerPlayer player){
+    private static void setCooldown(ChangedAddonVariables.PlayerVariables vars, ServerPlayer player){
         vars.actCooldown = true;
         vars.syncPlayerVariables(player);
 

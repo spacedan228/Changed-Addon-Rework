@@ -8,7 +8,6 @@ import net.foxyas.changedaddon.entity.simple.*;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
 
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.*;
@@ -39,9 +38,6 @@ import java.util.function.Supplier;
 public class ChangedAddonTransfurVariants {
 
     public static final DeferredRegister<TransfurVariant<?>> REGISTRY = ChangedRegistry.TRANSFUR_VARIANT.createDeferred(ChangedAddonMod.MODID);
-    //public static UseItemMode ABO = UseItemMode.create("ABO",false,true,true,true,true);
-    //this is For Not Show The Hot Bar
-    //.itemUseMode(ABO)
 
     // =========================================================== Basics =========================================================== //
     public static final RegistryObject<TransfurVariant<PuroKindMaleEntity>> PURO_KIND_MALE = register("form_puro_kind/male",
@@ -610,7 +606,6 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
     // ======================================================= Boss Transfurs ======================================================= //
-    //public static UseItemMode Ket_Boss = UseItemMode.create("Ket_Boss", false, true, true, true, true);
     public static final RegistryObject<TransfurVariant<Experiment009BossEntity>> EXPERIMENT_009_BOSS = register("form_experiment009_boss",
             TransfurVariant.Builder.of(ChangedAddonEntities.EXPERIMENT_009_BOSS)
                     .reducedFall()

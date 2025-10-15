@@ -26,13 +26,13 @@ public class CommonMod {
 
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(ChangedAddonModVariables.PlayerVariables.class);
+        event.register(ChangedAddonVariables.PlayerVariables.class);
     }
 
     @SubscribeEvent
     public static void init(FMLCommonSetupEvent event) {
-        ChangedAddonMod.addNetworkMessage(ChangedAddonModVariables.PlayerVariablesSyncMessage.class, ChangedAddonModVariables.PlayerVariablesSyncMessage::buffer,
-                ChangedAddonModVariables.PlayerVariablesSyncMessage::new, ChangedAddonModVariables.PlayerVariablesSyncMessage::handler);
+        ChangedAddonMod.addNetworkMessage(ChangedAddonVariables.SyncPacket.class, ChangedAddonVariables.SyncPacket::buffer,
+                ChangedAddonVariables.SyncPacket::new, ChangedAddonVariables.SyncPacket::handler);
 
         ChangedAddonMod.addNetworkMessage(FoxyasGui2ButtonMessage.class, FoxyasGui2ButtonMessage::buffer, FoxyasGui2ButtonMessage::new,
                 FoxyasGui2ButtonMessage::handler);

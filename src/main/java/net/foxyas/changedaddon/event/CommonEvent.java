@@ -5,7 +5,7 @@ import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.TransfurCause;
@@ -49,7 +49,7 @@ public class CommonEvent {
     public static void onPlayerLoggedInSyncPlayerVariables(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getPlayer();
         if (!player.level.isClientSide())
-            ChangedAddonModVariables.PlayerVariables.ofOrDefault(player).syncPlayerVariables(player);
+            ChangedAddonVariables.ofOrDefault(player).syncPlayerVariables(player);
     }
 
     @SubscribeEvent
@@ -72,24 +72,24 @@ public class CommonEvent {
     public static void onPlayerRespawnedSyncPlayerVariables(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (!player.level.isClientSide())
-            ChangedAddonModVariables.PlayerVariables.ofOrDefault(player).syncPlayerVariables(player);
+            ChangedAddonVariables.ofOrDefault(player).syncPlayerVariables(player);
     }
 
     @SubscribeEvent
     public static void onPlayerChangedDimensionSyncPlayerVariables(PlayerEvent.PlayerChangedDimensionEvent event) {
         Player player = event.getPlayer();
         if (!player.level.isClientSide())
-            ChangedAddonModVariables.PlayerVariables.ofOrDefault(player).syncPlayerVariables(player);
+            ChangedAddonVariables.ofOrDefault(player).syncPlayerVariables(player);
     }
 
     @SubscribeEvent
     public static void clonePlayer(PlayerEvent.Clone event) {
         Player originalPl = event.getOriginal();
         originalPl.reviveCaps();
-        ChangedAddonModVariables.PlayerVariables original = ChangedAddonModVariables.PlayerVariables.ofOrDefault(originalPl);
+        ChangedAddonVariables.PlayerVariables original = ChangedAddonVariables.ofOrDefault(originalPl);
         originalPl.invalidateCaps();
 
-        ChangedAddonModVariables.PlayerVariables clone = ChangedAddonModVariables.PlayerVariables.ofOrDefault(event.getPlayer());
+        ChangedAddonVariables.PlayerVariables clone = ChangedAddonVariables.ofOrDefault(event.getPlayer());
         original.copyTo(clone, event.isWasDeath());
     }
     //
@@ -215,7 +215,7 @@ public class CommonEvent {
 
 
     private static void tickUntransfur(Player player) {
-        ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.of(player);
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
         if (vars == null) return;
 
         if (!player.hasEffect(ChangedAddonMobEffects.UNTRANSFUR.get())) {

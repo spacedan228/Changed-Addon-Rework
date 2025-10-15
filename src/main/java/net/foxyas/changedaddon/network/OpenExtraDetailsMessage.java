@@ -55,7 +55,7 @@ public record OpenExtraDetailsMessage(int type, int pressedMs) {
                     }
                 }, player.blockPosition());
             } else {
-                ChangedAddonModVariables.PlayerVariables vars = player.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
+                ChangedAddonVariables.PlayerVariables vars = player.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
                 if (vars != null && vars.showWarns) {
                     player.displayClientMessage(new TextComponent((new TranslatableComponent("changedaddon.when_not.transfur").getString())), true);
                 }

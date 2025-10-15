@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.item;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.item.SpecializedAnimations;
@@ -37,7 +37,7 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
     public void applyEffectsAfterUse(@NotNull ItemStack pStack, Level level, LivingEntity entity) {
         if (!(entity instanceof Player player)) return;
 
-        var playerVars = ChangedAddonModVariables.PlayerVariables.ofOrDefault(player);
+        var playerVars = ChangedAddonVariables.ofOrDefault(player);
 
         if (!ProcessTransfur.isPlayerTransfurred(player)) {
             if (playerVars.showWarns && !player.level.isClientSide())

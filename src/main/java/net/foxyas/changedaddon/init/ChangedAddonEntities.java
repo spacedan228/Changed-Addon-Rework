@@ -2,15 +2,14 @@ package net.foxyas.changedaddon.init;
 
 import com.mojang.datafixers.util.Pair;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.entity.partials.SnowLeopardPartialEntity;
-import net.foxyas.changedaddon.entity.projectile.WitherParticleProjectile;
-import net.foxyas.changedaddon.entity.simple.PinkCyanSkunkEntity;
 import net.foxyas.changedaddon.entity.advanced.*;
 import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.mobs.ErikEntity;
 import net.foxyas.changedaddon.entity.mobs.FoxyasEntity;
+import net.foxyas.changedaddon.entity.partials.SnowLeopardPartialEntity;
 import net.foxyas.changedaddon.entity.projectile.LuminarCrystalSpearEntity;
 import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
+import net.foxyas.changedaddon.entity.projectile.WitherParticleProjectile;
 import net.foxyas.changedaddon.entity.simple.*;
 import net.ltxprogrammer.changed.init.ChangedMobCategories;
 import net.minecraft.world.entity.Entity;

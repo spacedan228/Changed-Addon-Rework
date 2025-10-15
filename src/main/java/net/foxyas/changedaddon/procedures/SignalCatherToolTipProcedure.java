@@ -21,28 +21,23 @@ public class SignalCatherToolTipProcedure {
         if (player == null) return;
 
         ItemStack stack = event.getItemStack();
+        if(!stack.is(ChangedAddonItems.SIGNAL_CATCHER.get())) return;
+
         List<Component> tooltip = event.getToolTip();
 
-        double deltaZ;
-        double distance;
-        double deltaX;
-        double deltaY;
-
-        if (stack.getItem() == ChangedAddonItems.SIGNAL_CATCHER.get()) {
-            deltaX = stack.getOrCreateTag().getDouble("x") - player.getX();
-            deltaY = stack.getOrCreateTag().getDouble("y") - player.getY();
-            deltaZ = stack.getOrCreateTag().getDouble("z") - player.getZ();
-            distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-            if (!Screen.hasShiftDown()) {
-                tooltip.add(new TextComponent("Hold §6<Shift>§r for Info"));
-            } else {
-                tooltip.add(new TextComponent("Hold §b<Right Click>§r For scan a 32 blocks area"));
-                tooltip.add(new TextComponent("Hold §c<Shift + Right Click>§r For Super scan and scan a 120 blocks area"));
-            }
-            tooltip.add(new TextComponent(("§oCords §l" + stack.getOrCreateTag().getDouble("x") + " " + stack.getOrCreateTag().getDouble("y") + " " + stack.getOrCreateTag().getDouble("z"))));
-            if (stack.getOrCreateTag().getBoolean("set")) {
-                tooltip.add(new TextComponent(("§oDistance §l" + Math.round(distance))));
-            }
+        double deltaX = stack.getOrCreateTag().getDouble("x") - player.getX();
+        double deltaY = stack.getOrCreateTag().getDouble("y") - player.getY();
+        double deltaZ = stack.getOrCreateTag().getDouble("z") - player.getZ();
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+        if (!Screen.hasShiftDown()) {
+            tooltip.add(new TextComponent("Hold §6<Shift>§r for Info"));
+        } else {
+            tooltip.add(new TextComponent("Hold §b<Right Click>§r For scan a 32 blocks area"));
+            tooltip.add(new TextComponent("Hold §c<Shift + Right Click>§r For Super scan and scan a 120 blocks area"));
+        }
+        tooltip.add(new TextComponent(("§oCords §l" + stack.getOrCreateTag().getDouble("x") + " " + stack.getOrCreateTag().getDouble("y") + " " + stack.getOrCreateTag().getDouble("z"))));
+        if (stack.getOrCreateTag().getBoolean("set")) {
+            tooltip.add(new TextComponent(("§oDistance §l" + Math.round(distance))));
         }
     }
 }

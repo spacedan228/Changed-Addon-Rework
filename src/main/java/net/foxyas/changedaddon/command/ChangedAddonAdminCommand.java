@@ -9,13 +9,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
-import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.ComponentUtil;
-import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
-import net.ltxprogrammer.changed.command.CommandTransfur;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
@@ -28,7 +25,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -50,8 +46,6 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static net.ltxprogrammer.changed.init.ChangedLootItemFunctions.RANDOM_VARIANT;
 
 @Mod.EventBusSubscriber
 public class ChangedAddonAdminCommand {
@@ -102,7 +96,7 @@ public class ChangedAddonAdminCommand {
                                                 .executes(arguments -> {
                                                     Player target = EntityArgument.getPlayer(arguments, "player");
 
-                                                    ChangedAddonModVariables.PlayerVariables vars = target.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
+                                                    ChangedAddonVariables.PlayerVariables vars = target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
                                                     if (vars == null) return 0;
 
                                                     arguments.getSource().sendSuccess(new TextComponent(target.getDisplayName().getString() + (vars.Exp009TransfurAllowed ? " has Exp009Transfur permission" : " has no Exp009Transfur permission")), false);
@@ -119,7 +113,7 @@ public class ChangedAddonAdminCommand {
 
                                                             arguments.getSource().sendSuccess(new TextComponent(("The Exp009Transfur Perm of the " + target.getDisplayName().getString() + " was set to " + val)), true);
 
-                                                            target.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY).ifPresent(capability -> {
+                                                            target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).ifPresent(capability -> {
                                                                 capability.Exp009TransfurAllowed = val;
                                                                 capability.syncPlayerVariables(target);
                                                             });
@@ -136,7 +130,7 @@ public class ChangedAddonAdminCommand {
                                                 .executes(arguments -> {
                                                     Player target = EntityArgument.getPlayer(arguments, "player");
 
-                                                    ChangedAddonModVariables.PlayerVariables vars = target.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
+                                                    ChangedAddonVariables.PlayerVariables vars = target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
                                                     if (vars == null) return 0;
 
                                                     arguments.getSource().sendSuccess(new TextComponent(target.getDisplayName().getString() + (vars.Exp10TransfurAllowed ? " has Exp10Transfur permission" : " has no Exp10Transfur permission")), false);
@@ -153,7 +147,7 @@ public class ChangedAddonAdminCommand {
 
                                                             arguments.getSource().sendSuccess(new TextComponent(("The Exp10Transfur Perm of the " + target.getDisplayName().getString() + " was set to " + val)), true);
 
-                                                            target.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY).ifPresent(capability -> {
+                                                            target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).ifPresent(capability -> {
                                                                 capability.Exp10TransfurAllowed = val;
                                                                 capability.syncPlayerVariables(target);
                                                             });
