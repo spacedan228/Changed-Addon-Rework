@@ -385,7 +385,7 @@ public class ChangedAddonEntities {
                     .setTrackingRange(64)
                     .setUpdateInterval(3)
                     .setCustomClientFactory(LatexSnepEntity::new)
-                    .sized(0.6f, 0.7f));
+                    .sized(0.6f, 0.7f), false);
 
     public static final RegistryObject<EntityType<LuminarcticLeopardMaleEntity>> LUMINARCTIC_LEOPARD_MALE = registerChangedEntity("luminarctic_leopard_male",
             EntityType.Builder.<LuminarcticLeopardMaleEntity>of(LuminarcticLeopardMaleEntity::new, MobCategory.MONSTER)

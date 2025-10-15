@@ -81,8 +81,8 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     }
 
     /**
-    * Util Method To Get All the EntityTypes that can Glide in a List
-    */
+     * Util Method To Get All the EntityTypes that can Glide in a List
+     */
     public static List<EntityType<?>> getAllEntityTypesThatCanGlide() {
         List<EntityType<?>> canGlideEntities = new ArrayList<>();
         Collection<TransfurVariant<?>> transfurVariants = ChangedRegistry.TRANSFUR_VARIANT.get().getValues();
@@ -100,13 +100,9 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
         //event.addAbility(entityType -> getCanGlideEntities().contains(entityType), WING_FLAP_ABILITY);
         event.addAbility(event.isOfTag(ChangedAddonTags.EntityTypes.HAS_CLAWS), CLAWS);
         event.addAbility(event.isOfTag(ChangedAddonTags.EntityTypes.DRAGON_ENTITIES), WING_FLAP_ABILITY);
-        event.addAbility(entityType -> entityType.equals(ChangedEntities.LATEX_BEE.get()) || entityType.is(ChangedAddonTags.EntityTypes.BEE_ENTITIES), POLLEN_CARRY);
-
-    }
-
-    @SubscribeEvent
-    public static void registerAbilities(FMLConstructModEvent event) {
-        ChangedAddonAbilities.REGISTRY.register(FMLJavaModLoadingContext.get().getModEventBus());
+        event.addAbility(entityType ->
+                entityType.equals(ChangedEntities.LATEX_BEE.get())
+                        || entityType.is(ChangedAddonTags.EntityTypes.BEE_ENTITIES), POLLEN_CARRY);
     }
 
     @SubscribeEvent

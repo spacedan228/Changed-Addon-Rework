@@ -182,7 +182,8 @@ public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
                 LATEX_KITSUNE_MALE.get(),
                 FENGQI_WOLF.get(),
                 LUMINARA_FLOWER_BEAST.get(),
-                PROTOGEN_0SENIA0.get()
+                PROTOGEN_0SENIA0.get(),
+                LATEX_KAYLA_SHARK.get()
         );
 
 

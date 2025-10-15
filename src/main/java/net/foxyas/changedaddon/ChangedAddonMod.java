@@ -45,6 +45,7 @@ public class ChangedAddonMod {
         ChangedAddonItems.REGISTRY.register(bus);
 
         ChangedAddonEntities.REGISTRY.register(bus);
+        ChangedAddonAbilities.REGISTRY.register(bus);
         ChangedAddonTransfurVariants.REGISTRY.register(bus);
         ChangedAddonBlockEntities.REGISTRY.register(bus);
         ChangedAddonFeatures.REGISTRY.register(bus);

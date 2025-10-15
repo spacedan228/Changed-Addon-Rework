@@ -27,8 +27,8 @@ public class LatexKaylaSharkRenderer extends AdvancedHumanoidRenderer<LatexKayla
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(),
                 CustomEyesLayer.fixedColor(Color3.parseHex("#060606")),
-                CustomEyesLayer.fixedColor(Color3.parseHex("#a81dc8")),
-                CustomEyesLayer.fixedColor(Color3.parseHex("#4cc4f5")),
+                CustomEyesLayer.fixedColorGlowing(Color3.parseHex("#a81dc8")),
+                CustomEyesLayer.fixedColorGlowing(Color3.parseHex("#4cc4f5")),
                 CustomEyesLayer::noRender,
                 CustomEyesLayer::noRender
         ));
@@ -36,12 +36,12 @@ public class LatexKaylaSharkRenderer extends AdvancedHumanoidRenderer<LatexKayla
         this.addLayer(new EmissiveBodyLayer<>(this, EMISSIVE_TEXTURE) {
             @Override
             public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, LatexKaylaSharkEntity entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-                super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+                if (entity.getGlowingState()) super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
             }
 
             @Override
-            public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, LatexKaylaSharkEntity pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-                super.render(pMatrixStack, pBuffer, pPackedLight, pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTicks, pAgeInTicks, pNetHeadYaw, pHeadPitch);
+            public void render(@NotNull PoseStack pMatrixStack, @NotNull MultiBufferSource pBuffer, int pPackedLight, @NotNull LatexKaylaSharkEntity pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+                if (pLivingEntity.getGlowingState()) super.render(pMatrixStack, pBuffer, pPackedLight, pLivingEntity, pLimbSwing, pLimbSwingAmount, pPartialTicks, pAgeInTicks, pNetHeadYaw, pHeadPitch);
             }
         });
     }
