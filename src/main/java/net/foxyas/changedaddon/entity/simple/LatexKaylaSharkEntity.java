@@ -6,7 +6,6 @@ import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.beast.LatexTigerShark;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.util.Color3;
-import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -29,9 +28,6 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class LatexKaylaSharkEntity extends LatexTigerShark implements GenderedEntity {
 
@@ -90,7 +86,7 @@ public class LatexKaylaSharkEntity extends LatexTigerShark implements GenderedEn
         return finalizedSpawn;
     }
 
-    public static LootTable.@NotNull Builder KaylaLoot() {
+    public static LootTable.@NotNull Builder getLoot() {
         return LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))

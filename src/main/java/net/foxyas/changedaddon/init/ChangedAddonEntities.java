@@ -29,7 +29,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -144,9 +143,9 @@ public class ChangedAddonEntities {
         return registerChangedEntity(registryName, entityTypeBuilder, true);
     }
 
-    private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, Supplier<LootTable.Builder> lootBuilder) {
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, Supplier<LootTable.Builder> lootDataBuilder) {
         RegistryObject<EntityType<T>> register = registerChangedEntity(registryName, entityTypeBuilder, true);
-        EntitiesWithLoot.add(Pair.of(register::get, lootBuilder));
+        EntitiesWithLoot.add(Pair.of(register::get, lootDataBuilder));
         return register;
     }
 
@@ -154,9 +153,9 @@ public class ChangedAddonEntities {
         return registerChangedEntity(registryName, entityTypeBuilder, false);
     }
 
-    private static <T extends Entity> RegistryObject<EntityType<T>> registerOrganicChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, Supplier<LootTable.Builder> lootBuilder) {
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerOrganicChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, Supplier<LootTable.Builder> lootDataBuilder) {
         RegistryObject<EntityType<T>> register = registerChangedEntity(registryName, entityTypeBuilder, false);
-        EntitiesWithLoot.add(Pair.of(register::get, lootBuilder));
+        EntitiesWithLoot.add(Pair.of(register::get, lootDataBuilder));
         return register;
     }
 
@@ -622,7 +621,7 @@ public class ChangedAddonEntities {
                     .setTrackingRange(64)
                     .setUpdateInterval(3)
                     .setCustomClientFactory(LatexKaylaSharkEntity::new)
-                    .sized(0.7f, 1.93f), LatexKaylaSharkEntity::KaylaLoot
+                    .sized(0.7f, 1.93f), LatexKaylaSharkEntity::getLoot
             );
 
     // --- MONSTER/MOB ENTITIES ---
