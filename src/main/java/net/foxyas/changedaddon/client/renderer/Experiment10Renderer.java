@@ -25,16 +25,16 @@ public class Experiment10Renderer extends AdvancedHumanoidRenderer<Experiment10E
     public Experiment10Renderer(EntityRendererProvider.Context context) {
         super(context, new Experiment10Model(context.bakeLayer(Experiment10Model.LAYER_LOCATION)),
                 ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);
-        this.addLayer(new EmissiveBodyLayer<>(this, new ResourceLocation("changed_addon", "textures/entities/experiment_10/experiment_10_glow.png")));
+        this.addLayer(new EmissiveBodyLayer<>(this, ResourceLocation.parse("changed_addon", "textures/entities/experiment_10/experiment_10_glow.png")));
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));
         this.addLayer(new GasMaskLayer<>(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(), CustomEyesLayer::scleraColor, CustomEyesLayer::glowingIrisColorLeft, CustomEyesLayer::glowingIrisColorRight, CustomEyesLayer::noRender, CustomEyesLayer::noRender));
-        this.addLayer(new BloodLayer<>(this, new ResourceLocation("changed_addon:textures/entities/experiment_10/experiment_10_phase2.png")));
+        this.addLayer(new BloodLayer<>(this, ResourceLocation.parse("changed_addon:textures/entities/experiment_10/experiment_10_phase2.png")));
     }
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Experiment10Entity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/experiment_10/experiment_10.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/experiment_10/experiment_10.png");
     }
 
     public static class BloodLayer<M extends AdvancedHumanoidModel<T>, T extends ChangedEntity> extends RenderLayer<T, M> implements FirstPersonLayer<T> {

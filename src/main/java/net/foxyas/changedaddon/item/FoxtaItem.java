@@ -73,7 +73,7 @@ public class FoxtaItem extends Item implements SpecializedItemRendering {
             // Distância percorrida no ar
             int Foxta_Drink_Amount = stats.getValue(Stats.ITEM_USED.get(ChangedAddonModItems.FOXTA.get()));
             if (Foxta_Drink_Amount >= 100) {
-                Advancement _adv = serverPlayer.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:foxta_adctive"));
+                Advancement _adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:foxta_adctive"));
                 assert _adv != null;
                 AdvancementProgress _ap = serverPlayer.getAdvancements().getOrStartProgress(_adv);
                 if (!_ap.isDone()) {

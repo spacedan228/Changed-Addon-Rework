@@ -26,8 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ArmorLatexSquidTigerSharkModel<T extends ChangedEntity> extends LatexHumanoidArmorModel<T, ArmorLatexSquidTigerSharkModel<T>> implements DoubleArmedModel<T> {
-    //public static final ModelLayerLocation INNER_ARMOR = ArmorModelLayerLocation.createInnerArmorLocation(new ResourceLocation("changed_addon", "squid_tiger_shark_armor")).get();
-    //public static final ModelLayerLocation OUTER_ARMOR = ArmorModelLayerLocation.createInnerArmorLocation(new ResourceLocation("changed_addon", "squid_tiger_shark_armor")).get();
+    //public static final ModelLayerLocation INNER_ARMOR = ArmorModelLayerLocation.createInnerArmorLocation(ResourceLocation.parse("changed_addon", "squid_tiger_shark_armor")).get();
+    //public static final ModelLayerLocation OUTER_ARMOR = ArmorModelLayerLocation.createInnerArmorLocation(ResourceLocation.parse("changed_addon", "squid_tiger_shark_armor")).get();
     public static final ArmorModelSet<ChangedEntity, ArmorLatexSquidTigerSharkModel<ChangedEntity>> MODEL_SET = ArmorModelSet.of(ChangedAddonMod.resourceLoc("armor_squid_tiger_shark"), ArmorLatexSquidTigerSharkModel::createArmorLayer, ArmorLatexSquidTigerSharkModel::new);
 
     private final ModelPart Head;

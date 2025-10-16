@@ -14,6 +14,6 @@ public class FoxyasRenderer extends MobRenderer<FoxyasEntity, ModelFoxyasModel<F
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull FoxyasEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/foxyas_texture.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/foxyas_texture.png");
     }
 }

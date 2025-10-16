@@ -53,10 +53,10 @@ public class UntransfurOverlayOverlay {
 
 
             if (canshow) {
-                RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/untransfurprogress.png"));
+                RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/untransfurprogress.png"));
                 GuiComponent.blit(event.getMatrixStack(), 10, posY - 73, 0, 0, 14, 5, 14, 5);
 
-                RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/untransfurprogress_full.png"));
+                RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/untransfurprogress_full.png"));
                 GuiComponent.blit(event.getMatrixStack(), 11, posY - 72, 0, 0, intprogress, 3, intprogress, 3);
 
 

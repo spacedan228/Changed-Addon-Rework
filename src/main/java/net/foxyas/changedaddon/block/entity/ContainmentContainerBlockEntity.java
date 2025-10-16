@@ -63,9 +63,9 @@ public class ContainmentContainerBlockEntity extends BlockEntity {
         if (compound.contains(TRANSFUR_VARIANT)) {
             ResourceLocation form;
             try {
-                form = new ResourceLocation(compound.getString(TRANSFUR_VARIANT));
+                form = ResourceLocation.parse(compound.getString(TRANSFUR_VARIANT));
             } catch (Exception e) {
-                form = new ResourceLocation("");
+                form = ResourceLocation.parse("");
             }
             if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getRegistryName).anyMatch(form::equals)) {
                 this.transfurVariant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);

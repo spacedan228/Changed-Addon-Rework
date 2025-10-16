@@ -19,7 +19,7 @@ public class Exp2MaleRenderer extends AdvancedHumanoidRenderer<Exp2MaleEntity, M
                 ArmorLatexMaleCatModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotArmFur));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
-        this.addLayer(new CustomHairColorLayer<>(this, this.getModel(), new ResourceLocation("changed_addon:textures/entities/male_snep_hair")));
+        this.addLayer(new CustomHairColorLayer<>(this, this.getModel(), ResourceLocation.parse("changed_addon:textures/entities/male_snep_hair")));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(), CustomEyesLayer::scleraColor, CustomEyesLayer::glowingIrisColorLeft, CustomEyesLayer::glowingIrisColorRight, CustomEyesLayer::noRender, CustomEyesLayer::noRender));
         this.addLayer(new GasMaskLayer<>(this, context.getModelSet()));
     }
@@ -27,11 +27,11 @@ public class Exp2MaleRenderer extends AdvancedHumanoidRenderer<Exp2MaleEntity, M
     @Override
     public @NotNull ResourceLocation getTextureLocation(Exp2MaleEntity entity) {
         if (entity.getUnderlyingPlayer() == null) {
-            return new ResourceLocation("changed_addon:textures/entities/male_exp2_snow_leopard.png");
+            return ResourceLocation.parse("changed_addon:textures/entities/male_exp2_snow_leopard.png");
         }
 
         if (entity.getUnderlyingPlayer() != null && entity.getHealth() / entity.getMaxHealth() <= 0.60 && entity.getHealth() / entity.getMaxHealth() > 0.30) {
-            return new ResourceLocation("changed_addon:textures/entities/male_exp2_snow_leopard_hurt.png");
+            return ResourceLocation.parse("changed_addon:textures/entities/male_exp2_snow_leopard_hurt.png");
         }
         if (entity.getUnderlyingPlayer() != null && entity.getHealth() / entity.getMaxHealth() <= 0.30) {
             return new ResourceLocation("changed_addon:textures/entities/male_exp2_snow_leopard_badly_hurt.png");

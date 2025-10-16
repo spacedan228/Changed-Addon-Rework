@@ -46,7 +46,7 @@ public class Experiment009BossRenderer extends AdvancedHumanoidRenderer<Experime
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Experiment009BossEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/experiment_9/experiment_009.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/experiment_9/experiment_009.png");
     }
 
     private static class CustomEmissiveBodyLayer<M extends EntityModel<T>, T extends ChangedEntity> extends EyesLayer<T, M> implements FirstPersonLayer<T> {

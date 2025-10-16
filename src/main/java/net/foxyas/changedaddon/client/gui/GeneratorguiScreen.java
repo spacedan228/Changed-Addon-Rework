@@ -24,7 +24,7 @@ import java.util.HashMap;
 
 public class GeneratorguiScreen extends AbstractContainerScreen<GeneratorGuiMenu> {
     private final static HashMap<String, Object> guistate = GeneratorGuiMenu.guistate;
-    private static final ResourceLocation texture = new ResourceLocation("changed_addon:textures/screens/generatorgui.png");
+    private static final ResourceLocation texture = ResourceLocation.parse("changed_addon:textures/screens/generatorgui.png");
     private final Level world;
     private final int x, y, z;
     private final Player entity;
@@ -56,11 +56,11 @@ public class GeneratorguiScreen extends AbstractContainerScreen<GeneratorGuiMenu
         RenderSystem.setShaderTexture(0, texture);
         blit(ms, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
         if (IfisturnonProcedure.execute(world, x, y, z)) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/on.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/on.png"));
             blit(ms, this.leftPos + 170, this.topPos + 73, 0, 0, 16, 16, 16, 16);
         }
         if (IfisturnoffProcedure.execute(world, x, y, z)) {
-            RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/off.png"));
+            RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/off.png"));
             blit(ms, this.leftPos + 170, this.topPos + 73, 0, 0, 16, 16, 16, 16);
         }
         RenderSystem.disableBlend();
@@ -100,7 +100,7 @@ public class GeneratorguiScreen extends AbstractContainerScreen<GeneratorGuiMenu
     public void init() {
         super.init();
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
-        imagebutton_hitbox_16x16 = new ImageButton(this.leftPos + 170, this.topPos + 73, 16, 16, 0, 0, 16, new ResourceLocation("changed_addon:textures/screens/atlas/imagebutton_hitbox_16x16.png"), 16, 32, e -> {
+        imagebutton_hitbox_16x16 = new ImageButton(this.leftPos + 170, this.topPos + 73, 16, 16, 0, 0, 16, ResourceLocation.parse("changed_addon:textures/screens/atlas/imagebutton_hitbox_16x16.png"), 16, 32, e -> {
             if (true) {
                 ChangedAddonMod.PACKET_HANDLER.sendToServer(new GeneratorGuiButtonMessage(0, x, y, z));
                 GeneratorGuiButtonMessage.handleButtonAction(entity, 0, x, y, z);

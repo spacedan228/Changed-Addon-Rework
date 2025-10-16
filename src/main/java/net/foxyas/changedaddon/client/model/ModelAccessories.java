@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public class ModelAccessories<T extends Entity> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in
     // the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("changed_addon", "model_accessories"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.parse("changed_addon", "model_accessories"), "main");
     public final ModelPart Colar;
     public final ModelPart Necklace;
     public final ModelPart Bracelets;

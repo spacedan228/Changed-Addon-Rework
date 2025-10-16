@@ -21,7 +21,7 @@ public class LatexSnepRenderer extends AdvancedHumanoidRenderer<LatexSnepEntity,
     public LatexSnepRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexSnepModel(context.bakeLayer(LatexSnepModel.LAYER_LOCATION)),
                 ArmorNoneModel.MODEL_SET, 0.5f);
-        this.addLayer(new CustomCatEyesLayer<>(this, new ResourceLocation("changed_addon:textures/entities/latex_snep_right_eye.png"), new ResourceLocation("changed_addon:textures/entities/latex_snep_left_eye.png"), new ResourceLocation("changed_addon:textures/entities/latex_snep_sclera.png")));
+        this.addLayer(new CustomCatEyesLayer<>(this, ResourceLocation.parse("changed_addon:textures/entities/latex_snep_right_eye.png"), ResourceLocation.parse("changed_addon:textures/entities/latex_snep_left_eye.png"), ResourceLocation.parse("changed_addon:textures/entities/latex_snep_sclera.png")));
     }
 
 

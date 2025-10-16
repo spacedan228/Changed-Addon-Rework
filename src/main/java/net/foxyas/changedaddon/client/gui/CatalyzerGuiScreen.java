@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu> {
 
-    private static final ResourceLocation texture = new ResourceLocation("changed_addon:textures/screens/catalyzer_gui_new.png");
+    private static final ResourceLocation texture = ResourceLocation.parse("changed_addon:textures/screens/catalyzer_gui_new.png");
 
     private final Level world;
     private final int x, y, z;
@@ -56,10 +56,10 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         BlockEntity be = world.getBlockEntity(new BlockPos(x, y, z));
         int progressInt = be != null ? (int) (be.getTileData().getDouble("recipe_progress") / 3.57) : -1;
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/empty_bar.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/empty_bar.png"));
         blit(ms, this.leftPos + 83, this.topPos + 46, 0, 0, 32, 12, 32, 12);
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/bar_full.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/bar_full.png"));
         blit(ms, this.leftPos + 83 + 2, this.topPos + 46 + 2, 0, 0, progressInt, 8, progressInt, 8);
 
         assert this.minecraft != null;
@@ -69,8 +69,8 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         boolean showSyringe = (gameTime % animationPeriod) < (animationPeriod / 2);
 
         ResourceLocation icon = showSyringe
-                ? new ResourceLocation("changed_addon:textures/screens/syringes.png")
-                : new ResourceLocation("changed_addon:textures/screens/dusts.png");
+                ? ResourceLocation.parse("changed_addon:textures/screens/syringes.png")
+                : ResourceLocation.parse("changed_addon:textures/screens/dusts.png");
 
         int yOffset = showSyringe ? 44 : 45;
         RenderSystem.setShaderTexture(0, icon);

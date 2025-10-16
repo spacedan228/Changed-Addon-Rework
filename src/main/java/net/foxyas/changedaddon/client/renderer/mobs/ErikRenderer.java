@@ -17,6 +17,6 @@ public class ErikRenderer extends HumanoidMobRenderer<ErikEntity, HumanoidModel<
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull ErikEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/erikskin.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/erikskin.png");
     }
 }

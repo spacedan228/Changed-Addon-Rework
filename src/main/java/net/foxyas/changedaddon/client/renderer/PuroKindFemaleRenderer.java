@@ -26,6 +26,6 @@ public class PuroKindFemaleRenderer extends AdvancedHumanoidRenderer<PuroKindFem
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull PuroKindFemaleEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/puro_kind_female_texture.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/puro_kind_female_texture.png");
     }
 }

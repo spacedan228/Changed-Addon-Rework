@@ -25,7 +25,7 @@ public class LatexSquidTigerSharkRenderer extends AdvancedHumanoidRenderer<Latex
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull LatexSquidTigerSharkEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/latex_tiger_squid_shark.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/latex_tiger_squid_shark.png");
     }
 
     @Override

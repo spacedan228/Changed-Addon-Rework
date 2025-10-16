@@ -55,22 +55,22 @@ public class UnifuserguiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/unifusergui_new.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/unifusergui_new.png"));
         blit(ms, this.leftPos, this.topPos, 0, 0, 200, 187, 200, 187);
 
         BlockEntity be = level.getBlockEntity(new BlockPos(x, y, z));
         int progressint = be != null ? (int) (be.getTileData().getDouble("recipe_progress") / 3.57) : -1;
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/empty_bar.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/empty_bar.png"));
         blit(ms, this.leftPos + 84, this.topPos + 59, 0, 0, 32, 12, 32, 12);
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/bar_full.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/bar_full.png"));
         blit(ms, this.leftPos + 84 + 2, this.topPos + 59 + 2, 0, 0, progressint, 8, progressint, 8);
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/dusts.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/dusts.png"));
         blit(ms, this.leftPos + 15, this.topPos + 46, 0, 0, 16, 16, 16, 16);
 
-        RenderSystem.setShaderTexture(0, new ResourceLocation("changed_addon:textures/screens/syringe_withlitixcamonia_screen.png"));
+        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/syringe_withlitixcamonia_screen.png"));
         blit(ms, this.leftPos + 50, this.topPos + 57, 0, 0, 16, 16, 16, 16);
 
         RenderSystem.disableBlend();

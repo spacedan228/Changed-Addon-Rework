@@ -50,7 +50,7 @@ public class ElectricKatanaItem extends AbstractKatanaItem {
             }
 
             public @NotNull Ingredient getRepairIngredient() {
-                return CompoundIngredient.of(Ingredient.of(new ItemStack(ChangedAddonItems.ELECTRIC_KATANA.get())), Ingredient.of(ItemTags.create(new ResourceLocation("changed_addon:tsc_katana_repair"))));
+                return CompoundIngredient.of(Ingredient.of(new ItemStack(ChangedAddonItems.ELECTRIC_KATANA.get())), Ingredient.of(ItemTags.create(ResourceLocation.parse("changed_addon:tsc_katana_repair"))));
             }
         }, 3, -2.3f, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT));
     }

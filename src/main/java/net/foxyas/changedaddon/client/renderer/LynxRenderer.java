@@ -19,6 +19,6 @@ public class LynxRenderer extends AdvancedHumanoidRenderer<LynxEntity, LynxModel
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull LynxEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/lynx.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/lynx.png");
     }
 }

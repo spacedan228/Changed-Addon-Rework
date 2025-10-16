@@ -36,7 +36,7 @@ import static net.minecraft.client.gui.GuiComponent.drawCenteredString;
 
 @Mod.EventBusSubscriber({Dist.CLIENT})
 public class PatOverlay {
-    public static final ResourceLocation TEXTURE = new ResourceLocation("changed_addon:textures/screens/paw_normal.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.parse("changed_addon:textures/screens/paw_normal.png");
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void eventHandler(RenderGameOverlayEvent.Pre event) {
@@ -181,7 +181,7 @@ public class PatOverlay {
                             .withItalic(true));
             return patMessage;
         } else {
-            return new TranslatableComponent("");
+            return new TranslatableComponent("block.minecraft.air");
         }
     }
 

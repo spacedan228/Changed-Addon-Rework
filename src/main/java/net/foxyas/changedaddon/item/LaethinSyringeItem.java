@@ -81,7 +81,7 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
     }
 
     private void resetAdvancement(ServerPlayer player, String id) {
-        Advancement adv = player.server.getAdvancements().getAdvancement(new ResourceLocation(id));
+        Advancement adv = player.server.getAdvancements().getAdvancement(ResourceLocation.parse(id));
         if (adv == null) return;
 
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(adv);
@@ -91,7 +91,7 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
     }
 
     protected void grantAdvancementIfNotDone(ServerPlayer player, String advancementId) {
-        Advancement advancement = player.server.getAdvancements().getAdvancement(new ResourceLocation(advancementId));
+        Advancement advancement = player.server.getAdvancements().getAdvancement(ResourceLocation.parse(advancementId));
         if (advancement == null) return;
 
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);

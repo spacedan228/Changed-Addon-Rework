@@ -13,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 public class ReynRenderer extends AdvancedHumanoidRenderer<ReynEntity, ReynModel, ArmorLatexMaleWolfModel<ReynEntity>> {
     public ReynRenderer(EntityRendererProvider.Context context) {
         super(context, new ReynModel(context.bakeLayer(ReynModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
-        this.addLayer(new CustomDisplay<>(this, getModel(), new ResourceLocation("changed_addon:textures/entities/reyn_eye_display.png"), new ResourceLocation("changed_addon:textures/entities/reyn_display.png"), true));
+        this.addLayer(new CustomDisplay<>(this, getModel(), ResourceLocation.parse("changed_addon:textures/entities/reyn_eye_display.png"), ResourceLocation.parse("changed_addon:textures/entities/reyn_display.png"), true));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
     }
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull ReynEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/reyn.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/reyn.png");
     }
 }

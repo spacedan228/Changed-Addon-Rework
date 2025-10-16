@@ -68,7 +68,7 @@ public class IridiumoreFeature extends OreFeature {
 
         @SubscribeEvent
         public static void init(FMLCommonSetupEvent event) {
-            Registry.register(Registry.RULE_TEST, new ResourceLocation("changed_addon:iridium_ore_match"), CUSTOM_MATCH);
+            Registry.register(Registry.RULE_TEST, ResourceLocation.parse("changed_addon:iridium_ore_match"), CUSTOM_MATCH);
         }
 
         public boolean test(BlockState blockstate, @NotNull Random random) {

@@ -21,7 +21,7 @@ public class AmmoniaCompressedItem extends Item {
     @Override
     public void onCraftedBy(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull Player entity) {
         if (entity instanceof ServerPlayer sPlayer) {
-            Advancement _adv = sPlayer.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:compressed_ammonia_advancement"));
+            Advancement _adv = sPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:compressed_ammonia_advancement"));
             assert _adv != null;
             AdvancementProgress _ap = sPlayer.getAdvancements().getOrStartProgress(_adv);
             if (!_ap.isDone()) {

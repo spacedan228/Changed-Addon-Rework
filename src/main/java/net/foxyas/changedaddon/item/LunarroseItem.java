@@ -9,6 +9,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -52,7 +53,7 @@ public abstract class LunarroseItem extends ArmorItem {
 
             @Override
             public @NotNull SoundEvent getEquipSound() {
-                return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation(""));
+                return SoundEvents.ARMOR_EQUIP_LEATHER;
             }
 
             @Override

@@ -31,7 +31,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
             @Override
             public @NotNull SoundEvent getEquipSound() {
-                return ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("item.armor.equip_netherite"));
+                return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("item.armor.equip_netherite"));
             }
 
             @Override

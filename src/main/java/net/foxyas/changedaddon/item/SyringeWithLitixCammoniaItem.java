@@ -121,7 +121,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
     }
 
     private static void resetAdvancement(ServerPlayer player, String id) {
-        Advancement adv = player.server.getAdvancements().getAdvancement(new ResourceLocation(id));
+        Advancement adv = player.server.getAdvancements().getAdvancement(ResourceLocation.parse(id));
         if (adv == null) return;
 
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(adv);
@@ -133,7 +133,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
     private static void grantAdvancement(Player player, String id) {
         if (!(player instanceof ServerPlayer sp)) return;
 
-        Advancement adv = sp.server.getAdvancements().getAdvancement(new ResourceLocation(id));
+        Advancement adv = sp.server.getAdvancements().getAdvancement(ResourceLocation.parse(id));
         if (adv == null) return;
 
         AdvancementProgress progress = sp.getAdvancements().getOrStartProgress(adv);

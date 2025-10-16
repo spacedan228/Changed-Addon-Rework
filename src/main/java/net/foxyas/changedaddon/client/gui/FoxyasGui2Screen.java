@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class FoxyasGui2Screen extends AbstractContainerScreen<FoxyasGui2Menu> {
 
-    private static final ResourceLocation texture = new ResourceLocation("changed_addon:textures/screens/foxyas_gui_2.png");
+    private static final ResourceLocation texture = ResourceLocation.parse("changed_addon:textures/screens/foxyas_gui_2.png");
 
     private final Player player;
     Button button_deal;
