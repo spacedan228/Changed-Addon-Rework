@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.advanced;
 
+import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
@@ -13,7 +14,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.PlayMessages;
 
-public class Protogen0senia0Entity extends AbstractProtogenEntity {
+import java.awt.*;
+
+public class Protogen0senia0Entity extends AbstractProtogenEntity implements IDynamicPawColor {
 
     public Protogen0senia0Entity(EntityType<? extends ChangedEntity> type, Level level) {
         super(type, level);
@@ -49,5 +52,10 @@ public class Protogen0senia0Entity extends AbstractProtogenEntity {
     }
 
     public static void init() {
+    }
+
+    @Override
+    public Color getPawBeansColor() {
+        return new Color(39, 53, 95);
     }
 }

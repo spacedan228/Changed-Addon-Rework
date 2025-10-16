@@ -25,23 +25,24 @@ public class TamePuroKindProcedure {
         if (!(entity instanceof AbstractDarkLatexWolf wolf) || player == null) return;
 
         if (entity instanceof PuroKindMaleEntity || entity instanceof PuroKindFemaleEntity) {
-            if (!wolf.isTame()) {
-                if (player.getMainHandItem().is(ChangedItems.ORANGE.get())) {
-                    wolf.tame(player);
-                } else if (player.getOffhandItem().is(ChangedItems.ORANGE.get())) {
-                    wolf.tame(player);
-                }
+            if(wolf.isTame()) return;
+
+            if (player.getMainHandItem().is(ChangedItems.ORANGE.get())) {
+                wolf.tame(player);
+            } else if (player.getOffhandItem().is(ChangedItems.ORANGE.get())) {
+                wolf.tame(player);
             }
+
             return;
         }
         
         if (entity instanceof WolfyEntity) {
-            if (!wolf.isTame()) {
-                if (player.getMainHandItem().is(ChangedAddonItems.FOXTA.get())) {
-                    wolf.tame(player);
-                } else if (player.getOffhandItem().is(ChangedAddonItems.FOXTA.get())) {
-                    wolf.tame(player);
-                }
+            if(wolf.isTame()) return;
+
+            if (player.getMainHandItem().is(ChangedAddonItems.FOXTA.get())) {
+                wolf.tame(player);
+            } else if (player.getOffhandItem().is(ChangedAddonItems.FOXTA.get())) {
+                wolf.tame(player);
             }
         }
     }

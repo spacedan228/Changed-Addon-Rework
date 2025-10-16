@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.entity.BasicPlayerInfo;
 import net.minecraft.commands.Commands;
@@ -27,7 +27,7 @@ public class ChangedAddonCommandRootCommand {
                                 .executes(arguments -> {
                                     Player player = arguments.getSource().getPlayerOrException();
 
-                                    ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.of(player);
+                                    ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
                                     if (vars == null) return 0;
 
                                     player.displayClientMessage(new TextComponent(("reset transfur progress is " + vars.resetTransfurAdvancements)), true);
@@ -38,7 +38,7 @@ public class ChangedAddonCommandRootCommand {
                                 .executes(arguments -> {
                                     Player player = arguments.getSource().getPlayerOrException();
 
-                                    ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.of(player);
+                                    ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
                                     if (vars == null) return 0;
 
                                     boolean newVal = BoolArgumentType.getBool(arguments, "turn");
@@ -62,7 +62,7 @@ public class ChangedAddonCommandRootCommand {
                                 .executes(arguments -> {
                                     Player player = arguments.getSource().getPlayerOrException();
 
-                                    ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.of(player);
+                                    ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
                                     if (vars == null) return 0;
 
                                     vars.showWarns = BoolArgumentType.getBool(arguments, "warns");
@@ -74,7 +74,7 @@ public class ChangedAddonCommandRootCommand {
                                 .executes(arguments -> {
                                     Player player = arguments.getSource().getPlayerOrException();
 
-                                    ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.of(player);
+                                    ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
                                     if (vars == null) return 0;
 
                                     player.displayClientMessage(new TextComponent("Warns is §4" + vars.showWarns), true);

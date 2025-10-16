@@ -68,10 +68,7 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     public @NotNull InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        CatalyzerOnBlockRightClickedProcedure.execute(world, x, y, z, blockstate, entity);
+        CatalyzerOnBlockRightClickedProcedure.execute(world, pos, blockstate, entity);
         return InteractionResult.SUCCESS;
     }
 

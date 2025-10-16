@@ -15,6 +15,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.EntityDamageSource;
@@ -28,7 +29,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
@@ -174,16 +174,16 @@ public class LeapProcedure {
 
                             if (!level.isClientSide()) {
                                 level.playSound(null, new BlockPos(entity.getX(), entity.getY(), entity.getZ()),
-                                        ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.lightning_bolt.impact")), SoundSource.NEUTRAL, 1, 0);
+                                        SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.NEUTRAL, 1, 0);
                             } else {
                                 level.playLocalSound((entity.getX()), (entity.getY()), (entity.getZ()),
-                                        ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.lightning_bolt.impact")), SoundSource.NEUTRAL, 1, 0, false);
+                                        SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.NEUTRAL, 1, 0, false);
                             }
                         }
                     }
                 }
             }
-        } else if (canFly(tf)) {
+        } else if (canFly(tf)) {//FIXME this branch is currently unreachable. Remove it?
             if (player.hasEffect(ChangedAddonMobEffects.FADIGUE.get()) || player.getFoodData().getFoodLevel() < 8)
                 return;
 

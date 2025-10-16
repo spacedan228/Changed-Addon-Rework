@@ -26,25 +26,35 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-public class ChangedAddonModVariables {
+public class ChangedAddonVariables {
 
-    public static final Capability<PlayerVariables> PLAYER_VARIABLES_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
-    });
+    public static final Capability<PlayerVariables> PLAYER_VARIABLES_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+
+    /**
+     * Should never return null unless FakePlayer is used or the player is dead
+     */
+    public static @Nullable PlayerVariables of(@NotNull Player player) {
+        return player.getCapability(PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
+    }
+
+    public static @NotNull PlayerVariables ofOrDefault(@NotNull Player player) {
+        return player.getCapability(PLAYER_VARIABLES_CAPABILITY).resolve().orElseGet(PlayerVariables::new);
+    }
+
+    public static @NotNull PlayerVariables nonNullOf(@NotNull Player player) {
+        return player.getCapability(PLAYER_VARIABLES_CAPABILITY).orElseThrow(() -> new IllegalStateException("Player Variables Capability expected but not found!"));
+    }
 
     @Mod.EventBusSubscriber
-    public static class PlayerVariablesProvider implements ICapabilitySerializable<CompoundTag> {
+    public static class Provider implements ICapabilitySerializable<CompoundTag> {
 
         private final PlayerVariables playerVariables = new PlayerVariables();
         private final LazyOptional<PlayerVariables> instance = LazyOptional.of(() -> playerVariables);
 
         @SubscribeEvent
-        public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {
-            if (event.getObject() instanceof Player player && !(player instanceof FakePlayer)) {
-                event.addCapability(
-                        ChangedAddonMod.resourceLoc("player_variables"),
-                        new ChangedAddonModVariables.PlayerVariablesProvider()
-                );
-            }
+        public static void onAttachCapabilities(AttachCapabilitiesEvent<Player> event) {
+            if(event.getObject() instanceof FakePlayer) return;
+            event.addCapability(ChangedAddonMod.resourceLoc("player_variables"), new Provider());
         }
 
         @Override
@@ -79,24 +89,9 @@ public class ChangedAddonModVariables {
         public boolean Exp009TransfurAllowed = false;
         public boolean Exp10TransfurAllowed = false;
 
-        /**
-         * Should never return null unless FakePlayer is used or the player is dead
-         */
-        public static @Nullable PlayerVariables of(@NotNull Player player) {
-            return player.getCapability(PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
-        }
-
-        public static @NotNull PlayerVariables ofOrDefault(@NotNull Player player) {
-            return player.getCapability(PLAYER_VARIABLES_CAPABILITY).resolve().orElseGet(PlayerVariables::new);
-        }
-
-        public static @NotNull PlayerVariables nonNullOf(@NotNull Player player) {
-            return player.getCapability(PLAYER_VARIABLES_CAPABILITY).orElseThrow(() -> new IllegalStateException("Player Variables Capability expected but not found!"));
-        }
-
         public void syncPlayerVariables(Entity entity) {
             if (entity instanceof ServerPlayer serverPlayer)
-                ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new PlayerVariablesSyncMessage(this));
+                ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncPacket(this));
         }
 
         public void copyTo(PlayerVariables other, boolean wasDeath) {
@@ -149,23 +144,24 @@ public class ChangedAddonModVariables {
         }
     }
 
-    public static class PlayerVariablesSyncMessage {
+    public static class SyncPacket {
+
         public PlayerVariables data;
 
-        public PlayerVariablesSyncMessage(FriendlyByteBuf buffer) {
+        public SyncPacket(FriendlyByteBuf buffer) {
             this.data = new PlayerVariables();
             this.data.readNBT(buffer.readNbt());
         }
 
-        public PlayerVariablesSyncMessage(PlayerVariables data) {
+        public SyncPacket(PlayerVariables data) {
             this.data = data;
         }
 
-        public static void buffer(PlayerVariablesSyncMessage message, FriendlyByteBuf buffer) {
+        public static void buffer(SyncPacket message, FriendlyByteBuf buffer) {
             buffer.writeNbt(message.data.writeNBT());
         }
 
-        public static void handler(PlayerVariablesSyncMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
+        public static void handler(SyncPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
             NetworkEvent.Context context = contextSupplier.get();
             context.setPacketHandled(true);
             if (context.getDirection().getReceptionSide().isServer()) return;

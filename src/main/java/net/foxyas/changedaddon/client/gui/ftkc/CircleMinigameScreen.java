@@ -5,7 +5,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.qte.FightToKeepConsciousness;
 import net.foxyas.changedaddon.util.RenderUtil;
 import net.foxyas.changedaddon.util.Vector2f;
@@ -89,7 +89,7 @@ public abstract class CircleMinigameScreen extends Screen {
             return;
         }
 
-        float fightProgress = ChangedAddonModVariables.PlayerVariables.nonNullOf(player).consciousnessFightProgress / FightToKeepConsciousness.STRUGGLE_NEED;
+        float fightProgress = ChangedAddonVariables.nonNullOf(player).consciousnessFightProgress / FightToKeepConsciousness.STRUGGLE_NEED;
         float loseProgress = Mth.lerp(partialTick, Math.max(0, tf.ageAsVariant - 1), tf.ageAsVariant) / FightToKeepConsciousness.STRUGGLE_TIME;
 
         int alpha = (int) (128 + 128 * (loseProgress - fightProgress));
@@ -99,7 +99,7 @@ public abstract class CircleMinigameScreen extends Screen {
 
     @Override
     public void tick() {
-        if (ChangedAddonModVariables.PlayerVariables.ofOrDefault(player).FTKCminigameType == null) {
+        if (ChangedAddonVariables.ofOrDefault(player).FTKCminigameType == null) {
             minecraft.setScreen(null);
             return;
         }

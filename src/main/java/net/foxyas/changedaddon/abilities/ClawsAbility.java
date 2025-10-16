@@ -64,6 +64,7 @@ public class ClawsAbility extends SimpleAbility {
                     if (abilityInstance.entity.getChangedEntity() instanceof IDynamicPawColor dynamicPawColor) {
                         return Optional.of(dynamicPawColor.getPawBeansColor().getRGB());
                     }
+                    return Optional.of(scheme.foreground().toInt());
                 }
             }
         }
@@ -92,7 +93,7 @@ public class ClawsAbility extends SimpleAbility {
         if (entity.getTransfurVariantInstance() == null) {
             return false;
         }
-        return entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.HAS_CLAWS) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.CAT_LIKE) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE);
+        return entity.getTransfurVariantInstance().getParent().getEntityType().is(ChangedAddonTags.EntityTypes.HAS_CLAWS) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.HAS_CLAWS) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.CAT_LIKE) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class ClawsAbility extends SimpleAbility {
         if (entity.getTransfurVariantInstance() == null) {
             return false;
         }
-        return entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.HAS_CLAWS) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.CAT_LIKE) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE);
+        return entity.getTransfurVariantInstance().getParent().getEntityType().is(ChangedAddonTags.EntityTypes.HAS_CLAWS) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.HAS_CLAWS) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.CAT_LIKE) || entity.getTransfurVariantInstance().getParent().is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE);
     }
 
     @Override

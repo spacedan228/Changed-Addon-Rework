@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.potion;
 
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -54,7 +54,7 @@ public class UntransfurMobEffect extends MobEffect {
         }
 
         if (!(entity instanceof Player player)) return;
-        ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.of(player);
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
         if (vars == null || vars.untransfurProgress < 100) return;
 
         if (!ProcessTransfur.isPlayerTransfurred(player)) {

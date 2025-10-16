@@ -119,8 +119,6 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
                             return;
                         }
                         event.setCanceled(true);
-                        //world.addDestroyBlockEffect(blockPos, state);
-                        //world.setBlocksDirty(blockPos, state, Blocks.AIR.defaultBlockState());
                         world.setBlock(blockPos , Blocks.AIR.defaultBlockState(), 3);
                         world.levelEvent(player, 2001, blockPos, Block.getId(state));
                         Block.popResource(world, blockPos, new ItemStack(ChangedAddonItems.EMPTY_CAN.get()));

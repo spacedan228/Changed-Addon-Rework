@@ -17,7 +17,7 @@ public class ServerPacketHandler {
         context.enqueueWork(() -> {
             ServerPlayer player = context.getSender();
 
-            ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.ofOrDefault(player);
+            ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.ofOrDefault(player);
             if (vars.FTKCminigameType == null) return;
 
             if (!ProcessTransfur.isPlayerTransfurred(player)) {

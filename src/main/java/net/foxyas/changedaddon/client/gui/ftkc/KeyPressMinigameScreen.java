@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.client.gui.ftkc;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packets.ServerboundProgressFTKCPacket;
 import net.foxyas.changedaddon.qte.FightToKeepConsciousness;
 import net.foxyas.changedaddon.util.RenderUtil;
@@ -54,7 +54,7 @@ public class KeyPressMinigameScreen extends Screen {
 
     /* ----------------------------- STATIC METHODS ----------------------------- */
     public static String getProgressText(@NotNull Player entity) {
-        return ChangedAddonModVariables.PlayerVariables.ofOrDefault(entity)
+        return ChangedAddonVariables.ofOrDefault(entity)
                 .consciousnessFightProgress + "/" + STRUGGLE_NEED;
     }
 
@@ -103,7 +103,7 @@ public class KeyPressMinigameScreen extends Screen {
         TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
 
         if (tf != null) {
-            float fightProgress = ChangedAddonModVariables.PlayerVariables.nonNullOf(player).consciousnessFightProgress / FightToKeepConsciousness.STRUGGLE_NEED;
+            float fightProgress = ChangedAddonVariables.nonNullOf(player).consciousnessFightProgress / FightToKeepConsciousness.STRUGGLE_NEED;
             float loseProgress = Mth.lerp(partialTick, Math.max(0, tf.ageAsVariant - 1), tf.ageAsVariant) / FightToKeepConsciousness.STRUGGLE_TIME;
 
             int alpha = (int) (128 + 128 * (loseProgress - fightProgress));
@@ -123,7 +123,7 @@ public class KeyPressMinigameScreen extends Screen {
 
     @Override
     public void tick() {
-        if (ChangedAddonModVariables.PlayerVariables.ofOrDefault(player).FTKCminigameType == null) {
+        if (ChangedAddonVariables.ofOrDefault(player).FTKCminigameType == null) {
             minecraft.setScreen(null);
         }
     }

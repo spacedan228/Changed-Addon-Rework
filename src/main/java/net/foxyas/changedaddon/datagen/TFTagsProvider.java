@@ -177,7 +177,13 @@ public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
         tag(ChangedAddonTags.TransfurTypes.ABLE_TO_CARRY).add(EXP6.get());
         tag(ChangedAddonTags.TransfurTypes.CAUSE_FREEZING).add(LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get());
         tag(ChangedAddonTags.TransfurTypes.GLOWING_VARIANTS).add(EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get(), EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());
-        tag(ChangedAddonTags.TransfurTypes.HAS_CLAWS).add(LATEX_KITSUNE_FEMALE.get(), LATEX_KITSUNE_MALE.get(), FENGQI_WOLF.get(), LUMINARA_FLOWER_BEAST.get());
+        tag(ChangedAddonTags.TransfurTypes.HAS_CLAWS).add(
+                LATEX_KITSUNE_FEMALE.get(),
+                LATEX_KITSUNE_MALE.get(),
+                FENGQI_WOLF.get(),
+                LUMINARA_FLOWER_BEAST.get(),
+                PROTOGEN_0SENIA0.get()
+        );
 
 
         tag(ChangedAddonTags.TransfurTypes.AQUATIC_LIKE).add(LATEX_DRAGON_SNEP_SHARK.get());

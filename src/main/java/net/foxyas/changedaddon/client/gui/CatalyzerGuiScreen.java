@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.procedures.BlockstartinfoProcedure;
-import net.foxyas.changedaddon.procedures.CatalyzerGuiValueProcedure;
 import net.foxyas.changedaddon.procedures.IfBlockisfullProcedure;
 import net.foxyas.changedaddon.procedures.RecipeProgressProcedure;
 import net.foxyas.changedaddon.world.inventory.CatalyzerGuiMenu;
@@ -82,9 +81,7 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
 
     @Override
     protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
-        this.font.draw(poseStack,
-
-                CatalyzerGuiValueProcedure.execute(world, x, y, z), 6, 8, -12829636);
+        this.font.draw(poseStack, nitrogenPercentage(x, y, z), 6, 8, -12829636);
         this.font.draw(poseStack,
 
                 BlockstartinfoProcedure.execute(world, x, y, z), 6, 20, -12829636);
@@ -93,5 +90,11 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         this.font.draw(poseStack,
 
                 RecipeProgressProcedure.execute(world, x, y, z), 90, 34, -12829636);
+    }
+
+    protected String nitrogenPercentage(double x, double y, double z) {
+        BlockEntity blockEntity = world.getBlockEntity(new BlockPos(x, y, z));
+
+        return "Nitrogen % = " + (blockEntity == null ? 0 : blockEntity.getTileData().getDouble("nitrogen_power")) + "%";
     }
 }

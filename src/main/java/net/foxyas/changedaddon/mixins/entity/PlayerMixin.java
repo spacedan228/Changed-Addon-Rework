@@ -24,6 +24,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,6 +49,14 @@ public abstract class PlayerMixin {
             abstractKatanaItem.spawnElectricSwingParticle((Player) (Object) this, 2);
         }
     }
+
+    /* // Maybe Fix the Blurp Sound After "drinking" a food item?
+    @Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"), cancellable = true)
+    private void stopSound(Level pLevel, ItemStack pFood, CallbackInfoReturnable<ItemStack> cir) {
+        if (pFood.getUseAnimation().equals(UseAnim.DRINK) && pFood.isEdible()) {
+            cir.cancel();
+        }
+    }*/
 
     @Inject(method = "attack", at = @At("HEAD"))
     private void CustomClawSweepAttack(Entity entity, CallbackInfo ci) {

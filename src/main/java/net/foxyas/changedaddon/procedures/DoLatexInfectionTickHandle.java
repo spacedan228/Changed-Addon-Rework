@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.procedures;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
@@ -28,6 +28,7 @@ import java.util.Objects;
 
 @Mod.EventBusSubscriber
 public class DoLatexInfectionTickHandle {
+
     private static final int HARD_TICK_DELAY = 40;
     private static final int NORMAL_TICK_DELAY = 60;
     private static final int EASY_TICK_DELAY = 100;
@@ -149,8 +150,8 @@ public class DoLatexInfectionTickHandle {
             return;
         }
 
-        var playerVariables = player.getCapability(ChangedAddonModVariables.PLAYER_VARIABLES_CAPABILITY)
-                .orElse(new ChangedAddonModVariables.PlayerVariables());
+        var playerVariables = player.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY)
+                .orElse(new ChangedAddonVariables.PlayerVariables());
 
         int tickCounter = (int) playerVariables.LatexInfectionCooldown;
         float progress = ProcessTransfur.getPlayerTransfurProgress(player);

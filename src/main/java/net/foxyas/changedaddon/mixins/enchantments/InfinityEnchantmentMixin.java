@@ -1,8 +1,6 @@
 package net.foxyas.changedaddon.mixins.enchantments;
 
-import net.foxyas.changedaddon.item.DarkLatexSprayItem;
-import net.foxyas.changedaddon.item.LitixCamoniaSprayItem;
-import net.foxyas.changedaddon.item.WhiteLatexSprayItem;
+import net.foxyas.changedaddon.item.SprayItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.ArrowInfiniteEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -18,9 +16,7 @@ public abstract class InfinityEnchantmentMixin {
     @Inject(method = "canEnchant", at = @At("TAIL"), cancellable = true)
     public void InfinityMixin_2(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
         if ((Enchantment) (Object) this instanceof ArrowInfiniteEnchantment) {
-            if (itemStack.getItem() instanceof DarkLatexSprayItem
-                    || itemStack.getItem() instanceof WhiteLatexSprayItem
-                    || itemStack.getItem() instanceof LitixCamoniaSprayItem) {
+            if (itemStack.getItem() instanceof SprayItem) {
                 cir.setReturnValue(true);
             }
         }

@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.qte;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
-import net.foxyas.changedaddon.network.ChangedAddonModVariables;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packets.ClientboundOpenFTKCScreenPacket;
 import net.foxyas.changedaddon.procedures.SummonEntityProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -47,7 +47,7 @@ public class FightToKeepConsciousness {
         event.shouldKeepConscious = true;
 
         MinigameType minigameType = MinigameType.getRandom(player.getRandom());
-        updatePlayerVariables(ChangedAddonModVariables.PlayerVariables.ofOrDefault(player), minigameType, 0, player);
+        updatePlayerVariables(ChangedAddonVariables.ofOrDefault(player), minigameType, 0, player);
 
         ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundOpenFTKCScreenPacket(minigameType));
     }
@@ -59,7 +59,7 @@ public class FightToKeepConsciousness {
         if (!player.isAlive()) return;
 
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.ofOrDefault(player);
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.ofOrDefault(player);
 
         if (vars.FTKCminigameType == null) return;
 
@@ -85,7 +85,7 @@ public class FightToKeepConsciousness {
         if (!(entity instanceof ServerPlayer player)) return;
 
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        ChangedAddonModVariables.PlayerVariables vars = ChangedAddonModVariables.PlayerVariables.ofOrDefault(player);
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.ofOrDefault(player);
 
         if (instance == null || vars.FTKCminigameType == null) return;
 
@@ -95,21 +95,21 @@ public class FightToKeepConsciousness {
         PlayerUtil.UnTransfurPlayer(player);
     }
 
-    private static void updatePlayerVariables(ChangedAddonModVariables.PlayerVariables vars, MinigameType minigameType, int progress, Entity entity) {
+    private static void updatePlayerVariables(ChangedAddonVariables.PlayerVariables vars, MinigameType minigameType, int progress, Entity entity) {
         vars.FTKCminigameType = minigameType;
         vars.consciousnessFightProgress = progress;
         vars.syncPlayerVariables(entity);
     }
 
     @ApiStatus.Internal
-    public static void successFTKC(ChangedAddonModVariables.PlayerVariables vars, ServerPlayer player) {
+    public static void successFTKC(ChangedAddonVariables.PlayerVariables vars, ServerPlayer player) {
         player.displayClientMessage(new TranslatableComponent("changedaddon.fight_conscience.success"), true);
 
         updatePlayerVariables(vars, null, 0, player);
     }
 
     @ApiStatus.Internal
-    public static void failFTKC(ChangedAddonModVariables.PlayerVariables vars, ServerPlayer player) {
+    public static void failFTKC(ChangedAddonVariables.PlayerVariables vars, ServerPlayer player) {
         player.displayClientMessage(new TranslatableComponent("changedaddon.fight_conscience.fail"), true);
 
         SummonEntityProcedure.execute(player.level, player);
