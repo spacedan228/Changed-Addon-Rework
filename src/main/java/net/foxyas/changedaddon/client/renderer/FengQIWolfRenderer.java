@@ -23,6 +23,6 @@ public class FengQIWolfRenderer extends AdvancedHumanoidRenderer<FengQIWolfEntit
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull FengQIWolfEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/fengqi_wolf.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/fengqi_wolf.png");
     }
 }

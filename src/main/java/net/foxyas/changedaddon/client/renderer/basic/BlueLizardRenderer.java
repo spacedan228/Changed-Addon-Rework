@@ -21,6 +21,6 @@ public class BlueLizardRenderer extends AdvancedHumanoidRenderer<BlueLizard, Blu
     }
 
     public @NotNull ResourceLocation getTextureLocation(@NotNull BlueLizard p_114482_) {
-        return new ResourceLocation(ChangedAddonMod.MODID, "textures/entities/blue_lizard.png");
+        return ResourceLocation.fromNamespaceAndPath(ChangedAddonMod.MODID, "textures/entities/blue_lizard.png");
     }
 }

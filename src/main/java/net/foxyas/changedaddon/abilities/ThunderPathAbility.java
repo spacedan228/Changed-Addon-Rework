@@ -46,7 +46,7 @@ public class ThunderPathAbility extends AbstractAbility<ThunderPathAbility.Insta
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/thunderbolt.png");
+        return ResourceLocation.parse("changed_addon:textures/screens/thunderbolt.png");
     }
 
     public UseType getUseType(IAbstractChangedEntity entity) {

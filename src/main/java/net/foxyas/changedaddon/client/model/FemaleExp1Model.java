@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.renderer.layers.animation.PsychicGrabAbilityAnimation;
 import net.foxyas.changedaddon.entity.simple.Exp1FemaleEntity;
 import net.ltxprogrammer.changed.client.animations.Limb;
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class FemaleExp1Model extends AdvancedHumanoidModel<Exp1FemaleEntity> implements AdvancedHumanoidModelInterface<Exp1FemaleEntity, FemaleExp1Model> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.parse("changed_addon", "female_snowfox"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("female_snowfox", "main");
 
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;

@@ -19,7 +19,7 @@ public class OverDoseAdvancementDetailProcedure {
         Advancement advancement = event.getAdvancement();
 
         if (advancement == null) return;
-        if (level.getServer() != null && level.getServer().getAdvancements().getAdvancement(new ResourceLocation("changed_addon:over_dose")).equals(advancement)) {
+        if (level.getServer() != null && level.getServer().getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:over_dose")).equals(advancement)) {
             player.hurt((new DamageSource("OverDose")), 10);
         }
     }

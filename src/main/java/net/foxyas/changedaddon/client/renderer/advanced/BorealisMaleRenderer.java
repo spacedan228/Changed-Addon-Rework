@@ -21,8 +21,8 @@ public class BorealisMaleRenderer extends AdvancedHumanoidRenderer<BorealisMaleE
     public BorealisMaleRenderer(EntityRendererProvider.Context context) {
         super(context, new BorealisMaleModel(context.bakeLayer(BorealisMaleModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new ProtogenDisplay<>(this, getModel(),
-                new ResourceLocation("changed_addon:textures/entities/borealis_male/protogen_display_eyes.png"),
-                new ResourceLocation("changed_addon:textures/entities/borealis_male/protogen_display.png")) {
+                ResourceLocation.parse("changed_addon:textures/entities/borealis_male/protogen_display_eyes.png"),
+                ResourceLocation.parse("changed_addon:textures/entities/borealis_male/protogen_display.png")) {
             @Override
             public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, @NotNull BorealisMaleEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
                 if (!entity.isInvisible()) {

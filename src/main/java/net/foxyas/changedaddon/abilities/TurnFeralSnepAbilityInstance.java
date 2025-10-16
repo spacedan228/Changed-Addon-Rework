@@ -92,9 +92,9 @@ public class TurnFeralSnepAbilityInstance extends AbstractAbilityInstance {
         if (tag.contains(OLD_TRANSFUR_VARIANT)) {
             ResourceLocation form;
             try {
-                form = new ResourceLocation(tag.getString(OLD_TRANSFUR_VARIANT));
+                form = ResourceLocation.parse(tag.getString(OLD_TRANSFUR_VARIANT));
             } catch (Exception e) {
-                form = new ResourceLocation("");
+                form = ResourceLocation.parse("");
             }
             if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getRegistryName).anyMatch(form::equals)) {
                 this.OldVariant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
@@ -104,9 +104,9 @@ public class TurnFeralSnepAbilityInstance extends AbstractAbilityInstance {
         /*if (tag.contains(NEW_TRANSFUR_VARIANT)){
             ResourceLocation form;
             try {
-                form = new ResourceLocation(tag.getString(NEW_TRANSFUR_VARIANT));
+                form = ResourceLocation.parse(tag.getString(NEW_TRANSFUR_VARIANT));
             } catch (Exception e) {
-                form = new ResourceLocation("");
+                form = ResourceLocation.parse("");
             }
             if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getRegistryName).anyMatch(form::equals)){
                 this.OldVariant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);

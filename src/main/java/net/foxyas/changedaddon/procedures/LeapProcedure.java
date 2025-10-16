@@ -84,10 +84,10 @@ public class LeapProcedure {
                     }
 
                     if (!(player instanceof ServerPlayer sPlayer && sPlayer.level instanceof ServerLevel
-                            && sPlayer.getAdvancements().getOrStartProgress(sPlayer.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:leaper"))).isDone())) {
+                            && sPlayer.getAdvancements().getOrStartProgress(sPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:leaper"))).isDone())) {
                         if (motionY >= 0.75) {
                             if (player instanceof ServerPlayer _player) {
-                                Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:leaper"));
+                                Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:leaper"));
                                 AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
                                 if (!_ap.isDone()) {
                                     for (String s : _ap.getRemainingCriteria())

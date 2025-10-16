@@ -77,7 +77,7 @@ public class HaydenTransfurRecipe extends CustomRecipe {
 
     public static class Serializer implements RecipeSerializer<HaydenTransfurRecipe> {
 
-        public static final ResourceLocation ID = new ResourceLocation("changed_addon", "hayden_syringe_recipe");
+        public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("changed_addon", "hayden_syringe_recipe");
 
         @Override
         public @NotNull HaydenTransfurRecipe fromJson(@NotNull ResourceLocation id, @NotNull JsonObject json) {

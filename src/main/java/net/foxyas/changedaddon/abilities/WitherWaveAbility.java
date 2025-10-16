@@ -70,7 +70,7 @@ public class WitherWaveAbility extends SimpleAbility {
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/wither_wave.png"); //Place holder
+        return ResourceLocation.parse("changed_addon:textures/screens/wither_wave.png"); //Place holder
     }
 
     @Override

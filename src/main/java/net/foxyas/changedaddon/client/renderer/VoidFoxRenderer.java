@@ -71,6 +71,6 @@ public class VoidFoxRenderer extends AdvancedHumanoidRenderer<VoidFoxEntity, Voi
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull VoidFoxEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/void_fox_dark.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/void_fox_dark.png");
     }
 }

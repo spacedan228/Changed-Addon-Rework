@@ -62,7 +62,7 @@ public class ThunderBoltAbility extends SimpleAbility {
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/thunderbolt.png");
+        return ResourceLocation.parse("changed_addon:textures/screens/thunderbolt.png");
     }
 
     @Override

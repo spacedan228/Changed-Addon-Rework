@@ -24,7 +24,7 @@ public class CarryAbility extends AbstractAbility<CarryAbilityInstance> {
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/carry_ability.png");
+        return ResourceLocation.parse("changed_addon:textures/screens/carry_ability.png");
     }
 
     @Override

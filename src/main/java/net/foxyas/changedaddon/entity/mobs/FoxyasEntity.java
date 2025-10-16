@@ -152,7 +152,7 @@ public class FoxyasEntity extends Monster {
         super.die(source);
 
         if (source.getEntity() instanceof ServerPlayer player) {
-            Advancement _adv = player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:foxyas_advancement"));
+            Advancement _adv = player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:foxyas_advancement"));
             AdvancementProgress _ap = player.getAdvancements().getOrStartProgress(_adv);
             if (!_ap.isDone()) {
                 for (String s : _ap.getRemainingCriteria()) player.getAdvancements().award(_adv, s);

@@ -27,6 +27,6 @@ public class SnowLeopardFemaleOrganicRenderer extends AdvancedHumanoidRenderer<S
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull SnowLeopardFemaleOrganicEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/biosynthsnowleopardfemale.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/biosynthsnowleopardfemale.png");
     }
 }

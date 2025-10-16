@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class EmptyProjectileRenderer<T extends AbstractArrow> extends EntityRenderer<T> {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(ChangedAddonMod.MODID, "textures/entities/empty.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(ChangedAddonMod.MODID, "textures/entities/empty.png");
 
     public EmptyProjectileRenderer(EntityRendererProvider.Context context) {
         super(context);

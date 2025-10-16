@@ -127,7 +127,7 @@ public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
 
             @Override
             public HolderSet.@NotNull Named<TransfurVariant<?>> getOrCreateTag(@NotNull TagKey<TransfurVariant<?>> p_206045_) {
-                return new HolderSet.Named<>(this, TagKey.create(key(), new ResourceLocation("null")));
+                return new HolderSet.Named<>(this, TagKey.create(key(), ResourceLocation.parse("null")));
             }
 
             @Override

@@ -41,7 +41,7 @@ public class Experiment009Renderer extends AdvancedHumanoidRenderer<Experiment00
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull Experiment009Entity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/experiment_9/experiment_009.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/experiment_9/experiment_009.png");
     }
 
     private static class CustomEmissiveBodyLayer<M extends EntityModel<T>, T extends ChangedEntity> extends EyesLayer<T, M> implements FirstPersonLayer<T> {

@@ -44,7 +44,7 @@ public class LatexSnepRenderer extends AdvancedHumanoidRenderer<LatexSnepEntity,
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull LatexSnepEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/latex_snep.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/latex_snep.png");
     }
 
 

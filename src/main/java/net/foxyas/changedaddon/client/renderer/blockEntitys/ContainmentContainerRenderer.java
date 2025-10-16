@@ -39,9 +39,9 @@ public class ContainmentContainerRenderer implements BlockEntityRenderer<Contain
         if (variantColorGet != null) {
             Color3 firstColor = variantColorGet.getColors().getFirst();
             Color3 secondColor = variantColorGet.getColors().getSecond();
-            RenderType renderType1 = RenderType.entityTranslucent(new ResourceLocation("changed_addon:textures/block/containment_container_fluid_color1.png"));
-            RenderType renderType2 = RenderType.entityTranslucent(new ResourceLocation("changed_addon:textures/block/containment_container_fluid_color2.png"));
-            RenderType glowRenderType2 = RenderType.eyes(new ResourceLocation("changed_addon:textures/block/containment_container_fluid_color2.png"));
+            RenderType renderType1 = RenderType.entityTranslucent(ResourceLocation.parse("changed_addon:textures/block/containment_container_fluid_color1.png"));
+            RenderType renderType2 = RenderType.entityTranslucent(ResourceLocation.parse("changed_addon:textures/block/containment_container_fluid_color2.png"));
+            RenderType glowRenderType2 = RenderType.eyes(ResourceLocation.parse("changed_addon:textures/block/containment_container_fluid_color2.png"));
             this.fluidModel.renderToBuffer(
                     poseStack,
                     bufferSource.getBuffer(renderType1),
@@ -62,7 +62,7 @@ public class ContainmentContainerRenderer implements BlockEntityRenderer<Contain
 
                 this.fluidModel.renderToBuffer(
                         poseStack,
-                        bufferSource.getBuffer(RenderType.entityCutout(new ResourceLocation("changed_addon:textures/block/containment_container_fluid_full.png"))), // Apenas linhas do contorno
+                        bufferSource.getBuffer(RenderType.entityCutout(ResourceLocation.parse("changed_addon:textures/block/containment_container_fluid_full.png"))), // Apenas linhas do contorno
                         light,
                         overlay,
                         secondColor.red(),

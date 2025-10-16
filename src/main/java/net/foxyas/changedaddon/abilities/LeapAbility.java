@@ -86,7 +86,7 @@ public class LeapAbility extends SimpleAbility {
             return;
         }
 
-        Advancement advancement = serverPlayer.server.getAdvancements().getAdvancement(new ResourceLocation(advancementId));
+        Advancement advancement = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse(advancementId));
         if (advancement == null) return;
 
 
@@ -104,7 +104,7 @@ public class LeapAbility extends SimpleAbility {
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/leap_ability.png");
+        return ResourceLocation.parse("changed_addon:textures/screens/leap_ability.png");
     }
 
     @Override

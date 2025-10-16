@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.model.advanced;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.animations.AvaliFallFlyAnimator;
 import net.foxyas.changedaddon.client.model.animations.AvaliUpperBodyInitAnimator;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
@@ -29,7 +30,7 @@ import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.
 
 public class AvaliModel extends AdvancedHumanoidModel<AvaliEntity> implements AdvancedHumanoidModelInterface<AvaliEntity, AvaliModel> {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("changed_addon", "avali_model"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("avali_model", "main");
     private final ModelPart Head;
     private final ModelPart Torso;
     private final ModelPart RightArm;

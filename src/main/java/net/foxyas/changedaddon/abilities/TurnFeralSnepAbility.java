@@ -19,7 +19,7 @@ public class TurnFeralSnepAbility extends AbstractAbility<TurnFeralSnepAbilityIn
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/normal_paw.png");
+        return ResourceLocation.parse("changed_addon:textures/screens/normal_paw.png");
     }
 
     @Nullable

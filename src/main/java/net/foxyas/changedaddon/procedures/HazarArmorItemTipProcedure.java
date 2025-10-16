@@ -37,7 +37,7 @@ public class HazarArmorItemTipProcedure {
                 AttributeModifier HazardArmor = new AttributeModifier(UUID.fromString("0-0-0-0-0"), "Hazard Armor Buff", 0.2, AttributeModifier.Operation.ADDITION);
                 AttributeModifier HazardDebuff3 = new AttributeModifier(UUID.fromString("0-0-0-0-5"), "Hazard Armor Transfur Dmg DeBuff", (-1), AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-                event.addModifier(ForgeRegistries.ATTRIBUTES.getValue(new ResourceLocation("changed:transfur_damage")), HazardDebuff3);
+                event.addModifier(ForgeRegistries.ATTRIBUTES.getValue(ResourceLocation.parse("changed:transfur_damage")), HazardDebuff3);
                 event.addModifier(ChangedAddonAttributes.LATEX_RESISTANCE.get(), HazardArmor);
                 event.addModifier(Attributes.MOVEMENT_SPEED, HazardDebuff);
                 event.addModifier(Attributes.ATTACK_SPEED, HazardDebuff2);

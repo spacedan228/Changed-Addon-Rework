@@ -68,7 +68,7 @@ public class PsychicGrab extends SimpleAbility {
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/psychic_hold.png"); // Placeholder
+        return ResourceLocation.parse("changed_addon:textures/screens/psychic_hold.png"); // Placeholder
     }
 
     @Override

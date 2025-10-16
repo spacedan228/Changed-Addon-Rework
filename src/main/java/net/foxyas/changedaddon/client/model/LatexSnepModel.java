@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
@@ -21,8 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> implements AdvancedHumanoidModelInterface<LatexSnepEntity, LatexSnepModel> {
-
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.parse("changed_addon", "latex_snep"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("latex_snep", "main");
     // Grupo principal: Animal e corpo
 
     private final ModelPart Animal;

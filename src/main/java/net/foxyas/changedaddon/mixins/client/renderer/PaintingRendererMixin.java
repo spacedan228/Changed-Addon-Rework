@@ -30,7 +30,6 @@ public abstract class PaintingRendererMixin extends EntityRenderer<Painting> {
     private Painting painting = null;
 
     @Unique
-    @Unique
     public boolean shouldGlow = false;
 
     @Inject(method = "render(Lnet/minecraft/world/entity/decoration/Painting;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",

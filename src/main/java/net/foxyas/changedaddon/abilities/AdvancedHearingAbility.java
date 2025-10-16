@@ -33,7 +33,7 @@ public class AdvancedHearingAbility extends SimpleAbility {
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/advanced_hearing.png");
+        return ResourceLocation.parse("changed_addon:textures/screens/advanced_hearing.png");
     }
 
     @Override

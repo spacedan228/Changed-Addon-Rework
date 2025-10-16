@@ -98,14 +98,14 @@ public class InfuserRecipeBuilder implements RecipeBuilder {
    @Override
    public void save(Consumer<FinishedRecipe> consumer, @NotNull ResourceLocation recipeId) {
       this.ensureValid(recipeId);
-      this.advancement.parent(new ResourceLocation("recipes/root"))
+      this.advancement.parent(ResourceLocation.parse("recipes/root"))
               .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(recipeId))
               .rewards(AdvancementRewards.Builder.recipe(recipeId))
               .requirements(RequirementsStrategy.OR);
 
       consumer.accept(new Result(recipeId, this.result, this.group == null ? "" : this.group,
               this.ingredients, this.gendered, this.advancement,
-              new ResourceLocation(recipeId.getNamespace(),
+              ResourceLocation.fromNamespaceAndPath(recipeId.getNamespace(),
                       "recipes/" + (!this.gendered ? result.getFormId().getPath() : getFormIdPathWithoutGender().toString()))));
    }
 

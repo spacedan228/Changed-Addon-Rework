@@ -40,7 +40,7 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return new ResourceLocation("changed_addon:jei_plugin");
+        return ResourceLocation.parse("changed_addon:jei_plugin");
     }
 
     @Override

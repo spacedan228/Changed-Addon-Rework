@@ -61,15 +61,15 @@ public class ChangedAddonMod {
 
     //Thanks :D
     public static ResourceLocation resourceLoc(String path) {
-        return new ResourceLocation(MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
     public static String resourceLocString(String path) {
-        return new ResourceLocation(MODID, path).toString();
+        return ResourceLocation.fromNamespaceAndPath(MODID, path).toString();
     }
 
     public static ResourceLocation textureLoc(String path) {
-        return new ResourceLocation(MODID, path + ".png");
+        return ResourceLocation.fromNamespaceAndPath(MODID, path + ".png");
     }
 
     public static ModelLayerLocation layerLocation(String path, String layer) {

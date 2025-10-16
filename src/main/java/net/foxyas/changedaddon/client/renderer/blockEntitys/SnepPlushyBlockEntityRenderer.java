@@ -60,7 +60,7 @@ public class SnepPlushyBlockEntityRenderer implements BlockEntityRenderer<SnepPl
         // Renderize a parte brilhante do modelo
         snepPlushExtraModel.getHead().render(
                 poseStack,
-                bufferSource.getBuffer(RenderType.eyes(new ResourceLocation("changed_addon:textures/block/snow_leopard_plushy/snow_leopard_plushy_glow_eye.png"))),
+                bufferSource.getBuffer(RenderType.eyes(ResourceLocation.parse("changed_addon:textures/block/snow_leopard_plushy/snow_leopard_plushy_glow_eye.png"))),
                 light,
                 overlay
         );

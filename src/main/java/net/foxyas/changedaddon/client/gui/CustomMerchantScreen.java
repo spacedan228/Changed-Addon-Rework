@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchantMenu> {
 
     /** The GUI texture for the villager merchant GUI. */
-    private static final ResourceLocation VILLAGER_LOCATION = new ResourceLocation("textures/gui/container/villager2.png");
+    private static final ResourceLocation VILLAGER_LOCATION = ResourceLocation.parse("textures/gui/container/villager2.png");
     private static final Component TRADES_LABEL = new TranslatableComponent("merchant.trades");
     private static final Component DEPRECATED_TOOLTIP = new TranslatableComponent("merchant.deprecated");
     /** The integer value corresponding to the currently selected merchant recipe. */

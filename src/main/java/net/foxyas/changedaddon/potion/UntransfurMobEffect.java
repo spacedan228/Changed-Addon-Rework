@@ -80,9 +80,9 @@ public class UntransfurMobEffect extends MobEffect {
         });
 
         if (!(entity instanceof ServerPlayer sPlayer && sPlayer.level instanceof ServerLevel
-                && sPlayer.getAdvancements().getOrStartProgress(Objects.requireNonNull(sPlayer.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfur_advancement")))).isDone())) {
+                && sPlayer.getAdvancements().getOrStartProgress(Objects.requireNonNull(sPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:untransfur_advancement")))).isDone())) {
             if (entity instanceof ServerPlayer _player) {
-                Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:untransfur_advancement"));
+                Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:untransfur_advancement"));
                 assert _adv != null;
                 AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
                 if (!_ap.isDone()) {
@@ -96,7 +96,7 @@ public class UntransfurMobEffect extends MobEffect {
             player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
         }
 
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("changed_addon:untransfursound")), SoundSource.NEUTRAL, 1, 1);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("changed_addon:untransfursound")), SoundSource.NEUTRAL, 1, 1);
     }
 
     @Override

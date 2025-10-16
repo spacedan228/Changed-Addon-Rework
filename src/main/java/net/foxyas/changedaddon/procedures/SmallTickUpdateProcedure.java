@@ -43,7 +43,7 @@ public class SmallTickUpdateProcedure {
         for (Entity entityIterator : entityList) {
             if (entityIterator != entity && entityIterator instanceof FoxyasEntity) {
                 if (entity instanceof ServerPlayer _player) {
-                    Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:gooey_friend"));
+                    Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:gooey_friend"));
                     AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(Objects.requireNonNull(_adv));
                     if (!_ap.isDone()) {
                         for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);

@@ -783,7 +783,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     }
 
     public static TagKey<Item> tag(String name) {
-        return ItemTags.create(new ResourceLocation("forge", name));
+        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", name));
     }
 
     @Mod.EventBusSubscriber

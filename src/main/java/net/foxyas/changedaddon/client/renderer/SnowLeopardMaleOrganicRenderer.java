@@ -19,13 +19,13 @@ public class SnowLeopardMaleOrganicRenderer extends AdvancedHumanoidRenderer<Sno
                 ArmorLatexMaleCatModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotArmFur));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
-        this.addLayer(new CustomHairColorLayer<>(this, this.getModel(), new ResourceLocation("changed_addon:textures/entities/male_snep_hair")));
+        this.addLayer(new CustomHairColorLayer<>(this, this.getModel(), ResourceLocation.parse("changed_addon:textures/entities/male_snep_hair")));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(), CustomEyesLayer::scleraColor, CustomEyesLayer::glowingIrisColorLeft, CustomEyesLayer::glowingIrisColorRight));
         this.addLayer(new GasMaskLayer<>(this, context.getModelSet()));
     }
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull SnowLeopardMaleOrganicEntity entity) {
-        return new ResourceLocation("changed_addon:textures/entities/biosynthsnowleopardmale.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/biosynthsnowleopardmale.png");
     }
 }

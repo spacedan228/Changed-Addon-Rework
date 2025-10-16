@@ -23,13 +23,13 @@ import java.util.function.Supplier;
 public record TransfurSoundsGuiButtonMessage(int buttonId) {
 
     private static final List<Triple<ResourceLocation, Predicate<Player>, Integer>> sounds = List.of(
-            Triple.of(new ResourceLocation("entity.cat.purr"), PlayerUtil::isCatTransfur, 60),
-            Triple.of(new ResourceLocation("entity.cat.ambient"), PlayerUtil::isCatTransfur, 10),
-            Triple.of(new ResourceLocation("entity.wolf.growl"), PlayerUtil::isWolfTransfur, 60),
-            Triple.of(new ResourceLocation("entity.wolf.ambient"), PlayerUtil::isWolfTransfur, 10),
-            Triple.of(new ResourceLocation("entity.wolf.howl"), PlayerUtil::isWolfTransfur, 80),
-            Triple.of(new ResourceLocation("entity.cat.hiss"), PlayerUtil::isCatTransfur, 40),
-            Triple.of(new ResourceLocation("entity.cat.purreow"), PlayerUtil::isCatTransfur, 20)
+            Triple.of(ResourceLocation.parse("entity.cat.purr"), PlayerUtil::isCatTransfur, 60),
+            Triple.of(ResourceLocation.parse("entity.cat.ambient"), PlayerUtil::isCatTransfur, 10),
+            Triple.of(ResourceLocation.parse("entity.wolf.growl"), PlayerUtil::isWolfTransfur, 60),
+            Triple.of(ResourceLocation.parse("entity.wolf.ambient"), PlayerUtil::isWolfTransfur, 10),
+            Triple.of(ResourceLocation.parse("entity.wolf.howl"), PlayerUtil::isWolfTransfur, 80),
+            Triple.of(ResourceLocation.parse("entity.cat.hiss"), PlayerUtil::isCatTransfur, 40),
+            Triple.of(ResourceLocation.parse("entity.cat.purreow"), PlayerUtil::isCatTransfur, 20)
     );
 
     public TransfurSoundsGuiButtonMessage(FriendlyByteBuf buf) {

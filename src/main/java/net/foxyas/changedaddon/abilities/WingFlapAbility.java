@@ -47,15 +47,15 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
         if (entity.getEntity() instanceof Player player) {
             AbilityInstance Instance = ProcessTransfur.getPlayerTransfurVariant(player).getAbilityInstance(this);
             if (Instance.dashPower <= 0.1f) {
-                return new ResourceLocation("changed_addon:textures/screens/wing_flap_ability_start.png");
+                return ResourceLocation.parse("changed_addon:textures/screens/wing_flap_ability_start.png");
             } else if (Instance.dashPower >= 0.3f && Instance.dashPower < 0.95F) {
-                return new ResourceLocation("changed_addon:textures/screens/wing_flap_ability_mid.png");
+                return ResourceLocation.parse("changed_addon:textures/screens/wing_flap_ability_mid.png");
             } else if (Instance.dashPower >= 0.95F) {
-                return new ResourceLocation("changed_addon:textures/screens/wing_flap_ability_final.png");
+                return ResourceLocation.parse("changed_addon:textures/screens/wing_flap_ability_final.png");
             }
         }
 
-        return new ResourceLocation("changed_addon:textures/screens/wing_flap_ability_start.png");
+        return ResourceLocation.parse("changed_addon:textures/screens/wing_flap_ability_start.png");
     }
 
     @Override

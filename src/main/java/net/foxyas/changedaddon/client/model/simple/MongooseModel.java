@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.model.simple;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.simple.MongooseEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class MongooseModel extends AdvancedHumanoidModel<MongooseEntity> implements AdvancedHumanoidModelInterface<MongooseEntity, MongooseModel> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("changed_addon", "mongoose"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation( "mongoose", "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart RightArm;

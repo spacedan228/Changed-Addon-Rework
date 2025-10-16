@@ -30,7 +30,7 @@ public class DazedPuddleAbility extends SimpleAbility {
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed:textures/abilities/puddle.png");
+        return ResourceLocation.parse("changed:textures/abilities/puddle.png");
     }
 
     @Override

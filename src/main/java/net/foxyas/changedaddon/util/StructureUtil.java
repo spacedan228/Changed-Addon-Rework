@@ -56,7 +56,7 @@ public class StructureUtil {
     public static boolean isStructureNearby(ServerLevel level, BlockPos pos, String structureId, int chunkRange) {
         ResourceKey<StructureSet> structureKey = ResourceKey.create(
                 BuiltinRegistries.STRUCTURE_SETS.key(),
-                new ResourceLocation(structureId)
+                ResourceLocation.parse(structureId)
         );
         return isStructureNearby(level, pos, structureKey, chunkRange);
     }

@@ -103,7 +103,7 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
 
     public static class Serializer implements RecipeSerializer<CatalyzerRecipe>, IForgeRegistryEntry<RecipeSerializer<?>> {
         public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID = new ResourceLocation("changed_addon", "catalyzer");
+        public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("changed_addon", "catalyzer");
 
         @Override
         public @NotNull CatalyzerRecipe fromJson(@NotNull ResourceLocation pRecipeId, @NotNull JsonObject pSerializedRecipe) {

@@ -20,7 +20,7 @@ import java.util.List;
 public class ChangedAddonBrewingRecipes implements IModPlugin {
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return new ResourceLocation("changed_addon:brewing_recipes");
+        return ResourceLocation.parse("changed_addon:brewing_recipes");
     }
 
     @Override

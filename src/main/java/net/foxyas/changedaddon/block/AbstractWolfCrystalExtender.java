@@ -103,7 +103,7 @@ public class AbstractWolfCrystalExtender {
         private static void grantAdvancement(Player player, String advancementId) {
             if (player instanceof ServerPlayer serverPlayer) {
                 Advancement advancement = serverPlayer.server.getAdvancements()
-                        .getAdvancement(new ResourceLocation(advancementId));
+                        .getAdvancement(ResourceLocation.parse(advancementId));
                 if (advancement != null) {
                     AdvancementProgress progress = serverPlayer.getAdvancements().getOrStartProgress(advancement);
                     if (!progress.isDone()) {

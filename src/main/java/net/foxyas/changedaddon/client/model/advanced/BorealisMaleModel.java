@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.model.advanced;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.renderer.layers.animation.CarryAbilityAnimation;
 import net.foxyas.changedaddon.entity.advanced.BorealisMaleEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class BorealisMaleModel extends AdvancedHumanoidModel<BorealisMaleEntity> implements AdvancedHumanoidModelInterface<BorealisMaleEntity, BorealisMaleModel> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("changed_addon", "borealis_male"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("borealis_male", "main");
 
     private final ModelPart Head;
     private final ModelPart RightEar;

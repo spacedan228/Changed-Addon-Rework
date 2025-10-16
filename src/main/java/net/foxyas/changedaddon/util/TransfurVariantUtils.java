@@ -47,7 +47,7 @@ public class TransfurVariantUtils {
 
 //    public static int GetLegs(String stringvariant) {
 //        try {
-//            ResourceLocation form = new ResourceLocation(stringvariant);
+//            ResourceLocation form = ResourceLocation.parse(stringvariant);
 //            if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getRegistryName).anyMatch(form::equals)) {
 //                TransfurVariant<?> variant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
 //                return variant == null ? 0 : variant.legCount;

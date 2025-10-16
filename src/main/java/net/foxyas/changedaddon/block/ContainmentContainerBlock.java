@@ -319,7 +319,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
 
     @Override
     public ResourceLocation getModelName() {
-        return new ModelResourceLocation(new ResourceLocation("changed_addon:containment_container"), "inventory");
+        return new ModelResourceLocation(ResourceLocation.parse("changed_addon:containment_container"), "inventory");
     }
 
 	/*@Override

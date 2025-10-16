@@ -41,7 +41,7 @@ public class ChangedAddonItemTiers {
     };
 
     public static void init() {
-        ResourceLocation netherite = new ResourceLocation("netherite");
+        ResourceLocation netherite = ResourceLocation.parse("netherite");
         TierSortingRegistry.registerTier(PAINITE, ChangedAddonMod.resourceLoc("painite"), List.of(netherite), List.of());
     }
 

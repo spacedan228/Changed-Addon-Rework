@@ -5,6 +5,7 @@ package net.foxyas.changedaddon.client.model.advanced;// Made with Blockbench 4.
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
 import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets.TailSet;
 import net.foxyas.changedaddon.client.renderer.layers.animation.CarryAbilityAnimation;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class LatexKitsuneFemaleModel extends AdvancedHumanoidModel<LatexKitsuneFemaleEntity> implements AdvancedHumanoidModelInterface<LatexKitsuneFemaleEntity, LatexKitsuneFemaleModel> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("changed_addon", "kitsune_female"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION =  ChangedAddonMod.layerLocation("kitsune_female", "main");
 
     private final ModelPart Hair;
     private final ModelPart Head;

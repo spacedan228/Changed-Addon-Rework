@@ -20,25 +20,25 @@ public class ChangedAddonFacilityPieces {
 
     public static void registerAddonCorridors(FacilityPieceCollectionBuilder builder) {
        builder.register((int) (FacilityPieceCollectionBuilder.WEIGHT_COMMON * 1.5f),
-                        new FacilityCorridorSection(new ResourceLocation("changed_addon:facility_hallways/specimen_containment_a"),
+                        new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facility_hallways/specimen_containment_a"),
                                 LootTables.HIGH_TIER_LAB))
                 .register((int) (FacilityPieceCollectionBuilder.WEIGHT_COMMON * 1.5f),
-                        new FacilityCorridorSection(new ResourceLocation("changed_addon:facility_hallways/specimen_containment_b"),
+                        new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facility_hallways/specimen_containment_b"),
                                 LootTables.HIGH_TIER_LAB));
     }
 
     public static void registerAddonRooms(FacilityPieceCollectionBuilder builder) {
         builder.register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
-                new FacilityRoomPiece(new ResourceLocation("changed_addon:facility_rooms/exp009room"),
-                        new ResourceLocation("changed_addon:chests/experiment_009_loot_dna")))
+                new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facility_rooms/exp009room"),
+                        ResourceLocation.parse("changed_addon:chests/experiment_009_loot_dna")))
                 .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
-                new FacilityRoomPiece(new ResourceLocation("changed_addon:facility_rooms/exp10room"),
-                        new ResourceLocation("changed_addon:chests/experiment_10_loot_op")))
+                new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facility_rooms/exp10room"),
+                        ResourceLocation.parse("changed_addon:chests/experiment_10_loot_op")))
                 .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
-                        new FacilityRoomPiece(new ResourceLocation("changed_addon:facility_rooms/luminar_crystal_room"),
-                                new ResourceLocation("changed:chests/high_tier_lab")))
+                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facility_rooms/luminar_crystal_room"),
+                                ResourceLocation.parse("changed:chests/high_tier_lab")))
                 .register(FacilityPieceCollectionBuilder.WEIGHT_COMMON,
-                        new FacilityRoomPiece(new ResourceLocation("changed_addon:facility_rooms/closed_meteor"),
-                                new ResourceLocation("changed:chests/high_tier_lab")));
+                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facility_rooms/closed_meteor"),
+                                ResourceLocation.parse("changed:chests/high_tier_lab")));
     }
 }

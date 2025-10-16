@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.model.armors;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class DarkLatexCoatModel<T extends Entity> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.parse("changed_addon", "dark_latex_coat_model"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("dark_latex_coat_model", "main");
     private final ModelPart PuroCoatHead;
     private final ModelPart RightEar;
     private final ModelPart RightEarPivot;

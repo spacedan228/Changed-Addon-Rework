@@ -272,13 +272,13 @@ public class ChangedAddonItems {
     @SubscribeEvent
     public static void clientLoad(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ItemProperties.register(LAETHIN.get(), new ResourceLocation("changed_addon:laethin_type"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
-            ItemProperties.register(LAETHIN_SYRINGE.get(), new ResourceLocation("changed_addon:laethin_syringe_type"),
+            ItemProperties.register(LAETHIN.get(), ResourceLocation.parse("changed_addon:laethin_type"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
+            ItemProperties.register(LAETHIN_SYRINGE.get(), ResourceLocation.parse("changed_addon:laethin_syringe_type"),
                     (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
-            ItemProperties.register(TRANSFUR_TOTEM.get(), new ResourceLocation("changed_addon:transfur_totem_glowtick"), (itemStackToRender, clientWorld, entity, itemEntityId) -> TransfurTotemItem.itemPropertyFunc(entity));
-            ItemProperties.register(SIGNAL_CATCHER.get(), new ResourceLocation("changed_addon:signal_catcher_dot_value"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) DotValueOfViewProcedure.execute(entity, itemStackToRender));
-            ItemProperties.register(SIGNAL_CATCHER.get(), new ResourceLocation("changed_addon:signal_catcher_cord_set"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) IsSignalCatcherCordsSetProcedure.execute(itemStackToRender));
-            ItemProperties.register(HAND_SCANNER.get(), new ResourceLocation("changed_addon:transfur_lock"), (itemStackToRender, clientWorld, entity, itemEntityId) -> {
+            ItemProperties.register(TRANSFUR_TOTEM.get(), ResourceLocation.parse("changed_addon:transfur_totem_glowtick"), (itemStackToRender, clientWorld, entity, itemEntityId) -> TransfurTotemItem.itemPropertyFunc(entity));
+            ItemProperties.register(SIGNAL_CATCHER.get(), ResourceLocation.parse("changed_addon:signal_catcher_dot_value"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) DotValueOfViewProcedure.execute(entity, itemStackToRender));
+            ItemProperties.register(SIGNAL_CATCHER.get(), ResourceLocation.parse("changed_addon:signal_catcher_cord_set"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) IsSignalCatcherCordsSetProcedure.execute(itemStackToRender));
+            ItemProperties.register(HAND_SCANNER.get(), ResourceLocation.parse("changed_addon:transfur_lock"), (itemStackToRender, clientWorld, entity, itemEntityId) -> {
                 if (entity instanceof Player player && ProcessTransfur.isPlayerTransfurred(player)) {
                     return 1f;
                 } else if (entity instanceof ChangedEntity changedEntity) {
@@ -286,7 +286,7 @@ public class ChangedAddonItems {
                 }
                 return 0f;
             });
-            ItemProperties.register(LUMINAR_CRYSTAL_SPEAR.get(), new ResourceLocation("throwing"),
+            ItemProperties.register(LUMINAR_CRYSTAL_SPEAR.get(), ResourceLocation.parse("throwing"),
                     (stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
             LaserItemDynamicRender.DynamicLaserColor(LASER_POINTER);
         });

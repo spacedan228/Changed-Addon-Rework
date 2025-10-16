@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public record InformantBlockGuiKeyMessage(String text, TransfurVariant<?> selectedTf, BlockPos pos) {
 
-    public static final ResourceLocation NULL_LOC = new ResourceLocation("null", "null");
+    public static final ResourceLocation NULL_LOC = ResourceLocation.fromNamespaceAndPath("null", "null");
 
     public static InformantBlockGuiKeyMessage decode(FriendlyByteBuf buf) {
         String selectedForm = buf.readUtf();

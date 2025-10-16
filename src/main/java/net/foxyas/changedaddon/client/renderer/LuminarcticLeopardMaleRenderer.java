@@ -38,9 +38,9 @@ public class LuminarcticLeopardMaleRenderer extends AdvancedHumanoidRenderer<Lum
         ));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new GasMaskLayer<>(this, context.getModelSet()));
-        this.addLayer(new LuminarcticLeopardsConditionalLayers.GlowLayer<>(this, new ResourceLocation("changed_addon:textures/entities/luminarctic_leopards/male/luminarctic_leopard_ability_active.png")));
-        this.addLayer(new LuminarcticLeopardsConditionalLayers.GlowFelineEyesLayer<>(this, new ResourceLocation("changed_addon:textures/entities/luminarctic_leopards/male/luminarctic_leopard_feline_eyes_male.png")));
-        this.addLayer(new EmissiveBodyLayer<>(this, new ResourceLocation("changed_addon:textures/entities/luminarctic_leopards/crystals_layer.png")));
+        this.addLayer(new LuminarcticLeopardsConditionalLayers.GlowLayer<>(this, ResourceLocation.parse("changed_addon:textures/entities/luminarctic_leopards/male/luminarctic_leopard_ability_active.png")));
+        this.addLayer(new LuminarcticLeopardsConditionalLayers.GlowFelineEyesLayer<>(this, ResourceLocation.parse("changed_addon:textures/entities/luminarctic_leopards/male/luminarctic_leopard_feline_eyes_male.png")));
+        this.addLayer(new EmissiveBodyLayer<>(this, ResourceLocation.parse("changed_addon:textures/entities/luminarctic_leopards/crystals_layer.png")));
     }
 
     @Override
@@ -76,9 +76,9 @@ public class LuminarcticLeopardMaleRenderer extends AdvancedHumanoidRenderer<Lum
     @Override
     public @NotNull ResourceLocation getTextureLocation(LuminarcticLeopardMaleEntity entity) {
         if (entity.getUnderlyingPlayer() != null) {
-            return new ResourceLocation("changed_addon:textures/entities/luminarctic_leopards/male/luminarctic_leopard_no_eyes.png");
+            return ResourceLocation.parse("changed_addon:textures/entities/luminarctic_leopards/male/luminarctic_leopard_no_eyes.png");
         }
 
-        return new ResourceLocation("changed_addon:textures/entities/luminarctic_leopards/male/luminarctic_leopard.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/luminarctic_leopards/male/luminarctic_leopard.png");
     }
 }

@@ -304,7 +304,7 @@ public abstract class AbstractCanTameSnepChangedEntity extends AbstractSnowLeopa
                 || stack.is(Items.COOKED_COD)
                 || stack.is(Items.SALMON)
                 || stack.is(Items.COOKED_SALMON)
-                || stack.is(ItemTags.create(new ResourceLocation(tameType.Tag)));
+                || stack.is(ItemTags.create(ResourceLocation.parse(tameType.Tag)));
     }
 
     //Default Use Type

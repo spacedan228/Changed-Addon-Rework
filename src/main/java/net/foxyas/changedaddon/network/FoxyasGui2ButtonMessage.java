@@ -46,7 +46,7 @@ public record FoxyasGui2ButtonMessage(int buttonId) {
 
             if (!(player instanceof ServerPlayer sPlayer)) return;
 
-            Advancement adv = sPlayer.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:friendly_transfur"));
+            Advancement adv = sPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:friendly_transfur"));
             if (adv == null) return;
 
             AdvancementProgress advProgress = sPlayer.getAdvancements().getOrStartProgress(adv);

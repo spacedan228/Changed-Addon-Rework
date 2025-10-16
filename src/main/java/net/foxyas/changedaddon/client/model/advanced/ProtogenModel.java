@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.model.advanced;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.renderer.layers.animation.CarryAbilityAnimation;
 import net.foxyas.changedaddon.entity.advanced.ProtogenEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ProtogenModel extends AdvancedHumanoidModel<ProtogenEntity> implements AdvancedHumanoidModelInterface<ProtogenEntity, ProtogenModel> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(new ResourceLocation("changed_addon", "protogen"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION =  ChangedAddonMod.layerLocation("protogen", "main");
 
     private final ModelPart Head;
     private final ModelPart RightEar;

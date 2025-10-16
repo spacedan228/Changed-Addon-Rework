@@ -106,11 +106,11 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
     }
 
     private ResourceLocation blockLoc(ResourceLocation loc){
-        return new ResourceLocation(loc.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + loc.getPath());
+        return ResourceLocation.fromNamespaceAndPath(loc.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + loc.getPath());
     }
 
     private ResourceLocation withSuffix(ResourceLocation loc, String suffix){
-        return new ResourceLocation(loc.getNamespace(), loc.getPath() + suffix);
+        return ResourceLocation.fromNamespaceAndPath(loc.getNamespace(), loc.getPath() + suffix);
     }
 
     private void simpleBlock(RegistryObject<? extends Block> block, Property<?>... ignore){

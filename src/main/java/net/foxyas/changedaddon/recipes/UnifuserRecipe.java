@@ -103,7 +103,7 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
 
     public static class Serializer implements RecipeSerializer<UnifuserRecipe>, IForgeRegistryEntry<RecipeSerializer<?>> {
         public static final Serializer INSTANCE = new Serializer();
-        public static final ResourceLocation ID = new ResourceLocation("changed_addon", "unifuser");
+        public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("changed_addon", "unifuser");
 
         @Override
         public @NotNull UnifuserRecipe fromJson(@NotNull ResourceLocation pRecipeId, @NotNull JsonObject pSerializedRecipe) {

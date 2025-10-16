@@ -31,7 +31,7 @@ public class GiveBlockCraftAdvancementProcedure {
             return;
         if (itemstack.getItem() == ChangedAddonBlocks.UNIFUSER.get().asItem()) {
             if (entity instanceof ServerPlayer _player) {
-                Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:unifuser_advancement"));
+                Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:unifuser_advancement"));
                 AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
                 if (!_ap.isDone()) {
                     Iterator _iterator = _ap.getRemainingCriteria().iterator();
@@ -42,7 +42,7 @@ public class GiveBlockCraftAdvancementProcedure {
         }
         if (itemstack.getItem() == ChangedAddonBlocks.CATALYZER.get().asItem()) {
             if (entity instanceof ServerPlayer _player) {
-                Advancement _adv = _player.server.getAdvancements().getAdvancement(new ResourceLocation("changed_addon:catalyzer_advancement"));
+                Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:catalyzer_advancement"));
                 AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
                 if (!_ap.isDone()) {
                     Iterator _iterator = _ap.getRemainingCriteria().iterator();

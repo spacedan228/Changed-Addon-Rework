@@ -200,12 +200,12 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntity {
 
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.hurt")));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.hurt")));
     }
 
     @Override
     public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.death")));
+        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.death")));
     }
 
     private static final List<SoundEvent> sounds = List.of(SoundEvents.CAT_AMBIENT, SoundEvents.CAT_PURR, SoundEvents.CAT_PURREOW);

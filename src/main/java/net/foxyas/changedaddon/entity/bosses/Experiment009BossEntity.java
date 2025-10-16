@@ -175,7 +175,7 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
 
     @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation("changed:humanoids")));
+        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ResourceLocation.parse("changed:humanoids")));
     }
 
     @Override

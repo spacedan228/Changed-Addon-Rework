@@ -99,7 +99,7 @@ public class DoLatexInfectionTickHandle {
     private static TransfurVariant<?> getLastVariant(Player player) {
         if (player.getPersistentData().contains(NBT_LAST_VARIANT)) {
             String id = player.getPersistentData().getString(NBT_LAST_VARIANT);
-            return ChangedRegistry.TRANSFUR_VARIANT.get().getValue(new ResourceLocation(id));
+            return ChangedRegistry.TRANSFUR_VARIANT.get().getValue(ResourceLocation.parse(id));
         }
         return null;
     }

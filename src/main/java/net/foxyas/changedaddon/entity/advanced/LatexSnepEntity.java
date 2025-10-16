@@ -149,12 +149,12 @@ public class LatexSnepEntity extends AbstractCanTameSnepChangedEntity implements
 
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return SoundEvents.OCELOT_HURT; //ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.hurt"));
+        return SoundEvents.OCELOT_HURT; //ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.hurt"));
     }
 
     @Override
     public @NotNull SoundEvent getDeathSound() {
-        return SoundEvents.OCELOT_DEATH; //ForgeRegistries.SOUND_EVENTS.getValue(new ResourceLocation("entity.generic.death"));
+        return SoundEvents.OCELOT_DEATH; //ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.death"));
     }
 
     @Override

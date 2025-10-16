@@ -43,7 +43,7 @@ public class DissolveAbility extends AbstractAbility<DissolveAbilityInstance> {
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
-        return new ResourceLocation("changed_addon:textures/screens/dodge_ability.png");
+        return ResourceLocation.parse("changed_addon:textures/screens/dodge_ability.png");
     }
 
 }

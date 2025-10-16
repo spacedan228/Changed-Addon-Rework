@@ -20,11 +20,11 @@ public class HaydenFennecFoxRenderer extends AdvancedHumanoidRenderer<HaydenFenn
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet()));
         this.addLayer(GasMaskLayer.forSnouted(this, context.getModelSet()));
-        this.addLayer(new CustomClothesLayer<>(this, this.getModel(), new ResourceLocation(ChangedAddonMod.MODID, "textures/entities/hayden_fennec_fox_clothes_layer.png")));
+        this.addLayer(new CustomClothesLayer<>(this, this.getModel(), ResourceLocation.fromNamespaceAndPath(ChangedAddonMod.MODID, "textures/entities/hayden_fennec_fox_clothes_layer.png")));
     }
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull HaydenFennecFoxEntity entity) {
-        return new ResourceLocation(ChangedAddonMod.MODID, "textures/entities/hayden_fennec_fox.png");
+        return ResourceLocation.fromNamespaceAndPath(ChangedAddonMod.MODID, "textures/entities/hayden_fennec_fox.png");
     }
 }

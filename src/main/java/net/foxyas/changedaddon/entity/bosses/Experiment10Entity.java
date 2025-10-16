@@ -122,7 +122,7 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
     }
 
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, new ResourceLocation("changed:humanoids")));
+        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ResourceLocation.parse("changed:humanoids")));
     }
 
     @Override

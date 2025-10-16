@@ -21,8 +21,8 @@ public class BorealisFemaleRenderer extends AdvancedHumanoidRenderer<BorealisFem
     public BorealisFemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new BorealisFemaleModel(context.bakeLayer(BorealisFemaleModel.LAYER_LOCATION)), ArmorLatexFemaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new ProtogenDisplay<>(this, getModel(),
-                new ResourceLocation("changed_addon:textures/entities/borealis_female/protogen_display_eyes.png"),
-                new ResourceLocation("changed_addon:textures/entities/borealis_female/protogen_display.png")) {
+                ResourceLocation.parse("changed_addon:textures/entities/borealis_female/protogen_display_eyes.png"),
+                ResourceLocation.parse("changed_addon:textures/entities/borealis_female/protogen_display.png")) {
             @Override
             public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, @NotNull BorealisFemaleEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
                 if (!entity.isInvisible()) {
