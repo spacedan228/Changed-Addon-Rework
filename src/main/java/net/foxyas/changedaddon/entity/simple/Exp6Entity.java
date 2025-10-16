@@ -108,7 +108,7 @@ public class Exp6Entity extends AbstractCanTameSnepChangedEntity {
     }
 
     @Override
-    protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
+    protected @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand hand) {
         return Exp2(player, hand, this.getUnderlyingPlayer());
     }
 

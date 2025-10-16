@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import org.jetbrains.annotations.NotNull;
 
 public class ReinforcedWallSilverTiledBlock extends Block implements NonLatexCoverableBlock {
     public ReinforcedWallSilverTiledBlock() {
@@ -15,7 +16,7 @@ public class ReinforcedWallSilverTiledBlock extends Block implements NonLatexCov
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
+    public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
         return 15;
     }
 }

@@ -66,7 +66,7 @@ public class GeneratorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side) {
+    public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, @Nullable Direction side) {
         return true;
     }
 

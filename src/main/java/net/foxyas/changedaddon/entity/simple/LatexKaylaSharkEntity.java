@@ -88,7 +88,7 @@ public class LatexKaylaSharkEntity extends LatexTigerShark implements GenderedEn
     }
 
     @Override
-    public @Nullable SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
+    public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         SpawnGroupData finalizedSpawn = super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
         BasicPlayerInfo basicPlayerInfo = this.getBasicPlayerInfo();
         basicPlayerInfo.setEyeStyle(EyeStyle.TALL);

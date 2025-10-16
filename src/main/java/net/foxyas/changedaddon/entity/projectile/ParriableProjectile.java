@@ -423,7 +423,7 @@ public abstract class ParriableProjectile extends Projectile {
         return false;
     }
 
-    protected float getEyeHeight(Pose pPose, EntityDimensions pSize) {
+    protected float getEyeHeight(@NotNull Pose pPose, @NotNull EntityDimensions pSize) {
         return 0.13F;
     }
 

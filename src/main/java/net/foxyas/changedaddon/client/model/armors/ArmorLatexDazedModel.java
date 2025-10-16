@@ -119,7 +119,7 @@ public class ArmorLatexDazedModel<T extends ChangedEntity> extends LatexHumanoid
         return this.animator;
     }
 
-    public ModelPart getArm(HumanoidArm arm) {
+    public @NotNull ModelPart getArm(HumanoidArm arm) {
         return arm == HumanoidArm.LEFT ? this.LeftArm : this.RightArm;
     }
 
@@ -127,7 +127,7 @@ public class ArmorLatexDazedModel<T extends ChangedEntity> extends LatexHumanoid
         return leg == HumanoidArm.LEFT ? this.LeftLeg : this.RightLeg;
     }
 
-    public ModelPart getHead() {
+    public @NotNull ModelPart getHead() {
         return this.Head;
     }
 

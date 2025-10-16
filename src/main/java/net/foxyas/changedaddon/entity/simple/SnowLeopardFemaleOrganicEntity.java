@@ -106,7 +106,7 @@ public class SnowLeopardFemaleOrganicEntity extends AbstractCanTameSnepChangedEn
     }
 
     @Override
-    protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
+    protected @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand hand) {
         return SnowLeopard(player, hand, this.getUnderlyingPlayer());
     }
 

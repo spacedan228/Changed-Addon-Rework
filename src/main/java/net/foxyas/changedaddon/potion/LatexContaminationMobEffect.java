@@ -34,7 +34,7 @@ public class LatexContaminationMobEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public void applyEffectTick(@NotNull LivingEntity pLivingEntity, int pAmplifier) {
         super.applyEffectTick(pLivingEntity, pAmplifier);
     }
 }

@@ -154,7 +154,7 @@ public class LatexWhiteSnowLeopardFemaleModel extends AdvancedHumanoidModel<Late
     }
 
     @Override
-    public void prepareMobModel(LatexWhiteSnowLeopardFemale p_102861_, float p_102862_, float p_102863_, float p_102864_) {
+    public void prepareMobModel(@NotNull LatexWhiteSnowLeopardFemale p_102861_, float p_102862_, float p_102863_, float p_102864_) {
         this.prepareMobModel(animator, p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
@@ -168,7 +168,7 @@ public class LatexWhiteSnowLeopardFemaleModel extends AdvancedHumanoidModel<Late
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
 
-    public ModelPart getArm(HumanoidArm p_102852_) {
+    public @NotNull ModelPart getArm(HumanoidArm p_102852_) {
         return p_102852_ == HumanoidArm.LEFT ? this.LeftArm : this.RightArm;
     }
 
@@ -176,7 +176,7 @@ public class LatexWhiteSnowLeopardFemaleModel extends AdvancedHumanoidModel<Late
         return p_102852_ == HumanoidArm.LEFT ? this.LeftLeg : this.RightLeg;
     }
 
-    public ModelPart getHead() {
+    public @NotNull ModelPart getHead() {
         return this.Head;
     }
 
@@ -185,7 +185,7 @@ public class LatexWhiteSnowLeopardFemaleModel extends AdvancedHumanoidModel<Late
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         RightLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         LeftLeg.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         Head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);

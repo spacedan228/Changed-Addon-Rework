@@ -39,6 +39,7 @@ public class ServerPlayerMixin implements SyncTrackMotion {
         this.lastKnownMotion = vec3;
     }
 
+    @Unique
     private ServerPlayer getSelf() {
         return (ServerPlayer) (Object) this;
     }

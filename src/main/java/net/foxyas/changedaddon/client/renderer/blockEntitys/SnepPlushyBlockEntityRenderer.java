@@ -28,7 +28,7 @@ public class SnepPlushyBlockEntityRenderer implements BlockEntityRenderer<SnepPl
         this.snepPlushExtraModel = new SnepPlushExtraModel(context.bakeLayer(SnepPlushExtraModel.LAYER_LOCATION));
     }
 
-    public void render(SnepPlushyBlockEntity blockEntity, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int light, int overlay) {
+    public void render(SnepPlushyBlockEntity blockEntity, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int light, int overlay) {
         BlockState state = blockEntity.getBlockState();
         if (!blockEntity.glowingEyes) return;
 

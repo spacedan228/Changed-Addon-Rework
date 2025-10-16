@@ -213,7 +213,7 @@ public class FoxyasEntity extends Monster {
     }
 
     @Override
-    public @NotNull InteractionResult mobInteract(Player sourceentity, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult mobInteract(@NotNull Player sourceentity, @NotNull InteractionHand hand) {
         InteractionResult retval = InteractionResult.sidedSuccess(this.level.isClientSide());
         if (sourceentity instanceof ServerPlayer serverPlayer) {
             NetworkHooks.openGui(serverPlayer, new MenuProvider() {

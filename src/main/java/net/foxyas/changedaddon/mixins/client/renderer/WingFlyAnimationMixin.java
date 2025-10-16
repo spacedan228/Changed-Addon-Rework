@@ -9,6 +9,7 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,15 +18,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class WingFlyAnimationMixin {
 
     // Função de suavização
+    @Unique
     private static float easeInOut(float t) {
         return t * t * (3 - 2 * t);
     }
 
+    @Unique
     private static float easeOutCubic(float t) {
         return 1 - (float) Math.pow(1 - t, 3);
     }
 
     // Method para limitar o valor entre min e max
+    @Unique
     private static float capLevel(float value, float min, float max) {
         if (value < min) {
             return min;

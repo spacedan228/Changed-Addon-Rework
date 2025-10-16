@@ -42,7 +42,7 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
+    public boolean propagatesSkylightDown(BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos) {
         return state.getFluidState().isEmpty();
     }
 
@@ -61,7 +61,7 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
     }
 
     @Override
-    public @NotNull BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
+    public @NotNull BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
         if (state.getValue(WATERLOGGED)) {
             world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
         }
@@ -105,7 +105,7 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
+    protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> pBuilder) {
         super.createBlockStateDefinition(pBuilder);
         pBuilder.add(FACING, WATERLOGGED);
     }

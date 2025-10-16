@@ -211,12 +211,12 @@ public class LatexSnepEntity extends AbstractCanTameSnepChangedEntity implements
     }
 
     @Override
-    protected @NotNull InteractionResult mobInteract(Player player, InteractionHand hand) {
+    protected @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand hand) {
         return LatexSnepInteraction(player, hand);
     }
 
     @Override
-    public void startSleeping(BlockPos pos) {
+    public void startSleeping(@NotNull BlockPos pos) {
         // Obtém todas as entidades dentro de um cubo 3x3x3 ao redor do bloco onde a entidade vai dormir
         List<Entity> entities = this.level.getEntitiesOfClass(Entity.class, new AABB(pos).inflate(1));
 

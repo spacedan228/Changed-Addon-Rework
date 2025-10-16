@@ -111,7 +111,7 @@ public class MultifaceBlock extends Block implements RenderLayerProvider {
         return super.getStateForPlacement(context).setValue(prop, true);
     }
 
-    public boolean canBeReplaced(@NotNull BlockState state, BlockPlaceContext context) {
+    public boolean canBeReplaced(@NotNull BlockState state, @NotNull BlockPlaceContext context) {
         if(super.canBeReplaced(state, context)) return true;
         if(!context.getItemInHand().is(asItem())) return false;
 
