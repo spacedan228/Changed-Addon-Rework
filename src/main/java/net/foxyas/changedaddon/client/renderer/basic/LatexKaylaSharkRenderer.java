@@ -27,8 +27,8 @@ public class LatexKaylaSharkRenderer extends AdvancedHumanoidRenderer<LatexKayla
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(),
                 CustomEyesLayer.fixedColor(Color3.parseHex("#060606")),
-                CustomEyesLayer.fixedColorGlowing(Color3.parseHex("#a81dc8")),
                 CustomEyesLayer.fixedColorGlowing(Color3.parseHex("#4cc4f5")),
+                CustomEyesLayer.fixedColorGlowing(Color3.parseHex("#a81dc8")),
                 CustomEyesLayer::noRender,
                 CustomEyesLayer::noRender
         ));
