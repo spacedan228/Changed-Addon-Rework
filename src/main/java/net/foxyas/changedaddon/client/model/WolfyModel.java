@@ -28,7 +28,7 @@ import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.
 public class WolfyModel extends AdvancedHumanoidModel<WolfyEntity> implements AdvancedHumanoidModelInterface<WolfyEntity, WolfyModel> {
 
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("wolfy_model"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("wolfy_model"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart RightArm;

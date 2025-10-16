@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.dragonWinged;
 
 public class LatexDragonSnowLeopardSharkModel extends AdvancedHumanoidModel<LatexDragonSnowLeopardSharkEntity> implements AdvancedHumanoidModelInterface<LatexDragonSnowLeopardSharkEntity, LatexDragonSnowLeopardSharkModel> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("latex_dragon_snep_shark"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("latex_dragon_snep_shark"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart RightArm;

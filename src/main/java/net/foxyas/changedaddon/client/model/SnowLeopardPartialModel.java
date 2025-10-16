@@ -34,10 +34,10 @@ import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.
 public class SnowLeopardPartialModel extends AdvancedHumanoidModel<SnowLeopardPartialEntity> implements AdvancedHumanoidModelInterface<SnowLeopardPartialEntity, SnowLeopardPartialModel> {
 
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION_HUMAN = new ModelLayerLocation(ChangedAddonMod.resourceLoc("snow_leopard_partial"), "main");
-    public static final ModelLayerLocation LAYER_LOCATION_HUMAN_SLIM = new ModelLayerLocation(ChangedAddonMod.resourceLoc("snow_leopard_partial"), "main_slim");
-    public static final ModelLayerLocation LAYER_LOCATION_LATEX = new ModelLayerLocation(ChangedAddonMod.resourceLoc("snow_leopard_partial"), "latex");
-    public static final ModelLayerLocation LAYER_LOCATION_LATEX_SLIM = new ModelLayerLocation(ChangedAddonMod.resourceLoc("snow_leopard_partial"), "latex_slim");
+    public static final ModelLayerLocation LAYER_LOCATION_HUMAN = ChangedAddonMod.layerLocation(("snow_leopard_partial"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION_HUMAN_SLIM = ChangedAddonMod.layerLocation(("snow_leopard_partial"), "main_slim");
+    public static final ModelLayerLocation LAYER_LOCATION_LATEX = ChangedAddonMod.layerLocation(("snow_leopard_partial"), "latex");
+    public static final ModelLayerLocation LAYER_LOCATION_LATEX_SLIM = ChangedAddonMod.layerLocation(("snow_leopard_partial"), "latex_slim");
     private static final ModelPart NULL_PART = new ModelPart(List.of(), Map.of());
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;

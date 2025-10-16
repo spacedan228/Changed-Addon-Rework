@@ -98,7 +98,7 @@ public class ContainmentContainerRenderer implements BlockEntityRenderer<Contain
     }
 
     public static class FluidModelPart extends Model {
-        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("containment_container_fluid"), "main");
+        public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("containment_container_fluid"), "main");
         private final ModelPart LatexLiquidFill;
 
         public FluidModelPart(ModelPart root) {

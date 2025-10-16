@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public class ModelHazardArmorCustomArms<T extends Entity> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in
     // the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("model_hazard_armor_custom_arms"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("model_hazard_armor_custom_arms"), "main");
     public final ModelPart body;
     public final ModelPart left_arm;
     public final ModelPart right_arm;

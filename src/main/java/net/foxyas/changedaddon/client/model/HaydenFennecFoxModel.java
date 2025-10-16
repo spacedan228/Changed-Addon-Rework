@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class HaydenFennecFoxModel extends AdvancedHumanoidModel<HaydenFennecFoxEntity> implements AdvancedHumanoidModelInterface<HaydenFennecFoxEntity, HaydenFennecFoxModel> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("hayden_fennec_fox"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("hayden_fennec_fox"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart RightArm;

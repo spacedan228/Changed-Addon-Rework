@@ -24,7 +24,7 @@ import java.util.List;
 
 public class LatexDazedModel extends AdvancedHumanoidModel<DazedLatexEntity> implements AdvancedHumanoidModelInterface<DazedLatexEntity, LatexDazedModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("dazed_latex"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("dazed_latex"), "main");
 
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;

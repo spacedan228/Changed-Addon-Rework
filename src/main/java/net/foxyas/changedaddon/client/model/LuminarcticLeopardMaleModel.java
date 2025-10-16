@@ -19,7 +19,7 @@ import java.util.List;
 
 public class LuminarcticLeopardMaleModel extends AdvancedHumanoidModel<LuminarcticLeopardMaleEntity> implements AdvancedHumanoidModelInterface<LuminarcticLeopardMaleEntity, LuminarcticLeopardMaleModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("luminarctic_leopard"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("luminarctic_leopard"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart Head;

@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class BlueLizardModel extends AdvancedHumanoidModel<BlueLizard> implements AdvancedHumanoidModelInterface<BlueLizard, BlueLizardModel> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("blue_lizard"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("blue_lizard"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart RightArm;

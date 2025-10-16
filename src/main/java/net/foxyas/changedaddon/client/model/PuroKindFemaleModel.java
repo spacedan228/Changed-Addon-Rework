@@ -31,7 +31,7 @@ import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.
 
 public class PuroKindFemaleModel extends AdvancedHumanoidModel<PuroKindFemaleEntity> implements AdvancedHumanoidModelInterface<PuroKindFemaleEntity, PuroKindFemaleModel> {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("female_puro_kind"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("female_puro_kind"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart RightArm;

@@ -23,7 +23,7 @@ import java.util.List;
 
 public class GrapeSnowLeopardModel extends AdvancedHumanoidModel<Exp6Entity> implements AdvancedHumanoidModelInterface<Exp6Entity, GrapeSnowLeopardModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("grape_snow_leopard_model"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("grape_snow_leopard_model"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart Head;

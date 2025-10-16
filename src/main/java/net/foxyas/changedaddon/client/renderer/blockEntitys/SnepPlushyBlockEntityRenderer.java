@@ -69,7 +69,7 @@ public class SnepPlushyBlockEntityRenderer implements BlockEntityRenderer<SnepPl
 
     // Classe estática para o modelo extra
     public static class SnepPlushExtraModel extends Model {
-        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("snep_plushe_extra_model"), "main");
+        public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("snep_plushe_extra_model"), "main");
         private final ModelPart Head;
 
         public SnepPlushExtraModel(ModelPart root) {

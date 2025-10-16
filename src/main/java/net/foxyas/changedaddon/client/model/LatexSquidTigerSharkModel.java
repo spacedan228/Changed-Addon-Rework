@@ -30,7 +30,7 @@ import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.
 
 public class LatexSquidTigerSharkModel extends AdvancedHumanoidModel<LatexSquidTigerSharkEntity> implements AdvancedHumanoidModelInterface<LatexSquidTigerSharkEntity, LatexSquidTigerSharkModel>, DoubleArmedModel<LatexSquidTigerSharkEntity> {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("squid_tiger_shark"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("squid_tiger_shark", "main");
     private final ModelPart Head;
     private final ModelPart Torso;
     private final ModelPart LeftArm;

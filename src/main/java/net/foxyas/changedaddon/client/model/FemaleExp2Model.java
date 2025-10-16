@@ -24,7 +24,7 @@ import java.util.List;
 
 public class FemaleExp2Model extends AdvancedHumanoidModel<Exp2FemaleEntity> implements AdvancedHumanoidModelInterface<Exp2FemaleEntity, FemaleExp2Model> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("female_exp2_snep"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("female_exp2_snep"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart Head;

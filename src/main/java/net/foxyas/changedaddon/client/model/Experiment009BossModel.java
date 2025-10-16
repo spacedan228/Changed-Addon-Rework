@@ -19,7 +19,7 @@ import java.util.List;
 
 public class Experiment009BossModel extends AdvancedHumanoidModel<Experiment009BossEntity> implements AdvancedHumanoidModelInterface<Experiment009BossEntity, Experiment009BossModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("exp_009_boss"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("exp_009_boss"), "main");
 
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;

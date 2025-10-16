@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public class ModelFoxyasModel<T extends Entity> extends EntityModel<T> {
     // This layer location should be baked with EntityRendererProvider.Context in
     // the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("model_foxyas_model"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("model_foxyas_model"), "main");
     public final ModelPart Head;
     public final ModelPart Torso;
     public final ModelPart RightArm;

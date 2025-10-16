@@ -19,7 +19,7 @@ import java.util.List;
 
 public class PinkCyanSkunkModel extends AdvancedHumanoidModel<PinkCyanSkunkEntity> implements AdvancedHumanoidModelInterface<PinkCyanSkunkEntity, PinkCyanSkunkModel> {
 
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("pink_cyan_skunk"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("pink_cyan_skunk"), "main");
 
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;

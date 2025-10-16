@@ -18,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class FengQIWolfModel extends AdvancedHumanoidModel<FengQIWolfEntity> implements AdvancedHumanoidModelInterface<FengQIWolfEntity, FengQIWolfModel> {
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ChangedAddonMod.resourceLoc("fengqi_wolf"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("fengqi_wolf"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
     private final ModelPart RightArm;
