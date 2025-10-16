@@ -37,6 +37,6 @@ public class PrototypeMenuScreen extends AbstractContainerScreen<PrototypeMenu> 
         int i = this.leftPos;
         int j = this.topPos;
         this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
-        InventoryScreen.renderEntityInInventory(i + 51, j + 75, 30, (float)(i + 51) - mouseX, (float)(j + 75 - 50) - mouseY, menu.getPrototype());
+        InventoryScreen.renderEntityInInventory(i + 51, j + 75, 30, (float)(i + 51) - mouseX, (float)(j + 75 - 50) - mouseY, menu.getEntity());
     }
 }

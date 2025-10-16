@@ -1,9 +1,10 @@
 package net.foxyas.changedaddon.entity.advanced;
 
-import net.foxyas.changedaddon.entity.defaults.AbstractCanTameChangedEntity;
-import net.foxyas.changedaddon.entity.goals.prototype.*;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
 import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
+import net.foxyas.changedaddon.entity.api.ItemHandlerHolder;
+import net.foxyas.changedaddon.entity.defaults.AbstractCanTameChangedEntity;
+import net.foxyas.changedaddon.entity.goals.prototype.*;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.util.ColorUtil;
@@ -70,7 +71,7 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
@@ -85,7 +86,7 @@ import java.util.*;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class PrototypeEntity extends AbstractCanTameChangedEntity implements InventoryCarrier, MenuProvider, CustomPatReaction, IDynamicPawColor {
+public class PrototypeEntity extends AbstractCanTameChangedEntity implements InventoryCarrier, MenuProvider, CustomPatReaction, IDynamicPawColor, ItemHandlerHolder {
     // Constants
     public static final int MAX_HARVEST_TIMES = 32;
     // Fields
@@ -102,11 +103,11 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         }
     };
     private int harvestsTimes = 0;
-    private DepositeType depositeType = DepositeType.BOTH;
+    private DepositType depositType = DepositType.BOTH;
     @Nullable
     private BlockPos targetChestPos = null;
 
-    private final IItemHandlerModifiable combinedInv;
+    private final CombinedInvWrapper combinedInv;
 
     // Constructors
     public PrototypeEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
@@ -120,7 +121,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         combinedInv = new CombinedInvWrapper(new EntityArmorInvWrapper(this), new EntityHandsInvWrapper(this), new InvWrapper(inventory));
     }
 
-    public IItemHandlerModifiable getCombinedInv() {
+    @Override
+    public IItemHandler getItemHandler() {
         return combinedInv;
     }
 
@@ -175,7 +177,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         super.addAdditionalSaveData(tag);
         tag.put("Inventory", inventory.createTag());
         tag.putInt("harvestDone", this.harvestsTimes);
-        tag.putString("DepositeType", this.depositeType.toString().toLowerCase(Locale.ROOT));
+        tag.putString("DepositeType", this.depositType.toString().toLowerCase(Locale.ROOT));
 
         if (targetChestPos != null) {
             CompoundTag nbt = new CompoundTag();
@@ -220,7 +222,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
             this.harvestsTimes = tag.getInt("harvestsTimes");
         }
         if (tag.contains("DepositeType")) {
-            this.depositeType = DepositeType.valueOf(tag.getString("DepositeType").toUpperCase());
+            this.depositType = DepositType.valueOf(tag.getString("DepositeType").toUpperCase());
         }
 
         if (tag.contains("TargetChestPos")) {
@@ -280,9 +282,9 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         ItemStack itemstack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!getLevel().isClientSide) {
-                this.depositeType = depositeType.switchDepositeType();
+                depositType = depositType.nextDepositType();
             }
-            player.displayClientMessage(new TranslatableComponent("entity.changed_addon.prototype.deposite_type.switch", depositeType.getFormatedName()), true);
+            player.displayClientMessage(new TranslatableComponent("entity.changed_addon.prototype.deposite_type.switch", depositType.getFormatedName()), true);
         } else {
             if (!getLevel().isClientSide) {
                 NetworkHooks.openGui((ServerPlayer) player, getMenuProvider(), buf -> buf.writeVarInt(getId()));
@@ -334,11 +336,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     protected void dropAllDeathLoot(@NotNull DamageSource pDamageSource) {
         super.dropAllDeathLoot(pDamageSource);
 
-        if (!this.inventory.isEmpty()) {
-            for (int i = 0; i < inventory.getContainerSize(); i++) {
-                dropInventoryItems();
-            }
-        }
+        if(!inventory.isEmpty()) dropInventoryItems();
     }
 
     @Override
@@ -367,7 +365,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     public boolean canTakeItem(@NotNull ItemStack pItemstack) {
         if(pItemstack.isEmpty()) return false;
         if (this.pickAbleItems().contains(pItemstack.getItem())
-                || (pItemstack.is(Tags.Items.CROPS) || (pItemstack.is(tag("fruits")) || pItemstack.is(Tags.Items.SHEARS) || pItemstack.is(Tags.Items.SEEDS)))) {
+                || (pItemstack.is(Tags.Items.CROPS) || (pItemstack.is(FORGE_FRUITS) || pItemstack.is(Tags.Items.SHEARS) || pItemstack.is(Tags.Items.SEEDS)))) {
             return true;
         }
 
@@ -382,7 +380,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public boolean wantsToPickUp(@NotNull ItemStack pStack) {
         if (!isInventoryAndHandsFull()) {
-            if (pStack.is(Tags.Items.CROPS) || (pStack.is(tag("fruits")) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem()))) {
+            if (pStack.is(Tags.Items.CROPS) || (pStack.is(FORGE_FRUITS) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem()))) {
                 return true;
             }
         }
@@ -391,13 +389,13 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
     @Override
     public boolean canHoldItem(@NotNull ItemStack pStack) {
-        return !isInventoryAndHandsFull() && (pStack.is(Tags.Items.CROPS) || (pStack.is(tag("fruits")) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem())));
+        return !isInventoryAndHandsFull() && (pStack.is(Tags.Items.CROPS) || (pStack.is(FORGE_FRUITS) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem())));
     }
 
     @Override
     protected void pickUpItem(@NotNull ItemEntity pItemEntity) {
         ItemStack pStack = pItemEntity.getItem();
-        if (pStack.is(Tags.Items.CROPS) || (pStack.is(tag("fruits")) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem()))) {
+        if (pStack.is(Tags.Items.CROPS) || (pStack.is(FORGE_FRUITS) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem()))) {
             addToInventory(pStack);
             return;
         }
@@ -460,10 +458,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         return itemStacks;
     }
 
-    public boolean isInventoryEmpty() {
-        return inventory.isEmpty();
-    }
-
     public void addToInventory(ItemStack stack) {
         for (int i = 0; i < getInventory().getContainerSize(); i++) {
             ItemStack slot = getInventory().getItem(i);
@@ -521,40 +515,41 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
         BlockPos closestChest = null;
         double closestDist = Double.MAX_VALUE;
+        double dist;
 
         // First try to find chest containing at least one matching item
         for (BlockPos pos : BlockPos.betweenClosed(center.offset(-range, -range, -range), center.offset(range, range, range))) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof ChestBlockEntity chest) {
-                if (!isChestFull(chest)) {
-                    for (int slot = 0; slot < chest.getContainerSize(); slot++) {
-                        ItemStack chestItem = chest.getItem(slot);
-                        if (!chestItem.isEmpty()) {
-                            for (ItemStack carried : carriedItems) {
-                                if (ItemStack.isSameItemSameTags(carried, chestItem)) {
-                                    double dist = pos.distSqr(center);
-                                    if (dist < closestDist) {
-                                        closestDist = dist;
-                                        closestChest = pos.immutable();
-                                    }
-                                }
-                            }
-                        }
-                    }
+            if(!(be instanceof ChestBlockEntity chest)) continue;
+
+            dist = pos.distSqr(center);
+            if(dist >= closestDist || isChestFull(chest)) continue;
+
+            for (int slot = 0; slot < chest.getContainerSize(); slot++) {
+                ItemStack chestItem = chest.getItem(slot);
+                if(chestItem.isEmpty()) continue;
+
+                for (ItemStack carried : carriedItems) {
+                    if(!ItemStack.isSameItemSameTags(carried, chestItem)) continue;
+
+                    closestDist = dist;
+                    closestChest = pos.immutable();
+                    break;
                 }
+                if(pos.equals(closestChest)) break;
             }
         }
 
         // Otherwise return any chest
         for (BlockPos pos : BlockPos.betweenClosed(center.offset(-range, -range, -range), center.offset(range, range, range))) {
             BlockEntity be = level.getBlockEntity(pos);
-            if (be instanceof ChestBlockEntity chest && !isChestFull(chest)) {
-                double dist = pos.distSqr(center);
-                if (dist < closestDist) {
-                    closestDist = dist;
-                    closestChest = pos.immutable();
-                }
-            }
+            if(!(be instanceof ChestBlockEntity chest) || isChestFull(chest)) continue;
+
+            dist = pos.distSqr(center);
+            if(dist >= closestDist) continue;
+
+            closestDist = dist;
+            closestChest = pos.immutable();
         }
 
         return closestChest;
@@ -563,39 +558,39 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     public BlockPos findNearbyCrop(Level level, BlockPos center, int range) {
         BlockPos closestCrop = null;
         double closestDist = Double.MAX_VALUE;
+        double dist;
 
         for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(center, range, range).toList()) {
             BlockState state = level.getBlockState(pos);
-            if (state.getBlock() instanceof CropBlock crop && crop.isMaxAge(state)) {
-                double dist = pos.distSqr(center);
-                if (dist < closestDist) {
-                    closestDist = dist;
-                    closestCrop = pos.immutable();
-                }
-            }
+            if(!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)) continue;
+
+            dist = pos.distSqr(center);
+            if(dist >= closestDist) continue;
+
+            closestDist = dist;
+            closestCrop = pos.immutable();
         }
         return closestCrop;
     }
 
     @Nullable
-    public BlockPos findNearbyOrangeLeaves(BlockPos center, int range, Vec3 eyePos, @Nullable Entity viewer) {
+    public BlockPos findNearbyOrangeLeaves(BlockPos center, int range, Vec3 eyePos) {
         BlockPos best = null;
         double bestDist = Double.MAX_VALUE;
+        double dist;
 
         // Evite .toList() para não alocar tudo; itere o stream diretamente
         for (BlockPos pos : (Iterable<BlockPos>) FoxyasUtils.betweenClosedStreamSphere(center, range, range)::iterator) {
             BlockState state = level.getBlockState(pos);
-            if (!state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get()))
-                continue;
+            if (!state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) continue;
 
             // Distância do olho ao centro do bloco (mais precisa)
-            double dist = eyePos.distanceToSqr(Vec3.atCenterOf(pos));
+            dist = eyePos.distanceToSqr(Vec3.atCenterOf(pos));
             if (dist >= bestDist) continue;
 
             BlockHitResult hit = level.clip(eyeContext(pos));
 
-            if (hit.getType() == HitResult.Type.BLOCK &&
-                    hit.getBlockPos().equals(pos)) {
+            if (hit.getType() == HitResult.Type.BLOCK && hit.getBlockPos().equals(pos)) {
                 bestDist = dist;
                 best = pos.immutable();
             }
@@ -615,16 +610,16 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
     public void harvestCrop(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
-        if (state.getBlock() instanceof CropBlock crop && crop.isMaxAge(state)) {
-            // Drop items naturally (simulate player breaking)
-            ItemStack tool = getMainHandItem();
-            Block.dropResources(state, level, pos, level.getBlockEntity(pos), this, tool);
+        if(!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)) return;
 
-            // Replant at age 0
-            level.setBlock(pos, crop.getStateForAge(0), 3);
-            level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);
-            this.addHarvestsTime();
-        }
+        // Drop items naturally (simulate player breaking)
+        ItemStack tool = getMainHandItem();
+        Block.dropResources(state, level, pos, level.getBlockEntity(pos), this, tool);
+
+        // Replant at age 0
+        level.setBlock(pos, crop.getStateForAge(0), 3);
+        level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);
+        addHarvestsTime();
     }
 
     private void depositToChest(ServerLevel level, BlockPos chestPos) {
@@ -639,32 +634,32 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         chest.startOpen(FakePlayerFactory.getMinecraft(level));
 
         for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            if (equipmentSlot.getType() == EquipmentSlot.Type.HAND) {
-                ItemStack stack = getItemBySlot(equipmentSlot);
-                if (!isChestFull(chest)) {
-                    if (!stack.isEmpty() && (depositeType.isRightType(stack))) {
-                        lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(chestPos.getX(), chestPos.getY() - 1, chestPos.getZ()));
-                        swing(isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-                        ItemStack remaining = HopperBlockEntity.addItem(null, chest, stack, null);
-                        chest.setChanged();
-                        setItemSlot(equipmentSlot, remaining);
-                        getInventory().setChanged();
-                        chest.triggerEvent(1, 1);
-                        if (state.getBlock() instanceof ChestBlock) {
-                            level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
-                            setHarvestsTimes(0);
-                        }
+            if(equipmentSlot.getType() != EquipmentSlot.Type.HAND) continue;
+
+            ItemStack stack = getItemBySlot(equipmentSlot);
+            if (!isChestFull(chest)) {
+                if (!stack.isEmpty() && depositType.test(stack)) {
+                    lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(chestPos.getX(), chestPos.getY() - 1, chestPos.getZ()));
+                    swing(isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+                    ItemStack remaining = HopperBlockEntity.addItem(null, chest, stack, null);
+                    chest.setChanged();
+                    setItemSlot(equipmentSlot, remaining);
+                    getInventory().setChanged();
+                    chest.triggerEvent(1, 1);
+                    if (state.getBlock() instanceof ChestBlock) {
+                        level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
+                        setHarvestsTimes(0);
                     }
-                } else {
-                    targetChestPos = tryFindNearbyChest(getLevel(), blockPosition(), 8);
                 }
+            } else {
+                targetChestPos = tryFindNearbyChest(getLevel(), blockPosition(), 8);
             }
         }
 
         for (int i = 0; i < getInventory().getContainerSize(); i++) {
             ItemStack stack = getInventory().getItem(i);
             if (!isChestFull(chest)) {
-                if (!stack.isEmpty() && (depositeType.isRightType(stack))) {
+                if (!stack.isEmpty() && (depositType.test(stack))) {
                     // Make entity look at a target position
                     getLookControl().setLookAt(
                             chestPos.getX(), chestPos.getY(), chestPos.getZ(),
@@ -704,12 +699,12 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         return List.of(Items.BONE_MEAL, Items.SHEARS);
     }
 
-    public DepositeType getDepositeType() {
-        return depositeType;
+    public DepositType getDepositType() {
+        return depositType;
     }
 
-    public void setDepositeType(DepositeType depositeType) {
-        this.depositeType = depositeType;
+    public void setDepositType(DepositType depositType) {
+        this.depositType = depositType;
     }
 
     public int getHarvestsTimes() {
@@ -733,7 +728,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     }
 
     public boolean willDepositSeeds() {
-        return this.depositeType == DepositeType.SEEDS || this.depositeType == DepositeType.BOTH;
+        return depositType == DepositType.SEEDS || depositType == DepositType.BOTH;
     }
 
     @Override
@@ -741,23 +736,25 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         return Color.CYAN;
     }
 
+    private static final TagKey<Item> FORGE_FRUITS = ItemTags.create(new ResourceLocation("forge", "fruits"));
+
     // Enums
-    public enum DepositeType {
+    public enum DepositType {
         SEEDS(Tags.Items.SEEDS),
-        CROPS(tag("fruits"), Tags.Items.CROPS),
-        BOTH(tag("fruits"), Tags.Items.CROPS, Tags.Items.SEEDS);
+        CROPS(FORGE_FRUITS, Tags.Items.CROPS),
+        BOTH(FORGE_FRUITS, Tags.Items.CROPS, Tags.Items.SEEDS);
 
         final List<TagKey<Item>> tagKeys;
 
-        DepositeType(TagKey<Item> crops, TagKey<Item> seeds) {
+        DepositType(TagKey<Item> crops, TagKey<Item> seeds) {
             this.tagKeys = List.of(crops, seeds);
         }
 
-        DepositeType(TagKey<Item> typeTag) {
+        DepositType(TagKey<Item> typeTag) {
             this.tagKeys = List.of(typeTag);
         }
 
-        DepositeType(TagKey<Item> fruits, TagKey<Item> crops, TagKey<Item> seeds) {
+        DepositType(TagKey<Item> fruits, TagKey<Item> crops, TagKey<Item> seeds) {
             this.tagKeys = List.of(fruits, crops, seeds);
         }
 
@@ -771,19 +768,15 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
             return normalName.toUpperCase().charAt(0) + lowerCaseName;
         }
 
-
-        public boolean isRightType(ItemStack stack) {
-            return this.tagKeys.stream().anyMatch(stack::is);
+        public boolean test(ItemStack stack) {
+            return tagKeys.stream().anyMatch(stack::is);
         }
 
-        public DepositeType switchDepositeType() {
-            int next = (this.ordinal() + 1) % DepositeType.values().length;
-            return DepositeType.values()[next];
+        public DepositType nextDepositType() {
+            int next = ordinal() + 1;
+            DepositType[] types = values();
+            return next >= types.length ? types[0] : types[next];
         }
-    }
-
-    public static TagKey<Item> tag(String name) {
-        return ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", name));
     }
 
     @Mod.EventBusSubscriber
@@ -793,13 +786,15 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
         public static void onFarmlandTrample(BlockEvent.FarmlandTrampleEvent event) {
             if (event.getEntity() instanceof PrototypeEntity) {
                 event.setCanceled(true);
-            } else if (event.getEntity() instanceof Player player) {
+                return;
+            }
+
+            if (event.getEntity() instanceof Player player) {
                 TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
                 if (transfurVariant != null && transfurVariant.is(ChangedAddonTransfurVariants.PROTOTYPE)) {
                     event.setCanceled(true);
                 }
             }
         }
-
     }
 }

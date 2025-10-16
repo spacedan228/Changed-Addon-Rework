@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.entity.goals.prototype;
 
-import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.init.ChangedItems;
@@ -13,7 +12,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
@@ -37,7 +35,7 @@ public class PruningOrangeLeavesGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition(), prototypeEntity);
+        targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
         boolean hasShearsLikeItem = (prototypeEntity.getMainHandItem().getItem() instanceof HoeItem || prototypeEntity.getOffhandItem().getItem() instanceof HoeItem) ||
                 (prototypeEntity.getMainHandItem().is(Tags.Items.SHEARS) || prototypeEntity.getOffhandItem().is(Tags.Items.SHEARS));
 
@@ -69,7 +67,7 @@ public class PruningOrangeLeavesGoal extends Goal {
         super.tick();
         if (targetLeave != null && prototypeEntity.getLevel() instanceof ServerLevel serverLevel) {
             if (!serverLevel.getBlockState(targetLeave).is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
-                targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition(), prototypeEntity);
+                targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
             }
         }
 
@@ -81,7 +79,7 @@ public class PruningOrangeLeavesGoal extends Goal {
         ticks++;
         if (ticks % 600 == 0) {
             if (targetLeave != null && targetLeave.distSqr(prototypeEntity.blockPosition()) > (16 * 16)) {
-                targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition(), prototypeEntity);
+                targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
             }
         }
     }

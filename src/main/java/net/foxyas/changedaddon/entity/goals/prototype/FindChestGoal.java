@@ -28,7 +28,7 @@ public class FindChestGoal extends Goal {
     public boolean canUse() {
         // Use only if inventory full or max harvests reached, and a chest exists nearby
         if (entity.getTargetChestPos() == null
-                && ((entity.isInventoryFull((itemStacks -> itemStacks.stream().filter((stack) -> entity.getDepositeType().isRightType(stack)).count() >= 4)))
+                && ((entity.isInventoryFull((itemStacks -> itemStacks.stream().filter((stack) -> entity.getDepositType().test(stack)).count() >= 4)))
                 || entity.getHarvestsTimes() >= PrototypeEntity.MAX_HARVEST_TIMES)) {
             targetChestPos = entity.tryFindNearbyChest(entity.getLevel(), entity.blockPosition(), searchRange);
             return targetChestPos != null;
