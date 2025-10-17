@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.client.renderer.mobs;
 
 import net.foxyas.changedaddon.client.model.ModelFoxyasModel;
-import net.foxyas.changedaddon.entity.mobs.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;

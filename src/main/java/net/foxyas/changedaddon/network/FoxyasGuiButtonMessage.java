@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.network;
 
-import net.foxyas.changedaddon.entity.mobs.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
 import net.foxyas.changedaddon.world.inventory.FoxyasGui2Menu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.entity.mobs.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
 import net.foxyas.changedaddon.network.FoxyasGuiButtonMessage;
 import net.foxyas.changedaddon.world.inventory.FoxyasGuiMenu;
 import net.ltxprogrammer.changed.process.ProcessTransfur;

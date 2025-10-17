@@ -43,6 +43,7 @@ public class ChangedAddonMod {
         ChangedAddonItemTiers.init();
         ChangedAddonAttributes.ATTRIBUTES.register(bus);
         ChangedAddonItems.REGISTRY.register(bus);
+        ChangedAddonMenus.CONTAINERS.register(bus);
 
         ChangedAddonEntities.REGISTRY.register(bus);
         ChangedAddonAbilities.REGISTRY.register(bus);

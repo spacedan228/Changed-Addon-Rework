@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.world.inventory;
 
-import net.foxyas.changedaddon.entity.mobs.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.network.FriendlyByteBuf;

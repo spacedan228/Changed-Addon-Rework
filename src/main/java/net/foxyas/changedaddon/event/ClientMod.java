@@ -29,6 +29,8 @@ public class ClientMod {
             MenuScreens.register(ChangedAddonMenus.INFORMANT_GUI, InformantGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.PROTOTYPE_MENU, PrototypeMenuScreen::new);
             MenuScreens.register(ChangedAddonMenus.MERCHANT_MENU, CustomMerchantScreen::new);
+
+            MenuScreens.register(ChangedAddonMenus.TEST_FOXYAS_MENU.get(), FoxyasMenuScreen::new);
         });
     }
 
