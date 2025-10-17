@@ -8,13 +8,13 @@ import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.foxyas.changedaddon.item.clothes.DyeableShorts;
 import net.foxyas.changedaddon.item.clothes.TShirtClothing;
 import net.foxyas.changedaddon.procedures.DotValueOfViewProcedure;
-import net.foxyas.changedaddon.procedures.IsSignalCatcherCordsSetProcedure;
 import net.foxyas.changedaddon.procedures.LaethinPropertyValueProviderProcedure;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -272,16 +272,18 @@ public class ChangedAddonItems {
     @SubscribeEvent
     public static void clientLoad(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ItemProperties.register(LAETHIN.get(), ResourceLocation.parse("changed_addon:laethin_type"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
-            ItemProperties.register(LAETHIN_SYRINGE.get(), ResourceLocation.parse("changed_addon:laethin_syringe_type"),
-                    (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
-            ItemProperties.register(TRANSFUR_TOTEM.get(), ResourceLocation.parse("changed_addon:transfur_totem_glowtick"), (itemStackToRender, clientWorld, entity, itemEntityId) -> TransfurTotemItem.itemPropertyFunc(entity));
-            ItemProperties.register(SIGNAL_CATCHER.get(), ResourceLocation.parse("changed_addon:signal_catcher_dot_value"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) DotValueOfViewProcedure.execute(entity, itemStackToRender));
-            ItemProperties.register(SIGNAL_CATCHER.get(), ResourceLocation.parse("changed_addon:signal_catcher_cord_set"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) IsSignalCatcherCordsSetProcedure.execute(itemStackToRender));
-            ItemProperties.register(HAND_SCANNER.get(), ResourceLocation.parse("changed_addon:transfur_lock"), (itemStackToRender, clientWorld, entity, itemEntityId) -> {
-                if (entity instanceof Player player && ProcessTransfur.isPlayerTransfurred(player)) {
-                    return 1f;
-                } else if (entity instanceof ChangedEntity changedEntity) {
+            ItemProperties.register(LAETHIN.get(), ChangedAddonMod.resourceLoc("laethin_type"), (itemStackToRender, clientWorld, entity, itemEntityId) -> LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
+            ItemProperties.register(LAETHIN_SYRINGE.get(), ChangedAddonMod.resourceLoc("laethin_syringe_type"),
+                    (itemStackToRender, clientWorld, entity, itemEntityId) -> LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
+            ItemProperties.register(TRANSFUR_TOTEM.get(), ChangedAddonMod.resourceLoc("transfur_totem_glowtick"), (itemStackToRender, clientWorld, entity, itemEntityId) -> TransfurTotemItem.itemPropertyFunc(entity));
+            ItemProperties.register(SIGNAL_CATCHER.get(), ChangedAddonMod.resourceLoc("signal_catcher_dot_value"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) DotValueOfViewProcedure.execute(entity, itemStackToRender));
+            ItemProperties.register(SIGNAL_CATCHER.get(), ChangedAddonMod.resourceLoc("signal_catcher_cord_set"), (stack, level, entity, itemEntityId) -> {
+                CompoundTag tag = stack.getTag();
+                return tag != null && tag.contains("x") && tag.contains("y") && tag.contains("z") ? 1 : 0;
+            });
+            ItemProperties.register(HAND_SCANNER.get(), ChangedAddonMod.resourceLoc("transfur_lock"), (itemStackToRender, clientWorld, entity, itemEntityId) -> {
+                if ((entity instanceof Player player && ProcessTransfur.isPlayerTransfurred(player))
+                        || entity instanceof ChangedEntity) {
                     return 1f;
                 }
                 return 0f;

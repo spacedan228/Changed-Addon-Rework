@@ -11,41 +11,35 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record GeneratorGuiButtonMessage(int buttonId, int x, int y, int z) {
+public record GeneratorGuiButtonMessage(int buttonId, BlockPos pos) {
 
     public GeneratorGuiButtonMessage(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
+        this(buf.readVarInt(), new BlockPos(buf.readVarInt(), buf.readVarInt(), buf.readVarInt()));
     }
 
     public static void buffer(GeneratorGuiButtonMessage message, FriendlyByteBuf buf) {
         buf.writeVarInt(message.buttonId);
-        buf.writeVarInt(message.x);
-        buf.writeVarInt(message.y);
-        buf.writeVarInt(message.z);
+        buf.writeVarInt(message.pos.getX());
+        buf.writeVarInt(message.pos.getY());
+        buf.writeVarInt(message.pos.getZ());
     }
 
     public static void handler(GeneratorGuiButtonMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> {
-            Player entity = context.getSender();
-            int x = message.x;
-            int y = message.y;
-            int z = message.z;
-            handleButtonAction(entity, message.buttonId, x, y, z);
-        });
+        context.enqueueWork(() ->
+                handleButtonAction(context.getSender(), message.buttonId, message.pos));
         context.setPacketHandled(true);
     }
 
-    public static void handleButtonAction(Player player, int buttonID, int x, int y, int z) {
+    public static void handleButtonAction(Player player, int buttonID, BlockPos pos) {
         if (player == null) return;
         Level level = player.level;
         // security measure to prevent arbitrary chunk generation
-        if (!level.hasChunkAt(new BlockPos(x, y, z))) return;
+        if (!level.hasChunkAt(pos)) return;
 
         if (buttonID == 0) {
             if (level.isClientSide) return;
 
-            BlockPos pos = new BlockPos(x, y, z);
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (blockEntity == null) return;
 

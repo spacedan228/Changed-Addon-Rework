@@ -90,19 +90,9 @@ import java.util.function.Predicate;
 public class PrototypeEntity extends AbstractCanTameChangedEntity implements InventoryCarrier, MenuProvider, CustomPatReaction, IDynamicPawColor, ItemHandlerHolder {
     // Constants
     public static final int MAX_HARVEST_TIMES = 32;
+
     // Fields
     private final SimpleContainer inventory = new SimpleContainer(9);
-    private final MenuProvider menuProvider = new MenuProvider() {
-        @Override
-        public @NotNull Component getDisplayName() {
-            return PrototypeEntity.this.getDisplayName();
-        }
-
-        @Override
-        public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
-            return PrototypeEntity.this.createMenu(i, inventory, player);
-        }
-    };
     private int harvestsTimes = 0;
     private DepositType depositType = DepositType.BOTH;
     @Nullable
@@ -169,22 +159,23 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public void WhenPattedReaction(Player patter, InteractionHand hand) {
         CustomPatReaction.super.WhenPattedReaction(patter, hand);
-        if (!patter.level.isClientSide()) {
-            if (!this.isTame()) {
-                this.tame(patter);
-            } else {
-                InteractionResult interactionresult = super.mobInteract(patter, hand);
-                if ((!interactionresult.consumesAction() || this.isBaby()) && this.isOwnedBy(patter)) {
-                    boolean shouldFollow = !this.isFollowingOwner();
-                    this.setFollowOwner(shouldFollow);
+        if(patter.level.isClientSide) return;
 
-                    patter.displayClientMessage(new TranslatableComponent(shouldFollow ? "text.changed.tamed.follow" : "text.changed.tamed.wander", this.getDisplayName()), false);
-                    this.jumping = false;
-                    this.navigation.stop();
-                    this.setTarget(null);
-                }
-            }
+        if (!isTame()) {
+            tame(patter);
+            return;
         }
+
+        InteractionResult interactionresult = super.mobInteract(patter, hand);
+        if((interactionresult.consumesAction() && !isBaby()) || !isOwnedBy(patter)) return;
+
+        boolean shouldFollow = !isFollowingOwner();
+        setFollowOwner(shouldFollow);
+
+        patter.displayClientMessage(new TranslatableComponent(shouldFollow ? "text.changed.tamed.follow" : "text.changed.tamed.wander", getDisplayName()), false);
+        jumping = false;
+        navigation.stop();
+        setTarget(null);
     }
 
     @Override
@@ -282,7 +273,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
             player.displayClientMessage(new TranslatableComponent("entity.changed_addon.prototype.deposit_type.switch", depositType.getFormatedName()), true);
         } else {
             if (!getLevel().isClientSide) {
-                NetworkHooks.openGui((ServerPlayer) player, getMenuProvider(), buf -> buf.writeVarInt(getId()));
+                NetworkHooks.openGui((ServerPlayer) player, this, buf -> buf.writeVarInt(getId()));
             }
         }
 
@@ -408,10 +399,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player player) {
         return new PrototypeMenu(id, playerInventory, this);
-    }
-
-    public MenuProvider getMenuProvider() {
-        return menuProvider;
     }
 
     // Inventory management

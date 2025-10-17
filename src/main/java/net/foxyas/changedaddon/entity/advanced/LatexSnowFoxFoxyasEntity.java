@@ -28,15 +28,15 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.network.NetworkHooks;
@@ -48,12 +48,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static net.foxyas.changedaddon.util.CustomMerchantUtil.*;
+
 public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInventory {
 
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> buyOffers = List.of(
             (entity) ->
-                    new CustomMerchantOffer(Ingredient.of(new ItemStack(ChangedItems.ORANGE.get(), 3)),
-                            Ingredient.of(new ItemStack(Items.GLASS_BOTTLE)), new ItemStack(ChangedAddonItems.ORANGE_JUICE.get()), 16)
+                    new CustomMerchantOffer(withCount(ChangedItems.ORANGE, 3),
+                            single(Items.GLASS_BOTTLE), defStack(ChangedAddonItems.ORANGE_JUICE), 16)
     );
 
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> sellOffers = List.of(

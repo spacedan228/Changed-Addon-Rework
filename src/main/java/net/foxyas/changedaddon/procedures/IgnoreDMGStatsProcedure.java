@@ -17,17 +17,21 @@ public class IgnoreDMGStatsProcedure {
         Entity entity = event.getEntity();
         if(!(entity instanceof Player player)) return;
 
-        DamageSource damagesource = event.getSource();
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (instance != null) {
-            if (instance.getFormId().toString().startsWith("changed_addon:form_experiment009")) {
-                if ((damagesource).getMsgId().equals(DamageSource.LIGHTNING_BOLT.getMsgId())) {
-                    event.setCanceled(true);
-                }
-            } else if (instance.getFormId().toString().startsWith("changed_addon:form_experiment_10")) {
-                if ((damagesource).getMsgId().equals(DamageSource.WITHER.getMsgId())) {
-                    event.setCanceled(true);
-                }
+        if(instance == null) return;
+
+        DamageSource damagesource = event.getSource();
+        String id = instance.getFormId().toString();
+        if (id.startsWith("changed_addon:form_experiment009")) {
+            if (damagesource.getMsgId().equals(DamageSource.LIGHTNING_BOLT.getMsgId())) {
+                event.setCanceled(true);
+            }
+            return;
+        }
+
+        if (id.startsWith("changed_addon:form_experiment_10")) {
+            if (damagesource.getMsgId().equals(DamageSource.WITHER.getMsgId())) {
+                event.setCanceled(true);
             }
         }
     }

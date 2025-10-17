@@ -20,18 +20,13 @@ public class PlayerLavaSwimHandler {
         if (event.phase != TickEvent.Phase.END) return;
 
         Player player = event.player;
-        if (player.getLevel().isClientSide) return;
-        if (player instanceof ServerPlayer serverPlayer) {
-            boolean isInLava = player.isEyeInFluid(FluidTags.LAVA);
-            boolean hasFireResist = player.hasEffect(MobEffects.FIRE_RESISTANCE);
-            TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (transfurVariantInstance != null && ChangedAddonTransfurVariants.isAquatic(transfurVariantInstance)) {
-                if (isInLava && hasFireResist) {
-                    ChangedAddonCriteriaTriggers.LAVA_SWIMMING_TRIGGER.trigger(serverPlayer);
-                }
-            }
+        if (player.getLevel().isClientSide || !(player instanceof ServerPlayer serverPlayer)) return;
 
+        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+        if(instance == null || !ChangedAddonTransfurVariants.isAquatic(instance)) return;
+
+        if (player.isEyeInFluid(FluidTags.LAVA) && player.hasEffect(MobEffects.FIRE_RESISTANCE)) {
+            ChangedAddonCriteriaTriggers.LAVA_SWIMMING_TRIGGER.trigger(serverPlayer);
         }
-
     }
 }

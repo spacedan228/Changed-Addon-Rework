@@ -55,6 +55,10 @@ public final class CustomMerchantUtil {
         return NBTIngredient.of(new ItemStack(Items.EMERALD, count));
     }
 
+    public static Ingredient single(ItemLike item){
+        return Ingredient.of(item);
+    }
+
     public static Ingredient single(RegistryObject<? extends ItemLike> item){
         return Ingredient.of(item.get());
     }

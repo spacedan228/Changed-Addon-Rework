@@ -1,25 +1,32 @@
 package net.foxyas.changedaddon.item;
 
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class SprayItem extends Item {
 
@@ -69,5 +76,27 @@ public class SprayItem extends Item {
         level.playSound(null, player, ChangedAddonSoundEvents.SPRAY_SOUND, SoundSource.PLAYERS, 1, 1);
 
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag pIsAdvanced) {
+        tooltip.add(new TextComponent(stack.getMaxDamage() - stack.getDamageValue() + "/" + stack.getMaxDamage() + " Uses"));
+    }
+
+    @Mod.EventBusSubscriber
+    public static class OnBreak {
+
+        @SubscribeEvent
+        public static void onBreak(PlayerDestroyItemEvent event){
+            Player player = event.getPlayer();
+            if (player == null) return;
+
+            ItemStack itemstack = event.getOriginal();
+            if (itemstack.is(ChangedAddonItems.LITIX_CAMONIA_SPRAY.get())
+                    || itemstack.is(ChangedAddonItems.WHITE_LATEX_SPRAY.get())
+                    || itemstack.is(ChangedAddonItems.DARK_LATEX_SPRAY.get())) {
+                ItemHandlerHelper.giveItemToPlayer(player, new ItemStack(ChangedAddonItems.EMPTY_SPRAY.get()));
+            }
+        }
     }
 }

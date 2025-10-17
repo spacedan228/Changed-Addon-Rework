@@ -40,73 +40,73 @@ public class MusicPlayerProcedure {
         List<AbstractLuminarcticLeopard> LumiEntities = level.getEntitiesOfClass(AbstractLuminarcticLeopard.class, AABB.ofSize(player.position(), 64, 64, 64), e -> true);
         List<Experiment009BossEntity> ketExp9Entities = level.getEntitiesOfClass(Experiment009BossEntity.class, AABB.ofSize(player.position(), 64, 64, 64), e -> true);
 
+        if(!level.isClientSide || !ChangedAddonClientConfiguration.MUSIC_PLAYER.get()) return;
+
+        Minecraft minecraft = Minecraft.getInstance();
+        MusicManager musicManager = minecraft.getMusicManager();
+        SoundManager soundManager = minecraft.getSoundManager();
+
+        // Eventos de som
+        SoundEvent exp009Music = ForgeRegistries.SOUND_EVENTS.getValue(ChangedAddonMod.resourceLoc("music.boss.exp9"));
+        SoundEvent exp10Music = ForgeRegistries.SOUND_EVENTS.getValue(ChangedAddonMod.resourceLoc("experiment10_theme"));
+        SoundEvent LumiMusic = ForgeRegistries.SOUND_EVENTS.getValue(ChangedAddonMod.resourceLoc("music.boss.luminarctic_leopard"));
+
+        // Instâncias de música
+        Music exp10ThemeMusicInstance = new Music(Objects.requireNonNull(exp10Music), 0, 0, true);
+        Music exp009Phase2ThemeMusicInstance = new Music(Objects.requireNonNull(exp009Music), 0, 0, true);
+        Music LumiThemeMusicInstance = new Music(Objects.requireNonNull(LumiMusic), 0, 0, true);
+
         // Verificações de proximidade
         boolean exp10Close = !exp10Entities.isEmpty();
         boolean LumiClose = !LumiEntities.isEmpty();
         boolean ketExp9Close = !ketExp9Entities.isEmpty();
 
-        if (level.isClientSide() && ChangedAddonClientConfiguration.MUSIC_PLAYER.get()) {
-            Minecraft minecraft = Minecraft.getInstance();
-            MusicManager musicManager = minecraft.getMusicManager();
-            SoundManager soundManager = minecraft.getSoundManager();
-
-            // Eventos de som
-            SoundEvent exp009Music = ForgeRegistries.SOUND_EVENTS.getValue(ChangedAddonMod.resourceLoc("music.boss.exp9"));
-            SoundEvent exp10Music = ForgeRegistries.SOUND_EVENTS.getValue(ChangedAddonMod.resourceLoc("experiment10_theme"));
-            SoundEvent LumiMusic = ForgeRegistries.SOUND_EVENTS.getValue(ChangedAddonMod.resourceLoc("music.boss.luminarctic_leopard"));
-
-            // Instâncias de música
-            Music exp10ThemeMusicInstance = new Music(Objects.requireNonNull(exp10Music), 0, 0, true);
-            Music exp009Phase2ThemeMusicInstance = new Music(Objects.requireNonNull(exp009Music), 0, 0, true);
-            Music LumiThemeMusicInstance = new Music(Objects.requireNonNull(LumiMusic), 0, 0, true);
-
-            // Verificar se músicas estão tocando
-            boolean isExp10ThemePlaying = musicManager.isPlayingMusic(exp10ThemeMusicInstance);
-            boolean isExp009Phase2ThemePlaying = musicManager.isPlayingMusic(exp009Phase2ThemeMusicInstance);
-            boolean isLumiThemePlaying = musicManager.isPlayingMusic(LumiThemeMusicInstance);
+        // Verificar se músicas estão tocando
+        boolean isExp10ThemePlaying = musicManager.isPlayingMusic(exp10ThemeMusicInstance);
+        boolean isExp009Phase2ThemePlaying = musicManager.isPlayingMusic(exp009Phase2ThemeMusicInstance);
+        boolean isLumiThemePlaying = musicManager.isPlayingMusic(LumiThemeMusicInstance);
 
 
-            if ((ketExp9Close)) {
-                if (!isExp009Phase2ThemePlaying) {
-                    if (!exp10Close && !LumiClose) {
-                        musicManager.startPlaying(exp009Phase2ThemeMusicInstance);
-                    }
+        if ((ketExp9Close)) {
+            if (!isExp009Phase2ThemePlaying) {
+                if (!exp10Close && !LumiClose) {
+                    musicManager.startPlaying(exp009Phase2ThemeMusicInstance);
                 }
+            }
 
-                if (ketExp9Entities.stream().anyMatch(Experiment009BossEntity::isDeadOrDying)) {
-                    soundManager.stop(ChangedAddonMod.resourceLoc("music.boss.exp9"), SoundSource.MUSIC);
-                }
-            } else if (isExp009Phase2ThemePlaying) {
+            if (ketExp9Entities.stream().anyMatch(Experiment009BossEntity::isDeadOrDying)) {
                 soundManager.stop(ChangedAddonMod.resourceLoc("music.boss.exp9"), SoundSource.MUSIC);
             }
+        } else if (isExp009Phase2ThemePlaying) {
+            soundManager.stop(ChangedAddonMod.resourceLoc("music.boss.exp9"), SoundSource.MUSIC);
+        }
 
-            if (exp10Close) {
-                if (!isExp10ThemePlaying) {
-                    if (!ketExp9Close) {
-                        musicManager.startPlaying(exp10ThemeMusicInstance);
-                    }
+        if (exp10Close) {
+            if (!isExp10ThemePlaying) {
+                if (!ketExp9Close) {
+                    musicManager.startPlaying(exp10ThemeMusicInstance);
                 }
+            }
 
-                if (exp10Entities.stream().anyMatch(LivingEntity::isDeadOrDying)) {
-                    soundManager.stop(ChangedAddonMod.resourceLoc("experiment10_theme"), SoundSource.MUSIC);
-                }
-            } else if (isExp10ThemePlaying) {
+            if (exp10Entities.stream().anyMatch(LivingEntity::isDeadOrDying)) {
                 soundManager.stop(ChangedAddonMod.resourceLoc("experiment10_theme"), SoundSource.MUSIC);
             }
+        } else if (isExp10ThemePlaying) {
+            soundManager.stop(ChangedAddonMod.resourceLoc("experiment10_theme"), SoundSource.MUSIC);
+        }
 
-            if (LumiClose && LumiEntities.stream().anyMatch((e) -> e.getTarget() == player)) {
-                if (!isLumiThemePlaying) {
-                    if (!exp10Close && !ketExp9Close) {
-                        musicManager.startPlaying(LumiThemeMusicInstance);
-                    }
+        if (LumiClose && LumiEntities.stream().anyMatch((e) -> e.getTarget() == player)) {
+            if (!isLumiThemePlaying) {
+                if (!exp10Close && !ketExp9Close) {
+                    musicManager.startPlaying(LumiThemeMusicInstance);
                 }
+            }
 
-                if (LumiEntities.stream().anyMatch(LivingEntity::isDeadOrDying)) {
-                    soundManager.stop(ChangedAddonMod.resourceLoc("music.boss.luminarctic_leopard"), SoundSource.MUSIC);
-                }
-            } else if (isLumiThemePlaying) {
+            if (LumiEntities.stream().anyMatch(LivingEntity::isDeadOrDying)) {
                 soundManager.stop(ChangedAddonMod.resourceLoc("music.boss.luminarctic_leopard"), SoundSource.MUSIC);
             }
+        } else if (isLumiThemePlaying) {
+            soundManager.stop(ChangedAddonMod.resourceLoc("music.boss.luminarctic_leopard"), SoundSource.MUSIC);
         }
     }
 }

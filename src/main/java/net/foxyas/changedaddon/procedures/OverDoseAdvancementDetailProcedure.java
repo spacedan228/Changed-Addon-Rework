@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.procedures;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -19,8 +19,8 @@ public class OverDoseAdvancementDetailProcedure {
         Advancement advancement = event.getAdvancement();
 
         if (advancement == null) return;
-        if (level.getServer() != null && level.getServer().getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:over_dose")).equals(advancement)) {
-            player.hurt((new DamageSource("OverDose")), 10);
+        if (level.getServer() != null && level.getServer().getAdvancements().getAdvancement(ChangedAddonMod.resourceLoc("over_dose")).equals(advancement)) {
+            player.hurt(new DamageSource("OverDose"), 10);
         }
     }
 }

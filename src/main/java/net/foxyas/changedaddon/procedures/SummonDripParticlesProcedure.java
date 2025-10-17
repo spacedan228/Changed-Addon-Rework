@@ -22,12 +22,12 @@ public class SummonDripParticlesProcedure {
 
         ChangedEntity fakeEntity = variant.getChangedEntity();
         Color3 color3 = fakeEntity.getTransfurColor(TransfurCause.DEFAULT);
-        if (player.getLevel() instanceof ServerLevel serverLevel) {
-            if (!variant.getParent().getEntityType().is(ChangedTags.EntityTypes.LATEX)) {
-                serverLevel.sendParticles(ChangedParticles.gas(color3), entity.getX(), entity.getY() + 1, entity.getZ(), 40, 0.2, 0.5, 0.2, 0);
-            } else {
-                serverLevel.sendParticles(ChangedParticles.drippingLatex(color3), entity.getX(), entity.getY() + 1, entity.getZ(), 40, 0.2, 0.5, 0.2, 0);
-            }
+        if(!(player.level instanceof ServerLevel serverLevel)) return;
+
+        if (!variant.getParent().getEntityType().is(ChangedTags.EntityTypes.LATEX)) {
+            serverLevel.sendParticles(ChangedParticles.gas(color3), entity.getX(), entity.getY() + 1, entity.getZ(), 40, 0.2, 0.5, 0.2, 0);
+        } else {
+            serverLevel.sendParticles(ChangedParticles.drippingLatex(color3), entity.getX(), entity.getY() + 1, entity.getZ(), 40, 0.2, 0.5, 0.2, 0);
         }
     }
 }

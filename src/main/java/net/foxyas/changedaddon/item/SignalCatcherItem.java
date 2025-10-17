@@ -3,12 +3,13 @@ package net.foxyas.changedaddon.item;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.*;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -18,9 +19,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +69,31 @@ public class SignalCatcherItem extends Item {
         if (!itemstack.getOrCreateTag().getBoolean("set")) {
             if (entity instanceof Player player && !player.level.isClientSide())
                 player.displayClientMessage(new TextComponent("§o§bNo Location Found §l[Not Close Enough]"), false);
+        }
+    }
+
+    @Override
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag pIsAdvanced) {
+        @Nullable Player player = Util.make(() -> Minecraft.getInstance().player);
+        if (player == null) return;
+
+        CompoundTag tag = stack.getOrCreateTag();
+        double x = tag.getDouble("x");
+        double y = tag.getDouble("y");
+        double z = tag.getDouble("z");
+        double deltaX = x - player.getX();
+        double deltaY = y - player.getY();
+        double deltaZ = z - player.getZ();
+        double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
+        if (!Screen.hasShiftDown()) {
+            tooltip.add(new TextComponent("Hold §6<Shift>§r for Info"));
+        } else {
+            tooltip.add(new TextComponent("Hold §b<Right Click>§r to scan a 32 block area"));
+            tooltip.add(new TextComponent("Hold §c<Shift + Right Click>§r to perform a Super scan and scan 120 block area"));
+        }
+        tooltip.add(new TextComponent(("§oCoords §l" + x + " " + y + " " + z)));
+        if (stack.getOrCreateTag().getBoolean("set")) {
+            tooltip.add(new TextComponent(("§oDistance §l" + Math.round(distance))));
         }
     }
 

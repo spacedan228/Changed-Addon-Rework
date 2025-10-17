@@ -23,31 +23,26 @@ public class SolventHitTickProcedure {
         DamageSource source = event.getSource();
 
         // Verifica se o atacante possui o encantamento Solvent
-        if (source == ChangedAddonDamageSources.SOLVENT || (source.getMsgId().equals("latex_solvent") || source.getMsgId().startsWith("latex_solvent"))) {
-            Level level = target.level;
+        if(source != ChangedAddonDamageSources.SOLVENT && !source.getMsgId().equals(ChangedAddonDamageSources.SOLVENT.getMsgId())) return;
 
-            // Toca som de extinção de fogo
-            if (target instanceof Player player) {
-                if (level instanceof ServerLevel serverLevel) {
-                    serverLevel.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.5f, 0);
-                } else {
-                    level.playLocalSound(player.getX(), player.getY(), player.getZ(), SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.5f, 0, true);
-                }
-            } else {
-                target.playSound(SoundEvents.FIRE_EXTINGUISH, 0.5f, 0);
-            }
-
-            // Emite partículas
-            if (level instanceof ServerLevel serverLevel) {
-                serverLevel.sendParticles(
-                        (SimpleParticleType) ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(),
-                        target.getX(),
-                        target.getY() + 1,
-                        target.getZ(),
-                        10,
-                        0.2, 0.3, 0.2, 0.1
-                );
-            }
+        Level level = target.level;
+        // Toca som de extinção de fogo
+        if (target instanceof Player player) {
+            level.playSound(null, player, SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.5f, 0);
+        } else {
+            target.playSound(SoundEvents.FIRE_EXTINGUISH, 0.5f, 0);
         }
+
+        // Emite partículas
+        if(!(level instanceof ServerLevel serverLevel)) return;
+
+        serverLevel.sendParticles(
+                (SimpleParticleType) ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(),
+                target.getX(),
+                target.getY() + 1,
+                target.getZ(),
+                10,
+                0.2, 0.3, 0.2, 0.1
+        );
     }
 }
