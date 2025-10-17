@@ -3,13 +3,19 @@ package net.foxyas.changedaddon.entity.advanced;
 import net.foxyas.changedaddon.entity.defaults.AbstractTraderChangedEntityWithInventory;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.item.clothes.DyeableClothingItem;
+import net.foxyas.changedaddon.item.clothes.DyeableShorts;
 import net.foxyas.changedaddon.menu.CustomMerchantOffer;
 import net.foxyas.changedaddon.menu.CustomMerchantOffers;
 import net.foxyas.changedaddon.menu.FoxyasMenu;
 import net.foxyas.changedaddon.util.CustomMerchantUtil;
+import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedItems;
+import net.ltxprogrammer.changed.item.LabCoatItem;
+import net.minecraft.Util;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +24,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -31,11 +38,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInventory {
@@ -54,7 +64,7 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     }
 
     public LatexSnowFoxFoxyasEntity(EntityType<LatexSnowFoxFoxyasEntity> type, Level world) {
-        super(type, world, 27);
+        super(type, world, 36);
         xpReward = 10;
         setNoAi(false);
         setPersistenceRequired();
@@ -157,6 +167,54 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
             return new FoxyasMenu(containerId, inv, this);
         }
         return super.createMenu(containerId, inv, player);
+    }
+
+    @Override
+    public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
+        SpawnGroupData spawnGroupData = super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
+        this.setDefaultClothing();
+        return spawnGroupData;
+    }
+
+    public void setDefaultClothing() {
+        Optional<AccessorySlots> accessorySlots = AccessorySlots.getForEntity(this);
+        accessorySlots.ifPresent((slots) -> {
+            if (slots.hasSlot(ChangedAccessorySlots.FULL_BODY.get())) {
+                Optional<ItemStack> item = slots.getItem(ChangedAccessorySlots.FULL_BODY.get());
+                if (item.isEmpty() || item.get().isEmpty()) {
+                    ItemStack stack = new ItemStack(ChangedItems.LAB_COAT.get());
+                    if (stack.getItem() instanceof LabCoatItem accessoryItem) {
+                        accessoryItem.setClothingState(stack, accessoryItem.getClothingState(stack).setValue(LabCoatItem.CLOSED, random.nextBoolean()));
+                        boolean flag = accessoryItem.allowedInSlot(stack, this, ChangedAccessorySlots.FULL_BODY.get());
+                        if (flag) slots.setItem(ChangedAccessorySlots.FULL_BODY.get(), stack);
+                    }
+                }
+            }
+            if (slots.hasSlot(ChangedAccessorySlots.BODY.get())) {
+                Optional<ItemStack> item = slots.getItem(ChangedAccessorySlots.BODY.get());
+                if (item.isEmpty() || item.get().isEmpty()) {
+                    ItemStack stack = new ItemStack(ChangedAddonItems.DYEABLE_TSHIRT.get());
+                    if (stack.getItem() instanceof DyeableClothingItem dyeableShorts) {
+                        boolean flag = dyeableShorts.allowedInSlot(stack, this, ChangedAccessorySlots.BODY.get());
+                        DyeableShorts.DefaultColors color = Util.getRandom(DyeableShorts.DefaultColors.values(), this.random);
+                        dyeableShorts.setColor(stack, color.getColorToInt());
+                        if (flag) slots.setItem(ChangedAccessorySlots.BODY.get(), stack);
+                    }
+                }
+            }
+            if (slots.hasSlot(ChangedAccessorySlots.LEGS.get())) {
+                Optional<ItemStack> item = slots.getItem(ChangedAccessorySlots.LEGS.get());
+                if (item.isEmpty() || item.get().isEmpty()) {
+                    ItemStack stack = new ItemStack(ChangedAddonItems.DYEABLE_SHORTS.get());
+                    if (stack.getItem() instanceof DyeableShorts dyeableShorts) {
+                        boolean flag = dyeableShorts.allowedInSlot(stack, this, ChangedAccessorySlots.LEGS.get());
+                        DyeableShorts.DefaultColors color = Util.getRandom(DyeableShorts.DefaultColors.values(), this.random);
+                        dyeableShorts.setColor(stack, color.getColorToInt());
+                        if (flag) slots.setItem(ChangedAccessorySlots.LEGS.get(), stack);
+                    }
+                }
+            }
+        });
     }
 
     @Override
