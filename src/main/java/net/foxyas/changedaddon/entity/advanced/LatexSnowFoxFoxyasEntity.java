@@ -42,8 +42,8 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
 
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> buyOffers = List.of(
             (entity) ->
-                    new CustomMerchantOffer(Ingredient.of(new ItemStack(ChangedItems.ORANGE.get(), 3),
-                            new ItemStack(Items.GLASS_BOTTLE)), new ItemStack(ChangedAddonItems.ORANGE_JUICE.get()), 16)
+                    new CustomMerchantOffer(Ingredient.of(new ItemStack(ChangedItems.ORANGE.get(), 3)),
+                            Ingredient.of(new ItemStack(Items.GLASS_BOTTLE)), new ItemStack(ChangedAddonItems.ORANGE_JUICE.get()), 16)
     );
 
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> sellOffers = List.of(
