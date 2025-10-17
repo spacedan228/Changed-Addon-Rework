@@ -17,7 +17,7 @@ public class FoxyasMenu extends AbstractEntityMenu<LatexSnowFoxFoxyasEntity> {
         //Inventory
         for(int i = 0; i < 3; i++){ //VERTICAL
             for(int ii = 0; ii < 9; ii++){ //HORIZONTAL
-                addSlot(new SlotItemHandler(combinedInv, 6 + i * 3 + ii, 107 + ii * 18, 18 + i * 18));
+                addSlot(new SlotItemHandler(combinedInv, 6 + i * 9 + ii, 107 + ii * 18, 18 + i * 18));
             }
         }
     }
