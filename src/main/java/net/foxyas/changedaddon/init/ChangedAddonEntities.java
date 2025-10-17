@@ -5,7 +5,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.*;
 import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.mobs.ErikEntity;
-import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.LatexSnowFoxFoxyasEntity;
 import net.foxyas.changedaddon.entity.partials.SnowLeopardPartialEntity;
 import net.foxyas.changedaddon.entity.projectile.LuminarCrystalSpearEntity;
 import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
@@ -666,7 +666,6 @@ public class ChangedAddonEntities {
                     .sized(0.7f, 1.93f), LatexKaylaSharkEntity::getLoot
     );
 
-    // --- MONSTER/MOB ENTITIES ---
     public static final RegistryObject<EntityType<PrototypeEntity>> PROTOTYPE = registerOrganicChangedEntity("prototype",
             EntityType.Builder.<PrototypeEntity>of(PrototypeEntity::new, ChangedMobCategories.CHANGED)
                     .setShouldReceiveVelocityUpdates(true)
@@ -675,14 +674,15 @@ public class ChangedAddonEntities {
                     .setCustomClientFactory(PrototypeEntity::new)
                     .sized(0.7f, 1.93f));
 
-    public static final RegistryObject<EntityType<FoxyasEntity>> FOXYAS = registerMob("foxyas",
-            EntityType.Builder.<FoxyasEntity>of(FoxyasEntity::new, MobCategory.MONSTER)
+    public static final RegistryObject<EntityType<LatexSnowFoxFoxyasEntity>> LATEX_SNOW_FOX_FOXYAS = registerChangedEntity("foxyas",
+            EntityType.Builder.<LatexSnowFoxFoxyasEntity>of(LatexSnowFoxFoxyasEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(64)
                     .setUpdateInterval(3)
-                    .setCustomClientFactory(FoxyasEntity::new)
-                    .sized(0.7f, 1.9f));
+                    .setCustomClientFactory(LatexSnowFoxFoxyasEntity::new)
+                    .sized(0.7f, 1.93f));
 
+    // --- MONSTER/MOB ENTITIES ---
     public static final RegistryObject<EntityType<ErikEntity>> ERIK = registerMob("erik",
             EntityType.Builder.<ErikEntity>of(ErikEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
@@ -694,7 +694,7 @@ public class ChangedAddonEntities {
     @SubscribeEvent
     public static void registerAttributes(@NotNull EntityAttributeCreationEvent event) {
         event.put(PROTOTYPE.get(), PrototypeEntity.createAttributes().build());
-        event.put(FOXYAS.get(), FoxyasEntity.createAttributes().build());
+        event.put(LATEX_SNOW_FOX_FOXYAS.get(), LatexSnowFoxFoxyasEntity.createAttributes().build());
         event.put(LATEX_SNOW_FOX_MALE.get(), LatexSnowFoxMaleEntity.createAttributes().build());
         event.put(LATEX_SNOW_FOX_FEMALE.get(), LatexSnowFoxFemaleEntity.createAttributes().build());
         event.put(DAZED_LATEX.get(), DazedLatexEntity.createAttributes().build());
@@ -756,7 +756,7 @@ public class ChangedAddonEntities {
     public static void init(@NotNull FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
             PrototypeEntity.init();
-            FoxyasEntity.init();
+            LatexSnowFoxFoxyasEntity.init();
             LatexSnowFoxMaleEntity.init();
             LatexSnowFoxFemaleEntity.init();
             DazedLatexEntity.init();

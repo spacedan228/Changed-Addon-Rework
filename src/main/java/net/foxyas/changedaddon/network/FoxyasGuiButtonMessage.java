@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.network;
 
-import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.LatexSnowFoxFoxyasEntity;
 import net.foxyas.changedaddon.world.inventory.FoxyasGui2Menu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -33,19 +33,19 @@ public record FoxyasGuiButtonMessage(int buttonId, int entityId) {
         context.enqueueWork(() -> {
             Player player = context.getSender();
             Entity entity = player.level.getEntity(message.entityId);
-            if(!(entity instanceof FoxyasEntity foxyas)) return;
+            if(!(entity instanceof LatexSnowFoxFoxyasEntity foxyas)) return;
             handleButtonAction(player, message.buttonId, foxyas);
         });
         context.setPacketHandled(true);
     }
 
-    static void handleButtonAction(Player player, int buttonID, FoxyasEntity entity) {
+    static void handleButtonAction(Player player, int buttonID, LatexSnowFoxFoxyasEntity entity) {
         if(player.level.isClientSide) return;
         // security measure to prevent arbitrary chunk generation
         if (!entity.isAddedToWorld()) return;
 
         if (buttonID == 0) {
-            entity.doTrade();
+            //entity.doTrade();
             return;
         }
 

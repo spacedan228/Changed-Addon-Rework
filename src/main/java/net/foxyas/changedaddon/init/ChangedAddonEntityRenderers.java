@@ -74,7 +74,7 @@ public class ChangedAddonEntityRenderers {
 
         // --- MONSTER/MOB ENTITIES ---
         event.registerEntityRenderer(ChangedAddonEntities.PROTOTYPE.get(), PrototypeRenderer::new);
-        event.registerEntityRenderer(ChangedAddonEntities.FOXYAS.get(), FoxyasRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), FoxyasRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.ERIK.get(), ErikRenderer::new);
 
         // --- PROJECTILE ENTITIES ---

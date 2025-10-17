@@ -38,9 +38,9 @@ public abstract class AbstractTraderChangedEntity extends ChangedEntity implemen
     private static final List<Function<AbstractTraderChangedEntity, CustomMerchantOffer>> sellOffers = List.of(
     );
 
-    private Player tradingPlayer;
-    private CustomMerchantOffers offers = new CustomMerchantOffers();
-    private long nextOfferReset;
+    protected Player tradingPlayer;
+    protected CustomMerchantOffers offers = new CustomMerchantOffers();
+    protected long nextOfferReset;
 
     protected AbstractTraderChangedEntity(EntityType<? extends AbstractTraderChangedEntity> type, Level level) {
         super(type, level);

@@ -325,6 +325,19 @@ public class ChangedAddonTransfurVariants {
 
 
     // ============================================================ OCs ============================================================ //
+    public static final RegistryObject<TransfurVariant<LatexSnowFoxFoxyasEntity>> FOXYAS = register("form_foxyas",
+            TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS)
+                    .addAbility(ChangedAddonAbilities.CLAWS)
+                    .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                    .nightVision()
+                    .transfurMode(TransfurMode.NONE)
+                    .jumpStrength(1.25f)
+                    .scares(List.of(Creeper.class))
+                    .reducedFall()
+                    .stepSize(0.7F)
+                    .sound(ChangedSounds.SOUND3.getLocation()));
+
     public static final RegistryObject<TransfurVariant<Protogen0senia0Entity>> PROTOGEN_0SENIA0 = register("form_protogen_0senia0",
             TransfurVariant.Builder.of(ChangedAddonEntities.PROTOGEN_0SENIA0)
                     .addAbility(ChangedAddonAbilities.CLAWS)

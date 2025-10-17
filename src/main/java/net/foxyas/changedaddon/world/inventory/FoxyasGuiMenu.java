@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.world.inventory;
 
-import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.LatexSnowFoxFoxyasEntity;
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.network.FriendlyByteBuf;
@@ -20,13 +20,13 @@ public class FoxyasGuiMenu extends AbstractContainerMenu {
 
     public final Player player;
     final Level level;
-    public final FoxyasEntity entity;
+    public final LatexSnowFoxFoxyasEntity entity;
 
     public FoxyasGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-        this(id, inv, (FoxyasEntity) inv.player.level.getEntity(extraData.readVarInt()));
+        this(id, inv, (LatexSnowFoxFoxyasEntity) inv.player.level.getEntity(extraData.readVarInt()));
     }
 
-    public FoxyasGuiMenu(int id, Inventory inv, FoxyasEntity entity){
+    public FoxyasGuiMenu(int id, Inventory inv, LatexSnowFoxFoxyasEntity entity){
         super(ChangedAddonMenus.FOXYAS_GUI, id);
         player = inv.player;
         level = player.level;

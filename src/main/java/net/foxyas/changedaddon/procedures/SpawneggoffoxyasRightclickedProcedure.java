@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.procedures;
 
-import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.LatexSnowFoxFoxyasEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
@@ -20,49 +20,49 @@ public class SpawneggoffoxyasRightclickedProcedure {
             return;
         if (direction == Direction.UP) {
             if (world instanceof ServerLevel _level) {
-                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new LatexSnowFoxFoxyasEntity(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 0.5), (y + 1), (z + 0.5), world.getRandom().nextFloat() * 360F, 0);
                 entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.DOWN) {
             if (world instanceof ServerLevel _level) {
-                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new LatexSnowFoxFoxyasEntity(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 0.5), (y - 1.5), (z + 0.5), world.getRandom().nextFloat() * 360F, 0);
                 entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.NORTH) {
             if (world instanceof ServerLevel _level) {
-                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new LatexSnowFoxFoxyasEntity(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 0.5), y, (z - 0.5), world.getRandom().nextFloat() * 360F, 0);
                 entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.SOUTH) {
             if (world instanceof ServerLevel _level) {
-                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new LatexSnowFoxFoxyasEntity(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 0.5), y, (z + 1.5), world.getRandom().nextFloat() * 360F, 0);
                 entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.WEST) {
             if (world instanceof ServerLevel _level) {
-                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new LatexSnowFoxFoxyasEntity(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x - 0.5), y, (z + 0.5), world.getRandom().nextFloat() * 360F, 0);
                 entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else if (direction == Direction.EAST) {
             if (world instanceof ServerLevel _level) {
-                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new LatexSnowFoxFoxyasEntity(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), _level);
                 entityToSpawn.moveTo((x + 1.5), y, (z + 0.5), world.getRandom().nextFloat() * 360F, 0);
                 entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);
             }
         } else {
             if (world instanceof ServerLevel _level) {
-                Mob entityToSpawn = new FoxyasEntity(ChangedAddonEntities.FOXYAS.get(), _level);
+                Mob entityToSpawn = new LatexSnowFoxFoxyasEntity(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), _level);
                 entityToSpawn.moveTo((entity.getX()), (entity.getY()), (entity.getZ()), world.getRandom().nextFloat() * 360F, 0);
                 entityToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                 world.addFreshEntity(entityToSpawn);

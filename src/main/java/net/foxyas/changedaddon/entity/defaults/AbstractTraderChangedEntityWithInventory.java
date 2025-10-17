@@ -21,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ExperienceOrb;
@@ -47,12 +48,6 @@ import java.util.function.Predicate;
 
 public abstract class AbstractTraderChangedEntityWithInventory extends AbstractTraderChangedEntity implements InventoryCarrier, MenuProvider, ItemHandlerHolder {
 
-    private static final List<Function<AbstractTraderChangedEntityWithInventory, CustomMerchantOffer>> buyOffers = List.of(
-    );
-
-    private static final List<Function<AbstractTraderChangedEntityWithInventory, CustomMerchantOffer>> sellOffers = List.of(
-    );
-
     // Fields
     private final SimpleContainer inventory;
     private final MenuProvider menuProvider = new MenuProvider() {
@@ -62,7 +57,7 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
         }
 
         @Override
-        public @Nullable AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
+        public @NotNull AbstractContainerMenu createMenu(int i, @NotNull Inventory inventory, @NotNull Player player) {
             return AbstractTraderChangedEntityWithInventory.this.createMenu(i, inventory, player);
         }
     };
@@ -76,10 +71,6 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
         calculateNextReset();
     }
 
-    protected CustomMerchantOffers makeOffers() {
-        return CustomMerchantUtil.makeOffers(this, buyOffers, 2, sellOffers, 2);
-    }
-
     @Override
     public IItemHandler getItemHandler() {
         return combinedInv;
@@ -88,6 +79,34 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
     @Override
     protected float getEquipmentDropChance(@NotNull EquipmentSlot pSlot) {
         return super.getEquipmentDropChance(pSlot);
+    }
+
+    @Override
+    protected void dropAllDeathLoot(@NotNull DamageSource pDamageSource) {
+        super.dropAllDeathLoot(pDamageSource);
+
+        if(!inventory.isEmpty()) dropInventoryItems();
+    }
+
+    @Override
+    protected void dropEquipment() {
+        super.dropEquipment();
+
+        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
+            if (equipmentSlot.getType() == EquipmentSlot.Type.HAND) {
+                ItemStack stack = this.getItemBySlot(equipmentSlot);
+                if (!stack.isEmpty()) {
+                    ItemEntity itemEntity = new ItemEntity(level, this.getX(), this.getY() + 0.5, this.getZ(), stack.copy());
+                    itemEntity.setDeltaMovement(
+                            (level.random.nextDouble() - 0.5) * 0.2,
+                            0.2,
+                            (level.random.nextDouble() - 0.5) * 0.2
+                    );
+                    level.addFreshEntity(itemEntity);
+                    this.setItemSlot(equipmentSlot, ItemStack.EMPTY);
+                }
+            }
+        }
     }
 
     @Override

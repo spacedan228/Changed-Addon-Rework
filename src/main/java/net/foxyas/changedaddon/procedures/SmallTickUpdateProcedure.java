@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.procedures;
 
-import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.LatexSnowFoxFoxyasEntity;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -41,7 +41,7 @@ public class SmallTickUpdateProcedure {
         List<Entity> entityList = world.getEntitiesOfClass(Entity.class, new AABB(center, center).inflate(2), e -> true)
                 .stream().sorted(Comparator.comparingDouble(e -> e.distanceToSqr(center))).toList();
         for (Entity entityIterator : entityList) {
-            if (entityIterator != entity && entityIterator instanceof FoxyasEntity) {
+            if (entityIterator != entity && entityIterator instanceof LatexSnowFoxFoxyasEntity) {
                 if (entity instanceof ServerPlayer _player) {
                     Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:gooey_friend"));
                     AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(Objects.requireNonNull(_adv));

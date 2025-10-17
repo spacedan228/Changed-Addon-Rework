@@ -2,9 +2,14 @@ package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.entity.defaults.AbstractTraderChangedEntityWithInventory;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.menu.CustomMerchantOffer;
+import net.foxyas.changedaddon.menu.CustomMerchantOffers;
 import net.foxyas.changedaddon.menu.FoxyasMenu;
+import net.foxyas.changedaddon.util.CustomMerchantUtil;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.nbt.CompoundTag;
@@ -22,22 +27,41 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 
-public class FoxyasEntity extends AbstractTraderChangedEntityWithInventory {
+import java.util.List;
+import java.util.function.Function;
 
-    public FoxyasEntity(PlayMessages.SpawnEntity packet, Level world) {
-        this(ChangedAddonEntities.FOXYAS.get(), world);
+public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInventory {
+
+    private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> buyOffers = List.of(
+            (entity) ->
+                    new CustomMerchantOffer(Ingredient.of(new ItemStack(ChangedItems.ORANGE.get(), 3),
+                            new ItemStack(Items.GLASS_BOTTLE)), new ItemStack(ChangedAddonItems.ORANGE_JUICE.get()), 16)
+    );
+
+    private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> sellOffers = List.of(
+    );
+
+    public LatexSnowFoxFoxyasEntity(PlayMessages.SpawnEntity packet, Level world) {
+        this(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), world);
     }
 
-    public FoxyasEntity(EntityType<FoxyasEntity> type, Level world) {
+    public LatexSnowFoxFoxyasEntity(EntityType<LatexSnowFoxFoxyasEntity> type, Level world) {
         super(type, world, 27);
         xpReward = 10;
         setNoAi(false);
         setPersistenceRequired();
+    }
+
+    protected CustomMerchantOffers makeOffers() {
+        return CustomMerchantUtil.makeOffers(this, buyOffers, 2, sellOffers, 2);
     }
 
     public static void init() {
@@ -117,8 +141,14 @@ public class FoxyasEntity extends AbstractTraderChangedEntityWithInventory {
     }
 
     @Override
-    public @NotNull InteractionResult mobInteract(@NotNull Player sourceentity, @NotNull InteractionHand hand) {
-        return super.mobInteract(sourceentity, hand);
+    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
+        if (getOffers().isEmpty() || player.isShiftKeyDown()) {
+            if(level.isClientSide) return InteractionResult.SUCCESS;
+            NetworkHooks.openGui((ServerPlayer) player, getMenuProvider(), buf -> buf.writeVarInt(getId()));
+            return InteractionResult.CONSUME;
+        }
+
+        return super.mobInteract(player, hand);
     }
 
     @Override

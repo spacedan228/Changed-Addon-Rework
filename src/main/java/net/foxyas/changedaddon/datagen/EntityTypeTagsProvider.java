@@ -88,7 +88,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 EntityType.RABBIT,
                 EntityType.WOLF,
                 EntityType.FOX,
-                FOXYAS.get(),
+                LATEX_SNOW_FOX_FOXYAS.get(),
                 PROTOTYPE.get(),
                 ERIK.get());
 

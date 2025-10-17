@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.entity.advanced.FoxyasEntity;
+import net.foxyas.changedaddon.entity.advanced.LatexSnowFoxFoxyasEntity;
 import net.foxyas.changedaddon.network.FoxyasGuiButtonMessage;
 import net.foxyas.changedaddon.world.inventory.FoxyasGuiMenu;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -22,7 +22,7 @@ public class FoxyasguiScreen extends AbstractContainerScreen<FoxyasGuiMenu> {
     private static final ResourceLocation texture = ResourceLocation.parse("changed_addon:textures/screens/foxyasgui.png");
 
     private final Player player;
-    private final FoxyasEntity entity;
+    private final LatexSnowFoxFoxyasEntity entity;
     Button button_trade;
     Button button_i_want_be_transfured_by_you;
 
