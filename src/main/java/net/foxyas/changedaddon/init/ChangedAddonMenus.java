@@ -16,18 +16,17 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonMenus {//TODO use actual registry?
-    private static final List<MenuType<?>> REGISTRY = new ArrayList<>();
+    private static final List<MenuType<?>> LIST = new ArrayList<>();
 
     private static <T extends AbstractContainerMenu> MenuType<T> register(String registryname, IContainerFactory<T> containerFactory) {
         MenuType<T> menuType = new MenuType<>(containerFactory);
         menuType.setRegistryName(registryname);
-        REGISTRY.add(menuType);
+        LIST.add(menuType);
         return menuType;
     }
 
@@ -35,11 +34,12 @@ public class ChangedAddonMenus {//TODO use actual registry?
 
     @SubscribeEvent
     public static void registerContainers(RegistryEvent.Register<MenuType<?>> event) {
-        event.getRegistry().registerAll(REGISTRY.toArray(new MenuType[0]));
+        event.getRegistry().registerAll(LIST.toArray(new MenuType[0]));
     }
 
-    public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, ChangedAddonMod.MODID);
-    public static final RegistryObject<MenuType<FoxyasMenu>> TEST_FOXYAS_MENU = CONTAINERS.register("test_foxyas_menu", () -> IForgeMenuType.create(new FoxyasMenu.Factory()));
+    public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, ChangedAddonMod.MODID);
+
+    public static final RegistryObject<MenuType<FoxyasMenu>> TEST_FOXYAS_MENU = REGISTRY.register("test_foxyas_menu", () -> IForgeMenuType.create(FoxyasMenu::new));
 
 
     public static final MenuType<GeneratorGuiMenu> GENERATORGUI = register("generator_gui", GeneratorGuiMenu::new);
@@ -50,9 +50,6 @@ public class ChangedAddonMenus {//TODO use actual registry?
     public static final MenuType<InformantGuiMenu> INFORMANT_GUI = register("informant_gui", InformantGuiMenu::new);
 
     public static final MenuType<PrototypeMenu> PROTOTYPE_MENU = register("prototype_menu", PrototypeMenu::new);
-    //public static final MenuType<FoxyasMenu> FOXYAS_MENU = register("foxyas_menu", FoxyasMenu::new);
 
     public static final MenuType<CustomMerchantMenu> MERCHANT_MENU = register("merchant_menu", CustomMerchantMenu::new);
-
-
 }

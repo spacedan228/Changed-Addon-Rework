@@ -26,17 +26,21 @@ public class AbstractEntityMenu <E extends LivingEntity & ItemHandlerHolder> ext
     protected final E entity;
 
     protected AbstractEntityMenu(@Nullable MenuType<?> menuType, int containerId, Inventory playerInv, E entity) {
+        this(menuType, containerId, playerInv, entity, 0, 0);
+    }
+
+    protected AbstractEntityMenu(@Nullable MenuType<?> menuType, int containerId, Inventory playerInv, E entity, int xOffset, int yOffset) {
         super(menuType, containerId);
         this.entity = entity;
         IItemHandler combinedInv = entity.getItemHandler();
 
-        createPlayerHotbar(playerInv);
-        createPlayerInventory(playerInv);
+        createPlayerHotbar(playerInv, xOffset, yOffset);
+        createPlayerInventory(playerInv, xOffset, yOffset);
 
         //Armor
         for(int i = 0; i < 4; i++) {
             final EquipmentSlot equipmentslot = SLOT_IDS[i];
-            addSlot(new SlotItemHandler(combinedInv, i, 8, 8 + (3 - i) * 18) {
+            addSlot(new SlotItemHandler(combinedInv, i, 8 + xOffset, 8 + (3 - i) * 18 + yOffset) {
 
                 public int getMaxStackSize() {
                     return 1;
@@ -58,8 +62,8 @@ public class AbstractEntityMenu <E extends LivingEntity & ItemHandlerHolder> ext
         }
 
         //Hands
-        addSlot(new SlotItemHandler(combinedInv, 4, 77, 8 + 2 * 18));//Main
-        addSlot(new SlotItemHandler(combinedInv, 5, 77, 8 + 3 * 18));//Off
+        addSlot(new SlotItemHandler(combinedInv, 4, 77 + xOffset, 8 + 2 * 18 + yOffset));//Main
+        addSlot(new SlotItemHandler(combinedInv, 5, 77 + xOffset, 8 + 3 * 18 + yOffset));//Off
     }
 
     public E getEntity(){

@@ -17,15 +17,23 @@ public abstract class AbstractMenu extends AbstractContainerMenu {
     }
 
     protected void createPlayerHotbar(Inventory playerInv) {
+        createPlayerHotbar(playerInv, 0, 0);
+    }
+
+    protected void createPlayerHotbar(Inventory playerInv, int xOffset, int yOffset) {
         for (int column = 0; column < 9; column++) {
-            addSlot(new Slot(playerInv, column, 8 + (column * 18), 142));
+            addSlot(new Slot(playerInv, column, 8 + (column * 18) + xOffset, 142 + yOffset));
         }
     }
 
     protected void createPlayerInventory(Inventory playerInv) {
+        createPlayerInventory(playerInv, 0, 0);
+    }
+
+    protected void createPlayerInventory(Inventory playerInv, int xOffset, int yOffset) {
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
-                addSlot(new Slot(playerInv, 9 + column + (row * 9), 8 + (column * 18), 84 + (row * 18)));
+                addSlot(new Slot(playerInv, 9 + column + (row * 9), 8 + (column * 18) + xOffset, 84 + (row * 18) + yOffset));
             }
         }
     }

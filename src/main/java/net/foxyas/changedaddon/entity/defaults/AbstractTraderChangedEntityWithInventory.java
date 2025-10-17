@@ -1,22 +1,11 @@
 package net.foxyas.changedaddon.entity.defaults;
 
-import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
-import net.foxyas.changedaddon.entity.api.CustomMerchant;
 import net.foxyas.changedaddon.entity.api.ItemHandlerHolder;
 import net.foxyas.changedaddon.entity.goals.generic.LookAndFollowTradingPlayerSink;
 import net.foxyas.changedaddon.entity.goals.generic.TradeWithPlayerGoal;
-import net.foxyas.changedaddon.menu.CustomMerchantMenu;
-import net.foxyas.changedaddon.menu.CustomMerchantOffer;
-import net.foxyas.changedaddon.menu.CustomMerchantOffers;
-import net.foxyas.changedaddon.menu.PrototypeMenu;
-import net.foxyas.changedaddon.util.CustomMerchantUtil;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -24,7 +13,6 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Inventory;
@@ -37,13 +25,9 @@ import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 import net.minecraftforge.items.wrapper.InvWrapper;
-import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public abstract class AbstractTraderChangedEntityWithInventory extends AbstractTraderChangedEntity implements InventoryCarrier, MenuProvider, ItemHandlerHolder {
