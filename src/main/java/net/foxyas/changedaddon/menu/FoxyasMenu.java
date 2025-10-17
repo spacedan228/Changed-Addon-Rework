@@ -50,14 +50,12 @@ public class FoxyasMenu extends AbstractEntityMenu<LatexSnowFoxFoxyasEntity> {
     }
 
     public void offsetAllSlots(int offsetX, int offsetY) {
-        // Cria uma nova lista para guardar os slots copiados
-        NonNullList<Slot> newSlots = NonNullList.withSize(this.slots.size(), null);
+        NonNullList<Slot> newSlots = NonNullList.withSize(this.slots.size(), this.slots.get(0));
 
         for (int i = 0; i < this.slots.size(); i++) {
             Slot slot = this.slots.get(i);
 
-            // Cria uma cópia do slot original, mas movido
-            Slot copiedSlot = new Slot(slot.container, slot.index, slot.x + offsetX, slot.y + offsetY) {
+            Slot copiedSlot = new Slot(slot.container, i, slot.x + offsetX, slot.y + offsetY) {
 
                 @Override
                 public int getSlotIndex() {
@@ -104,7 +102,6 @@ public class FoxyasMenu extends AbstractEntityMenu<LatexSnowFoxFoxyasEntity> {
             newSlots.set(i, copiedSlot);
         }
 
-        // Substitui a lista antiga pela nova
         this.slots.clear();
         this.slots.addAll(newSlots);
     }
