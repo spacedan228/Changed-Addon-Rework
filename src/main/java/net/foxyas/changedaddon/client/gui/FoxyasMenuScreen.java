@@ -37,8 +37,8 @@ public class FoxyasMenuScreen extends AbstractContainerScreen<FoxyasMenu> {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-        int i = this.leftPos - 64;
-        int j = this.topPos;
+        int i = this.leftPos + FoxyasMenu.OffsetX;
+        int j = this.topPos + FoxyasMenu.OffsetY;
         this.blit(poseStack, i, j, 0, 0, this.imageWidth, this.imageHeight);
         InventoryScreen.renderEntityInInventory(i + 51, j + 75, 30, (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, menu.getEntity());
 
