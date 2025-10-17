@@ -40,24 +40,24 @@ public class GotoTargetChestGoal extends Goal {
         return false;
     }
 
-    @Override
+    /*@Override
     public void start() {
-        //this.entity.setTargetChestPos(targetChestPos);
+        entity.setTargetChestPos(targetChestPos);
         if (entity.getTargetChestPos() != null) {
-            //entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSounds.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
-//            if (entity.getLevel().isClientSide) {
-//                entity.getLevel().addParticle(
-//                        ChangedParticles.emote(entity, Emote.IDEA),
-//                        entity.getX(),
-//                        entity.getY() + (double) entity.getDimensions(entity.getPose()).height + 0.65,
-//                        entity.getZ(),
-//                        0.0f,
-//                        0.0f,
-//                        0.0f
-//                );
-//            }
+            entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSounds.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
+            if (entity.getLevel().isClientSide) {
+                entity.getLevel().addParticle(
+                        ChangedParticles.emote(entity, Emote.IDEA),
+                        entity.getX(),
+                        entity.getY() + (double) entity.getDimensions(entity.getPose()).height + 0.65,
+                        entity.getZ(),
+                        0.0f,
+                        0.0f,
+                        0.0f
+                );
+            }
         }
-    }
+    }*/
 
     @Override
     public void tick() {
@@ -79,7 +79,7 @@ public class GotoTargetChestGoal extends Goal {
 
         if (targetChestPos != null && !entity.blockPosition().closerThan(targetChestPos, 2.0)) {
             navigation.moveTo(targetChestPos.getX() + 0.5, targetChestPos.getY(), targetChestPos.getZ() + 0.5, 0.25f);
-            this.entity.getLookControl().setLookAt(
+            entity.getLookControl().setLookAt(
                     targetChestPos.getX(), targetChestPos.getY(), targetChestPos.getZ(),
                     30.0F, // yaw change speed (degrees per tick)
                     30.0F  // pitch change speed
@@ -97,10 +97,8 @@ public class GotoTargetChestGoal extends Goal {
 
     @Override
     public void stop() {
-        super.stop();
         navigation.stop();
         ticks = 0;
-        //this.entity.setTargetChestPos(targetChestPos);
     }
 
     // Helper Method

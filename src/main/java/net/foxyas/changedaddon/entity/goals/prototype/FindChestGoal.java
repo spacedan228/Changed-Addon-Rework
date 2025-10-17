@@ -43,11 +43,10 @@ public class FindChestGoal extends Goal {
 
     @Override
     public void start() {
-        //this.entity.setTargetChestPos(targetChestPos);
         if (targetChestPos == null) return;
 
         BlockPos targetChestPosOld = entity.getTargetChestPos();
-        this.entity.setTargetChestPos(targetChestPos);
+        entity.setTargetChestPos(targetChestPos);
         if (targetChestPosOld != entity.getTargetChestPos()) {
             entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
         }
@@ -68,7 +67,7 @@ public class FindChestGoal extends Goal {
 
     @Override
     public void tick() {//Maybe check whether the chest is still there?
-        this.entity.setTargetChestPos(targetChestPos);
+        entity.setTargetChestPos(targetChestPos);
         // Just keep moving towards chest
         if (targetChestPos != null && !entity.blockPosition().closerThan(targetChestPos, 2.0)) {
             navigation.moveTo(targetChestPos.getX() + 0.5, targetChestPos.getY(), targetChestPos.getZ() + 0.5, 0.25f);
@@ -83,9 +82,7 @@ public class FindChestGoal extends Goal {
 
     @Override
     public void stop() {
-        this.entity.setTargetChestPos(targetChestPos);
+        entity.setTargetChestPos(targetChestPos);
         targetChestPos = null;
-        super.stop();
-        //this.entity.setTargetChestPos(targetChestPos);
     }
 }

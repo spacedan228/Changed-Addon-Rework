@@ -3,15 +3,14 @@ package net.foxyas.changedaddon.entity.advanced.handle;
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.util.PlayerUtil;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.client.particle.FireworkParticles;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -31,11 +30,9 @@ public class VoidTransformationHandler {
         if (player.isSpectator()) return;
 
         // Check if player is under world min height (void)
-        if (player.getY() < player.getLevel().getMinBuildHeight() - 6f) {
-            if (isVoidForm(player)) {
-                triggerVoidTransformation(player);
-            }
-        }
+        if(player.getY() > player.getLevel().getMinBuildHeight() - 6f) return;
+
+        triggerVoidTransformation(player);
     }
 
     /**
@@ -46,12 +43,11 @@ public class VoidTransformationHandler {
         if (player.isSpectator()) return;
 
         // Only cancel OUT_OF_WORLD damage
-        if (event.getSource() == DamageSource.OUT_OF_WORLD) {
-            if (isVoidForm(player)) {
-                event.setCanceled(true);
-                triggerVoidTransformation(player);
-            }
-        }
+        if(event.getSource() != DamageSource.OUT_OF_WORLD) return;
+
+        triggerVoidTransformation(player);
+
+        if(isVoidForm(player)) event.setCanceled(true);
     }
 
     /**
@@ -63,55 +59,58 @@ public class VoidTransformationHandler {
      */
     public static void triggerVoidTransformation(Player player) {
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (instance != null && instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
-            if (!luminaraFlowerBeastEntity.isAwakened()) {
-                luminaraFlowerBeastEntity.setAwakened(true);
-                if (player.getInventory().contains(new ItemStack(Items.DRAGON_BREATH))) {
-                    luminaraFlowerBeastEntity.setHyperAwakened(true);
-                }
+        if(instance == null || !(instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity)
+                || luminaraFlowerBeastEntity.isAwakened()) return;
 
-                // Cancel fall/void velocity and launch player upwards
-                player.setDeltaMovement(0, 8.0, 0); // strong vertical push
-                player.hurtMarked = true; // force velocity update to client
-                DelayedTask.schedule(20, () -> {
-                    // Enable flight
-                    player.getAbilities().mayfly = true;
-                    player.getAbilities().flying = true; // auto fly
-                    player.onUpdateAbilities();
-                });
+        luminaraFlowerBeastEntity.setAwakened(true);
+        if (player.getInventory().contains(new ItemStack(Items.DRAGON_BREATH))) {
+            luminaraFlowerBeastEntity.setHyperAwakened(true);
+        }
 
-                // Grant effects
-                player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20 * 10, 1));
-                player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 10, 2));
+        // Cancel fall/void velocity and launch player upwards
+        player.setDeltaMovement(0, 8.0, 0); // strong vertical push
+        player.hurtMarked = true; // force velocity update to client
+        DelayedTask.schedule(20, () -> {
+            // Enable flight
+            player.getAbilities().mayfly = true;
+            player.getAbilities().flying = true; // auto fly
+            player.onUpdateAbilities();
+        });
 
-                // Explosion-like particles
-                if (player.getLevel() instanceof ServerLevel serverLevel) {
-                    double radius = 1f;
-                    double angle = 25f;
-                    for (double theta = 0; theta < 360; theta += angle) {
-                        double angleTheta = Math.toRadians(theta);
-                        for (double phi = 0; phi <= 180; phi += angle) {
-                            double anglePhi = Math.toRadians(phi);
-                            double x = player.getX() + Math.sin(anglePhi) * Math.cos(angleTheta) * radius;
-                            double y = player.getY() + Math.cos(anglePhi) * radius;
-                            double z = player.getZ() + Math.sin(anglePhi) * Math.sin(angleTheta) * radius;
-                            Vec3 pos = new Vec3(x, y, z);
-                            ParticlesUtil.sendParticlesWithMotion(
-                                    player.getLevel(),
-                                    ParticleTypes.REVERSE_PORTAL,
-                                    pos,
-                                    Vec3.ZERO,
-                                    pos.subtract(player.position()),
-                                    1, 1
-                            );
-                        }
-                    }
+        // Grant effects
+        player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20 * 10, 1));
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 10, 2));
 
-                    serverLevel.playSound(null, player.blockPosition(),
-                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
-                }
+        // Explosion-like particles
+        if(!(player.level instanceof ServerLevel serverLevel)) return;
+
+        float radius = 1f;
+        float angle = 22.5f;
+        float angleTheta, anglePhi;
+        double x, y, z;
+        Vec3 pos;
+        for (float theta = 0; theta < 360; theta += angle) {
+            angleTheta = theta * Mth.DEG_TO_RAD;
+
+            for (float phi = 0; phi <= 180; phi += angle) {
+                anglePhi = phi * Mth.DEG_TO_RAD;
+                x = player.getX() + Mth.sin(anglePhi) * Mth.cos(angleTheta) * radius;
+                y = player.getY() + Mth.cos(anglePhi) * radius;
+                z = player.getZ() + Mth.sin(anglePhi) * Mth.sin(angleTheta) * radius;
+                pos = new Vec3(x, y, z);
+                ParticlesUtil.sendParticlesWithMotion(
+                        player.getLevel(),
+                        ParticleTypes.REVERSE_PORTAL,
+                        pos,
+                        Vec3.ZERO,
+                        pos.subtract(player.position()),
+                        1, 1
+                );
             }
         }
+
+        serverLevel.playSound(null, player.blockPosition(),
+                SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
     }
 
     /**
