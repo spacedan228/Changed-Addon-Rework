@@ -33,7 +33,7 @@ public class TransfurSoundsGuiMenu extends AbstractContainerMenu implements Supp
     private final BlockEntity boundBlockEntity = null;
 
     public TransfurSoundsGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-        super(ChangedAddonMenus.TRANSFUR_SOUNDS_GUI, id);
+        super(ChangedAddonMenus.TRANSFUR_SOUNDS_GUI.get(), id);
         this.entity = inv.player;
         this.world = inv.player.level;
         this.internal = new ItemStackHandler(0);

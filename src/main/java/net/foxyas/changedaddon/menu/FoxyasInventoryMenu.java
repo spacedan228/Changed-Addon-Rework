@@ -7,12 +7,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class FoxyasMenu extends AbstractEntityMenu<LatexSnowFoxFoxyasEntity> {
+public class FoxyasInventoryMenu extends AbstractEntityMenu<LatexSnowFoxFoxyasEntity> {
 
     public static final int X_OFFSET = -64, Y_OFFSET = 0;
 
-    public FoxyasMenu(int containerId, Inventory playerInv, LatexSnowFoxFoxyasEntity foxyas) {
-        super(ChangedAddonMenus.TEST_FOXYAS_MENU.get(), containerId, playerInv, foxyas, X_OFFSET, Y_OFFSET);
+    public FoxyasInventoryMenu(int containerId, Inventory playerInv, LatexSnowFoxFoxyasEntity foxyas) {
+        super(ChangedAddonMenus.FOXYAS_INVENTORY_MENU.get(), containerId, playerInv, foxyas, X_OFFSET, Y_OFFSET);
         IItemHandler combinedInv = foxyas.getItemHandler();
 
         //Inventory
@@ -32,7 +32,7 @@ public class FoxyasMenu extends AbstractEntityMenu<LatexSnowFoxFoxyasEntity> {
         }
     }
 
-    public FoxyasMenu(int containerId, Inventory playerInv, FriendlyByteBuf data) {
+    public FoxyasInventoryMenu(int containerId, Inventory playerInv, FriendlyByteBuf data) {
         this(containerId, playerInv, (LatexSnowFoxFoxyasEntity) playerInv.player.level.getEntity(data.readVarInt()));
     }
 }

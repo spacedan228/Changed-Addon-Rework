@@ -10,7 +10,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public class PrototypeMenu extends AbstractEntityMenu<PrototypeEntity> {
 
     public PrototypeMenu(int containerId, Inventory playerInv, PrototypeEntity prototype) {
-        super(ChangedAddonMenus.PROTOTYPE_MENU, containerId, playerInv, prototype);
+        super(ChangedAddonMenus.PROTOTYPE_MENU.get(), containerId, playerInv, prototype);
         IItemHandler combinedInv = prototype.getItemHandler();
 
         //Inventory

@@ -1,20 +1,21 @@
 package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.entity.defaults.AbstractTraderChangedEntityWithInventory;
+import net.foxyas.changedaddon.entity.goals.generic.LookAndFollowTradingPlayerSink;
+import net.foxyas.changedaddon.entity.goals.generic.TradeWithPlayerGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.clothes.DyeableClothingItem;
 import net.foxyas.changedaddon.item.clothes.DyeableShorts;
 import net.foxyas.changedaddon.menu.CustomMerchantOffer;
 import net.foxyas.changedaddon.menu.CustomMerchantOffers;
-import net.foxyas.changedaddon.menu.FoxyasMenu;
+import net.foxyas.changedaddon.menu.FoxyasInventoryMenu;
 import net.foxyas.changedaddon.util.CustomMerchantUtil;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedItems;
-import net.ltxprogrammer.changed.item.LabCoatItem;
 import net.minecraft.Util;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
@@ -106,6 +107,8 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(1, new TradeWithPlayerGoal(this));
+        this.goalSelector.addGoal(3, new LookAndFollowTradingPlayerSink(this, 0.25f));
     }
 
     @Override
@@ -163,9 +166,14 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     }
 
     @Override
+    public float getScale() {
+        return super.getScale() * 0.75f;
+    }
+
+    @Override
     public @NotNull AbstractContainerMenu createMenu(int containerId, @NotNull Inventory inv, @NotNull Player player) {
         if (player.isShiftKeyDown()) {
-            return new FoxyasMenu(containerId, inv, this);
+            return new FoxyasInventoryMenu(containerId, inv, this);
         }
         return super.createMenu(containerId, inv, player);
     }
@@ -180,17 +188,6 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     public void setDefaultClothing() {
         Optional<AccessorySlots> accessorySlots = AccessorySlots.getForEntity(this);
         accessorySlots.ifPresent((slots) -> {
-            if (slots.hasSlot(ChangedAccessorySlots.FULL_BODY.get())) {
-                Optional<ItemStack> item = slots.getItem(ChangedAccessorySlots.FULL_BODY.get());
-                if (item.isEmpty() || item.get().isEmpty()) {
-                    ItemStack stack = new ItemStack(ChangedItems.LAB_COAT.get());
-                    if (stack.getItem() instanceof LabCoatItem accessoryItem) {
-                        accessoryItem.setClothingState(stack, accessoryItem.getClothingState(stack).setValue(LabCoatItem.CLOSED, random.nextBoolean()));
-                        boolean flag = accessoryItem.allowedInSlot(stack, this, ChangedAccessorySlots.FULL_BODY.get());
-                        if (flag) slots.setItem(ChangedAccessorySlots.FULL_BODY.get(), stack);
-                    }
-                }
-            }
             if (slots.hasSlot(ChangedAccessorySlots.BODY.get())) {
                 Optional<ItemStack> item = slots.getItem(ChangedAccessorySlots.BODY.get());
                 if (item.isEmpty() || item.get().isEmpty()) {

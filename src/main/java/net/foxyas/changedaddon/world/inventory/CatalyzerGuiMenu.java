@@ -26,7 +26,7 @@ public class CatalyzerGuiMenu extends AbstractContainerMenu {
     private final BlockEntity boundBlockEntity;
 
     public CatalyzerGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-        super(ChangedAddonMenus.CATALYZER_GUI, id);
+        super(ChangedAddonMenus.CATALYZER_GUI.get(), id);
         this.entity = inv.player;
         this.world = inv.player.level;
         IItemHandler internal = new ItemStackHandler(2);

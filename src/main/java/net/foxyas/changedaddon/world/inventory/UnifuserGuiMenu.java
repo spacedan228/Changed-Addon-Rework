@@ -32,7 +32,7 @@ public class UnifuserGuiMenu extends AbstractContainerMenu {
     }
 
     public UnifuserGuiMenu(int id, Inventory inv, BlockPos pos) {
-        super(ChangedAddonMenus.UNIFUSER_GUI, id);
+        super(ChangedAddonMenus.UNIFUSER_GUI.get(), id);
         this.entity = inv.player;
         this.world = inv.player.level;
         IItemHandler internal = new ItemStackHandler(4);

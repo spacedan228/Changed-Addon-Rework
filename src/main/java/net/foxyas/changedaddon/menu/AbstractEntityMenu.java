@@ -63,7 +63,12 @@ public class AbstractEntityMenu <E extends LivingEntity & ItemHandlerHolder> ext
 
         //Hands
         addSlot(new SlotItemHandler(combinedInv, 4, 77 + xOffset, 8 + 2 * 18 + yOffset));//Main
-        addSlot(new SlotItemHandler(combinedInv, 5, 77 + xOffset, 8 + 3 * 18 + yOffset));//Off
+        addSlot(new SlotItemHandler(combinedInv, 5, 77 + xOffset, 8 + 3 * 18 + yOffset) {
+            @Override
+            public @Nullable Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
+                return Pair.of(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+            }
+        });//Off
     }
 
     public E getEntity(){

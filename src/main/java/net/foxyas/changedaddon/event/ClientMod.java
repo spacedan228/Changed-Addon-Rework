@@ -20,17 +20,14 @@ public class ClientMod {
     @SubscribeEvent
     public static void clientLoad(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            MenuScreens.register(ChangedAddonMenus.FOXYAS_GUI, FoxyasguiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.GENERATORGUI, GeneratorguiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.CATALYZER_GUI, CatalyzerGuiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.UNIFUSER_GUI, UnifuserguiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.FOXYAS_GUI_2, FoxyasGui2Screen::new);
-            MenuScreens.register(ChangedAddonMenus.TRANSFUR_SOUNDS_GUI, TransfurSoundsGuiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.INFORMANT_GUI, InformantGuiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.PROTOTYPE_MENU, PrototypeMenuScreen::new);
-            MenuScreens.register(ChangedAddonMenus.MERCHANT_MENU, CustomMerchantScreen::new);
-
-            MenuScreens.register(ChangedAddonMenus.TEST_FOXYAS_MENU.get(), FoxyasMenuScreen::new);
+            MenuScreens.register(ChangedAddonMenus.GENERATORGUI.get(), GeneratorguiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.CATALYZER_GUI.get(), CatalyzerGuiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.UNIFUSER_GUI.get(), UnifuserguiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.TRANSFUR_SOUNDS_GUI.get(), TransfurSoundsGuiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.INFORMANT_MENU.get(), InformantGuiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.PROTOTYPE_MENU.get(), PrototypeMenuScreen::new);
+            MenuScreens.register(ChangedAddonMenus.MERCHANT_MENU.get(), CustomMerchantScreen::new);
+            MenuScreens.register(ChangedAddonMenus.FOXYAS_INVENTORY_MENU.get(), FoxyasInventoryMenuScreen::new);
         });
     }
 

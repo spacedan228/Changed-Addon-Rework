@@ -39,7 +39,7 @@ public class CustomMerchantMenu extends AbstractContainerMenu {
     }
 
     public CustomMerchantMenu(int containerId, Inventory inv, CustomMerchant merchant) {
-        super(ChangedAddonMenus.MERCHANT_MENU, containerId);
+        super(ChangedAddonMenus.MERCHANT_MENU.get(), containerId);
         this.merchant = merchant;
         tradeContainer = new CustomMerchantContainer(merchant);
         addSlot(new Slot(tradeContainer, PAYMENT1_SLOT, 136, 37));

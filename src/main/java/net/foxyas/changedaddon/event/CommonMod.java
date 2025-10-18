@@ -34,12 +34,6 @@ public class CommonMod {
         ChangedAddonMod.addNetworkMessage(ChangedAddonVariables.SyncPacket.class, ChangedAddonVariables.SyncPacket::buffer,
                 ChangedAddonVariables.SyncPacket::new, ChangedAddonVariables.SyncPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(FoxyasGui2ButtonMessage.class, FoxyasGui2ButtonMessage::buffer, FoxyasGui2ButtonMessage::new,
-                FoxyasGui2ButtonMessage::handler);
-
-        ChangedAddonMod.addNetworkMessage(FoxyasGuiButtonMessage.class, FoxyasGuiButtonMessage::buffer, FoxyasGuiButtonMessage::new,
-                FoxyasGuiButtonMessage::handler);
-
         ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonMessage.class, GeneratorGuiButtonMessage::buffer, GeneratorGuiButtonMessage::new,
                 GeneratorGuiButtonMessage::handler);
 

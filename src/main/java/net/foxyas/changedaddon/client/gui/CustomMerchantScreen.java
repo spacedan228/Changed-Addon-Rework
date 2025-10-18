@@ -148,7 +148,7 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
                 poseStack.translate(0.0D, 0.0D, itemRenderer.blitOffset + 200.0F);
                 MultiBufferSource.BufferSource multibuffersource$buffersource = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
                 String str = String.valueOf(offer.getUsesLeft());
-                font.drawInBatch(str, i + 5 + 46 + 19 - 2 - font.width(str), (float)(j1 + 6 + 3), 16777215, true, poseStack.last().pose(), multibuffersource$buffersource, false, 0, 15728880);
+                font.drawInBatch(str, i + 5 + (46 + 5) + 19 - 2 - font.width(str), (float)(j1 + 6 + 3), 16777215, true, poseStack.last().pose(), multibuffersource$buffersource, false, 0, 15728880);
                 multibuffersource$buffersource.endBatch();
 
                 itemRenderer.renderAndDecorateFakeItem(result, i + 5 + 68, j1);

@@ -17,7 +17,7 @@ public class GeneratorGuiMenu extends AbstractContainerMenu {
     public final BlockPos pos;
 
     public GeneratorGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
-        super(ChangedAddonMenus.GENERATORGUI, id);
+        super(ChangedAddonMenus.GENERATORGUI.get(), id);
         this.entity = inv.player;
         this.level = inv.player.level;
         pos = extraData.readBlockPos();

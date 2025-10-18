@@ -3,10 +3,13 @@ package net.foxyas.changedaddon.extension.jeiSuport;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.foxyas.changedaddon.client.gui.FoxyasInventoryMenuScreen;
 import net.foxyas.changedaddon.enchantment.TransfurAspectEnchantment;
+import net.foxyas.changedaddon.extension.jeiSuport.guisHandlers.FoxyasGuiContainerHandler;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
@@ -67,6 +70,19 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
         registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.ADVANCED_CATALYZER.get().asItem()), JeiCatalyzer_Type);
         registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.UNIFUSER.get().asItem()), JeiUnifuser_Type);
         registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.ADVANCED_UNIFUSER.get().asItem()), JeiUnifuser_Type);
+    }
+
+
+    @Override
+    public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
+        ChangedAddonJeiGuiHandler.registerModMenusHandlers(registration);
+    }
+
+
+    public static class ChangedAddonJeiGuiHandler {
+        public static void registerModMenusHandlers(IGuiHandlerRegistration registration) {
+            registration.addGuiContainerHandler(FoxyasInventoryMenuScreen.class, new FoxyasGuiContainerHandler());
+        }
     }
 
     public static class ChangedAddonJeiDescriptionHandler {

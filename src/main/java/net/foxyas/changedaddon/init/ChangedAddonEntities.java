@@ -674,7 +674,7 @@ public class ChangedAddonEntities {
                     .setCustomClientFactory(PrototypeEntity::new)
                     .sized(0.7f, 1.93f));
 
-    public static final RegistryObject<EntityType<LatexSnowFoxFoxyasEntity>> LATEX_SNOW_FOX_FOXYAS = registerChangedEntity("foxyas",
+    public static final RegistryObject<EntityType<LatexSnowFoxFoxyasEntity>> LATEX_SNOW_FOX_FOXYAS = registerChangedEntity("latex_snow_fox_foxyas",
             EntityType.Builder.<LatexSnowFoxFoxyasEntity>of(LatexSnowFoxFoxyasEntity::new, MobCategory.MONSTER)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(64)

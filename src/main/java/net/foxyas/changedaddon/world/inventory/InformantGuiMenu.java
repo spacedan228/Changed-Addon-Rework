@@ -27,7 +27,7 @@ public class InformantGuiMenu extends AbstractContainerMenu {
     }
 
     public InformantGuiMenu(int id, Inventory inv, InformantBlockEntity blockEntity) {
-        super(ChangedAddonMenus.INFORMANT_GUI, id);
+        super(ChangedAddonMenus.INFORMANT_MENU.get(), id);
         player = inv.player;
         level = player.level;
 
