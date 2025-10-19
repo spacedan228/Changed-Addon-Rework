@@ -20,10 +20,7 @@ public class ChangedAddonFacilityPieces {
 
     public static void registerAddonCorridors(FacilityPieceCollectionBuilder builder) {
        builder.register((int) (FacilityPieceCollectionBuilder.WEIGHT_COMMON * 1.5f),
-                        new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facility_hallways/specimen_containment_a"),
-                                LootTables.HIGH_TIER_LAB))
-                .register((int) (FacilityPieceCollectionBuilder.WEIGHT_COMMON * 1.5f),
-                        new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facility_hallways/specimen_containment_b"),
+                        new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facilities/facility_hallways/garden_containment"),
                                 LootTables.HIGH_TIER_LAB));
     }
 
