@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
-import net.foxyas.changedaddon.entity.defaults.AbstractBasicChangedEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;

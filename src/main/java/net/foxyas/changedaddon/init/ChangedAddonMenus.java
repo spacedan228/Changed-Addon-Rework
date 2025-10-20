@@ -15,7 +15,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ChangedAddonMenus {//TODO use actual registry?
+public class ChangedAddonMenus {
 
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> register(String registryname, IContainerFactory<T> containerFactory) {
         return REGISTRY.register(registryname, () -> IForgeMenuType.create(containerFactory));

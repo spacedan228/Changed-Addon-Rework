@@ -328,7 +328,7 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<LatexSnowFoxFoxyasEntity>> FOXYAS = register("form_foxyas",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS)
                     .addAbility(ChangedAddonAbilities.CLAWS)
-                    .addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)
+                    //.addAbility(ChangedAbilities.GRAB_ENTITY_ABILITY)// Already applied in TFVariant.Builder.<init>
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .nightVision()
                     .transfurMode(TransfurMode.NONE)
@@ -355,11 +355,11 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<LatexKaylaSharkEntity>> LATEX_KAYLA_SHARK = register("form_latex_kayla_shark",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_KAYLA_SHARK)
-                    .addAbility((entityType) -> ChangedAbilities.TOGGLE_NIGHT_VISION.get())
-                    .addAbility((entityType) -> ChangedAddonAbilities.CUSTOM_INTERACTION.get())
-                    .addAbility((entityType) -> ChangedAddonAbilities.CLAWS.get())
-                    .addAbility((entityType) -> ChangedAddonAbilities.LEAP.get())
-                    .addAbility((entityType) -> ChangedAbilities.HYPNOSIS.get())
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                    .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
+                    .addAbility(ChangedAddonAbilities.CLAWS)
+                    .addAbility(ChangedAddonAbilities.LEAP)
+                    .addAbility(ChangedAbilities.HYPNOSIS)
                     .jumpStrength(1.35f)
                     .nightVision()
                     .reducedFall()
