@@ -52,8 +52,8 @@ public class ChangedAddonVariables {
         private final LazyOptional<PlayerVariables> instance = LazyOptional.of(() -> playerVariables);
 
         @SubscribeEvent
-        public static void onAttachCapabilities(AttachCapabilitiesEvent<Player> event) {
-            if(event.getObject() instanceof FakePlayer) return;
+        public static void onAttachCapabilities(AttachCapabilitiesEvent<Entity> event) {//For some reason only works with Entity
+            if(!(event.getObject() instanceof Player player) || player instanceof FakePlayer) return;
             event.addCapability(ChangedAddonMod.resourceLoc("player_variables"), new Provider());
         }
 
