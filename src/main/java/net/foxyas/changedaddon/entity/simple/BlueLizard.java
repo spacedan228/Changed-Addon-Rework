@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class BlueLizard extends AbstractBasicChangedEntity implements ExtraConditions.Climb, CustomPatReaction {
-    public BlueLizard(PlayMessages.SpawnEntity packet, Level world) {
+    public BlueLizard(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.BLUE_LIZARD.get(), world);
     }
 
@@ -73,6 +73,11 @@ public class BlueLizard extends AbstractBasicChangedEntity implements ExtraCondi
         super.setAttributes(attributes);
         attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.05f);
         attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(1.1F);
+    }
+
+    @Override
+    public int getTicksRequiredToFreeze() {
+        return 2000;
     }
 
     public TransfurMode getTransfurMode() {
