@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -25,6 +26,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -34,6 +36,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonEntities {
 
+    // ========================================================== Datagen ========================================================== //
     /**
      * Todo: Make this Class Use HashMaps to make it registration more dynamic
      * example -> ATTRIBUTES.put(PROTOTYPE, PrototypeEntity::createAttributes);
@@ -138,9 +141,22 @@ public class ChangedAddonEntities {
         return entityTypes;
     }
 
-    public static List<Supplier<EntityType<?>>> LatexEntities = new ArrayList<>();
-    public static List<Supplier<EntityType<?>>> LatexEntitiesThatCanUseAccessories = new ArrayList<>();
-    public static List<Pair<Supplier<EntityType<?>>, Supplier<LootTable.Builder>>> EntitiesWithLoot = new ArrayList<>();
+    public static final List<Supplier<EntityType<?>>> LatexEntities;
+    public static final List<Supplier<EntityType<?>>> LatexEntitiesThatCanUseAccessories;
+    public static final List<Pair<Supplier<EntityType<?>>, Supplier<LootTable.Builder>>> EntitiesWithLoot;
+
+    static {
+        if(DatagenModLoader.isRunningDataGen()){
+            LatexEntities = new ArrayList<>();
+            LatexEntitiesThatCanUseAccessories = new ArrayList<>();
+            EntitiesWithLoot = new ArrayList<>();
+        } else {
+            LatexEntities = null;
+            LatexEntitiesThatCanUseAccessories = null;
+            EntitiesWithLoot = null;
+        }
+    }
+    // ========================================================== /Datagen ========================================================= //
 
     //Todo: Make this Class a bit less Chaotic
     public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITIES, ChangedAddonMod.MODID);
@@ -155,15 +171,11 @@ public class ChangedAddonEntities {
     }
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, Supplier<LootTable.Builder> lootDataBuilder) {
-        RegistryObject<EntityType<T>> register = registerChangedEntity(registryName, entityTypeBuilder, true, true);
-        EntitiesWithLoot.add(Pair.of(register::get, lootDataBuilder));
-        return register;
+        return registerChangedEntityWithLoot(registryName, entityTypeBuilder, true, true, lootDataBuilder);
     }
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, boolean canUseAccessories, Supplier<LootTable.Builder> lootDataBuilder) {
-        RegistryObject<EntityType<T>> register = registerChangedEntity(registryName, entityTypeBuilder, true, canUseAccessories);
-        EntitiesWithLoot.add(Pair.of(register::get, lootDataBuilder));
-        return register;
+        return registerChangedEntityWithLoot(registryName, entityTypeBuilder, true, canUseAccessories, lootDataBuilder);
     }
 
     /// Non Latex Changed Entity Registers
@@ -176,30 +188,25 @@ public class ChangedAddonEntities {
     }
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerOrganicChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, Supplier<LootTable.Builder> lootDataBuilder) {
-        RegistryObject<EntityType<T>> register = registerChangedEntity(registryName, entityTypeBuilder, false, true);
-        EntitiesWithLoot.add(Pair.of(register::get, lootDataBuilder));
-        return register;
+        return registerChangedEntityWithLoot(registryName, entityTypeBuilder, false, true, lootDataBuilder);
     }
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerOrganicChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, boolean canUseAccessories, Supplier<LootTable.Builder> lootDataBuilder) {
-        RegistryObject<EntityType<T>> register = registerChangedEntity(registryName, entityTypeBuilder, false, canUseAccessories);
-        EntitiesWithLoot.add(Pair.of(register::get, lootDataBuilder));
-        return register;
+        return registerChangedEntityWithLoot(registryName, entityTypeBuilder, false, canUseAccessories, lootDataBuilder);
     }
 
     /// Generic/Manual Changed Entity Registers
     private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntity(String registryName, EntityType.Builder<T> entityTypeBuilder, boolean latex, boolean canUseAccessories) {
-        RegistryObject<EntityType<T>> register = REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
-        if (latex) LatexEntities.add(register::get);
-        if (canUseAccessories) LatexEntitiesThatCanUseAccessories.add(register::get);
-        return register;
+        return registerChangedEntityWithLoot(registryName, entityTypeBuilder, latex, canUseAccessories, null);
     }
 
-    private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, boolean latex, boolean canUseAccessories, Supplier<LootTable.Builder> lootDataBuilder) {
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntityWithLoot(String registryName, EntityType.Builder<T> entityTypeBuilder, boolean latex, boolean canUseAccessories, @Nullable Supplier<LootTable.Builder> lootDataBuilder) {
         RegistryObject<EntityType<T>> register = REGISTRY.register(registryName, () -> entityTypeBuilder.build(registryName));
-        if (latex) LatexEntities.add(register::get);
-        if (canUseAccessories) LatexEntitiesThatCanUseAccessories.add(register::get);
-        EntitiesWithLoot.add(Pair.of(register::get, lootDataBuilder));
+        if(DatagenModLoader.isRunningDataGen()){
+            if (latex) LatexEntities.add(register::get);
+            if (canUseAccessories) LatexEntitiesThatCanUseAccessories.add(register::get);
+            if (lootDataBuilder != null) EntitiesWithLoot.add(Pair.of(register::get, lootDataBuilder));
+        }
         return register;
     }
 

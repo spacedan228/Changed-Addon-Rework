@@ -1,27 +1,18 @@
 package net.foxyas.changedaddon.datagen;
 
-import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.storage.loot.LootPool;
-import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemKilledByPlayerCondition;
-import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.EntitiesWithLoot;
-import static net.foxyas.changedaddon.init.ChangedAddonEntities.LatexEntities;
 import static net.minecraft.world.level.storage.loot.LootPool.lootPool;
 
 public class EntityLoot extends net.minecraft.data.loot.EntityLoot {
