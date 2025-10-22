@@ -22,6 +22,9 @@ public class ChangedAddonFacilityPieces {
        builder.register((int) (FacilityPieceCollectionBuilder.WEIGHT_COMMON * 1.5f),
                         new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facilities/facility_hallways/garden_containment"),
                                 LootTables.HIGH_TIER_LAB));
+        builder.register(9,
+                new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facilities/facility_hallways/closed_meteor_in_pool"),
+                        LootTables.HIGH_TIER_LAB));
     }
 
     public static void registerAddonRooms(FacilityPieceCollectionBuilder builder) {
@@ -33,9 +36,9 @@ public class ChangedAddonFacilityPieces {
                         ResourceLocation.parse("changed_addon:chests/experiment_10_loot_op")))
                 .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
                         new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/luminar_crystal_room"),
-                                ResourceLocation.parse("changed:chests/high_tier_lab")))
-                .register(FacilityPieceCollectionBuilder.WEIGHT_COMMON,
-                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/closed_meteor"),
                                 ResourceLocation.parse("changed:chests/high_tier_lab")));
+//                .register(FacilityPieceCollectionBuilder.WEIGHT_COMMON,
+//                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/closed_meteor"),
+//                                ResourceLocation.parse("changed:chests/high_tier_lab")));
     }
 }
