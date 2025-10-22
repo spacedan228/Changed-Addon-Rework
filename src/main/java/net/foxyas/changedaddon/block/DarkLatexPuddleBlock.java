@@ -141,9 +141,7 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean moving) {
         if (level.isClientSide()) return;
-
         level.scheduleTick(pos, this, 1);
-
     }
 
     @Override
