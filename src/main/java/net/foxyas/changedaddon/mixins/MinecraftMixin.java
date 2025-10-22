@@ -31,7 +31,7 @@ public abstract class MinecraftMixin {
             return;
         if (LatexType.getEntityLatexType(this.cameraEntity) != LatexType.DARK_LATEX)
             return;
-        if (LatexType.getEntityLatexType(livingEntity) == null || LatexType.getEntityLatexType(livingEntity) == LatexType.DARK_LATEX)
+        if (LatexType.getEntityLatexType(livingEntity) != null && LatexType.getEntityLatexType(livingEntity) == LatexType.DARK_LATEX)
             return;
         BlockState feetBlockState = livingEntity.getFeetBlockState();
         if (feetBlockState.isAir())

@@ -59,7 +59,6 @@ public class LatexKaylaSharkEntity extends LatexTigerShark implements GenderedEn
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putBoolean("glowingState", getGlowingState());
-
     }
 
     @Override
