@@ -4,14 +4,14 @@ license="MIT License"
 
 [[mods]]
 modId="changed_addon"
-version="2.6.7"
+version="2.6.8"
 displayName="Changed Addon Plus"
-credits="LTXProgrammer for Changed mod"
+credits="0senia0 (Helper Dev)\nLTXProgrammer (Main Mod Dev)\n Donators : Nazaeura, Axivorn, BlockyBreaker9001, BRUH, Deathswordd, LostyBoy"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/changed-addon-plus/"
 updateJSONURL="https://raw.githubusercontent.com/Foxyas/check-mods-update/main/Changed-Addon-Update-Check"
 logoFile="logo.png"
-authors="Foxyas"
-description="this is a remastered version of my mod addon hope you like it If you want to help me by donating some money this is my patreon https://www.patreon.com/Changedaddonplus "
+authors="Foxyas (Main Dev) \n 0senia0 (Helper Dev)"
+description="this is a remastered version of my mod addon hope you like it! \n If you want to help me by donating some money this is my patreon https://www.patreon.com/Changedaddonplus"
 
 [[dependencies.changed_addon]]
     modId="minecraft"
