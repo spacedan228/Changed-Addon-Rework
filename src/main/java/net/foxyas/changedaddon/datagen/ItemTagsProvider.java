@@ -46,7 +46,7 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
         tag(ChangedTagsExtension.AccessoryItemsTags.LEGS).add(
                 DYEABLE_SHORTS.get());
 
-        tag(ChangedAddonTags.Items.METAL).add(//TODO add guns?
+        tag(ChangedAddonTags.Items.METAL).add( //TODO add guns?
                 Items.IRON_SWORD, Items.IRON_PICKAXE, Items.IRON_AXE, Items.IRON_HOE, Items.IRON_SHOVEL,
                 Items.IRON_HELMET, Items.IRON_CHESTPLATE, Items.IRON_LEGGINGS, Items.IRON_BOOTS,
                 ChangedItems.IRON_QUADRUPEDAL_LEGGINGS.get(), ChangedItems.IRON_QUADRUPEDAL_BOOTS.get(), ChangedItems.IRON_UPPER_ABDOMEN_ARMOR.get(), ChangedItems.IRON_LOWER_ABDOMEN_ARMOR.get(),

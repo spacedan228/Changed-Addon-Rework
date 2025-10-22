@@ -97,13 +97,13 @@ public class LatexWindCatFemaleModel extends AdvancedHumanoidModel<LatexWindCatF
 
         PartDefinition RightEar = Head.addOrReplaceChild("RightEar", CubeListBuilder.create(), PartPose.offset(-2.5F, -5.0F, 0.0F));
 
-        PartDefinition Fur_r1 = RightEar.addOrReplaceChild("Fur_r1", CubeListBuilder.create().texOffs(24, 66).mirror().addBox(0.0F, -4.0F, -2.0F, 1.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-2.25F, -6.25F, 2.75F, 0.5604F, -0.2494F, -0.3155F));
+        PartDefinition Fur_r1 = RightEar.addOrReplaceChild("Fur_r1", CubeListBuilder.create().texOffs(33, 66).mirror().addBox(0.0F, -4.0F, -2.0F, 0.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-2.25F, -6.25F, 2.75F, 0.5604F, -0.2494F, -0.3155F));
 
         PartDefinition rightear_r1 = RightEar.addOrReplaceChild("rightear_r1", CubeListBuilder.create().texOffs(0, 59).addBox(4.25F, -31.25F, -18.25F, 2.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5F, 30.0F, 0.0F, -0.5236F, -0.1745F, -0.2618F));
 
         PartDefinition LeftEar = Head.addOrReplaceChild("LeftEar", CubeListBuilder.create(), PartPose.offset(2.5F, -5.0F, 0.0F));
 
-        PartDefinition Fur_r2 = LeftEar.addOrReplaceChild("Fur_r2", CubeListBuilder.create().texOffs(24, 66).addBox(-1.0F, -4.0F, -2.0F, 1.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.25F, -6.25F, 2.75F, 0.5604F, 0.2494F, 0.3155F));
+        PartDefinition Fur_r2 = LeftEar.addOrReplaceChild("Fur_r2", CubeListBuilder.create().texOffs(25, 66).addBox(0.0F, -4.0F, -2.0F, 0.0F, 4.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.25F, -6.25F, 2.75F, 0.5604F, 0.2494F, 0.3155F));
 
         PartDefinition leftear_r1 = LeftEar.addOrReplaceChild("leftear_r1", CubeListBuilder.create().texOffs(16, 32).addBox(-6.25F, -31.25F, -18.25F, 2.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.5F, 30.0F, 0.0F, -0.5236F, 0.1745F, 0.2618F));
 
@@ -114,6 +114,13 @@ public class LatexWindCatFemaleModel extends AdvancedHumanoidModel<LatexWindCatF
                 .texOffs(71, 29).addBox(-4.0F, 4.0F, -2.0F, 8.0F, 6.0F, 4.0F, new CubeDeformation(-0.3F))
                 .texOffs(28, 37).addBox(-4.0F, 8.6F, -2.0F, 8.0F, 3.0F, 4.0F, new CubeDeformation(0.1F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
+        PartDefinition Plantoids = Torso.addOrReplaceChild("Plantoids", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -2.0F));
+
+        PartDefinition RightPlantoid_r1 = Plantoids.addOrReplaceChild("RightPlantoid_r1", CubeListBuilder.create().texOffs(75, 22).addBox(-4.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F))
+                .texOffs(75, 15).addBox(0.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.2793F, 0.0F, 0.0F));
+
+        PartDefinition Center_r1 = Plantoids.addOrReplaceChild("Center_r1", CubeListBuilder.create().texOffs(70, 21).addBox(-0.5F, -1.3F, -0.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.192F, 0.0F, 0.0F));
+
         PartDefinition Tail = Torso.addOrReplaceChild("Tail", CubeListBuilder.create(), PartPose.offset(0.0F, 10.0F, 0.0F));
 
         PartDefinition TailPrimary = Tail.addOrReplaceChild("TailPrimary", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.1309F, 0.0F, 0.0F));
@@ -122,19 +129,19 @@ public class LatexWindCatFemaleModel extends AdvancedHumanoidModel<LatexWindCatF
 
         PartDefinition TailSecondary = TailPrimary.addOrReplaceChild("TailSecondary", CubeListBuilder.create(), PartPose.offset(0.0F, 1.25F, 4.5F));
 
-        PartDefinition Fur_r3 = TailSecondary.addOrReplaceChild("Fur_r3", CubeListBuilder.create().texOffs(7, 76).mirror().addBox(0.0F, -5.0F, -2.0F, 1.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-1.75F, 1.0F, 0.0F, -1.8414F, -0.2527F, 0.0692F));
+        PartDefinition Fur_r3 = TailSecondary.addOrReplaceChild("Fur_r3", CubeListBuilder.create().texOffs(8, 76).mirror().addBox(0.0F, -5.0F, -2.0F, 0.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-1.75F, 1.0F, 0.75F, -1.7514F, -0.2577F, 0.0465F));
 
-        PartDefinition Fur_r4 = TailSecondary.addOrReplaceChild("Fur_r4", CubeListBuilder.create().texOffs(7, 68).addBox(-1.0F, -5.0F, -2.0F, 1.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.75F, 1.0F, 0.0F, -1.8414F, 0.2527F, -0.0692F));
+        PartDefinition Fur_r4 = TailSecondary.addOrReplaceChild("Fur_r4", CubeListBuilder.create().texOffs(8, 68).addBox(0.0F, -5.0F, -2.0F, 0.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.75F, 1.0F, 0.75F, -1.7514F, 0.2577F, -0.0465F));
 
         PartDefinition Base_r2 = TailSecondary.addOrReplaceChild("Base_r2", CubeListBuilder.create().texOffs(48, 22).addBox(-2.0F, -0.25F, -1.9F, 4.0F, 6.0F, 4.0F, new CubeDeformation(-0.05F)), PartPose.offsetAndRotation(0.0F, 0.5F, 0.0F, 1.3526F, 0.0F, 0.0F));
 
         PartDefinition TailTertiary = TailSecondary.addOrReplaceChild("TailTertiary", CubeListBuilder.create(), PartPose.offset(0.0F, 0.75F, 4.5F));
 
-        PartDefinition Fur_r5 = TailTertiary.addOrReplaceChild("Fur_r5", CubeListBuilder.create().texOffs(0, 74).mirror().addBox(0.0F, -4.0F, -2.0F, 1.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-2.0F, 1.5F, 1.5F, -1.5708F, -0.1745F, 0.0F));
+        PartDefinition Fur_r5 = TailTertiary.addOrReplaceChild("Fur_r5", CubeListBuilder.create().texOffs(1, 74).mirror().addBox(0.0F, -4.0F, -2.0F, 0.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-2.0F, 1.25F, 2.25F, -1.5708F, -0.1745F, 0.0F));
 
-        PartDefinition Fur_r6 = TailTertiary.addOrReplaceChild("Fur_r6", CubeListBuilder.create().texOffs(15, 67).addBox(-1.0F, -4.0F, -2.0F, 1.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, -1.25F, 0.75F, -1.5708F, 0.1309F, -1.5708F));
+        PartDefinition Fur_r6 = TailTertiary.addOrReplaceChild("Fur_r6", CubeListBuilder.create().texOffs(16, 68).addBox(0.0F, -3.0F, -2.0F, 0.0F, 3.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, -1.25F, 0.75F, -1.5708F, 0.1309F, -1.5708F));
 
-        PartDefinition Fur_r7 = TailTertiary.addOrReplaceChild("Fur_r7", CubeListBuilder.create().texOffs(0, 67).addBox(-1.0F, -4.0F, -2.0F, 1.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, 1.5F, 1.5F, -1.5708F, 0.1745F, 0.0F));
+        PartDefinition Fur_r7 = TailTertiary.addOrReplaceChild("Fur_r7", CubeListBuilder.create().texOffs(1, 67).addBox(0.0F, -4.0F, -2.0F, 0.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.0F, 1.25F, 2.25F, -1.5708F, 0.1745F, 0.0F));
 
         PartDefinition Base_r3 = TailTertiary.addOrReplaceChild("Base_r3", CubeListBuilder.create().texOffs(48, 0).addBox(-2.0F, 5.05F, -2.8F, 4.0F, 7.0F, 4.0F, new CubeDeformation(0.05F)), PartPose.offsetAndRotation(0.0F, -0.25F, -4.5F, 1.5184F, 0.0F, 0.0F));
 
@@ -142,20 +149,13 @@ public class LatexWindCatFemaleModel extends AdvancedHumanoidModel<LatexWindCatF
 
         PartDefinition Base_r4 = TailQuaternary.addOrReplaceChild("Base_r4", CubeListBuilder.create().texOffs(56, 11).addBox(-2.0F, 4.6F, -3.6F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.12F)), PartPose.offsetAndRotation(0.0F, -1.0F, -5.5F, 1.6581F, 0.0F, 0.0F));
 
-        PartDefinition Plantoids = Torso.addOrReplaceChild("Plantoids", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -2.0F));
-
-        PartDefinition RightPlantoid_r1 = Plantoids.addOrReplaceChild("RightPlantoid_r1", CubeListBuilder.create().texOffs(75, 22).addBox(-4.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F))
-                .texOffs(75, 15).addBox(0.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.2793F, 0.0F, 0.0F));
-
-        PartDefinition Center_r1 = Plantoids.addOrReplaceChild("Center_r1", CubeListBuilder.create().texOffs(70, 21).addBox(-0.5F, -1.3F, -0.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.192F, 0.0F, 0.0F));
-
         PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(0, 32).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-5.0F, 2.0F, 0.0F));
 
-        PartDefinition Fur_r8 = RightArm.addOrReplaceChild("Fur_r8", CubeListBuilder.create().texOffs(72, 1).mirror().addBox(0.0F, -4.0F, -2.0F, 1.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-3.0F, 5.0F, 0.5F, 0.0F, 0.0F, -0.1745F));
+        PartDefinition Fur_r8 = RightArm.addOrReplaceChild("Fur_r8", CubeListBuilder.create().texOffs(73, 1).mirror().addBox(0.0F, -4.0F, -2.0F, 0.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-3.0F, 5.5F, 0.5F, 0.0F, 0.0F, -0.1745F));
 
         PartDefinition LeftArm = partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(16, 40).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, 2.0F, 0.0F));
 
-        PartDefinition Fur_r9 = LeftArm.addOrReplaceChild("Fur_r9", CubeListBuilder.create().texOffs(64, 1).addBox(-1.0F, -4.0F, -2.0F, 1.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, 5.5F, 0.5F, 0.0F, 0.0F, 0.1745F));
+        PartDefinition Fur_r9 = LeftArm.addOrReplaceChild("Fur_r9", CubeListBuilder.create().texOffs(65, 1).addBox(0.0F, -4.0F, -2.0F, 0.0F, 4.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(3.0F, 5.5F, 0.5F, 0.0F, 0.0F, 0.1745F));
 
         return LayerDefinition.create(meshdefinition, 96, 96);
     }

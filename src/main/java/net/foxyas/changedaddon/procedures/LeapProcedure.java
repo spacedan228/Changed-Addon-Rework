@@ -183,47 +183,6 @@ public class LeapProcedure {
                     }
                 }
             }
-        } else if (canFly(tf)) {//FIXME this branch is currently unreachable. Remove it?
-            if (player.hasEffect(ChangedAddonMobEffects.FADIGUE.get()) || player.getFoodData().getFoodLevel() < 8)
-                return;
-
-            if (player.getAbilities().flying && !player.isFallFlying()) {
-                deltaX = -Math.sin((player.getYRot() / 180) * (float) Math.PI);
-                deltaY = -Math.sin((player.getXRot() / 180) * (float) Math.PI);
-                deltaZ = Math.cos((player.getYRot() / 180) * (float) Math.PI);
-                speed = 2;
-                motionX = deltaX * speed;
-                motionY = deltaY * speed;
-                motionZ = deltaZ * speed;
-                player.setDeltaMovement(player.getDeltaMovement().add(motionX, motionY, motionZ));
-
-                if (!player.isCreative()) {
-                    player.causeFoodExhaustion((float) 0.8);
-                    if (!player.level.isClientSide())
-                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGUE.get(), 30, 0, false, false));
-                }
-
-            } else {
-                if (!player.isFallFlying()) return;
-
-                deltaX = -Math.sin((player.getYRot() / 180) * (float) Math.PI);
-                deltaY = -Math.sin((player.getXRot() / 180) * (float) Math.PI);
-                deltaZ = Math.cos((player.getYRot() / 180) * (float) Math.PI);
-                speed = 2;
-                motionX = deltaX * speed;
-                motionY = deltaY * speed;
-                motionZ = deltaZ * speed;
-                player.setDeltaMovement(player.getDeltaMovement().add(motionX, motionY, motionZ));
-
-                if (!player.isCreative()) {
-                    player.causeFoodExhaustion(4);
-                    if (!player.level.isClientSide())
-                        player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.FADIGUE.get(), 60, 0, false, false));
-                }
-            }
-
-            if (!player.level.isClientSide() && player.getServer() != null)
-                player.getServer().getCommands().performCommand(player.createCommandSourceStack().withSuppressedOutput().withPermission(4), "playsound changed:bow2 ambient @a ~ ~ ~ 2.5 1 0");
         }
     }
 
@@ -239,11 +198,4 @@ public class LeapProcedure {
         return false;
     }
 
-    private static boolean canFly(TransfurVariantInstance<?> tf) {
-        /*TransfurVariant Variant = TransfurVariant.getEntityVariant(tf.getChangedEntity());
-		if (Variant.canGlide){
-			return true;
-		}*/
-        return false;
-    }
 }

@@ -827,3 +827,5 @@ public class CatalyzerUpdateTickProcedure {
         }
     }
 }
+
+// TODO: REWORK THIS THING OMG IS SO BAD!

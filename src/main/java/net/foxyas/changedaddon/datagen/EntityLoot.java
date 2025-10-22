@@ -35,7 +35,7 @@ public class EntityLoot extends net.minecraft.data.loot.EntityLoot {
     }
 
     /**
-     * 🔧 Método utilitário para simplificar a criação dos pools
+     * 🔧 Util Method
      */
     private LootPool.Builder pool(ItemLike item, float min, float max, float lootingMin, float lootingMax) {
         return lootPool()
