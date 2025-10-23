@@ -1,7 +1,7 @@
-package net.foxyas.changedaddon.client.renderer.mobs;
+package net.foxyas.changedaddon.client.renderer;
 
-import net.foxyas.changedaddon.client.model.LatexSnowFoxFoxyasModel;
-import net.foxyas.changedaddon.entity.advanced.LatexSnowFoxFoxyasEntity;
+import net.foxyas.changedaddon.client.model.LatexSnowFoxMaleModel;
+import net.foxyas.changedaddon.entity.simple.LatexSnowFoxMaleEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.GasMaskLayer;
@@ -12,9 +12,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class FoxyasRenderer extends AdvancedHumanoidRenderer<LatexSnowFoxFoxyasEntity, LatexSnowFoxFoxyasModel, ArmorLatexMaleWolfModel<LatexSnowFoxFoxyasEntity>> {
-    public FoxyasRenderer(EntityRendererProvider.Context context) {
-        super(context, new LatexSnowFoxFoxyasModel(context.bakeLayer(LatexSnowFoxFoxyasModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
+public class LatexSnowFoxMaleRenderer extends AdvancedHumanoidRenderer<LatexSnowFoxMaleEntity, LatexSnowFoxMaleModel, ArmorLatexMaleWolfModel<LatexSnowFoxMaleEntity>> {
+    public LatexSnowFoxMaleRenderer(EntityRendererProvider.Context context) {
+        super(context, new LatexSnowFoxMaleModel(context.bakeLayer(LatexSnowFoxMaleModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet()));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
@@ -22,7 +22,7 @@ public class FoxyasRenderer extends AdvancedHumanoidRenderer<LatexSnowFoxFoxyasE
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull LatexSnowFoxFoxyasEntity entity) {
-        return ResourceLocation.parse("changed_addon:textures/entities/foxyas/foxyas_main.png");
+    public @NotNull ResourceLocation getTextureLocation(@NotNull LatexSnowFoxMaleEntity entity) {
+        return ResourceLocation.parse("changed_addon:textures/entities/latex_snowfox_male_new.png");
     }
 }

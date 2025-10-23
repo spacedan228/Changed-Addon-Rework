@@ -174,9 +174,11 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
         return super.mobInteract(player, hand);
     }
 
+    public static final float FOXYAS_SCALE = 0.85f;
+
     @Override
     public float getScale() {
-        return super.getScale() * 0.75f;
+        return super.getScale() * FOXYAS_SCALE;
     }
 
     @Override

@@ -5,7 +5,7 @@ import net.foxyas.changedaddon.client.renderer.projectiles.*;
 import net.foxyas.changedaddon.client.renderer.advanced.*;
 import net.foxyas.changedaddon.client.renderer.basic.*;
 import net.foxyas.changedaddon.client.renderer.mobs.ErikRenderer;
-import net.foxyas.changedaddon.client.renderer.mobs.FoxyasRenderer;
+import net.foxyas.changedaddon.client.renderer.mobs.LatexSnowFoxFoxyasRenderer;
 import net.ltxprogrammer.changed.client.RegisterComplexRenderersEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -17,7 +17,7 @@ public class ChangedAddonEntityRenderers {
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
 
-        event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), LatexSnowFoxRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), LatexSnowFoxMaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FEMALE.get(), LatexSnowFoxFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LUMINAR_CRYSTAL_SPEAR.get(), LuminarCrystalSpearRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.DAZED_LATEX.get(), LatexDazedRenderer::new);
@@ -74,7 +74,7 @@ public class ChangedAddonEntityRenderers {
 
         // --- MONSTER/MOB ENTITIES ---
         event.registerEntityRenderer(ChangedAddonEntities.PROTOTYPE.get(), PrototypeRenderer::new);
-        event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), FoxyasRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), LatexSnowFoxFoxyasRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.ERIK.get(), ErikRenderer::new);
 
         // --- PROJECTILE ENTITIES ---

@@ -23,7 +23,7 @@ import java.util.List;
 
 public class LatexSnowFoxFoxyasModel extends AdvancedHumanoidModel<LatexSnowFoxFoxyasEntity> implements AdvancedHumanoidModelInterface<LatexSnowFoxFoxyasEntity, LatexSnowFoxFoxyasModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("snow_fox"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("snow_fox_foxyas"), "main");
 
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;

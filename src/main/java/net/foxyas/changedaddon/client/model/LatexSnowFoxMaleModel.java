@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ModelSnowFox extends AdvancedHumanoidModel<LatexSnowFoxMaleEntity> implements AdvancedHumanoidModelInterface<LatexSnowFoxMaleEntity, ModelSnowFox> {
+public class LatexSnowFoxMaleModel extends AdvancedHumanoidModel<LatexSnowFoxMaleEntity> implements AdvancedHumanoidModelInterface<LatexSnowFoxMaleEntity, LatexSnowFoxMaleModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("snow_fox"), "main");
 
@@ -32,9 +32,9 @@ public class ModelSnowFox extends AdvancedHumanoidModel<LatexSnowFoxMaleEntity> 
     private final ModelPart Head;
     private final ModelPart Torso;
     private final ModelPart Tail;
-    private final HumanoidAnimator<LatexSnowFoxMaleEntity, ModelSnowFox> animator;
+    private final HumanoidAnimator<LatexSnowFoxMaleEntity, LatexSnowFoxMaleModel> animator;
 
-    public ModelSnowFox(ModelPart root) {
+    public LatexSnowFoxMaleModel(ModelPart root) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
         this.LeftLeg = root.getChild("LeftLeg");
@@ -196,7 +196,7 @@ public class ModelSnowFox extends AdvancedHumanoidModel<LatexSnowFoxMaleEntity> 
     }
 
     @Override
-    public HumanoidAnimator<LatexSnowFoxMaleEntity, ModelSnowFox> getAnimator(LatexSnowFoxMaleEntity entity) {
+    public HumanoidAnimator<LatexSnowFoxMaleEntity, LatexSnowFoxMaleModel> getAnimator(LatexSnowFoxMaleEntity entity) {
         return animator;
     }
 }
