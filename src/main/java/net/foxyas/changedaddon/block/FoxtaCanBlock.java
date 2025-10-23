@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -57,7 +58,7 @@ public class FoxtaCanBlock extends HorizontalDirectionalBlock implements SimpleW
     @Override
     public void appendHoverText(ItemStack itemstack, @Nullable BlockGetter world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TextComponent("Now made with 200% more oranages! Only $2.99! Tastes like Heaven!"));
+        list.add(new TranslatableComponent("item.changed_addon.foxta.desc"));
     }
 
     @Override
@@ -116,6 +117,6 @@ public class FoxtaCanBlock extends HorizontalDirectionalBlock implements SimpleW
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-        return new ItemStack(ChangedAddonItems.FOXTA.get());
+        return ChangedAddonItems.FOXTA.get().getDefaultInstance();
     }
 }

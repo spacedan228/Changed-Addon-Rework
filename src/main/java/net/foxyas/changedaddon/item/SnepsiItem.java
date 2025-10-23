@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
@@ -17,18 +18,21 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-public class SnepsiItem extends Item implements SpecializedItemRendering {
+public class SnepsiItem extends BlockItem implements SpecializedItemRendering {
     private static final ModelResourceLocation GUIMODEL =
             new ModelResourceLocation(ChangedAddonMod.resourceLoc("snepsi_gui"), "inventory");
     private static final ModelResourceLocation HANDMODEL =
@@ -37,7 +41,7 @@ public class SnepsiItem extends Item implements SpecializedItemRendering {
             new ModelResourceLocation(ChangedAddonMod.resourceLoc("snepsi_ground"), "inventory");
 
     public SnepsiItem() {
-        super(new Item.Properties()
+        super(ChangedAddonBlocks.SNEPSI_CAN.get(), new Item.Properties()
                 .tab(ChangedAddonTabs.TAB_CHANGED_ADDON)
                 .stacksTo(64)
                 .rarity(Rarity.RARE)
@@ -64,7 +68,6 @@ public class SnepsiItem extends Item implements SpecializedItemRendering {
     @Override
     public void appendHoverText(@NotNull ItemStack itemstack, Level world, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TranslatableComponent("item.changed_addon.snepsi.desc"));
     }
 
     @Override
@@ -94,6 +97,16 @@ public class SnepsiItem extends Item implements SpecializedItemRendering {
     public ModelResourceLocation getModelLocation(ItemStack itemStack, ItemTransforms.TransformType transformType) {
         return transformType == ItemTransforms.TransformType.GUI || transformType == ItemTransforms.TransformType.FIXED ? GUIMODEL
                 : transformType == ItemTransforms.TransformType.GROUND ? GROUNDMODEL : HANDMODEL;
+    }
+
+    @Override
+    public @NotNull InteractionResult useOn(@NotNull UseOnContext pContext) {
+        if (pContext.getPlayer() != null && pContext.getPlayer().isShiftKeyDown()) {
+            return super.useOn(pContext);
+        } else {
+            InteractionResult result = this.use(pContext.getLevel(), pContext.getPlayer(), pContext.getHand()).getResult();
+            return result == InteractionResult.CONSUME ? InteractionResult.CONSUME_PARTIAL : result;
+        }
     }
 
     @Override

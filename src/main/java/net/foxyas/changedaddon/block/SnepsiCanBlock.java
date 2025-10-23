@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -52,7 +53,7 @@ public class SnepsiCanBlock extends HorizontalDirectionalBlock implements Simple
     @Override
     public void appendHoverText(@NotNull ItemStack itemstack, BlockGetter world, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TextComponent("Cat-ion? Isn't it spelled caution? Says do NOT drink. Contains goo?"));
+        list.add(new TranslatableComponent("item.changed_addon.snepsi.desc"));
     }
 
     @Override
@@ -111,6 +112,6 @@ public class SnepsiCanBlock extends HorizontalDirectionalBlock implements Simple
 
     @Override
     public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-        return new ItemStack(ChangedAddonItems.SNEPSI.get());
+        return ChangedAddonItems.SNEPSI.get().getDefaultInstance();
     }
 }

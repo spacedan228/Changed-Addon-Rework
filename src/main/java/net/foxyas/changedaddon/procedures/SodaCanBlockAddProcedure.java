@@ -20,9 +20,10 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber
+//@Mod.EventBusSubscriber
 public class SodaCanBlockAddProcedure {
 
+    /*
     @SubscribeEvent
     public static void UseItem(LivingEntityUseItemEvent.Start event) {
         if(!event.getEntity().isCrouching()) return;
@@ -74,5 +75,5 @@ public class SodaCanBlockAddProcedure {
                 event.getItemStack().shrink(1);
             }
         }
-    }
+    }*/
 }

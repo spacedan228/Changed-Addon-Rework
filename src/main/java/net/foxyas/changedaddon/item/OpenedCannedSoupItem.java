@@ -40,7 +40,9 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level pLevel, @NotNull Player pPlayer, @NotNull InteractionHand pUsedHand) {
         if (pPlayer.isShiftKeyDown()) {
             ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
-            itemStack.shrink(1);
+            if (!pPlayer.getAbilities().instabuild) {
+                itemStack.shrink(1);
+            }
             ItemStack closedCan = new ItemStack(ChangedBlocks.CANNED_SOUP.get().asItem(), 1);
             pPlayer.swing(pUsedHand);
             if (!pPlayer.addItem(closedCan)) {

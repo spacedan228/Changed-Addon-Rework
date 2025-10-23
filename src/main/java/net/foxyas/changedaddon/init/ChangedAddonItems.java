@@ -174,8 +174,8 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> CATALYZER_BLOCK_ILLUSTRATIVE_ITEM = REGISTRY.register("catalyzer_block_illustrative_item", CatalyzerBlockIllustrativeItemItem::new);
     public static final RegistryObject<Item> UNIFUSER_BLOCK_ILLUSTRATIVE_ITEM = REGISTRY.register("unifuser_block_illustrative_item", UnifuserblockIllustrativeItemItem::new);
     public static final RegistryObject<Item> AMMONIA_PARTICLES_JEI_ILLUSTRATIVE = REGISTRY.register("ammonia_particles_jei_illustrative", AmmoniaParticlesJeiIllustrativeItem::new);
-    public static final RegistryObject<Item> FOXTA_CAN = blockNoTab(ChangedAddonBlocks.FOXTA_CAN, null);
-    public static final RegistryObject<Item> SNEPSI_CAN = blockNoTab(ChangedAddonBlocks.SNEPSI_CAN, null);
+    //public static final RegistryObject<Item> FOXTA_CAN = blockNoTab(ChangedAddonBlocks.FOXTA_CAN, null);
+    //public static final RegistryObject<Item> SNEPSI_CAN = blockNoTab(ChangedAddonBlocks.SNEPSI_CAN, null);
     public static final RegistryObject<Item> SNEP_ICON = REGISTRY.register("snep_icon", SnepIconItem::new);
     public static final RegistryObject<Item> FRIENDLY_GOEY_ICON = REGISTRY.register("friendly_goey_icon", FriendlyGoeyIconItem::new);
     public static final RegistryObject<Item> PAT_ICON = REGISTRY.register("pat_icon", PatIconItem::new);

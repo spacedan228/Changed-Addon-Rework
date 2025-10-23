@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.TransfurCause;
@@ -14,11 +15,14 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +30,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 
-public class FoxtaItem extends Item implements SpecializedItemRendering {
+public class FoxtaItem extends BlockItem implements SpecializedItemRendering {
 
     private static final ModelResourceLocation GUIMODEL =
             new ModelResourceLocation(ChangedAddonMod.resourceLoc("foxta_gui"), "inventory");
@@ -36,7 +40,7 @@ public class FoxtaItem extends Item implements SpecializedItemRendering {
             new ModelResourceLocation(ChangedAddonMod.resourceLoc("foxta_ground"), "inventory");
 
     public FoxtaItem() {
-        super(new Item.Properties()
+        super(ChangedAddonBlocks.FOXTA_CAN.get(), new Item.Properties()
                 .tab(ChangedAddonTabs.TAB_CHANGED_ADDON)
                 .stacksTo(64)
                 .rarity(Rarity.RARE)
@@ -62,7 +66,16 @@ public class FoxtaItem extends Item implements SpecializedItemRendering {
     @Override
     public void appendHoverText(@NotNull ItemStack itemstack, Level world, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TranslatableComponent("item.changed_addon.foxta.desc"));
+    }
+
+    @Override
+    public @NotNull InteractionResult useOn(@NotNull UseOnContext pContext) {
+        if (pContext.getPlayer() != null && pContext.getPlayer().isShiftKeyDown()) {
+            return super.useOn(pContext);
+        } else {
+            InteractionResult result = this.use(pContext.getLevel(), pContext.getPlayer(), pContext.getHand()).getResult();
+            return result == InteractionResult.CONSUME ? InteractionResult.CONSUME_PARTIAL : result;
+        }
     }
 
     @Override

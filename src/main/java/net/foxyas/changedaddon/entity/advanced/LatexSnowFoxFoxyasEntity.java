@@ -55,7 +55,10 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
 
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> buyOffers = List.of(
             (entity) ->
-                    new CustomMerchantOffer(withCount(ChangedItems.ORANGE, 3), single(Items.GLASS_BOTTLE), defStack(ChangedAddonItems.ORANGE_JUICE), 16),
+                    new CustomMerchantOffer(withCount(ChangedItems.ORANGE, 3), single(Items.GLASS_BOTTLE), defStack(ChangedAddonItems.ORANGE_JUICE), 16)
+    );
+
+    private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> sellOffers = List.of(
             (entity) ->
                     new CustomMerchantOffer(Ingredient.of(emeralds(4)), defStack(ChangedAddonItems.OPENED_CANNED_SOUP), 16),
             (entity) ->
@@ -64,9 +67,6 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
                     new CustomMerchantOffer(Ingredient.of(emeralds(8)), defStack(ChangedAddonItems.SNEPSI), 4),
             (entity) ->
                     new CustomMerchantOffer(Ingredient.of(emeralds(12)), defStack(ChangedAddonItems.GOLDEN_ORANGE), 8)
-    );
-
-    private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> sellOffers = List.of(
     );
 
     public LatexSnowFoxFoxyasEntity(PlayMessages.SpawnEntity packet, Level world) {
@@ -81,7 +81,7 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     }
 
     protected CustomMerchantOffers makeOffers() {
-        return CustomMerchantUtil.makeOffers(this, buyOffers, 2, sellOffers, 2);
+        return CustomMerchantUtil.makeOffers(this, buyOffers, buyOffers.size(), sellOffers, sellOffers.size());
     }
 
     public static void init() {
