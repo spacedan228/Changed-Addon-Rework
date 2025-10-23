@@ -87,17 +87,6 @@ public class SnepsiItem extends Item implements SpecializedItemRendering {
         };
 
         ProcessTransfur.progressTransfur(sPlayer, 15, var, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE));
-
-        /*int Snepsi_Drink_Amount = stats.getValue(Stats.ITEM_USED.get(ChangedAddonModItems.SNEPSI.get()));
-        if (Snepsi_Drink_Amount >= 100) {
-            Advancement _adv = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:snepsi_adctive"));
-            assert _adv != null;
-            AdvancementProgress _ap = serverPlayer.getAdvancements().getOrStartProgress(_adv);
-            if (!_ap.isDone()) {
-                for (String string : _ap.getRemainingCriteria()) serverPlayer.getAdvancements().award(_adv, string);
-            }
-        }*/
-        //serverPlayer.displayClientMessage(new TextComponent("Drink this = " + Snepsi_Drink_Amount),false);
         return retval;
     }
 

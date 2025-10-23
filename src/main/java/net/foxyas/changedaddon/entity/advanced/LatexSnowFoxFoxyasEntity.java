@@ -37,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.network.NetworkHooks;
@@ -54,8 +55,15 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
 
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> buyOffers = List.of(
             (entity) ->
-                    new CustomMerchantOffer(withCount(ChangedItems.ORANGE, 3),
-                            single(Items.GLASS_BOTTLE), defStack(ChangedAddonItems.ORANGE_JUICE), 16)
+                    new CustomMerchantOffer(withCount(ChangedItems.ORANGE, 3), single(Items.GLASS_BOTTLE), defStack(ChangedAddonItems.ORANGE_JUICE), 16),
+            (entity) ->
+                    new CustomMerchantOffer(Ingredient.of(emeralds(4)), defStack(ChangedAddonItems.OPENED_CANNED_SOUP), 16),
+            (entity) ->
+                    new CustomMerchantOffer(Ingredient.of(emeralds(6)), defStack(ChangedAddonItems.FOXTA), 6),
+            (entity) ->
+                    new CustomMerchantOffer(Ingredient.of(emeralds(8)), defStack(ChangedAddonItems.SNEPSI), 4),
+            (entity) ->
+                    new CustomMerchantOffer(Ingredient.of(emeralds(12)), defStack(ChangedAddonItems.GOLDEN_ORANGE), 8)
     );
 
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> sellOffers = List.of(
@@ -132,6 +140,7 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
 
         if (source.getEntity() instanceof ServerPlayer player) {
             Advancement _adv = player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:foxyas_advancement"));
+            assert _adv != null;
             AdvancementProgress _ap = player.getAdvancements().getOrStartProgress(_adv);
             if (!_ap.isDone()) {
                 for (String s : _ap.getRemainingCriteria()) player.getAdvancements().award(_adv, s);
