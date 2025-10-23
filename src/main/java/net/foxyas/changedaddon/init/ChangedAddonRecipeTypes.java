@@ -1,6 +1,8 @@
-package net.foxyas.changedaddon.recipes;
+package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
+import net.foxyas.changedaddon.recipes.UnifuserRecipe;
 import net.foxyas.changedaddon.recipes.special.HaydenTransfurRecipe;
 import net.foxyas.changedaddon.recipes.special.LaserPointerColoringRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -13,7 +15,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ChangedAddonModRecipeTypes {
+public class ChangedAddonRecipeTypes {
+
     public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS =
             DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, ChangedAddonMod.MODID);
 

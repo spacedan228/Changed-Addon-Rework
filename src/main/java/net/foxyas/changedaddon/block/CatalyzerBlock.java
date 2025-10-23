@@ -59,10 +59,7 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, Random random) {
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        CatalyzerUpdateTickProcedure.execute(world, x, y, z, blockstate);
+        CatalyzerUpdateTickProcedure.execute(world, pos, blockstate);
         world.scheduleTick(pos, this, 5);
     }
 

@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.recipes.special;
 
 import com.google.gson.JsonObject;
-import net.foxyas.changedaddon.recipes.ChangedAddonModRecipeTypes;
+import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedItems;
@@ -72,7 +72,7 @@ public class HaydenTransfurRecipe extends CustomRecipe {
 
     @Override
     public @NotNull RecipeSerializer<?> getSerializer() {
-        return ChangedAddonModRecipeTypes.HAYDEN_SYRINGE_RECIPE.get(); // Veja abaixo
+        return ChangedAddonRecipeTypes.HAYDEN_SYRINGE_RECIPE.get(); // Veja abaixo
     }
 
     public static class Serializer implements RecipeSerializer<HaydenTransfurRecipe> {
