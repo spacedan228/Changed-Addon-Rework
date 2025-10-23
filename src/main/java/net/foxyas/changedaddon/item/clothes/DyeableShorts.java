@@ -12,6 +12,7 @@ import net.ltxprogrammer.changed.item.ClothingItem;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -39,6 +40,7 @@ public class DyeableShorts extends ClothingItem implements DyeableLeatherItem {
 
     public DyeableShorts() {
         super();
+        CauldronInteraction.WATER.put(this, CauldronInteraction.DYED_ITEM);
     }
 
     @Override

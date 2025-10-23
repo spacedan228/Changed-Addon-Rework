@@ -5,6 +5,7 @@ import net.ltxprogrammer.changed.init.ChangedTabs;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeableLeatherItem;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class DyeableClothingItem extends ClothingItem implements DyeableLeatherItem {
     public DyeableClothingItem() {
         super();
+        CauldronInteraction.WATER.put(this, CauldronInteraction.DYED_ITEM);
     }
 
     @Override
