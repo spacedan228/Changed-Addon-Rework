@@ -11,6 +11,7 @@ import net.foxyas.changedaddon.util.RenderUtil;
 import net.foxyas.changedaddon.util.Vector2f;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -70,7 +71,15 @@ public abstract class CircleMinigameScreen extends Screen {
 
     protected void drawCircles(PoseStack stack) {
         RenderSystem.setShaderTexture(0, CIRCLE_SLOT);
+
+        TransfurVariantInstance<?> var = ProcessTransfur.getPlayerTransfurVariant(player);
+        if(var != null) {
+            Color3 color = var.getTransfurColor();
+            RenderSystem.setShaderColor(1 - color.red(), 1 - color.green(), 1 - color.blue(), 1);
+        } else RenderSystem.setShaderColor(0, 0, 0, 0);
+
         blit(stack, (int) circle.x - 9, (int) circle.y - 9, 0, 0, 19, 19, 19, 19);
+        RenderSystem.setShaderColor(1, 1, 1, 1);
 
         RenderSystem.setShaderTexture(0, CIRCLE_CURSOR);
         blit(stack, (int) cursor.x - 9, (int) cursor.y - 9, 0, 0, 19, 19, 19, 19);
