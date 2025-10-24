@@ -81,11 +81,6 @@ public class AdvancedCatalyzerBlockEntity extends RandomizableContainerBlockEnti
     }
 
     @Override
-    public int getMaxStackSize() {
-        return 64;
-    }
-
-    @Override
     public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory) {
         return new CatalyzerGuiMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
     }
@@ -103,11 +98,6 @@ public class AdvancedCatalyzerBlockEntity extends RandomizableContainerBlockEnti
     @Override
     protected void setItems(@NotNull NonNullList<ItemStack> stacks) {
         this.stacks = stacks;
-    }
-
-    @Override
-    public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
-        return index != 1;
     }
 
     @Override
