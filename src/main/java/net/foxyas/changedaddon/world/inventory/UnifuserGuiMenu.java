@@ -23,9 +23,9 @@ public class UnifuserGuiMenu extends AbstractContainerMenu {
 
     public final Level world;
     public final Player entity;
-    public int x, y, z;
     private final ContainerLevelAccess access;
     private final BlockEntity boundBlockEntity;
+    private final BlockPos blockPos;
 
     public UnifuserGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         this(id, inv, extraData.readBlockPos());
@@ -37,9 +37,7 @@ public class UnifuserGuiMenu extends AbstractContainerMenu {
         this.world = inv.player.level;
         IItemHandler internal = new ItemStackHandler(4);
 
-        x = pos.getX();
-        y = pos.getY();
-        z = pos.getZ();
+        this.blockPos = pos;
         access = ContainerLevelAccess.create(world, pos);
 
         boundBlockEntity = this.world.getBlockEntity(pos);
@@ -80,7 +78,7 @@ public class UnifuserGuiMenu extends AbstractContainerMenu {
             this.addSlot(new Slot(inv, si, 12 + 8 + si * 18, 21 + 142));
     }
 
-    public boolean isSlotEmpty(int slot){
+    public boolean isSlotEmpty(int slot) {
         return getSlot(slot).getItem().isEmpty();
     }
 
@@ -200,5 +198,9 @@ public class UnifuserGuiMenu extends AbstractContainerMenu {
             }
         }
         return flag;
+    }
+
+    public BlockPos getBlockPos() {
+        return blockPos;
     }
 }

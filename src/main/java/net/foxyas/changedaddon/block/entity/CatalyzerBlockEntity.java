@@ -1,7 +1,10 @@
 package net.foxyas.changedaddon.block.entity;
 
 import io.netty.buffer.Unpooled;
+import net.foxyas.changedaddon.block.AdvancedCatalyzerBlock;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
+import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
+import net.foxyas.changedaddon.recipes.RecipesHandle;
 import net.foxyas.changedaddon.world.inventory.CatalyzerGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,17 +14,22 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,27 +37,47 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-    private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
+    protected final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
+    protected NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
+
+    public boolean startRecipe = true;
+    public double nitrogenPower = 0;
+    public double recipeProgress = 0;
+    protected boolean recipeOn = false;
+    public int tickCount = 0;
 
     public CatalyzerBlockEntity(BlockPos position, BlockState state) {
         super(ChangedAddonBlockEntities.CATALYZER.get(), position, state);
     }
 
-    @Override
-    public void load(@NotNull CompoundTag compound) {
-        super.load(compound);
-        if (!this.tryLoadLootTable(compound))
-            this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(compound, this.stacks);
+    public CatalyzerBlockEntity(BlockEntityType<?> blockEntityType, BlockPos position, BlockState state) {
+        super(blockEntityType, position, state);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        super.saveAdditional(compound);
-        if (!this.trySaveLootTable(compound)) {
-            ContainerHelper.saveAllItems(compound, this.stacks);
+    public void load(@NotNull CompoundTag tag) {
+        super.load(tag);
+        if (!this.tryLoadLootTable(tag))
+            this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
+        ContainerHelper.loadAllItems(tag, this.stacks);
+
+        nitrogenPower = tag.getDouble("nitrogen_power");
+        recipeProgress = tag.getDouble("recipe_progress");
+        recipeOn = tag.getBoolean("recipe_on");
+        startRecipe = tag.getBoolean("start_recipe");
+    }
+
+    @Override
+    public void saveAdditional(@NotNull CompoundTag tag) {
+        super.saveAdditional(tag);
+        if (!this.trySaveLootTable(tag)) {
+            ContainerHelper.saveAllItems(tag, this.stacks);
         }
+
+        tag.putDouble("nitrogen_power", nitrogenPower);
+        tag.putDouble("recipe_progress", recipeProgress);
+        tag.putBoolean("recipe_on", recipeOn);
+        tag.putBoolean("start_recipe", startRecipe);
     }
 
     @Override
@@ -73,6 +101,10 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
             if (!itemstack.isEmpty())
                 return false;
         return true;
+    }
+
+    public boolean isSlotFull(int index) {
+        return getItem(index).getCount() >= getItem(index).getMaxStackSize();
     }
 
     @Override
@@ -127,5 +159,87 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
         super.setRemoved();
         for (LazyOptional<? extends IItemHandler> handler : handlers)
             handler.invalidate();
+    }
+
+    public static void clientTick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
+    }
+
+    public static void serverTick(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
+        if (!(blockEntity instanceof CatalyzerBlockEntity catalyzer)) return;
+        if (!(level instanceof ServerLevel serverLevel)) return;
+        boolean shouldTick = false;
+        if (catalyzer.tickCount % 120 == 0) {
+            shouldTick = true;
+        }
+
+        if (!shouldTick) {
+            catalyzer.tickCount ++;
+            update(serverLevel, pos, state, catalyzer);
+            return;
+        }
+
+        if (catalyzer.nitrogenPower < 200) {
+            catalyzer.nitrogenPower += 1;
+            level.sendBlockUpdated(pos, state, state, 3);
+            catalyzer.setChanged();
+            return;
+        }
+
+        IItemHandlerModifiable handler = (IItemHandlerModifiable)
+                blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElse(null);
+        if (handler == null) return;
+
+        if (handler.getStackInSlot(0).isEmpty()) {
+            catalyzer.recipeOn = false;
+            catalyzer.recipeProgress = Math.max(0, catalyzer.recipeProgress - 5);
+            update(serverLevel, pos, state, catalyzer);
+            return;
+        }
+
+        boolean isFull = handler.getStackInSlot(1).getCount() >= handler.getStackInSlot(1).getMaxStackSize();
+        if (isFull) {
+            update(serverLevel, pos, state, catalyzer);
+            return;
+        }
+
+        if (!catalyzer.startRecipe) {
+            update(serverLevel, pos, state, catalyzer);
+            return;
+        }
+
+        ItemStack input = handler.getStackInSlot(0).copy();
+        CatalyzerRecipe recipe = RecipesHandle.findRecipeForCatalyzer(serverLevel, input);
+        catalyzer.recipeOn = recipe != null;
+
+        if (recipe != null) {
+            if (catalyzer.recipeProgress < 100) {
+                double speed = recipe.getProgressSpeed();
+                if (state.getBlock() instanceof AdvancedCatalyzerBlock) {
+                    speed *= 4;
+                }
+                catalyzer.recipeProgress += speed;
+            }
+
+            if (catalyzer.recipeProgress >= 100) {
+                ItemStack outputSlot = handler.getStackInSlot(1);
+                ItemStack output = recipe.getResultItem();
+
+                if (outputSlot.isEmpty() || outputSlot.getItem() == output.getItem()) {
+                    handler.extractItem(0, 1, false);
+                    handler.insertItem(1, output.copy(), false);
+                    catalyzer.nitrogenPower -= recipe.getNitrogenUsage();
+                    catalyzer.recipeProgress = 0;
+                }
+            }
+        } else {
+            catalyzer.recipeProgress = 0;
+        }
+
+        update(serverLevel, pos, state, catalyzer);
+    }
+
+    private static void update(ServerLevel level, BlockPos pos, BlockState state, CatalyzerBlockEntity be) {
+        be.setChanged();
+        level.sendBlockUpdated(pos, state, state, 3);
     }
 }

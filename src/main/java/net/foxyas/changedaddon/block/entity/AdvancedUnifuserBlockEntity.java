@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.block.entity;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
+import net.foxyas.changedaddon.recipes.RecipesHandle;
+import net.foxyas.changedaddon.recipes.UnifuserRecipe;
 import net.foxyas.changedaddon.world.inventory.UnifuserGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,12 +11,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -26,51 +30,40 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
-public class AdvancedUnifuserBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
-    private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
-    private NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
+public class AdvancedUnifuserBlockEntity extends UnifuserBlockEntity {
 
     public AdvancedUnifuserBlockEntity(BlockPos position, BlockState state) {
         super(ChangedAddonBlockEntities.ADVANCED_UNIFUSER.get(), position, state);
     }
 
     @Override
-    public void load(@NotNull CompoundTag compound) {
-        super.load(compound);
-        if (!this.tryLoadLootTable(compound))
-            this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        ContainerHelper.loadAllItems(compound, this.stacks);
+    public void load(@NotNull CompoundTag tag) {
+        super.load(tag);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag compound) {
-        super.saveAdditional(compound);
-        if (!this.trySaveLootTable(compound)) {
-            ContainerHelper.saveAllItems(compound, this.stacks);
-        }
+    public void saveAdditional(@NotNull CompoundTag tag) {
+        super.saveAdditional(tag);
+    }
+
+    @Override
+    public boolean isAdvanced() {
+        return true;
     }
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
+        return super.getUpdatePacket();
     }
 
     @Override
     public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+        return super.getUpdateTag();
     }
 
     @Override
     public int getContainerSize() {
-        return stacks.size();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        for (ItemStack itemstack : this.stacks)
-            if (!itemstack.isEmpty())
-                return false;
-        return true;
+        return super.getContainerSize();
     }
 
     @Override
@@ -80,7 +73,7 @@ public class AdvancedUnifuserBlockEntity extends RandomizableContainerBlockEntit
 
     @Override
     public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory) {
-        return new UnifuserGuiMenu(id, inventory, worldPosition);
+        return super.createMenu(id, inventory);
     }
 
     @Override
@@ -90,22 +83,22 @@ public class AdvancedUnifuserBlockEntity extends RandomizableContainerBlockEntit
 
     @Override
     protected @NotNull NonNullList<ItemStack> getItems() {
-        return this.stacks;
+        return super.getItems();
     }
 
     @Override
     protected void setItems(@NotNull NonNullList<ItemStack> stacks) {
-        this.stacks = stacks;
+        super.setItems(stacks);
     }
 
     @Override
     public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
-        return index != 3;
+        return super.canPlaceItem(index, stack);
     }
 
     @Override
     public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
-        return IntStream.range(0, this.getContainerSize()).toArray();
+        return super.getSlotsForFace(side);
     }
 
     @Override
@@ -134,5 +127,13 @@ public class AdvancedUnifuserBlockEntity extends RandomizableContainerBlockEntit
         super.setRemoved();
         for (LazyOptional<? extends IItemHandler> handler : handlers)
             handler.invalidate();
+    }
+
+    public static void clientTick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
+        UnifuserBlockEntity.clientTick(level, blockPos, blockState, blockEntity);
+    }
+
+    public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
+        UnifuserBlockEntity.serverTick(level, blockPos, blockState, blockEntity);
     }
 }

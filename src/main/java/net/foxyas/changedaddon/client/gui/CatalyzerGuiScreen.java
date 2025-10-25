@@ -2,9 +2,8 @@ package net.foxyas.changedaddon.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.foxyas.changedaddon.procedures.BlockstartinfoProcedure;
-import net.foxyas.changedaddon.procedures.IfBlockisfullProcedure;
-import net.foxyas.changedaddon.procedures.RecipeProgressProcedure;
+import net.foxyas.changedaddon.block.entity.CatalyzerBlockEntity;
+import net.foxyas.changedaddon.block.entity.UnifuserBlockEntity;
 import net.foxyas.changedaddon.world.inventory.CatalyzerGuiMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
@@ -16,20 +15,25 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
+import static net.foxyas.changedaddon.client.gui.UnifuserGuiScreen.getMachineState;
+import static net.foxyas.changedaddon.client.gui.UnifuserGuiScreen.getRecipeState;
+
 public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu> {
 
     private static final ResourceLocation texture = ResourceLocation.parse("changed_addon:textures/screens/catalyzer_gui_new.png");
 
     private final Level world;
     private final int x, y, z;
+    private final BlockPos containerPos;
     private final CatalyzerGuiMenu menu;
 
     public CatalyzerGuiScreen(CatalyzerGuiMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
         this.world = container.world;
-        this.x = container.x;
-        this.y = container.y;
-        this.z = container.z;
+        this.containerPos = container.getBlockPos();
+        this.x = containerPos.getX();
+        this.y = containerPos.getY();
+        this.z = containerPos.getZ();
         menu = container;
         this.imageWidth = 200;
         this.imageHeight = 170;
@@ -53,14 +57,17 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         RenderSystem.setShaderTexture(0, texture);
         blit(ms, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
-        BlockEntity be = world.getBlockEntity(new BlockPos(x, y, z));
-        int progressInt = be != null ? (int) (be.getTileData().getDouble("recipe_progress") / 3.57) : -1;
-
         RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/empty_bar.png"));
         blit(ms, this.leftPos + 83, this.topPos + 46, 0, 0, 32, 12, 32, 12);
 
-        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/bar_full.png"));
-        blit(ms, this.leftPos + 83 + 2, this.topPos + 46 + 2, 0, 0, progressInt, 8, progressInt, 8);
+        BlockEntity be = world.getBlockEntity(new BlockPos(x, y, z));
+        if (be instanceof CatalyzerBlockEntity unifuserBlockEntity) {
+            int progressInt = (int) (unifuserBlockEntity.recipeProgress / 3.57);
+
+            RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/bar_full.png"));
+            blit(ms, this.leftPos + 83 + 2, this.topPos + 46 + 2, 0, 0, progressInt, 8, progressInt, 8);
+        }
+
 
         assert this.minecraft != null;
         assert this.minecraft.level != null;
@@ -83,13 +90,15 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
     protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
         this.font.draw(poseStack, nitrogenPercentage(x, y, z), 6, 8, -12829636);
         this.font.draw(poseStack,
-
-                BlockstartinfoProcedure.execute(world, x, y, z), 6, 20, -12829636);
-        if (IfBlockisfullProcedure.execute(world, x, y, z))
-            this.font.draw(poseStack, new TranslatableComponent("gui.changed_addon.catalyzergui.label_full"), 151, 65, -12829636);
+                getMachineState(world, x, y, z), 6, 20, -12829636);
+        if (isBlockFull())
+            this.font.draw(poseStack, new TranslatableComponent("gui.changed_addon.catalyzer_gui.label_full"), 151, 65, -12829636);
         this.font.draw(poseStack,
+                getRecipeState(world, x, y, z), 90, 34, -12829636);
+    }
 
-                RecipeProgressProcedure.execute(world, x, y, z), 90, 34, -12829636);
+    private boolean isBlockFull() {
+        return world.getBlockEntity(containerPos) instanceof CatalyzerBlockEntity catalyzerBlockEntity && catalyzerBlockEntity.isSlotFull(1);
     }
 
     protected String nitrogenPercentage(double x, double y, double z) {

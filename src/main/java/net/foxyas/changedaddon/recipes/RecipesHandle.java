@@ -72,7 +72,7 @@ public class RecipesHandle {
         return 1f; // Retorna um ItemStack vazio se nenhuma receita correspondente for encontrada
     }
 
-    public static @Nullable CatalyzerRecipe findRecipe(ServerLevel level, ItemStack input){
+    public static @Nullable CatalyzerRecipe findRecipeForCatalyzer(ServerLevel level, ItemStack input){
         RecipeManager recipeManager = level.getRecipeManager();
 
         // Obtém todas as receitas do tipo JeiCatalyzerRecipe
@@ -86,6 +86,31 @@ public class RecipesHandle {
         for (CatalyzerRecipe recipe : catalyzerRecipes) {
             NonNullList<Ingredient> ingredients = recipe.getIngredients();
             if (!ingredients.get(0).test(input))
+                continue;
+            return recipe;
+        }
+
+        return null;
+    }
+
+    public static @Nullable UnifuserRecipe findRecipeForUnifuser(ServerLevel level, ItemStack input1, ItemStack input2, ItemStack input3){
+        RecipeManager recipeManager = level.getRecipeManager();
+
+        // Obtém todas as receitas do tipo JeiCatalyzerRecipe
+        List<UnifuserRecipe> unifuserRecipes = recipeManager.getAllRecipesFor(UnifuserRecipe.Type.INSTANCE);
+
+        // Cria um contêiner simples com o input fornecido
+        SimpleContainer container = new SimpleContainer(1);
+        container.setItem(0, input1);
+
+        // Verifica cada receita para ver se ela corresponde ao input fornecido
+        for (UnifuserRecipe recipe : unifuserRecipes) {
+            NonNullList<Ingredient> ingredients = recipe.getIngredients();
+            if (!ingredients.get(0).test(input1))
+                continue;
+            if (!ingredients.get(1).test(input2))
+                continue;
+            if (!ingredients.get(2).test(input3))
                 continue;
             return recipe;
         }

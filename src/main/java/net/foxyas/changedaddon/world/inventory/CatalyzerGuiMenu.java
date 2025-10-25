@@ -21,9 +21,9 @@ public class CatalyzerGuiMenu extends AbstractContainerMenu {
 
     public final Level world;
     public final Player entity;
-    public int x, y, z;
     private final ContainerLevelAccess access;
     private final BlockEntity boundBlockEntity;
+    private final BlockPos blockPos;
 
     public CatalyzerGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         super(ChangedAddonMenus.CATALYZER_GUI.get(), id);
@@ -32,9 +32,7 @@ public class CatalyzerGuiMenu extends AbstractContainerMenu {
         IItemHandler internal = new ItemStackHandler(2);
 
         BlockPos pos = extraData.readBlockPos();
-        this.x = pos.getX();
-        this.y = pos.getY();
-        this.z = pos.getZ();
+        this.blockPos = pos;
         access = ContainerLevelAccess.create(world, pos);
 
         boundBlockEntity = this.world.getBlockEntity(pos);
@@ -177,5 +175,9 @@ public class CatalyzerGuiMenu extends AbstractContainerMenu {
             }
         }
         return flag;
+    }
+
+    public BlockPos getBlockPos() {
+        return blockPos;
     }
 }

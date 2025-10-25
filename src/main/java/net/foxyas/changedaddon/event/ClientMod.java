@@ -22,7 +22,7 @@ public class ClientMod {
         event.enqueueWork(() -> {
             MenuScreens.register(ChangedAddonMenus.GENERATORGUI.get(), GeneratorguiScreen::new);
             MenuScreens.register(ChangedAddonMenus.CATALYZER_GUI.get(), CatalyzerGuiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.UNIFUSER_GUI.get(), UnifuserguiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.UNIFUSER_GUI.get(), UnifuserGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.TRANSFUR_SOUNDS_GUI.get(), TransfurSoundsGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.INFORMANT_MENU.get(), InformantGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.PROTOTYPE_MENU.get(), PrototypeMenuScreen::new);

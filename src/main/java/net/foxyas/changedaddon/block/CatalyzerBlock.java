@@ -1,12 +1,13 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.CatalyzerBlockEntity;
-import net.foxyas.changedaddon.procedures.CatalyzerOnBlockRightClickedProcedure;
-import net.foxyas.changedaddon.procedures.CatalyzerUpdateTickProcedure;
-import net.foxyas.changedaddon.procedures.UnifuserBlockAddedProcedure;
+import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -16,14 +17,21 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
@@ -34,6 +42,10 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
     public CatalyzerBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.METAL).strength(5f, 10f));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+    }
+
+    public CatalyzerBlock(Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -53,19 +65,52 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
-        world.scheduleTick(pos, this, 5);
-        UnifuserBlockAddedProcedure.execute(world, pos, blockstate);
+        super.onPlace(blockstate, world, pos, oldState, moving);
     }
 
     @Override
     public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, Random random) {
-        CatalyzerUpdateTickProcedure.execute(world, pos, blockstate);
-        world.scheduleTick(pos, this, 5);
+        super.tick(blockstate, world, pos, random);
     }
 
     @Override
-    public @NotNull InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
-        CatalyzerOnBlockRightClickedProcedure.execute(world, pos, blockstate, entity);
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return createTickerHelper(pBlockEntityType, ChangedAddonBlockEntities.CATALYZER.get(), pLevel.isClientSide ? CatalyzerBlockEntity::clientTick : CatalyzerBlockEntity::serverTick);
+    }
+
+    @Nullable
+    protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> pServerType, BlockEntityType<E> pClientType, BlockEntityTicker<? super E> pTicker) {
+        return pClientType == pServerType ? (BlockEntityTicker<A>) pTicker : null;
+    }
+
+    @Override
+    public @NotNull InteractionResult use(BlockState blockstate, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        //CatalyzerOnBlockRightClickedProcedure.execute(world, pos, blockstate, entity);
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+        if (!(blockEntity instanceof CatalyzerBlockEntity catalyzerBlockEntity)) return InteractionResult.PASS;
+
+        if (player.isShiftKeyDown()) {
+            Component customName = catalyzerBlockEntity.getCustomName();
+            if (customName == null) customName = catalyzerBlockEntity.getDisplayName();
+            String name = customName.getString();
+
+            if (catalyzerBlockEntity.startRecipe) {
+                catalyzerBlockEntity.startRecipe = false;
+                level.setBlockAndUpdate(pos, blockstate);
+                player.displayClientMessage(new TextComponent("you stop the " + name), true);
+                return InteractionResult.SUCCESS;
+            } else {
+                catalyzerBlockEntity.startRecipe = true;
+                level.setBlockAndUpdate(pos, blockstate);
+                player.displayClientMessage(new TextComponent("you start the " + name), true);
+                return InteractionResult.SUCCESS;
+            }
+        }
+
+        if (player instanceof ServerPlayer sPlayer) {
+            NetworkHooks.openGui(sPlayer, catalyzerBlockEntity, pos);
+        }
+
         return InteractionResult.SUCCESS;
     }
 
