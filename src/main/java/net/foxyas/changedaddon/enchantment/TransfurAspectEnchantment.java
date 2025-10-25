@@ -139,6 +139,7 @@ public class TransfurAspectEnchantment extends Enchantment {
 
         @SubscribeEvent
         public static void onItemTooltip(ItemTooltipEvent event) {
+            if(event.getPlayer() == null) return;
             ItemStack stack = event.getItemStack();
             List<Component> tooltip = event.getToolTip();
 
@@ -151,7 +152,7 @@ public class TransfurAspectEnchantment extends Enchantment {
             // Display detailed tooltip only when Shift is held
             if (Screen.hasShiftDown()) {
                 // Use base value of 1.0 here; can be dynamically adjusted for the actual player stats
-                double baseValue = getTransfurDamage(event.getEntityLiving(), null, enchantLevel);
+                double baseValue = getTransfurDamage(event.getPlayer(), null, enchantLevel);
 
                 // Calculate the Transfur Damage using the same formula as in doPostAttack
                 double damage = baseValue * 0.75 * enchantLevel / 4.0;
