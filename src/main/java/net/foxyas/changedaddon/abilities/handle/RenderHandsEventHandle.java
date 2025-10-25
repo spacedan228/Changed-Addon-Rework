@@ -40,7 +40,7 @@ public class RenderHandsEventHandle {
     public static final float VISIBLE_HAND_PROGRESS = 0f;
     private static boolean lock;
 
-    private static float extraHandShowProgress;
+    private static float extraHandShowProgress = 1.01f;
 
     @SubscribeEvent
     public static void onRenderHand(RenderHandEvent event) {

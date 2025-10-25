@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -73,11 +74,14 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
         }
 
 
-        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/dusts.png"));
-        blit(ms, this.leftPos + 15, this.topPos + 46, 0, 0, 16, 16, 16, 16);
-
-        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/syringe_withlitixcamonia_screen.png"));
-        blit(ms, this.leftPos + 50, this.topPos + 57, 0, 0, 16, 16, 16, 16);
+        if (getBlockItem(0).isEmpty()) {
+            RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/dusts.png"));
+            blit(ms, this.leftPos + 15, this.topPos + 46, 0, 0, 16, 16, 16, 16);
+        }
+        if (getBlockItem(2).isEmpty()) {
+            RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/syringe_withlitixcamonia_screen.png"));
+            blit(ms, this.leftPos + 50, this.topPos + 57, 0, 0, 16, 16, 16, 16);
+        }
 
         RenderSystem.disableBlend();
     }
@@ -118,5 +122,9 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
         }
 
         return Math.round(number) + "%";
+    }
+
+    private ItemStack getBlockItem(int index) {
+        return world.getBlockEntity(containerPos) instanceof CatalyzerBlockEntity catalyzerBlockEntity ? catalyzerBlockEntity.getItem(index) : ItemStack.EMPTY;
     }
 }

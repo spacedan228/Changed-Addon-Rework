@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -69,19 +70,21 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         }
 
 
-        assert this.minecraft != null;
-        assert this.minecraft.level != null;
-        long gameTime = this.minecraft.level.getGameTime();
-        int animationPeriod = 40; // ticks (2 segundos)
-        boolean showSyringe = (gameTime % animationPeriod) < (animationPeriod / 2);
+        if (getBlockItem(0).isEmpty()) {
+            assert this.minecraft != null;
+            assert this.minecraft.level != null;
+            long gameTime = this.minecraft.level.getGameTime();
+            int animationPeriod = 40; // ticks (2 segundos)
+            boolean showSyringe = (gameTime % animationPeriod) < (animationPeriod / 2);
 
-        ResourceLocation icon = showSyringe
-                ? ResourceLocation.parse("changed_addon:textures/screens/syringes.png")
-                : ResourceLocation.parse("changed_addon:textures/screens/dusts.png");
+            ResourceLocation icon = showSyringe
+                    ? ResourceLocation.parse("changed_addon:textures/screens/syringes.png")
+                    : ResourceLocation.parse("changed_addon:textures/screens/dusts.png");
 
-        int yOffset = showSyringe ? 44 : 45;
-        RenderSystem.setShaderTexture(0, icon);
-        blit(ms, this.leftPos + 23, this.topPos + yOffset, 0, 0, 16, 16, 16, 16);
+            int yOffset = showSyringe ? 44 : 45;
+            RenderSystem.setShaderTexture(0, icon);
+            blit(ms, this.leftPos + 23, this.topPos + yOffset, 0, 0, 16, 16, 16, 16);
+        }
 
         RenderSystem.disableBlend();
     }
@@ -99,6 +102,14 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
 
     private boolean isBlockFull() {
         return world.getBlockEntity(containerPos) instanceof CatalyzerBlockEntity catalyzerBlockEntity && catalyzerBlockEntity.isSlotFull(1);
+    }
+
+    private boolean isBlockFull(int index) {
+        return world.getBlockEntity(containerPos) instanceof CatalyzerBlockEntity catalyzerBlockEntity && catalyzerBlockEntity.isSlotFull(index);
+    }
+
+    private ItemStack getBlockItem(int index) {
+        return world.getBlockEntity(containerPos) instanceof CatalyzerBlockEntity catalyzerBlockEntity ? catalyzerBlockEntity.getItem(index) : ItemStack.EMPTY;
     }
 
     protected String nitrogenPercentage(double x, double y, double z) {
