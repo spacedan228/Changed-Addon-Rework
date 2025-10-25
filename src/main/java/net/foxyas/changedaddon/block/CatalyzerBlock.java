@@ -66,6 +66,7 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
     @Override
     public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
         super.onPlace(blockstate, world, pos, oldState, moving);
+        world.sendBlockUpdated(pos, oldState, blockstate, 3);
     }
 
     @Override

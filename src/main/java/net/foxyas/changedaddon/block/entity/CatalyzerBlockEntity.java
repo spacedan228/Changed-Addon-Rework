@@ -165,23 +165,24 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        if (!(blockEntity instanceof CatalyzerBlockEntity catalyzer)) return;
+        if (!(blockEntity instanceof CatalyzerBlockEntity catalyzerBlockEntity)) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         boolean shouldTick = false;
-        if (catalyzer.tickCount % 120 == 0) {
+        if (catalyzerBlockEntity.tickCount >= 5) {
             shouldTick = true;
+            catalyzerBlockEntity.tickCount = 0;
         }
 
         if (!shouldTick) {
-            catalyzer.tickCount ++;
-            update(serverLevel, pos, state, catalyzer);
+            catalyzerBlockEntity.tickCount ++;
+            update(serverLevel, pos, state, catalyzerBlockEntity);
             return;
         }
 
-        if (catalyzer.nitrogenPower < 200) {
-            catalyzer.nitrogenPower += 1;
+        if (catalyzerBlockEntity.nitrogenPower < 200) {
+            catalyzerBlockEntity.nitrogenPower += 1;
             level.sendBlockUpdated(pos, state, state, 3);
-            catalyzer.setChanged();
+            catalyzerBlockEntity.setChanged();
             return;
         }
 
@@ -190,52 +191,52 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
         if (handler == null) return;
 
         if (handler.getStackInSlot(0).isEmpty()) {
-            catalyzer.recipeOn = false;
-            catalyzer.recipeProgress = Math.max(0, catalyzer.recipeProgress - 5);
-            update(serverLevel, pos, state, catalyzer);
+            catalyzerBlockEntity.recipeOn = false;
+            catalyzerBlockEntity.recipeProgress = Math.max(0, catalyzerBlockEntity.recipeProgress - 5);
+            update(serverLevel, pos, state, catalyzerBlockEntity);
             return;
         }
 
         boolean isFull = handler.getStackInSlot(1).getCount() >= handler.getStackInSlot(1).getMaxStackSize();
         if (isFull) {
-            update(serverLevel, pos, state, catalyzer);
+            update(serverLevel, pos, state, catalyzerBlockEntity);
             return;
         }
 
-        if (!catalyzer.startRecipe) {
-            update(serverLevel, pos, state, catalyzer);
+        if (!catalyzerBlockEntity.startRecipe) {
+            update(serverLevel, pos, state, catalyzerBlockEntity);
             return;
         }
 
         ItemStack input = handler.getStackInSlot(0).copy();
         CatalyzerRecipe recipe = RecipesHandle.findRecipeForCatalyzer(serverLevel, input);
-        catalyzer.recipeOn = recipe != null;
+        catalyzerBlockEntity.recipeOn = recipe != null;
 
         if (recipe != null) {
-            if (catalyzer.recipeProgress < 100) {
+            if (catalyzerBlockEntity.recipeProgress < 100) {
                 double speed = recipe.getProgressSpeed();
                 if (state.getBlock() instanceof AdvancedCatalyzerBlock) {
                     speed *= 4;
                 }
-                catalyzer.recipeProgress += speed;
+                catalyzerBlockEntity.recipeProgress += speed;
             }
 
-            if (catalyzer.recipeProgress >= 100) {
+            if (catalyzerBlockEntity.recipeProgress >= 100) {
                 ItemStack outputSlot = handler.getStackInSlot(1);
                 ItemStack output = recipe.getResultItem();
 
                 if (outputSlot.isEmpty() || outputSlot.getItem() == output.getItem()) {
                     handler.extractItem(0, 1, false);
                     handler.insertItem(1, output.copy(), false);
-                    catalyzer.nitrogenPower -= recipe.getNitrogenUsage();
-                    catalyzer.recipeProgress = 0;
+                    catalyzerBlockEntity.nitrogenPower -= recipe.getNitrogenUsage();
+                    catalyzerBlockEntity.recipeProgress = 0;
                 }
             }
         } else {
-            catalyzer.recipeProgress = 0;
+            catalyzerBlockEntity.recipeProgress = 0;
         }
 
-        update(serverLevel, pos, state, catalyzer);
+        update(serverLevel, pos, state, catalyzerBlockEntity);
     }
 
     private static void update(ServerLevel level, BlockPos pos, BlockState state, CatalyzerBlockEntity be) {

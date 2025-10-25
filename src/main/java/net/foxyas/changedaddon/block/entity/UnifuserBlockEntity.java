@@ -180,8 +180,9 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
         if (!(blockEntity instanceof UnifuserBlockEntity unifuserBlockEntity)) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         boolean shouldTick = false;
-        if (unifuserBlockEntity.tickCount % 20 == 0) {
+        if (unifuserBlockEntity.tickCount >= 5) {
             shouldTick = true;
+            unifuserBlockEntity.tickCount = 0;
         }
 
         if (!shouldTick) {
