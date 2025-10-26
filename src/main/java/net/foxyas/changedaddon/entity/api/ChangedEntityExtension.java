@@ -73,15 +73,20 @@ public interface ChangedEntityExtension {
                         List<Item> itemStream = acceptedSpawnClothes.stream().filter((itemType) -> itemType instanceof AccessoryItem accessoryItem).toList();
 
                         ItemStack stack = getRandomItemFromList(changedEntity, itemStream);
-                        do stack = getRandomItemFromList(changedEntity, itemStream); while (stack.isEmpty());
-
                         if (stack.getItem() instanceof AccessoryItem accessoryItem) {
                             if (accessoryItem instanceof DyeableClothingItem dyeableClothes) {
                                 DyeableClothingItem.DefaultColors color = Util.getRandom(DyeableClothingItem.DefaultColors.values(), changedEntity.getRandom());
                                 dyeableClothes.setColor(stack, color.getColorToInt());
                             }
                             boolean flag = accessoryItem.allowedInSlot(stack, changedEntity, accessorySlotType);
+                            do stack = getRandomItemFromList(changedEntity, itemStream); while (stack.isEmpty());
                             if (flag) slots.setItem(accessorySlotType, stack);
+
+                            if (accessorySlotType == ChangedAccessorySlots.BODY.get() || stack.is(ChangedItems.SPORTS_BRA.get())) {
+                                ItemStack randomItemFromList = getRandomItemFromList(changedEntity, acceptedSpawnClothes.stream().filter((item1) -> item1 instanceof AccessoryItem accessory && accessory.allowedInSlot(new ItemStack(item1), changedEntity, ChangedAccessorySlots.LEGS.get())).toList());
+                                boolean flag2 = accessoryItem.allowedInSlot(randomItemFromList, changedEntity, ChangedAccessorySlots.LEGS.get());
+                                if (flag2) slots.setItem(ChangedAccessorySlots.LEGS.get(), randomItemFromList);
+                            } //To Stop the Half Naked Entities To Spawn... if it spawns with only a shorts is less odd than only with a bra...
                         }
                     }
                 }
