@@ -46,7 +46,7 @@ public abstract class AbilityRadialScreenMixin {
         }
     }
 
-
+    /*
     @Inject(method = "handleClicked", at = @At("TAIL"), remap = false, cancellable = true)
     public void handleClicked(int section, SingleRunnable close, CallbackInfoReturnable<Boolean> cir) {
         close.run();
@@ -56,5 +56,5 @@ public abstract class AbilityRadialScreenMixin {
             ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(this.menu.player, variantInstanceExtensor.getSecondAbilityKeyState(), ability));
             cir.setReturnValue(false);
         }
-    }
+    }*/
 }

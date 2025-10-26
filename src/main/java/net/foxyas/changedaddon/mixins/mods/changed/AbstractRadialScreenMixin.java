@@ -1,7 +1,12 @@
 package net.foxyas.changedaddon.mixins.mods.changed;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.network.packets.VariantSecondAbilityActivate;
+import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
+import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.ltxprogrammer.changed.client.gui.AbilityRadialScreen;
 import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;
 import net.ltxprogrammer.changed.util.SingleRunnable;
 import net.minecraft.client.Minecraft;
@@ -16,6 +21,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -54,14 +60,28 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
                     LocalPlayer localPlayer = this.minecraft.player;
                     Objects.requireNonNull(localPlayer);
                     SingleRunnable single = new SingleRunnable(localPlayer::closeContainer);
-                    if (this.handleClicked(section.get(), single)) {
+                    if (this.handleRightClicked(section.get(), single)) {
                         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         single.run();
                         cir.setReturnValue(true);
-                        cir.cancel();
                     }
                 }
             }
         }
+    }
+
+
+    @Unique
+    public boolean handleRightClicked(int section, SingleRunnable close) {
+        close.run();
+        if ((AbstractRadialScreen<?>) (Object) this instanceof AbilityRadialScreen abilityRadialScreen) {
+            AbstractAbility<?> ability = abilityRadialScreen.abilities.get(section);
+            if (abilityRadialScreen.variant instanceof TransfurVariantInstanceExtensor variantInstanceExtensor) {
+                variantInstanceExtensor.setSecondSelectedAbility(ability);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(abilityRadialScreen.menu.player, variantInstanceExtensor.getSecondAbilityKeyState(), ability));
+                return false;
+            }
+        }
+        return false;
     }
 }
