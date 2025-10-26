@@ -120,7 +120,7 @@ public class ChangedAddonKeyMappings {
                                     if (newState != transfurVariantInstanceExtensor.getSecondAbilityKeyState()) {
                                         ChangedTutorial.triggerOnUseAbility(variant.getSelectedAbility());
                                         transfurVariantInstanceExtensor.setSecondAbilityKeyState(newState);
-                                        Changed.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
+                                        ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
                                     }
 
                                 }

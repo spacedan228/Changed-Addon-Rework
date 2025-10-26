@@ -58,6 +58,7 @@
     "client.renderer.PaintingRendererMixin",
     "client.renderer.PostChainMixin",
     "mods.changed.AbilityOverlayMixin",
+    "mods.changed.AbilityRadialScreenMixin",
     "mods.changed.AbstractRadialScreenMixin"
   ]
 }

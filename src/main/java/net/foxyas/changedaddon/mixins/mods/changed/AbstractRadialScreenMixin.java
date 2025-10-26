@@ -63,19 +63,4 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
             }
         }
     }
-
-    @Inject(method = "render", at = @At("TAIL"), remap = true, cancellable = true)
-    private void render(PoseStack ms, int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
-        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-            this.getSectionAt(mouseX, mouseY).ifPresent((section) -> {
-                List<Component> toolTips = this.tooltipsFor(section);
-                if (toolTips != null) {
-                    List<Component> list = new ArrayList<>(toolTips);
-                    list.add(new TranslatableComponent("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
-                    this.renderTooltip(ms, list, Optional.empty(), mouseX, mouseY);
-                }
-
-            });
-        }
-    }
 }
