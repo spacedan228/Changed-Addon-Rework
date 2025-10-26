@@ -64,7 +64,9 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
                         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         single.run();
                         cir.setReturnValue(true);
+                        return;
                     }
+                    cir.setReturnValue(true);
                 }
             }
         }
