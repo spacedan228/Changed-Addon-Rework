@@ -205,7 +205,7 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
                     ItemStack stack = new ItemStack(ChangedAddonItems.DYEABLE_TSHIRT.get());
                     if (stack.getItem() instanceof DyeableClothingItem dyeableShorts) {
                         boolean flag = dyeableShorts.allowedInSlot(stack, this, ChangedAccessorySlots.BODY.get());
-                        DyeableShorts.DefaultColors color = Util.getRandom(DyeableShorts.DefaultColors.values(), this.random);
+                        DyeableClothingItem.DefaultColors color = Util.getRandom(DyeableClothingItem.DefaultColors.values(), this.random);
                         dyeableShorts.setColor(stack, color.getColorToInt());
                         if (flag) slots.setItem(ChangedAccessorySlots.BODY.get(), stack);
                     }
@@ -217,7 +217,7 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
                     ItemStack stack = new ItemStack(ChangedAddonItems.DYEABLE_SHORTS.get());
                     if (stack.getItem() instanceof DyeableShorts dyeableShorts) {
                         boolean flag = dyeableShorts.allowedInSlot(stack, this, ChangedAccessorySlots.LEGS.get());
-                        DyeableShorts.DefaultColors color = Util.getRandom(DyeableShorts.DefaultColors.values(), this.random);
+                        DyeableClothingItem.DefaultColors color = Util.getRandom(DyeableClothingItem.DefaultColors.values(), this.random);
                         dyeableShorts.setColor(stack, color.getColorToInt());
                         if (flag) slots.setItem(ChangedAccessorySlots.LEGS.get(), stack);
                     }

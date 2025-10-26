@@ -1,10 +1,31 @@
 package net.foxyas.changedaddon.world.gamerules;
 
+import net.ltxprogrammer.changed.init.ChangedTags;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 public enum ChangedEntitySpawnDressedType {
-    NON_LATEX,
-    LATEX,
-    ANY,
-    NONE;
+    NON_LATEX(entitytype -> !entitytype.is(ChangedTags.EntityTypes.LATEX)),
+    LATEX (entitytype -> entitytype.is(ChangedTags.EntityTypes.LATEX)),
+    ANY(entityType -> true),
+    NONE(entityType -> false);
+
+    private final Predicate<EntityType<?>> predicate;
+
+    ChangedEntitySpawnDressedType(Predicate<EntityType<?>> predicate) {
+        this.predicate = predicate;
+    }
+
+    public Predicate<EntityType<?>> getPredicate() {
+        return predicate;
+    }
+
+    public boolean isMatch(LivingEntity livingEntity) {
+        return this.predicate.test(livingEntity.getType());
+    }
 
     public static ChangedEntitySpawnDressedType fromString(String value) {
         try {
