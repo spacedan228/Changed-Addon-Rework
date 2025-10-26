@@ -692,5 +692,7 @@
   "text.changed_addon.land_speed": "Land Speed \u003d %s",
   "text.changed_addon.legs": "Amount of Legs \u003d %s",
   "text.changed_addon.swim_speed": "Swim Speed \u003d %s",
-  "text.changed_addon.miningStrength": "Mining Strength: %s"
+  "text.changed_addon.miningStrength": "Mining Strength: %s",
+  "key.changed_addon.use_second_ability": "Use Second Variant Ability",
+  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Press Right Click of mouse to select the Second Ability"
 }

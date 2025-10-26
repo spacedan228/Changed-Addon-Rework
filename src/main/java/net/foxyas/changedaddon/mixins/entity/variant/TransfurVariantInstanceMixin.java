@@ -1,9 +1,13 @@
 package net.foxyas.changedaddon.mixins.entity.variant;
 
+import com.google.common.collect.ImmutableMap;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazmatSuitItem;
+import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
+import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -21,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = TransfurVariantInstance.class, remap = false)
-public abstract class TransfurVariantInstanceMixin {
+public abstract class TransfurVariantInstanceMixin implements TransfurVariantInstanceExtensor {
 
     @Shadow
     @Final
@@ -43,6 +47,82 @@ public abstract class TransfurVariantInstanceMixin {
 
     @Shadow
     public int ticksFlying;
+
+    @Shadow protected boolean isTemporaryFromSuit;
+
+    @Shadow public abstract boolean isTemporaryFromSuit();
+
+    @Shadow public AbstractAbility<?> selectedAbility;
+
+    @Shadow @Final public ImmutableMap<AbstractAbility<?>, AbstractAbilityInstance> abilityInstances;
+    @Shadow public boolean abilityKeyState;
+
+
+    @Shadow public abstract void resetTicksSinceLastAbilityActivity();
+
+    @Unique
+    public int ticksSinceSecondAAbilityActivity;
+
+    @Unique
+    public boolean secondAbilityKeyState;
+
+    @Override
+    public boolean getSecondAbilityKeyState() {
+        return secondAbilityKeyState;
+    }
+
+    @Override
+    public void setSecondAbilityKeyState(boolean secondAbilityKeyState) {
+        this.secondAbilityKeyState = secondAbilityKeyState;
+    }
+
+    @Unique
+    public AbstractAbility<?> secondSelectedAbility;
+
+    @Override
+    public AbstractAbility<?> getSecondSelectedAbility() {
+        return secondSelectedAbility;
+    }
+
+    @Override
+    public void setSecondSelectedAbility(AbstractAbility<?> secondSelectedAbility) {
+        this.secondSelectedAbility = secondSelectedAbility;
+    }
+
+    @Override
+    public int getTicksSinceSecondAbilityActivity() {
+        return ticksSinceSecondAAbilityActivity;
+    }
+
+    @Override
+    public void resetTicksSinceSecondAbilityActivity() {
+        this.ticksSinceSecondAAbilityActivity = 0;
+    }
+
+    @Override
+    public AbstractAbilityInstance getSecondSelectedAbilityInstance() {
+        return this.abilityInstances.get(this.secondSelectedAbility);
+    }
+
+    @Inject(method = "tickAbilities", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableCollection;iterator()Lcom/google/common/collect/UnmodifiableIterator;", shift = At.Shift.AFTER))
+    private void changedAddon$onTickAbilities(CallbackInfo ci) {
+        if (!this.isTemporaryFromSuit() && this.shouldApplyAbilities()) {
+            if (this.secondSelectedAbility != null) {
+                AbstractAbilityInstance instance = this.abilityInstances.get(this.secondSelectedAbility);
+                if (instance != null) {
+                    AbstractAbility.Controller controller = instance.getController();
+                    boolean oldState = controller.exchangeKeyState(this.secondAbilityKeyState);
+                    if (this.secondAbilityKeyState || instance.getController().isCoolingDown()) {
+                        this.resetTicksSinceSecondAbilityActivity();
+                    }
+
+                    if (this.host.containerMenu == this.host.inventoryMenu && !this.host.isUsingItem() && !instance.getController().isCoolingDown()) {
+                        instance.getUseType().check(this.secondAbilityKeyState, oldState, controller);
+                    }
+                }
+            }
+        }
+    }
 
     @Inject(method = "canWear", at = @At("HEAD"), cancellable = true)
     private void negateArmor(Player player, ItemStack itemStack, EquipmentSlot slot, CallbackInfoReturnable<Boolean> cir) {

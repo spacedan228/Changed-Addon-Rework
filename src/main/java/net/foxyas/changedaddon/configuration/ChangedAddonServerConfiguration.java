@@ -13,6 +13,7 @@ public class ChangedAddonServerConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALWAYS_INFECT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> DL_COAT_AFFECT_ALL;
     public static final ForgeConfigSpec.ConfigValue<ChangedEntitySpawnDressedType> CHANGED_SPAWN_DRESS_MODE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_SECOND_ABILITY_USE;
 
     static {
         BUILDER.push("Latex Totem");
@@ -36,6 +37,9 @@ public class ChangedAddonServerConfiguration {
                         "Options: NONE, NON_LATEX, LATEX, ANY")
                 .defineEnum("Changed Entities Dress Mode", ChangedEntitySpawnDressedType.ANY);
         BUILDER.pop();
+        BUILDER.pop();
+        BUILDER.push("Player Handle");
+        ALLOW_SECOND_ABILITY_USE = BUILDER.comment("Allow the Player to use the second selected ability (similar to offhand and main hand)").define("Allow Second Ability use", false);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

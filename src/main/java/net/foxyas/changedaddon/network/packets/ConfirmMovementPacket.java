@@ -63,9 +63,9 @@ public class ConfirmMovementPacket {
 
                     // Agora você pode agir com base nisso no servidor:
                     if (syncTrackMotion.getLastKnownMotion() != null) {
-                        sender.sendMessage(new TextComponent("Client motion is: " + syncTrackMotion.getLastKnownMotion()), sender.getUUID());
+                        //sender.sendMessage(new TextComponent("Client motion is: " + syncTrackMotion.getLastKnownMotion()), sender.getUUID());
                     }
-                    sender.sendMessage(new TextComponent("Client is moving: " + syncTrackMotion.isMoving()), sender.getUUID());
+                    //sender.sendMessage(new TextComponent("Client is moving: " + syncTrackMotion.isMoving()), sender.getUUID());
                 }
             }
         });

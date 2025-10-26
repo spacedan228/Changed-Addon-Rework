@@ -22,6 +22,7 @@ public class CommonMod {
 
         ChangedAddonMod.addNetworkMessage(RequestMovementCheckPacket.class, RequestMovementCheckPacket::encode, RequestMovementCheckPacket::decode, RequestMovementCheckPacket::handle);
         ChangedAddonMod.addNetworkMessage(ConfirmMovementPacket.class, ConfirmMovementPacket::encode, ConfirmMovementPacket::decode, ConfirmMovementPacket::handle);
+        ChangedAddonMod.addNetworkMessage(VariantSecondAbilityActivate.class, VariantSecondAbilityActivate::write, VariantSecondAbilityActivate::new, VariantSecondAbilityActivate::handle);
     }
 
     @SubscribeEvent
