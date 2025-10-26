@@ -70,7 +70,7 @@ public interface ChangedEntityExtension {
                         List<Item> acceptedSpawnClothes = this.getAcceptedSpawnClothes(changedEntity);
                         if (acceptedSpawnClothes.isEmpty()) return;
 
-                        Stream<Item> itemStream = acceptedSpawnClothes.stream().filter((itemType) -> itemType instanceof AccessoryItem accessoryItem);
+                        List<Item> itemStream = acceptedSpawnClothes.stream().filter((itemType) -> itemType instanceof AccessoryItem accessoryItem).toList();
 
                         ItemStack stack = getRandomItemFromList(changedEntity, itemStream);
                         do stack = getRandomItemFromList(changedEntity, itemStream); while (stack.isEmpty());
@@ -114,7 +114,7 @@ public interface ChangedEntityExtension {
         });
     }
 
-    private @NotNull ItemStack getRandomItemFromList(ChangedEntity changedEntity, Stream<Item> itemStream) {
-        return new ItemStack(Util.getRandom(itemStream.toList(), changedEntity.getRandom()));
+    private @NotNull ItemStack getRandomItemFromList(ChangedEntity changedEntity, List<Item> itemList) {
+        return new ItemStack(Util.getRandom(itemList, changedEntity.getRandom()));
     }
 }
