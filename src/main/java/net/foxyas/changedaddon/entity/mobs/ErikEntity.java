@@ -2,8 +2,8 @@ package net.foxyas.changedaddon.entity.mobs;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -19,7 +19,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public class ErikEntity extends Monster {
@@ -64,11 +63,6 @@ public class ErikEntity extends Monster {
 
             @Override
             public boolean canContinueToUse() {
-                double x = ErikEntity.this.getX();
-                double y = ErikEntity.this.getY();
-                double z = ErikEntity.this.getZ();
-                Entity entity = ErikEntity.this;
-                Level world = ErikEntity.this.level;
                 return super.canContinueToUse();
             }
 
@@ -96,11 +90,11 @@ public class ErikEntity extends Monster {
 
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.hurt"));
+        return SoundEvents.GENERIC_HURT;
     }
 
     @Override
     public @NotNull SoundEvent getDeathSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.death"));
+        return SoundEvents.GENERIC_DEATH;
     }
 }

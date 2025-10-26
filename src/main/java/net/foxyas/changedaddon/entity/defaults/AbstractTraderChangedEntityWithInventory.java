@@ -13,6 +13,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,6 +27,7 @@ import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
@@ -33,8 +35,8 @@ import java.util.function.Predicate;
 public abstract class AbstractTraderChangedEntityWithInventory extends AbstractTraderChangedEntity implements InventoryCarrier, MenuProvider, ItemHandlerHolder {
 
     // Fields
-    private final SimpleContainer inventory;
-    private final MenuProvider menuProvider = new MenuProvider() {
+    protected final SimpleContainer inventory;
+    protected final MenuProvider menuProvider = new MenuProvider() {
         @Override
         public @NotNull Component getDisplayName() {
             return AbstractTraderChangedEntityWithInventory.this.getDisplayName();
@@ -46,7 +48,7 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
         }
     };
 
-    private final CombinedInvWrapper combinedInv;
+    protected final CombinedInvWrapper combinedInv;
 
     public AbstractTraderChangedEntityWithInventory(EntityType<? extends AbstractTraderChangedEntityWithInventory> type, Level world, int slots) {
         super(type, world);
@@ -94,13 +96,13 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.put("Inventory", inventory.createTag());
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag tag) {
+    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         this.inventory.fromTag(tag.getList("Inventory", 10));
     }
@@ -120,6 +122,35 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
     @Override
     public @NotNull SimpleContainer getInventory() {
         return inventory;
+    }
+
+    @Override
+    public @NotNull SlotAccess getSlot(int slot) {
+        if (getEquipmentSlot(slot) == null) {
+            int invSlot = slot;
+            if (invSlot >= 0 && invSlot < this.inventory.getContainerSize()) {
+                return SlotAccess.forContainer(this.inventory, invSlot);
+            }
+        }
+
+        return super.getSlot(slot);
+    }
+
+    @Nullable
+    protected static EquipmentSlot getEquipmentSlot(int pIndex) {
+        if (pIndex == 100 + EquipmentSlot.HEAD.getIndex()) {
+            return EquipmentSlot.HEAD;
+        } else if (pIndex == 100 + EquipmentSlot.CHEST.getIndex()) {
+            return EquipmentSlot.CHEST;
+        } else if (pIndex == 100 + EquipmentSlot.LEGS.getIndex()) {
+            return EquipmentSlot.LEGS;
+        } else if (pIndex == 100 + EquipmentSlot.FEET.getIndex()) {
+            return EquipmentSlot.FEET;
+        } else if (pIndex == 98) {
+            return EquipmentSlot.MAINHAND;
+        } else {
+            return pIndex == 99 ? EquipmentSlot.OFFHAND : null;
+        }
     }
 
     // MenuProvider implementation
