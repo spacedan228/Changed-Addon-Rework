@@ -86,7 +86,7 @@ public interface ChangedEntityExtension {
                                 ItemStack randomItemFromList = getRandomItemFromList(changedEntity, acceptedSpawnClothes.stream().filter((item1) -> item1 instanceof AccessoryItem accessory && accessory.allowedInSlot(new ItemStack(item1), changedEntity, ChangedAccessorySlots.LEGS.get())).toList());
                                 boolean flag2 = accessoryItem.allowedInSlot(randomItemFromList, changedEntity, ChangedAccessorySlots.LEGS.get());
                                 if (flag2) slots.setItem(ChangedAccessorySlots.LEGS.get(), randomItemFromList);
-                            } //To Stop the Half Naked Entities To Spawn... if it spawns with only a shorts is less odd than only with a bra...
+                            } // To Stop the Half Naked Entities To Spawn... if it spawns with only a shorts is less odd than only with a bra...
                         }
                     }
                 }
