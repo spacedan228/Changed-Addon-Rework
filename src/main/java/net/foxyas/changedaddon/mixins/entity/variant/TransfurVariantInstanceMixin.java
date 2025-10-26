@@ -98,7 +98,7 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Override
     public void setSecondSelectedAbility(AbstractAbility<?> secondSelectedAbility) {
         if (this.abilityInstances.containsKey(secondSelectedAbility)) {
-            this.resetTicksSinceLastAbilityActivity();
+            this.resetTicksSinceSecondAbilityActivity();
             AbstractAbilityInstance instance = this.abilityInstances.get(secondSelectedAbility);
             if (instance.getUseType() != AbstractAbility.UseType.MENU) {
                 if (this.secondSelectedAbility != secondSelectedAbility) {
