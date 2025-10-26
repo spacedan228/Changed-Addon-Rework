@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.network.packets;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
@@ -76,7 +77,7 @@ public class VariantSecondAbilityActivate implements ChangedPacket {
                                 transfurVariantInstanceExtensor.setSecondAbilityKeyState(this.keyState);
                             }
 
-                            Changed.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> sender), this);
+                            ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> sender), this);
                         }
                     }
                 });

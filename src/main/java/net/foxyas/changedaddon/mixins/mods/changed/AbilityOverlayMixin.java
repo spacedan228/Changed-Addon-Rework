@@ -32,11 +32,11 @@ public class AbilityOverlayMixin {
             if (ability != null && ability.getUseType() != AbstractAbility.UseType.MENU) {
                 if (!variant.isTemporaryFromSuit()) {
                     if (variant.shouldApplyAbilities()) {
-                        int offset = (int) (Transition.easeInOutSine(Mth.clamp(Mth.map((float) variant.getTicksSinceLastAbilityActivity() + partialTick, 100.0F, 130.0F, 0.0F, 1.0F), 0.0F, 1.0F)) * 40.0F);
+                        int offset = (int) (Transition.easeInOutSine(Mth.clamp(Mth.map((float) extensor.getTicksSinceSecondAbilityActivity() + partialTick, 100.0F, 130.0F, 0.0F, 1.0F), 0.0F, 1.0F)) * 40.0F);
                         if (offset < 39) {
                             AbstractRadialScreen.ColorScheme color = AbstractRadialScreen.getColors(variant).setForegroundToBright();
-                            renderBackground((10 + 18) - offset, screenHeight - 42 + offset, stack, color, player, variant, ability);
-                            renderForeground((15 + 18) - offset, screenHeight - 47 + offset, stack, color, player, variant, ability);
+                            renderBackground((10 + 32) - offset, screenHeight - 42 + offset, stack, color, player, variant, ability);
+                            renderForeground((15 + 32) - offset, screenHeight - 47 + offset, stack, color, player, variant, ability);
                         }
                     }
                 }

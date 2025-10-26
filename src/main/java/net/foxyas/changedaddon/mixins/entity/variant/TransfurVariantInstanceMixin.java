@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity.variant;
 
 import com.google.common.collect.ImmutableMap;
+import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazmatSuitItem;
@@ -11,7 +12,10 @@ import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.util.TagUtil;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -48,20 +52,27 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Shadow
     public int ticksFlying;
 
-    @Shadow protected boolean isTemporaryFromSuit;
+    @Shadow
+    protected boolean isTemporaryFromSuit;
 
-    @Shadow public abstract boolean isTemporaryFromSuit();
+    @Shadow
+    public abstract boolean isTemporaryFromSuit();
 
-    @Shadow public AbstractAbility<?> selectedAbility;
+    @Shadow
+    public AbstractAbility<?> selectedAbility;
 
-    @Shadow @Final public ImmutableMap<AbstractAbility<?>, AbstractAbilityInstance> abilityInstances;
-    @Shadow public boolean abilityKeyState;
+    @Shadow
+    @Final
+    public ImmutableMap<AbstractAbility<?>, AbstractAbilityInstance> abilityInstances;
+    @Shadow
+    public boolean abilityKeyState;
 
 
-    @Shadow public abstract void resetTicksSinceLastAbilityActivity();
+    @Shadow
+    public abstract void resetTicksSinceLastAbilityActivity();
 
     @Unique
-    public int ticksSinceSecondAAbilityActivity;
+    public int ticksSinceSecondAbilityActivity;
 
     @Unique
     public boolean secondAbilityKeyState;
@@ -91,12 +102,12 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @Override
     public int getTicksSinceSecondAbilityActivity() {
-        return ticksSinceSecondAAbilityActivity;
+        return ticksSinceSecondAbilityActivity;
     }
 
     @Override
     public void resetTicksSinceSecondAbilityActivity() {
-        this.ticksSinceSecondAAbilityActivity = 0;
+        this.ticksSinceSecondAbilityActivity = 0;
     }
 
     @Override
@@ -106,19 +117,47 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @Inject(method = "tickAbilities", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableCollection;iterator()Lcom/google/common/collect/UnmodifiableIterator;", shift = At.Shift.AFTER))
     private void changedAddon$onTickAbilities(CallbackInfo ci) {
-        if (!this.isTemporaryFromSuit() && this.shouldApplyAbilities()) {
-            if (this.secondSelectedAbility != null) {
-                AbstractAbilityInstance instance = this.abilityInstances.get(this.secondSelectedAbility);
-                if (instance != null) {
-                    AbstractAbility.Controller controller = instance.getController();
-                    boolean oldState = controller.exchangeKeyState(this.secondAbilityKeyState);
-                    if (this.secondAbilityKeyState || instance.getController().isCoolingDown()) {
-                        this.resetTicksSinceSecondAbilityActivity();
-                    }
+        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
+            if (!this.isTemporaryFromSuit() && this.shouldApplyAbilities()) {
+                if (this.secondSelectedAbility != null) {
+                    AbstractAbilityInstance instance = this.abilityInstances.get(this.secondSelectedAbility);
+                    if (instance != null) {
+                        AbstractAbility.Controller controller = instance.getController();
+                        boolean oldState = controller.exchangeKeyState(this.secondAbilityKeyState);
+                        if (this.secondAbilityKeyState || instance.getController().isCoolingDown()) {
+                            this.resetTicksSinceSecondAbilityActivity();
+                        }
 
-                    if (this.host.containerMenu == this.host.inventoryMenu && !this.host.isUsingItem() && !instance.getController().isCoolingDown()) {
-                        instance.getUseType().check(this.secondAbilityKeyState, oldState, controller);
+                        if (this.host.containerMenu == this.host.inventoryMenu && !this.host.isUsingItem() && !instance.getController().isCoolingDown()) {
+                            instance.getUseType().check(this.secondAbilityKeyState, oldState, controller);
+                        }
                     }
+                }
+            }
+        }
+    }
+
+    @Inject(method = "saveAbilities", at = @At("TAIL"))
+    private void changedAddon$saveAbilities(CallbackInfoReturnable<CompoundTag> cir) {
+        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
+            CompoundTag returnValue = cir.getReturnValue();
+
+            if (returnValue != null) {
+                ResourceLocation selectedKey = ChangedRegistry.ABILITY.get().getKey(this.secondSelectedAbility);
+                if (selectedKey != null) {
+                    TagUtil.putResourceLocation(returnValue, "secondSelectedAbility", selectedKey);
+                }
+            }
+        }
+    }
+
+    @Inject(method = "loadAbilities", at = @At("TAIL"))
+    private void changedAddon$loadAbilities(CompoundTag tagAbilities, CallbackInfo ci) {
+        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
+            if (tagAbilities.contains("secondSelectedAbility")) {
+                AbstractAbility<?> savedSelected = ChangedRegistry.ABILITY.get().getValue(TagUtil.getResourceLocation(tagAbilities, "secondSelectedAbility"));
+                if (this.abilityInstances.containsKey(savedSelected)) {
+                    this.secondSelectedAbility = savedSelected;
                 }
             }
         }
@@ -178,6 +217,10 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
                     }
                 }
             }
+        }
+
+        if (this.shouldApplyAbilities()) {
+            ++this.ticksSinceSecondAbilityActivity;
         }
     }
 

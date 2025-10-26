@@ -44,7 +44,7 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
     @Nullable
     public abstract List<Component> tooltipsFor(int i);
 
-    @Inject(method = "mouseClicked", at = @At("TAIL"), remap = true, cancellable = true)
+    @Inject(method = "mouseClicked", at = @At("HEAD"), remap = true, cancellable = true)
     private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
         if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
             if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
