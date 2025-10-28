@@ -1,6 +1,10 @@
 package net.foxyas.changedaddon.event;
 
+import com.mojang.brigadier.CommandDispatcher;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.command.ChangedAddonAdminCommand;
+import net.foxyas.changedaddon.command.ChangedAddonCommandRootCommand;
+import net.foxyas.changedaddon.command.TransfurMe;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
@@ -17,6 +21,7 @@ import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -27,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
@@ -35,6 +41,14 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
 public class CommonEvent {
+
+    @SubscribeEvent
+    public static void registerCommands(RegisterCommandsEvent event){
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        ChangedAddonAdminCommand.register(dispatcher);
+        ChangedAddonCommandRootCommand.register(dispatcher);
+        TransfurMe.register(dispatcher);
+    }
 
     @SubscribeEvent
     public static void persistAttributes(PlayerEvent.Clone event) {
@@ -56,16 +70,16 @@ public class CommonEvent {
     public static void onPlayerPickupXp(PlayerXpEvent.PickupXp event) {
         Player player = event.getPlayer();
         ExperienceOrb experienceOrb = event.getOrb();
-        AccessorySlots.getForEntity(player).ifPresent((slots) -> {
-            slots.forEachSlot((slotType, itemStack) -> {
-                if (itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension) {
+        AccessorySlots.getForEntity(player).ifPresent((slots) ->
+                slots.forEachSlot((slotType, itemStack) -> {
+                    if(!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
+
                     if (accessoryItemExtension.IsAffectedByMending(slotType, itemStack) && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, itemStack) > 0) {
                         int i = Math.min((int) (experienceOrb.getValue() * itemStack.getXpRepairRatio()), itemStack.getDamageValue());
                         itemStack.setDamageValue(itemStack.getDamageValue() - i);
                     }
-                }
-            });
-        });
+                })
+        );
     }
 
     @SubscribeEvent
@@ -103,8 +117,6 @@ public class CommonEvent {
 
         maskTransfur(player, player.level);
 
-        //tickInfectionAndRes(player);
-
         tickUntransfur(player);
 
         triggerSwimRegret(player);
@@ -118,9 +130,7 @@ public class CommonEvent {
     private static void maskTransfur(Player player, Level level) {
         int doTransfur = level.getLevelData().getGameRules().getInt(ChangedAddonGameRules.DO_DARK_LATEX_MASK_TRANSFUR);
         if (doTransfur <= 0) return;
-        if (player.isCreative() || player.isSpectator()) {
-            return;
-        }
+        if (player.isCreative() || player.isSpectator()) return;
 
         if (!player.getPersistentData().contains("HoldingDarkLatexMask")) {
             player.getPersistentData().putInt("HoldingDarkLatexMask", 0);
@@ -171,7 +181,7 @@ public class CommonEvent {
         player.getPersistentData().remove("HoldingDarkLatexMask");
     }
 
-    public static void tickInfectionAndRes(ProgressTransfurEvents.TickPlayerTransfurProgressEvent event) {
+    private static void tickInfectionAndRes(ProgressTransfurEvents.TickPlayerTransfurProgressEvent event) {
         Player player = event.getPlayer();
         if (ProcessTransfur.isPlayerTransfurred(player)) return;
 

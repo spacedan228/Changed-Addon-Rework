@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.command;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
@@ -39,20 +40,15 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Mod.EventBusSubscriber
 public class ChangedAddonAdminCommand {
 
-    @SubscribeEvent
-    public static void registerCommand(RegisterCommandsEvent event) {
-        event.getDispatcher().register(Commands.literal("changed-addon-admin")
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal("changed-addon-admin")
                 .requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("setUltraInstinctDodge")
                         .then(Commands.argument("targets", EntityArgument.entities())
@@ -314,7 +310,7 @@ public class ChangedAddonAdminCommand {
 
     private static final int MAX_OUTPUT = 20; // max lines to show
 
-    private static int showTransfursSlots(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    private static int showTransfursSlots(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         String namespaceFormId = StringArgumentType.getString(context, "NamespaceFormId").toLowerCase().replace("$", "");
         String filter = "";
@@ -398,7 +394,6 @@ public class ChangedAddonAdminCommand {
         return 1;
     }
 
-
     private static void sendCondensedMessage(CommandSourceStack source, List<Component> messages, boolean success) {
         int maxLines = 6;
 
@@ -422,5 +417,4 @@ public class ChangedAddonAdminCommand {
                 source.sendFailure(full);
         }
     }
-
 }
