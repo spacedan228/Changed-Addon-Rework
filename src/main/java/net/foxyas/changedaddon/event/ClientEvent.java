@@ -18,6 +18,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -125,7 +126,10 @@ public class ClientEvent {
             }
 
             if (ChangedAddonTransfurVariants.isVariantOC(loc, entity.getLevel())) {
-                tooltip.add(new TextComponent("§8OC Transfur"));
+                Component ocVariantComponent = ChangedAddonTransfurVariants.getOcVariantComponent(tf, entity.getLevel());
+                MutableComponent append = new TextComponent("§8OC Transfur");
+                if (ocVariantComponent != null) append.append("\n").append(ocVariantComponent);
+                tooltip.add(append);
             }
         }
 

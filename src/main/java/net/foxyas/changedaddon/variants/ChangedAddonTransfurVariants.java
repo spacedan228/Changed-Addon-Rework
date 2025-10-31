@@ -6,10 +6,9 @@ import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.partials.SnowLeopardPartialEntity;
 import net.foxyas.changedaddon.entity.simple.*;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
-
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.beast.AquaticEntity;
 import net.ltxprogrammer.changed.entity.variant.GenderedPair;
@@ -18,6 +17,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.AbstractGolem;
 import net.minecraft.world.entity.animal.Rabbit;
@@ -29,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -321,7 +322,6 @@ public class ChangedAddonTransfurVariants {
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.PROTOTYPE)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
-
 
 
     // ============================================================ OCs ============================================================ //
@@ -717,30 +717,90 @@ public class ChangedAddonTransfurVariants {
 
     public static boolean isAnBossVariant(TransfurVariant<?> transfurVariant) {
         return bossesVariants()
-                    .containsValue(transfurVariant);
+                .containsValue(transfurVariant);
     }
 
     public static TransfurVariant<?> getBossVersionOf(TransfurVariant<?> transfurVariant) {
         TransfurVariant<?> variant = bossesVariants()
-                    .get(transfurVariant);
+                .get(transfurVariant);
         return variant != null ? variant : transfurVariant;
     }
 
     protected static List<TransfurVariant<?>> getOcVariantList() {
-        return List.of(BOREALIS_MALE.get(), MONGOOSE.get(), BLUE_LIZARD.get(), HAYDEN_FENNEC_FOX.get(), HIMALAYAN_CRYSTAL_GAS_CAT_MALE.get(), HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE.get(), REYN.get(), LYNX.get(), FENGQI_WOLF.get(), FOXTA_FOXY.get(), SNEPSI_LEOPARD.get(), EXPERIMENT_009_BOSS.get(), EXPERIMENT_10_BOSS.get(), EXPERIMENT_009.get(), EXPERIMENT_10.get());
+        return List.of(
+                BOREALIS_MALE.get(),
+                MONGOOSE.get(),
+                BLUE_LIZARD.get(),
+                HAYDEN_FENNEC_FOX.get(),
+                HIMALAYAN_CRYSTAL_GAS_CAT_MALE.get(),
+                HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE.get(),
+                REYN.get(),
+                LYNX.get(),
+                FENGQI_WOLF.get(),
+                FOXTA_FOXY.get(),
+                SNEPSI_LEOPARD.get(),
+                EXPERIMENT_009_BOSS.get(),
+                EXPERIMENT_10_BOSS.get(),
+                EXPERIMENT_009.get(),
+                EXPERIMENT_10.get()
+        );
+    }
+
+    protected static VariantWithOwnerMap getOcVariantMap() {
+        VariantWithOwnerMap variants = new VariantWithOwnerMap();
+        addNoOwnerName(variants, BOREALIS_MALE.get());
+        addNoOwnerName(variants, MONGOOSE.get());
+        addNoOwnerName(variants, BLUE_LIZARD.get());
+        addNoOwnerName(variants, HAYDEN_FENNEC_FOX.get());
+        addNoOwnerName(variants, HIMALAYAN_CRYSTAL_GAS_CAT_MALE.get());
+        addNoOwnerName(variants, HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE.get());
+        addNoOwnerName(variants, REYN.get());
+        addNoOwnerName(variants, LYNX.get());
+        addNoOwnerName(variants, FENGQI_WOLF.get());
+        addNoOwnerName(variants, FOXTA_FOXY.get());
+        addNoOwnerName(variants, SNEPSI_LEOPARD.get());
+        addWithOwnerName(variants, EXPERIMENT_009.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
+        addWithOwnerNameFrom(variants, EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get());
+        addWithOwnerName(variants, EXPERIMENT_10.get(), ComponentUtil.literal("@SuperNovaDragon"));
+        addWithOwnerNameFrom(variants, EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());
+        return variants;
+    }
+
+    // Just For organization.
+    public static class VariantWithOwnerMap extends HashMap<TransfurVariant<?>, Component> {
+    }
+
+    @Nullable
+    public static Component getOcVariantComponent(TransfurVariant<?> transfurVariant, @Nullable Level level) {
+        return getOcVariantMap().get(transfurVariant);
+    }
+
+    private static void addNoOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
+        map.put(variant, ComponentUtil.literal("Free For Use, No Owner Name"));
+    }
+
+    private static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant, Component component) {
+        map.put(variant, component);
+    }
+
+    private static void addWithOwnerNameFrom(VariantWithOwnerMap map, @NotNull TransfurVariant<?> from, @NotNull TransfurVariant<?> to) {
+        Component component = map.get(from);
+        if (component != null) {
+            map.put(to, component);
+        }
     }
 
     public static boolean isVariantOC(TransfurVariant<?> transfurVariant, @Nullable Level level) {
         if (level != null && transfurVariant.getEntityType()
-                    .create(level) instanceof PatronOC) {
+                .create(level) instanceof PatronOC) {
             return true;
         } else return getOcVariantList()
-                    .contains(transfurVariant);
+                .contains(transfurVariant);
     }
 
     public static boolean isVariantOC(ResourceLocation transfurVariantID, @Nullable Level level) {
         TransfurVariant<?> variantFromID = ChangedRegistry.TRANSFUR_VARIANT.get()
-                    .getValue(transfurVariantID);
+                .getValue(transfurVariantID);
         if (variantFromID != null) {
             return isVariantOC(variantFromID, level);
         }
@@ -762,7 +822,7 @@ public class ChangedAddonTransfurVariants {
 
     private static <T extends ChangedEntity> RegistryObject<TransfurVariant<T>> register(String name, Supplier<TransfurVariant.Builder<T>> builder) {
         return REGISTRY.register(name, () -> builder.get()
-                    .build());
+                .build());
     }
 
 
