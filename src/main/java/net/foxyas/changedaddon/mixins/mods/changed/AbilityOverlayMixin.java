@@ -23,7 +23,7 @@ import static net.ltxprogrammer.changed.client.gui.AbilityOverlay.renderForegrou
 @Mixin(value = AbilityOverlay.class, remap = false)
 public class AbilityOverlayMixin {
 
-    @Inject(method = "lambda$renderSelectedAbility$0", at = @At("TAIL"))
+    @Inject(method = "lambda$renderSelectedAbility$0", at = @At("HEAD"))
     private static void renderSelectedAbility(float partialTick, int screenHeight, PoseStack stack, Player player, TransfurVariantInstance<?> variant, CallbackInfo ci) {
         if (variant instanceof TransfurVariantInstanceExtensor extensor) {
             if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;

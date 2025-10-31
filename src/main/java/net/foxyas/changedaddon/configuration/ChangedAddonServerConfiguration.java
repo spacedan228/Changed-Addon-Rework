@@ -35,6 +35,7 @@ public class ChangedAddonServerConfiguration {
         CHANGED_SPAWN_DRESS_MODE = BUILDER
                 .comment("Defines how Changed entities spawn with clothing.",
                         "Options: NONE, NON_LATEX, LATEX, ANY")
+                .worldRestart()
                 .defineEnum("Changed Entities Dress Mode", ChangedEntitySpawnDressedType.ANY);
         BUILDER.pop();
         BUILDER.pop();
