@@ -18,6 +18,7 @@ import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.extension.ChangedCompatibility;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.item.Clothing;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -137,6 +138,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                 this.playerClothingModel = getPlayerModel(entity);
                 if (playerClothingModel == null) return;
                 baseModel.copyPropertiesTo(this.playerClothingModel);
+                this.playerClothingModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
                 this.playerClothingModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
                 this.playerClothingModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
                 this.playerClothingModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
