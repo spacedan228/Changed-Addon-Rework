@@ -604,11 +604,20 @@ public class ChangedAddonEntities {
                     .sized(0.7f, 1.93f));
 
     public static final RegistryObject<EntityType<LatexSnowFoxFoxyasEntity>> LATEX_SNOW_FOX_FOXYAS = registerChangedEntity("latex_snow_fox_foxyas",
-            EntityType.Builder.<LatexSnowFoxFoxyasEntity>of(LatexSnowFoxFoxyasEntity::new, MobCategory.MONSTER)
+            EntityType.Builder.<LatexSnowFoxFoxyasEntity>of(LatexSnowFoxFoxyasEntity::new, ChangedMobCategories.CHANGED)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(64)
                     .setUpdateInterval(3)
                     .setCustomClientFactory(LatexSnowFoxFoxyasEntity::new)
+                    .sized(0.7f, 1.93f));
+
+
+    public static final RegistryObject<EntityType<LatexBorderCollieEntity>> LATEX_BORDER_COLLIE = registerChangedEntity("latex_border_collie",
+            EntityType.Builder.<LatexBorderCollieEntity>of(LatexBorderCollieEntity::new, ChangedMobCategories.CHANGED)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(3)
+                    .setCustomClientFactory(LatexBorderCollieEntity::new)
                     .sized(0.7f, 1.93f));
 
     // --- MONSTER/MOB ENTITIES ---
@@ -679,6 +688,7 @@ public class ChangedAddonEntities {
         event.put(LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastEntity.createAttributes().build());
         event.put(PROTOGEN_0SENIA0.get(), Protogen0senia0Entity.createAttributes().build());
         event.put(LATEX_KAYLA_SHARK.get(), LatexKaylaSharkEntity.createLatexAttributes().build());
+        event.put(LATEX_BORDER_COLLIE.get(), LatexBorderCollieEntity.createLatexAttributes().build());
     }
 
     @SubscribeEvent
@@ -740,6 +750,7 @@ public class ChangedAddonEntities {
             LatexCheetahFemale.init();
             LatexCheetahMale.init();
             Protogen0senia0Entity.init();
+            LatexBorderCollieEntity.init();
         });
     }
 

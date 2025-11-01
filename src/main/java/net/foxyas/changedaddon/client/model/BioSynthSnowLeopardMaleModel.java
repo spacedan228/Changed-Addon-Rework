@@ -200,11 +200,11 @@ public class BioSynthSnowLeopardMaleModel extends AdvancedHumanoidModel<SnowLeop
          return corrector;
      }
   */
+
     @Override
     public void setupHand(SnowLeopardMaleOrganicEntity entity) {
         animator.setupHand();
     }
-
 
     @Override
     public void setupAnim(@NotNull SnowLeopardMaleOrganicEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {

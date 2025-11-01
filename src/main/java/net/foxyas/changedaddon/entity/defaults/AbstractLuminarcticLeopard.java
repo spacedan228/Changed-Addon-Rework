@@ -43,6 +43,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -507,5 +508,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         }
     }
 
-
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable();
+    }
 }

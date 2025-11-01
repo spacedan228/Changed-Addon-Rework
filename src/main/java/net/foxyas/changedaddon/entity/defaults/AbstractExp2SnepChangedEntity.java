@@ -42,6 +42,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.scores.Team;
 import net.minecraftforge.common.IExtensibleEnum;
@@ -54,7 +55,7 @@ import java.util.UUID;
 
 public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard implements ICoatLikeEntity, CustomPatReaction {
     protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.BYTE);
-    protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+    protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     protected static final EntityDataAccessor<Boolean> UNFUSED_FROM_HOST = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.BOOLEAN);
 
     public AbstractExp2SnepChangedEntity(EntityType<? extends AbstractSnowLeopard> type, Level level) {
@@ -78,11 +79,15 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
         this.entityData.set(UNFUSED_FROM_HOST, value);
     }
 
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable();
+    }
+
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DATA_FLAGS_ID, (byte) 0);
-        this.entityData.define(DATA_OWNERUUID_ID, Optional.empty());
+        this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
         this.entityData.define(UNFUSED_FROM_HOST, false);
 
     }
@@ -90,15 +95,11 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
     @Override
     public void stopSleeping() {
         super.stopSleeping();
-        //if (this.getPose() == Pose.SLEEPING) {
-        //    this.setPose(Pose.STANDING);
-        //}
     }
 
     @Override
     public void startSleeping(@NotNull BlockPos blockPos) {
         super.startSleeping(blockPos);
-        //this.setPose(Pose.SLEEPING);
     }
 
     public boolean isBiped() {
@@ -152,11 +153,11 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
     @Nullable
     @Override
     public UUID getOwnerUUID() {
-        return this.entityData.get(DATA_OWNERUUID_ID).orElse(null);
+        return this.entityData.get(DATA_OWNER_UUID_ID).orElse(null);
     }
 
     public void setOwnerUUID(@Nullable UUID uuid) {
-        this.entityData.set(DATA_OWNERUUID_ID, Optional.ofNullable(uuid));
+        this.entityData.set(DATA_OWNER_UUID_ID, Optional.ofNullable(uuid));
     }
 
     public boolean isPreventingPlayerRest(Player player) {
@@ -283,12 +284,10 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
                 && (getSelfVariant().is(ChangedAddonTransfurVariants.Gendered.EXP2.getMaleVariant())
                 || getSelfVariant().is(ChangedAddonTransfurVariants.Gendered.EXP2.getFemaleVariant())));
 
-        if (isPlayerTransfur) { //Add The Effect if is Transfur is Exp2
+        if (isPlayerTransfur) {
             if (!isPlayerTransfurInExp2 && isTargetTransfurInExp2) {
                 patter.addEffect(new MobEffectInstance(ChangedAddonMobEffects.TRANSFUR_SICKNESS.get(), 2400, 100, false, false));
-            } /*else if (isPlayerTransfurInExp2 && isTargetTransfurInExp2){
-                 return;//Exp2 Can't give Exp2 Transfur Sickness
-                 }*/
+            }
         }
     }
 
@@ -310,11 +309,6 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
                     if (isPlayerTransfurInExp2 && !isTargetTransfurInExp2) {
                         patTarget.addEffect(new MobEffectInstance(ChangedAddonMobEffects.TRANSFUR_SICKNESS.get(), 2400, 100, false, false));
                     }
-                    /*else if (!isPlayerTransfurInExp2 && isTargetTransfurInExp2) {
-                        patter.addEffect(new MobEffectInstance(ChangedAddonMobEffects.TRANSFUR_SICKNESS.get(), 2400, 100, false, false));
-                    } else if (isPlayerTransfurInExp2 && isTargetTransfurInExp2){
-                         return;//Exp2 Can't give Exp2 Transfur Sickness
-                         }*/
                 }
             } else if (patTarget instanceof ChangedEntity patChangedEntityTarget) {
                 boolean isTargetLatexTransfur = patChangedEntityTarget.getType().is(ChangedTags.EntityTypes.LATEX);
@@ -326,11 +320,6 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
                     if (isPlayerTransfurInExp2 && !isTargetTransfurInExp2) {
                         patTarget.addEffect(new MobEffectInstance(ChangedAddonMobEffects.TRANSFUR_SICKNESS.get(), 2400, 100, false, false));
                     }
-                    /*else if (!isPlayerTransfurInExp2 && isTargetTransfurInExp2) {
-                        patter.addEffect(new MobEffectInstance(ChangedAddonMobEffects.TRANSFUR_SICKNESS.get(), 2400, 100, false, false));
-                    } else if (isPlayerTransfurInExp2 && isTargetTransfurInExp2){
-                         return;//Exp2 Can't give Exp2 Transfur Sickness
-                         }*/
                 }
             }
         }

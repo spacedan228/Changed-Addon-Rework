@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.*;
 
 
-public class PuroKindModel extends AdvancedHumanoidModel<PuroKindMaleEntity> implements AdvancedHumanoidModelInterface<PuroKindMaleEntity, PuroKindModel> {
+public class PuroKindMaleModel extends AdvancedHumanoidModel<PuroKindMaleEntity> implements AdvancedHumanoidModelInterface<PuroKindMaleEntity, PuroKindMaleModel> {
 
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("puro_kind"), "main");
     private final ModelPart RightLeg;
@@ -37,8 +37,9 @@ public class PuroKindModel extends AdvancedHumanoidModel<PuroKindMaleEntity> imp
     private final ModelPart Torso;
     private final ModelPart Tail;
     private final ModelPart Mask;
-    private final HumanoidAnimator<PuroKindMaleEntity, PuroKindModel> animator;
-    public PuroKindModel(ModelPart root) {
+    private final HumanoidAnimator<PuroKindMaleEntity, PuroKindMaleModel> animator;
+
+    public PuroKindMaleModel(ModelPart root) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
         this.LeftLeg = root.getChild("LeftLeg");
@@ -305,7 +306,7 @@ public class PuroKindModel extends AdvancedHumanoidModel<PuroKindMaleEntity> imp
     }
 
     @Override
-    public HumanoidAnimator<PuroKindMaleEntity, PuroKindModel> getAnimator(PuroKindMaleEntity entity) {
+    public HumanoidAnimator<PuroKindMaleEntity, PuroKindMaleModel> getAnimator(PuroKindMaleEntity entity) {
         return animator;
     }
 

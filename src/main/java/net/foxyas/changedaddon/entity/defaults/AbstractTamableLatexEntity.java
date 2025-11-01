@@ -29,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.scores.Team;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -48,6 +49,10 @@ public abstract class AbstractTamableLatexEntity extends ChangedEntity implement
 
     public AbstractTamableLatexEntity(EntityType<? extends ChangedEntity> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
+    }
+
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable();
     }
 
     protected void registerGoals() {

@@ -18,6 +18,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -34,6 +35,10 @@ public abstract class AbstractBasicOrganicChangedLeopardEntity extends AbstractS
     }
 
     public static void init() {
+    }
+
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable();
     }
 
     protected void safeSetBaseValue(@org.jetbrains.annotations.Nullable AttributeInstance instance, double value) {

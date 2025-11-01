@@ -22,7 +22,7 @@ public class ChangedAddonEntityRenderers {
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FEMALE.get(), LatexSnowFoxFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LUMINAR_CRYSTAL_SPEAR.get(), LuminarCrystalSpearRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.DAZED_LATEX.get(), LatexDazedRenderer::new);
-        event.registerEntityRenderer(ChangedAddonEntities.PURO_KIND_MALE.get(), PuroKindRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.PURO_KIND_MALE.get(), PuroKindMaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.PURO_KIND_FEMALE.get(), PuroKindFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.BUNY.get(), BunyRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.SNOW_LEOPARD_FEMALE_ORGANIC.get(), SnowLeopardFemaleOrganicRenderer::new);
@@ -72,10 +72,11 @@ public class ChangedAddonEntityRenderers {
         event.registerEntityRenderer(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), LuminaraFlowerBeastRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.PROTOGEN_0SENIA0.get(), Protogen0senia0Renderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_KAYLA_SHARK.get(), LatexKaylaSharkRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), LatexSnowFoxFoxyasRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.LATEX_BORDER_COLLIE.get(), LatexBorderCollieRenderer::new);
 
         // --- MONSTER/MOB ENTITIES ---
         event.registerEntityRenderer(ChangedAddonEntities.PROTOTYPE.get(), PrototypeRenderer::new);
-        event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), LatexSnowFoxFoxyasRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.ERIK.get(), ErikRenderer::new);
 
         // --- PROJECTILE ENTITIES ---

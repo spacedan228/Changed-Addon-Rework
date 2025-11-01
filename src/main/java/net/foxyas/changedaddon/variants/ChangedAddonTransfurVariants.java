@@ -402,6 +402,11 @@ public class ChangedAddonTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
+    public static final RegistryObject<TransfurVariant<LatexBorderCollieEntity>> LATEX_BORDER_COLLIE = register("form_latex_border_collie",
+            TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_BORDER_COLLIE)
+                    .stepSize(0.7F)
+                    .breatheMode(TransfurVariant.BreatheMode.NORMAL));
+
     public static final RegistryObject<TransfurVariant<BunyEntity>> BUNY = register("form_buny",
             TransfurVariant.Builder.of(ChangedAddonEntities.BUNY)
                     .jumpStrength(1.5F)

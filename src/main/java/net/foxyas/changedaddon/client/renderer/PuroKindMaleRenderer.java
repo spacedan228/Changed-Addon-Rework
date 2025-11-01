@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.client.renderer;
 
-import net.foxyas.changedaddon.client.model.PuroKindModel;
+import net.foxyas.changedaddon.client.model.PuroKindMaleModel;
 import net.foxyas.changedaddon.entity.simple.PuroKindMaleEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
@@ -14,9 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 
-public class PuroKindRenderer extends AdvancedHumanoidRenderer<PuroKindMaleEntity, PuroKindModel, ArmorLatexMaleWolfModel<PuroKindMaleEntity>> {
-    public PuroKindRenderer(EntityRendererProvider.Context context) {
-        super(context, new PuroKindModel(context.bakeLayer(PuroKindModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
+public class PuroKindMaleRenderer extends AdvancedHumanoidRenderer<PuroKindMaleEntity, PuroKindMaleModel, ArmorLatexMaleWolfModel<PuroKindMaleEntity>> {
+    public PuroKindMaleRenderer(EntityRendererProvider.Context context) {
+        super(context, new PuroKindMaleModel(context.bakeLayer(PuroKindMaleModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotMask));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(), CustomEyesLayer.fixedColor(Color3.parseHex("#242424")), CustomEyesLayer::glowingIrisColorLeft, CustomEyesLayer::glowingIrisColorRight));

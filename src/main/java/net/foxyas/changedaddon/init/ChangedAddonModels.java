@@ -43,7 +43,7 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(LatexSnowFoxMaleModel.LAYER_LOCATION, LatexSnowFoxMaleModel::createBodyLayer);
         event.registerLayerDefinition(ModelFemaleSnowFox.LAYER_LOCATION, ModelFemaleSnowFox::createBodyLayer);
         event.registerLayerDefinition(LatexDazedModel.LAYER_LOCATION, LatexDazedModel::createBodyLayer);
-        event.registerLayerDefinition(PuroKindModel.LAYER_LOCATION, PuroKindModel::createBodyLayer);
+        event.registerLayerDefinition(PuroKindMaleModel.LAYER_LOCATION, PuroKindMaleModel::createBodyLayer);
         event.registerLayerDefinition(PuroKindFemaleModel.LAYER_LOCATION, PuroKindFemaleModel::createBodyLayer);
         event.registerLayerDefinition(BunyModel.LAYER_LOCATION, BunyModel::createBodyLayer);
         event.registerLayerDefinition(BioSynthSnowLeopardMaleModel.LAYER_LOCATION, BioSynthSnowLeopardMaleModel::createBodyLayer);
@@ -98,6 +98,7 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(Protogen0senia0Model.LAYER_LOCATION, Protogen0senia0Model::createBodyLayer);
         event.registerLayerDefinition(LatexKaylaSharkModel.LAYER_LOCATION, LatexKaylaSharkModel::createBodyLayer);
         event.registerLayerDefinition(LatexSnowFoxFoxyasModel.LAYER_LOCATION, LatexSnowFoxFoxyasModel::createBodyLayer);
+        event.registerLayerDefinition(LatexBorderCollieModel.LAYER_LOCATION, LatexBorderCollieModel::createBodyLayer);
 
 
 

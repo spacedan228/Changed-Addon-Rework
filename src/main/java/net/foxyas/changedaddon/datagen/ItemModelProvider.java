@@ -20,6 +20,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
     protected void registerModels() {
         basicSpawnEgg(ChangedAddonItems.PROTOGEN_0SENIA0_SPAWN_EGG);
         basicSpawnEgg(ChangedAddonItems.LATEX_KAYLA_SHARK_SPAWN_EGG);
+        basicSpawnEgg(ChangedAddonItems.LATEX_BORDER_COLLIE_SPAWN_EGG);
     }
 
     public ItemModelBuilder basicSpawnEgg(RegistryObject<? extends Item> item) {

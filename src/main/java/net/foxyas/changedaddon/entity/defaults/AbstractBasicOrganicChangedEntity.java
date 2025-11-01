@@ -17,6 +17,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
@@ -32,6 +33,10 @@ public abstract class AbstractBasicOrganicChangedEntity extends ChangedEntity {
     }
 
     public static void init() {
+    }
+
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable();
     }
 
     protected void safeSetBaseValue(@Nullable AttributeInstance instance, double value) {
