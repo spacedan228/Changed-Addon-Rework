@@ -1,10 +1,7 @@
 package net.foxyas.changedaddon.entity.goals.phantom;
 
-import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.mixins.entity.PhantomAccessor;
-import net.foxyas.changedaddon.network.PacketUtil;
-import net.foxyas.changedaddon.network.packets.utils.PacketsUtils;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.server.level.ServerLevel;

@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.client.renderer.items.SimpleColorfulClothingRenderer;
 import net.foxyas.changedaddon.client.renderer.items.TransfurAwareClothingRenderer;
-import net.ltxprogrammer.changed.client.renderer.accessory.SimpleClothingRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.AccessoryLayer;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.minecraft.world.entity.EquipmentSlot;

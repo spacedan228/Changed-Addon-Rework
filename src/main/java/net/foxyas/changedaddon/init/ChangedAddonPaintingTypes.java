@@ -6,7 +6,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
-import java.util.Set;
 
 import static net.foxyas.changedaddon.ChangedAddonMod.MODID;
 

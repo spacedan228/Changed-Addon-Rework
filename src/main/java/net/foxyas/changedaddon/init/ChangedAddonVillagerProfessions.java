@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.init;
 
 import com.google.common.collect.ImmutableSet;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.ai.village.poi.PoiType;

@@ -1,8 +1,8 @@
 package net.foxyas.changedaddon.util;
 
 import net.foxyas.changedaddon.item.LaserPointer;
-import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 

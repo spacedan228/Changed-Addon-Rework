@@ -1,6 +1,9 @@
 package net.foxyas.changedaddon.init;
 
-import net.foxyas.changedaddon.advancements.critereon.*;
+import net.foxyas.changedaddon.advancements.critereon.GrabEntityTrigger;
+import net.foxyas.changedaddon.advancements.critereon.LavaSwimmingTrigger;
+import net.foxyas.changedaddon.advancements.critereon.PatEntityTrigger;
+import net.foxyas.changedaddon.advancements.critereon.SleepNextAPlushyTrigger;
 import net.minecraftforge.fml.common.Mod;
 
 import static net.minecraft.advancements.CriteriaTriggers.register;

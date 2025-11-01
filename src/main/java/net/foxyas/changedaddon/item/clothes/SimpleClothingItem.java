@@ -2,8 +2,9 @@ package net.foxyas.changedaddon.item.clothes;
 
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.init.ChangedTabs;
-import net.ltxprogrammer.changed.item.*;
+import net.ltxprogrammer.changed.item.AccessoryItem;
+import net.ltxprogrammer.changed.item.Clothing;
+import net.ltxprogrammer.changed.item.ExtendedItemProperties;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;

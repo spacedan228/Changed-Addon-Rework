@@ -1,11 +1,12 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.client.renderer.*;
-import net.foxyas.changedaddon.client.renderer.projectiles.*;
 import net.foxyas.changedaddon.client.renderer.advanced.*;
 import net.foxyas.changedaddon.client.renderer.basic.*;
 import net.foxyas.changedaddon.client.renderer.mobs.ErikRenderer;
 import net.foxyas.changedaddon.client.renderer.mobs.LatexSnowFoxFoxyasRenderer;
+import net.foxyas.changedaddon.client.renderer.projectiles.SimpleProjectileRenderer;
+import net.foxyas.changedaddon.client.renderer.projectiles.WitherSimpleProjectileRenderer;
 import net.ltxprogrammer.changed.client.RegisterComplexRenderersEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;

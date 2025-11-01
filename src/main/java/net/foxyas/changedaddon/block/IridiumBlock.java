@@ -16,8 +16,6 @@ import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
 public class IridiumBlock extends Block implements NonLatexCoverableBlock {
     public IridiumBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.SNOW).sound(SoundType.NETHERITE_BLOCK).strength(30f, 50f).requiresCorrectToolForDrops());

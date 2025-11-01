@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import net.ltxprogrammer.changed.entity.animation.AnimationAssociation;
 import net.ltxprogrammer.changed.entity.animation.AnimationParameters;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
 
 public class DodgeAnimationParameters implements AnimationParameters {
     public static DodgeAnimationParameters INSTANCE = new DodgeAnimationParameters();

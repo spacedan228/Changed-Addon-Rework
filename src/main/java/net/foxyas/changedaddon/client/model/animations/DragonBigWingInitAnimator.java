@@ -5,7 +5,6 @@ import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator.AnimateStage;
 import net.ltxprogrammer.changed.client.renderer.animate.wing.AbstractWingAnimatorV2;
-import net.ltxprogrammer.changed.client.renderer.animate.wing.DragonWingInitAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;

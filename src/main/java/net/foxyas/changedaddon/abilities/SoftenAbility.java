@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class SoftenAbility extends AbstractAbility<SoftenAbilityInstance> {
     public SoftenAbility() {

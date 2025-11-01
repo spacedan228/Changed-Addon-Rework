@@ -10,7 +10,6 @@ import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleShark
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;

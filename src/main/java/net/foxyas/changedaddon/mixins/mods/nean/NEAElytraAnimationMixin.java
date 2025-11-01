@@ -22,9 +22,8 @@ public class NEAElytraAnimationMixin {
     private void injectAvaliAnimation(AbstractClientPlayer entity, PlayerData data, PlayerModel<AbstractClientPlayer> model, BodyPart part, float delta, float tickCounter, CallbackInfo ci) {
         var tf = ProcessTransfur.getPlayerTransfurVariant(entity);
         if (tf != null && tf.is(ChangedAddonTransfurVariants.AVALI)) {
-            float ticks = tickCounter;
             // Aplicamos uma curva ease-in-out para suavizar o início e fim
-            float t = Mth.clamp(ticks * 0.6662F, 0.0F, 1.0F);
+            float t = Mth.clamp(tickCounter * 0.6662F, 0.0F, 1.0F);
             float flyAmount = smootherStep(t); // Muito mais suave!
 
             // float old2_flyAmount = t * t * (3.0F - 2.0F * t); // Smoothstep

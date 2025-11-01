@@ -9,7 +9,6 @@ import net.ltxprogrammer.changed.client.gui.AbilityOverlay;
 import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.util.Transition;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;

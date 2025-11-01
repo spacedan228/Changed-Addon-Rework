@@ -1,8 +1,8 @@
 package net.foxyas.changedaddon.recipes.special;
 
 import com.google.gson.JsonObject;
-import net.foxyas.changedaddon.item.LaserPointer;
 import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
+import net.foxyas.changedaddon.item.LaserPointer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;

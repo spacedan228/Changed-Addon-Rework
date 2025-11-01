@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.clothes.DyeableClothingItem;
-import net.foxyas.changedaddon.item.clothes.DyeableShorts;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -22,7 +21,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @ParametersAreNonnullByDefault
 public interface ChangedEntityExtension {

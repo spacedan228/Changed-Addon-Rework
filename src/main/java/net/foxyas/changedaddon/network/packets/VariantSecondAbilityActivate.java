@@ -1,11 +1,7 @@
 package net.foxyas.changedaddon.network.packets;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
-import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.network.packet.ChangedPacket;
@@ -18,6 +14,9 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
+
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class VariantSecondAbilityActivate implements ChangedPacket {
     final UUID uuid;

@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.entity.goals.generic.attacks;
 import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;

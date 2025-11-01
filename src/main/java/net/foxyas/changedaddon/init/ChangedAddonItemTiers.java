@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.init;
 
-import com.sun.jna.platform.win32.Variant;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;

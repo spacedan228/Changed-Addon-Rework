@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.mixins.mods.changed;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.network.packets.VariantSecondAbilityActivate;
@@ -14,7 +13,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -24,12 +22,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -42,13 +36,6 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
 
     @Shadow
     public abstract Optional<Integer> getSectionAt(int mouseX, int mouseY);
-
-    @Shadow
-    public abstract boolean handleClicked(int i, SingleRunnable singleRunnable);
-
-    @Shadow
-    @Nullable
-    public abstract List<Component> tooltipsFor(int i);
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), remap = true, cancellable = true)
     private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {

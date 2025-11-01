@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.client.renderer.basic;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.simple.LatexWhiteSnowLeopardFemaleModel;
 import net.foxyas.changedaddon.entity.simple.LatexWhiteSnowLeopardFemale;
-import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.GasMaskLayer;
