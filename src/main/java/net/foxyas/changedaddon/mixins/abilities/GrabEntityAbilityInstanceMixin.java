@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.mixins.abilities;
 
-import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;

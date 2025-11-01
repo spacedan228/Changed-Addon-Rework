@@ -1,8 +1,6 @@
 package net.foxyas.changedaddon.client.renderer.basic;
 
-import net.foxyas.changedaddon.client.model.BunyModel;
 import net.foxyas.changedaddon.client.model.simple.LatexBorderCollieModel;
-import net.foxyas.changedaddon.entity.simple.BunyEntity;
 import net.foxyas.changedaddon.entity.simple.LatexBorderCollieEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;

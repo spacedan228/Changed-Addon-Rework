@@ -6,7 +6,6 @@ import net.ltxprogrammer.changed.client.renderer.accessory.AccessoryRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.AccessoryLayer;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
-import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;

@@ -1,17 +1,13 @@
 package net.foxyas.changedaddon.mixins.blocks;
 
-import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.abilities.WindPassiveAbility;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
-import net.foxyas.changedaddon.util.PlayerUtil;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.SimpleAbilityInstance;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;

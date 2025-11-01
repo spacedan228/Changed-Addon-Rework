@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.mixins;
 
 import net.foxyas.changedaddon.block.DarkLatexPuddleBlock;
 import net.foxyas.changedaddon.block.entity.DarkLatexPuddleBlockEntity;
-import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
