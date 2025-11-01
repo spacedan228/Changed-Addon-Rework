@@ -32,8 +32,6 @@ public abstract class AbilityRadialScreenMixin {
 
     @Shadow @Final public TransfurVariantInstance<?> variant;
 
-    @Shadow @Final public AbilityRadialMenu menu;
-
     @Inject(method = "tooltipsFor", at = @At("RETURN"), remap = false, cancellable = true)
     private void toolTipsHook(int par1, CallbackInfoReturnable<List<Component>> cir) {
         if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
@@ -45,16 +43,4 @@ public abstract class AbilityRadialScreenMixin {
             }
         }
     }
-
-    /*
-    @Inject(method = "handleClicked", at = @At("TAIL"), remap = false, cancellable = true)
-    public void handleClicked(int section, SingleRunnable close, CallbackInfoReturnable<Boolean> cir) {
-        close.run();
-        AbstractAbility<?> ability = this.abilities.get(section);
-        if (variant instanceof TransfurVariantInstanceExtensor variantInstanceExtensor) {
-            variantInstanceExtensor.setSecondSelectedAbility(ability);
-            ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(this.menu.player, variantInstanceExtensor.getSecondAbilityKeyState(), ability));
-            cir.setReturnValue(false);
-        }
-    }*/
 }

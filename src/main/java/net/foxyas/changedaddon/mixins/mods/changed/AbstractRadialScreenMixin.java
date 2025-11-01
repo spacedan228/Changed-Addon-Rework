@@ -60,7 +60,7 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
                     LocalPlayer localPlayer = this.minecraft.player;
                     Objects.requireNonNull(localPlayer);
                     SingleRunnable single = new SingleRunnable(localPlayer::closeContainer);
-                    if (this.handleRightClicked(section.get(), single)) {
+                    if (this.ChangedAddonPlus$handleRightClicked(section.get(), single)) {
                         Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                         single.run();
                         cir.setReturnValue(true);
@@ -74,7 +74,7 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
 
 
     @Unique
-    public boolean handleRightClicked(int section, SingleRunnable close) {
+    public boolean ChangedAddonPlus$handleRightClicked(int section, SingleRunnable close) {
         close.run();
         if ((AbstractRadialScreen<?>) (Object) this instanceof AbilityRadialScreen abilityRadialScreen) {
             AbstractAbility<?> ability = abilityRadialScreen.abilities.get(section);
