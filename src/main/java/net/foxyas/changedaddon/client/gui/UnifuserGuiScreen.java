@@ -21,18 +21,14 @@ import org.jetbrains.annotations.NotNull;
 public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> {
 
     private final UnifuserGuiMenu menu;
-    private final Level world;
-    private final int x, y, z;
-    private final BlockPos containerPos;
+    private final Level level;
+    private final BlockPos pos;
 
     public UnifuserGuiScreen(UnifuserGuiMenu container, Inventory inventory, Component text) {
         super(container, inventory, text);
         menu = container;
-        this.world = container.world;
-        this.containerPos = container.getBlockPos();
-        this.x = containerPos.getX();
-        this.y = containerPos.getY();
-        this.z = containerPos.getZ();
+        this.level = container.level;
+        this.pos = menu.getBlockPos();
         this.imageWidth = 200;
         this.imageHeight = 187;
     }
@@ -65,14 +61,10 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
         RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/empty_bar.png"));
         blit(ms, this.leftPos + 84, this.topPos + 59, 0, 0, 32, 12, 32, 12);
 
-        BlockEntity be = world.getBlockEntity(new BlockPos(x, y, z));
-        if (be instanceof UnifuserBlockEntity unifuserBlockEntity) {
-            int progressInt = (int) (unifuserBlockEntity.recipeProgress / 3.57);
+        int progressInt = (int) (menu.getUnifuser().recipeProgress / 3.57);
 
-            RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/bar_full.png"));
-            blit(ms, this.leftPos + 84 + 2, this.topPos + 59 + 2, 0, 0, progressInt, 8, progressInt, 8);
-        }
-
+        RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/bar_full.png"));
+        blit(ms, this.leftPos + 84 + 2, this.topPos + 59 + 2, 0, 0, progressInt, 8, progressInt, 8);
 
         if (getBlockItem(0).isEmpty()) {
             RenderSystem.setShaderTexture(0, ResourceLocation.parse("changed_addon:textures/screens/dusts.png"));
@@ -88,18 +80,13 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
 
     @Override
     protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
-        this.font.draw(poseStack, getMachineState(world, x, y, z), 9, 10, -12829636);
-        if (isBlockFull())
+        this.font.draw(poseStack, getMachineState(level, pos), 9, 10, -12829636);
+        if (menu.getUnifuser().isSlotFull(3))
             this.font.draw(poseStack, new TranslatableComponent("gui.changed_addon.unifuser_gui.label_full"), 153, 78, -12829636);
-        this.font.draw(poseStack, getRecipeState(world, x, y, z), 89, 47, -12829636);
+        this.font.draw(poseStack, getRecipeState(level, pos), 89, 47, -12829636);
     }
 
-    private boolean isBlockFull() {
-        return world.getBlockEntity(containerPos) instanceof UnifuserBlockEntity unifuserBlockEntity && unifuserBlockEntity.isSlotFull(3);
-    }
-
-    public static String getMachineState(Level level, double x, double y, double z) {
-        BlockPos pos = new BlockPos(x, y, z);
+    public static String getMachineState(Level level, BlockPos pos) {
         String block = new TranslatableComponent("block." + ForgeRegistries.BLOCKS.getKey((level.getBlockState(pos)).getBlock()).toString().replace(":", ".")).getString();
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -111,8 +98,8 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
         return "Something ODD Happen..";
     }
 
-    public static String getRecipeState(LevelAccessor level, double x, double y, double z) {
-        BlockEntity blockEntity = level.getBlockEntity(new BlockPos(x, y, z));
+    public static String getRecipeState(LevelAccessor level, BlockPos pos) {
+        BlockEntity blockEntity = level.getBlockEntity(pos);
         if(blockEntity == null) return "THIS SHOULD NEVER HAPPEN";
         double number = 0;
         if (blockEntity instanceof UnifuserBlockEntity unifuserBlockEntity) {
@@ -125,6 +112,6 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
     }
 
     private ItemStack getBlockItem(int index) {
-        return world.getBlockEntity(containerPos) instanceof CatalyzerBlockEntity catalyzerBlockEntity ? catalyzerBlockEntity.getItem(index) : ItemStack.EMPTY;
+        return menu.getUnifuser().getItem(index);
     }
 }

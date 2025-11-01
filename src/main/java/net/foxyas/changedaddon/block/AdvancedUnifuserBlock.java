@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.AdvancedUnifuserBlockEntity;
+import net.foxyas.changedaddon.block.entity.UnifuserBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +27,7 @@ public class AdvancedUnifuserBlock extends UnifuserBlock {
 
     @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
-        return createTickerHelper(pBlockEntityType, ChangedAddonBlockEntities.ADVANCED_UNIFUSER.get(), pLevel.isClientSide ? AdvancedUnifuserBlockEntity::clientTick : AdvancedUnifuserBlockEntity::serverTick);
+        return createTickerHelper(pBlockEntityType, ChangedAddonBlockEntities.ADVANCED_UNIFUSER.get(), pLevel.isClientSide ? UnifuserBlockEntity::clientTick : UnifuserBlockEntity::serverTick);
     }
 
     @Override

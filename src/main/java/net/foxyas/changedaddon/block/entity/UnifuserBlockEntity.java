@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.block.entity;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
-import net.foxyas.changedaddon.recipes.RecipesHandle;
 import net.foxyas.changedaddon.recipes.UnifuserRecipe;
 import net.foxyas.changedaddon.world.inventory.UnifuserGuiMenu;
 import net.minecraft.core.BlockPos;
@@ -13,10 +12,13 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -26,14 +28,16 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+
     protected final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
     protected NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
 
@@ -52,10 +56,6 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
     
     public boolean isAdvanced() {
         return false;
-    }
-
-    public @NotNull LazyOptional<IItemHandler> getItemHandler(@Nullable Direction facing) {
-        return getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, facing);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
     @Override
     public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+        return this.saveWithoutMetadata();
     }
 
     @Override
@@ -135,11 +135,6 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
     }
 
     @Override
-    public boolean canPlaceItem(int index, @NotNull ItemStack stack) {
-        return index != 3;
-    }
-
-    @Override
     public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
         return IntStream.range(0, this.getContainerSize()).toArray();
     }
@@ -177,151 +172,118 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
     public static void serverTick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
         if (level.isClientSide) return;
-        if (!(blockEntity instanceof UnifuserBlockEntity unifuserBlockEntity)) return;
+        if (!(blockEntity instanceof UnifuserBlockEntity unifuser)) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         boolean shouldTick = false;
-        if (unifuserBlockEntity.tickCount >= 5) {
+        if (unifuser.tickCount >= 5) {
             shouldTick = true;
-            unifuserBlockEntity.tickCount = 0;
+            unifuser.tickCount = 0;
         }
 
         if (!shouldTick) {
-            unifuserBlockEntity.tickCount ++;
+            unifuser.tickCount ++;
             level.sendBlockUpdated(blockPos, blockState, blockState, 3);
             return;
         }
 
+        IItemHandlerModifiable handler = (IItemHandlerModifiable)
+                blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElse(null);
+        if (handler == null) return;
+
         // --- Checar inputs e output ---
-        ItemStack input0 = unifuserBlockEntity.getItem(0);
-        ItemStack input1 = unifuserBlockEntity.getItem(1);
-        ItemStack input2 = unifuserBlockEntity.getItem(2);
-        ItemStack output = unifuserBlockEntity.getItem(3);
+        ItemStack input0 = handler.getStackInSlot(0);
+        ItemStack input1 = handler.getStackInSlot(1);
+        ItemStack input2 = handler.getStackInSlot(2);
+        ItemStack output = handler.getStackInSlot(3);
 
         // Nenhum input = parar receita
         if (input0.isEmpty() && input1.isEmpty() && input2.isEmpty()) {
-            unifuserBlockEntity.recipeOn = false;
-            unifuserBlockEntity.startRecipe = false;
+            unifuser.recipeOn = false;
+            unifuser.startRecipe = false;
 
-            if (unifuserBlockEntity.recipeProgress > 0) {
-                unifuserBlockEntity.recipeProgress = Math.max(0, unifuserBlockEntity.recipeProgress - 5);
+            if (unifuser.recipeProgress > 0) {
+                unifuser.recipeProgress = Math.max(0, unifuser.recipeProgress - 5);
             }
 
-            unifuserBlockEntity.setChanged();
+            unifuser.setChanged();
             return;
         }
 
         // Output cheio = travar processo
         boolean outputFull = !output.isEmpty() && output.getCount() >= output.getMaxStackSize();
         if (outputFull) {
-            unifuserBlockEntity.setChanged();
+            unifuser.setChanged();
             return;
         }
 
         // Sem receita iniciada
-        if (!unifuserBlockEntity.startRecipe) {
-            unifuserBlockEntity.recipeProgress = 0;
-            unifuserBlockEntity.setChanged();
+        if (!unifuser.startRecipe) {
+            unifuser.recipeProgress = 0;
+            unifuser.setChanged();
+            level.sendBlockUpdated(blockPos, blockState, blockState, 3);
             return;
         }
 
         // Encontrar receita válida
-        UnifuserRecipe recipe = RecipesHandle.findRecipeForUnifuser(serverLevel, input0, input1, input2);
+        UnifuserRecipe recipe = findRecipe(serverLevel, input0, input1, input2);
         boolean hasRecipe = recipe != null;
-        unifuserBlockEntity.recipeOn = hasRecipe;
-        boolean isAdvanced = unifuserBlockEntity.isAdvanced();
+        unifuser.recipeOn = hasRecipe;
 
         // Progresso da receita
         if (hasRecipe) {
-            if (unifuserBlockEntity.recipeProgress < 100) {
-                unifuserBlockEntity.recipeProgress += recipe.getProgressSpeed() * (isAdvanced ? 4 : 1);
+            if (unifuser.recipeProgress < 100) {
+                unifuser.recipeProgress += recipe.getProgressSpeed() * (unifuser.isAdvanced() ? 4 : 1);
             }
         } else {
-            unifuserBlockEntity.recipeProgress = 0;
+            unifuser.recipeProgress = 0;
         }
 
         // Concluir receita
-        if (hasRecipe && unifuserBlockEntity.recipeProgress >= 100) {
+        if (hasRecipe && unifuser.recipeProgress >= 100) {
             ItemStack result = recipe.getResultItem();
 
-            boolean canOutput =
-                    output.isEmpty() ||
-                            (output.getItem() == result.getItem() && output.getCount() + result.getCount() <= output.getMaxStackSize());
+            boolean canOutput = handler.insertItem(3, result.copy(), true).isEmpty();
 
             if (canOutput) {
                 // Consumir inputs
-                unifuserBlockEntity.extractItem(0, 1, false);
-                unifuserBlockEntity.extractItem(1, 1, false);
-                unifuserBlockEntity.extractItem(2, 1, false);
+                handler.extractItem(0, 1, false);
+                handler.extractItem(1, 1, false);
+                handler.extractItem(2, 1, false);
 
                 // Adicionar output
-                unifuserBlockEntity.insertItem(3, result.copy(), false);
+                handler.insertItem(3, result.copy(), false);
 
                 // Resetar progresso e consumir energia
-                unifuserBlockEntity.recipeProgress = 0;
+                unifuser.recipeProgress = 0;
             }
         }
 
-        unifuserBlockEntity.setChanged();
+        unifuser.setChanged();
         level.sendBlockUpdated(blockPos, blockState, blockState, 3);
     }
 
+    static @Nullable UnifuserRecipe findRecipe(ServerLevel level, ItemStack input1, ItemStack input2, ItemStack input3){
+        RecipeManager recipeManager = level.getRecipeManager();
 
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        if (slot < 0 || slot >= stacks.size() || amount <= 0)
-            return ItemStack.EMPTY;
+        // Obtém todas as receitas do tipo JeiCatalyzerRecipe
+        List<UnifuserRecipe> unifuserRecipes = recipeManager.getAllRecipesFor(UnifuserRecipe.Type.INSTANCE);
 
-        ItemStack stackInSlot = stacks.get(slot);
-        if (stackInSlot.isEmpty())
-            return ItemStack.EMPTY;
+        // Cria um contêiner simples com o input fornecido
+        SimpleContainer container = new SimpleContainer(1);
+        container.setItem(0, input1);
 
-        int extractAmount = Math.min(amount, stackInSlot.getCount());
-        ItemStack extracted = stackInSlot.copy();
-        extracted.setCount(extractAmount);
-
-        if (!simulate) {
-            stackInSlot.shrink(extractAmount);
-            if (stackInSlot.isEmpty()) {
-                stacks.set(slot, ItemStack.EMPTY);
-            }
-            setChanged(); // notifica que algo mudou
+        // Verifica cada receita para ver se ela corresponde ao input fornecido
+        for (UnifuserRecipe recipe : unifuserRecipes) {
+            NonNullList<Ingredient> ingredients = recipe.getIngredients();
+            if (!ingredients.get(0).test(input1))
+                continue;
+            if (!ingredients.get(1).test(input2))
+                continue;
+            if (!ingredients.get(2).test(input3))
+                continue;
+            return recipe;
         }
 
-        return extracted;
+        return null;
     }
-
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        if (slot < 0 || slot >= stacks.size() || stack.isEmpty())
-            return stack;
-
-        ItemStack slotStack = stacks.get(slot);
-
-        // Slot vazio → coloca direto
-        if (slotStack.isEmpty()) {
-            if (!simulate) {
-                stacks.set(slot, stack.copy());
-                setChanged();
-            }
-            return ItemStack.EMPTY;
-        }
-
-        // Se item diferente → não empilha
-        if (!ItemStack.isSameItemSameTags(slotStack, stack))
-            return stack;
-
-        int space = slotStack.getMaxStackSize() - slotStack.getCount();
-        if (space <= 0)
-            return stack;
-
-        int toInsert = Math.min(space, stack.getCount());
-
-        if (!simulate) {
-            slotStack.grow(toInsert);
-            setChanged();
-        }
-
-        ItemStack remaining = stack.copy();
-        remaining.shrink(toInsert);
-        return remaining.getCount() <= 0 ? ItemStack.EMPTY : remaining;
-    }
-
 }

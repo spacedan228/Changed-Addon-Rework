@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
@@ -34,13 +33,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class CatalyzerBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
     public CatalyzerBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.METAL).strength(5f, 10f));
+        this(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.METAL).strength(5f, 10f));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
@@ -70,11 +68,6 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
     }
 
     @Override
-    public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, Random random) {
-        super.tick(blockstate, world, pos, random);
-    }
-
-    @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
         return createTickerHelper(pBlockEntityType, ChangedAddonBlockEntities.CATALYZER.get(), pLevel.isClientSide ? CatalyzerBlockEntity::clientTick : CatalyzerBlockEntity::serverTick);
     }
@@ -86,7 +79,6 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
 
     @Override
     public @NotNull InteractionResult use(BlockState blockstate, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        //CatalyzerOnBlockRightClickedProcedure.execute(world, pos, blockstate, entity);
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (!(blockEntity instanceof CatalyzerBlockEntity catalyzerBlockEntity)) return InteractionResult.PASS;
 

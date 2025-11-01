@@ -1,9 +1,7 @@
 package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.model.clothes.PlayerModelVisibilityModifier;
 import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
-import net.foxyas.changedaddon.mixins.client.renderer.LivingEntityRendererAccessor;
 import net.foxyas.changedaddon.process.sounds.BossMusicHandler;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
@@ -13,20 +11,14 @@ import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -126,14 +118,14 @@ public class ClientEvent {
             }
 
             if (ChangedAddonTransfurVariants.isVariantOC(loc, entity.getLevel())) {
-                Component ocVariantComponent = ChangedAddonTransfurVariants.getOcVariantComponent(tf, entity.getLevel());
+                Component ocVariantComponent = ChangedAddonTransfurVariants.getOcVariantComponent(tf);
                 MutableComponent append = new TextComponent("§8OC Transfur");
                 if (ocVariantComponent != null) append.append("\n").append(ocVariantComponent);
                 tooltip.add(append);
             }
         }
 
-        if (ChangedAddonTransfurVariants.isAnBossVariant(tf)) {
+        if (ChangedAddonTransfurVariants.isBossVariant(tf)) {
             tooltip.add(new TextComponent("§8Boss Version"));
         }
     }

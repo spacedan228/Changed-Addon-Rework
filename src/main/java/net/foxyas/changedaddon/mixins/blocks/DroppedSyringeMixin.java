@@ -27,10 +27,10 @@ public abstract class DroppedSyringeMixin {
     @Inject(method = "getVariant", at = @At("RETURN"), cancellable = true, remap = false)
     private void checkAllowBossTag(CallbackInfoReturnable<TransfurVariant<?>> cir) {
         if (!changed_Addon_Rework$AllowBosses) {
-            if (ChangedAddonTransfurVariants.getBossesVariantsList().contains(this.variant)
+            if (ChangedAddonTransfurVariants.getBossVariants().contains(this.variant)
                     || ChangedAddonTransfurVariants.getVariantsRemovedFromSyringes().contains(this.variant)) {
                 List<TransfurVariant<?>> list = new ArrayList<>(TransfurVariant.getPublicTransfurVariants().toList());
-                list.removeIf(transfurVariant -> ChangedAddonTransfurVariants.getBossesVariantsList().contains(transfurVariant));
+                list.removeIf(transfurVariant -> ChangedAddonTransfurVariants.getBossVariants().contains(transfurVariant));
                 TransfurVariant<?> transfurVariant = list.get(new Random().nextInt(list.size()));
                 this.variant = transfurVariant;
                 cir.setReturnValue(transfurVariant);
@@ -47,7 +47,7 @@ public abstract class DroppedSyringeMixin {
 
     @Inject(method = "saveAdditional", at = @At("HEAD"))
     private void AddDataMod(CompoundTag tag, CallbackInfo ci) {
-        if (this.variant != null && ChangedAddonTransfurVariants.getBossesVariantsList().contains(this.variant)) {
+        if (this.variant != null && ChangedAddonTransfurVariants.getBossVariants().contains(this.variant)) {
             tag.putBoolean("AllowBosses", changed_Addon_Rework$AllowBosses);
         }
     }

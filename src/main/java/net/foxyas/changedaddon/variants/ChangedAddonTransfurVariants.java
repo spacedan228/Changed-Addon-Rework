@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.variants;
 
+import com.google.common.base.Suppliers;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.*;
 import net.foxyas.changedaddon.entity.bosses.*;
@@ -690,63 +691,60 @@ public class ChangedAddonTransfurVariants {
                 variant.is(ChangedAddonTags.TransfurTypes.AQUATIC_DIET);
     }
 
+    private static List<TransfurVariant<?>> REMOVED_VARS;
     public static List<TransfurVariant<?>> getRemovedVariantsList() {
-        return List.of(VOID_FOX.get(), REYN.get(), FENGQI_WOLF.get(), EXPERIMENT_009.get(), EXPERIMENT_10.get(), EXPERIMENT_009_BOSS.get(), EXPERIMENT_10_BOSS.get(), LATEX_SNEP_FERAL_FORM.get(), LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get());
+        if(REMOVED_VARS == null){
+            REMOVED_VARS = List.of(VOID_FOX.get(), REYN.get(), FENGQI_WOLF.get(), EXPERIMENT_009.get(), EXPERIMENT_10.get(), EXPERIMENT_009_BOSS.get(), EXPERIMENT_10_BOSS.get(), LATEX_SNEP_FERAL_FORM.get(), LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get());
+        }
+        return REMOVED_VARS;
     }
 
-    public static Collection<TransfurVariant<?>> getVariantsRemovedFromSyringes() {
-        ArrayList<TransfurVariant<?>> SyringeItemRemovedList, DroppedSyringeRemovedList;
-        SyringeItemRemovedList = new ArrayList<>(getRemovedVariantsList());
-        DroppedSyringeRemovedList = new ArrayList<>(List.of(LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get()));
-        SyringeItemRemovedList.addAll(DroppedSyringeRemovedList);
-
-        return SyringeItemRemovedList;
+    private static List<TransfurVariant<?>> REMOVED_FROM_SYRINGES;
+    public static List<TransfurVariant<?>> getVariantsRemovedFromSyringes() {
+        if(REMOVED_FROM_SYRINGES == null){
+            List<TransfurVariant<?>> tmp = new ArrayList<>(getRemovedVariantsList());
+            tmp.add(LUMINARCTIC_LEOPARD_MALE.get());
+            tmp.add(LUMINARCTIC_LEOPARD_FEMALE.get());
+            REMOVED_FROM_SYRINGES = List.copyOf(tmp);
+        }
+        return REMOVED_FROM_SYRINGES;
     }
 
-    public static List<TransfurVariant<?>> getBossesVariantsList() {
-        return List.of(EXPERIMENT_009_BOSS.get(), EXPERIMENT_10_BOSS.get(), EXPERIMENT_009.get(), EXPERIMENT_10.get(), VOID_FOX.get());
+    private static List<TransfurVariant<?>> BOSS_VARS1;
+    public static List<TransfurVariant<?>> getBossVariants() {
+        if(BOSS_VARS1 == null){
+            BOSS_VARS1 = List.of(EXPERIMENT_009_BOSS.get(), EXPERIMENT_10_BOSS.get(), EXPERIMENT_009.get(), EXPERIMENT_10.get(), VOID_FOX.get());
+        }
+        return BOSS_VARS1;
     }
 
-
-    public static Map<TransfurVariant<?>, TransfurVariant<?>> bossesVariants() {
-        HashMap<TransfurVariant<?>, TransfurVariant<?>> VariantsMap = new HashMap<>();
-        VariantsMap.put(EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get());
-        VariantsMap.put(EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());
-        return VariantsMap;
+    private static Map<TransfurVariant<?>, TransfurVariant<?>> BOSS_VARS;
+    public static Map<TransfurVariant<?>, TransfurVariant<?>> bossVariants() {
+        if(BOSS_VARS == null){
+            BOSS_VARS = Map.of(
+                    EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get(),
+                    EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get()
+            );
+        }
+        return BOSS_VARS;
     }
 
-    public static boolean isAnBossVariant(TransfurVariant<?> transfurVariant) {
-        return bossesVariants()
+    public static boolean isBossVariant(TransfurVariant<?> transfurVariant) {
+        return bossVariants()
                 .containsValue(transfurVariant);
     }
 
     public static TransfurVariant<?> getBossVersionOf(TransfurVariant<?> transfurVariant) {
-        TransfurVariant<?> variant = bossesVariants()
+        TransfurVariant<?> variant = bossVariants()
                 .get(transfurVariant);
         return variant != null ? variant : transfurVariant;
     }
 
-    protected static List<TransfurVariant<?>> getOcVariantList() {
-        return List.of(
-                BOREALIS_MALE.get(),
-                MONGOOSE.get(),
-                BLUE_LIZARD.get(),
-                HAYDEN_FENNEC_FOX.get(),
-                HIMALAYAN_CRYSTAL_GAS_CAT_MALE.get(),
-                HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE.get(),
-                REYN.get(),
-                LYNX.get(),
-                FENGQI_WOLF.get(),
-                FOXTA_FOXY.get(),
-                SNEPSI_LEOPARD.get(),
-                EXPERIMENT_009_BOSS.get(),
-                EXPERIMENT_10_BOSS.get(),
-                EXPERIMENT_009.get(),
-                EXPERIMENT_10.get()
-        );
+    // Just For organization.
+    static class VariantWithOwnerMap extends HashMap<TransfurVariant<?>, Component> {
     }
 
-    protected static VariantWithOwnerMap getOcVariantMap() {
+    private static final Supplier<VariantWithOwnerMap> OCS = Suppliers.memoize(() -> {
         VariantWithOwnerMap variants = new VariantWithOwnerMap();
         addNoOwnerName(variants, BOREALIS_MALE.get());
         addNoOwnerName(variants, MONGOOSE.get());
@@ -764,19 +762,15 @@ public class ChangedAddonTransfurVariants {
         addWithOwnerName(variants, EXPERIMENT_10.get(), ComponentUtil.literal("@SuperNovaDragon"));
         addWithOwnerNameFrom(variants, EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());
         return variants;
-    }
-
-    // Just For organization.
-    public static class VariantWithOwnerMap extends HashMap<TransfurVariant<?>, Component> {
-    }
+    });
 
     @Nullable
-    public static Component getOcVariantComponent(TransfurVariant<?> transfurVariant, @Nullable Level level) {
-        return getOcVariantMap().get(transfurVariant);
+    public static Component getOcVariantComponent(TransfurVariant<?> transfurVariant) {
+        return OCS.get().get(transfurVariant);
     }
 
     private static void addNoOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
-        map.put(variant, ComponentUtil.literal("Free For Use, No Owner Name"));
+        map.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
     }
 
     private static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant, Component component) {
@@ -794,8 +788,8 @@ public class ChangedAddonTransfurVariants {
         if (level != null && transfurVariant.getEntityType()
                 .create(level) instanceof PatronOC) {
             return true;
-        } else return getOcVariantList()
-                .contains(transfurVariant);
+        } else return OCS.get()
+                .containsKey(transfurVariant);
     }
 
     public static boolean isVariantOC(ResourceLocation transfurVariantID, @Nullable Level level) {
@@ -806,12 +800,6 @@ public class ChangedAddonTransfurVariants {
         }
         return false;
     }
-
-    /*@SubscribeEvent
-    public static void registerTransfurVariants(FMLConstructModEvent event) {
-        REGISTRY.register(FMLJavaModLoadingContext.get()
-                    .getModEventBus());
-    }*/
 
     //@Annotation: Dazed Maybe is of .faction(LatexType.WHITE_LATEX)
 
@@ -824,6 +812,4 @@ public class ChangedAddonTransfurVariants {
         return REGISTRY.register(name, () -> builder.get()
                 .build());
     }
-
-
 }

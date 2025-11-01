@@ -1,25 +1,25 @@
 package net.foxyas.changedaddon.block.entity;
 
-import io.netty.buffer.Unpooled;
 import net.foxyas.changedaddon.block.AdvancedCatalyzerBlock;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
-import net.foxyas.changedaddon.recipes.RecipesHandle;
 import net.foxyas.changedaddon.world.inventory.CatalyzerGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -34,9 +34,11 @@ import net.minecraftforge.items.wrapper.SidedInvWrapper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+
     protected final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
     protected NonNullList<ItemStack> stacks = NonNullList.withSize(2, ItemStack.EMPTY);
 
@@ -87,7 +89,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+        return saveWithoutMetadata();
     }
 
     @Override
@@ -114,7 +116,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory) {
-        return new CatalyzerGuiMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(this.worldPosition));
+        return new CatalyzerGuiMenu(id, inventory, getBlockPos());
     }
 
     @Override
@@ -181,8 +183,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
 
         if (catalyzerBlockEntity.nitrogenPower < 200) {
             catalyzerBlockEntity.nitrogenPower += 1;
-            level.sendBlockUpdated(pos, state, state, 3);
-            catalyzerBlockEntity.setChanged();
+            update(serverLevel, pos, state, catalyzerBlockEntity);
             return;
         }
 
@@ -209,7 +210,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
         }
 
         ItemStack input = handler.getStackInSlot(0).copy();
-        CatalyzerRecipe recipe = RecipesHandle.findRecipeForCatalyzer(serverLevel, input);
+        CatalyzerRecipe recipe = findRecipe(serverLevel, input);
         catalyzerBlockEntity.recipeOn = recipe != null;
 
         if (recipe != null) {
@@ -222,10 +223,9 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
             }
 
             if (catalyzerBlockEntity.recipeProgress >= 100) {
-                ItemStack outputSlot = handler.getStackInSlot(1);
                 ItemStack output = recipe.getResultItem();
 
-                if (outputSlot.isEmpty() || outputSlot.getItem() == output.getItem()) {
+                if (handler.insertItem(1, output.copy(), true).isEmpty()) {
                     handler.extractItem(0, 1, false);
                     handler.insertItem(1, output.copy(), false);
                     catalyzerBlockEntity.nitrogenPower -= recipe.getNitrogenUsage();
@@ -237,6 +237,27 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
         }
 
         update(serverLevel, pos, state, catalyzerBlockEntity);
+    }
+
+    static @Nullable CatalyzerRecipe findRecipe(ServerLevel level, ItemStack input){
+        RecipeManager recipeManager = level.getRecipeManager();
+
+        // Obtém todas as receitas do tipo JeiCatalyzerRecipe
+        List<CatalyzerRecipe> catalyzerRecipes = recipeManager.getAllRecipesFor(CatalyzerRecipe.Type.INSTANCE);
+
+        // Cria um contêiner simples com o input fornecido
+        SimpleContainer container = new SimpleContainer(1);
+        container.setItem(0, input);
+
+        // Verifica cada receita para ver se ela corresponde ao input fornecido
+        for (CatalyzerRecipe recipe : catalyzerRecipes) {
+            NonNullList<Ingredient> ingredients = recipe.getIngredients();
+            if (!ingredients.get(0).test(input))
+                continue;
+            return recipe;
+        }
+
+        return null;
     }
 
     private static void update(ServerLevel level, BlockPos pos, BlockState state, CatalyzerBlockEntity be) {
