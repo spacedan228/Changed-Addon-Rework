@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.renderer.layers.animation.CarryAbilityAnimation;
+import net.foxyas.changedaddon.entity.simple.BagelEntity;
 import net.foxyas.changedaddon.entity.simple.LatexBorderCollieEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
@@ -140,6 +141,11 @@ public class LatexBorderCollieModel extends AdvancedHumanoidModel<LatexBorderCol
 		animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		CarryAbilityAnimation.playAnimation(entity, this);
+	}
+
+	@Override
+	public void prepareMobModel(@NotNull LatexBorderCollieEntity entity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
+		this.prepareMobModel(animator, entity, pLimbSwing, pLimbSwingAmount, pPartialTick);
 	}
 
 	public @NotNull ModelPart getArm(HumanoidArm p_102852) {
