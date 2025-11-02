@@ -23,7 +23,7 @@ public class TransfurGasMixin {
     @Inject(method = "validEntityInGas", at = @At("HEAD"), remap = false, cancellable = true)
     private static void cancelTransfurGas(LivingEntity livingEntity, CallbackInfoReturnable<Optional<TransfurGas>> cir) {
         TransfurVariantInstance<?> variant = ProcessTransfur.getPlayerTransfurVariant(EntityUtil.playerOrNull(livingEntity));
-        if (variant != null) {
+        if (variant == null) {
             Optional<AccessorySlots> slots = AccessorySlots.getForEntity(livingEntity);
             slots.ifPresent((accessorySlots) -> {
                 Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
