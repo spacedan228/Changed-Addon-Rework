@@ -11,12 +11,14 @@ import net.ltxprogrammer.changed.client.renderer.accessory.TransitionalAccessory
 import net.ltxprogrammer.changed.client.renderer.layers.LatexHumanoidArmorLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
+import net.ltxprogrammer.changed.client.renderer.model.LatexHumanModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorHumanModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.beast.LatexHuman;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.extension.ChangedCompatibility;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
@@ -112,6 +114,19 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
             }
 
             if (entity instanceof ChangedEntity changedEntity) {
+                if (changedEntity instanceof LatexHuman latexHuman) {
+                    EntityModel layer = renderLayerParent.getModel();
+                    if (layer instanceof LatexHumanModel baseModel) {
+                        this.playerClothingModel = getPlayerModel(entity);
+                        if (playerClothingModel == null) return;
+                        baseModel.copyPropertiesTo(this.playerClothingModel);
+                        this.playerClothingModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
+                        this.playerClothingModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
+                        this.playerClothingModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+                        this.playerClothingModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                        return;
+                    }
+                }
                 if (renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
                     LatexHumanoidArmorLayer layer = advancedHumanoidRenderer.getArmorLayer();
 
