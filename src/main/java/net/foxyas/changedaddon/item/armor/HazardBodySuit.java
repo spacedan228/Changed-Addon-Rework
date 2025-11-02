@@ -7,9 +7,11 @@ import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.foxyas.changedaddon.util.ComponentUtil;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.beast.LatexHuman;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.*;
@@ -350,16 +352,25 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
 
     @Override
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        if (entity instanceof ChangedEntity) {
+        if (entity instanceof ChangedEntity changedEntity) {
+            if (changedEntity instanceof LatexHuman latexHuman && latexHuman.maybeGetUnderlying() instanceof AbstractClientPlayer abstractClientPlayer) {
+                ResourceLocation itemId = stack.getItem().getRegistryName();
+                return String.format("%s:textures/models/hazard_suit/%s_%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack), getPlayerModelStyle(abstractClientPlayer));
+            }
+
             ResourceLocation itemId = stack.getItem().getRegistryName();
             return String.format("%s:textures/models/hazard_suit/%s_%s_tf.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
         }
         if (entity instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (transfurVariant != null && transfurVariant.isTransfurring()) {
+            if (transfurVariant != null && transfurVariant.isTransfurring() && !ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariant.getParent())) {
                 ResourceLocation itemId = stack.getItem().getRegistryName();
                 return String.format("%s:textures/models/hazard_suit/%s_%s_tf.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
+            } else if (transfurVariant != null && ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariant.getParent())) {
+                ResourceLocation itemId = stack.getItem().getRegistryName();
+                return String.format("%s:textures/models/hazard_suit/%s_%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack), getPlayerModelStyle(entity));
             }
+
         }
 
 

@@ -18,6 +18,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.AbstractGolem;
@@ -804,6 +805,10 @@ public class ChangedAddonTransfurVariants {
             return isVariantOC(variantFromID, level);
         }
         return false;
+    }
+
+    public static List<TransfurVariant<?>> getHumanForms() {
+        return List.of(ChangedTransfurVariants.LATEX_HUMAN.get());
     }
 
     //@Annotation: Dazed Maybe is of .faction(LatexType.WHITE_LATEX)
