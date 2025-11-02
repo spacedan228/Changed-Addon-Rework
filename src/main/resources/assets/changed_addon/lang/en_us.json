@@ -670,6 +670,7 @@
   "key.changed_addon.turn_off_transfur": "Turn Off Transfur",
   "key.changed_addon.turn_off_transfur.grab_safe_mode": "You set the Friendly Grab to %s",
   "key.changed_addon.turn_off_transfur.safe_mode": "You set the Transfur Attack to %s",
+  "key.changed_addon.use_second_ability": "Use Second Variant Ability",
 
   "subtitles.armor_equip": "Armor Equip",
   "subtitles.block.plushes.sfx": "Plush Squeezed",
@@ -695,6 +696,8 @@
   "text.changed_addon.legs": "Amount of Legs \u003d %s",
   "text.changed_addon.swim_speed": "Swim Speed \u003d %s",
   "text.changed_addon.miningStrength": "Mining Strength: %s",
-  "key.changed_addon.use_second_ability": "Use Second Variant Ability",
+
+  "text.changed_addon.display.hazard_body_suit.cant_have_helmet": "Mmph... it’s squishing my ears! Better not wear it.",
+
   "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Press Right Click of mouse to select the Second Ability"
 }

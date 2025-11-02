@@ -57,6 +57,7 @@
     "client.renderer.LivingEntityRendererMixin",
     "client.renderer.PaintingRendererMixin",
     "client.renderer.PostChainMixin",
+    "entity.projectiles.GasParticleMixin",
     "mods.changed.AbilityOverlayMixin",
     "mods.changed.AbilityRadialScreenMixin",
     "mods.changed.AbstractRadialScreenMixin"

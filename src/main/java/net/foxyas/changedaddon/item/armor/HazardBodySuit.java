@@ -6,14 +6,13 @@ import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
+import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
-import net.ltxprogrammer.changed.init.ChangedAttributes;
-import net.ltxprogrammer.changed.init.ChangedDamageSources;
-import net.ltxprogrammer.changed.init.ChangedTabs;
+import net.ltxprogrammer.changed.init.*;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.ltxprogrammer.changed.item.ClothingState;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -66,7 +65,33 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     @Override
     public void accessoryInteract(AccessorySlotContext<?> slotContext) {
         super.accessoryInteract(slotContext);
+        LivingEntity wearer = slotContext.wearer();
+        ItemStack stack = slotContext.stack();
+        boolean canChange = true;
 
+        if (wearer instanceof ChangedEntity changedEntity) {
+            TransfurVariant<?> selfVariant = changedEntity.getSelfVariant();
+            if (!selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
+                    && !selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
+                canChange = false;
+            }
+        } else if (wearer instanceof Player player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (!transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
+                    && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
+                player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.hazard_body_suit.cant_have_helmet"), true);
+                canChange = false;
+            }
+        }
+
+        if (canChange) {
+            changeHelmetState(slotContext);
+        } else {
+            negateHelmetChange(slotContext);
+        }
+    }
+
+    public void changeHelmetState(AccessorySlotContext<?> slotContext) {
         this.setClothingState(
                 slotContext.stack(),
                 this.getClothingState(slotContext.stack()).cycle(HELMET)
@@ -138,6 +163,53 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
 
     public boolean IsAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
         return true;
+    }
+
+    @Override
+    public void accessoryTick(AccessorySlotContext<?> slotContext) {
+        super.accessoryTick(slotContext);
+
+        LivingEntity wearer = slotContext.wearer();
+        ItemStack stack = slotContext.stack();
+
+        if (!this.getClothingState(stack).getValue(HELMET)) return;
+
+        if (wearer instanceof ChangedEntity changedEntity) {
+            TransfurVariant<?> selfVariant = changedEntity.getSelfVariant();
+            if (!selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
+                    && !selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
+                setHelmetStage(slotContext, false);
+            }
+        } else if (wearer instanceof Player player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (!transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
+                    && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
+                setHelmetStage(slotContext, false);
+                player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.hazard_body_suit.cant_have_helmet"), true);
+            }
+        }
+    }
+
+    public void setHelmetStage(AccessorySlotContext<?> slotContext, boolean value) {
+        this.setClothingState(
+                slotContext.stack(),
+                this.getClothingState(slotContext.stack()).setValue(HELMET, value)
+        );
+
+        SoundEvent changeSound = this.getEquipSound();
+        if (changeSound != null) {
+            slotContext.wearer().playSound(changeSound, 1.0F, 1.0F);
+        }
+    }
+
+    public void negateHelmetChange(AccessorySlotContext<?> slotContext) {
+        this.setClothingState(
+                slotContext.stack(),
+                this.getClothingState(slotContext.stack()).setValue(HELMET, false)
+        );
+
+        SoundEvent changeSound = ChangedSounds.EXOSKELETON_CHIME;
+        slotContext.wearer().playSound(changeSound, 1.0F, 0.0F);
     }
 
     public void applyDamage(DamageSource damageSource, float amount, AccessorySlotContext<?> slotContext) {
