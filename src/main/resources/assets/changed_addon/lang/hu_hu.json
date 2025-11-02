@@ -388,6 +388,7 @@
   "entity.changed_addon.hayden_fennec_fox": "Hayden sivatagi róka",
   "entity.changed_addon.experiment_009": "009-es kísérlet",
   "entity.changed_addon.experiment_009_boss": "009-es kísérlet",
+  "entity.changed_addon.latex_border_collie": "Latex border collie",
   "entity.changed_addon.latex_calico_cat": "Latex tarka macska",
   "entity.changed_addon.latex_cheetah_female": "Nőstény latex gepárd",
   "entity.changed_addon.latex_cheetah_male": "Hím latex gepárd",
@@ -560,6 +561,7 @@
   "item.changed_addon.fengqi_wolf_spawn_egg": "Feng QI farkast idéző tojás",
   "item.changed_addon.foxta_foxy_spawn_egg": "Foxta rókát idéző tojás",
   "item.changed_addon.hayden_fennec_fox_spawn_egg": "Hayden sivatagi rókát idéző tojás",
+  "item.changed_addon.latex_border_collie_spawn_egg": "Latex border colliet idéző tojás",
   "item.changed_addon.latex_calico_cat_spawn_egg": "Latex tarka macskát idéző tojás",
   "item.changed_addon.latex_cheetah_female_spawn_egg": "Nőstény latex gepárdot idéző tojás",
   "item.changed_addon.latex_cheetah_male_spawn_egg": "Hím latex gepárdot idéző tojás",
@@ -668,6 +670,7 @@
   "key.changed_addon.turn_off_transfur": "Transzfur kikapcsolása",
   "key.changed_addon.turn_off_transfur.grab_safe_mode": "Barátságos megragadás beállítva: %s",
   "key.changed_addon.turn_off_transfur.safe_mode": "Transzfur támadás beállítva: %s",
+  "key.changed_addon.use_second_ability": "Változat második képességének használata",
 
   "subtitles.armor_equip": "Páncél felvétele",
   "subtitles.block.plushes.sfx": "Plüss összenyomása",
@@ -693,6 +696,8 @@
   "text.changed_addon.legs": "Lábak száma \u003d %s",
   "text.changed_addon.swim_speed": "Úszási sebesség \u003d %s",
   "text.changed_addon.miningStrength": "Bányászati erősség: %s",
-  "key.changed_addon.use_second_ability": "Változat második képességének használata",
+  
+  "text.changed_addon.display.hazard_body_suit.cant_have_helmet": "Mmph... Nyomja a fülem! Jobb, ha nem veszem fel.",
+  
   "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Jobb egérgombbal válassza ki a második képességet"
 }
