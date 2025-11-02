@@ -71,13 +71,13 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
 
         if (wearer instanceof ChangedEntity changedEntity) {
             TransfurVariant<?> selfVariant = changedEntity.getSelfVariant();
-            if (!selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
+            if (selfVariant != null && !selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
                     && !selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
                 canChange = false;
             }
         } else if (wearer instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (!transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
+            if (transfurVariant != null && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
                     && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
                 player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.hazard_body_suit.cant_have_helmet"), true);
                 canChange = false;
@@ -176,13 +176,13 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
 
         if (wearer instanceof ChangedEntity changedEntity) {
             TransfurVariant<?> selfVariant = changedEntity.getSelfVariant();
-            if (!selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
+            if (selfVariant != null && !selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
                     && !selfVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
                 setHelmetStage(slotContext, false);
             }
         } else if (wearer instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (!transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
+            if (transfurVariant != null && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
                     && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
                 setHelmetStage(slotContext, false);
                 player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.hazard_body_suit.cant_have_helmet"), true);
