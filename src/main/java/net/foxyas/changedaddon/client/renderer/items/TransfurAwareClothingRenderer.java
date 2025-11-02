@@ -148,6 +148,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                             HumanoidAnimator fromAnimator = advancedHumanoidModelInterface.getAnimator(latexHuman);
                             HumanoidAnimator toAnimator = latexHumanHazardBodySuitModel.getAnimator(latexHuman);
                             toAnimator.copyProperties(fromAnimator);
+                            toAnimator.applyPropertyModelLimbs(latexHumanModel);
                             toAnimator.applyPropertyModel(latexHumanModel);
                         }
 
