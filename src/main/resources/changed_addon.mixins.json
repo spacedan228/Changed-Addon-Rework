@@ -35,6 +35,7 @@
     "entity.variant.RandomVariantFunctionMixin",
     "entity.variant.ServerTransfurVariantInstanceMixin",
     "entity.variant.TransfurVariantInstanceMixin",
+    "fluids.TransfurGasMixin",
     "items.ItemStackMixin",
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",

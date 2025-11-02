@@ -79,7 +79,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
             if (transfurVariant != null && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
                     && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
-                player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.hazard_body_suit.cant_have_helmet"), true);
+                player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.display.hazard_body_suit.cant_have_helmet"), true);
                 canChange = false;
             }
         }
@@ -185,7 +185,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
             if (transfurVariant != null && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
                     && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
                 setHelmetStage(slotContext, false);
-                player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.hazard_body_suit.cant_have_helmet"), true);
+                player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.display.hazard_body_suit.cant_have_helmet"), true);
             }
         }
     }
@@ -209,7 +209,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         );
 
         SoundEvent changeSound = ChangedSounds.EXOSKELETON_CHIME;
-        slotContext.wearer().playSound(changeSound, 1.0F, 0.0F);
+        slotContext.wearer().playSound(changeSound, 1.0F, 0.5F);
     }
 
     public void applyDamage(DamageSource damageSource, float amount, AccessorySlotContext<?> slotContext) {
