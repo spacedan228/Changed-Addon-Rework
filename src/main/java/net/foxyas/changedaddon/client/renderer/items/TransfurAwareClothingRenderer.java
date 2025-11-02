@@ -143,15 +143,14 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                 if (model instanceof LatexHumanModel latexHumanModel) {
                     this.playerClothingModel = getPlayerModel(latexHuman);
                     if (playerClothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
-                        latexHumanModel.copyPropertiesTo(this.playerClothingModel);
-                        if (advancedHumanoidRenderer instanceof AdvancedHumanoidModelInterface advancedHumanoidModelInterface) {
-                            HumanoidAnimator fromAnimator = advancedHumanoidModelInterface.getAnimator(latexHuman);
-                            HumanoidAnimator toAnimator = latexHumanHazardBodySuitModel.getAnimator(latexHuman);
-                            toAnimator.copyProperties(fromAnimator);
-                            toAnimator.applyPropertyModelLimbs(latexHumanModel);
-                            toAnimator.applyPropertyModel(latexHumanModel);
-                        }
-
+                        PlayerModel<?> playerModel = latexHumanModel.preparePropertyModel(latexHuman);
+                        playerModel.copyPropertiesTo(this.playerClothingModel);
+                        
+                        HumanoidAnimator fromAnimator = latexHumanModel.getAnimator(latexHuman);
+                        HumanoidAnimator toAnimator = latexHumanHazardBodySuitModel.getAnimator(latexHuman);
+                        toAnimator.copyProperties(fromAnimator);
+                        toAnimator.applyPropertyModelLimbs(latexHumanModel);
+                        toAnimator.applyPropertyModel(latexHumanModel);
                         latexHumanHazardBodySuitModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
                         latexHumanHazardBodySuitModel.prepareMobModel(latexHuman, limbSwing, limbSwingAmount, partialTicks);
                         latexHumanHazardBodySuitModel.setupAnim(latexHuman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
