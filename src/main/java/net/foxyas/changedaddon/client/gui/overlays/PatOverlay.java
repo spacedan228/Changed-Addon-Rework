@@ -36,6 +36,9 @@ import static net.minecraft.client.gui.GuiComponent.drawCenteredString;
 
 @Mod.EventBusSubscriber({Dist.CLIENT})
 public class PatOverlay {
+
+    //Todo: Make this a InGameOverlay check ChangedAddonOverlays to examples
+
     public static final ResourceLocation TEXTURE = ResourceLocation.parse("changed_addon:textures/screens/paw_normal.png");
 
     @SubscribeEvent(priority = EventPriority.NORMAL)
