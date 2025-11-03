@@ -10,7 +10,6 @@ import net.ltxprogrammer.changed.client.FormRenderHandler;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.accessory.AccessoryRenderer;
 import net.ltxprogrammer.changed.client.renderer.accessory.TransitionalAccessory;
-import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.layers.LatexHumanoidArmorLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
@@ -144,13 +143,14 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                     this.playerClothingModel = getPlayerModel(latexHuman.maybeGetUnderlying());
                     if (this.playerClothingModel == null) return;
                     if (playerClothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
-                        if (latexHuman.getUnderlyingPlayer() instanceof AbstractClientPlayer player) {
-                            this.setPlayerModelProperties(player, model);
-                        }
 
                         latexHumanModel.copyPropertiesTo(latexHumanHazardBodySuitModel);
                         latexHumanHazardBodySuitModel.prepareMobModel(latexHuman, limbSwing, limbSwingAmount, partialTicks);
                         latexHumanHazardBodySuitModel.setupAnim(latexHuman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
+                        if (latexHuman.getUnderlyingPlayer() instanceof AbstractClientPlayer player) {
+                            this.setPlayerModelProperties(player, model);
+                        }
 
                         this.setHelmetFirstPersonVisibility(latexHumanHazardBodySuitModel.getHead());
                         latexHumanHazardBodySuitModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
@@ -185,7 +185,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
     }
 
     // Util Method.
-    public void copyPropertiesFromOtherPlayerModel(PlayerModel<?> copyPlayerModel) {
+    public void copyPlayerModelProperties(PlayerModel<?> copyPlayerModel) {
         if (this.playerClothingModel instanceof PlayerModel<?> playerModel) {
             playerModel.hat.visible = copyPlayerModel.hat.visible;
             playerModel.jacket.visible = copyPlayerModel.jacket.visible;
@@ -194,6 +194,15 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
             playerModel.leftSleeve.visible = copyPlayerModel.leftSleeve.visible;
             playerModel.rightSleeve.visible = copyPlayerModel.rightSleeve.visible;
         }
+    }
+
+    public void copyPlayerModelProperties(PlayerModel<?> target, PlayerModel<?> data) {
+        target.hat.visible = data.hat.visible;
+        target.jacket.visible = data.jacket.visible;
+        target.leftPants.visible = data.leftPants.visible;
+        target.rightPants.visible = data.rightPants.visible;
+        target.leftSleeve.visible = data.leftSleeve.visible;
+        target.rightSleeve.visible = data.rightSleeve.visible;
     }
 
 
@@ -302,13 +311,14 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
 
                     if (entity instanceof LatexHuman latexHuman && latexHuman.maybeGetUnderlying() instanceof AbstractClientPlayer player) {
                         if (baseModel instanceof PlayerModel playerModel) {
-                            this.setPlayerModelProperties(player, playerModel);
 
                             this.playerClothingModel = getPlayerModelForFirstPerson(player);
                             if (this.playerClothingModel == null) return;
                             playerModel.copyPropertiesTo(this.playerClothingModel);
                             ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
                             armPart.loadPose(armPose);
+
+                            this.setPlayerModelProperties(player, playerModel);
                             FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                             return;
                         }
