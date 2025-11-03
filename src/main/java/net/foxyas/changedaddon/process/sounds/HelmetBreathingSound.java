@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.process.sounds;
 
-import net.foxyas.changedaddon.client.gui.HazardSuitHelmetOverlay;
+import net.foxyas.changedaddon.client.gui.overlays.HazardSuitHelmetOverlay;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -39,7 +39,7 @@ public class HelmetBreathingSound extends AbstractTickableSoundInstance {
         this.y = mouthPosition.y();
         this.z = mouthPosition.z();
 
-        if (!HazardSuitHelmetOverlay.shouldApplyOverlay(player)) {
+        if (!HazardSuitHelmetOverlay.shouldPlayOverlaySound(player)) {
             this.stop();
         }
     }

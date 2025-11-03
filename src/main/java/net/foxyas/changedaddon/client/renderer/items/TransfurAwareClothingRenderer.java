@@ -141,23 +141,25 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
             if (entity instanceof LatexHuman latexHuman && renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
                 AdvancedHumanoidModel model = advancedHumanoidRenderer.getModel(latexHuman);
                 if (model instanceof LatexHumanModel latexHumanModel) {
-                    this.playerClothingModel = getPlayerModel(latexHuman);
+                    this.playerClothingModel = getPlayerModel(latexHuman.maybeGetUnderlying());
+                    if (this.playerClothingModel == null) return;
                     if (playerClothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
-                        PlayerModel<?> playerModel = latexHumanModel.preparePropertyModel(latexHuman);
-                        playerModel.copyPropertiesTo(this.playerClothingModel);
-                        
-                        HumanoidAnimator fromAnimator = latexHumanModel.getAnimator(latexHuman);
-                        HumanoidAnimator toAnimator = latexHumanHazardBodySuitModel.getAnimator(latexHuman);
-                        toAnimator.copyProperties(fromAnimator);
-                        toAnimator.applyPropertyModelLimbs(latexHumanModel);
-                        toAnimator.applyPropertyModel(latexHumanModel);
+
+                        latexHumanModel.copyPropertiesTo(latexHumanHazardBodySuitModel);
                         latexHumanHazardBodySuitModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
                         latexHumanHazardBodySuitModel.prepareMobModel(latexHuman, limbSwing, limbSwingAmount, partialTicks);
                         latexHumanHazardBodySuitModel.setupAnim(latexHuman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
                         latexHumanHazardBodySuitModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                         return;
                     }
                 }
+            }
+
+            if (entity instanceof Player player
+                    && ProcessTransfur.isPlayerTransfurred(player)
+                    && ChangedAddonTransfurVariants.getHumanForms().contains(ProcessTransfur.getPlayerTransfurVariant(player).getParent())) {
+                return;
             }
 
             EntityModel layer = renderLayerParent.getModel();
@@ -203,13 +205,44 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
         if (entity instanceof AbstractClientPlayer player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
             if (transfurVariant != null && transfurVariant.isTransfurring()) {
-                if (ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariant.getParent())) {
-                    // Verifica se o jogador está usando o skin tipo "slim" (Alex)
-                    layer = LatexHumanHazardBodySuitModel.LATEX_PLAYER;
-                    slim = player.getModelName().equals("slim");
-                    if (slim) layer = LatexHumanHazardBodySuitModel.LATEX_PLAYER;
-                    return new LatexHumanHazardBodySuitModel(Minecraft.getInstance().getEntityModels().bakeLayer(layer));
-                }
+                return clothingModel;
+            } else if (transfurVariant != null && !transfurVariant.isTransfurring() && ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariant.getParent())) {
+                // Verifica se o jogador está usando o skin tipo "slim" (Alex)
+                layer = LatexHumanHazardBodySuitModel.LATEX_PLAYER;
+                slim = player.getModelName().equals("slim");
+                if (slim) layer = LatexHumanHazardBodySuitModel.LATEX_PLAYER;
+                return new LatexHumanHazardBodySuitModel(Minecraft.getInstance().getEntityModels().bakeLayer(layer));
+            }
+
+            // Verifica se o jogador está usando o skin tipo "slim" (Alex)
+            slim = player.getModelName().equals("slim");
+            if (slim) layer = HazardBodySuitLayers.PLAYER_SLIM;
+
+        } else if (entity instanceof LatexHuman latexHuman) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(EntityUtil.playerOrNull(latexHuman.maybeGetUnderlying()));
+            if (transfurVariant != null && transfurVariant.isTransfurring()) {
+                return clothingModel;
+            } else {
+                // Verifica se o jogador está usando o skin tipo "slim" (Alex)
+                layer = LatexHumanHazardBodySuitModel.LATEX_PLAYER;
+                slim = latexHuman.getModelName().equals("slim");
+                if (slim) layer = LatexHumanHazardBodySuitModel.LATEX_PLAYER;
+                return new LatexHumanHazardBodySuitModel(Minecraft.getInstance().getEntityModels().bakeLayer(layer));
+            }
+        }
+
+        return new PlayerModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(layer), slim);
+    }
+
+
+    /// For First Person is Recommended to only use the Default player models.
+    private <T extends LivingEntity> HumanoidModel<?> getPlayerModelForFirstPerson(T entity) {
+        ModelLayerLocation layer = HazardBodySuitLayers.PLAYER;
+        boolean slim = false;
+
+        if (entity instanceof AbstractClientPlayer player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfurVariant != null && transfurVariant.isTransfurring()) {
                 return clothingModel;
             }
 
@@ -220,6 +253,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
 
         return new PlayerModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(layer), slim);
     }
+
 
 
     @SuppressWarnings("unchecked")
@@ -245,7 +279,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
 
                     if (entity instanceof LatexHuman latexHuman && latexHuman.maybeGetUnderlying() instanceof AbstractClientPlayer player) {
                         if (baseModel instanceof PlayerModel playerModel) {
-                            this.playerClothingModel = getPlayerModel(player);
+                            this.playerClothingModel = getPlayerModelForFirstPerson(player);
                             if (this.playerClothingModel == null) return;
                             playerModel.copyPropertiesTo(this.playerClothingModel);
                             ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
@@ -273,7 +307,7 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
 
             EntityModel layer = renderLayerParent.getModel();
             if (layer instanceof HumanoidModel<?> baseModel) {
-                this.playerClothingModel = getPlayerModel(entity);
+                this.playerClothingModel = getPlayerModelForFirstPerson(entity);
                 if (this.playerClothingModel == null) return;
                 baseModel.copyPropertiesTo(this.playerClothingModel);
                 ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;

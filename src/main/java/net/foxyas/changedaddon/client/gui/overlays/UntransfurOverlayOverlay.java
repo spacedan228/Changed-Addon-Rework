@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.client.gui;
+package net.foxyas.changedaddon.client.gui.overlays;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
