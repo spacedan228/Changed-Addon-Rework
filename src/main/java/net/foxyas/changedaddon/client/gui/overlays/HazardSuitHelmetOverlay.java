@@ -18,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -26,7 +27,7 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.Optional;
 
-@Mod.EventBusSubscriber({Dist.CLIENT})
+@OnlyIn(Dist.CLIENT)
 public class HazardSuitHelmetOverlay {
 
     public static final ResourceLocation OVERLAY_TEXTURE = ResourceLocation.parse("changed_addon:textures/screens/overlays/hazard_helmet_overlay.png");
@@ -56,8 +57,7 @@ public class HazardSuitHelmetOverlay {
         }
 
 
-        return false; /*player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZARD_SUIT_HELMET.get())
-                || player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZMAT_SUIT_HELMET.get());*/
+        return false;
     }
 
     public static boolean shouldPlayOverlaySound(Player entity) {
@@ -83,8 +83,7 @@ public class HazardSuitHelmetOverlay {
         }
 
 
-        return false; /*player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZARD_SUIT_HELMET.get())
-                || player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.HAZMAT_SUIT_HELMET.get());*/
+        return false;
     }
 
     public static void renderHelmetOverlay(ForgeIngameGui forgeIngameGui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {

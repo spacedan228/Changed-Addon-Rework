@@ -24,7 +24,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -34,14 +36,14 @@ import java.awt.*;
 import static net.foxyas.changedaddon.process.features.PatFeatureHandle.canPlayerPat;
 import static net.minecraft.client.gui.GuiComponent.drawCenteredString;
 
-@Mod.EventBusSubscriber({Dist.CLIENT})
+@OnlyIn(Dist.CLIENT) //@Mod.EventBusSubscriber({Dist.CLIENT})
 public class PatOverlay {
 
     //Todo: Make this a InGameOverlay check ChangedAddonOverlays to examples
 
     public static final ResourceLocation TEXTURE = ResourceLocation.parse("changed_addon:textures/screens/paw_normal.png");
 
-    @SubscribeEvent(priority = EventPriority.NORMAL)
+    //@SubscribeEvent(priority = EventPriority.NORMAL)
     public static void eventHandler(RenderGameOverlayEvent.Pre event) {
 
         if (!ChangedAddonClientConfiguration.PAT_OVERLAY.get()) {
@@ -208,6 +210,71 @@ public class PatOverlay {
             return patMessage;
         } else {
             return new TextComponent("");
+        }
+    }
+
+    public static void renderPatIconOverlay(ForgeIngameGui forgeIngameGui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+        if (!ChangedAddonClientConfiguration.PAT_OVERLAY.get()) {
+            return;
+        }
+
+        double posX = ChangedAddonClientConfiguration.PAT_OVERLAY_X.get();
+        double posY = screenHeight - ChangedAddonClientConfiguration.PAT_OVERLAY_Y.get();
+
+        float floatPosX = (float) posX;
+        float floatPosY = (float) posY;
+
+
+        Player entity = Minecraft.getInstance().player;
+
+        if (entity != null && !entity.isSpectator()) {
+            if (entity.getMainHandItem().isEmpty() || entity.getOffhandItem().isEmpty()) {
+                Entity lookedEntity = PlayerUtil.getEntityLookingAt(entity, entity.getReachDistance());
+                if (lookedEntity != null && isPatableEntity(entity, lookedEntity) && isEntityInPassiveStage(lookedEntity) && isKeySet()) {
+                    if (!getPatInfo(entity).getString().isEmpty()) {
+                        if (!lookedEntity.isInvisible() && canPlayerPat(entity)) {
+                            if (!ChangedAddonClientConfiguration.PAW_STYLE_PAT_OVERLAY.get()) {
+                                drawCenteredString(poseStack, Minecraft.getInstance().font,
+                                        getPatInfo(lookedEntity), (int) floatPosX, (int) floatPosY, -1);
+                            } else {
+                                TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(entity);
+                                Minecraft mc = Minecraft.getInstance();
+                                RenderSystem.setShader(GameRenderer::getPositionTexShader);
+                                RenderSystem.setShaderTexture(0, TEXTURE);
+
+                                int x = ((int) posX); // Posição X na tela
+                                int y = ((int) posY); // Posição Y na tela
+                                int largura = 19; // Largura da imagem
+                                int altura = 19; // Altura da imagem
+                                float troubleShotXValue = floatPosX + 9;
+                                float troubleShotYValue = floatPosY + 20;
+
+                                if (instance != null) {
+                                    if (instance.getChangedEntity() instanceof IDynamicPawColor iDynamicPawColor) {
+                                        Color pawColor = iDynamicPawColor.getPawBeansColor();
+                                        RenderSystem.setShaderColor(pawColor.getRed() / 255f, pawColor.getGreen() / 255f, pawColor.getBlue() / 255f, pawColor.getAlpha() / 255f);
+                                        // Renderiza a imagem na tela
+                                        GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
+                                        drawCenteredString(poseStack, mc.font,
+                                                getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, pawColor.getRGB());
+                                    } else {
+                                        // Renderiza a imagem na tela
+                                        GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
+                                        drawCenteredString(poseStack, mc.font,
+                                                getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, Color3.getColor("#ffabab").toInt());
+                                    }
+                                } else {
+                                    // Renderiza a imagem na tela
+                                    GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
+                                    drawCenteredString(poseStack, mc.font,
+                                            getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, Color3.getColor("#ffabab").toInt());
+                                }
+
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

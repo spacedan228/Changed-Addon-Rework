@@ -807,8 +807,10 @@ public class ChangedAddonTransfurVariants {
         return false;
     }
 
+    public static List<Supplier<TransfurVariant<?>>> humanForms = List.of(ChangedTransfurVariants.LATEX_HUMAN::get);
+
     public static List<TransfurVariant<?>> getHumanForms() {
-        return List.of(ChangedTransfurVariants.LATEX_HUMAN.get());
+        return new ArrayList<>(humanForms.stream().map(Supplier::get).toList());
     }
 
     //@Annotation: Dazed Maybe is of .faction(LatexType.WHITE_LATEX)

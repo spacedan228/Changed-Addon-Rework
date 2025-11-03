@@ -255,7 +255,6 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
     }
 
 
-
     @SuppressWarnings("unchecked")
     @Override
     public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTicks) {
@@ -329,6 +328,18 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                 playerModel.rightPants.visible = false;
                 playerModel.leftSleeve.visible = false;
                 playerModel.rightSleeve.visible = false;
+            }
+        } else if (ProcessTransfur.isPlayerTransfurred(clientPlayer)) {
+            if (ChangedAddonTransfurVariants.getHumanForms().contains(ProcessTransfur.getPlayerTransfurVariant(clientPlayer).getParent())) {
+                if (!clientPlayer.isSpectator()) {
+                    playerModel.setAllVisible(true);
+                    playerModel.hat.visible = !shouldHideHat(clientPlayer);
+                    playerModel.jacket.visible = false;
+                    playerModel.leftPants.visible = false;
+                    playerModel.rightPants.visible = false;
+                    playerModel.leftSleeve.visible = false;
+                    playerModel.rightSleeve.visible = false;
+                }
             }
         }
     }
