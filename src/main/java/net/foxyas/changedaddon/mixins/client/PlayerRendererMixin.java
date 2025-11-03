@@ -28,7 +28,7 @@ public abstract class PlayerRendererMixin {
     /**
      * Inject before the player renders to adjust model visibility.
      */
-    @Inject(method = "setModelProperties", at = @At("TAIL"))
+    @Inject(method = "setModelProperties", at = @At("RETURN"))
     private void changedaddon$applyModelVisibilityModifiers(AbstractClientPlayer pClientPlayer, CallbackInfo ci) {
         PlayerRenderer thisFix = (PlayerRenderer) (Object) this;
         List<RenderLayer<LivingEntity, EntityModel<LivingEntity>>> layers = ((LivingEntityRendererAccessor) thisFix).getLayers();

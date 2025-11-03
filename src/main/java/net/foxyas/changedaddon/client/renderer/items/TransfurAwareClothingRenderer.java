@@ -144,12 +144,15 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                     this.playerClothingModel = getPlayerModel(latexHuman.maybeGetUnderlying());
                     if (this.playerClothingModel == null) return;
                     if (playerClothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
+                        if (latexHuman.getUnderlyingPlayer() instanceof AbstractClientPlayer player) {
+                            this.setPlayerModelProperties(player, model);
+                        }
 
                         latexHumanModel.copyPropertiesTo(latexHumanHazardBodySuitModel);
                         latexHumanHazardBodySuitModel.prepareMobModel(latexHuman, limbSwing, limbSwingAmount, partialTicks);
                         latexHumanHazardBodySuitModel.setupAnim(latexHuman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-                        latexHumanHazardBodySuitModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
+                        this.setHelmetFirstPersonVisibility(latexHumanHazardBodySuitModel.getHead());
                         latexHumanHazardBodySuitModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                         return;
                     }
@@ -166,12 +169,12 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
             if (layer instanceof HumanoidModel<?> baseModel) {
                 this.playerClothingModel = getPlayerModel(entity);
                 if (playerClothingModel == null) return;
-                if (playerClothingModel instanceof PlayerModel playerModel) {
+                if (playerClothingModel instanceof PlayerModel playerModel && entity instanceof AbstractClientPlayer player) {
                     baseModel.copyPropertiesTo(playerModel);
                     playerModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
                     playerModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
-                    playerModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
+                    this.setHelmetFirstPersonVisibility(playerModel.getHead());
                     playerModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                 }
                 return;
@@ -180,6 +183,24 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
         }
 
     }
+
+    // Util Method.
+    public void copyPropertiesFromOtherPlayerModel(PlayerModel<?> copyPlayerModel) {
+        if (this.playerClothingModel instanceof PlayerModel<?> playerModel) {
+            playerModel.hat.visible = copyPlayerModel.hat.visible;
+            playerModel.jacket.visible = copyPlayerModel.jacket.visible;
+            playerModel.leftPants.visible = copyPlayerModel.leftPants.visible;
+            playerModel.rightPants.visible = copyPlayerModel.rightPants.visible;
+            playerModel.leftSleeve.visible = copyPlayerModel.leftSleeve.visible;
+            playerModel.rightSleeve.visible = copyPlayerModel.rightSleeve.visible;
+        }
+    }
+
+
+    public void setHelmetFirstPersonVisibility(ModelPart helmet) {
+        helmet.visible = !ChangedCompatibility.isFirstPersonRendering();
+    }
+
 
     public static boolean shouldHideHat(LivingEntity entity) {
         if (entity instanceof Player player) {
@@ -281,6 +302,8 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
 
                     if (entity instanceof LatexHuman latexHuman && latexHuman.maybeGetUnderlying() instanceof AbstractClientPlayer player) {
                         if (baseModel instanceof PlayerModel playerModel) {
+                            this.setPlayerModelProperties(player, playerModel);
+
                             this.playerClothingModel = getPlayerModelForFirstPerson(player);
                             if (this.playerClothingModel == null) return;
                             playerModel.copyPropertiesTo(this.playerClothingModel);
