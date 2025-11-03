@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.client.gui;
+package net.foxyas.changedaddon.client.gui.overlays;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -17,6 +17,10 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber({Dist.CLIENT})
 public class UntransfurOverlayOverlay {
+
+    //Todo: Make this a InGameOverlay check ChangedAddonOverlays to examples
+    //Todo: revamp this code a bit.. damn this code is sucks..
+
     @SubscribeEvent(priority = EventPriority.NORMAL)
     public static void eventHandler(RenderGameOverlayEvent.Pre event) {
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {

@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.client.model.*;
 import net.foxyas.changedaddon.client.model.advanced.*;
 import net.foxyas.changedaddon.client.model.armors.*;
 import net.foxyas.changedaddon.client.model.clothes.HazardBodySuitLayers;
+import net.foxyas.changedaddon.client.model.clothes.LatexHumanHazardBodySuitModel;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
 import net.foxyas.changedaddon.client.model.simple.*;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.ContainmentContainerRenderer;
@@ -31,6 +32,9 @@ public class ChangedAddonModels {
         // --- CLOTHING MODELS ---
         event.registerLayerDefinition(HazardBodySuitLayers.PLAYER, () -> LayerDefinition.create(PlayerModel.createMesh(new CubeDeformation(0.05f), false), 64, 64));
         event.registerLayerDefinition(HazardBodySuitLayers.PLAYER_SLIM, () -> LayerDefinition.create(PlayerModel.createMesh(new CubeDeformation(0.05f), true), 64, 64));
+
+        event.registerLayerDefinition(LatexHumanHazardBodySuitModel.LATEX_PLAYER, () -> LatexHumanHazardBodySuitModel.createBodyLayer(new CubeDeformation(0.05f), false));
+        event.registerLayerDefinition(LatexHumanHazardBodySuitModel.LATEX_PLAYER_SLIM, () -> LatexHumanHazardBodySuitModel.createBodyLayer(new CubeDeformation(0.05f), true));
 
 
 
