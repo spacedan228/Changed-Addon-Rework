@@ -146,10 +146,10 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
                     if (playerClothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
 
                         latexHumanModel.copyPropertiesTo(latexHumanHazardBodySuitModel);
-                        latexHumanHazardBodySuitModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
                         latexHumanHazardBodySuitModel.prepareMobModel(latexHuman, limbSwing, limbSwingAmount, partialTicks);
                         latexHumanHazardBodySuitModel.setupAnim(latexHuman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
+                        latexHumanHazardBodySuitModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
                         latexHumanHazardBodySuitModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                         return;
                     }
@@ -166,11 +166,14 @@ public class TransfurAwareClothingRenderer implements AccessoryRenderer, Transit
             if (layer instanceof HumanoidModel<?> baseModel) {
                 this.playerClothingModel = getPlayerModel(entity);
                 if (playerClothingModel == null) return;
-                baseModel.copyPropertiesTo(this.playerClothingModel);
-                this.playerClothingModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
-                this.playerClothingModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
-                this.playerClothingModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                this.playerClothingModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                if (playerClothingModel instanceof PlayerModel playerModel) {
+                    baseModel.copyPropertiesTo(playerModel);
+                    playerModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
+                    playerModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
+                    playerModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
+                    playerModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                }
                 return;
             }
 
