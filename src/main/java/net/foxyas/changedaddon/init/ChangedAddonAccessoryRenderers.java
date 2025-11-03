@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.client.renderer.items.SimpleColorfulClothingRenderer;
-import net.foxyas.changedaddon.client.renderer.items.TransfurAwareClothingRenderer;
+import net.foxyas.changedaddon.client.renderer.items.HazardBodySuitClothingRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.AccessoryLayer;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -21,12 +21,12 @@ public class ChangedAddonAccessoryRenderers {
             AccessoryLayer.registerRenderer(ChangedAddonItems.DYEABLE_TSHIRT.get(), SimpleColorfulClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.CHEST));
             AccessoryLayer.registerRenderer(ChangedAddonItems.DYEABLE_SHORTS.get(), SimpleColorfulClothingRenderer.of(ArmorModel.CLOTHING_INNER, EquipmentSlot.LEGS));
             AccessoryLayer.registerRenderer(ChangedAddonItems.HAZARD_BODY_SUIT.get(),
-                    TransfurAwareClothingRenderer.of(ArmorModel.CLOTHING_MIDDLE,
-                            Set.of(new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_INNER, EquipmentSlot.HEAD),
-                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.CHEST),
-                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_MIDDLE, EquipmentSlot.LEGS),
-                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.FEET),
-                                    new TransfurAwareClothingRenderer.ModelComponent(ArmorModel.CLOTHING_INNER, EquipmentSlot.FEET)
+                    HazardBodySuitClothingRenderer.of(ArmorModel.CLOTHING_MIDDLE,
+                            Set.of(new HazardBodySuitClothingRenderer.ModelComponent(ArmorModel.CLOTHING_INNER, EquipmentSlot.HEAD),
+                                    new HazardBodySuitClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.CHEST),
+                                    new HazardBodySuitClothingRenderer.ModelComponent(ArmorModel.CLOTHING_MIDDLE, EquipmentSlot.LEGS),
+                                    new HazardBodySuitClothingRenderer.ModelComponent(ArmorModel.CLOTHING_OUTER, EquipmentSlot.FEET),
+                                    new HazardBodySuitClothingRenderer.ModelComponent(ArmorModel.CLOTHING_INNER, EquipmentSlot.FEET)
                             )
                     )
             );

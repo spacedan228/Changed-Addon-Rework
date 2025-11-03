@@ -1,11 +1,16 @@
 package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.abilities.ClawsAbility;
+import net.foxyas.changedaddon.client.renderer.items.HazardBodySuitClothingRenderer;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
+import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.data.AccessorySlotType;
+import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.particles.ParticleTypes;
@@ -22,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,7 +37,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin {
@@ -44,6 +52,38 @@ public abstract class PlayerMixin {
         if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof AbstractKatanaItem abstractKatanaItem) {
             ci.cancel();
             abstractKatanaItem.spawnElectricSwingParticle((Player) (Object) this, 2);
+        }
+    }
+
+    @Inject(method = "isModelPartShown", at = @At("HEAD"), cancellable = true)
+    private void hideModelParts(PlayerModelPart pPart, CallbackInfoReturnable<Boolean> cir) {
+        final Player thisFixed = (Player) (Object) this;
+        TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(thisFixed);
+        if (transfurVariantInstance != null && transfurVariantInstance.isTransfurring()) {
+            return;
+        }
+
+        if (transfurVariantInstance != null
+                && !ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariantInstance.getParent())) {
+            return;
+            //Fixme Maybe Change How the Process of hide stuff works?
+            //Fixme Right when the player is a latex human this handle it but when the player has a null transfur variant the PlayerRendererMixin handle it, maybe change to be just here?
+        }
+
+        for (EquipmentSlot slot : Arrays.stream(EquipmentSlot.values()).filter((equipmentSlot) -> equipmentSlot.getType() == EquipmentSlot.Type.ARMOR).toList()) {
+            AccessorySlots accessorySlots = AccessorySlots.getForEntity(thisFixed).get();
+            List<AccessorySlotType> list = accessorySlots.getSlotTypes().filter((slotType) -> slotType.getEquivalentSlot() == slot).toList();
+            for (AccessorySlotType slotType : list) {
+                Optional<ItemStack> item = accessorySlots.getItem(slotType);
+                ItemStack itemStack = item.isPresent() ? item.get() : ItemStack.EMPTY;
+                if (itemStack.is(ChangedAddonItems.HAZARD_BODY_SUIT.get())) {
+                    if (pPart == PlayerModelPart.HAT) {
+                        cir.setReturnValue(HazardBodySuitClothingRenderer.shouldHideHat(thisFixed));
+                    } else {
+                        cir.setReturnValue(false);
+                    }
+                }
+            }
         }
     }
 

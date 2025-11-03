@@ -27,6 +27,7 @@ public abstract class PlayerRendererMixin {
 
     /**
      * Inject before the player renders to adjust model visibility.
+     * This is Probably Useless after the mixin into the Player$isModelPartShown in PlayerMixin.class
      */
     @Inject(method = "setModelProperties", at = @At("RETURN"))
     private void changedaddon$applyModelVisibilityModifiers(AbstractClientPlayer pClientPlayer, CallbackInfo ci) {
