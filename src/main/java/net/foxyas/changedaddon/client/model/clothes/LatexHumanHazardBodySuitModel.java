@@ -116,6 +116,10 @@ public class LatexHumanHazardBodySuitModel extends AdvancedHumanoidModel<LatexHu
         return arm == HumanoidArm.LEFT ? this.LeftArm : this.RightArm;
     }
 
+    public @NotNull ModelPart getSleeve(HumanoidArm arm) {
+        return arm == HumanoidArm.LEFT ? this.LeftSleeve : this.RightSleeve;
+    }
+
     public ModelPart getLeg(HumanoidArm p_102852_) {
         return p_102852_ == HumanoidArm.LEFT ? this.LeftLeg : this.RightLeg;
     }

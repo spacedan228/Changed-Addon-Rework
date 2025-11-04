@@ -363,7 +363,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         }
         if (entity instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (transfurVariant != null && transfurVariant.isTransfurring() && !ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariant.getParent())) {
+            if (transfurVariant != null && transfurVariant.isTransfurring()) {
                 ResourceLocation itemId = stack.getItem().getRegistryName();
                 return String.format("%s:textures/models/hazard_suit/%s_%s_tf.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
             } else if (transfurVariant != null && ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariant.getParent())) {

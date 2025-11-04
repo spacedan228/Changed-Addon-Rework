@@ -228,7 +228,8 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
                 return;
             }
 
-            if (mayRenderTransfuringModel(poseStack, renderLayerParent, renderTypeBuffer, light, entity, texture, stack, color)) return;
+            if (mayRenderTransfuringModel(poseStack, renderLayerParent, renderTypeBuffer, light, entity, texture, stack, color))
+                return;
 
             if (mayRenderNonHumanTransfurModel(poseStack, renderLayerParent, renderTypeBuffer, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, entity, stack, texture, color))
                 return;
@@ -356,6 +357,11 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
             ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
             armPart.loadPose(armPose);
             FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+            if (this.playerClothingModel instanceof PlayerModel<?> playerModel) {
+                ModelPart sleevePart = arm == HumanoidArm.RIGHT ? playerModel.rightSleeve : playerModel.leftSleeve;
+                sleevePart.loadPose(armPose);
+                FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+            }
         }
     }
 
@@ -367,12 +373,31 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
 
                 if (entity instanceof LatexHuman latexHuman && latexHuman.maybeGetUnderlying() instanceof AbstractClientPlayer player) {
                     if (baseModel instanceof LatexHumanModel playerModel) {
-                        this.playerClothingModel = getPlayerModelForFirstPerson(player);
+                        this.playerClothingModel = getPlayerModel(player);
                         if (this.playerClothingModel == null) return true;
-                        playerModel.copyPropertiesTo(this.playerClothingModel);
-                        ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
-                        armPart.loadPose(armPose);
-                        FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                        if (this.playerClothingModel instanceof AdvancedHumanoidModel advancedHumanoidModel) {
+                            playerModel.copyPropertiesTo(advancedHumanoidModel);
+
+                            ModelPart armPart = advancedHumanoidModel.getArm(arm);
+                            armPart.loadPose(armPose);
+                            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+
+                            if (advancedHumanoidModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
+                                ModelPart sleevePart = latexHumanHazardBodySuitModel.getSleeve(arm);
+                                sleevePart.loadPose(armPose);
+                                FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                            }
+
+                        } else if (this.playerClothingModel instanceof PlayerModel) {
+                            baseModel.copyPropertiesTo(this.playerClothingModel);
+
+                            ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
+                            armPart.loadPose(armPose);
+                            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+
+                            ModelPart sleevePart = arm == HumanoidArm.RIGHT ? playerModel.rightSleeve : playerModel.leftSleeve;
+                            FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                        }
                         return true;
                     }
                 }
