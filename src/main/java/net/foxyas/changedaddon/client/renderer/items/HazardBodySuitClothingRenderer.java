@@ -99,148 +99,6 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
         }
     }
 
-    @SuppressWarnings({"unchecked"})
-    public <T extends LivingEntity, M extends EntityModel<T>> void render(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        ItemStack stack = slotContext.stack();
-        Item var14 = stack.getItem();
-        if (var14 instanceof Clothing clothing) {
-            Color color = Color.WHITE;
-            if (clothing instanceof DyeableLeatherItem dyeableLeatherItem) {
-                color = new Color(dyeableLeatherItem.getColor(stack));
-            }
-
-            T entity = slotContext.wearer();
-            ResourceLocation texture = clothing.getTexture(stack, entity);
-            if (texture == null) {
-                return;
-            }
-
-            if (entity instanceof ChangedEntity changedEntity && !(changedEntity instanceof LatexHuman)) {
-                if (renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
-                    LatexHumanoidArmorLayer layer = advancedHumanoidRenderer.getArmorLayer();
-
-                    for (ModelComponent component : this.components) {
-                        LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
-                        AdvancedHumanoidModel var24 = advancedHumanoidRenderer.getModel(changedEntity);
-                        if (var24 instanceof AdvancedHumanoidModelInterface advancedModel) {
-                            model.getAnimator(changedEntity).copyProperties(advancedModel.getAnimator(changedEntity));
-                        }
-
-                        model.prepareMobModel(changedEntity, limbSwing, limbSwingAmount, partialTicks);
-                        model.setupAnim(changedEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                        model.prepareVisibility(component.renderAs, stack);
-                        model.renderForSlot(changedEntity, advancedHumanoidRenderer, stack, component.renderAs, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                        model.unprepareVisibility(component.renderAs, stack);
-                    }
-
-                    return;
-                }
-            }
-
-            if (entity instanceof LatexHuman latexHuman && renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
-                AdvancedHumanoidModel baseModel = advancedHumanoidRenderer.getModel(latexHuman);
-                if (baseModel instanceof LatexHumanModel latexHumanModel) {
-                    this.playerClothingModel = getPlayerModel(latexHuman.maybeGetUnderlying());
-                    if (this.playerClothingModel == null) return;
-                    if (playerClothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
-
-                        latexHumanModel.copyPropertiesTo(latexHumanHazardBodySuitModel);
-                        latexHumanHazardBodySuitModel.prepareMobModel(latexHuman, limbSwing, limbSwingAmount, partialTicks);
-                        latexHumanHazardBodySuitModel.setupAnim(latexHuman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-
-                        if (latexHuman.getUnderlyingPlayer() instanceof AbstractClientPlayer abstractClientPlayer) latexHumanHazardBodySuitModel.setModelProperties(abstractClientPlayer);
-
-                        this.setHelmetFirstPersonVisibility(latexHumanHazardBodySuitModel.getHead());
-                        this.setHelmetFirstPersonVisibility(latexHumanHazardBodySuitModel.getHat());
-                        latexHumanHazardBodySuitModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                        return;
-                    }
-                }
-            }
-
-            if (entity instanceof Player player
-                    && ProcessTransfur.isPlayerTransfurred(player)
-                    && ChangedAddonTransfurVariants.getHumanForms().contains(ProcessTransfur.getPlayerTransfurVariant(player).getParent())) {
-                return;
-            }
-
-            EntityModel layer = renderLayerParent.getModel();
-            if (layer instanceof HumanoidModel<?> baseModel) {
-                this.playerClothingModel = getPlayerModel(entity);
-                if (playerClothingModel == null) return;
-                if (playerClothingModel instanceof PlayerModel playerModel) {
-                    baseModel.copyPropertiesTo(playerModel);
-                    playerModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
-                    playerModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-
-                    this.setHelmetFirstPersonVisibility(playerModel.getHead());
-                    this.setHelmetFirstPersonVisibility(playerModel.hat);
-                    playerModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                }
-                return;
-            }
-
-        }
-
-    }
-
-    // Util Method.
-    public void copyPlayerModelProperties(PlayerModel<?> copyPlayerModel) {
-        if (this.playerClothingModel instanceof PlayerModel<?> playerModel) {
-            playerModel.hat.visible = copyPlayerModel.hat.visible;
-            playerModel.jacket.visible = copyPlayerModel.jacket.visible;
-            playerModel.leftPants.visible = copyPlayerModel.leftPants.visible;
-            playerModel.rightPants.visible = copyPlayerModel.rightPants.visible;
-            playerModel.leftSleeve.visible = copyPlayerModel.leftSleeve.visible;
-            playerModel.rightSleeve.visible = copyPlayerModel.rightSleeve.visible;
-        }
-    }
-
-    public void copyPlayerModelProperties(PlayerModel<?> target, PlayerModel<?> data) {
-        target.hat.visible = data.hat.visible;
-        target.jacket.visible = data.jacket.visible;
-        target.leftPants.visible = data.leftPants.visible;
-        target.rightPants.visible = data.rightPants.visible;
-        target.leftSleeve.visible = data.leftSleeve.visible;
-        target.rightSleeve.visible = data.rightSleeve.visible;
-    }
-
-
-    public void setHelmetFirstPersonVisibility(ModelPart helmet) {
-        helmet.visible = !ChangedCompatibility.isFirstPersonRendering();
-    }
-
-    public <T extends PlayerModel<?>> void setHelmetFirstPersonVisibility(T clothingModel) {
-        clothingModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
-        clothingModel.hat.visible = !ChangedCompatibility.isFirstPersonRendering();
-
-        if (clothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
-            latexHumanHazardBodySuitModel.getHat().visible = !ChangedCompatibility.isFirstPersonRendering();
-        }
-    }
-
-
-    public static boolean shouldHideHat(LivingEntity entity) {
-        if (entity instanceof Player player) {
-            if (ProcessTransfur.isPlayerTransfurred(player)
-                    && !ChangedAddonTransfurVariants.getHumanForms().contains(ProcessTransfur.getPlayerTransfurVariant(player).getParent())) return false;
-
-            if (AccessorySlots.getForEntity(player).isPresent()) {
-                AccessorySlots accessorySlots = AccessorySlots.getForEntity(player).get();
-                Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
-                if (item.isPresent()) {
-                    ItemStack stack = item.get();
-                    if (stack.getItem() instanceof HazardBodySuit hazardBodySuit) {
-                        return hazardBodySuit.getClothingState(stack).getValue(HazardBodySuit.HELMET);
-                    }
-                }
-            }
-        }
-
-
-        return false;
-    }
-
     private <T extends LivingEntity> HumanoidModel<?> getPlayerModel(T entity) {
         ModelLayerLocation layer = HazardBodySuitLayers.PLAYER;
         boolean slim = false;
@@ -297,6 +155,173 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
         return new PlayerModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(layer), slim);
     }
 
+    // Util Method.
+    public void copyPlayerModelProperties(PlayerModel<?> copyPlayerModel) {
+        if (this.playerClothingModel instanceof PlayerModel<?> playerModel) {
+            playerModel.hat.visible = copyPlayerModel.hat.visible;
+            playerModel.jacket.visible = copyPlayerModel.jacket.visible;
+            playerModel.leftPants.visible = copyPlayerModel.leftPants.visible;
+            playerModel.rightPants.visible = copyPlayerModel.rightPants.visible;
+            playerModel.leftSleeve.visible = copyPlayerModel.leftSleeve.visible;
+            playerModel.rightSleeve.visible = copyPlayerModel.rightSleeve.visible;
+        }
+    }
+
+    public void copyPlayerModelProperties(PlayerModel<?> target, PlayerModel<?> data) {
+        target.hat.visible = data.hat.visible;
+        target.jacket.visible = data.jacket.visible;
+        target.leftPants.visible = data.leftPants.visible;
+        target.rightPants.visible = data.rightPants.visible;
+        target.leftSleeve.visible = data.leftSleeve.visible;
+        target.rightSleeve.visible = data.rightSleeve.visible;
+    }
+
+    public void setHelmetFirstPersonVisibility(ModelPart helmet) {
+        helmet.visible = !ChangedCompatibility.isFirstPersonRendering();
+    }
+
+    public <T extends PlayerModel<?>> void setHelmetFirstPersonVisibility(T clothingModel) {
+        clothingModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
+        clothingModel.hat.visible = !ChangedCompatibility.isFirstPersonRendering();
+
+        if (clothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
+            latexHumanHazardBodySuitModel.getHat().visible = !ChangedCompatibility.isFirstPersonRendering();
+        }
+    }
+
+
+    public static boolean shouldHideHat(LivingEntity entity) {
+        if (entity instanceof Player player) {
+            if (ProcessTransfur.isPlayerTransfurred(player)
+                    && !ChangedAddonTransfurVariants.getHumanForms().contains(ProcessTransfur.getPlayerTransfurVariant(player).getParent()))
+                return false;
+
+            if (AccessorySlots.getForEntity(player).isPresent()) {
+                AccessorySlots accessorySlots = AccessorySlots.getForEntity(player).get();
+                Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
+                if (item.isPresent()) {
+                    ItemStack stack = item.get();
+                    if (stack.getItem() instanceof HazardBodySuit hazardBodySuit) {
+                        return hazardBodySuit.getClothingState(stack).getValue(HazardBodySuit.HELMET);
+                    }
+                }
+            }
+        }
+
+
+        return false;
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public <T extends LivingEntity, M extends EntityModel<T>> void render(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        ItemStack stack = slotContext.stack();
+        Item var14 = stack.getItem();
+        if (var14 instanceof Clothing clothing) {
+            Color color = Color.WHITE;
+            if (clothing instanceof DyeableLeatherItem dyeableLeatherItem) {
+                color = new Color(dyeableLeatherItem.getColor(stack));
+            }
+
+            T entity = slotContext.wearer();
+            ResourceLocation texture = clothing.getTexture(stack, entity);
+            if (texture == null) {
+                return;
+            }
+
+            if (mayRenderTransfuringModel(poseStack, renderLayerParent, renderTypeBuffer, light, entity, texture, stack, color)) return;
+
+            if (mayRenderNonHumanTransfurModel(poseStack, renderLayerParent, renderTypeBuffer, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, entity, stack, texture, color))
+                return;
+
+            if (mayRenderHumanTransfurModel(poseStack, renderLayerParent, renderTypeBuffer, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, entity, texture, stack, color))
+                return;
+
+            renderBasicPlayerModel(poseStack, renderLayerParent, renderTypeBuffer, light, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, entity, texture, stack, color);
+
+        }
+
+    }
+
+    private <T extends LivingEntity, M extends EntityModel<T>> void renderBasicPlayerModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, T entity, ResourceLocation texture, ItemStack stack, Color color) {
+        EntityModel layer = renderLayerParent.getModel();
+        if (layer instanceof HumanoidModel<?> baseModel) {
+            this.playerClothingModel = getPlayerModel(entity);
+            if (playerClothingModel == null) return;
+            if (playerClothingModel instanceof PlayerModel playerModel) {
+                baseModel.copyPropertiesTo(playerModel);
+                playerModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
+                playerModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
+                this.setHelmetFirstPersonVisibility(playerModel.getHead());
+                this.setHelmetFirstPersonVisibility(playerModel.hat);
+                playerModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+            }
+            return;
+        }
+    }
+
+    private <T extends LivingEntity, M extends EntityModel<T>> boolean mayRenderHumanTransfurModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, T entity, ResourceLocation texture, ItemStack stack, Color color) {
+        if (entity instanceof LatexHuman latexHuman && renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
+            AdvancedHumanoidModel baseModel = advancedHumanoidRenderer.getModel(latexHuman);
+            if (baseModel instanceof LatexHumanModel latexHumanModel) {
+                this.playerClothingModel = getPlayerModel(latexHuman.maybeGetUnderlying());
+                if (this.playerClothingModel == null) return true;
+                if (playerClothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
+                    latexHumanHazardBodySuitModel.defaultModelProperties();
+                    latexHumanModel.copyPropertiesTo(latexHumanHazardBodySuitModel);
+                    latexHumanHazardBodySuitModel.prepareMobModel(latexHuman, limbSwing, limbSwingAmount, partialTicks);
+                    latexHumanHazardBodySuitModel.setupAnim(latexHuman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+
+                    this.setHelmetFirstPersonVisibility(latexHumanHazardBodySuitModel.getHead());
+                    this.setHelmetFirstPersonVisibility(latexHumanHazardBodySuitModel.getHat());
+                    latexHumanHazardBodySuitModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private <T extends LivingEntity, M extends EntityModel<T>> boolean mayRenderNonHumanTransfurModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, T entity, ItemStack stack, ResourceLocation texture, Color color) {
+        if (entity instanceof ChangedEntity changedEntity && !(changedEntity instanceof LatexHuman)) {
+            if (renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
+                LatexHumanoidArmorLayer layer = advancedHumanoidRenderer.getArmorLayer();
+
+                for (ModelComponent component : this.components) {
+                    LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
+                    AdvancedHumanoidModel var24 = advancedHumanoidRenderer.getModel(changedEntity);
+                    if (var24 instanceof AdvancedHumanoidModelInterface advancedModel) {
+                        model.getAnimator(changedEntity).copyProperties(advancedModel.getAnimator(changedEntity));
+                    }
+
+                    model.prepareMobModel(changedEntity, limbSwing, limbSwingAmount, partialTicks);
+                    model.setupAnim(changedEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+                    model.prepareVisibility(component.renderAs, stack);
+                    model.renderForSlot(changedEntity, advancedHumanoidRenderer, stack, component.renderAs, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                    model.unprepareVisibility(component.renderAs, stack);
+                }
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private <T extends LivingEntity, M extends EntityModel<T>> boolean mayRenderTransfuringModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, T entity, ResourceLocation texture, ItemStack stack, Color color) {
+        if (entity instanceof AbstractClientPlayer player) {
+            TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfurVariantInstance != null && transfurVariantInstance.isTransfurring()) {
+                EntityModel layer = renderLayerParent.getModel();
+                if (layer instanceof HumanoidModel<?> baseModel) {
+                    baseModel.copyPropertiesTo(this.clothingModel);
+                    this.clothingModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                    return true;
+                }
+                return true;
+            }
+        }
+        return false;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -314,50 +339,60 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
                 return;
             }
 
-            if (entity instanceof ChangedEntity changedEntity) {
-                if (renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
-                    LatexHumanoidArmorLayer layer = advancedHumanoidRenderer.getArmorLayer();
-                    EntityModel baseModel = advancedHumanoidRenderer.getModel(changedEntity);
+            if (mayRenderTransfuredArmModel(poseStack, renderLayerParent, renderTypeBuffer, light, arm, armPose, stackCorrector, partialTicks, entity, texture, stack, color))
+                return;
 
-                    if (entity instanceof LatexHuman latexHuman && latexHuman.maybeGetUnderlying() instanceof AbstractClientPlayer player) {
-                        if (baseModel instanceof LatexHumanModel playerModel) {
-                            this.playerClothingModel = getPlayerModelForFirstPerson(player);
-                            if (this.playerClothingModel == null) return;
-                            playerModel.copyPropertiesTo(this.playerClothingModel);
-                            ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
-                            armPart.loadPose(armPose);
-                            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                            return;
-                        }
-                    }
-
-                    for (ModelComponent component : this.components) {
-                        if (component.renderAs == EquipmentSlot.CHEST) {
-                            LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
-                            model.prepareMobModel(changedEntity, 0.0F, 0.0F, partialTicks);
-                            model.prepareVisibility(component.renderAs, stack);
-                            ModelPart armPart = model.getArm(arm);
-                            armPart.loadPose(armPose);
-                            FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                            model.unprepareVisibility(component.renderAs, stack);
-                        }
-                    }
-
-                    return;
-                }
-            }
-
-            EntityModel layer = renderLayerParent.getModel();
-            if (layer instanceof HumanoidModel<?> baseModel) {
-                this.playerClothingModel = getPlayerModelForFirstPerson(entity);
-                if (this.playerClothingModel == null) return;
-                baseModel.copyPropertiesTo(this.playerClothingModel);
-                ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
-                armPart.loadPose(armPose);
-                FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-            }
+            renderNonTransfuredArmModel(poseStack, renderLayerParent, renderTypeBuffer, light, arm, armPose, stackCorrector, entity, texture, stack, color);
         }
 
+    }
+
+    private <T extends LivingEntity, M extends EntityModel<T>> void renderNonTransfuredArmModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, T entity, ResourceLocation texture, ItemStack stack, Color color) {
+        EntityModel layer = renderLayerParent.getModel();
+        if (layer instanceof HumanoidModel<?> baseModel) {
+            this.playerClothingModel = getPlayerModelForFirstPerson(entity);
+            if (this.playerClothingModel == null) return;
+            baseModel.copyPropertiesTo(this.playerClothingModel);
+            ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
+            armPart.loadPose(armPose);
+            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+        }
+    }
+
+    private <T extends LivingEntity, M extends EntityModel<T>> boolean mayRenderTransfuredArmModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTicks, T entity, ResourceLocation texture, ItemStack stack, Color color) {
+        if (entity instanceof ChangedEntity changedEntity) {
+            if (renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
+                LatexHumanoidArmorLayer layer = advancedHumanoidRenderer.getArmorLayer();
+                EntityModel baseModel = advancedHumanoidRenderer.getModel(changedEntity);
+
+                if (entity instanceof LatexHuman latexHuman && latexHuman.maybeGetUnderlying() instanceof AbstractClientPlayer player) {
+                    if (baseModel instanceof LatexHumanModel playerModel) {
+                        this.playerClothingModel = getPlayerModelForFirstPerson(player);
+                        if (this.playerClothingModel == null) return true;
+                        playerModel.copyPropertiesTo(this.playerClothingModel);
+                        ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
+                        armPart.loadPose(armPose);
+                        FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                        return true;
+                    }
+                }
+
+                for (ModelComponent component : this.components) {
+                    if (component.renderAs == EquipmentSlot.CHEST) {
+                        LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
+                        model.prepareMobModel(changedEntity, 0.0F, 0.0F, partialTicks);
+                        model.prepareVisibility(component.renderAs, stack);
+                        ModelPart armPart = model.getArm(arm);
+                        armPart.loadPose(armPose);
+                        FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                        model.unprepareVisibility(component.renderAs, stack);
+                    }
+                }
+
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

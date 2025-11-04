@@ -7,7 +7,6 @@ import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
-import net.ltxprogrammer.changed.client.renderer.model.LatexHumanModel;
 import net.ltxprogrammer.changed.entity.beast.LatexHuman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -70,11 +69,6 @@ public class LatexHumanHazardBodySuitModel extends AdvancedHumanoidModel<LatexHu
         this.RightPants.visible = player.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
         this.LeftSleeve.visible = player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
         this.RightSleeve.visible = player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
-    }
-
-    public void setHelmetProperties(boolean hatToo, boolean value) {
-        this.Head.visible = value;
-        if (hatToo) this.Hat.visible = value;
     }
 
     public ModelPart getHat() {

@@ -353,7 +353,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     @Override
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         if (entity instanceof ChangedEntity changedEntity) {
-            if (changedEntity instanceof LatexHuman latexHuman && latexHuman.maybeGetUnderlying() instanceof AbstractClientPlayer abstractClientPlayer) {
+            if (changedEntity instanceof LatexHuman latexHuman && latexHuman.getUnderlyingPlayer() instanceof AbstractClientPlayer abstractClientPlayer) {
                 ResourceLocation itemId = stack.getItem().getRegistryName();
                 return String.format("%s:textures/models/hazard_suit/%s_%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack), getPlayerModelStyle(abstractClientPlayer));
             }
