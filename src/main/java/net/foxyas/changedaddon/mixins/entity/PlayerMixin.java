@@ -65,26 +65,26 @@ public abstract class PlayerMixin {
 
         if (transfurVariantInstance != null
                 && !ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariantInstance.getParent())) {
-            return;
             //Fixme Maybe Change How the Process of hide stuff works?
             //Fixme Right when the player is a latex human this handle it but when the player has a null transfur variant the PlayerRendererMixin handle it, maybe change to be just here?
-        }
-
-        for (EquipmentSlot slot : Arrays.stream(EquipmentSlot.values()).filter((equipmentSlot) -> equipmentSlot.getType() == EquipmentSlot.Type.ARMOR).toList()) {
-            AccessorySlots accessorySlots = AccessorySlots.getForEntity(thisFixed).get();
-            List<AccessorySlotType> list = accessorySlots.getSlotTypes().filter((slotType) -> slotType.getEquivalentSlot() == slot).toList();
-            for (AccessorySlotType slotType : list) {
-                Optional<ItemStack> item = accessorySlots.getItem(slotType);
-                ItemStack itemStack = item.isPresent() ? item.get() : ItemStack.EMPTY;
-                if (itemStack.is(ChangedAddonItems.HAZARD_BODY_SUIT.get())) {
-                    if (pPart == PlayerModelPart.HAT) {
-                        cir.setReturnValue(HazardBodySuitClothingRenderer.shouldHideHat(thisFixed));
-                    } else {
-                        cir.setReturnValue(false);
+        } else if (transfurVariantInstance != null && ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariantInstance.getParent())) {
+            for (EquipmentSlot slot : Arrays.stream(EquipmentSlot.values()).filter((equipmentSlot) -> equipmentSlot.getType() == EquipmentSlot.Type.ARMOR).toList()) {
+                AccessorySlots accessorySlots = AccessorySlots.getForEntity(thisFixed).get();
+                List<AccessorySlotType> list = accessorySlots.getSlotTypes().filter((slotType) -> slotType.getEquivalentSlot() == slot).toList();
+                for (AccessorySlotType slotType : list) {
+                    Optional<ItemStack> item = accessorySlots.getItem(slotType);
+                    ItemStack itemStack = item.isPresent() ? item.get() : ItemStack.EMPTY;
+                    if (itemStack.is(ChangedAddonItems.HAZARD_BODY_SUIT.get())) {
+                        if (pPart == PlayerModelPart.HAT) {
+                            cir.setReturnValue(!HazardBodySuitClothingRenderer.shouldHideHat(thisFixed));
+                        } else {
+                            cir.setReturnValue(false);
+                        }
                     }
                 }
             }
         }
+
     }
 
     /* // Maybe Fix the Blurp Sound After "drinking" a food item?
