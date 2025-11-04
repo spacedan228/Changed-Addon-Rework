@@ -138,8 +138,8 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
             }
 
             if (entity instanceof LatexHuman latexHuman && renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
-                AdvancedHumanoidModel model = advancedHumanoidRenderer.getModel(latexHuman);
-                if (model instanceof LatexHumanModel latexHumanModel) {
+                AdvancedHumanoidModel baseModel = advancedHumanoidRenderer.getModel(latexHuman);
+                if (baseModel instanceof LatexHumanModel latexHumanModel) {
                     this.playerClothingModel = getPlayerModel(latexHuman.maybeGetUnderlying());
                     if (this.playerClothingModel == null) return;
                     if (playerClothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
@@ -148,7 +148,10 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
                         latexHumanHazardBodySuitModel.prepareMobModel(latexHuman, limbSwing, limbSwingAmount, partialTicks);
                         latexHumanHazardBodySuitModel.setupAnim(latexHuman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
+                        if (latexHuman.getUnderlyingPlayer() instanceof AbstractClientPlayer abstractClientPlayer) latexHumanHazardBodySuitModel.setModelProperties(abstractClientPlayer);
+
                         this.setHelmetFirstPersonVisibility(latexHumanHazardBodySuitModel.getHead());
+                        this.setHelmetFirstPersonVisibility(latexHumanHazardBodySuitModel.getHat());
                         latexHumanHazardBodySuitModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                         return;
                     }
@@ -165,12 +168,13 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
             if (layer instanceof HumanoidModel<?> baseModel) {
                 this.playerClothingModel = getPlayerModel(entity);
                 if (playerClothingModel == null) return;
-                if (playerClothingModel instanceof PlayerModel playerModel && entity instanceof AbstractClientPlayer player) {
+                if (playerClothingModel instanceof PlayerModel playerModel) {
                     baseModel.copyPropertiesTo(playerModel);
                     playerModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
                     playerModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
                     this.setHelmetFirstPersonVisibility(playerModel.getHead());
+                    this.setHelmetFirstPersonVisibility(playerModel.hat);
                     playerModel.renderToBuffer(poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                 }
                 return;
@@ -204,6 +208,15 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
 
     public void setHelmetFirstPersonVisibility(ModelPart helmet) {
         helmet.visible = !ChangedCompatibility.isFirstPersonRendering();
+    }
+
+    public <T extends PlayerModel<?>> void setHelmetFirstPersonVisibility(T clothingModel) {
+        clothingModel.getHead().visible = !ChangedCompatibility.isFirstPersonRendering();
+        clothingModel.hat.visible = !ChangedCompatibility.isFirstPersonRendering();
+
+        if (clothingModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
+            latexHumanHazardBodySuitModel.getHat().visible = !ChangedCompatibility.isFirstPersonRendering();
+        }
     }
 
 
