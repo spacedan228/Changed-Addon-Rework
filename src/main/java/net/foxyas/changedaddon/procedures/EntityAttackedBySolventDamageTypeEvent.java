@@ -15,7 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
-public class SolventHitTickProcedure {
+public class EntityAttackedBySolventDamageTypeEvent {
 
     @SubscribeEvent
     public static void onEntityAttacked(LivingHurtEvent event) {
@@ -23,7 +23,8 @@ public class SolventHitTickProcedure {
         DamageSource source = event.getSource();
 
         // Verifica se o atacante possui o encantamento Solvent
-        if(source != ChangedAddonDamageSources.SOLVENT && !source.getMsgId().equals(ChangedAddonDamageSources.SOLVENT.getMsgId())) return;
+        if (source != ChangedAddonDamageSources.SOLVENT && !source.getMsgId().equals(ChangedAddonDamageSources.SOLVENT.getMsgId())) return;
+        if (!source.getMsgId().contains(ChangedAddonDamageSources.SOLVENT.getMsgId())) return;
 
         Level level = target.level;
         // Toca som de extinção de fogo
@@ -34,7 +35,7 @@ public class SolventHitTickProcedure {
         }
 
         // Emite partículas
-        if(!(level instanceof ServerLevel serverLevel)) return;
+        if (!(level instanceof ServerLevel serverLevel)) return;
 
         serverLevel.sendParticles(
                 (SimpleParticleType) ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(),

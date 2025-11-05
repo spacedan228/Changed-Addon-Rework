@@ -4,10 +4,12 @@ import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedTags;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class LatexSolventMobEffect extends MobEffect {
@@ -31,6 +33,10 @@ public class LatexSolventMobEffect extends MobEffect {
     public void applyEffectTick(LivingEntity entity, int amplifier) {
         if (entity instanceof ChangedEntity changedEntity && changedEntity.getType().is(ChangedTags.EntityTypes.LATEX)) {
             changedEntity.hurt(ChangedAddonDamageSources.SOLVENT, amplifier + 2);
+        }
+
+        if (entity instanceof Player player && ProcessTransfur.isPlayerLatex(player)) {
+            player.hurt(ChangedAddonDamageSources.SOLVENT, amplifier + 2);
         }
     }
 }
