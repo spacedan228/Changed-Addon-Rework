@@ -60,7 +60,7 @@ public class SprayItem extends Item {
             level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, latexType));
 
         for(Direction dir : Direction.values()){
-            pos.set(origin).relative(dir);
+            pos.set(origin).move(dir);
             bs = level.getBlockState(pos);
             if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != latexType)
                 level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, latexType));
