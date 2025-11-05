@@ -67,22 +67,6 @@ public class CommonEvent {
     }
 
     @SubscribeEvent
-    public static void onPlayerPickupXp(PlayerXpEvent.PickupXp event) {
-        Player player = event.getPlayer();
-        ExperienceOrb experienceOrb = event.getOrb();
-        AccessorySlots.getForEntity(player).ifPresent((slots) ->
-                slots.forEachSlot((slotType, itemStack) -> {
-                    if(!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-
-                    if (accessoryItemExtension.IsAffectedByMending(slotType, itemStack) && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.MENDING, itemStack) > 0) {
-                        int i = Math.min((int) (experienceOrb.getValue() * itemStack.getXpRepairRatio()), itemStack.getDamageValue());
-                        itemStack.setDamageValue(itemStack.getDamageValue() - i);
-                    }
-                })
-        );
-    }
-
-    @SubscribeEvent
     public static void onPlayerRespawnedSyncPlayerVariables(PlayerEvent.PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         if (!player.level.isClientSide())

@@ -20,7 +20,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 
 @Mod.EventBusSubscriber
-public class Phase2EntitysHandleProcedure {
+public class Phase2EntitiesHandleProcedure {
 
     @SubscribeEvent
     public static void onEntityAttacked(LivingHurtEvent event) {
