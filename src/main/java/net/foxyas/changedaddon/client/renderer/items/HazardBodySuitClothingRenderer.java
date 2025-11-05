@@ -248,10 +248,10 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
         if (layer instanceof HumanoidModel<?> baseModel) {
             this.playerClothingModel = getPlayerModel(entity);
             if (playerClothingModel == null) return;
-            if (playerClothingModel instanceof PlayerModel playerModel) {
+            if (playerClothingModel instanceof PlayerModel playerModel && entity instanceof AbstractClientPlayer player) {
                 baseModel.copyPropertiesTo(playerModel);
-                playerModel.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
-                playerModel.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+                playerModel.prepareMobModel(player, limbSwing, limbSwingAmount, partialTicks);
+                playerModel.setupAnim(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
                 this.setHelmetFirstPersonVisibility(playerModel.getHead());
                 this.setHelmetFirstPersonVisibility(playerModel.hat);
