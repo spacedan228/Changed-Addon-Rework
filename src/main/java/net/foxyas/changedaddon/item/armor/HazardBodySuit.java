@@ -38,6 +38,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.Vec3;
@@ -163,8 +165,37 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         return super.getBreakSound(itemStack);
     }
 
-    public boolean IsAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
+    public boolean isAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
         return true;
+    }
+
+    @Override
+    public boolean isConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
+        if (enchantment == ChangedEnchantments.TRANSFUR_RESISTANCE.get()) {
+            return slotType.canHoldItem(itemStack, pEntity);
+        }
+
+        if (enchantment == Enchantments.MENDING) {
+            return slotType.canHoldItem(itemStack, pEntity);
+        }
+
+
+        return AccessoryItemExtension.super.isConsideredByEnchantment(enchantment, itemStack, slotType, pEntity);
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        if (enchantment == ChangedEnchantments.TRANSFUR_RESISTANCE.get()) {
+            return true;
+        }
+
+
+        return super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        return super.isBookEnchantable(stack, book);
     }
 
     @Override
@@ -184,8 +215,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
             }
         } else if (wearer instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (transfurVariant != null && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
-                    && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
+            if (transfurVariant != null && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
                 setHelmetStage(slotContext, false);
                 player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.display.hazard_body_suit.cant_have_helmet"), true);
             }

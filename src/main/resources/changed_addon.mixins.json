@@ -17,6 +17,7 @@
     "client.renderer.AnimationsMixin",
     "client.renderer.WingFallFlyAnimationMixin",
     "client.renderer.WingFlyAnimationMixin",
+    "enchantments.EnchantmentMixin",
     "enchantments.InfinityEnchantmentMixin",
     "entity.AccessoryEntitiesAccessor",
     "entity.ChangedEntityMixin",
