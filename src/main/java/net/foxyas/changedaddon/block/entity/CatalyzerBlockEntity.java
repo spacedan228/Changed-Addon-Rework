@@ -45,7 +45,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
     public boolean startRecipe = true;
     public double nitrogenPower = 0;
     public double recipeProgress = 0;
-    protected boolean recipeOn = false;
+    protected boolean recipeOn = true;
     public int tickCount = 0;
 
     public CatalyzerBlockEntity(BlockPos position, BlockState state) {

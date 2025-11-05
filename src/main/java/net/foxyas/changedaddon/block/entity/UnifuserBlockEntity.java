@@ -43,7 +43,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
     public boolean startRecipe = true;
     public double recipeProgress = 0;
-    protected boolean recipeOn = false;
+    protected boolean recipeOn = true;
     public int tickCount;
 
     public UnifuserBlockEntity(BlockPos position, BlockState state) {
