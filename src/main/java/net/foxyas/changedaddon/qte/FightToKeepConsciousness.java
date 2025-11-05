@@ -16,6 +16,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -32,7 +33,7 @@ public class FightToKeepConsciousness {
     public static final int STRUGGLE_TIME = 150;
     public static final int STRUGGLE_NEED = 30;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void onPlayerTransfur(ProcessTransfur.KeepConsciousEvent event) {
         if (!(event.player instanceof ServerPlayer player) || event.shouldKeepConscious
                 || !player.level.getGameRules().getBoolean(ChangedAddonGameRules.FIGHT_TO_KEEP_CONSCIOUSNESS)) return;
