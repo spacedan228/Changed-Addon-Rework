@@ -7,7 +7,6 @@ import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.client.gui.AbilityRadialScreen;
 import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;
-import net.ltxprogrammer.changed.util.SingleRunnable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.player.LocalPlayer;
@@ -39,36 +38,32 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), remap = true, cancellable = true)
     private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
-        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-            if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-                Optional<Integer> section = this.getSectionAt((int) mouseX, (int) mouseY);
-                if (section.isPresent()) {
-                    assert this.minecraft != null;
-                    LocalPlayer localPlayer = this.minecraft.player;
-                    Objects.requireNonNull(localPlayer);
-                    SingleRunnable single = new SingleRunnable(localPlayer::closeContainer);
-                    if (this.ChangedAddonPlus$handleRightClicked(section.get(), single)) {
-                        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                        single.run();
-                        cir.setReturnValue(true);
-                        return;
-                    }
-                    cir.setReturnValue(true);
-                }
-            }
+        if(!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()
+                || button != GLFW.GLFW_MOUSE_BUTTON_RIGHT) return;
+
+        Optional<Integer> section = this.getSectionAt((int) mouseX, (int) mouseY);
+        if(section.isEmpty()) return;
+
+        assert this.minecraft != null;
+        LocalPlayer localPlayer = this.minecraft.player;
+        Objects.requireNonNull(localPlayer);
+        if (ChangedAddonPlus$handleRightClicked(section.get())) {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            localPlayer.closeContainer();
+            cir.setReturnValue(true);
+            return;
         }
+        cir.setReturnValue(true);
     }
 
-
     @Unique
-    public boolean ChangedAddonPlus$handleRightClicked(int section, SingleRunnable close) {
-        close.run();
-        if ((AbstractRadialScreen<?>) (Object) this instanceof AbilityRadialScreen abilityRadialScreen) {
+    public boolean ChangedAddonPlus$handleRightClicked(int section) {
+        if ((Object) this instanceof AbilityRadialScreen abilityRadialScreen) {
             AbstractAbility<?> ability = abilityRadialScreen.abilities.get(section);
             if (abilityRadialScreen.variant instanceof TransfurVariantInstanceExtensor variantInstanceExtensor) {
                 variantInstanceExtensor.setSecondSelectedAbility(ability);
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(abilityRadialScreen.menu.player, variantInstanceExtensor.getSecondAbilityKeyState(), ability));
-                return false;
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(minecraft.player, variantInstanceExtensor.getSecondAbilityKeyState(), ability));
+                return true;
             }
         }
         return false;
