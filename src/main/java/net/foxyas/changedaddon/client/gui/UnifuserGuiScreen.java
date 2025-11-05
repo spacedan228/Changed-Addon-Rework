@@ -38,13 +38,13 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
         this.renderBackground(ms);
         super.render(ms, mouseX, mouseY, partialTicks);
         this.renderTooltip(ms, mouseX, mouseY);
-        if (menu.isSlotEmpty(0))
+        if (menu.isSlotEmpty(36))
             if (mouseX > leftPos + 10 && mouseX < leftPos + 34 && mouseY > topPos + 41 && mouseY < topPos + 65)
                 this.renderTooltip(ms, new TranslatableComponent("gui.changed_addon.unifuser_gui.tooltip_place_the_powders"), mouseX, mouseY);
-        if (menu.isSlotEmpty(2))
+        if (menu.isSlotEmpty(38))
             if (mouseX > leftPos + 45 && mouseX < leftPos + 69 && mouseY > topPos + 53 && mouseY < topPos + 77)
                 this.renderTooltip(ms, new TranslatableComponent("gui.changed_addon.unifuser_gui.tooltip_place_a_syringe_with_dna"), mouseX, mouseY);
-        if (menu.isSlotEmpty(3))
+        if (menu.isSlotEmpty(39))
             if (mouseX > leftPos + 10 && mouseX < leftPos + 34 && mouseY > topPos + 65 && mouseY < topPos + 89)
                 this.renderTooltip(ms, new TranslatableComponent("gui.changed_addon.unifuser_gui.tooltip_put_the_second_ingredient"), mouseX, mouseY);
     }
