@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.item;
 
-import com.google.common.collect.Multimap;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
@@ -8,6 +7,7 @@ import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
+import net.ltxprogrammer.changed.block.WhiteLatexTransportInterface;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -15,12 +15,13 @@ import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.ltxprogrammer.changed.util.TagUtil;
+import net.ltxprogrammer.changed.util.StackUtil;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -34,7 +35,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -42,18 +42,13 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
-import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
@@ -71,13 +66,6 @@ public class TransfurTotemItem extends Item {
     }
 
     @Override
-    public @NotNull ItemStack getDefaultInstance() {
-        ItemStack defaultInstance = super.getDefaultInstance();
-        defaultInstance.getOrCreateTag().putString("form", "");
-        return defaultInstance;
-    }
-
-    @Override
     public @NotNull Optional<TooltipComponent> getTooltipImage(@NotNull ItemStack pStack) {
         if (Syringe.getVariant(pStack) == null
                 || !pStack.getOrCreateTag().contains("form")
@@ -88,38 +76,27 @@ public class TransfurTotemItem extends Item {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        return super.getAttributeModifiers(slot, stack);
-    }
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltip, @NotNull TooltipFlag isAdvanced) {
+        CompoundTag itemTag = stack.getOrCreateTag();
+        String form = itemTag.getString("form");
+        if (form.isEmpty()) {
+            tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
+            return;
+        }
 
-    @Mod.EventBusSubscriber(value = Dist.CLIENT)
-    public static class ShowTransfurTotemItemTip {
+        TransfurVariant<?> variant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(ResourceLocation.parse(form));
+        if (variant == null) {
+            tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
+            return;
+        }
 
-        @SubscribeEvent
-        public static void onItemTooltip(ItemTooltipEvent event) {
-            ItemStack stack = event.getItemStack();
-            List<Component> tooltip = event.getToolTip();
-
-            if (stack.getItem() == ChangedAddonItems.TRANSFUR_TOTEM.get()) {
-                CompoundTag itemTag = stack.getOrCreateTag();
-                if ((itemTag.getString("form")).isEmpty())
-                    tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
-                else {
-                    TransfurVariant<?> variant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(TagUtil.getResourceLocation(itemTag, "form"));
-                    if (variant == null) {
-                        tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
-                        return;
-                    }
-                    if (Screen.hasShiftDown() && !Screen.hasAltDown() && !Screen.hasControlDown())
-                        tooltip.add(1, new TextComponent(("§6Form=" + itemTag.getString("form"))));
-                    else if (Screen.hasAltDown() && Screen.hasControlDown())
-                        tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.desc_1")));
-                    else {
-                        String ID = Syringe.getVariantDescriptionId(stack);
-                        tooltip.add(1, new TextComponent(("§6(" + new TranslatableComponent(ID).getString() + ")")));
-                    }
-                }
-            }
+        if (Screen.hasShiftDown() && !Screen.hasAltDown() && !Screen.hasControlDown())
+            tooltip.add(1, new TextComponent(("§6Form=" + itemTag.getString("form"))));
+        else if (Screen.hasAltDown() && Screen.hasControlDown())
+            tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.desc_1")));
+        else {
+            String ID = Syringe.getVariantDescriptionId(stack);
+            tooltip.add(1, new TextComponent(("§6(" + new TranslatableComponent(ID).getString() + ")")));
         }
     }
 
@@ -197,7 +174,6 @@ public class TransfurTotemItem extends Item {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public boolean isFoil(@NotNull ItemStack itemstack) {
         String form = itemstack.getOrCreateTag().getString("form");
         if (form.isEmpty()) return false;
@@ -210,7 +186,7 @@ public class TransfurTotemItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         InteractionResultHolder<ItemStack> ar = super.use(level, player, hand);
         ItemStack stack = ar.getObject();
-        if (!(level instanceof ServerLevel serverLevel)) return ar;
+        if (!(level instanceof ServerLevel)) return ar;
 
         boolean isValidUse = (player.getOffhandItem().is(stack.getItem()) && (player.getMainHandItem().is(stack.getItem())))
                 || (player.getOffhandItem().is(stack.getItem()) && player.getMainHandItem().isEmpty())
@@ -403,13 +379,31 @@ public class TransfurTotemItem extends Item {
     }
 
     @Mod.EventBusSubscriber
-    public static class TransfurTotemItemIsStruckByLighting {
+    public static class EventHandler {
 
         @SubscribeEvent
         public static void onLightning(EntityStruckByLightningEvent event) {
             if (!(event.getEntity() instanceof ItemEntity itemEntity)) return;
 
             if (itemEntity.getItem().is(ChangedAddonItems.TRANSFUR_TOTEM.get())) event.setCanceled(true);
+        }
+
+        @SubscribeEvent
+        public static void execute(ProcessTransfur.KeepConsciousEvent event) {
+            if (event.shouldKeepConscious
+                    || event.player == null
+                    || !event.player.getInventory().contains(new ItemStack(ChangedAddonItems.TRANSFUR_TOTEM.get()))) return;
+
+            if (ProcessTransfur.getPlayerTransfurVariant(event.player) != null && StackUtil.callStackContainsClass(WhiteLatexTransportInterface.class, 15)) return;
+
+            event.shouldKeepConscious = true;
+            if (event.player instanceof ServerPlayer serverPlayer) {
+                TranslatableComponent text = new TranslatableComponent("changed_addon.latex_totem.tittle.text_1");
+                TranslatableComponent text2 = new TranslatableComponent("changed_addon.latex_totem.tittle.text_2");
+                serverPlayer.displayClientMessage(text, true);
+                serverPlayer.sendMessage(text, ChatType.CHAT, serverPlayer.getUUID());
+                serverPlayer.sendMessage(text2, ChatType.CHAT, serverPlayer.getUUID());
+            }
         }
     }
 }
