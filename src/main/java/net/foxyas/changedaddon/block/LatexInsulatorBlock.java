@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedTags;
@@ -39,7 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class LatexInsulatorBlock extends Block {
+public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock {
 
     public LatexInsulatorBlock() {
         super(BlockBehaviour.Properties.of(Material.CLAY).sound(SoundType.SLIME_BLOCK).strength(0.05f, 10f).speedFactor(0.5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
@@ -80,11 +81,6 @@ public class LatexInsulatorBlock extends Block {
     }
 
     @Override
-    public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return Shapes.block();
-    }
-
-    @Override
     public @NotNull VoxelShape getCollisionShape(BlockState p_60572_, BlockGetter p_60573_, BlockPos p_60574_, CollisionContext p_60575_) {
         return Shapes.or(box(1, 1, 1, 15, 15, 15), box(4, 4, 4, 12, 12, 12));
     }
@@ -95,14 +91,18 @@ public class LatexInsulatorBlock extends Block {
     }
 
     @Override
+    public boolean isRandomlyTicking(BlockState pState) {
+        return true;
+    }
+
+    @Override
     public void tick(BlockState blockstate, ServerLevel level, BlockPos origin, Random random) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
-        BlockState bs = level.getBlockState(pos);
-        if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
-            level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
+        pos.set(origin);
 
+        BlockState bs;
         for(Direction dir : Direction.values()){
-            pos.set(origin).relative(dir);
+            pos.set(origin).move(dir);
             bs = level.getBlockState(pos);
             if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
                 level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));

@@ -49,15 +49,23 @@ public class LitixCamoniaFluidBlock extends LiquidBlock {
     }
 
     @Override
+    public boolean isRandomlyTicking(BlockState pState) {
+        return true;
+    }
+
+    @Override
+    public void randomTick(BlockState pState, ServerLevel pLevel, BlockPos pPos, Random pRandom) {
+        tick(pState, pLevel, pPos, pRandom);
+    }
+
+    @Override
     public void tick(BlockState blockstate, ServerLevel level, BlockPos origin, Random random) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        pos.set(origin);
 
-        BlockState bs = level.getBlockState(pos);
-        if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
-            level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
-
+        BlockState bs;
         for(Direction dir : Direction.values()){
-            pos.set(origin).relative(dir);
+            pos.set(origin).move(dir);
             bs = level.getBlockState(pos);
             if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
                 level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
