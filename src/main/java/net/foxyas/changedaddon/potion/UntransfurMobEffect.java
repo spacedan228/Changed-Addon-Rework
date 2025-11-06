@@ -22,9 +22,13 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
@@ -102,5 +106,25 @@ public class UntransfurMobEffect extends MobEffect {
     @Override
     public boolean isDurationEffectTick(int duration, int amplifier) {
         return true;
+    }
+
+    @Mod.EventBusSubscriber
+    public static class EventHandler {
+
+        @SubscribeEvent
+        public static void onEntityEndSleep(PlayerWakeUpEvent event) {
+            Entity entity = event.getEntity();
+            Level level = entity.level;
+
+            if (!level.isDay() || !(entity instanceof Player player)
+                    || !player.hasEffect(ChangedAddonMobEffects.UNTRANSFUR.get())) return;
+
+            new DelayedTask(5, () -> player.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY, null).ifPresent(cap -> {
+                if (ProcessTransfur.isPlayerTransfurred(player) && player.isSleepingLongEnough()) {
+                    cap.untransfurProgress += 50;
+                    cap.syncPlayerVariables(player);
+                }
+            }));
+        }
     }
 }
