@@ -52,12 +52,12 @@ public class EntitySolventEnchantmentHitProcedure {
     private static int getSolventEnchantmentLevel(Entity entity) {
         if (entity instanceof LivingEntity livingEntity) {
             ItemStack mainHandItem = livingEntity.getMainHandItem();
-            return EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.SOLVENT.get(), mainHandItem);
+            return EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get(), mainHandItem);
         } else if (entity instanceof ThrownTrident trident) {
             CompoundTag tag = new CompoundTag();
             trident.save(tag);
             ItemStack tridentItem = tag.contains("Trident") ? ItemStack.of(tag.getCompound("Trident")) : new ItemStack(Items.TRIDENT);
-            return EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.SOLVENT.get(), tridentItem);
+            return EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get(), tridentItem);
         }
         return 0;
     }

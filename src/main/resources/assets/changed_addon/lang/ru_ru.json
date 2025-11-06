@@ -326,9 +326,9 @@
 
   "enchantment.changed_addon.changed_lure": "Приманка Changed",
   "enchantment.changed_addon.changed_lure.desc": "Позволяет ловить латексных зверей с помощью удочки.",
-  "enchantment.changed_addon.solvent": "Растворитель латекса",
-  "enchantment.changed_addon.solvent.desc": "Наносит больше урона латексным существам",
-  "enchantment.changed_addon.solvent.jei_desc": "Наносит %1$s урона латексным существам",
+  "enchantment.changed_addon.latex_solvent": "Растворитель латекса",
+  "enchantment.changed_addon.latex_solvent.desc": "Наносит больше урона латексным существам",
+  "enchantment.changed_addon.latex_solvent.jei_desc": "Наносит %1$s урона латексным существам",
 
   "entity.changed_addon.avali": "Авали",
   "entity.changed_addon.bagel": "Bagel",

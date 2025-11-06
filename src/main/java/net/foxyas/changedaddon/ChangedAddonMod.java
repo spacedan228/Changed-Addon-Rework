@@ -2,6 +2,7 @@ package net.foxyas.changedaddon;
 
 import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.world.datafixers.ChangedAddonDataFixer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -32,6 +33,8 @@ public class ChangedAddonMod {
     private static final String PROTOCOL_VERSION = "1";
     public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(ChangedAddonMod.resourceLoc(MODID), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
     private static int messageID = 0;
+    public static ChangedAddonDataFixer dataFixer;
+
 
     public ChangedAddonMod() {
         ChangedAddonTabs.load();
@@ -57,6 +60,7 @@ public class ChangedAddonMod {
         ChangedAddonParticleTypes.REGISTRY.register(bus);
         ChangedAddonVillagerProfessions.PROFESSIONS.register(bus);
         ChangedAddonFluids.REGISTRY.register(bus);
+        dataFixer = new ChangedAddonDataFixer();
     }
 
     //Thanks :D

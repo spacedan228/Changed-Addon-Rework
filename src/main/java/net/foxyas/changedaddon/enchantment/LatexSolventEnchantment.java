@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class SolventEnchantment extends Enchantment {
-    public SolventEnchantment(EquipmentSlot... slots) {
+public class LatexSolventEnchantment extends Enchantment {
+    public LatexSolventEnchantment(EquipmentSlot... slots) {
         super(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, slots);
     }
 
@@ -50,10 +50,10 @@ public class SolventEnchantment extends Enchantment {
             ItemStack stack = event.getItemStack();
             List<Component> tooltip = event.getToolTip();
 
-            int EnchantLevel = EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.SOLVENT.get(), stack);
+            int EnchantLevel = EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get(), stack);
             double math = 0 + EnchantLevel * 0.2;
             if (!(stack.getItem() instanceof BowItem) && !(stack.getItem() instanceof CrossbowItem)) {
-                if (EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.SOLVENT.get(), stack) != 0) {
+                if (EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get(), stack) != 0) {
                     if (Screen.hasShiftDown()) {
                         tooltip.add(new TextComponent(("§r§e+" + String.format("%.2f", math * 100) + "%§r §nLatex Solvent Damage")));
                     } else {

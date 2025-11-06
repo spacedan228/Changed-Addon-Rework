@@ -351,9 +351,9 @@
 
   "enchantment.changed_addon.changed_lure": "Changed csalétekje",
   "enchantment.changed_addon.changed_lure.desc": "Lehetővé teszi, hogy horgászbottal fogjon latex lényeket.",
-  "enchantment.changed_addon.solvent": "Latexoldó",
-  "enchantment.changed_addon.solvent.desc": "Több sebzést okoz latex entitásoknak",
-  "enchantment.changed_addon.solvent.jei_desc": "%1$s T sebzést okoz latex entitásoknak",
+  "enchantment.changed_addon.latex_solvent": "Latexoldó",
+  "enchantment.changed_addon.latex_solvent.desc": "Több sebzést okoz latex entitásoknak",
+  "enchantment.changed_addon.latex_solvent.jei_desc": "%1$s T sebzést okoz latex entitásoknak",
   "enchantment.changed_addon.transfur_aspect": "Transzfur kilátása",
   "enchantment.changed_addon.transfur_aspect.desc": "Transzfur okozta sebzést okoz humanoid entitásoknak, a fertőzés típusát a támadó variánsa határozza meg.",
   "enchantment.changed_addon.transfur_aspect.jei_desc": "%1$s transzfur okozta sebzést okoz humanoid entitásoknak, a fertőzés típusát a támadó variánsa határozza meg.",

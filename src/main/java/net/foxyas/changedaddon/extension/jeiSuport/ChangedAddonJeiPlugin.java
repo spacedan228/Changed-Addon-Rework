@@ -119,8 +119,8 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             ItemStack enchantedBookWithSolvent = new ItemStack(Items.ENCHANTED_BOOK);
             for (int i = 1; i < 6; i++) { // Começa em 1 para ignorar o nível 0
                 float math = SolventMath(i) * 100;
-                EnchantmentHelper.setEnchantments(Map.of(ChangedAddonEnchantments.SOLVENT.get(), i), enchantedBookWithSolvent);
-                String text = new TranslatableComponent("enchantment.changed_addon.solvent.jei_desc", Math.round(math)).getString().replace(" T ", "% ");
+                EnchantmentHelper.setEnchantments(Map.of(ChangedAddonEnchantments.LATEX_SOLVENT.get(), i), enchantedBookWithSolvent);
+                String text = new TranslatableComponent("enchantment.changed_addon.latex_solvent.jei_desc", Math.round(math)).getString().replace(" T ", "% ");
                 registration.addIngredientInfo(enchantedBookWithSolvent, VanillaTypes.ITEM_STACK, new TextComponent(text));
             }
         }

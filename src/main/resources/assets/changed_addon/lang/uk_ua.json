@@ -311,9 +311,9 @@
 
   "enchantment.changed_addon.changed_lure": "Латексна приманка",
   "enchantment.changed_addon.changed_lure.desc": "Дозволяє ловити водний латекс, використовуючи вудку",
-  "enchantment.changed_addon.solvent": "Розчинник латексу",
-  "enchantment.changed_addon.solvent.desc": "Наносить більше шкоди латексним істотам",
-  "enchantment.changed_addon.solvent.jei_desc": "Наносить %1$s шкоди латексним істотам",
+  "enchantment.changed_addon.latex_solvent": "Розчинник латексу",
+  "enchantment.changed_addon.latex_solvent.desc": "Наносить більше шкоди латексним істотам",
+  "enchantment.changed_addon.latex_solvent.jei_desc": "Наносить %1$s шкоди латексним істотам",
 
   "entity.changed_addon.avali": "Авалі",
   "entity.changed_addon.bagel": "Бенгальський кіт",

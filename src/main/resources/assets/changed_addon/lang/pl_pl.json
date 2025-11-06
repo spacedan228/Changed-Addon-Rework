@@ -340,9 +340,9 @@
 
   "enchantment.changed_addon.changed_lure": "Zmieniona przynęta",
   "enchantment.changed_addon.changed_lure.desc": "Pozwala złowić latexy.",
-  "enchantment.changed_addon.solvent": "Rozpuszczalnik latexu",
-  "enchantment.changed_addon.solvent.desc": "Zadaje więcej obrażeń latexom",
-  "enchantment.changed_addon.solvent.jei_desc": "Zadaje %1$s T obrażeń latexom",
+  "enchantment.changed_addon.latex_solvent": "Rozpuszczalnik latexu",
+  "enchantment.changed_addon.latex_solvent.desc": "Zadaje więcej obrażeń latexom",
+  "enchantment.changed_addon.latex_solvent.jei_desc": "Zadaje %1$s T obrażeń latexom",
   "enchantment.changed_addon.transfur_aspect": "Zaklęty latex",
   "enchantment.changed_addon.transfur_aspect.desc": "Zadaje obrażenia od transfurów humanoidom. Typ zarażenia jest uzależniony od wariantu atakującego.",
   "enchantment.changed_addon.transfur_aspect.jei_desc": "Zadaje %1$s obrażeń od transfurów humonoidom. Typ zarażenia jest uzależniony od wariantu atakującego.",

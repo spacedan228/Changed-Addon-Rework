@@ -351,9 +351,9 @@
 
   "enchantment.changed_addon.changed_lure": "Changed Lure",
   "enchantment.changed_addon.changed_lure.desc": "Allows you to catch Latex Beasts using the fishing rod.",
-  "enchantment.changed_addon.solvent": "Latex Solvent",
-  "enchantment.changed_addon.solvent.desc": "Deal more Damage to Latex Entities",
-  "enchantment.changed_addon.solvent.jei_desc": "Deal %1$s T Damage to Latex Entities",
+  "enchantment.changed_addon.latex_solvent": "Latex Solvent",
+  "enchantment.changed_addon.latex_solvent.desc": "Deal more Damage to Latex Entities",
+  "enchantment.changed_addon.latex_solvent.jei_desc": "Deal %1$s T Damage to Latex Entities",
   "enchantment.changed_addon.transfur_aspect": "Transfur Aspect",
   "enchantment.changed_addon.transfur_aspect.desc": "Inflicts Transfur damage on humanoid entities, with the infection type determined by the attacker's variant.",
   "enchantment.changed_addon.transfur_aspect.jei_desc": "Inflicts %1$s of Transfur damage to humanoid entities, with the infection type determined by the attacker's variant.",

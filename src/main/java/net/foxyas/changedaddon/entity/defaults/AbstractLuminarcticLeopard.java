@@ -432,7 +432,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         }
 
         if (attacker instanceof LivingEntity livingEntity && this.isBoss()) {
-            if (EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.SOLVENT.get(), livingEntity.getMainHandItem()) >= 1) {
+            if (EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get(), livingEntity.getMainHandItem()) >= 1) {
                 return super.hurt(source, amount * 1.25f);
             } else if (source.getMsgId().contains("latex_solvent")) {
                 return super.hurt(source, amount * 1.25f);

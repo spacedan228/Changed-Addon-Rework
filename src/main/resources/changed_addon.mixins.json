@@ -41,7 +41,9 @@
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",
     "mods.changed.ProcessTransfurMixin",
-    "mods.nean.NEAElytraAnimationMixin"
+    "mods.nean.NEAElytraAnimationMixin",
+    "world.NbtUtilsMixin",
+    "world.PrimaryLevelDataMixin"
   ],
   "injectors": {
     "defaultRequire": 1
