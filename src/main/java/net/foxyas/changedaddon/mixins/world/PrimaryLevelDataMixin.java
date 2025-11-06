@@ -1,9 +1,8 @@
 package net.foxyas.changedaddon.mixins.world;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.ltxprogrammer.changed.Changed;
-import net.ltxprogrammer.changed.world.ChangedDataFixer;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.storage.PrimaryLevelData;
@@ -23,9 +22,18 @@ public abstract class PrimaryLevelDataMixin {
 
     @Shadow @Nullable private CompoundTag loadedPlayerTag;
 
+    @Shadow @Final private int version;
+
     @Inject(method = "updatePlayerTag", at = @At("RETURN"))
-    private void updateChangedTag(CallbackInfo callback) {
-        if (this.playerDataVersion >= SharedConstants.getCurrentVersion().getWorldVersion() && Changed.dataFixer != null)
+    private void updateChangedAddonPLayerTag(CallbackInfo callback) {
+        if (this.playerDataVersion >= SharedConstants.getCurrentVersion().getWorldVersion() && ChangedAddonMod.dataFixer != null)
             ChangedAddonMod.dataFixer.updateCompoundTag(DataFixTypes.PLAYER, this.loadedPlayerTag);
+    }
+
+    @Inject(method = "createTag", at = @At("RETURN"))
+    private void updateChangedAddonLevelData(RegistryAccess pRegistries, CompoundTag pHostPlayerNBT, CallbackInfoReturnable<CompoundTag> cir) {
+        if (cir.getReturnValue() != null && ChangedAddonMod.dataFixer != null) {
+            ChangedAddonMod.dataFixer.updateCompoundTag(DataFixTypes.LEVEL, cir.getReturnValue());
+        }
     }
 }

@@ -51,7 +51,7 @@ public class ChangedAddonDataFixer {
 
         // adiciona um tipo de fix (aqui corrigimos inventário de player)
         DATA_FIXERS.put(DataFixTypes.PLAYER, this::fixPlayerData);
-        DATA_FIXERS.put(DataFixTypes.SAVED_DATA, this::fixGameRules);
+        DATA_FIXERS.put(DataFixTypes.LEVEL, this::fixLevelData);
     }
 
     private void fixPlayerData(CompoundTag tag) {
@@ -66,11 +66,26 @@ public class ChangedAddonDataFixer {
         }
     }
 
-    private void fixGameRules(@NotNull CompoundTag rootTag) {
-        if (!rootTag.contains("Data", 10)) return; // 10 = CompoundTag
-        CompoundTag dataTag = rootTag.getCompound("Data");
+    private void fixLevelData(@NotNull CompoundTag rootTag) {
 
-        if (!dataTag.contains("GameRules", 10)) return;
+        // IF there's no data maybe the level data is already the CompoundTag "Data"
+        if (rootTag.getAsString().equals("Data")) {
+            this.fixGameRules(rootTag);
+        } else {
+            if (rootTag.contains("Data")) {
+                CompoundTag dataTag = rootTag.getCompound("Data");
+                this.fixGameRules(dataTag);
+            }
+
+            // Do other Stuff
+        }
+    }
+
+    private void fixGameRules(@NotNull CompoundTag dataTag) {
+        //if (!rootTag.contains("Data")) return; // 10 = CompoundTag
+        //CompoundTag dataTag = rootTag.getCompound("Data");
+
+        if (!dataTag.contains("GameRules")) return;
         CompoundTag gameRules = dataTag.getCompound("GameRules");
 
         for (String oldRule : new ArrayList<>(gameRules.getAllKeys())) {

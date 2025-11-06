@@ -42,6 +42,8 @@
     "mods.changed.ChangedMixin",
     "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin",
+    "world.LevelStorageAccessMixin",
+    "world.LevelStorageSourceMixin",
     "world.NbtUtilsMixin",
     "world.PrimaryLevelDataMixin"
   ],
