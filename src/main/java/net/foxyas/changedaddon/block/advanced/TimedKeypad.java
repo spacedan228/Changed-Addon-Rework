@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -200,11 +201,14 @@ public class TimedKeypad extends KeypadBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-        if (!level.isClientSide && stack.hasTag() && stack.getTag().contains("TimerValue")) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (!level.isClientSide && stack.hasTag() && tag.contains("TimerValue")) {
             BlockEntity be = level.getBlockEntity(pos);
             if (be instanceof TimedKeypadBlockEntity keypad) {
-                keypad.addTimer(stack.getTag().getInt("TimerValue"));
+                keypad.addTimer(tag.getInt("TimerValue"));
                 keypad.setCanTick(true);
+                keypad.setChanged();
+                level.sendBlockUpdated(pos, state, state, 3);
             }
         }
     }

@@ -69,19 +69,19 @@ public class ChangedAddonDataFixer {
     private void fixLevelData(@NotNull CompoundTag rootTag) {
 
         // IF there's no data maybe the level data is already the CompoundTag "Data"
-        if (rootTag.getAsString().equals("Data")) {
-            this.fixGameRules(rootTag);
+        if (rootTag.getAllKeys().size() > 1) {
+            this.fixData(rootTag);
         } else {
             if (rootTag.contains("Data")) {
                 CompoundTag dataTag = rootTag.getCompound("Data");
-                this.fixGameRules(dataTag);
+                this.fixData(dataTag);
             }
 
             // Do other Stuff
         }
     }
 
-    private void fixGameRules(@NotNull CompoundTag dataTag) {
+    private void fixData(@NotNull CompoundTag dataTag) {
         //if (!rootTag.contains("Data")) return; // 10 = CompoundTag
         //CompoundTag dataTag = rootTag.getCompound("Data");
 
