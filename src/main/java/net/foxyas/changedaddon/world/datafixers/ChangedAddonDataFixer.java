@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.world.datafixers;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
+import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -11,6 +12,7 @@ import net.minecraft.util.datafix.DataFixTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -31,6 +33,12 @@ public class ChangedAddonDataFixer {
     private final Map<ResourceLocation, ResourceLocation> VARIANT_ID_REMAP = Util.make(new HashMap<>(), map -> {});
     private final Map<String, String> ENUM_REMAP = Util.make(new HashMap<>(), map -> {});
     private final Map<String, String> TAG_REMAP  = Util.make(new HashMap<>(), map -> {});
+    private final Map<String, String> GAMERULES_REMAP = Util.make(new HashMap<>(), map -> {
+        map.put("doLatexInfection", ChangedAddonGameRules.DO_LATEX_INFECTION.getId());
+        map.put("painiteGeneration", ChangedAddonGameRules.PAINITE_GENERATION.getId());
+        map.put("doDazedLatexBurn", ChangedAddonGameRules.DO_DAZED_LATEX_BURN.getId());
+        map.put("doDarkLatexMaskTransfur", ChangedAddonGameRules.TICKS_TO_DARK_LATEX_MASK_TRANSFUR.getId());
+    });
 
     private static final Consumer<CompoundTag> NULL_OP = (tag) -> {};
 
@@ -43,6 +51,7 @@ public class ChangedAddonDataFixer {
 
         // adiciona um tipo de fix (aqui corrigimos inventário de player)
         DATA_FIXERS.put(DataFixTypes.PLAYER, this::fixPlayerData);
+        DATA_FIXERS.put(DataFixTypes.SAVED_DATA, this::fixGameRules);
     }
 
     private void fixPlayerData(CompoundTag tag) {
@@ -56,6 +65,42 @@ public class ChangedAddonDataFixer {
             });
         }
     }
+
+    private void fixGameRules(@NotNull CompoundTag rootTag) {
+        if (!rootTag.contains("Data", 10)) return; // 10 = CompoundTag
+        CompoundTag dataTag = rootTag.getCompound("Data");
+
+        if (!dataTag.contains("GameRules", 10)) return;
+        CompoundTag gameRules = dataTag.getCompound("GameRules");
+
+        for (String oldRule : new ArrayList<>(gameRules.getAllKeys())) {
+            String newRule = GAMERULES_REMAP.get(oldRule);
+            if (newRule == null || newRule.equals(oldRule)) continue;
+
+            String value = gameRules.getString(oldRule);
+            ChangedAddonMod.LOGGER.info("[Changed Addon DataFix] Remapping gamerule {} → {} (value: {})", oldRule, newRule, value);
+
+            // Copia o valor e remove a antiga
+            gameRules.putString(newRule, value);
+            gameRules.remove(oldRule);
+        }
+
+        // Exemplo extra: normalizar booleanos (1/0 → true/false)
+        normalizeGameRuleValues(gameRules);
+    }
+
+    private void normalizeGameRuleValues(@NotNull CompoundTag gameRules) {
+        for (String key : gameRules.getAllKeys()) {
+            String val = gameRules.getString(key);
+            if (val.equals("1")) {
+                gameRules.putString(key, "true");
+            } else if (val.equals("0")) {
+                gameRules.putString(key, "false");
+            }
+        }
+    }
+
+
 
     private void fixEnchantments(CompoundTag tag) {
         if (!tag.contains("Enchantments", 9)) // 10 = tipo ListTag
@@ -71,7 +116,7 @@ public class ChangedAddonDataFixer {
 
             if (ENCHANTMENT_REMAP.containsKey(oldId)) {
                 ResourceLocation newId = ENCHANTMENT_REMAP.get(oldId);
-                ChangedAddonMod.LOGGER.info("Remapping enchantment {} → {}", oldId, newId);
+                ChangedAddonMod.LOGGER.info("[Changed Addon DataFix] Remapping enchantment {} → {}", oldId, newId);
                 ench.putString("id", newId.toString());
             }
         }
