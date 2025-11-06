@@ -439,7 +439,7 @@
   "gamerule.changed_addon:bossesDifficultScale": "Changed Addon HardMode Bosses",
   "gamerule.changed_addon:bossesDifficultScale.description": "Add a difficulty multiplier to Mod Changed Addon bosses",
   "gamerule.changed_addon:doDarkLatexMaskTransfur": "Can Dark Latex Mask Transfur",
-  "gamerule.doDarkLatexMaskTransfur.description": "When on the player can be transfured while holding the Dark Latex Mask",
+  "gamerule.changed_addon:doDarkLatexMaskTransfur.description": "When on the player can be transfured while holding the Dark Latex Mask",
   "gamerule.changed_addon:doDazedLatexBurn": "Do Dazed Latex Burn",
   "gamerule.changed_addon:doDazedLatexBurn.description": "When On Make The Dazed Latexs Burn in Sun Light like in Dazed Game",
   "gamerule.changed_addon:doLatexInfection": "Do Latex Infection",
