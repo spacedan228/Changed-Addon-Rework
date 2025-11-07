@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class LocalPlayerMixin implements LivingEntityDataExtensor {
 
 
-    @Inject(method = "isUnderWater" ,at = @At("RETURN"), cancellable = true)
+    /*@Inject(method = "isUnderWater" ,at = @At("RETURN"), cancellable = true)
     private void customIsUnderWater(CallbackInfoReturnable<Boolean> cir) {
         Boolean returnValue = cir.getReturnValue();
         if (returnValue != null) {
@@ -24,7 +24,7 @@ public class LocalPlayerMixin implements LivingEntityDataExtensor {
                 cir.setReturnValue(canOverrideSwim());
             }
         }
-    }
+    }*/
 
     /*@WrapOperation(method = "aiStep", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;isUnderWater()Z", shift = At.Shift.BY))
     private boolean aiStepHook(LocalPlayer instance, Operation<Boolean> original) {

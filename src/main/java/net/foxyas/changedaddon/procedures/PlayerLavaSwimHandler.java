@@ -25,7 +25,7 @@ public class PlayerLavaSwimHandler {
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
         if(instance == null || !ChangedAddonTransfurVariants.isAquatic(instance)) return;
 
-        if (player.isEyeInFluid(FluidTags.LAVA) && player.hasEffect(MobEffects.FIRE_RESISTANCE)) {
+        if (player.isEyeInFluid(FluidTags.LAVA) && player.hasEffect(MobEffects.FIRE_RESISTANCE) && (player.isSwimming() || player.isVisuallySwimming())) {
             ChangedAddonCriteriaTriggers.LAVA_SWIMMING_TRIGGER.trigger(serverPlayer);
         }
     }

@@ -51,6 +51,8 @@ public abstract class PlayerMixin implements LivingEntityDataExtensor {
     @Shadow
     public abstract ItemStack getItemBySlot(EquipmentSlot p_36257_);
 
+    @Shadow protected boolean wasUnderwater;
+
     @Inject(method = "sweepAttack", at = @At("HEAD"), cancellable = true)
     private void customSweepAttackEffect(CallbackInfo ci) {
         if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof AbstractKatanaItem abstractKatanaItem) {
@@ -64,6 +66,19 @@ public abstract class PlayerMixin implements LivingEntityDataExtensor {
         Player self = ((Player) (Object) this);
         if (this.canOverrideSwimUpdate()) {
             self.setSwimming(self.isSprinting() && !self.isPassenger());
+        }
+    }
+
+
+    @Inject(method = "updateIsUnderwater", at = @At("RETURN"), cancellable = true)
+    private void customUpdateUnderwater(CallbackInfoReturnable<Boolean> cir) {
+        Player self = ((Player) (Object) this);
+        Boolean returnValue = cir.getReturnValue();
+        if (returnValue != null) {
+            if (!returnValue) {
+                this.wasUnderwater = canOverrideSwim();
+                cir.setReturnValue(wasUnderwater);
+            }
         }
     }
 
