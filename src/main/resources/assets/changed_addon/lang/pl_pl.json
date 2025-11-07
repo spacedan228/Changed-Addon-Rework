@@ -153,6 +153,7 @@
   "block.changed_addon.signal_block": "Blok sygnałowy",
   "block.changed_addon.snepsi_can": "§bPuszka Snepsi§r",
   "block.changed_addon.timed_keypad": "Czasowa klawiatura numeryczna",
+  "block.changed_addon.timed_keypad.info": "Minutnik ustawiony na: (%s) ticków",
   "block.changed_addon.unifuser": "Unifuser",
   "block.changed_addon.wall_white_cracked": "Popękany biały mur",
   "block.changed_addon.wall_white_slab": "Płyta z białego muru",
