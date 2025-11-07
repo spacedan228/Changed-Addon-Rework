@@ -152,6 +152,8 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         }*/
         boolean nonHurtFrame = wearer.hurtTime <= 10 && wearer.invulnerableTime <= 10;
         if (wearer.hurtMarked || !nonHurtFrame) return;
+        if (amount <= 0) return;
+        if (wearer.isDamageSourceBlocked(source)) return;
 
         if (!source.isBypassArmor() && !(source instanceof ChangedDamageSources.TransfurDamageSource)) {
             this.applyDamage(source, amount, slotContext);
@@ -245,47 +247,48 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     }
 
     public void applyDamage(DamageSource damageSource, float amount, AccessorySlotContext<?> slotContext) {
-        if (!(amount <= 0.0F)) {
-            amount /= 4.0F;
-            if (amount < 1.0F) {
-                amount = 1.0F;
-            }
-            ItemStack itemStack = slotContext.stack();
-            LivingEntity player = slotContext.wearer();
-            if ((!damageSource.isFire() || !itemStack.getItem().isFireResistant())) {
-                itemStack.hurtAndBreak((int) amount, player, (livingEntity) -> {
-                    if (!itemStack.isEmpty()) {
-                        if (!livingEntity.isSilent()) {
-                            livingEntity.level.playSound(null, livingEntity,
-                                    this.getBreakSound(itemStack),
-                                    livingEntity.getSoundSource(),
-                                    0.8F,
-                                    0.8F + livingEntity.level.random.nextFloat() * 0.4F);
-                        }
+        if (amount <= 0) return;
+        if (damageSource.isFire() && damageSource != DamageSource.LAVA) return;
 
-                        //livingEntity.spawnItemParticles(pStack, 5);
-
-                        for (int i = 0; i < 5; ++i) {
-                            Vec3 vec3 = new Vec3(((double) livingEntity.getRandom().nextFloat() - 0.5D) * 0.1D, Math.random() * 0.1D + 0.1D, 0.0D);
-                            vec3 = vec3.xRot(-livingEntity.getXRot() * ((float) Math.PI / 180F));
-                            vec3 = vec3.yRot(-livingEntity.getYRot() * ((float) Math.PI / 180F));
-                            double d0 = (double) (-livingEntity.getRandom().nextFloat()) * 0.6D - 0.3D;
-                            Vec3 vec31 = new Vec3(((double) livingEntity.getRandom().nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
-                            vec31 = vec31.xRot(-livingEntity.getXRot() * ((float) Math.PI / 180F));
-                            vec31 = vec31.yRot(-livingEntity.getYRot() * ((float) Math.PI / 180F));
-                            vec31 = vec31.add(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ());
-                            if (livingEntity.level instanceof ServerLevel serverLevel) //Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server specific variant
-                            {
-                                serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, itemStack), vec31.x, vec31.y, vec31.z, 1, vec3.x, vec3.y + 0.05D, vec3.z, 0.0D);
-                            }
-                        }
-
-                    }
-                    //livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST);
-                });
-            }
-
+        amount /= 4.0F;
+        if (amount < 1.0F) {
+            amount = 1.0F;
         }
+        ItemStack itemStack = slotContext.stack();
+        LivingEntity player = slotContext.wearer();
+        if ((!damageSource.isFire() || !itemStack.getItem().isFireResistant())) {
+            itemStack.hurtAndBreak((int) amount, player, (livingEntity) -> {
+                if (!itemStack.isEmpty()) {
+                    if (!livingEntity.isSilent()) {
+                        livingEntity.level.playSound(null, livingEntity,
+                                this.getBreakSound(itemStack),
+                                livingEntity.getSoundSource(),
+                                0.8F,
+                                0.8F + livingEntity.level.random.nextFloat() * 0.4F);
+                    }
+
+                    //livingEntity.spawnItemParticles(pStack, 5);
+
+                    for (int i = 0; i < 5; ++i) {
+                        Vec3 vec3 = new Vec3(((double) livingEntity.getRandom().nextFloat() - 0.5D) * 0.1D, Math.random() * 0.1D + 0.1D, 0.0D);
+                        vec3 = vec3.xRot(-livingEntity.getXRot() * ((float) Math.PI / 180F));
+                        vec3 = vec3.yRot(-livingEntity.getYRot() * ((float) Math.PI / 180F));
+                        double d0 = (double) (-livingEntity.getRandom().nextFloat()) * 0.6D - 0.3D;
+                        Vec3 vec31 = new Vec3(((double) livingEntity.getRandom().nextFloat() - 0.5D) * 0.3D, d0, 0.6D);
+                        vec31 = vec31.xRot(-livingEntity.getXRot() * ((float) Math.PI / 180F));
+                        vec31 = vec31.yRot(-livingEntity.getYRot() * ((float) Math.PI / 180F));
+                        vec31 = vec31.add(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ());
+                        if (livingEntity.level instanceof ServerLevel serverLevel) //Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server specific variant
+                        {
+                            serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, itemStack), vec31.x, vec31.y, vec31.z, 1, vec3.x, vec3.y + 0.05D, vec3.z, 0.0D);
+                        }
+                    }
+
+                }
+                //livingEntity.broadcastBreakEvent(EquipmentSlot.CHEST);
+            });
+        }
+
     }
 
     @Override

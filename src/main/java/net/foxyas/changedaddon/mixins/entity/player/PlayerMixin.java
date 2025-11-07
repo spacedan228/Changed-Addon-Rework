@@ -1,9 +1,11 @@
-package net.foxyas.changedaddon.mixins.entity;
+package net.foxyas.changedaddon.mixins.entity.player;
 
 import net.foxyas.changedaddon.abilities.ClawsAbility;
 import net.foxyas.changedaddon.client.renderer.items.HazardBodySuitClothingRenderer;
+import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
@@ -17,6 +19,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -30,6 +33,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.ForgeMod;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -42,7 +46,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Mixin(Player.class)
-public abstract class PlayerMixin {
+public abstract class PlayerMixin implements LivingEntityDataExtensor {
 
     @Shadow
     public abstract ItemStack getItemBySlot(EquipmentSlot p_36257_);
@@ -52,6 +56,14 @@ public abstract class PlayerMixin {
         if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof AbstractKatanaItem abstractKatanaItem) {
             ci.cancel();
             abstractKatanaItem.spawnElectricSwingParticle((Player) (Object) this, 2);
+        }
+    }
+
+    @Inject(method = "updateSwimming", at = @At("RETURN"), cancellable = true)
+    private void customUpdateSwimming(CallbackInfo ci) {
+        Player self = ((Player) (Object) this);
+        if (this.canOverrideSwimUpdate()) {
+            self.setSwimming(self.isSprinting() && !self.isPassenger());
         }
     }
 

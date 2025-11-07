@@ -1,5 +1,6 @@
-package net.foxyas.changedaddon.mixins.entity;
+package net.foxyas.changedaddon.mixins.entity.player;
 
+import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
@@ -11,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayer.class)
-public class ServerPlayerMixin implements SyncTrackMotion {
+public class ServerPlayerMixin implements SyncTrackMotion, LivingEntityDataExtensor {
 
     @Unique
     public boolean isMoving = false;
