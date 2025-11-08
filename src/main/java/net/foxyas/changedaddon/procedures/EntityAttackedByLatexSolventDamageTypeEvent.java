@@ -15,7 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
-public class EntityAttackedBySolventDamageTypeEvent {
+public class EntityAttackedByLatexSolventDamageTypeEvent {
 
     @SubscribeEvent
     public static void onEntityAttacked(LivingHurtEvent event) {

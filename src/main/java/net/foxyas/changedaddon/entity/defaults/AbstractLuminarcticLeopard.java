@@ -38,7 +38,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -432,7 +431,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         }
 
         if (attacker instanceof LivingEntity livingEntity && this.isBoss()) {
-            if (EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get(), livingEntity.getMainHandItem()) >= 1) {
+            if (livingEntity.getAttribute(ChangedAddonAttributes.LATEX_SOLVENT_DAMAGE_MULTIPLIER.get()) != null && livingEntity.getAttributeValue(ChangedAddonAttributes.LATEX_SOLVENT_DAMAGE_MULTIPLIER.get()) >= 1) {
                 return super.hurt(source, amount * 1.25f);
             } else if (source.getMsgId().contains("latex_solvent")) {
                 return super.hurt(source, amount * 1.25f);

@@ -110,15 +110,15 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             ), "item.changed_addon.colorful_wolf_crystal_fragment_desc");
 
             // Enchant Information
-            registerSolventDescriptions(registration);
+            registerLatexSolventDescriptions(registration);
             registerChangedLureDescriptions(registration);
             registerTransfurAspectDescriptions(registration);
         }
 
-        private static void registerSolventDescriptions(IRecipeRegistration registration) {
+        private static void registerLatexSolventDescriptions(IRecipeRegistration registration) {
             ItemStack enchantedBookWithSolvent = new ItemStack(Items.ENCHANTED_BOOK);
             for (int i = 1; i < 6; i++) { // Começa em 1 para ignorar o nível 0
-                float math = SolventMath(i) * 100;
+                float math = LatexSolventMath(i) * 100;
                 EnchantmentHelper.setEnchantments(Map.of(ChangedAddonEnchantments.LATEX_SOLVENT.get(), i), enchantedBookWithSolvent);
                 String text = new TranslatableComponent("enchantment.changed_addon.latex_solvent.jei_desc", Math.round(math)).getString().replace(" T ", "% ");
                 registration.addIngredientInfo(enchantedBookWithSolvent, VanillaTypes.ITEM_STACK, new TextComponent(text));
@@ -142,8 +142,8 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             }
         }
 
-        private static float SolventMath(int EnchantLevel) {
-            return 1.0f + (EnchantLevel) * 0.20f;
+        private static float LatexSolventMath(int EnchantLevel) {
+            return (EnchantLevel) * 0.20f;
         }
 
         private static float TransfurAspectMath(int EnchantLevel) {

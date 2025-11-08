@@ -103,8 +103,8 @@
   "advancements.wolfy_transfur.descr": "Congratulations, you are now officially Wolfy. Hope it was worth it.",
   "advancements.main.rock_fish.title": "Rock Fish",
   "advancements.main.rock_fish.description": "Use a fire resistance potion and swim in lava while transfured into an aquatic form.",
-  "advancements.cuddles_of_eternal_night.title": "Cuddles of Eternal Night",
-  "advancements.cuddles_of_eternal_night.descr": "You should’ve known better than to snuggle the plushie. Sleep tight… forever.",
+  "advancements.cuddles_of_eternal_night.title": "Am i Dreaming?",
+  "advancements.cuddles_of_eternal_night.descr": "Cuddles of Eternal Night... You should’ve known better than to snuggle the plushie. Sleep tight… forever.",
 
   "advancement.grab.hug.title": "Warm Hug",
   "advancement.grab.hug.description": "You gave someone a warm hug ♥",
@@ -114,6 +114,7 @@
 
   "attribute.changed_addon.latex_infection": "Latex Infection",
   "attribute.changed_addon.latex_resistance": "Latex Resistance",
+  "attribute.changed_addon.latex_solvent_damage_multiplier": "Latex Solvent Damage Multiplier",
 
   "block.changed_addon.advanced_catalyzer": "Advanced Catalyzer",
   "block.changed_addon.advanced_unifuser": "Advanced Unifuser",

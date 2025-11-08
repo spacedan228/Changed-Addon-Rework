@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.util;
 
+import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix4f;
@@ -15,7 +16,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
@@ -783,6 +787,21 @@ public class FoxyasUtils {
         );
 
         return baseOscillation * scale + bpiSize;
+    }
+
+
+    public static double getAttributeValueFromItemStack(ItemStack stack, Attribute attribute, EquipmentSlot slot) {
+        Multimap<Attribute, AttributeModifier> modifiers = stack.getAttributeModifiers(slot);
+        Collection<AttributeModifier> mods = modifiers.get(attribute);
+
+        double total = 0.0;
+        for (AttributeModifier mod : mods) {
+            switch (mod.getOperation()) {
+                case ADDITION -> total += mod.getAmount();
+                case MULTIPLY_BASE, MULTIPLY_TOTAL -> total += 1.0 * mod.getAmount();
+            }
+        }
+        return total;
     }
 
 

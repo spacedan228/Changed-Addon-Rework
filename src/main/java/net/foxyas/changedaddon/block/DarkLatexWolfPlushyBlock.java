@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
@@ -90,8 +91,10 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
                 float luck = player.getLuck() / 100f;
                 double distance = (position.distanceTo(Vec3.atCenterOf(plushyPos)));
                 float value = (float) ((0.25f + luck) / (distance * intensity));
+                boolean plushyHead = player.getItemBySlot(EquipmentSlot.HEAD).is(ChangedAddonItems.DARK_LATEX_WOLF_PLUSH.get());
+                if (plushyHead) value = 1;
                 if (randomValue <= value) {
-                    ProcessTransfur.transfur(player, world, getTransfurVariant(world), false, TransfurContext.hazard(TransfurCause.FACE_HAZARD));
+                    ProcessTransfur.transfur(player, world, getTransfurVariant(world), true, TransfurContext.hazard(TransfurCause.FACE_HAZARD));
                     if (player instanceof ServerPlayer serverPlayer) {
                         ChangedAddonCriteriaTriggers.SLEEP_NEXT_A_PLUSHY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "dark_latex_plushy", true);
                     }

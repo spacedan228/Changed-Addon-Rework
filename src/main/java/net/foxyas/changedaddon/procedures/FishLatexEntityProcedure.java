@@ -95,7 +95,12 @@ public class FishLatexEntityProcedure {
             // Verifica se o item possui o encantamento "Changed Lure"
             if (itemEnchantment > 0) {
                 // Cálculo da chance de spawnar uma criatura "Changed"
-                float luck = (float) player.getAttributeValue(Attributes.LUCK);
+                float luck;
+                if (player.getAttribute(Attributes.LUCK) != null) {
+                    luck = (float) player.getAttributeValue(Attributes.LUCK);
+                } else {
+                    luck = 0;
+                }
                 float attributeBonus = Math.min(luck, 35.0F); // Aplica o cap no valor de Luck
                 float enchantmentBonus = (2.5F * itemEnchantment) + attributeBonus;
                 float chance = 7.5F + enchantmentBonus; // Aumenta a chance de spawn com base no Luck e no encantamento

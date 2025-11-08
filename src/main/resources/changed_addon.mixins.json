@@ -27,6 +27,7 @@
     "entity.LivingEntityMixin",
     "entity.MobAccessor",
     "entity.PhantomAccessor",
+    "entity.attributes.AttributeMapAccessor",
     "entity.goals.AvoidEntityGoalMixin",
     "entity.goals.ChangedEntityGoalsMixin",
     "entity.goals.PhantomAIMixin",
