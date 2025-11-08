@@ -3,12 +3,15 @@ package net.foxyas.changedaddon.event;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.menu.CustomMerchantMenu;
 import net.foxyas.changedaddon.network.*;
-import net.foxyas.changedaddon.network.packets.*;
+import net.foxyas.changedaddon.network.packet.*;
+import net.foxyas.changedaddon.procedures.blocksHandle.BoneMealExpansion;
+import net.foxyas.changedaddon.recipes.brewing.TransfurSicknessRecipeBrewingRecipe;
+import net.foxyas.changedaddon.recipes.brewing.UntransfurPotionRecipeBrewingRecipe;
+import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -16,67 +19,74 @@ import net.minecraftforge.network.NetworkEvent;
 public class CommonMod {
 
     @SubscribeEvent
-    public static void registerPackets(FMLConstructModEvent event) {
-        ChangedAddonMod.addNetworkMessage(KeyPressPacket.class, KeyPressPacket::encode, KeyPressPacket::decode, KeyPressPacket::handle);
-        ChangedAddonMod.addNetworkMessage(SyncTransfurVisionsPacket.class, SyncTransfurVisionsPacket::encode, SyncTransfurVisionsPacket::decode, SyncTransfurVisionsPacket::handle);
-
-        ChangedAddonMod.addNetworkMessage(RequestMovementCheckPacket.class, RequestMovementCheckPacket::encode, RequestMovementCheckPacket::decode, RequestMovementCheckPacket::handle);
-        ChangedAddonMod.addNetworkMessage(ConfirmMovementPacket.class, ConfirmMovementPacket::encode, ConfirmMovementPacket::decode, ConfirmMovementPacket::handle);
-        ChangedAddonMod.addNetworkMessage(VariantSecondAbilityActivate.class, VariantSecondAbilityActivate::write, VariantSecondAbilityActivate::new, VariantSecondAbilityActivate::handle);
-    }
-
-    @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
         event.register(ChangedAddonVariables.PlayerVariables.class);
     }
 
     @SubscribeEvent
-    public static void init(FMLCommonSetupEvent event) {
-        ChangedAddonMod.addNetworkMessage(ChangedAddonVariables.SyncPacket.class, ChangedAddonVariables.SyncPacket::buffer,
+    public static void onCommonSetup(FMLCommonSetupEvent event) {
+        addPackets();
+
+        event.enqueueWork(() -> {
+            BoneMealExpansion.BoneMealDispenserHandler.registerDispenserBehavior();
+            BoneMealExpansion.GooApplyDispenserHandler.registerDispenserBehavior();
+
+            BrewingRecipeRegistry.addRecipe(new UntransfurPotionRecipeBrewingRecipe());
+            BrewingRecipeRegistry.addRecipe(new TransfurSicknessRecipeBrewingRecipe());
+        });
+    }
+
+    private static void addPackets(){
+        ChangedAddonMod.addNetworkMessage(KeyPressPacket.class, KeyPressPacket::encode,
+                KeyPressPacket::new, KeyPressPacket::handle);
+        ChangedAddonMod.addNetworkMessage(SyncTransfurVisionsPacket.class, SyncTransfurVisionsPacket::encode,
+                SyncTransfurVisionsPacket::new, SyncTransfurVisionsPacket::handle);
+
+        ChangedAddonMod.addNetworkMessage(RequestMovementCheckPacket.class, RequestMovementCheckPacket::encode,
+                RequestMovementCheckPacket::new, RequestMovementCheckPacket::handle);
+        ChangedAddonMod.addNetworkMessage(ConfirmMovementPacket.class, ConfirmMovementPacket::encode,
+                ConfirmMovementPacket::decode, ConfirmMovementPacket::handle);
+        ChangedAddonMod.addNetworkMessage(VariantSecondAbilityActivate.class, VariantSecondAbilityActivate::write,
+                VariantSecondAbilityActivate::new, VariantSecondAbilityActivate::handle);
+
+        ChangedAddonMod.addNetworkMessage(ChangedAddonVariables.SyncPacket.class, ChangedAddonVariables.SyncPacket::encode,
                 ChangedAddonVariables.SyncPacket::new, ChangedAddonVariables.SyncPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonMessage.class, GeneratorGuiButtonMessage::buffer, GeneratorGuiButtonMessage::new,
-                GeneratorGuiButtonMessage::handler);
+        ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonPacket.class, GeneratorGuiButtonPacket::encode,
+                GeneratorGuiButtonPacket::new, GeneratorGuiButtonPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(LeapKeyMessage.class, LeapKeyMessage::buffer, LeapKeyMessage::new, LeapKeyMessage::handler);
+        ChangedAddonMod.addNetworkMessage(LeapKeyPacket.class, LeapKeyPacket::encode, LeapKeyPacket::new, LeapKeyPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(OpenExtraDetailsMessage.class, OpenExtraDetailsMessage::buffer, OpenExtraDetailsMessage::new,
-                OpenExtraDetailsMessage::handler);
+        ChangedAddonMod.addNetworkMessage(OpenExtraDetailsPacket.class, OpenExtraDetailsPacket::encode,
+                OpenExtraDetailsPacket::new, OpenExtraDetailsPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(PatKeyMessage.class, PatKeyMessage::buffer, PatKeyMessage::new, PatKeyMessage::handler);
+        ChangedAddonMod.addNetworkMessage(PatKeyPacket.class, PatKeyPacket::encode, PatKeyPacket::new, PatKeyPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(TransfurSoundsGuiButtonMessage.class, TransfurSoundsGuiButtonMessage::buffer,
-                TransfurSoundsGuiButtonMessage::new, TransfurSoundsGuiButtonMessage::handler);
+        ChangedAddonMod.addNetworkMessage(TransfurSoundsGuiButtonPacket.class, TransfurSoundsGuiButtonPacket::encode,
+                TransfurSoundsGuiButtonPacket::new, TransfurSoundsGuiButtonPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(TurnOffTransfurMessage.class, TurnOffTransfurMessage::buffer, TurnOffTransfurMessage::new,
-                TurnOffTransfurMessage::handler);
+        ChangedAddonMod.addNetworkMessage(TurnOffTransfurPacket.class, TurnOffTransfurPacket::encode,
+                TurnOffTransfurPacket::new, TurnOffTransfurPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(InformantBlockGuiKeyMessage.class,
-                InformantBlockGuiKeyMessage::encode,
-                InformantBlockGuiKeyMessage::decode,
-                InformantBlockGuiKeyMessage::handle);
+        ChangedAddonMod.addNetworkMessage(InformantBlockGuiKeyPacket.class, InformantBlockGuiKeyPacket::encode,
+                InformantBlockGuiKeyPacket::new, InformantBlockGuiKeyPacket::handle);
 
 
-        ChangedAddonMod.addNetworkMessage(ServerboundProgressFTKCPacket.class,
-                ServerboundProgressFTKCPacket::encode,
-                ServerboundProgressFTKCPacket::new,
-                ServerPacketHandler::handleProgressFTKCPacket,
+        ChangedAddonMod.addNetworkMessage(ServerboundProgressFTKCPacket.class, ServerboundProgressFTKCPacket::encode,
+                ServerboundProgressFTKCPacket::new, ServerPacketHandler::handleProgressFTKCPacket,
                 NetworkDirection.PLAY_TO_SERVER);
 
-        ChangedAddonMod.addNetworkMessage(ClientboundOpenFTKCScreenPacket.class,
-                ClientboundOpenFTKCScreenPacket::encode,
+        ChangedAddonMod.addNetworkMessage(ClientboundOpenFTKCScreenPacket.class, ClientboundOpenFTKCScreenPacket::encode,
                 ClientboundOpenFTKCScreenPacket::new,
                 (packet, contextSupplier) -> ClientPacketHandler.handleOpenFTKCScreenPacket(packet, contextSupplier),
                 NetworkDirection.PLAY_TO_CLIENT);
 
-        ChangedAddonMod.addNetworkMessage(ClientboundSonarUpdatePacket.class,
-                ClientboundSonarUpdatePacket::encode,
+        ChangedAddonMod.addNetworkMessage(ClientboundSonarUpdatePacket.class, ClientboundSonarUpdatePacket::encode,
                 ClientboundSonarUpdatePacket::new,
                 (packet, contextSupplier) -> ClientPacketHandler.handleSonarUpdatePacket(packet, contextSupplier),
                 NetworkDirection.PLAY_TO_CLIENT);
 
-        ChangedAddonMod.addNetworkMessage(ServerboundCustomSelectTradePacket.class,
-                ServerboundCustomSelectTradePacket::encode,
+        ChangedAddonMod.addNetworkMessage(ServerboundCustomSelectTradePacket.class, ServerboundCustomSelectTradePacket::encode,
                 ServerboundCustomSelectTradePacket::new,
                 (packet, context) -> {
                     NetworkEvent.Context ctx = context.get();

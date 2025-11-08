@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.abilities;
 
 import net.foxyas.changedaddon.client.renderer.layers.features.RenderMode;
 import net.foxyas.changedaddon.network.PacketUtil;
-import net.foxyas.changedaddon.network.packets.ClientboundSonarUpdatePacket;
+import net.foxyas.changedaddon.network.packet.ClientboundSonarUpdatePacket;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;

@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.process.variantsExtraStats.visions;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.network.packets.SyncTransfurVisionsPacket;
+import net.foxyas.changedaddon.network.packet.SyncTransfurVisionsPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.foxyas.changedaddon.network.packets.utils.PacketsUtils.sendToPlayer;
+import static net.foxyas.changedaddon.network.packet.utils.PacketsUtils.sendToPlayer;
 
 @Mod.EventBusSubscriber
 public class TransfurVisionSync {

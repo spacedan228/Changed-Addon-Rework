@@ -148,17 +148,17 @@ public class ChangedAddonVariables {
 
         public PlayerVariables data;
 
+        public SyncPacket(PlayerVariables data) {
+            this.data = data;
+        }
+
         public SyncPacket(FriendlyByteBuf buffer) {
             this.data = new PlayerVariables();
             this.data.readNBT(buffer.readNbt());
         }
 
-        public SyncPacket(PlayerVariables data) {
-            this.data = data;
-        }
-
-        public static void buffer(SyncPacket message, FriendlyByteBuf buffer) {
-            buffer.writeNbt(message.data.writeNBT());
+        public void encode(FriendlyByteBuf buffer) {
+            buffer.writeNbt(data.writeNBT());
         }
 
         public static void handler(SyncPacket message, Supplier<NetworkEvent.Context> contextSupplier) {

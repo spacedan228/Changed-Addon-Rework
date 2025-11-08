@@ -1,5 +1,6 @@
-package net.foxyas.changedaddon.network;
+package net.foxyas.changedaddon.network.packet;
 
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public record TransfurSoundsGuiButtonMessage(int buttonId) {
+public record TransfurSoundsGuiButtonPacket(int buttonId) {
 
     private static final List<Triple<ResourceLocation, Predicate<Player>, Integer>> sounds = List.of(
             Triple.of(ResourceLocation.parse("entity.cat.purr"), PlayerUtil::isCatTransfur, 60),
@@ -32,15 +33,15 @@ public record TransfurSoundsGuiButtonMessage(int buttonId) {
             Triple.of(ResourceLocation.parse("entity.cat.purreow"), PlayerUtil::isCatTransfur, 20)
     );
 
-    public TransfurSoundsGuiButtonMessage(FriendlyByteBuf buf) {
+    public TransfurSoundsGuiButtonPacket(FriendlyByteBuf buf) {
         this(buf.readVarInt());
     }
 
-    public static void buffer(TransfurSoundsGuiButtonMessage message, FriendlyByteBuf buf) {
-        buf.writeVarInt(message.buttonId);
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeVarInt(buttonId);
     }
 
-    public static void handler(TransfurSoundsGuiButtonMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handler(TransfurSoundsGuiButtonPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() -> handleButtonAction(context.getSender(), message.buttonId));
         context.setPacketHandled(true);

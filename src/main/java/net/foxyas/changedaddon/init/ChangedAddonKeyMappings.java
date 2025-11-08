@@ -2,11 +2,11 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.network.LeapKeyMessage;
-import net.foxyas.changedaddon.network.OpenExtraDetailsMessage;
-import net.foxyas.changedaddon.network.PatKeyMessage;
-import net.foxyas.changedaddon.network.TurnOffTransfurMessage;
-import net.foxyas.changedaddon.network.packets.VariantSecondAbilityActivate;
+import net.foxyas.changedaddon.network.packet.LeapKeyPacket;
+import net.foxyas.changedaddon.network.packet.OpenExtraDetailsPacket;
+import net.foxyas.changedaddon.network.packet.PatKeyPacket;
+import net.foxyas.changedaddon.network.packet.TurnOffTransfurPacket;
+import net.foxyas.changedaddon.network.packet.VariantSecondAbilityActivate;
 import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.tutorial.ChangedTutorial;
@@ -32,7 +32,7 @@ public class ChangedAddonKeyMappings {
         public void setDown(boolean isDown) {
             super.setDown(isDown);
             if (isDownOld != isDown && isDown) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new OpenExtraDetailsMessage(0, 0));
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new OpenExtraDetailsPacket(0, 0));
                 //OpenExtraDetailsMessage.pressAction(Minecraft.getInstance().player, 0, 0);
             }
             isDownOld = isDown;
@@ -45,8 +45,8 @@ public class ChangedAddonKeyMappings {
         public void setDown(boolean isDown) {
             super.setDown(isDown);
             if (isDownOld != isDown && isDown) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new LeapKeyMessage(0, 0));
-                LeapKeyMessage.pressAction(Minecraft.getInstance().player, 0, 0);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new LeapKeyPacket(0, 0));
+                LeapKeyPacket.pressAction(Minecraft.getInstance().player, 0, 0);
             }
             isDownOld = isDown;
         }
@@ -58,8 +58,8 @@ public class ChangedAddonKeyMappings {
         public void setDown(boolean isDown) {
             super.setDown(isDown);
             if (isDownOld != isDown && isDown) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TurnOffTransfurMessage(0, 0));
-                TurnOffTransfurMessage.pressAction(Minecraft.getInstance().player, 0, 0);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TurnOffTransfurPacket(0, 0));
+                TurnOffTransfurPacket.pressAction(Minecraft.getInstance().player, 0);
             }
             isDownOld = isDown;
         }
@@ -71,8 +71,8 @@ public class ChangedAddonKeyMappings {
         public void setDown(boolean isDown) {
             super.setDown(isDown);
             if (isDown) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new PatKeyMessage(0, 0));
-                PatKeyMessage.pressAction(Minecraft.getInstance().player, 0, 0);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new PatKeyPacket(0, 0));
+                PatKeyPacket.pressAction(Minecraft.getInstance().player, 0);
             }
             //isDownOld = isDown;
         }

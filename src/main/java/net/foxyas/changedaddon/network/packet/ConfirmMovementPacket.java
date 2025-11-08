@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network.packets;
+package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
@@ -11,7 +11,9 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public class ConfirmMovementPacket {
+
     public static final ResourceLocation ID = ChangedAddonMod.resourceLoc("confirm_movement");
+
     private final boolean isMoving;
     private Vec3 motion = null;
 
@@ -24,10 +26,9 @@ public class ConfirmMovementPacket {
         this.motion = motion;
     }
 
-    public static void encode(ConfirmMovementPacket msg, FriendlyByteBuf buf) {
-        buf.writeBoolean(msg.isMoving);
-        if (msg.motion != Vec3.ZERO && msg.motion != null) {
-            Vec3 motion = msg.motion;
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeBoolean(isMoving);
+        if (motion != Vec3.ZERO && motion != null) {
             buf.writeDouble(motion.x());
             buf.writeDouble(motion.y());
             buf.writeDouble(motion.z());

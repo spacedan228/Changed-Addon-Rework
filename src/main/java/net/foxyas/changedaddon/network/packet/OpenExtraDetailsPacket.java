@@ -1,6 +1,7 @@
-package net.foxyas.changedaddon.network;
+package net.foxyas.changedaddon.network.packet;
 
 import io.netty.buffer.Unpooled;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.world.inventory.TransfurSoundsGuiMenu;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.FriendlyByteBuf;
@@ -19,24 +20,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public record OpenExtraDetailsMessage(int type, int pressedMs) {
+public record OpenExtraDetailsPacket(int type, int pressedMs) {
 
-    public OpenExtraDetailsMessage(FriendlyByteBuf buf) {
+    public OpenExtraDetailsPacket(FriendlyByteBuf buf) {
         this(buf.readVarInt(), buf.readVarInt());
     }
 
-    public static void buffer(OpenExtraDetailsMessage message, FriendlyByteBuf buf) {
-        buf.writeVarInt(message.type);
-        buf.writeVarInt(message.pressedMs);
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeVarInt(type);
+        buf.writeVarInt(pressedMs);
     }
 
-    public static void handler(OpenExtraDetailsMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handler(OpenExtraDetailsPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> pressAction(context.getSender(), message.type, message.pressedMs));
+        context.enqueueWork(() -> pressAction(context.getSender(), message.type));
         context.setPacketHandled(true);
     }
 
-    public static void pressAction(Player player, int type, int pressedms) {
+    public static void pressAction(Player player, int type) {
         if (player == null || player.level.isClientSide) return;
 
         if (type == 0) {

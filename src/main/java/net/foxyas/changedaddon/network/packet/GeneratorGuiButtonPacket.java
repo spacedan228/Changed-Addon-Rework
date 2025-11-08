@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network;
+package net.foxyas.changedaddon.network.packet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,20 +11,20 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record GeneratorGuiButtonMessage(int buttonId, BlockPos pos) {
+public record GeneratorGuiButtonPacket(int buttonId, BlockPos pos) {
 
-    public GeneratorGuiButtonMessage(FriendlyByteBuf buf) {
+    public GeneratorGuiButtonPacket(FriendlyByteBuf buf) {
         this(buf.readVarInt(), new BlockPos(buf.readVarInt(), buf.readVarInt(), buf.readVarInt()));
     }
 
-    public static void buffer(GeneratorGuiButtonMessage message, FriendlyByteBuf buf) {
-        buf.writeVarInt(message.buttonId);
-        buf.writeVarInt(message.pos.getX());
-        buf.writeVarInt(message.pos.getY());
-        buf.writeVarInt(message.pos.getZ());
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeVarInt(buttonId);
+        buf.writeVarInt(pos.getX());
+        buf.writeVarInt(pos.getY());
+        buf.writeVarInt(pos.getZ());
     }
 
-    public static void handler(GeneratorGuiButtonMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handler(GeneratorGuiButtonPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
         context.enqueueWork(() ->
                 handleButtonAction(context.getSender(), message.buttonId, message.pos));

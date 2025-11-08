@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.network.packets.ServerboundProgressFTKCPacket;
+import net.foxyas.changedaddon.network.packet.ServerboundProgressFTKCPacket;
 import net.foxyas.changedaddon.qte.FightToKeepConsciousness;
 import net.foxyas.changedaddon.util.RenderUtil;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;

@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network.packets;
+package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;

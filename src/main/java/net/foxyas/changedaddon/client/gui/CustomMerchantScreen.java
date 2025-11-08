@@ -7,7 +7,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.menu.CustomMerchantMenu;
 import net.foxyas.changedaddon.menu.CustomMerchantOffer;
 import net.foxyas.changedaddon.menu.CustomMerchantOffers;
-import net.foxyas.changedaddon.network.packets.ServerboundCustomSelectTradePacket;
+import net.foxyas.changedaddon.network.packet.ServerboundCustomSelectTradePacket;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;

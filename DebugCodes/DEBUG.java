@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.process;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
-import net.foxyas.changedaddon.network.packets.RequestMovementCheckPacket;
+import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;

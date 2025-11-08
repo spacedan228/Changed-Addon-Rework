@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network.packets;
+package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.qte.FightToKeepConsciousness;
 import net.minecraft.network.FriendlyByteBuf;

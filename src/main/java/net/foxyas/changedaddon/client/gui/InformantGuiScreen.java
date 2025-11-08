@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.entity.InformantBlockEntity;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.InformantBlockEntityRenderer;
-import net.foxyas.changedaddon.network.InformantBlockGuiKeyMessage;
+import net.foxyas.changedaddon.network.packet.InformantBlockGuiKeyPacket;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.world.inventory.InformantGuiMenu;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -76,7 +76,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
                 variant = variants.get(0);
             }
 
-            ChangedAddonMod.PACKET_HANDLER.sendToServer(new InformantBlockGuiKeyMessage(text, variant, menu.blockEntity.getBlockPos()));
+            ChangedAddonMod.PACKET_HANDLER.sendToServer(new InformantBlockGuiKeyPacket(text, variant, menu.blockEntity.getBlockPos()));
             blockEntity.updateInternal(text, variant);
         }); // sempre que o valor mudar, atualiza sugestões
 

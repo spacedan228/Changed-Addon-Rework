@@ -1,8 +1,8 @@
 package net.foxyas.changedaddon.network;
 
 import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
-import net.foxyas.changedaddon.network.packets.ClientboundOpenFTKCScreenPacket;
-import net.foxyas.changedaddon.network.packets.ClientboundSonarUpdatePacket;
+import net.foxyas.changedaddon.network.packet.ClientboundOpenFTKCScreenPacket;
+import net.foxyas.changedaddon.network.packet.ClientboundSonarUpdatePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.network.NetworkEvent;
 

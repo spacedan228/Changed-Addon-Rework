@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network.packets.utils;
+package net.foxyas.changedaddon.network.packet.utils;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.PacketDistributor;

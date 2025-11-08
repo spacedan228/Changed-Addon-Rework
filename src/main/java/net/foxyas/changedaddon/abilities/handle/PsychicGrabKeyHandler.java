@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.abilities.handle;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.PsychicGrab;
-import net.foxyas.changedaddon.network.packets.KeyPressPacket;
+import net.foxyas.changedaddon.network.packet.KeyPressPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;

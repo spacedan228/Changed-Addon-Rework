@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network.packets;
+package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.abilities.PsychicGrab;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
@@ -14,12 +14,12 @@ import java.util.function.Supplier;
  */
 public record KeyPressPacket(int keyCode) {
 
-    public static void encode(KeyPressPacket msg, FriendlyByteBuf buf) {
-        buf.writeInt(msg.keyCode);
+    public KeyPressPacket(FriendlyByteBuf buf) {
+        this(buf.readInt());
     }
 
-    public static KeyPressPacket decode(FriendlyByteBuf buf) {
-        return new KeyPressPacket(buf.readInt());
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeInt(keyCode);
     }
 
     public static void handle(KeyPressPacket msg, Supplier<NetworkEvent.Context> contextSupplier) {

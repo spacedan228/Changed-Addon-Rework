@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.client.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.network.GeneratorGuiButtonMessage;
+import net.foxyas.changedaddon.network.packet.GeneratorGuiButtonPacket;
 import net.foxyas.changedaddon.world.inventory.GeneratorGuiMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
@@ -34,8 +34,8 @@ public class GeneratorguiScreen extends AbstractContainerScreen<GeneratorGuiMenu
         this.imageHeight = 99;
 
         imagebutton_hitbox_16x16 = new ImageButton(this.leftPos + 170, this.topPos + 73, 16, 16, 0, 0, 16, ResourceLocation.parse("changed_addon:textures/screens/atlas/imagebutton_hitbox_16x16.png"), 16, 32, e -> {
-            ChangedAddonMod.PACKET_HANDLER.sendToServer(new GeneratorGuiButtonMessage(0, menu.pos));
-            GeneratorGuiButtonMessage.handleButtonAction(entity, 0, menu.pos);
+            ChangedAddonMod.PACKET_HANDLER.sendToServer(new GeneratorGuiButtonPacket(0, menu.pos));
+            GeneratorGuiButtonPacket.handleButtonAction(entity, 0, menu.pos);
         });
     }
 

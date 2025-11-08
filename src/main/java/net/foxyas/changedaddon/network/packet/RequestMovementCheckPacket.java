@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network.packets;
+package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,16 @@ import net.minecraftforge.network.NetworkEvent;
 import java.util.function.Supplier;
 
 public record RequestMovementCheckPacket(boolean syncMotion) {
+
     public static final ResourceLocation ID = ChangedAddonMod.resourceLoc("request_movement");
+
+    public RequestMovementCheckPacket(FriendlyByteBuf buf){
+        this(buf.readBoolean());
+    }
+
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeBoolean(syncMotion);
+    }
 
     public static void handle(RequestMovementCheckPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
@@ -34,13 +43,5 @@ public record RequestMovementCheckPacket(boolean syncMotion) {
             }
         });
         ctx.get().setPacketHandled(true);
-    }
-
-    public static void encode(RequestMovementCheckPacket msg, FriendlyByteBuf buf) {
-        buf.writeBoolean(msg.syncMotion);
-    }
-
-    public static RequestMovementCheckPacket decode(FriendlyByteBuf buf) {
-        return new RequestMovementCheckPacket(buf.readBoolean());
     }
 }

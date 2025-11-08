@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network;
+package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.block.entity.InformantBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
@@ -14,15 +14,17 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record InformantBlockGuiKeyMessage(String text, TransfurVariant<?> selectedTf, BlockPos pos) {
+public record InformantBlockGuiKeyPacket(String text, TransfurVariant<?> selectedTf, BlockPos pos) {
 
     public static final ResourceLocation NULL_LOC = ResourceLocation.fromNamespaceAndPath("null", "null");
 
-    public static InformantBlockGuiKeyMessage decode(FriendlyByteBuf buf) {
-        String selectedForm = buf.readUtf();
+    public InformantBlockGuiKeyPacket(FriendlyByteBuf buf){
+        this(buf.readUtf(), tf(buf), buf.readBlockPos());
+    }
+
+    private static TransfurVariant<?> tf(FriendlyByteBuf buf){
         ResourceLocation loc = buf.readResourceLocation();
-        BlockPos position = buf.readBlockPos();
-        return new InformantBlockGuiKeyMessage(selectedForm, loc.equals(NULL_LOC) ? null : ChangedRegistry.TRANSFUR_VARIANT.get().getValue(loc), position);
+        return loc.equals(NULL_LOC) ? null : ChangedRegistry.TRANSFUR_VARIANT.get().getValue(loc);
     }
 
     public void encode(FriendlyByteBuf buf) {

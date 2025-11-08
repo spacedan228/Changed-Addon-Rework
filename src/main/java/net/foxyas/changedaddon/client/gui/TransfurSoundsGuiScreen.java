@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.network.TransfurSoundsGuiButtonMessage;
+import net.foxyas.changedaddon.network.packet.TransfurSoundsGuiButtonPacket;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.foxyas.changedaddon.world.inventory.TransfurSoundsGuiMenu;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -105,8 +105,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
         button_1 = new Button(this.leftPos + 4, this.topPos + 6, 30, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_1"), e -> {
             if (PlayerUtil.isCatTransfur(player)) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(0));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 0);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(0));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 0);
             }
         }) {
             @Override
@@ -119,8 +119,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.addRenderableWidget(button_1);
         button_2 = new Button(this.leftPos + 4, this.topPos + 28, 30, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_2"), e -> {
             if (PlayerUtil.isCatTransfur(player)) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(1));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 1);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(1));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 1);
             }
         }) {
             @Override
@@ -133,8 +133,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.addRenderableWidget(button_2);
         button_3 = new Button(this.leftPos + 138, this.topPos + 7, 30, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_3"), e -> {
             if (PlayerUtil.isWolfTransfur(player)) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(2));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 2);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(2));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 2);
             }
         }) {
             @Override
@@ -147,8 +147,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.addRenderableWidget(button_3);
         button_4 = new Button(this.leftPos + 138, this.topPos + 29, 30, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_4"), e -> {
             if (PlayerUtil.isWolfTransfur(player)) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(3));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 3);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(3));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 3);
             }
         }) {
             @Override
@@ -161,8 +161,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.addRenderableWidget(button_4);
         button_5 = new Button(this.leftPos + 138, this.topPos + 51, 30, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_5"), e -> {
             if (PlayerUtil.isWolfTransfur(player)) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(4));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 4);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(4));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 4);
             }
         }) {
             @Override
@@ -175,8 +175,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.addRenderableWidget(button_5);
         button_6 = new Button(this.leftPos + 4, this.topPos + 50, 30, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_6"), e -> {
             if (PlayerUtil.isCatTransfur(player)) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(5));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 5);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(5));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 5);
             }
         }) {
             @Override
@@ -189,8 +189,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.addRenderableWidget(button_6);
         button_7 = new Button(this.leftPos + 4, this.topPos + 72, 40, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_7"), e -> {
             if (PlayerUtil.isCatTransfur(player)) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(6));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 6);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(6));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 6);
             }
         }) {
             @Override
@@ -203,8 +203,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.addRenderableWidget(button_7);
         button_cooldown = new Button(this.leftPos + 47, this.topPos + 5, 77, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_cooldown"), e -> {
             if (isOnCooldown()) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(7));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 7);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(7));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 7);
             }
         }) {
             @Override
@@ -216,8 +216,8 @@ public class TransfurSoundsGuiScreen extends AbstractContainerScreen<TransfurSou
         this.addRenderableWidget(button_cooldown);
         button_61 = new Button(this.leftPos + 4, this.topPos + 94, 30, 20, new TranslatableComponent("gui.changed_addon.transfur_sounds_gui.button_61"), e -> {
             if (canRoar()) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonMessage(8));
-                TransfurSoundsGuiButtonMessage.handleButtonAction(player, 8);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new TransfurSoundsGuiButtonPacket(8));
+                TransfurSoundsGuiButtonPacket.handleButtonAction(player, 8);
             }
         }) {
             @Override

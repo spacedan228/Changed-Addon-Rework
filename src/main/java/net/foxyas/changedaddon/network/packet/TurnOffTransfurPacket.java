@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.network;
+package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
@@ -12,24 +12,24 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public record TurnOffTransfurMessage(int type, int pressedMs) {
+public record TurnOffTransfurPacket(int type, int pressedMs) {
 
-    public TurnOffTransfurMessage(FriendlyByteBuf buf) {
+    public TurnOffTransfurPacket(FriendlyByteBuf buf) {
         this(buf.readVarInt(), buf.readVarInt());
     }
 
-    public static void buffer(TurnOffTransfurMessage message, FriendlyByteBuf buf) {
-        buf.writeVarInt(message.type);
-        buf.writeVarInt(message.pressedMs);
+    public void encode(FriendlyByteBuf buf) {
+        buf.writeVarInt(type);
+        buf.writeVarInt(pressedMs);
     }
 
-    public static void handler(TurnOffTransfurMessage message, Supplier<NetworkEvent.Context> contextSupplier) {
+    public static void handler(TurnOffTransfurPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> pressAction(context.getSender(), message.type, message.pressedMs));
+        context.enqueueWork(() -> pressAction(context.getSender(), message.type));
         context.setPacketHandled(true);
     }
 
-    public static void pressAction(Player player, int type, int pressedms) {
+    public static void pressAction(Player player, int type) {
         if (player == null) return;
 
         if (type == 0) {
