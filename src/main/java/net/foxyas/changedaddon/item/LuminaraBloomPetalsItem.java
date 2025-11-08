@@ -88,7 +88,7 @@ public class LuminaraBloomPetalsItem extends Item {
                 return InteractionResult.PASS; // too far away
 
             // Direction check — player must be in front of the target
-            Vec3 targetLook = target.getLookAngle().normalize(); // entity's facing direction
+            Vec3 targetLook = target.getViewVector(0).normalize(); // entity's facing direction
             Vec3 fromHitToMouth = targetMouth.subtract(hitResultLocation).scale(-1).normalize();
 
             // Dot product > 0 means in front, < 0 means behind
