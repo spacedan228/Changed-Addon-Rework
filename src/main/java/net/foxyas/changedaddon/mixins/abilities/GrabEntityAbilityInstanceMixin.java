@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.mixins.abilities;
 
 import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
+import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -114,7 +115,7 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
             if (this.suitTransition >= 3.0f) {
                 ci.cancel();
 
-                if (!(grabbedEntity instanceof Player player)) {
+                if (getSelf().entity.getChangedEntity() instanceof ChangedEntityExtension changedEntityExtension && changedEntityExtension.shouldAlwaysHoldGrab(grabbedEntity)) {
                     this.grabStrength = 1;
                     if (getSelf().getController().getHoldTicks() >= 1) {
                         this.suitTransition -= 0.25f;
@@ -126,8 +127,10 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
                         }
                     }
                 } else {
-                    if (!isAlreadySnuggledTight()) {
-                        this.runTightHug(player);
+                    if (grabbedEntity != null) {
+                        if (!isAlreadySnuggledTight()) {
+                            this.runTightHug(this.grabbedEntity);
+                        }
                     }
                 }
 

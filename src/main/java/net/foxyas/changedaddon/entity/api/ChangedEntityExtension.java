@@ -13,9 +13,11 @@ import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.item.AccessoryItem;
 import net.minecraft.Util;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -37,10 +39,10 @@ public interface ChangedEntityExtension {
     }
 
     static boolean isNeutralTo(ChangedEntity entity, LivingEntity target) {
-        return of(entity).c_additions$isNeutralTo(target);
+        return of(entity).isNeutralTo(target);
     }
 
-    boolean c_additions$isNeutralTo(LivingEntity target);
+    boolean isNeutralTo(LivingEntity target);
 
     default List<Item> getAcceptedSpawnClothes(ChangedEntity changedEntity) {
         List<Item> acceptedSpawnClothes = new ArrayList<>();
@@ -56,6 +58,13 @@ public interface ChangedEntityExtension {
         acceptedSpawnClothes.add(ChangedAddonItems.DYEABLE_SHORTS.get());
         acceptedSpawnClothes.add(ChangedAddonItems.DYEABLE_TSHIRT.get());
         return acceptedSpawnClothes;
+    }
+
+    default boolean shouldAlwaysHoldGrab(@Nullable LivingEntity grabbedEntity) {
+        if (grabbedEntity == null) {
+            return false;
+        }
+        return !(grabbedEntity instanceof Player);
     }
 
     default void setDefaultClothing(ChangedEntity changedEntity) {

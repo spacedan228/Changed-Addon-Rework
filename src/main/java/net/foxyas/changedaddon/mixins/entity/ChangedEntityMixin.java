@@ -62,7 +62,7 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     }
 
     @Override
-    public boolean c_additions$isNeutralTo(@NotNull LivingEntity target) {
+    public boolean isNeutralTo(@NotNull LivingEntity target) {
         if (hasEffect(ChangedAddonMobEffects.PACIFIED.get())) return true;
         if (this.isPacified()) return true;
         return false;
@@ -70,7 +70,7 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
 
     @Inject(at = @At("HEAD"), method = "targetSelectorTest", cancellable = true)
     private void onTargetSelectorTest(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
-        if (c_additions$isNeutralTo(livingEntity)) cir.setReturnValue(false);
+        if (isNeutralTo(livingEntity)) cir.setReturnValue(false);
     }
 
     @Inject(at = @At("HEAD"), method = "tryAbsorbTarget", cancellable = true)
