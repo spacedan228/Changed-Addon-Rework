@@ -14,8 +14,8 @@ public class AdvancedUnifuserBlockEntity extends UnifuserBlockEntity {
     }
 
     @Override
-    public boolean isAdvanced() {
-        return true;
+    public float getSpeedMultiplier() {
+        return super.getSpeedMultiplier() * 4;
     }
 
     @Override

@@ -14,6 +14,11 @@ public class AdvancedCatalyzerBlockEntity extends CatalyzerBlockEntity {
     }
 
     @Override
+    public float getSpeedMultiplier() {
+        return super.getSpeedMultiplier() * 4;
+    }
+
+    @Override
     public @NotNull Component getDefaultName() {
         return new TextComponent("advanced_catalyzer");
     }

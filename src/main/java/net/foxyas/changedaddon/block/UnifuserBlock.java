@@ -69,7 +69,6 @@ public class UnifuserBlock extends HorizontalDirectionalBlock implements EntityB
     @Override
     public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
         super.onPlace(blockstate, world, pos, oldState, moving);
-        world.sendBlockUpdated(pos, oldState, blockstate, 3);
     }
 
     @Override
@@ -94,11 +93,13 @@ public class UnifuserBlock extends HorizontalDirectionalBlock implements EntityB
 
             if (unifuserBlockEntity.startRecipe) {
                 unifuserBlockEntity.startRecipe = false;
+                unifuserBlockEntity.setChanged();
                 world.setBlockAndUpdate(pos, blockstate);
                 player.displayClientMessage(new TextComponent("you stop the " + name), true);
                 return InteractionResult.SUCCESS;
             } else {
                 unifuserBlockEntity.startRecipe = true;
+                unifuserBlockEntity.setChanged();
                 world.setBlockAndUpdate(pos, blockstate);
                 player.displayClientMessage(new TextComponent("you start the " + name), true);
                 return InteractionResult.SUCCESS;

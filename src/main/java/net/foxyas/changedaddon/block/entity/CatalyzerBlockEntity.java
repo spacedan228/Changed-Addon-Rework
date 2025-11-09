@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.block.entity;
 
-import net.foxyas.changedaddon.block.AdvancedCatalyzerBlock;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
 import net.foxyas.changedaddon.world.inventory.CatalyzerGuiMenu;
@@ -12,7 +11,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -163,27 +166,35 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
             handler.invalidate();
     }
 
+    public float getSpeedMultiplier() {
+        return 1f;
+    }
+
+    public SimpleContainer getContainer() {
+        return new SimpleContainer(this.stacks.toArray(new ItemStack[0]));
+    }
+
     public static void clientTick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-        if (!(blockEntity instanceof CatalyzerBlockEntity catalyzerBlockEntity)) return;
+        if (!(blockEntity instanceof CatalyzerBlockEntity catalyzer)) return;
         if (!(level instanceof ServerLevel serverLevel)) return;
         boolean shouldTick = false;
-        if (catalyzerBlockEntity.tickCount >= 5) {
+        if (catalyzer.tickCount >= 5) {
             shouldTick = true;
-            catalyzerBlockEntity.tickCount = 0;
+            catalyzer.tickCount = 0;
         }
 
         if (!shouldTick) {
-            catalyzerBlockEntity.tickCount ++;
-            update(serverLevel, pos, state, catalyzerBlockEntity);
+            catalyzer.tickCount++;
+            update(serverLevel, pos, state, catalyzer);
             return;
         }
 
-        if (catalyzerBlockEntity.nitrogenPower < 200) {
-            catalyzerBlockEntity.nitrogenPower += 1;
-            update(serverLevel, pos, state, catalyzerBlockEntity);
+        if (catalyzer.nitrogenPower < 200) {
+            catalyzer.nitrogenPower += 1;
+            update(serverLevel, pos, state, catalyzer);
             return;
         }
 
@@ -192,54 +203,92 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
         if (handler == null) return;
 
         if (handler.getStackInSlot(0).isEmpty()) {
-            catalyzerBlockEntity.recipeOn = false;
-            catalyzerBlockEntity.recipeProgress = Math.max(0, catalyzerBlockEntity.recipeProgress - 5);
-            update(serverLevel, pos, state, catalyzerBlockEntity);
+            catalyzer.recipeOn = false;
+            catalyzer.recipeProgress = Math.max(0, catalyzer.recipeProgress - 5);
+            update(serverLevel, pos, state, catalyzer);
             return;
         }
 
         boolean isFull = handler.getStackInSlot(1).getCount() >= handler.getStackInSlot(1).getMaxStackSize();
         if (isFull) {
-            update(serverLevel, pos, state, catalyzerBlockEntity);
+            update(serverLevel, pos, state, catalyzer);
             return;
         }
 
-        if (!catalyzerBlockEntity.startRecipe) {
-            update(serverLevel, pos, state, catalyzerBlockEntity);
+        if (!catalyzer.startRecipe) {
+            update(serverLevel, pos, state, catalyzer);
             return;
         }
 
         ItemStack input = handler.getStackInSlot(0).copy();
         CatalyzerRecipe recipe = findRecipe(serverLevel, input);
-        catalyzerBlockEntity.recipeOn = recipe != null;
+        catalyzer.recipeOn = recipe != null;
 
         if (recipe != null) {
-            if (catalyzerBlockEntity.recipeProgress < 100) {
-                double speed = recipe.getProgressSpeed();
-                if (state.getBlock() instanceof AdvancedCatalyzerBlock) {
-                    speed *= 4;
-                }
-                catalyzerBlockEntity.recipeProgress += speed;
+            if (catalyzer.recipeProgress < 100) {
+                double speed = recipe.getProgressSpeed() * catalyzer.getSpeedMultiplier();
+                catalyzer.recipeProgress += speed;
             }
 
-            if (catalyzerBlockEntity.recipeProgress >= 100) {
+            if (catalyzer.recipeProgress >= 100) {
                 ItemStack output = recipe.getResultItem();
 
                 if (handler.insertItem(1, output.copy(), true).isEmpty()) {
+                    NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(catalyzer.getContainer());
                     handler.extractItem(0, 1, false);
+
+                    // Recolocar os itens remanescentes de volta nos slots corretos
+                    for (int i = 0; i < remainingItems.size() - 1; i++) {
+                        ItemStack remaining = remainingItems.get(i);
+                        if (!remaining.isEmpty()) {
+                            // Se o slot estiver vazio, apenas coloca o item remanescente lá
+                            ItemStack current = handler.getStackInSlot(i);
+
+                            boolean inserted = false;
+
+                            if (current.isEmpty()) {
+                                handler.setStackInSlot(i, remaining);
+                                inserted = true;
+                            } else if (ItemStack.isSameItemSameTags(current, remaining)) {
+                                current.grow(remaining.getCount());
+                                handler.setStackInSlot(i, current);
+                                inserted = true;
+                            } else {
+                                ItemStack leftover = handler.insertItem(i, remaining, false);
+                                if (leftover.isEmpty()) {
+                                    inserted = true;
+                                } else {
+                                    remaining = leftover; // ainda sobrou algo
+                                }
+                            }
+
+                            // Se não conseguiu colocar no slot, dropar no mundo
+                            if (!inserted && !remaining.isEmpty()) {
+                                Vec3 vecPos = Vec3.upFromBottomCenterOf(catalyzer.getBlockPos(), -0.25f);
+                                Containers.dropItemStack(serverLevel, vecPos.x, vecPos.y, vecPos.z, remaining);
+                            }
+                        }
+                    }
+
                     handler.insertItem(1, output.copy(), false);
-                    catalyzerBlockEntity.nitrogenPower -= recipe.getNitrogenUsage();
-                    catalyzerBlockEntity.recipeProgress = 0;
+                    catalyzer.nitrogenPower -= recipe.getNitrogenUsage();
+                    catalyzer.recipeProgress = 0;
+                    serverLevel.playSound(null,
+                            pos,
+                            SoundEvents.BREWING_STAND_BREW,
+                            SoundSource.BLOCKS,
+                            1,
+                            1);
                 }
             }
         } else {
-            catalyzerBlockEntity.recipeProgress = 0;
+            catalyzer.recipeProgress = 0;
         }
 
-        update(serverLevel, pos, state, catalyzerBlockEntity);
+        update(serverLevel, pos, state, catalyzer);
     }
 
-    static @Nullable CatalyzerRecipe findRecipe(ServerLevel level, ItemStack input){
+    static @Nullable CatalyzerRecipe findRecipe(ServerLevel level, ItemStack input) {
         RecipeManager recipeManager = level.getRecipeManager();
 
         // Obtém todas as receitas do tipo JeiCatalyzerRecipe

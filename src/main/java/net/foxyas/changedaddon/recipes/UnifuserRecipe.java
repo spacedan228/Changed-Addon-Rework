@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.recipes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,16 +51,12 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
 
         // Verifica se a lista de ingredientes não está vazia
         if (!recipeItems.isEmpty()) {
-            // Percorre todos os itens da lista de ingredientes
-            for (Ingredient ingredient : recipeItems) {
-                // Verifica se pelo menos um item da lista atende às condições
-                if (NBTIngredient.of(this.output).test(pContainer.getItem(3))) {
-                    return true;
-                }
+            if (NBTIngredient.of(this.output).test(pContainer.getItem(3))) {
+                return true;
             }
         }
 
-        return false; // Retorna false se a lista de ingredientes estiver vazia ou nenhum item atender às condições
+        return false; // Retorna false se a lista de ingredientes estiver vazia
     }
 
     @Override
@@ -104,6 +101,7 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
     public static class Type implements RecipeType<UnifuserRecipe> {
         public static final Type INSTANCE = new Type();
         public static final String ID = "unifuser";
+
         private Type() {
         }
     }
@@ -120,13 +118,23 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
 
             for (int i = 0; i < ingredients.size(); i++) {
                 JsonElement ingredientElement = ingredients.get(i);
-                Ingredient ingredient = NBTIngredient.of(ShapedRecipe.itemStackFromJson(ingredientElement.getAsJsonObject()));
+
+                Ingredient ingredient;
+
+                if (ingredientElement.isJsonObject() && ingredientElement.getAsJsonObject().has("nbt")) {
+                    ItemStack stack = ShapedRecipe.itemStackFromJson(ingredientElement.getAsJsonObject());
+                    ingredient = NBTIngredient.of(stack);
+                    ChangedAddonMod.LOGGER.info("[Changed Addon Recipes Types] Parsing nbt recipe with id {} of type {}", pRecipeId, Type.ID);
+                } else {
+                    ingredient = Ingredient.fromJson(ingredientElement);
+                }
+
                 inputs.set(i, ingredient);
             }
 
-            float ProgressSpeed = GsonHelper.getAsFloat(pSerializedRecipe, "ProgressSpeed", 1.0f);
+            float progressSpeed = GsonHelper.getAsFloat(pSerializedRecipe, "ProgressSpeed", 1.0f);
 
-            return new UnifuserRecipe(pRecipeId, output, inputs, ProgressSpeed);
+            return new UnifuserRecipe(pRecipeId, output, inputs, progressSpeed);
         }
 
         @Override

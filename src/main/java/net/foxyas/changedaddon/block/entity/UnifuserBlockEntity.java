@@ -11,7 +11,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.WorldlyContainer;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -43,7 +48,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
     public boolean startRecipe = true;
     public double recipeProgress = 0;
-    protected boolean recipeOn = true;
+    protected boolean recipeProgressOn = true;
     public int tickCount;
 
     public UnifuserBlockEntity(BlockPos position, BlockState state) {
@@ -53,9 +58,9 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
     public UnifuserBlockEntity(BlockEntityType<?> blockEntityType, BlockPos position, BlockState state) {
         super(blockEntityType, position, state);
     }
-    
-    public boolean isAdvanced() {
-        return false;
+
+    public float getSpeedMultiplier() {
+        return 1f;
     }
 
     @Override
@@ -66,7 +71,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
         ContainerHelper.loadAllItems(tag, this.stacks);
 
         recipeProgress = tag.getDouble("recipe_progress");
-        recipeOn = tag.getBoolean("recipe_on");
+        recipeProgressOn = tag.getBoolean("recipe_on");
         startRecipe = tag.getBoolean("start_recipe");
     }
 
@@ -78,7 +83,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
         }
 
         tag.putDouble("recipe_progress", recipeProgress);
-        tag.putBoolean("recipe_on", recipeOn);
+        tag.putBoolean("recipe_on", recipeProgressOn);
         tag.putBoolean("start_recipe", startRecipe);
     }
 
@@ -167,6 +172,10 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
             handler.invalidate();
     }
 
+    public SimpleContainer getContainer() {
+        return new SimpleContainer(this.stacks.toArray(new ItemStack[0]));
+    }
+
     public static void clientTick(Level level, BlockPos blockPos, BlockState blockState, BlockEntity blockEntity) {
     }
 
@@ -181,7 +190,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
         }
 
         if (!shouldTick) {
-            unifuser.tickCount ++;
+            unifuser.tickCount++;
             level.sendBlockUpdated(blockPos, blockState, blockState, 3);
             return;
         }
@@ -198,8 +207,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
         // Nenhum input = parar receita
         if (input0.isEmpty() && input1.isEmpty() && input2.isEmpty()) {
-            unifuser.recipeOn = false;
-            unifuser.startRecipe = false;
+            unifuser.recipeProgressOn = false;
 
             if (unifuser.recipeProgress > 0) {
                 unifuser.recipeProgress = Math.max(0, unifuser.recipeProgress - 5);
@@ -227,12 +235,12 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
         // Encontrar receita válida
         UnifuserRecipe recipe = findRecipe(serverLevel, input0, input1, input2);
         boolean hasRecipe = recipe != null;
-        unifuser.recipeOn = hasRecipe;
+        unifuser.recipeProgressOn = hasRecipe;
 
         // Progresso da receita
         if (hasRecipe) {
             if (unifuser.recipeProgress < 100) {
-                unifuser.recipeProgress += recipe.getProgressSpeed() * (unifuser.isAdvanced() ? 4 : 1);
+                unifuser.recipeProgress += recipe.getProgressSpeed() * unifuser.getSpeedMultiplier();
             }
         } else {
             unifuser.recipeProgress = 0;
@@ -245,16 +253,57 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
             boolean canOutput = handler.insertItem(3, result.copy(), true).isEmpty();
 
             if (canOutput) {
+                NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(unifuser.getContainer());
+
                 // Consumir inputs
                 handler.extractItem(0, 1, false);
                 handler.extractItem(1, 1, false);
                 handler.extractItem(2, 1, false);
+
+
+                // Recolocar os itens remanescentes de volta nos slots corretos
+                for (int i = 0; i < remainingItems.size() - 1; i++) {
+                    ItemStack remaining = remainingItems.get(i);
+                    if (!remaining.isEmpty()) {
+                        // Se o slot estiver vazio, apenas coloca o item remanescente lá
+                        ItemStack current = handler.getStackInSlot(i);
+                        boolean inserted = false;
+
+                        if (current.isEmpty()) {
+                            handler.setStackInSlot(i, remaining);
+                            inserted = true;
+                        } else if (ItemStack.isSameItemSameTags(current, remaining)) {
+                            current.grow(remaining.getCount());
+                            handler.setStackInSlot(i, current);
+                            inserted = true;
+                        } else {
+                            ItemStack leftover = handler.insertItem(i, remaining, false);
+                            if (leftover.isEmpty()) {
+                                inserted = true;
+                            } else {
+                                remaining = leftover; // ainda sobrou algo
+                            }
+                        }
+
+                        // Se não conseguiu colocar no slot, dropar no mundo
+                        if (!inserted && !remaining.isEmpty()) {
+                            Vec3 vecPos = Vec3.upFromBottomCenterOf(unifuser.getBlockPos(), -0.25f);
+                            Containers.dropItemStack(level, vecPos.x, vecPos.y, vecPos.z, remaining);
+                        }
+                    }
+                }
 
                 // Adicionar output
                 handler.insertItem(3, result.copy(), false);
 
                 // Resetar progresso e consumir energia
                 unifuser.recipeProgress = 0;
+                serverLevel.playSound(null,
+                        blockPos,
+                        SoundEvents.BREWING_STAND_BREW,
+                        SoundSource.BLOCKS,
+                        1,
+                        1);
             }
         }
 
