@@ -50,6 +50,10 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
         return false; // Retorna false se a lista de ingredientes estiver vazia ou nenhum item atender às condições
     }
 
+    public boolean isRecipeHided() {
+        String string = this.getId().getPath();
+        return string.contains("_hided") || string.contains("_secret");
+    }
 
     @Override
     public @NotNull NonNullList<Ingredient> getIngredients() {

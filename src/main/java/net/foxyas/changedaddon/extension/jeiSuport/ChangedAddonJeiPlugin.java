@@ -54,11 +54,14 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
+
         RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
-        List<CatalyzerRecipe> catalyzerRecipes = recipeManager.getAllRecipesFor(CatalyzerRecipe.Type.INSTANCE);
-        registration.addRecipes(JeiCatalyzer_Type, catalyzerRecipes);
-        List<UnifuserRecipe> unifuserRecipes = recipeManager.getAllRecipesFor(UnifuserRecipe.Type.INSTANCE);
-        registration.addRecipes(JeiUnifuser_Type, unifuserRecipes);
+        List<CatalyzerRecipe> allCatalyzerRecipes = recipeManager.getAllRecipesFor(CatalyzerRecipe.Type.INSTANCE);
+        List<CatalyzerRecipe> publicCatalyzerRecipes = allCatalyzerRecipes.stream().filter((catalyzerRecipe -> !catalyzerRecipe.isRecipeHided())).toList();
+        registration.addRecipes(JeiCatalyzer_Type, publicCatalyzerRecipes);
+        List<UnifuserRecipe> allUnifuserRecipes = recipeManager.getAllRecipesFor(UnifuserRecipe.Type.INSTANCE);
+        List<UnifuserRecipe> publicUnifuserRecipes = allUnifuserRecipes.stream().filter((unifuserRecipe) -> !unifuserRecipe.isRecipeHided()).toList();
+        registration.addRecipes(JeiUnifuser_Type, publicUnifuserRecipes);
 
         //Items Info
         ChangedAddonJeiDescriptionHandler.registerDescriptions(registration);

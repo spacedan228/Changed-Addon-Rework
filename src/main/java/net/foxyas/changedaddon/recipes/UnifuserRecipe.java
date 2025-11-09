@@ -12,11 +12,13 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.NBTIngredient;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.List;
 
 public class UnifuserRecipe implements Recipe<SimpleContainer> {
     private final ResourceLocation id;
@@ -29,6 +31,11 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
         this.output = output;
         this.recipeItems = recipeItems;
         this.ProgressSpeed = ProgressSpeed;
+    }
+
+    public boolean isRecipeHided() {
+        String string = this.getId().getPath();
+        return string.contains("_hided") || string.contains("_secret");
     }
 
     public CompoundTag getTagOfIngredient(Ingredient ingredient) {
@@ -46,7 +53,7 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
             // Percorre todos os itens da lista de ingredientes
             for (Ingredient ingredient : recipeItems) {
                 // Verifica se pelo menos um item da lista atende às condições
-                if (ingredient.test(pContainer.getItem(3))) {
+                if (NBTIngredient.of(this.output).test(pContainer.getItem(3))) {
                     return true;
                 }
             }
@@ -113,7 +120,7 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
 
             for (int i = 0; i < ingredients.size(); i++) {
                 JsonElement ingredientElement = ingredients.get(i);
-                Ingredient ingredient = Ingredient.fromJson(ingredientElement);
+                Ingredient ingredient = NBTIngredient.of(ShapedRecipe.itemStackFromJson(ingredientElement.getAsJsonObject()));
                 inputs.set(i, ingredient);
             }
 

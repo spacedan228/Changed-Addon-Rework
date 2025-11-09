@@ -262,7 +262,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
         level.sendBlockUpdated(blockPos, blockState, blockState, 3);
     }
 
-    static @Nullable UnifuserRecipe findRecipe(ServerLevel level, ItemStack input1, ItemStack input2, ItemStack input3){
+    public static @Nullable UnifuserRecipe findRecipe(ServerLevel level, ItemStack input1, ItemStack input2, ItemStack input3) {
         RecipeManager recipeManager = level.getRecipeManager();
 
         // Obtém todas as receitas do tipo JeiCatalyzerRecipe
