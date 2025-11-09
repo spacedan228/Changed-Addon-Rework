@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.world.datafixers;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.minecraft.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -27,7 +28,9 @@ public class ChangedAddonDataFixer {
 
     // Future Data fixers
     private final Map<ResourceLocation, ResourceLocation> ENTITY_ID_REMAP = Util.make(new HashMap<>(), map -> {});
-    private final Map<ResourceLocation, ResourceLocation> ITEM_ID_REMAP   = Util.make(new HashMap<>(), map -> {});
+    private final Map<ResourceLocation, ResourceLocation> ITEM_ID_REMAP   = Util.make(new HashMap<>(), map -> {
+        map.put(ChangedAddonMod.resourceLoc("lunarrose_helmet"), ChangedAddonItems.LUNAR_ROSE.getId());
+    });
     private final Map<ResourceLocation, ResourceLocation> BLOCK_ID_REMAP  = Util.make(new HashMap<>(), map -> {});
     private final Map<ResourceLocation, ResourceLocation> BLOCK_ITEM_ID_REMAP = Util.make(new HashMap<>(), map -> {});
     private final Map<ResourceLocation, ResourceLocation> VARIANT_ID_REMAP = Util.make(new HashMap<>(), map -> {});
@@ -45,7 +48,7 @@ public class ChangedAddonDataFixer {
     public ChangedAddonDataFixer() {
         // define remapeamentos de IDs antigos para novos
         ENCHANTMENT_REMAP.put(
-                ResourceLocation.parse(ChangedAddonMod.resourceLocString("solvent")),
+                ChangedAddonMod.resourceLoc("solvent"),
                 ChangedAddonEnchantments.LATEX_SOLVENT.getId()
         );
 

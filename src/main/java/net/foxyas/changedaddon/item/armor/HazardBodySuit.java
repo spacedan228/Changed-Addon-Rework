@@ -43,6 +43,8 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,7 +72,6 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     public void accessoryInteract(AccessorySlotContext<?> slotContext) {
         super.accessoryInteract(slotContext);
         LivingEntity wearer = slotContext.wearer();
-        ItemStack stack = slotContext.stack();
         boolean canChange = true;
 
         if (wearer instanceof ChangedEntity changedEntity) {
@@ -375,7 +376,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         return flag ? "helmeted" : "no_helmet";
     }
 
-
+    @OnlyIn(Dist.CLIENT)
     private <T extends Entity> String getPlayerModelStyle(T entity) {
         if (entity instanceof AbstractClientPlayer player) {
             return player.getModelName();
@@ -384,30 +385,25 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        ResourceLocation itemId = stack.getItem().getRegistryName();
         if (entity instanceof ChangedEntity changedEntity) {
             if (changedEntity instanceof LatexHuman latexHuman && latexHuman.getUnderlyingPlayer() instanceof AbstractClientPlayer abstractClientPlayer) {
-                ResourceLocation itemId = stack.getItem().getRegistryName();
                 return String.format("%s:textures/models/hazard_suit/%s_%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack), getPlayerModelStyle(abstractClientPlayer));
             }
 
-            ResourceLocation itemId = stack.getItem().getRegistryName();
             return String.format("%s:textures/models/hazard_suit/%s_%s_tf.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
         }
         if (entity instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
             if (transfurVariant != null && transfurVariant.isTransfurring()) {
-                ResourceLocation itemId = stack.getItem().getRegistryName();
                 return String.format("%s:textures/models/hazard_suit/%s_%s_tf.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack));
             } else if (transfurVariant != null && ChangedAddonTransfurVariants.getHumanForms().contains(transfurVariant.getParent())) {
-                ResourceLocation itemId = stack.getItem().getRegistryName();
                 return String.format("%s:textures/models/hazard_suit/%s_%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack), getPlayerModelStyle(entity));
             }
-
         }
 
-
-        ResourceLocation itemId = stack.getItem().getRegistryName();
         return String.format("%s:textures/models/hazard_suit/%s_%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack), getPlayerModelStyle(entity));
     }
 }

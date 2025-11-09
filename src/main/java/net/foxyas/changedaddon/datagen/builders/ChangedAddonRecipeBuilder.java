@@ -217,18 +217,15 @@ public class ChangedAddonRecipeBuilder implements RecipeBuilder {
             JsonArray jsonarray = new JsonArray();
 
             for (Ingredient ingredient : this.ingredients) {
-                if (ingredient instanceof NBTIngredient nbtIngredient) {
-                    jsonarray.add(nbtIngredient.toJson());
-                } else {
-                    jsonarray.add(ingredient.toJson());
-                }
+                jsonarray.add(ingredient.toJson());
             }
 
             pJson.add("ingredients", jsonarray);
 
             // Serializa o resultado com NBT se existir
+            if(result.getDamageValue() == 0) result.getOrCreateTag().remove("Damage");
             JsonObject jsonobject = NBTIngredient.of(result).toJson().getAsJsonObject();
-            pJson.add("result", jsonobject);
+            pJson.add("output", jsonobject);
 
             // ✅ Adiciona propriedades customizadas
             progressSpeed.ifPresent(speed -> pJson.addProperty("ProgressSpeed", speed));

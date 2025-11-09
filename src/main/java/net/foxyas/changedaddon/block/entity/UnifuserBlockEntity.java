@@ -11,7 +11,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
@@ -326,9 +325,9 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
             NonNullList<Ingredient> ingredients = recipe.getIngredients();
             if (!ingredients.get(0).test(input1))
                 continue;
-            if (!ingredients.get(1).test(input2))
+            if (ingredients.size() >= 2 && !ingredients.get(1).test(input2))
                 continue;
-            if (!ingredients.get(2).test(input3))
+            if (ingredients.size() == 3 &&  !ingredients.get(2).test(input3))
                 continue;
             return recipe;
         }
