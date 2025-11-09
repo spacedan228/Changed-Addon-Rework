@@ -195,7 +195,6 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
         if (catalyzer.nitrogenPower < 200) {
             catalyzer.nitrogenPower += 1;
             update(serverLevel, pos, state, catalyzer);
-            return;
         }
 
         IItemHandlerModifiable handler = (IItemHandlerModifiable)
@@ -264,7 +263,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
 
                             // Se não conseguiu colocar no slot, dropar no mundo
                             if (!inserted && !remaining.isEmpty()) {
-                                Vec3 vecPos = Vec3.upFromBottomCenterOf(catalyzer.getBlockPos(), -0.25f);
+                                Vec3 vecPos = Vec3.upFromBottomCenterOf(catalyzer.getBlockPos(), 0.5);
                                 Containers.dropItemStack(serverLevel, vecPos.x, vecPos.y, vecPos.z, remaining);
                             }
                         }

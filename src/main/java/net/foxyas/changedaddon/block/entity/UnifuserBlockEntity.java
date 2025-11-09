@@ -287,7 +287,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
                         // Se não conseguiu colocar no slot, dropar no mundo
                         if (!inserted && !remaining.isEmpty()) {
-                            Vec3 vecPos = Vec3.upFromBottomCenterOf(unifuser.getBlockPos(), -0.25f);
+                            Vec3 vecPos = Vec3.upFromBottomCenterOf(unifuser.getBlockPos(), 0.5f);
                             Containers.dropItemStack(level, vecPos.x, vecPos.y, vecPos.z, remaining);
                         }
                     }

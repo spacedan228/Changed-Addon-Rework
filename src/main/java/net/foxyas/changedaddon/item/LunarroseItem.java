@@ -31,8 +31,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public abstract class LunarroseItem extends ArmorItem {
-    public LunarroseItem(EquipmentSlot slot, Item.Properties properties) {
+public abstract class LunarRoseItem extends ArmorItem {
+    public LunarRoseItem(EquipmentSlot slot, Item.Properties properties) {
         super(new ArmorMaterial() {
             @Override
             public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
@@ -76,8 +76,8 @@ public abstract class LunarroseItem extends ArmorItem {
         }, slot, properties);
     }
 
-    public static class Helmet extends LunarroseItem {
-        public Helmet() {
+    public static class Head extends LunarRoseItem {
+        public Head() {
             super(EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).fireResistant());
         }
 
