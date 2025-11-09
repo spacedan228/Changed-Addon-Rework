@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.network.packet.LeapKeyPacket;
 import net.foxyas.changedaddon.network.packet.OpenExtraDetailsPacket;
 import net.foxyas.changedaddon.network.packet.PatKeyPacket;
 import net.foxyas.changedaddon.network.packet.TurnOffTransfurPacket;
@@ -25,6 +24,7 @@ import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = {Dist.CLIENT})
 public class ChangedAddonKeyMappings {
+
     public static final KeyMapping OPEN_EXTRA_DETAILS = new KeyMapping("key.changed_addon.open_extra_details", GLFW.GLFW_KEY_UNKNOWN, "key.categories.changed_addon") {
         private boolean isDownOld = false;
 
@@ -38,19 +38,7 @@ public class ChangedAddonKeyMappings {
             isDownOld = isDown;
         }
     };
-    public static final KeyMapping LEAP_KEY = new KeyMapping("key.changed_addon.leap_key", GLFW.GLFW_KEY_UNKNOWN, "key.categories.changed_addon") {
-        private boolean isDownOld = false;
 
-        @Override
-        public void setDown(boolean isDown) {
-            super.setDown(isDown);
-            if (isDownOld != isDown && isDown) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new LeapKeyPacket(0, 0));
-                LeapKeyPacket.pressAction(Minecraft.getInstance().player, 0, 0);
-            }
-            isDownOld = isDown;
-        }
-    };
     public static final KeyMapping TURN_OFF_TRANSFUR = new KeyMapping("key.changed_addon.turn_off_transfur", GLFW.GLFW_KEY_UNKNOWN, "key.categories.changed_addon") {
         private boolean isDownOld = false;
 
@@ -64,6 +52,7 @@ public class ChangedAddonKeyMappings {
             isDownOld = isDown;
         }
     };
+
     public static final KeyMapping PAT_KEY = new KeyMapping("key.changed_addon.pat_key", GLFW.GLFW_KEY_UNKNOWN, "key.categories.changed_addon") {
         //private boolean isDownOld = false;
         // Foxyas here.. i'm going to allow the player to hold the key to Spam Pats, the packet is too small to cause any harm
@@ -83,7 +72,6 @@ public class ChangedAddonKeyMappings {
     @SubscribeEvent
     public static void registerKeyBindings(FMLClientSetupEvent event) {
         ClientRegistry.registerKeyBinding(OPEN_EXTRA_DETAILS);
-        ClientRegistry.registerKeyBinding(LEAP_KEY);
         ClientRegistry.registerKeyBinding(TURN_OFF_TRANSFUR);
         ClientRegistry.registerKeyBinding(PAT_KEY);
         ClientRegistry.registerKeyBinding(USE_SECOND_ABILITY);
@@ -95,7 +83,6 @@ public class ChangedAddonKeyMappings {
         public static void onClientTick(TickEvent.ClientTickEvent event) {
             if (Minecraft.getInstance().screen == null) {
                 OPEN_EXTRA_DETAILS.consumeClick();
-                LEAP_KEY.consumeClick();
                 TURN_OFF_TRANSFUR.consumeClick();
                 PAT_KEY.consumeClick();
             }

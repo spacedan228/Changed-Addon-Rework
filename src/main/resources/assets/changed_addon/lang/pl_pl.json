@@ -413,7 +413,7 @@
   "entity.changed_addon.lynx": "Ryś",
   "entity.changed_addon.mirror_white_tiger": "Biały tygrys",
   "entity.changed_addon.prototype": "Prototyp",
-  "entity.changed_addon.prototype.deposite_type.switch": "Depozytuj %s",
+  "entity.changed_addon.prototype.deposit_type.switch": "Depozytuj %s",
   "entity.changed_addon.protogen": "Protogen",
   "entity.changed_addon.protogen_0senia0": "Protogen 0senia0",
   "entity.changed_addon.puro_kind_female": "Samica gatunku Puro",
@@ -660,7 +660,6 @@
   "itemGroup.tab_changed_addon_combat_optional": "Changed Addon Plus - opcjonalne wyposażenie bojowe",
 
   "key.categories.changed_addon": "Changed Addon - Przypisane klawisze",
-  "key.changed_addon.leap_key": "Sus",
   "key.changed_addon.open_extra_details": "Dodatkowe menu transfura",
   "key.changed_addon.open_struggle_menu": "Menu walki o zachowanie świadomości",
   "key.changed_addon.pat_key": "Pogłaszcz",

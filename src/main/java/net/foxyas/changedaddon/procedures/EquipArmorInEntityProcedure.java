@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.procedures;
 
 import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractCanTameSnepChangedEntity;
-import net.foxyas.changedaddon.item.armor.HazmatSuitItem;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TamableLatexEntity;
 import net.ltxprogrammer.changed.entity.beast.DarkLatexWolfPup;
@@ -44,9 +43,6 @@ public class EquipArmorInEntityProcedure {
                 event.setCancellationResult(InteractionResult.PASS);
                 // Check if the item is an armor piece
                 if (itemStack.getItem() instanceof ArmorItem armorItem) {
-                    if (armorItem instanceof HazmatSuitItem) {
-                        return;
-                    }
                     // Proceed only on the server side
                     if (!event.getWorld().isClientSide()) {
                         equipOrSwapArmor(event, changedEntity, itemStack, armorItem, event.getPlayer(), event.getHand());

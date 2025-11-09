@@ -49,7 +49,10 @@ public class SmallTickUpdateProcedure {
 
         ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.ofOrDefault(player);
         String id = variant.getFormId().toString();
-        vars.areDarkLatex = id.contains("dark_latex") || id.contains("puro_kind");
+        boolean darkLatex = id.contains("dark_latex") || id.contains("puro_kind");
+        if(vars.areDarkLatex == darkLatex) return;
+
+        vars.areDarkLatex = darkLatex;
         vars.syncPlayerVariables(player);
     }
 }

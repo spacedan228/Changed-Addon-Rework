@@ -55,8 +55,6 @@ public class CommonMod {
         ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonPacket.class, GeneratorGuiButtonPacket::encode,
                 GeneratorGuiButtonPacket::new, GeneratorGuiButtonPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(LeapKeyPacket.class, LeapKeyPacket::encode, LeapKeyPacket::new, LeapKeyPacket::handler);
-
         ChangedAddonMod.addNetworkMessage(OpenExtraDetailsPacket.class, OpenExtraDetailsPacket::encode,
                 OpenExtraDetailsPacket::new, OpenExtraDetailsPacket::handler);
 

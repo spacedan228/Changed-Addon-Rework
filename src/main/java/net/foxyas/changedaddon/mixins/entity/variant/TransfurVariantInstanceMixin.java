@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
-import net.foxyas.changedaddon.item.armor.HazmatSuitItem;
 import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
@@ -53,23 +52,12 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     public int ticksFlying;
 
     @Shadow
-    protected boolean isTemporaryFromSuit;
-
-    @Shadow
     public abstract boolean isTemporaryFromSuit();
-
-    @Shadow
-    public AbstractAbility<?> selectedAbility;
 
     @Shadow
     @Final
     public ImmutableMap<AbstractAbility<?>, AbstractAbilityInstance> abilityInstances;
-    @Shadow
-    public boolean abilityKeyState;
 
-
-    @Shadow
-    public abstract void resetTicksSinceLastAbilityActivity();
 
     @Unique
     public int ticksSinceSecondAbilityActivity;
@@ -175,7 +163,7 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @Inject(method = "canWear", at = @At("HEAD"), cancellable = true)
     private void negateArmor(Player player, ItemStack itemStack, EquipmentSlot slot, CallbackInfoReturnable<Boolean> cir) {
-        if ((itemStack.getItem() instanceof HazmatSuitItem || itemStack.getItem() instanceof DarkLatexCoatItem) && slot.getType() == EquipmentSlot.Type.ARMOR) {
+        if (itemStack.getItem() instanceof DarkLatexCoatItem && slot.getType() == EquipmentSlot.Type.ARMOR) {
             cir.setReturnValue(false);
         }
     }
