@@ -53,7 +53,7 @@ public class DodgeAbility extends AbstractAbility<DodgeAbilityInstance> {
     @Override
     public int getCoolDown(IAbstractChangedEntity entity) {
         if (this.instance != null && this.instance.getDodgeType() instanceof CounterDodgeType) {
-            return 120;
+            return 90;
         }
         return super.getCoolDown(entity);
     }

@@ -44,4 +44,9 @@ public class CounterDodgeType extends DodgeType {
     public boolean shouldPlayDodgeAnimation() {
         return true;
     }
+
+    @Override
+    public boolean shouldApplyIframes(DodgeAbilityInstance dodgeAbilityInstance, LevelAccessor levelAccessor, @Nullable LivingEntity dodger, @Nullable Entity attacker, DodgeType dodgeType, @Nullable LivingAttackEvent event, boolean causeExhaustion) {
+        return true;
+    }
 }

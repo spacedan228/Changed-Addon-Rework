@@ -442,6 +442,11 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
             public boolean shouldPlayDodgeAnimation() {
                 return true;
             }
+
+            @Override
+            public boolean shouldApplyIframes(DodgeAbilityInstance dodgeAbilityInstance, LevelAccessor levelAccessor, @Nullable LivingEntity dodger, @Nullable Entity attacker, DodgeType dodgeType, @Nullable LivingAttackEvent event, boolean causeExhaustion) {
+                return true;
+            }
         };
 
         public DodgeType() {
@@ -452,6 +457,16 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         }
 
         public void runDodgeEffects(DodgeAbilityInstance dodgeAbilityInstance, LevelAccessor levelAccessor, @Nullable LivingEntity dodger, @Nullable Entity attacker, DodgeType dodgeType, @Nullable LivingAttackEvent event, boolean causeExhaustion) {
+            if (this.shouldApplyIframes(dodgeAbilityInstance, levelAccessor, dodger, attacker, dodgeType, event, causeExhaustion) && dodger != null) {
+                dodger.invulnerableTime = 20 * 3;
+                dodger.hurtDuration = 20 * 3;
+                dodger.hurtTime = dodger.hurtDuration;
+                dodger.hurtMarked = false;
+            }
+        }
+
+        public boolean shouldApplyIframes(DodgeAbilityInstance dodgeAbilityInstance, LevelAccessor levelAccessor, @Nullable LivingEntity dodger, @Nullable Entity attacker, DodgeType dodgeType, @Nullable LivingAttackEvent event, boolean causeExhaustion) {
+            return false;
         }
 
         public boolean shouldPlayDodgeAnimation() {

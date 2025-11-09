@@ -41,7 +41,7 @@ public interface LivingEntityDataExtensor {
 
     default boolean canOverrideIsInLava() {
         if (this instanceof Player player) {
-            return isOnLavaWithTransfurAndFireResistance(player);
+            return !isOnLavaWithTransfurAndFireResistance(player);
         }
 
         return false;
