@@ -21,9 +21,12 @@ public class ChangedAddonFacilityPieces {
     }
 
     public static void registerAddonCorridors(FacilityPieceCollectionBuilder builder) {
-       builder.register((int) (FacilityPieceCollectionBuilder.WEIGHT_COMMON * 1.5f),
-                        new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facilities/facility_hallways/garden_containment"),
-                                LootTables.HIGH_TIER_LAB));
+        builder.register((int) (FacilityPieceCollectionBuilder.WEIGHT_COMMON * 1.5f),
+                new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facilities/facility_hallways/garden_containment"),
+                        LootTables.HIGH_TIER_LAB));
+        builder.register(FacilityPieceCollectionBuilder.WEIGHT_COMMON,
+                new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facilities/facility_hallways/dark_latex_plushy_hallway"),
+                        LootTables.LOW_TIER_LAB));
         builder.register(9,
                 new FacilityCorridorSection(ResourceLocation.parse("changed_addon:facilities/facility_hallways/closed_meteor_in_pool"),
                         LootTables.HIGH_TIER_LAB));
@@ -31,11 +34,11 @@ public class ChangedAddonFacilityPieces {
 
     public static void registerAddonRooms(FacilityPieceCollectionBuilder builder) {
         builder.register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
-                new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/exp009room"),
-                        ResourceLocation.parse("changed_addon:chests/experiment_009_loot_dna")))
+                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/exp009room"),
+                                ResourceLocation.parse("changed_addon:chests/experiment_009_loot_dna")))
                 .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
-                new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/exp10room"),
-                        ResourceLocation.parse("changed_addon:chests/experiment_10_loot_op")))
+                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/exp10room"),
+                                ResourceLocation.parse("changed_addon:chests/experiment_10_loot_op")))
                 .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
                         new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/luminar_crystal_room"),
                                 ResourceLocation.parse("changed:chests/high_tier_lab")));

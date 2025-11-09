@@ -1,7 +1,10 @@
 package net.foxyas.changedaddon.process.features;
 
 import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
+import net.foxyas.changedaddon.abilities.handle.CounterDodgeType;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -19,6 +22,7 @@ import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Map;
 import java.util.Objects;
 
 @Mod.EventBusSubscriber
@@ -105,11 +109,19 @@ public class DodgeAbilityHandle {
 
         DodgeAbilityInstance dodge = variant.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
         if (dodge == null) {
-            if (variant.abilityInstances.get(ChangedAddonAbilities.TELEPORT_DODGE.get()) == null) {
-                return;
+            AbstractAbilityInstance teleportDodge = variant.abilityInstances.get(ChangedAddonAbilities.TELEPORT_DODGE.get());
+            if (teleportDodge == null) {
+                DodgeAbilityInstance counterDodge = variant.getAbilityInstance(ChangedAddonAbilities.COUNTER_DODGE.get());
+                if (counterDodge != null) {
+                    dodge = counterDodge;
+                }
             } else {
                 dodge = variant.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
             }
+        }
+
+        if (dodge == null) {
+            return;
         }
 
         if (!dodge.isDodgeActive())

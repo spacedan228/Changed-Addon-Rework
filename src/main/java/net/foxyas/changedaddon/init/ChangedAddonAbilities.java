@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.abilities.*;
+import net.foxyas.changedaddon.abilities.handle.CounterDodgeType;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.client.ChangedClient;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
@@ -38,6 +39,7 @@ public class ChangedAddonAbilities /*extends ChangedAbilities*/ {
     public static final RegistryObject<ShockWaveAbility> SHOCKWAVE = REGISTRY.register("shock_wave", ShockWaveAbility::new);
     public static final RegistryObject<DodgeAbility> DODGE = REGISTRY.register("dodge", DodgeAbility::new);
     public static final RegistryObject<DodgeAbility> TELEPORT_DODGE = REGISTRY.register("teleport_dodge", () -> new DodgeAbility(DodgeAbilityInstance.DodgeType.TELEPORT));
+    public static final RegistryObject<DodgeAbility> COUNTER_DODGE = REGISTRY.register("counter_dodge", () -> new DodgeAbility(1, CounterDodgeType.COUNTER));
     public static final RegistryObject<CarryAbility> CARRY = REGISTRY.register("carry", CarryAbility::new);
     public static final RegistryObject<DissolveAbility> DISSOLVE = REGISTRY.register("warp", DissolveAbility::new);
     public static final RegistryObject<WitherWaveAbility> WITHER_WAVE = REGISTRY.register("wither_wave", WitherWaveAbility::new);

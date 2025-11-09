@@ -368,13 +368,15 @@ public class ChangedAddonTransfurVariants {
     );
 
     public static final RegistryObject<TransfurVariant<WolfyEntity>> WOLFY = register("form_wolfy",
-            TransfurVariant.Builder.of(ChangedAddonEntities.WOLFY)
+            () -> TransfurVariant.Builder.of(ChangedAddonEntities.WOLFY)
                     .stepSize(0.7F)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
                     .transfurMode(TransfurMode.NONE)
                     .scares(List.of())
                     .nightVision()
-                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
+                    .addAbility(ChangedAddonAbilities.COUNTER_DODGE)
+    );
 
     public static final RegistryObject<TransfurVariant<ReynEntity>> REYN = register("form_reyn",
             TransfurVariant.Builder.of(ChangedAddonEntities.REYN)

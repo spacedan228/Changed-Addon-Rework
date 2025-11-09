@@ -1,11 +1,14 @@
 package net.foxyas.changedaddon.abilities;
 
+import net.foxyas.changedaddon.abilities.handle.CounterDodgeType;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 
 public class DodgeAbility extends AbstractAbility<DodgeAbilityInstance> {
+
+    private DodgeAbilityInstance instance = null;
 
     public DodgeAbility() {
         super(DodgeAbilityInstance::new);
@@ -24,6 +27,13 @@ public class DodgeAbility extends AbstractAbility<DodgeAbilityInstance> {
     }
 
     @Override
+    public DodgeAbilityInstance makeInstance(IAbstractChangedEntity entity) {
+        DodgeAbilityInstance dodgeAbilityInstance = super.makeInstance(entity);
+        this.instance = dodgeAbilityInstance;
+        return dodgeAbilityInstance;
+    }
+
+    @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
         return new TranslatableComponent("changed_addon.ability.dodge");
     }
@@ -34,7 +44,18 @@ public class DodgeAbility extends AbstractAbility<DodgeAbilityInstance> {
 
     @Override
     public UseType getUseType(IAbstractChangedEntity entity) {
+        if (this.instance != null && this.instance.getDodgeType() instanceof CounterDodgeType) {
+            return UseType.INSTANT;
+        }
         return UseType.HOLD;
+    }
+
+    @Override
+    public int getCoolDown(IAbstractChangedEntity entity) {
+        if (this.instance != null && this.instance.getDodgeType() instanceof CounterDodgeType) {
+            return 120;
+        }
+        return super.getCoolDown(entity);
     }
 
     @Override

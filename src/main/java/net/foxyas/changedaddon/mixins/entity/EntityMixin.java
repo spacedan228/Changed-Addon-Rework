@@ -19,4 +19,14 @@ public class EntityMixin implements LivingEntityDataExtensor {
             }
         }
     }
+
+    @Inject(method = "isInLava" ,at = @At("RETURN"), cancellable = true)
+    private void customIsInLava(CallbackInfoReturnable<Boolean> cir) {
+        Boolean returnValue = cir.getReturnValue();
+        if (returnValue != null) {
+            if (returnValue) {
+                cir.setReturnValue(canOverrideIsInLava());
+            }
+        }
+    }
 }

@@ -236,7 +236,8 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
                     || selectedItem.getItem() instanceof LatexFlask
                     && !variant.getEntityType().is(ChangedTags.EntityTypes.PARTIAL_LATEX)) {
                 blockEntity.setTransfurVariant(variant);
-                level.blockUpdated(pos, this);
+                blockEntity.setChanged();
+                level.sendBlockUpdated(pos, state, state, 3);
                 level.updateNeighborsAt(pos, this);
                 ItemStack normalSyringe = new ItemStack(ChangedItems.SYRINGE.get());
                 ItemStack glassFlask = new ItemStack(ChangedItems.getBlockItem(ChangedBlocks.ERLENMEYER_FLASK.get()));
@@ -264,7 +265,8 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
                     : new ItemStack(ChangedItems.LATEX_SYRINGE.get());
             Syringe.setVariant(latexSyringe, blockEntity.getTransfurVariant().getFormId());
             blockEntity.setTransfurVariant(null);
-            level.blockUpdated(pos, this);
+            blockEntity.setChanged();
+            level.sendBlockUpdated(pos, state, state, 3);
             level.updateNeighborsAt(pos, this);
             if (!player.isCreative()) {
                 selectedItem.shrink(1);
