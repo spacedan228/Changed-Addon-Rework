@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Random;
 
 public class LuminaraBloomFlowerBlock extends FlowerBlock implements BonemealableBlock {
+
     public LuminaraBloomFlowerBlock() {
         super(ChangedAddonMobEffects.UNTRANSFUR, 60,
                 BlockBehaviour.Properties.of(Material.PLANT)
@@ -145,12 +146,6 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
         }
         return super.mayPlaceOn(pState, pLevel, pPos);
     }
-
-//    @Override
-//    public boolean isValidBonemealTarget(@NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull BlockState blockState, boolean pIsClient) {
-//        BlockState below = blockGetter.getBlockState(blockPos.below());
-//        return below.getBlock() instanceof AbstractLatexBlock || below.is(BlockTags.DIRT) || below.is(Blocks.FARMLAND);
-//    }
 
     @Override
     public boolean isValidBonemealTarget(@NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull BlockState blockState, boolean pIsClient) {

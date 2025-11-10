@@ -25,7 +25,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
-public class PrunOrangeLeavesEvent {
+public class PruneOrangeLeavesEvent {
 
     @SubscribeEvent
     public static void rightClickOrangeLeaves(PlayerInteractEvent.RightClickBlock rightClickBlockEvent) {

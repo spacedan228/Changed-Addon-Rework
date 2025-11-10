@@ -1,9 +1,8 @@
-package net.foxyas.changedaddon.world.inventory;
+package net.foxyas.changedaddon.menu;
 
 import net.foxyas.changedaddon.block.entity.UnifuserBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
-import net.foxyas.changedaddon.menu.AbstractMenu;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;

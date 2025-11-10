@@ -155,11 +155,4 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         RenderSystem.applyModelViewMatrix();
         Lighting.setupFor3DItems();
     }
-
-
-    public static void renderEntityInInventory(int posX, int posY, int scale,
-                                               float mouseX, float mouseY, LivingEntity livingEntity) {
-        renderEntityInInventory(posX, posY, scale, mouseX, mouseY, new PoseStack(), livingEntity);
-    }
-
 }

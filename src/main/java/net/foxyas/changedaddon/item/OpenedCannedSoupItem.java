@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Mod.EventBusSubscriber
 public class OpenedCannedSoupItem extends AbstractCanItem {
+
     public OpenedCannedSoupItem() {
         super(new Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)
                 .food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).alwaysEat().build()));

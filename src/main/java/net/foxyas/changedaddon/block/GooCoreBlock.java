@@ -24,6 +24,7 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class GooCoreBlock extends Block {
+
     public GooCoreBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE)
                 .sound(new ForgeSoundType(1.0f, 1.0f, () -> SoundEvents.STONE_BREAK, () -> SoundEvents.SCULK_SENSOR_STEP,

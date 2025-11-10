@@ -1,12 +1,13 @@
 package net.foxyas.changedaddon.item;
 
+import com.google.common.base.Suppliers;
 import net.foxyas.changedaddon.client.model.ModelAccessories;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -16,26 +17,29 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public abstract class AccessoriesItem extends ArmorItem {
+
     public AccessoriesItem(EquipmentSlot slot, Item.Properties properties) {
         super(new ArmorMaterial() {
+
+            final int[] durability = new int[]{13, 15, 16, 11};
+
             @Override
             public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
-                return new int[]{13, 15, 16, 11}[slot.getIndex()] * 45;
+                return durability[slot.getIndex()] * 45;
             }
 
             @Override
             public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
-                return new int[]{0, 0, 2, 0}[slot.getIndex()];
+                return slot == EquipmentSlot.CHEST ? 2 : 0;
             }
 
             @Override
@@ -45,7 +49,7 @@ public abstract class AccessoriesItem extends ArmorItem {
 
             @Override
             public @NotNull SoundEvent getEquipSound() {
-                return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("changed_addon:armor_equip"));
+                return ChangedAddonSoundEvents.ARMOR_EQUIP;
             }
 
             @Override
@@ -71,19 +75,25 @@ public abstract class AccessoriesItem extends ArmorItem {
     }
 
     public static class Chestplate extends AccessoriesItem {
+
         public Chestplate() {
             super(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).fireResistant());
         }
 
-        public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.IItemRenderProperties> consumer) {
+        public void initializeClient(Consumer<IItemRenderProperties> consumer) {
             consumer.accept(new IItemRenderProperties() {
-                @Override
-                @OnlyIn(Dist.CLIENT)
-                public HumanoidModel getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
-                    HumanoidModel armorModel = new HumanoidModel(new ModelPart(Collections.emptyList(), Map.of("body", new ModelAccessories(Minecraft.getInstance().getEntityModels().bakeLayer(ModelAccessories.LAYER_LOCATION)).Colar, "left_arm",
-                            new ModelAccessories(Minecraft.getInstance().getEntityModels().bakeLayer(ModelAccessories.LAYER_LOCATION)).LeftArmBracelet, "right_arm",
-                            new ModelAccessories(Minecraft.getInstance().getEntityModels().bakeLayer(ModelAccessories.LAYER_LOCATION)).RightArmBracelet, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
+
+                final Supplier<HumanoidModel<?>> MODEL = Suppliers.memoize(() -> {
+                    ModelAccessories<?> ma = new ModelAccessories<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelAccessories.LAYER_LOCATION));
+                    return new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of("body", ma.Colar, "left_arm",
+                            ma.LeftArmBracelet, "right_arm",
+                            ma.RightArmBracelet, "head", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "hat",
                             new ModelPart(Collections.emptyList(), Collections.emptyMap()), "right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()), "left_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
+                });
+
+                @Override
+                public HumanoidModel<?> getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
+                    HumanoidModel<?> armorModel = MODEL.get();
                     armorModel.crouching = living.isShiftKeyDown();
                     armorModel.riding = defaultModel.riding;
                     armorModel.young = living.isBaby();

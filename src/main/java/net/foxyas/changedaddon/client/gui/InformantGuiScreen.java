@@ -8,7 +8,7 @@ import net.foxyas.changedaddon.block.entity.InformantBlockEntity;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.InformantBlockEntityRenderer;
 import net.foxyas.changedaddon.network.packet.InformantBlockGuiKeyPacket;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
-import net.foxyas.changedaddon.world.inventory.InformantGuiMenu;
+import net.foxyas.changedaddon.menu.InformantGuiMenu;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.client.Minecraft;

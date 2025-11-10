@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PainiteBlock extends Block {
+
     public PainiteBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.COLOR_RED).sound(SoundType.NETHERITE_BLOCK).strength(30f, 50f).requiresCorrectToolForDrops());
     }

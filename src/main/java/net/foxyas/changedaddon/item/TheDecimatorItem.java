@@ -75,11 +75,6 @@ public class TheDecimatorItem extends Item {
     }
 
     @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return super.isBookEnchantable(stack, book);
-    }
-
-    @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if (enchantment == Enchantments.SHARPNESS) {
             return false;
@@ -107,9 +102,7 @@ public class TheDecimatorItem extends Item {
                 }
             }
             // 💥 Partículas para indicar o ataque em área
-            if (ChangedAddonSoundEvents.HAMMER_SWING != null) {
-                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.HAMMER_SWING, SoundSource.PLAYERS, 1f, 1f);
-            }
+            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.HAMMER_SWING, SoundSource.PLAYERS, 1f, 1f);
             double d0 = (double) (-Mth.sin(player.getYRot() * 0.017453292F)) * 1;
             double d1 = (double) Mth.cos(player.getYRot() * 0.017453292F) * 1;
             Level var7 = player.level;
@@ -162,9 +155,7 @@ public class TheDecimatorItem extends Item {
                 }
             }
             // 🔊 Reproduzir som de explosão no local
-            if (ChangedAddonSoundEvents.HAMMER_GUN_SHOT != null) {
-                world.playSound(null, pos, ChangedAddonSoundEvents.HAMMER_GUN_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
-            }
+            world.playSound(null, pos, ChangedAddonSoundEvents.HAMMER_GUN_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
             // 💥 Criar uma partícula de explosão centralizada
             Vec3 center = Vec3.atCenterOf(pos);
             world.addParticle(ParticleTypes.EXPLOSION, center.x, center.y, center.z, 0, 0, 0);
@@ -195,20 +186,14 @@ public class TheDecimatorItem extends Item {
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot equipmentSlot, ItemStack stack) {
-        if (equipmentSlot == EquipmentSlot.MAINHAND) {
-            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-            builder.putAll(super.getAttributeModifiers(equipmentSlot, stack));
-            builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", AttackDamage(), AttributeModifier.Operation.ADDITION));
-            builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", AttackSpeed(), AttributeModifier.Operation.ADDITION));
-            builder.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(BASE_ATTACK_REACH_UUID, "Tool modifier", 0.5f, AttributeModifier.Operation.ADDITION));
-            builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(BASE_ATTACK_REACH_UUID, "Tool modifier", 0.5f, AttributeModifier.Operation.ADDITION));
-            return builder.build();
-        }
-        return super.getAttributeModifiers(equipmentSlot, stack);
-    }
+        if(equipmentSlot != EquipmentSlot.MAINHAND) return super.getAttributeModifiers(equipmentSlot, stack);
 
-    @Override
-    public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot equipmentSlot) {
-        return super.getDefaultAttributeModifiers(equipmentSlot);
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        builder.putAll(super.getAttributeModifiers(equipmentSlot, stack));
+        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", AttackDamage(), AttributeModifier.Operation.ADDITION));
+        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", AttackSpeed(), AttributeModifier.Operation.ADDITION));
+        builder.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(BASE_ATTACK_REACH_UUID, "Tool modifier", 0.5f, AttributeModifier.Operation.ADDITION));
+        builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(BASE_ATTACK_REACH_UUID, "Tool modifier", 0.5f, AttributeModifier.Operation.ADDITION));
+        return builder.build();
     }
 }

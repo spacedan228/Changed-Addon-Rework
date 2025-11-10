@@ -15,6 +15,7 @@ import net.minecraftforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
 
 public class WallWhiteCrackedBlock extends Block {
+
     public WallWhiteCrackedBlock() {
         super(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.QUARTZ).sound(SoundType.STONE).strength(1.5f, 4.5f).requiresCorrectToolForDrops());
     }

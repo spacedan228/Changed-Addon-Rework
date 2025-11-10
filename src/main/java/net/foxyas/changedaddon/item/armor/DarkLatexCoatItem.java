@@ -1,14 +1,14 @@
 package net.foxyas.changedaddon.item.armor;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.foxyas.changedaddon.client.model.armors.DarkLatexCoatModel;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.ltxprogrammer.changed.init.ChangedItems;
-import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,16 +19,17 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.client.IItemRenderProperties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class DarkLatexCoatItem extends ArmorItem {
+
     public DarkLatexCoatItem(EquipmentSlot slot, Properties properties) {
         super(new ArmorMaterial() {
             @Override
@@ -48,7 +49,7 @@ public class DarkLatexCoatItem extends ArmorItem {
 
             @Override
             public @NotNull SoundEvent getEquipSound() {
-                return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("changed_addon:armor_equip")) != null ? ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("changed_addon:armor_equip")) : ChangedSounds.EQUIP1;
+                return ChangedAddonSoundEvents.ARMOR_EQUIP;
             }
 
             @Override
@@ -71,7 +72,6 @@ public class DarkLatexCoatItem extends ArmorItem {
                 return 0f;
             }
         }, slot, properties);
-
     }
 
     @Override
@@ -79,42 +79,27 @@ public class DarkLatexCoatItem extends ArmorItem {
         return ImmutableMultimap.of();
     }
 
-    @Override
-    public int getDefense() {
-        return 0; // Nenhuma proteção de armadura
-    }
-
-    @Override
-    public float getToughness() {
-        return 0f; // Nenhuma resistência
-    }
-
-    @Nullable
-    @Override
-    public SoundEvent getEquipSound() {
-        return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("changed_addon:armor_equip"));
-    }
-
     // Method para definir o modelo da armadura no lado do cliente
-    public void initializeClient(java.util.function.@NotNull Consumer<net.minecraftforge.client.IItemRenderProperties> consumer) {
-        consumer.accept(new net.minecraftforge.client.IItemRenderProperties() {
-            @Override
-            @OnlyIn(Dist.CLIENT)
-            public HumanoidModel<?> getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
-                // Criar o modelo de armadura com base na classe DarkLatexCoat
-                HumanoidModel<?> armorModel = new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of("head", new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION)).getPuroCoatHead(),  // Para a parte da cabeça
+    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
+        consumer.accept(new IItemRenderProperties() {
+
+            final Supplier<HumanoidModel<?>> MODEL = Suppliers.memoize(() -> {
+                DarkLatexCoatModel<?> coat = new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION));
+                return new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of("head", coat.getPuroCoatHead(),  // Para a parte da cabeça
                         "hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-                        "body", new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION)).getPuroCoatBody(),
-                        "left_arm", new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION)).getPuroCoatLeftArm(),
-                        "right_arm", new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION)).getPuroCoatRightArm(),
+                        "body", coat.getPuroCoatBody(),
+                        "left_arm", coat.getPuroCoatLeftArm(),
+                        "right_arm", coat.getPuroCoatRightArm(),
                         "right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
                         "left_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
+            });
 
-                // Ajustar os estados do modelo (agachado, montado, jovem)
+            @Override
+            public HumanoidModel<?> getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
+                HumanoidModel<?> armorModel = MODEL.get();
                 armorModel.crouching = living.isShiftKeyDown();
                 armorModel.riding = defaultModel.riding;
                 armorModel.young = living.isBaby();
-
                 return armorModel;
             }
         });
@@ -124,48 +109,5 @@ public class DarkLatexCoatItem extends ArmorItem {
     @Override
     public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
         return "changed_addon:textures/entities/darklatexcoat.png";
-    }
-
-    public static class HeadPart extends DarkLatexCoatItem {
-        public HeadPart(EquipmentSlot slot, Properties properties) {
-            super(slot, properties);
-
-        }
-
-        @Override
-        public @NotNull Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(@NotNull EquipmentSlot p_40390_) {
-            return super.getDefaultAttributeModifiers(p_40390_);
-        }
-
-        // Method para definir o modelo da armadura no lado do cliente
-        public void initializeClient(java.util.function.@NotNull Consumer<net.minecraftforge.client.IItemRenderProperties> consumer) {
-            consumer.accept(new net.minecraftforge.client.IItemRenderProperties() {
-                @Override
-                @OnlyIn(Dist.CLIENT)
-                public HumanoidModel<?> getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
-                    // Criar o modelo de armadura com base na classe DarkLatexCoat
-                    HumanoidModel<?> armorModel = new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of("head", new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION)).getPuroCoatHead(),  // Para a parte da cabeça
-                            "hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-                            "body", new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION)).getPuroCoatBody(),
-                            "left_arm", new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION)).getPuroCoatLeftArm(),
-                            "right_arm", new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION)).getPuroCoatRightArm(),
-                            "right_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
-                            "left_leg", new ModelPart(Collections.emptyList(), Collections.emptyMap()))));
-
-                    // Ajustar os estados do modelo (agachado, montado, jovem)
-                    armorModel.crouching = living.isShiftKeyDown();
-                    armorModel.riding = defaultModel.riding;
-                    armorModel.young = living.isBaby();
-
-                    return armorModel;
-                }
-            });
-        }
-
-        @Nullable
-        @Override
-        public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-            return "changed_addon:textures/entities/darklatexcoat.png";
-        }
     }
 }

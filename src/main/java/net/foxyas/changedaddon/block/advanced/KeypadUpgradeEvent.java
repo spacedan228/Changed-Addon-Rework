@@ -59,9 +59,6 @@ public class KeypadUpgradeEvent {
             }
         }
 
-        // Feedback opcional
-        // player.displayClientMessage(new TextComponent("Converted to Timed Keypad!"), true);
-
         // Cancelar uso padrão do clique
         event.setCanceled(true);
         event.setCancellationResult(net.minecraft.world.InteractionResult.SUCCESS);

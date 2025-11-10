@@ -9,12 +9,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractPlushyBlockEntity extends BlockEntity {
+
     private static final String SQUEEZED_TAG = "squeezedTicks";
-    public int squeezedTicks;
+    public int squeezedTicks = 0;
 
     public AbstractPlushyBlockEntity(BlockEntityType<?> type, BlockPos position, BlockState state) {
         super(type, position, state);
-        this.squeezedTicks = 0;
     }
 
     @Override
@@ -38,7 +38,7 @@ public abstract class AbstractPlushyBlockEntity extends BlockEntity {
 
     @Override
     public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+        return this.saveWithoutMetadata();
     }
 
     public boolean isSqueezed() {

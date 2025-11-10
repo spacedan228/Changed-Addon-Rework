@@ -42,6 +42,7 @@ import java.util.List;
 
 @ParametersAreNonnullByDefault
 public class FoxtaCanBlock extends HorizontalDirectionalBlock implements SimpleWaterloggedBlock {
+
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public FoxtaCanBlock() {

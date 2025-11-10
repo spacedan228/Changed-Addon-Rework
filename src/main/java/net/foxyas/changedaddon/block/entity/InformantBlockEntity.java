@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.block.entity;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
-import net.foxyas.changedaddon.world.inventory.InformantGuiMenu;
+import net.foxyas.changedaddon.menu.InformantGuiMenu;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.minecraft.core.BlockPos;
@@ -133,7 +133,7 @@ public class InformantBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+        return this.saveWithoutMetadata();
     }
 
     @Override

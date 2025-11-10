@@ -4,7 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.block.entity.CatalyzerBlockEntity;
 import net.foxyas.changedaddon.block.entity.UnifuserBlockEntity;
-import net.foxyas.changedaddon.world.inventory.UnifuserGuiMenu;
+import net.foxyas.changedaddon.menu.UnifuserGuiMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

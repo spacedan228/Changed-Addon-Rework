@@ -11,6 +11,7 @@ import net.minecraft.world.level.material.Material;
 import org.jetbrains.annotations.NotNull;
 
 public class ReinforcedWallSilverTiledBlock extends Block implements NonLatexCoverableBlock {
+
     public ReinforcedWallSilverTiledBlock() {
         super(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.NETHERITE_BLOCK).strength(6f, 30f));
     }

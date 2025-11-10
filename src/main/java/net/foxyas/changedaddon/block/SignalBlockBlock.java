@@ -16,7 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -31,9 +30,9 @@ import java.util.Arrays;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class SignalBlockBlock extends Block implements EntityBlock {
+public class SignalBlockBlock extends HorizontalDirectionalBlock implements EntityBlock {
+
     public static final EnumProperty<SignalVariant> VARIANT = EnumProperty.create("variant", SignalVariant.class);
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public SignalBlockBlock() {
         super(BlockBehaviour.Properties
                 .of(Material.STONE)
@@ -109,16 +108,6 @@ public class SignalBlockBlock extends Block implements EntityBlock {
             case WEST -> box(3, 0, 3, 13, 3.5, 13);
             default -> box(3, 0, 3, 13, 3.5, 13);
         };
-    }
-
-    @Override
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    @Override
-    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
     @Override

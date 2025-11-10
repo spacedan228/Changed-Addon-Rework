@@ -10,10 +10,7 @@ import net.ltxprogrammer.changed.item.SpecializedItemRendering;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -24,7 +21,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 
@@ -54,16 +50,6 @@ public class FoxtaItem extends BlockItem implements SpecializedItemRendering {
     @Override
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack itemstack) {
         return UseAnim.DRINK;
-    }
-
-    @Override
-    public @NotNull SoundEvent getDrinkingSound() {
-        return SoundEvents.GENERIC_DRINK;
-    }
-
-    @Override
-    public void appendHoverText(@NotNull ItemStack itemstack, Level world, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
-        super.appendHoverText(itemstack, world, list, flag);
     }
 
     @Override

@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.network.packet;
 
 import io.netty.buffer.Unpooled;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.world.inventory.TransfurSoundsGuiMenu;
+import net.foxyas.changedaddon.menu.TransfurSoundsGuiMenu;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;

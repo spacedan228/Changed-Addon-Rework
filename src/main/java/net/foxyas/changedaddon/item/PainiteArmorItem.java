@@ -2,26 +2,29 @@ package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class PainiteArmorItem extends ArmorItem {
     public PainiteArmorItem(EquipmentSlot slot, Item.Properties properties) {
         super(new ArmorMaterial() {
+
+            final int[] durability = new int[]{13, 15, 16, 11};
+            final int[] defence = new int[]{3, 6, 8, 3};
+
             @Override
             public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
-                return new int[]{13, 15, 16, 11}[slot.getIndex()] * 40;
+                return durability[slot.getIndex()] * 40;
             }
 
             @Override
             public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
-                return new int[]{3, 6, 8, 3}[slot.getIndex()];
+                return defence[slot.getIndex()];
             }
 
             @Override
@@ -31,7 +34,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
             @Override
             public @NotNull SoundEvent getEquipSound() {
-                return ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("item.armor.equip_netherite"));
+                return SoundEvents.ARMOR_EQUIP_NETHERITE;
             }
 
             @Override

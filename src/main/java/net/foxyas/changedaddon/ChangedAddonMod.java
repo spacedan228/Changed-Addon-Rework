@@ -2,7 +2,7 @@ package net.foxyas.changedaddon;
 
 import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
-import net.foxyas.changedaddon.world.datafixers.ChangedAddonDataFixer;
+import net.foxyas.changedaddon.world.datafixer.ChangedAddonDataFixer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

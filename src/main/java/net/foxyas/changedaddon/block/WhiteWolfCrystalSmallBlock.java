@@ -17,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import static net.ltxprogrammer.changed.block.AbstractLatexBlock.getLatexed;
 
 public class WhiteWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.AbstractWolfCrystalSmall {
+
     public WhiteWolfCrystalSmallBlock() {
         super(ChangedAddonItems.WHITE_WOLF_CRYSTAL_FRAGMENT);
     }

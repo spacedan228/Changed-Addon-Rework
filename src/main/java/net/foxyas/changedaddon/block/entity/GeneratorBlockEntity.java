@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.block.entity;
 
 import io.netty.buffer.Unpooled;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
-import net.foxyas.changedaddon.world.inventory.GeneratorGuiMenu;
+import net.foxyas.changedaddon.menu.GeneratorGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import java.util.stream.IntStream;
 
 public class GeneratorBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+
     private final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
     private final EnergyStorage energyStorage = new EnergyStorage(50000, 5000, 5000, 0) {
         @Override
@@ -86,7 +87,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+        return this.saveWithoutMetadata();
     }
 
     @Override
@@ -105,11 +106,6 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
     @Override
     public @NotNull Component getDefaultName() {
         return new TextComponent("generator");
-    }
-
-    @Override
-    public int getMaxStackSize() {
-        return 64;
     }
 
     @Override

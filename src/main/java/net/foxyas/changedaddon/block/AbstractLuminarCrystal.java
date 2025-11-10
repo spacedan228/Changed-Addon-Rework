@@ -36,7 +36,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -78,40 +77,7 @@ public class AbstractLuminarCrystal {
         double d0 = vec3.x + (i == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) i * 0.55D);
         double d1 = vec3.y + (j == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) j * 0.55D);
         double d2 = vec3.z + (k == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) k * 0.55D);
-        double d3 = i == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        double d4 = j == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        double d5 = k == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
         ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, 0.05, 0.05, 0.05, count, particleSpeed);
-    }
-
-    public static void spawnEndRodParticleOnFace(ServerLevel level, BlockPos pos, Direction direction, int count, float particleSpeed) {
-        ParticleOptions p_144961_ = ParticleTypes.END_ROD;
-        Vec3 vec3 = Vec3.atCenterOf(pos);
-        int i = direction.getStepX();
-        int j = direction.getStepY();
-        int k = direction.getStepZ();
-        double d0 = vec3.x + (i == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) i * 0.55D);
-        double d1 = vec3.y + (j == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) j * 0.55D);
-        double d2 = vec3.z + (k == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) k * 0.55D);
-        double d3 = i == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        double d4 = j == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        double d5 = k == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, d3, d4, d5, count, particleSpeed);
-    }
-
-    public static void spawnSnowParticleOnFace(ServerLevel level, BlockPos pos, Direction direction, int count, float particleSpeed) {
-        ParticleOptions p_144961_ = ParticleTypes.SNOWFLAKE;
-        Vec3 vec3 = Vec3.atCenterOf(pos);
-        int i = direction.getStepX();
-        int j = direction.getStepY();
-        int k = direction.getStepZ();
-        double d0 = vec3.x + (i == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) i * 0.55D);
-        double d1 = vec3.y + (j == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) j * 0.55D);
-        double d2 = vec3.z + (k == 0 ? Mth.nextDouble(level.random, -0.5D, 0.5D) : (double) k * 0.55D);
-        double d3 = i == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        double d4 = j == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        double d5 = k == 0 ? Mth.nextDouble(level.random, -1.0D, 1.0D) : 0.0D;
-        ParticlesUtil.sendParticles(level, p_144961_, d0, d1, d2, 0.2, 0.2, 0.2, count, particleSpeed);
     }
 
     public static abstract class Block extends AbstractLatexIceBlock {
@@ -192,11 +158,6 @@ public class AbstractLuminarCrystal {
         }
 
         @Override
-        public void playerDestroy(@NotNull Level p_49827_, @NotNull Player p_49828_, @NotNull BlockPos p_49829_, @NotNull BlockState p_49830_, @Nullable BlockEntity p_49831_, @NotNull ItemStack p_49832_) {
-            super.playerDestroy(p_49827_, p_49828_, p_49829_, p_49830_, p_49831_, p_49832_);
-        }
-
-        @Override
         public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
             if (!(player.isCreative() || player.isSpectator())) {
                 List<AbstractLuminarcticLeopard> lumiList = level.getEntitiesOfClass(AbstractLuminarcticLeopard.class, new AABB(pos).inflate(10));
@@ -259,11 +220,6 @@ public class AbstractLuminarCrystal {
             }
         }
 
-        @Override
-        public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Random random) {
-            super.animateTick(state, level, pos, random);
-        }
-
         private void triggerCrystal(BlockState blockState, Level level, BlockPos position, Entity entity) {
             if (entity instanceof LivingEntity le && !(entity instanceof ChangedEntity) && !le.isDeadOrDying()) {
                 if (entity instanceof Player player && (ProcessTransfur.isPlayerTransfurred(player) || player.isCreative()))
@@ -320,7 +276,6 @@ public class AbstractLuminarCrystal {
         public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
             return Shapes.empty();
         }
-
 
         @Override
         public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
@@ -459,26 +414,6 @@ public class AbstractLuminarCrystal {
         @Override
         public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
             return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
-        }
-
-        @Override
-        public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Random random) {
-            super.animateTick(state, level, pos, random);
-        }
-
-        @Override
-        public @NotNull PushReaction getPistonPushReaction(@NotNull BlockState p_60584_) {
-            return super.getPistonPushReaction(p_60584_);
-        }
-
-        @Override
-        public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
-            return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
-        }
-
-        @Override
-        public void destroy(@NotNull LevelAccessor p_49860_, @NotNull BlockPos p_49861_, @NotNull BlockState p_49862_) {
-            super.destroy(p_49860_, p_49861_, p_49862_);
         }
 
         @Override

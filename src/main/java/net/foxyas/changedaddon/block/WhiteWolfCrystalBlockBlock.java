@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public class WhiteWolfCrystalBlockBlock extends AbstractWolfCrystalExtender.AbstractWolfCrystalBlock {
+
     public WhiteWolfCrystalBlockBlock() {
         super();
     }

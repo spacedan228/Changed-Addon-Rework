@@ -1,10 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.menu.CustomMerchantMenu;
-import net.foxyas.changedaddon.menu.FoxyasInventoryMenu;
-import net.foxyas.changedaddon.menu.PrototypeMenu;
-import net.foxyas.changedaddon.world.inventory.*;
+import net.foxyas.changedaddon.menu.*;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;

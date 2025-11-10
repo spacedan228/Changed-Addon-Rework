@@ -8,37 +8,29 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -68,26 +60,6 @@ public class SnepPlushyBlock extends AbstractPlushyBlock {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) {
-        return state.getFluidState().isEmpty();
-    }
-
-    @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return 0;
-    }
-
-    @Override
-    public @NotNull VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return Shapes.empty();
-    }
-
-    @Override
-    public BlockPathTypes getAiPathNodeType(BlockState state, BlockGetter world, BlockPos pos, Mob entity) {
-        return BlockPathTypes.BLOCKED;
-    }
-
-    @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(FACING)) {
             case NORTH -> box(4, 0, 3.5, 12, 16, 12);
@@ -109,35 +81,6 @@ public class SnepPlushyBlock extends AbstractPlushyBlock {
                 .setValue(FACING, context.getHorizontalDirection().getOpposite())
                 .setValue(WATERLOGGED, flag)
                 .setValue(CANS, CansEnum.NONE); // NONE by Default
-    }
-
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
-    }
-
-    @Override
-    public @NotNull FluidState getFluidState(BlockState state) {
-        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
-    }
-
-    @Override
-    public @NotNull BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor world, BlockPos currentPos, BlockPos facingPos) {
-        if (state.getValue(WATERLOGGED)) {
-            world.scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(world));
-        }
-        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
-    }
-
-    @Override
-    public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face) {
-        if (state.getValue(WATERLOGGED)) {
-            return 0;
-        }
-        return 20;
     }
 
     @Override
@@ -204,24 +147,6 @@ public class SnepPlushyBlock extends AbstractPlushyBlock {
         }
 
         world.scheduleTick(pos, this, 10);  // Continua o tick
-    }
-
-
-    @Override
-    public void tick(BlockState state, ServerLevel serverLevel, BlockPos pos, Random p_60465_) {
-        super.tick(state, serverLevel, pos, p_60465_);
-        BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
-        if (blockEntity instanceof SnepPlushyBlockEntity snepPlushyBlockEntity && snepPlushyBlockEntity.isSqueezed()) {
-            snepPlushyBlockEntity.subSqueezedTicks(1);
-        }
-        serverLevel.scheduleTick(pos, this, 10);
-    }
-
-    @Override
-    public boolean triggerEvent(BlockState state, Level world, BlockPos pos, int eventID, int eventParam) {
-        super.triggerEvent(state, world, pos, eventID, eventParam);
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        return blockEntity != null && blockEntity.triggerEvent(eventID, eventParam);
     }
 
     public enum CansEnum implements StringRepresentable {

@@ -14,13 +14,14 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
@@ -34,7 +35,6 @@ import java.util.Random;
 
 public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     protected AbstractPlushyBlock(Properties pProperties) {
@@ -46,18 +46,9 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
         return state.getFluidState().isEmpty();
     }
 
-
     @Override
     public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
         return 0;
-    }
-
-    public @NotNull BlockState rotate(BlockState state, Rotation rot) {
-        return state.setValue(FACING, rot.rotate(state.getValue(FACING)));
-    }
-
-    public @NotNull BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.getRotation(state.getValue(FACING)));
     }
 
     @Override
@@ -156,5 +147,4 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
         BlockEntity blockEntity = world.getBlockEntity(pos);
         return blockEntity != null && blockEntity.triggerEvent(eventID, eventParam);
     }
-
 }

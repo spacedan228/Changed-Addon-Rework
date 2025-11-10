@@ -6,7 +6,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.TransfurSoundsGuiButtonPacket;
 import net.foxyas.changedaddon.util.PlayerUtil;
-import net.foxyas.changedaddon.world.inventory.TransfurSoundsGuiMenu;
+import net.foxyas.changedaddon.menu.TransfurSoundsGuiMenu;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;

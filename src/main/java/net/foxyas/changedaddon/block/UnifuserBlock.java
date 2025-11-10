@@ -67,11 +67,6 @@ public class UnifuserBlock extends HorizontalDirectionalBlock implements EntityB
     }
 
     @Override
-    public void onPlace(BlockState blockstate, Level world, BlockPos pos, BlockState oldState, boolean moving) {
-        super.onPlace(blockstate, world, pos, oldState, moving);
-    }
-
-    @Override
     public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
         return createTickerHelper(pBlockEntityType, ChangedAddonBlockEntities.UNIFUSER.get(), pLevel.isClientSide ? UnifuserBlockEntity::clientTick : UnifuserBlockEntity::serverTick);
     }

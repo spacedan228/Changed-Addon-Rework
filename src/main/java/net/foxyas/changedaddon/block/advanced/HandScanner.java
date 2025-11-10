@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.block.advanced;
 
-import com.google.common.collect.ImmutableMap;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedSounds;
@@ -37,11 +36,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.Random;
-import java.util.function.Function;
 
 @SuppressWarnings("deprecation")
 public class HandScanner extends Block {
@@ -66,22 +63,12 @@ public class HandScanner extends Block {
     }
 
     @Override
-    public boolean canConnectRedstone(BlockState state, BlockGetter level, BlockPos pos, @Nullable Direction direction) {
-        return super.canConnectRedstone(state, level, pos, direction);
-    }
-
-    @Override
     public @NotNull BlockState updateShape(@NotNull BlockState state, @NotNull Direction direction, @NotNull BlockState neighborState, @NotNull LevelAccessor level, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
         if (!canSurvive(state, level, pos)) {
             level.destroyBlock(pos, true);
             return Blocks.AIR.defaultBlockState();
         }
         return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
-    }
-
-    @Override
-    protected @NotNull ImmutableMap<BlockState, VoxelShape> getShapeForEachState(@NotNull Function<BlockState, VoxelShape> p_152459_) {
-        return super.getShapeForEachState(p_152459_);
     }
 
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
@@ -205,12 +192,6 @@ public class HandScanner extends Block {
             level.updateNeighborsAt(pos.relative(direction), block);
         }
     }
-
-    @Override
-    public void neighborChanged(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Block blockIn, @NotNull BlockPos fromPos, boolean isMoving) {
-        super.neighborChanged(state, level, pos, blockIn, fromPos, isMoving);
-    }
-
 
     @Override
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull Random random) {

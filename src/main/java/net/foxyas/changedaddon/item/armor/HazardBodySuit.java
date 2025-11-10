@@ -299,76 +299,73 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot == EquipmentSlot.CHEST) {
-            ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+        if(slot != EquipmentSlot.CHEST) return super.getAttributeModifiers(slot, stack);
 
-            Boolean helmeted = this.getClothingState(stack).getValue(HELMET);
-            float multiplier = helmeted ? 1f : 0.75f;
-            builder.put(
-                    ChangedAttributes.TRANSFUR_TOLERANCE.get(),
-                    new AttributeModifier(
-                            UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                            "Hazard Transfur Tolerance Buff",
-                            multiplier,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL
-                    )
-            );
+        ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
 
-            builder.put(
-                    ChangedAttributes.TRANSFUR_DAMAGE.get(),
-                    new AttributeModifier(
-                            UUID.fromString("00000000-0000-0000-0000-000000000000"),
-                            "Hazard Transfur Tolerance Buff",
-                            -1,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL
-                    )
-            );
+        Boolean helmeted = this.getClothingState(stack).getValue(HELMET);
+        float multiplier = helmeted ? 1f : 0.75f;
+        builder.put(
+                ChangedAttributes.TRANSFUR_TOLERANCE.get(),
+                new AttributeModifier(
+                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                        "Hazard Transfur Tolerance Buff",
+                        multiplier,
+                        AttributeModifier.Operation.MULTIPLY_TOTAL
+                )
+        );
 
-            builder.put(
-                    ChangedAddonAttributes.LATEX_RESISTANCE.get(),
-                    new AttributeModifier(
-                            UUID.fromString("00000000-0000-0000-0000-000000000001"),
-                            "Hazard Armor Speed Debuff",
-                            0.05 * multiplier,
-                            AttributeModifier.Operation.ADDITION
-                    )
-            );
+        builder.put(
+                ChangedAttributes.TRANSFUR_DAMAGE.get(),
+                new AttributeModifier(
+                        UUID.fromString("00000000-0000-0000-0000-000000000000"),
+                        "Hazard Transfur Tolerance Buff",
+                        -1,
+                        AttributeModifier.Operation.MULTIPLY_TOTAL
+                )
+        );
 
-            builder.put(
-                    Attributes.ARMOR,
-                    new AttributeModifier(
-                            UUID.fromString("00000000-0000-0000-0000-000000000002"),
-                            "Hazard Armor Buff",
-                            2 * multiplier,
-                            AttributeModifier.Operation.ADDITION
-                    )
-            );
+        builder.put(
+                ChangedAddonAttributes.LATEX_RESISTANCE.get(),
+                new AttributeModifier(
+                        UUID.fromString("00000000-0000-0000-0000-000000000001"),
+                        "Hazard Armor Speed Debuff",
+                        0.05 * multiplier,
+                        AttributeModifier.Operation.ADDITION
+                )
+        );
 
-            builder.put(
-                    Attributes.MOVEMENT_SPEED,
-                    new AttributeModifier(
-                            UUID.fromString("00000000-0000-0000-0000-000000000003"),
-                            "Hazard Armor Speed Debuff",
-                            -0.05,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL
-                    )
-            );
+        builder.put(
+                Attributes.ARMOR,
+                new AttributeModifier(
+                        UUID.fromString("00000000-0000-0000-0000-000000000002"),
+                        "Hazard Armor Buff",
+                        2 * multiplier,
+                        AttributeModifier.Operation.ADDITION
+                )
+        );
 
-            builder.put(
-                    Attributes.ATTACK_SPEED,
-                    new AttributeModifier(
-                            UUID.fromString("00000000-0000-0000-0000-000000000004"),
-                            "Hazard Armor Attack Speed Debuff",
-                            -0.09,
-                            AttributeModifier.Operation.MULTIPLY_TOTAL
-                    )
-            );
+        builder.put(
+                Attributes.MOVEMENT_SPEED,
+                new AttributeModifier(
+                        UUID.fromString("00000000-0000-0000-0000-000000000003"),
+                        "Hazard Armor Speed Debuff",
+                        -0.05,
+                        AttributeModifier.Operation.MULTIPLY_TOTAL
+                )
+        );
 
-            return builder.build();
-        }
+        builder.put(
+                Attributes.ATTACK_SPEED,
+                new AttributeModifier(
+                        UUID.fromString("00000000-0000-0000-0000-000000000004"),
+                        "Hazard Armor Attack Speed Debuff",
+                        -0.09,
+                        AttributeModifier.Operation.MULTIPLY_TOTAL
+                )
+        );
 
-
-        return super.getAttributeModifiers(slot, stack);
+        return builder.build();
     }
 
     public String getHelmetState(ItemStack stack) {

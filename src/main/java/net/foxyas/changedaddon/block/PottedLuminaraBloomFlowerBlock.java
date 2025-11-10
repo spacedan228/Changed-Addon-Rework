@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public class PottedLuminaraBloomFlowerBlock extends FlowerPotBlock {
+
     public PottedLuminaraBloomFlowerBlock() {
         super(() -> (FlowerPotBlock) Blocks.FLOWER_POT, ChangedAddonBlocks.LUMINARA_BLOOM,
                 Properties.copy(Blocks.POTTED_DANDELION).noOcclusion()
@@ -68,5 +69,4 @@ public class PottedLuminaraBloomFlowerBlock extends FlowerPotBlock {
             clientLevel.playLocalSound(pos, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 1, random.nextFloat(), true);
         }
     }
-
 }

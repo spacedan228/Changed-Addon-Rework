@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.block;
 import io.netty.buffer.Unpooled;
 import net.foxyas.changedaddon.block.entity.GeneratorBlockEntity;
 import net.foxyas.changedaddon.procedures.GeneratorUpdateTickProcedure;
-import net.foxyas.changedaddon.world.inventory.GeneratorGuiMenu;
+import net.foxyas.changedaddon.menu.GeneratorGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;

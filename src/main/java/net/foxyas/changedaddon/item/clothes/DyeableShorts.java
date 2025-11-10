@@ -3,20 +3,14 @@ package net.foxyas.changedaddon.item.clothes;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
-import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.init.ChangedTabs;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
@@ -41,14 +35,6 @@ public class DyeableShorts extends DyeableClothingItem implements DyeableLeather
         return slot == ChangedAccessorySlots.LEGS.get() || slot == ChangedAccessorySlots.LOWER_BODY.get();
     }
 
-    public boolean isDamageable(ItemStack stack) {
-        return false;
-    }
-
-    public SoundEvent getEquipSound() {
-        return ChangedSounds.EQUIP3;
-    }
-
     @Override
     public @NotNull ItemStack getDefaultInstance() {
         ItemStack stack = super.getDefaultInstance();
@@ -59,31 +45,6 @@ public class DyeableShorts extends DyeableClothingItem implements DyeableLeather
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return ImmutableMultimap.of();
-    }
-
-    public SoundEvent getBreakSound(ItemStack itemStack) {
-        return ChangedSounds.SLASH10;
-    }
-
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab tab, @NotNull NonNullList<ItemStack> items) {
-        if (this.allowdedIn(tab)) {
-            for (DefaultColors color : DefaultColors.values()) {
-                ItemStack stack = new ItemStack(this);
-                this.setColor(stack, color.getColorToInt());
-                items.add(stack);
-            }
-        }
-    }
-
-    @Override
-    protected boolean allowdedIn(@NotNull CreativeModeTab tab) {
-        if (tab == ChangedTabs.TAB_CHANGED_ITEMS) {
-            return false;
-        } else if (tab == ChangedAddonTabs.TAB_CHANGED_ADDON) {
-            return true;
-        }
-        return super.allowdedIn(tab);
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 public interface IDynamicCoatColors extends VariantExtraStats {
+
     static boolean playerHasTransfurWithExtraColors(@Nullable Player player) {
         if (player == null) {
             return false;

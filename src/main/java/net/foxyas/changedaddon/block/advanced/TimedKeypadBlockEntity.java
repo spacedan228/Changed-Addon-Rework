@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class TimedKeypadBlockEntity extends KeypadBlockEntity {
+
     private int timer = 0;
     private boolean canTick = false;
     private int ticks = 0;

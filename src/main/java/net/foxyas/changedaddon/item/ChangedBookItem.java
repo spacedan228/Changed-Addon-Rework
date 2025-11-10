@@ -1,14 +1,10 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class ChangedBookItem extends Item {
@@ -24,10 +20,5 @@ public class ChangedBookItem extends Item {
     @Override
     public int getUseDuration(@NotNull ItemStack p_41454_) {
         return 1;
-    }
-
-    @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand interactionHand) {
-        return super.use(level, player, interactionHand);
     }
 }

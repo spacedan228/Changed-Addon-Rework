@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.potion;
 
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.DelayedTask;
@@ -29,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.entity.player.PlayerWakeUpEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -100,7 +100,7 @@ public class UntransfurMobEffect extends MobEffect {
             player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
         }
 
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("changed_addon:untransfursound")), SoundSource.NEUTRAL, 1, 1);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR, SoundSource.NEUTRAL, 1, 1);
     }
 
     @Override

@@ -5,7 +5,6 @@ import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.util.ComponentUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -17,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class TimedKeypadItem extends BlockItem {
+
     public TimedKeypadItem(Block pBlock, Properties pProperties) {
         super(pBlock, pProperties);
     }

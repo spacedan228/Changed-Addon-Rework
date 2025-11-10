@@ -86,7 +86,7 @@ public class LuminarCrystalSpearItem extends Item implements Vanishable {
     public void releaseUsing(@NotNull ItemStack itemStack, @NotNull Level world, @NotNull LivingEntity livingEntity, int time) {
         if (livingEntity instanceof Player player) {
             int i = this.getUseDuration(itemStack) - time;
-            if (i >= 10) {
+            if (i >= THROW_THRESHOLD_TIME) {
                 int j = EnchantmentHelper.getRiptide(itemStack);
                 if (j <= 0 || player.isInWaterOrRain()) {
                     if (!world.isClientSide) {

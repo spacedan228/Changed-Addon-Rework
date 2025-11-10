@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.world.inventory;
+package net.foxyas.changedaddon.menu;
 
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
 import net.minecraft.core.BlockPos;

@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.world.datafixers;
+package net.foxyas.changedaddon.world.datafixer;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class ChangedAddonDataFixer {
+
     public static final int DATAFIX_ID = 1; // used to internal version
     private static final Map<DataFixTypes, Consumer<CompoundTag>> DATA_FIXERS = new HashMap<>();
 

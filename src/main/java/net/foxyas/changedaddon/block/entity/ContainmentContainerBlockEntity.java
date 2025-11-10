@@ -16,21 +16,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class ContainmentContainerBlockEntity extends BlockEntity {
 
-
     private static final String TRANSFUR_VARIANT = "form";
 
     @Nullable
     private TransfurVariant<?> transfurVariant;
-    //public double poseX;
-    //public double poseY;
-    //public double poseZ;
 
     public ContainmentContainerBlockEntity(BlockPos position, BlockState state) {
         super(ChangedAddonBlockEntities.CONTAINMENT_CONTAINER.get(), position, state);
         this.transfurVariant = null;
-        //this.poseX = 0;
-        //this.poseY = 0;
-        //this.poseZ = 0;
     }
 
     public @Nullable TransfurVariant<?> getTransfurVariant() {
@@ -71,19 +64,6 @@ public class ContainmentContainerBlockEntity extends BlockEntity {
                 this.transfurVariant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
             }
         }
-
-		/*if (compound.contains("PoseX")) {
-			this.poseX = compound.getDouble("PoseX");
-		}
-
-		if (compound.contains("PoseY")) {
-			this.poseY = compound.getDouble("PoseY");
-		}
-
-		if (compound.contains("PoseZ")) {
-			this.poseZ = compound.getDouble("PoseZ");
-		}
-*/
     }
 
     @Override
@@ -92,10 +72,6 @@ public class ContainmentContainerBlockEntity extends BlockEntity {
         if (this.transfurVariant != null && transfurVariant.getRegistryName() != null) {
             compound.putString(TRANSFUR_VARIANT, transfurVariant.getRegistryName().toString());
         }
-
-        //compound.putDouble("PoseX",this.poseX);
-        //compound.putDouble("PoseY",this.poseY);
-        //compound.putDouble("PoseZ",this.poseZ);
     }
 
     @Override
@@ -105,6 +81,6 @@ public class ContainmentContainerBlockEntity extends BlockEntity {
 
     @Override
     public @NotNull CompoundTag getUpdateTag() {
-        return this.saveWithFullMetadata();
+        return this.saveWithoutMetadata();
     }
 }

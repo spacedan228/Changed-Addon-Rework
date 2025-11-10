@@ -49,6 +49,7 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
+
     public DarkLatexWolfPlushyBlock() {
         super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL)
                 .strength(0.5f, 5f)

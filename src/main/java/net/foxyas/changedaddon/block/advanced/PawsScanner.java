@@ -49,6 +49,7 @@ import java.util.function.Function;
 
 @SuppressWarnings("deprecation")
 public class PawsScanner extends Block {
+
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty POWERED = LeverBlock.POWERED;
     // Shapes por direção

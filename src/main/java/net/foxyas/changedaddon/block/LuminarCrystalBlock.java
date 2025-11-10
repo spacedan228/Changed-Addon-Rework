@@ -7,6 +7,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class LuminarCrystalBlock extends AbstractLuminarCrystal.Block {
+
     public LuminarCrystalBlock() {
         super();
     }

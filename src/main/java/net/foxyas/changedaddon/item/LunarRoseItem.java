@@ -42,9 +42,10 @@ public class LunarRoseItem extends ArmorItem {
 
     public LunarRoseItem() {
         super(new ArmorMaterial() {
+
             @Override
             public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
-                return new int[]{13, 15, 16, 11}[slot.getIndex()] * 100;
+                return 1100;
             }
 
             @Override
@@ -111,13 +112,13 @@ public class LunarRoseItem extends ArmorItem {
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 1, false, false));
         }
 
+        if((player.hasEffect(MobEffects.REGENERATION) ? player.getEffect(MobEffects.REGENERATION).getAmplifier() : 0) >= 3) return;
+
         final Vec3 center = player.position();
         List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, new AABB(center, center).inflate(1 / 2d), e -> e != player && !e.hasEffect(MobEffects.REGENERATION));
         for (LivingEntity entity : list) {
-            if ((player.hasEffect(MobEffects.REGENERATION) ? player.getEffect(MobEffects.REGENERATION).getAmplifier() : 0) < 3) {
-                entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 3, false, false));
-                entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 270, 1, false, false));
-            }
+            entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 3, false, false));
+            entity.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 270, 1, false, false));
         }
     }
 

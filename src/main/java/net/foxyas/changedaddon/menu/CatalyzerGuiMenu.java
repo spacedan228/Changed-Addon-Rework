@@ -1,8 +1,7 @@
-package net.foxyas.changedaddon.world.inventory;
+package net.foxyas.changedaddon.menu;
 
 import net.foxyas.changedaddon.block.entity.CatalyzerBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
-import net.foxyas.changedaddon.menu.AbstractMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;

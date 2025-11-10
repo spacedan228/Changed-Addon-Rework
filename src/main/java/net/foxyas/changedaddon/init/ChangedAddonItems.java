@@ -253,7 +253,7 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> DARK_LATEX_COAT = REGISTRY.register("dark_latex_coat",
             () -> new DarkLatexCoatItem(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
     public static final RegistryObject<Item> DARK_LATEX_HEAD_CAP = REGISTRY.register("dark_latex_coat_cap",
-            () -> new DarkLatexCoatItem.HeadPart(EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
+            () -> new DarkLatexCoatItem(EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON)));
     public static final RegistryObject<Item> LASER_POINTER = REGISTRY.register("laser_pointer", LaserPointer::new);
     //public static final RegistryObject<Item> DYEABLE_SPORTS_BRA = REGISTRY.register("dyeable_sports_bra", DyeableSportsBra::new);
     public static final RegistryObject<Item> DYEABLE_TSHIRT = REGISTRY.register("dyeable_tshirt", TShirtClothing::new);

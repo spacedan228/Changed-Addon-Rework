@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.block.entity;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.foxyas.changedaddon.recipes.UnifuserRecipe;
-import net.foxyas.changedaddon.world.inventory.UnifuserGuiMenu;
+import net.foxyas.changedaddon.menu.UnifuserGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;

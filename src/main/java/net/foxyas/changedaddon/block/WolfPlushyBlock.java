@@ -2,27 +2,17 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.WolfPlushyBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
-import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -51,21 +41,6 @@ public class WolfPlushyBlock extends AbstractPlushyBlock {
     }
 
     @Override
-    public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos) {
-        return 0;
-    }
-
-    @Override
-    public @NotNull VoxelShape getVisualShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
-        return Shapes.empty();
-    }
-
-    @Override
-    public BlockPathTypes getAiPathNodeType(BlockState state, BlockGetter world, BlockPos pos, Mob entity) {
-        return BlockPathTypes.BLOCKED;
-    }
-
-    @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
         return switch (state.getValue(FACING)) {
             case NORTH -> box(4, 0, 3.5, 12, 18, 12);
@@ -73,25 +48,6 @@ public class WolfPlushyBlock extends AbstractPlushyBlock {
             case WEST -> box(3.5, 0, 4, 12, 18, 12);
             default -> box(4, 0, 4, 12, 18, 12.5);
         };
-    }
-
-    @Override
-    public @NotNull InteractionResult use(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player entity, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-        InteractionResult retValue = super.use(blockstate, world, pos, entity, hand, hit);
-        double hitX = hit.getLocation().x;
-        double hitY = hit.getLocation().y;
-        double hitZ = hit.getLocation().z;
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof WolfPlushyBlockEntity plushBlockEntity) {
-            if (!plushBlockEntity.isSqueezed()) {
-                if (!world.isClientSide()) {
-                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
-                }
-                return InteractionResult.sidedSuccess(world.isClientSide());
-            }
-        }
-
-        return retValue;
     }
 
     @Override

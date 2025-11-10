@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Random;
 
 public class YellowWolfCrystalBlockBlock extends AbstractWolfCrystalExtender.AbstractWolfCrystalBlock {
+
     public YellowWolfCrystalBlockBlock() {
         super();
     }
@@ -36,5 +37,4 @@ public class YellowWolfCrystalBlockBlock extends AbstractWolfCrystalExtender.Abs
             level.playSound(null, pos, ChangedSounds.ICE2, SoundSource.BLOCKS, 1.0f, 1.0f);
         }
     }
-
 }

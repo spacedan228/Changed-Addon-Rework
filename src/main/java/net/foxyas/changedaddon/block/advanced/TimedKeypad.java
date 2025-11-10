@@ -30,6 +30,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Random;
 
 public class TimedKeypad extends KeypadBlock {
+
     public TimedKeypad() {
         super();
         drops = BuiltInLootTables.EMPTY;
@@ -44,25 +45,6 @@ public class TimedKeypad extends KeypadBlock {
     public @Nullable BlockEntity newBlockEntity(BlockPos blockPos, BlockState blockState) {
         return new TimedKeypadBlockEntity(blockPos, blockState);
     }
-
-/*
-    void oldLogic(){
-    if (relative.y > 0.185f && relative.y < 0.25f) {
-                Direction direction = state.getValue(HorizontalDirectionalBlock.FACING);
-                if (direction == Direction.NORTH) {
-                    if (relative.x == 0.0625f || (relative.x >= 0.0624 && relative.x < 0.0626) ){
-                        if (relative.z > 0.75f && relative.z < 0.8125) {
-                            BlockEntity blockEntity = level.getBlockEntity(pos);
-                            if (blockEntity instanceof TimedKeypadBlockEntity timedKeypadBlockEntity) {
-                                timedKeypadBlockEntity.setTimer(timedKeypadBlockEntity.getTimer() + 10);
-                            }
-                            return InteractionResult.SUCCESS;
-                        }
-                    }
-                }
-            }
-    }
-*/
 
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
@@ -223,11 +205,6 @@ public class TimedKeypad extends KeypadBlock {
                     lvl.sendBlockUpdated(pos, blockState, blockState, 3);
                 }
         );
-    }
-
-    @Override
-    public boolean triggerEvent(@NotNull BlockState p_49226_, @NotNull Level p_49227_, @NotNull BlockPos p_49228_, int p_49229_, int p_49230_) {
-        return super.triggerEvent(p_49226_, p_49227_, p_49228_, p_49229_, p_49230_);
     }
 
     // pixelX, pixelY, pixelZ vão de 0 a 15 (inclusive)
