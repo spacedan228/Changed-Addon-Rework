@@ -38,6 +38,13 @@ public class CounterDodgeType extends DodgeType {
         if (dodger != null) {
             dodger.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 60, 2, true, true));
         }
+
+        if (this.shouldApplyIframes(dodgeAbilityInstance, levelAccessor, dodger, attacker, dodgeType, event, causeExhaustion) && dodger != null) {
+            dodger.invulnerableTime = 20 * 3;
+            dodger.hurtDuration = 20 * 3;
+            dodger.hurtTime = dodger.hurtDuration;
+            dodger.hurtMarked = false;
+        }
     }
 
     @Override

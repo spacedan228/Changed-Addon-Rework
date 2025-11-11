@@ -5,7 +5,6 @@ import net.foxyas.changedaddon.client.renderer.items.HazardBodySuitClothingRende
 import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
@@ -19,12 +18,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -32,8 +31,9 @@ import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.ForgeMod;
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,12 +46,25 @@ import java.util.List;
 import java.util.Optional;
 
 @Mixin(Player.class)
-public abstract class PlayerMixin implements LivingEntityDataExtensor {
+public abstract class PlayerMixin extends LivingEntity implements LivingEntityDataExtensor {
+
+    protected PlayerMixin(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+    }
 
     @Shadow
-    public abstract ItemStack getItemBySlot(EquipmentSlot p_36257_);
+    public abstract @NotNull ItemStack getItemBySlot(@NotNull EquipmentSlot equipmentSlot);
 
     @Shadow protected boolean wasUnderwater;
+
+    @Override
+    public boolean isInWater() {
+        boolean inWater = super.isInWater();
+        if (!inWater) {
+            return this.overrideIsInWater();
+        }
+        return super.isInWater();
+    }
 
     @Inject(method = "sweepAttack", at = @At("HEAD"), cancellable = true)
     private void customSweepAttackEffect(CallbackInfo ci) {
@@ -64,7 +77,7 @@ public abstract class PlayerMixin implements LivingEntityDataExtensor {
     @Inject(method = "updateSwimming", at = @At("RETURN"), cancellable = true)
     private void customUpdateSwimming(CallbackInfo ci) {
         Player self = ((Player) (Object) this);
-        if (this.canOverrideSwimUpdate()) {
+        if (this.overrideSwimUpdate()) {
             self.setSwimming(self.isSprinting() && !self.isPassenger());
         }
     }
@@ -76,7 +89,7 @@ public abstract class PlayerMixin implements LivingEntityDataExtensor {
         Boolean returnValue = cir.getReturnValue();
         if (returnValue != null) {
             if (!returnValue) {
-                this.wasUnderwater = canOverrideSwim();
+                this.wasUnderwater = overrideSwim();
                 cir.setReturnValue(wasUnderwater);
             }
         }

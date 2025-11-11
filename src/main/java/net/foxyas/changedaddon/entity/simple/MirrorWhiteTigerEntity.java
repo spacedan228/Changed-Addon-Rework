@@ -118,7 +118,6 @@ public class MirrorWhiteTigerEntity extends ChangedEntity implements PowderSnowW
         return TransfurMode.REPLICATION;
     }
 
-    @Override
     public Color3 getHairColor(int layer) {
         return Color3.WHITE;
     }

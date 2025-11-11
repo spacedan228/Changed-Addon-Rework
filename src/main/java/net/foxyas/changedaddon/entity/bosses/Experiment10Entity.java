@@ -2,14 +2,11 @@ package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
-import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
-import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.util.Color3;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
@@ -18,8 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
@@ -27,14 +22,12 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.common.ForgeMod;
@@ -46,7 +39,6 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
@@ -127,10 +119,12 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
 
     @Override
     public void checkDespawn() {
-        if (true) {
-            return;
-        }
         super.checkDespawn();
+    }
+
+    @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return false;
     }
 
     @Override
@@ -314,174 +308,6 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
     @Override
     public void baseTick() {
         super.baseTick();
-    }
-
-    private void thisBurstAttack() {
-        if (TpCooldown <= 0) {
-            BossAbilitiesHandle.BurstAttack(this);
-            this.TpCooldown = 50;
-        }
-    }
-
-    public void CrawSystem(LivingEntity target) {
-        if (target != null) {
-            setCrawlingPoseIfNeeded(target);
-            crawlToTarget(target);
-        } else {
-            if (!this.isSwimming() && !this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ())).isAir()) {
-                this.setPose(Pose.SWIMMING);
-            }
-        }
-    }
-
-    public void setCrawlingPoseIfNeeded(LivingEntity target) {
-        double targetEyeY = target.getEyeY();
-        double entityEyeY = this.getEyeY();
-
-        if (target.getPose() == Pose.SWIMMING && !(this.getPose() == Pose.SWIMMING)) {
-            if (target.getY() < entityEyeY && !(target.level.getBlockState(new BlockPos(target.getX(), target.getEyeY(), target.getZ()).above()).isAir())) {
-                this.setPose(Pose.SWIMMING);
-            }
-        } else {
-            if (!this.isSwimming() && this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir()) {
-                this.setPose(Pose.STANDING);
-            }
-        }
-    }
-
-    public void crawlToTarget(LivingEntity target) {
-        double targetEyeY = target.getEyeY();
-        double entityEyeY = this.getEyeY();
-
-        if (target.getPose() == Pose.SWIMMING && this.getPose() == Pose.SWIMMING) {
-            double deltaX = target.getX() - this.getX();
-            double deltaY = target.getY() - this.getY();
-            double deltaZ = target.getZ() - this.getZ();
-            double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-
-            if (distance > 1.0) {
-                double speed = 0.00015;
-                double motionX = deltaX / distance * speed;
-                double motionY = deltaY / distance * speed;
-                double motionZ = deltaZ / distance * speed;
-                this.setDeltaMovement(this.getDeltaMovement().add(motionX, motionY, motionZ));
-            }
-        }
-    }
-
-    public void updateSwimmingMovement() {
-        if (this.isInWater()) {
-            if (this.getTarget() != null) {
-                LivingEntity target = this.getTarget();
-                double deltaX = target.getX() - this.getX();
-                double deltaY = target.getY() - this.getY();
-                double deltaZ = target.getZ() - this.getZ();
-                double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-
-                if (distance > 0) {
-                    double speed = 0.07;
-                    double motionX = deltaX / distance * speed;
-                    double motionY = deltaY / distance * speed;
-                    double motionZ = deltaZ / distance * speed;
-                    this.setDeltaMovement(this.getDeltaMovement().add(motionX, motionY, motionZ));
-                }
-            }
-
-            if (this.isEyeInFluid(FluidTags.WATER)) {
-                this.setPose(Pose.SWIMMING);
-                this.setSwimming(true);
-            } else if (this.getPose() == Pose.SWIMMING && !this.isEyeInFluid(FluidTags.WATER)) {
-                this.setPose(Pose.STANDING);
-                this.setSwimming(false);
-            }
-        } else if (this.getPose() == Pose.SWIMMING && !this.isInWater() && this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir()) {
-            this.setPose(Pose.STANDING);
-        }
-    }
-
-    public void SetDefense(Experiment10Entity entity) {
-        AttributeModifier AttibuteChange = new AttributeModifier(UUID.fromString("10-0-0-0-0"), "ArmorChange", 20, AttributeModifier.Operation.ADDITION);
-        AttributeModifier AttibuteDefenseChange = new AttributeModifier(UUID.fromString("10-10-0-0-0"), "ArmorChange", 0.7, AttributeModifier.Operation.MULTIPLY_BASE);
-        if (entity.isPhase2()) {
-            if (!((entity.getAttribute(Attributes.ARMOR).hasModifier(AttibuteChange)))) {
-                entity.getAttribute(Attributes.ARMOR).addTransientModifier(AttibuteChange);
-            }
-
-            if (!((entity.getAttribute(Attributes.ARMOR_TOUGHNESS).hasModifier(AttibuteDefenseChange)))) {
-                entity.getAttribute(Attributes.ARMOR_TOUGHNESS).addTransientModifier(AttibuteDefenseChange);
-            }
-
-        } else {
-            entity.getAttribute(Attributes.ARMOR).removeModifier(AttibuteChange);
-            entity.getAttribute(Attributes.ARMOR_TOUGHNESS).removeModifier(AttibuteDefenseChange);
-        }
-    }
-
-    public void SetAttack(Experiment10Entity entity) {
-        AttributeModifier AttibuteChange = new AttributeModifier(UUID.fromString("10-0-0-0-0"), "Attack", 0.6667, AttributeModifier.Operation.MULTIPLY_BASE);
-        if (entity.isPhase2()) {
-            if (!((entity.getAttribute(Attributes.ATTACK_DAMAGE).hasModifier(AttibuteChange)))) {
-                entity.getAttribute(Attributes.ATTACK_DAMAGE).addTransientModifier(AttibuteChange);
-            }
-        } else {
-            entity.getAttribute(Attributes.ATTACK_DAMAGE).removeModifier(AttibuteChange);
-        }
-    }
-
-    public void SetSpeed(Experiment10Entity entity) {
-        AttributeModifier AttibuteChange = new AttributeModifier(UUID.fromString("10-0-0-0-0"), "Speed", -0.4, AttributeModifier.Operation.MULTIPLY_BASE);
-        if (entity.getPose() == Pose.SWIMMING) {
-            if (!((entity.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(AttibuteChange)))) {
-                entity.getAttribute(Attributes.MOVEMENT_SPEED).addTransientModifier(AttibuteChange);
-            }
-        } else {
-            entity.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(AttibuteChange);
-        }
-    }
-
-    public void TpEntity(Experiment10Entity entity) {
-        double deltaZ;
-        double distance;
-        double deltaX;
-        double deltaY;
-        if (entity.getTarget() == null) {
-            return; //stop if target = @null
-        }
-
-
-        Entity Target = entity.getTarget();
-        LivingEntity Targets = entity.getLastHurtByMob();
-        deltaX = Target.getX() - entity.getX();
-        deltaY = Target.getY() - entity.getY();
-        deltaZ = Target.getZ() - entity.getZ();
-        distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-
-        if (TpCooldown <= 0) {
-            if (distance > 3) {
-                if (entity.getLastHurtByMob() == Target) {
-                    entity.teleportTo(Target.getX(), Target.getY(), Target.getZ());
-                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.BOW2, SoundSource.HOSTILE, 10, 1, true);
-                    TpCooldown = 40;
-                } else {
-                    if (Targets != null && !(Targets instanceof ServerPlayer)) {
-                        entity.setTarget(Targets);
-                    } else if (Targets != null && Targets instanceof ServerPlayer serverPlayer) {
-                        if (serverPlayer.gameMode.getGameModeForPlayer() != GameType.CREATIVE && serverPlayer.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
-                            entity.setTarget(Targets);
-                        }
-                    }// Check if the entity in not null and is instance of server player if is will check if the gametype and if is not Creative and Spectator return true
-                    entity.teleportTo(Target.getX(), Target.getY(), Target.getZ());
-                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.BOW2, SoundSource.HOSTILE, 10, 1, true);
-                    TpCooldown = 40;
-                }
-
-				/*if((TpCooldown != 0)){
-					TpCooldown -= 0.5f;
-				}*/
-            }
-        } else {
-            TpCooldown -= 0.5f;
-        }
     }
 
     @Override

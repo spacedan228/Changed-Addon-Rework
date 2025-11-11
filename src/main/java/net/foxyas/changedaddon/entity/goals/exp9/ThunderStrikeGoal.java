@@ -88,7 +88,9 @@ public class ThunderStrikeGoal extends Goal {
                     }
                     lightning.setDamage(10);
                     ParticlesUtil.sendParticles(pathfinderMob.getLevel(), ChangedAddonParticleTypes.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
-                    pathfinderMob.getLookControl().setLookAt(lightning, 30, 30);
+                    if (!lightning.isRemoved()) {
+                        pathfinderMob.getLookControl().setLookAt(lightning, 30.0F, 30.0F);
+                    }
                     DelayedTask.schedule(10, () -> {
                         pathfinderMob.getLevel().addFreshEntity(lightning);
                         applyKnockBack(lightning);

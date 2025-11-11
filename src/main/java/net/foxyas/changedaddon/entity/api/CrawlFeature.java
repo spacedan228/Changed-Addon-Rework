@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.entity.api;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,11 +17,35 @@ public interface CrawlFeature {
             setCrawlingPoseIfNeeded(livingEntity, target);
             crawlToTarget(livingEntity, target);
         } else {
-            if (!livingEntity.isSwimming() && !livingEntity.level.getBlockState(new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ())).isAir()) {
-                livingEntity.setPose(Pose.SWIMMING);
+
+            Pose currentPose = livingEntity.getPose();
+            Pose safePose = currentPose;
+
+            if (!canEnterPose(livingEntity, currentPose)) {
+                if (canEnterPose(livingEntity, Pose.CROUCHING)) {
+                    safePose = Pose.CROUCHING;
+                } else if (canEnterPose(livingEntity, Pose.SWIMMING)) {
+                    safePose = Pose.SWIMMING;
+                }
             }
+
+            if (safePose != currentPose) {
+                livingEntity.setPose(safePose);
+                //this.refreshDimensions();
+            }
+
+            //BlockPos pPos = new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ());
+            //BlockState blockState = livingEntity.level.getBlockState(pPos.above());
+            //if (!this.isSwimming() && !blockState.isAir() && (blockState.isSuffocating(level, pPos.above()) || blockState.isSolidRender(level, pPos.above()))) {
+            //    this.setPose(Pose.SWIMMING);
+            //}
         }
     }
+
+    static boolean canEnterPose(ChangedEntity entity, Pose pose) {
+        return (entity.overridePose == null || entity.overridePose == pose) && entity.level.noCollision(entity, entity.getBoundingBoxForPose(pose).deflate(1.0E-7D));
+    }
+
 
     default void crawlingSystem(ChangedEntity livingEntity, LivingEntity target) {
         crawlingSystem(livingEntity, target, 0.07f);
