@@ -27,9 +27,9 @@
   "advancements.drink_snepsi.title": "Wait this isn't pepsi!",
   "advancements.foxta_addictive.descr": "We take a big sippy, you drank 100 Foxtas!!!",
   "advancements.foxta_addictive.title": "Foxta Addctive!",
-  "advancements.foxyas_advancement.descr": "§4You..§oMonster§r§4...Are you prond of that?",
+  "advancements.foxyas_advancement.descr": "§4You..§oMonster§r§4...Are you proud of that?",
   "advancements.foxyas_advancement.title": "§4Fox Killer",
-  "advancements.friendly_transfur.descr": "You get Transfured by Foxyas",
+  "advancements.friendly_transfur.descr": "You get Transfurred by Foxyas",
   "advancements.friendly_transfur.title": "Friendly Transfur",
   "advancements.gooey_friend.descr": "You are next to a Friendly Latex",
   "advancements.gooey_friend.title": "Gooey Friend",
@@ -57,11 +57,11 @@
   "advancements.obtain_red_crystal_dagger.title": "§4Red§r Crystal Dagger!",
   "advancements.obtain_red_electric_katana.descr": "Memories is Broken, truths go unspoken, you even forgot your name!!, Obtain §4Red§r Electric Katana!",
   "advancements.obtain_red_electric_katana.title": "§4Red Style!§r",
-  "advancements.obtain_snepsi.descr": "Obtain an Snepsi!, Cation this soda have high dose of Snep",
+  "advancements.obtain_snepsi.descr": "Obtain a Snepsi!, Cation this soda have high dose of Snep",
   "advancements.obtain_snepsi.title": "Snepsi?",
   "advancements.orange_juice_is_yummy.descr": "You drank §lOrange juice§r, yummy",
   "advancements.orange_juice_is_yummy.title": "Orange Juice Is Yummy",
-  "advancements.organic_transfur_advancement.descr": "Transfur yourself into a organic form",
+  "advancements.organic_transfur_advancement.descr": "Transfur yourself into an organic form",
   "advancements.organic_transfur_advancement.title": "Organic And Fluffy!!",
   "advancements.over_dose.descr": "Well it wasn't §4cancer§r but i §4warned you",
   "advancements.over_dose.title": "Overdose",
@@ -72,8 +72,8 @@
   "advancements.pats_on_the_beast.descr": "Congratulations!!!, you just buffed the monster!, they will probably have no mercy of your soul now!, Good Luck!",
   "advancements.pats_on_the_beast.title": "Bad Idea?...or Totally worth it?.",
   "advancements.paticifier.descr": "You didn’t just pat, you §opaticified.§r§5, you made a gooey entity pacified by your pats, isn't permanent however",
-  "advancements.paticifier.title": "You're an §oPaticifier.§r",
-  "advancements.pot_with_litix_camonia_use.descr": "You drank a liquid made from the dilution of litix-camonia The taste is not bad besides it tastes like cherry!",
+  "advancements.paticifier.title": "You're a §oPaticifier.§r",
+  "advancements.pot_with_litix_camonia_use.descr": "You drank a liquid made from the dilution of litix-camonia. The taste is not bad besides it tastes like cherry!",
   "advancements.pot_with_litix_camonia_use.title": "yummy?",
   "advancements.snepsi_addictive.descr": "We take a big sippy,You drink 100 Snepsis!",
   "advancements.snepsi_addictive.title": "Snepsi Addctive!",
@@ -102,7 +102,7 @@
   "advancements.wolfy_transfur.title": "Certified Bum",
   "advancements.wolfy_transfur.descr": "Congratulations, you are now officially Wolfy. Hope it was worth it.",
   "advancements.main.rock_fish.title": "Rock Fish",
-  "advancements.main.rock_fish.description": "Use a fire resistance potion and swim in lava while transfured into an aquatic form.",
+  "advancements.main.rock_fish.description": "Use a fire resistance potion and swim in lava while transfurred into an aquatic form.",
   "advancements.cuddles_of_eternal_night.title": "Am i Dreaming?",
   "advancements.cuddles_of_eternal_night.descr": "Cuddles of Eternal Night... You should’ve known better than to snuggle the plushie. Sleep tight… forever.",
 
@@ -172,7 +172,7 @@
   "changed_addon.ability.carry": "Carry",
 
   "changed_addon.ability.claws": "Claws Ability",
-  "changed_addon.ability.claws.desc": "Activate your feline claws and unleash a sweeping attacks with your §mhands§r Paws.",
+  "changed_addon.ability.claws.desc": "Activate your feline claws and unleash sweeping attacks with your §mhands§r Paws.",
 
   "changed_addon.ability.custom_interaction": "Variant Custom Interaction ",
   "changed_addon.ability.custom_interaction.have_interaction": "This Variant §aHave§r Custom Interactions",
@@ -332,8 +332,6 @@
   "death.attack.untransfur_fail": "%1$s dies when the untransfurmation attempt fails",
   "death.attack.untransfur_fail.player": "%1$s dies for a fail untransfurmation attempt while fighting %2$s",
 
-  "effect.changed_addon.fatigue": "Fatigue",
-  "effect.changed_addon.fatigue.description": "Temporarily limits your abilities, causing a cooldown before you can act again.",
   "effect.changed_addon.untransfur": "§7Untransfur",
   "effect.changed_addon.untransfur.description": "Displays untransfur progress via overlay. Progress speeds up when sleeping. When complete, the untransfur is applied.",
   "effect.changed_addon.latex_solvent": "Latex Solvent",
@@ -698,5 +696,5 @@
 
   "text.changed_addon.display.hazard_body_suit.cant_have_helmet": "Mmph... it’s squishing my ears! Better not wear it.",
 
-  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Press Right Click of mouse to select the Second Ability"
+  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Press Right Mouse Button to select the Second Ability"
 }
