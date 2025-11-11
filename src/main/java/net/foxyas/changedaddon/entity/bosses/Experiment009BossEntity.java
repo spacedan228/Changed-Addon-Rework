@@ -11,6 +11,7 @@ import net.foxyas.changedaddon.entity.goals.generic.BreakBlocksAroundGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.util.ColorUtil;
+import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.*;
@@ -56,6 +57,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
@@ -508,14 +510,23 @@ public class Experiment009BossEntity extends ChangedEntity implements BossWithMu
                     ParticlesUtil.sendParticlesWithMotion(
                             this,
                             ParticleTypes.ELECTRIC_SPARK,
-                            new Vec3(0.1f, 0.1f, 0.1f),
+                            new Vec3(0, 0, 0),
                             this.position().subtract(pos),
                             5, 0.025f
                     );
                 }
             }
             this.playSound(SoundEvents.GENERIC_EXPLODE, 1, 1);
+            for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(blockPosition(), 16, 16, 1).toList()) {
+                BlockState state = level.getBlockState(pos);
+
+                if (state.is(Blocks.FIRE) || state.is(Blocks.SOUL_FIRE)) {
+                    level.removeBlock(pos, false);
+                    level.levelEvent(1009, pos, 0); // Partículas e som de "extinguir fogo"
+                }
+            }
         }
+
         super.die(damageSource);
     }
 
