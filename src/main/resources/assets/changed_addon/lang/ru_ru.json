@@ -380,7 +380,7 @@
   "entity.changed_addon.mirror_white_tiger": "Зеркальный белый тигр",
   "entity.changed_addon.prototype": "Прототип",
   "entity.changed_addon.prototype.deposit_type.switch": "Переключить тип депозита на %s",
-  "entity.changed_addon.protogen": "Protogen",
+  "entity.changed_addon.protogen": "Протоген",
   "entity.changed_addon.puro_kind_female": "Пуро-подобный - самка",
   "entity.changed_addon.puro_kind_male": "Пуро-подобный - самец",
   "entity.changed_addon.reyn": "Reyn",
@@ -521,14 +521,17 @@
   "item.changed_addon.fengqi_wolf_spawn_egg": "Яйцо призыва Волк Фэн Ци",
   "item.changed_addon.foxta_foxy_spawn_egg": "Яйцо призыва Лиса Фокста",
   "item.changed_addon.hayden_fennec_fox_spawn_egg": "Яйцо призыва Фенек Хайден",
+  "item.changed_addon.latex_border_collie_spawn_egg": "Яйцо призыва Латексный Бордер-Колли",
   "item.changed_addon.latex_calico_cat_spawn_egg": "Яйцо призыва Латексный калико-кот",
   "item.changed_addon.latex_dazed_spawn_egg": "Яйцо призыва Dazed Латекс",
   "item.changed_addon.latex_dragon_snow_leopard_shark_spawn_egg": "Яйцо призыва Латексный снежный-дракон леопард-акула",
+  "item.changed_addon.latex_kayla_shark_spawn_egg": "Яйцо призыва Латексная Кайла Акула",
   "item.changed_addon.latex_kitsune_female_spawn_egg": "Яйцо призыва Латексный кицунэ - самка",
   "item.changed_addon.latex_kitsune_male_spawn_egg": "Яйцо призыва Латексный кицунэ - самец",
   "item.changed_addon.latex_snep_spawn_egg": "Яйцо призыва Латексный снежный барс",
   "item.changed_addon.latex_snow_fox_female_spawn_egg": "Яйцо призыва Латексная снежная лисица",
   "item.changed_addon.latex_snow_fox_male_spawn_egg": "Яйцо призыва Латексный снежный лис",
+  "item.changed_addon.latex_snow_fox_foxyas_spawn_egg": "Яйцо призыва Латексный снежный лис Foxyas",
   "item.changed_addon.latex_snow_leopard_partial_spawn_egg": "Яйцо призыва Частичный снежный барс",
   "item.changed_addon.latex_squid_tiger_shark_spawn_egg": "Яйцо призыва Латексная кальмар-тигровая акула",
   "item.changed_addon.latex_wind_cat_female_spawn_egg": "Яйцо призыва Латексная ветряная кошка",
@@ -545,7 +548,8 @@
   "item.changed_addon.mongoose_spawn_egg": "Яйцо призыва Мангуст",
   "item.changed_addon.partial_snow_leopard_spawn_egg": "Яйцо призыва Частичный снежный барс",
   "item.changed_addon.pink_cyan_skunk_spawn_egg": "Яйцо призыва Розово-голубой скунс",
-  "item.changed_addon.protogen_spawn_egg": "Яйцо призыва Protogen",
+  "item.changed_addon.protogen_spawn_egg": "Яйцо призыва Протоген",
+  "item.changed_addon.protogen_0senia0_spawn_egg": "Яйцо призыва Протоген 0senia0",
   "item.changed_addon.prototype_spawn_egg": "Яйцо призыва Prototype",
   "item.changed_addon.puro_kind_female_spawn_egg": "Яйцо призыва Пуро-подобный - самка",
   "item.changed_addon.puro_kind_male_spawn_egg": "Яйцо призыва Пуро-подобный - самец",
@@ -598,7 +602,7 @@
   "item.changed_addon.opened_canned_soup": "Открытый консервированный суп",
   "item.changed_addon.empty_can": "Пустая консерва",
 
-  "item.changed_addon.latex_syringe.tooltip": "Удерживайте §r§6<Shift>§r чтобы показать статистики %s Трансфура",
+  "item.changed_addon.latex_syringe.tooltip": "Удерживайте §r§6<Shift>§r чтобы показать статистики %s формы",
 
   "item.minecraft.lingering_potion.effect.litix_cammonia_effect": "Долгодействующее зелье Литикс-Камонии",
   "item.minecraft.lingering_potion.effect.transfur_sickness_potion": "Долгодействующее зелье болезни трансфурмации",
@@ -621,6 +625,7 @@
   "key.changed_addon.turn_off_transfur": "Отключить трансфурмацию",
   "key.changed_addon.turn_off_transfur.grab_safe_mode": "Вы установили дружеский захват на %s",
   "key.changed_addon.turn_off_transfur.safe_mode": "Вы установили атаку трансфурмации на %s",
+  "key.changed_addon.use_second_ability": "Использовать Второй Вариант Способности",
 
   "subtitles.armor_equip": "Экипировка брони",
   "subtitles.block.plushes.sfx": "Писк плюшевой игрушки",
@@ -645,5 +650,57 @@
   "text.changed_addon.land_speed": "Скорость на суше \u003d %s",
   "text.changed_addon.legs": "Количество ног \u003d %s",
   "text.changed_addon.swim_speed": "Скорость плавания \u003d %s",
-  "text.changed_addon.miningStrength": "Сила копания: %s"
+  "text.changed_addon.miningStrength": "Сила копания: %s",
+
+  "text.changed_addon.display.hazard_body_suit.cant_have_helmet": "Мфф... Уши не влазят! Лучше не надевать это.",
+
+  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Нажмите правую кнопку мыши чтобы выбрать Вторую Способность",
+  
+  "advancements.cuddles_of_eternal_night.title": "Это... сон?",
+  "advancements.cuddles_of_eternal_night.descr": "Объятия Вечной Ночи... Не стоило тебе прижимать плюшевую игрушку к себе. Спи спокойно... навсегда.",
+
+  "attribute.changed_addon.latex_solvent_damage_multiplier": "Множитель урона растворителя латекса",
+
+  "block.changed_addon.cover_block": "Покрывающий блок",
+  "block.changed_addon.dark_latex_cover_block": "Покрывающий блок тёмного латекса",
+  "block.changed_addon.white_latex_cover_block": "Покрывающий блок белого латекса",
+  "block.changed_addon.potted_luminara_bloom": "Цветочный горшок с Люминарой",
+  "block.changed_addon.timed_keypad.info": "Таймер установлен: (%s) тиков",
+  "block.changed_addon.dark_latex_wolf_plushy": "Плюшевый Тёмный Волк из латекса",
+
+  "changed_addon.ability.custom_interaction.have_interaction.avali.extra": "Масштаб выбранного: %s",
+  "changed_addon.ability.custom_interaction.have_interaction.luminara_beast": "Этот вариант позволяет включать или выключать свечение частиц.",
+  "changed_addon.ability.custom_interaction.have_interaction.luminara_beast.extra": "Излучение частиц сейчас установлено на %s",
+  "changed_addon.ability.custom_interaction.have_interaction.luminara_beast.action": "Излучение частиц изменено на %s",
+  "changed_addon.ability.custom_interaction.have_interaction.latex_kayla_shark.action": "Состояние свечения установлено на %s",
+
+  "changed_addon.ability.pollen_carry": "Перенос пыльцы",
+  "changed_addon.ability.pollen_carry.description": "Позволяет собирать пыльцу и разносить её по близлежащим растениям, помогая им расти.",
+  "changed_addon.ability.pollen_carry.display.can": "Я собрал немного пыльцы!",
+  "changed_addon.ability.pollen_carry.display.cant": "Похоже, с этого я не смогу взять пыльцу.",
+
+  "effect.changed_addon.fatigue": "Усталость",
+  "effect.changed_addon.fatigue.description": "Временно ограничивает ваши способности, добавляя задержку перед следующими действиями.",
+  "effect.changed_addon.latex_strength": "Сила трансфура",
+  "effect.changed_addon.latex_strength.description": "Увеличивает урон существ Changed при атаке гуманоидов. Чем выше уровень, тем сильнее эффект трансфура.",
+  "effect.changed_addon.latex_tolerance_boost": "Повышенная устойчивость к латексу",
+  "effect.changed_addon.latex_tolerance_boost.description": "Повышает устойчивость к воздействию латекса, замедляя начало заражения.",
+  "effect.changed_addon.latex_exposure.description": "Повышает уязвимость к латексным атакам и эффектам. Чем выше воздействие, тем быстрее может развиться инфекция.",
+  "effect.changed_addon.pacified.description": "Успокаивает агрессивных существ. Пока эффект действует, они не будут нападать.",
+
+  "enchantment.changed_addon.transfur_aspect": "Аспект трансфура",
+  "enchantment.changed_addon.transfur_aspect.desc": "Наносит трансфур-урон гуманоидным существам, тип инфекции зависит от формы атакующего.",
+  "enchantment.changed_addon.transfur_aspect.jei_desc": "Наносит %1$s трансфур-урона гуманоидным существам, тип инфекции определяется формой атакующего.",
+
+  "entity.changed_addon.latex_border_collie": "Латексный Бордер-Колли",
+  "entity.changed_addon.latex_kayla_shark": "Латексная акула Кайла",
+  "entity.changed_addon.latex_snow_fox_foxyas": "Foxyas — Латексная снежная лиса",
+  "entity.changed_addon.protogen_0senia0": "Протоген 0senia0",
+
+  "item.changed_addon.anti_latex_base.description": "Создано из латексной основы и чего-то ещё...",
+  "item.changed_addon.experiment_009_dna.description": "§3Странная сфера...",
+  "item.changed_addon.experiment_10_dna.description": "§4Странная сфера...",
+  "item.changed_addon.hazard_body_suit": "Защитный костюм",
+  "item.changed_addon.red_latex_goo.description": "§4Странная субстанция...",
+  "item.changed_addon.transfur_totem.no_form_linked": "§6Форма не привязана"
 }
