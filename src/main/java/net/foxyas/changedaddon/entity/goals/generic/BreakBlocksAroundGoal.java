@@ -28,6 +28,10 @@ public class BreakBlocksAroundGoal extends Goal {
             return false;
         }
 
+        if (mob.getTarget() == null) {
+            return false;
+        }
+
 
         if (mob instanceof Experiment009BossEntity experiment009BossEntity) {
             if (experiment009BossEntity.isPhase2()) {
@@ -39,7 +43,7 @@ public class BreakBlocksAroundGoal extends Goal {
                     return false;
                 }
 
-                if (mob.getDeltaMovement().length() > 0) {
+                if (mob.getDeltaMovement().length() > 0.05) {
                     if (mob.horizontalCollision || mob.verticalCollision) {
                         return true;
                     }
@@ -55,7 +59,7 @@ public class BreakBlocksAroundGoal extends Goal {
                     return false;
                 }
 
-                if (mob.getDeltaMovement().length() > 0) {
+                if (mob.getDeltaMovement().length() > 0.05) {
                     if (mob.horizontalCollision || mob.verticalCollision) {
                         return true;
                     }
@@ -71,7 +75,7 @@ public class BreakBlocksAroundGoal extends Goal {
             return false;
         }
 
-        if (mob.getDeltaMovement().length() > 0) {
+        if (mob.getDeltaMovement().length() > 0.05) {
             if (mob.horizontalCollision || mob.verticalCollision) return true;
         }
 

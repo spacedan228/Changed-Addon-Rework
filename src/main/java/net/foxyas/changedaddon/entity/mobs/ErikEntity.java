@@ -97,4 +97,9 @@ public class ErikEntity extends Monster {
     public @NotNull SoundEvent getDeathSound() {
         return SoundEvents.GENERIC_DEATH;
     }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+    }
 }

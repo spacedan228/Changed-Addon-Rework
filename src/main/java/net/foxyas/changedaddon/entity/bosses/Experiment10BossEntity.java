@@ -61,6 +61,7 @@ import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
@@ -386,7 +387,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         SetAttack(this);
         SetSpeed(this);
         TpEntity(this);
-        CrawlSystem(this.getTarget());
+        crawlSystem(this.getTarget());
         thisBurstAttack();
     }
 
@@ -398,13 +399,25 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
 
-    public void CrawlSystem(LivingEntity target) {
+    public void crawlSystem(LivingEntity target) {
         if (target != null) {
             setCrawlingPoseIfNeeded(target);
             crawlToTarget(target);
         } else {
-            if (!this.isSwimming() && !this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ())).isAir()) {
-                this.setPose(Pose.SWIMMING);
+            Pose currentPose = this.getPose();
+            Pose safePose = currentPose;
+
+            if (!this.canEnterPose(currentPose)) {
+                if (this.canEnterPose(Pose.CROUCHING)) {
+                    safePose = Pose.CROUCHING;
+                } else if (this.canEnterPose(Pose.SWIMMING)) {
+                    safePose = Pose.SWIMMING;
+                }
+            }
+
+            if (safePose != currentPose) {
+                this.setPose(safePose);
+                //this.refreshDimensions();
             }
         }
     }

@@ -6,6 +6,7 @@ import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedDamageSources;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -118,6 +119,16 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
     @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
         return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ResourceLocation.parse("changed:humanoids")));
+    }
+
+    @Override
+    public void checkDespawn() {
+        super.checkDespawn();
+    }
+
+    @Override
+    protected boolean shouldDespawnInPeaceful() {
+        return false;
     }
 
     @Override
@@ -263,6 +274,14 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
             return super.hurt(source, amount * 0.5f);
         }
         return super.hurt(source, amount);
+    }
+
+    @Override
+    public boolean isDamageSourceBlocked(@NotNull DamageSource pDamageSource) {
+        if (pDamageSource == ChangedDamageSources.ELECTROCUTION) {
+            return true;
+        }
+        return super.isDamageSourceBlocked(pDamageSource);
     }
 
     @Override

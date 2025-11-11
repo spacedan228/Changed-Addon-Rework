@@ -52,13 +52,22 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     }
 
     private void dodgeAwayFromAttacker(Entity dodger, Entity attacker) {
-        Vec3 motion = attacker.position().subtract(dodger.position()).scale(-0.25);
+        Vec3 attackerPosition = attacker.position();
+        Vec3 dodgerPosition = dodger.position();
+
+        Vec3 rawMotion = attackerPosition.subtract(dodgerPosition).scale(-0.25);
+        Vec3 motion = divideVec(rawMotion, Math.max(dodger.distanceTo(attacker), 1d));
         if (dodger instanceof ServerPlayer serverPlayer) {
             serverPlayer.setDeltaMovement(motion.x, motion.y, motion.z);
             serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer.getId(), serverPlayer.getDeltaMovement()));
         } else {
             dodger.setDeltaMovement(motion.x, motion.y, motion.z);
         }
+    }
+
+    private static Vec3 divideVec(Vec3 vec3, double value) {
+        double vecX = vec3.x, vecY = vec3.y, vecZ = vec3.z;
+        return new Vec3(vecX / value, vecY / value, vecZ / value);
     }
 
 
@@ -128,7 +137,8 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     public void subDodgeAmount() {
         if (dodgeAmount > 0) dodgeAmount--;
-        if (dodgeAmount <= 0 && (this.getCanDodgeTicks() > 0 && this.getDodgeType() instanceof CounterDodgeType)) this.canDodgeTicks = 0;
+        if (dodgeAmount <= 0 && (this.getCanDodgeTicks() > 0 && this.getDodgeType() instanceof CounterDodgeType))
+            this.canDodgeTicks = 0;
     }
 
     public DodgeType getDodgeType() {

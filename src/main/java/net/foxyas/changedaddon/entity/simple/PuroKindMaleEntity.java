@@ -90,7 +90,6 @@ public class PuroKindMaleEntity extends AbstractDarkLatexWolf {
         return HairStyle.Collection.getAll();
     }
 
-    @Override
     public Color3 getHairColor(int layer) {
         return Color3.DARK;
     }

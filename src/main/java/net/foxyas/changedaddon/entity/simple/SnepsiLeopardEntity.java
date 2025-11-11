@@ -82,7 +82,6 @@ public class SnepsiLeopardEntity extends LatexSnowLeopardMale {
         return Color3.GREEN;
     }
 
-    @Override
     public Color3 getHairColor(int layer) {
         return Color3.GREEN;
     }

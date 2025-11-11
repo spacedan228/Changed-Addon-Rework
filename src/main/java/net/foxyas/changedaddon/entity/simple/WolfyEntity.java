@@ -1,7 +1,9 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variants.VariantExtraStats;
@@ -18,10 +20,13 @@ import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -65,10 +70,10 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         @SubscribeEvent
         public static void onEntityAttacked(LivingAttackEvent event) {
             Entity entity = event.getEntity();
-            if(!(entity instanceof Player player)) return;
+            if (!(entity instanceof Player player)) return;
 
             TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-            if(instance == null || !instance.is(ChangedAddonTransfurVariants.WOLFY)) return;
+            if (instance == null || !instance.is(ChangedAddonTransfurVariants.WOLFY)) return;
 
             DamageSource damagesource = event.getSource();
             if (damagesource instanceof EntityDamageSource _entityDamageSource && _entityDamageSource.isThorns()) {
@@ -118,6 +123,15 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
 
     @Override
     public boolean tryAbsorbTarget(LivingEntity target, IAbstractChangedEntity source, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions) {
+        boolean thisOrUnderlyingPlayerHasEffect = (
+                (
+                        this.getUnderlyingPlayer() != null && this.getUnderlyingPlayer().hasEffect(MobEffects.DAMAGE_BOOST)
+                ) || this.hasEffect(MobEffects.DAMAGE_BOOST)
+        );
+
+        if (thisOrUnderlyingPlayerHasEffect || target.hasEffect(ChangedAddonMobEffects.LATEX_EXPOSURE.get())) {
+            return super.tryAbsorbTarget(target, source, amount, possibleMobFusions);
+        }
         return false;
     }
 
@@ -127,14 +141,44 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
+    public boolean variantOverrideSwim() {
+        if (this.maybeGetUnderlying() instanceof Player player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            return transfurVariant != null && player.isEyeInFluid(FluidTags.LAVA);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean variantOverrideSwimUpdate() {
+        if (this.maybeGetUnderlying() instanceof Player player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            return transfurVariant != null && player.isEyeInFluid(FluidTags.LAVA);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean variantOverrideIsInWater() {
+        if (this.maybeGetUnderlying() instanceof Player player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            return transfurVariant != null && player.getLevel().getFluidState(player.blockPosition()).is(FluidTags.LAVA);
+        }
+
+        return false;
+    }
+
+    @Override
     public TransfurMode getTransfurMode() {
         return TransfurMode.NONE;
     }
 
-	/*@Override
-	public LatexType getLatexType() {
-		return LatexType.DARK_LATEX;
-	}*/
+    @Override
+    public boolean isAlliedTo(Entity entity) {
+        return super.isAlliedTo(entity);
+    }
 
     @Override
     public HairStyle getDefaultHairStyle() {
@@ -145,7 +189,6 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         return HairStyle.Collection.getAll();
     }
 
-    @Override
     public Color3 getHairColor(int layer) {
         return Color3.DARK;
     }

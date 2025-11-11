@@ -69,7 +69,6 @@ public class LatexSquidTigerSharkEntity extends AbstractAquaticEntity {
         return HairStyle.Collection.MALE.getStyles();
     }
 
-    @Override
     public Color3 getHairColor(int layer) {
         return Color3.WHITE;
     }
