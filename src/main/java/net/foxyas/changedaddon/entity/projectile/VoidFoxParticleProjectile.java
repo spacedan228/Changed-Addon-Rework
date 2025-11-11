@@ -69,7 +69,7 @@ public class VoidFoxParticleProjectile extends AbstractVoidFoxParticleProjectile
 
     @Override
     public boolean isPickable() {
-        return true;
+        return super.isPickable();
     }
 
     @Override

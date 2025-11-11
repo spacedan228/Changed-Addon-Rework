@@ -13,19 +13,24 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 @Mixin(value = GrabEntityAbilityInstance.class, remap = false)
@@ -199,5 +204,48 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         }
         // comportamento normal
         return ProcessTransfur.progressTransfur(grabbedEntity, damage, variant, ctx);
+    }
+
+
+    /**
+     * Modify the computed keyStrength value during escape handling.
+     * You can adjust or completely override it here.
+     *
+     * @param original The computed keyStrength value
+     * @return The modified keyStrength
+     */
+    @ModifyVariable(
+            method = "handleEscape",
+            at = @At(
+                    value = "STORE",
+                    ordinal = 0 // ordinal 0 = first float stored in that method
+            ),
+            name = "keyStrength"
+    )
+    private float changedaddon$modifyKeyStrength(float original) {
+        if (this.grabbedEntity != null) {
+            //Todo New GrabResistance Enchantment or attribute
+
+            float analogicPercent = 0;
+
+            List<EquipmentSlot> armorSlots = Arrays.stream(EquipmentSlot.values()).filter((equipmentSlot -> equipmentSlot.getType() == EquipmentSlot.Type.ARMOR)).toList();
+
+            for (EquipmentSlot slot : armorSlots) {
+                ItemStack itemBySlot = this.grabbedEntity.getItemBySlot(slot);
+                int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.THORNS, itemBySlot);
+                if (enchantmentLevel > 0) {
+                    analogicPercent += (float) enchantmentLevel / Enchantments.THORNS.getMaxLevel();
+                }
+            }
+
+            if (analogicPercent > 0) {
+                return original * (1 + analogicPercent);
+            } else {
+                return original;
+            }
+        }
+
+
+        return original;
     }
 }

@@ -187,12 +187,14 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
         if (this.tickCount > 400) {
             ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
             this.discard();
+            return;
         }
 
         if (this.lifeSpamNearTarget >= 100) {
             ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
             this.lifeSpamWithoutTarget = 0;
             this.discard();
+            return;
         }
 
 
@@ -201,6 +203,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
             if (this.onGround) {
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
+                return;
             }
             this.lifeSpamWithoutTarget = 0;
             double dx = targetPos.x() - getX();
@@ -235,16 +238,19 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
             if (getOwner() != null && livingTarget.is(getOwner())) {
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
+                return;
             }
             if (this.onGround) {
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
+                return;
             }
             this.lifeSpamWithoutTarget = 0;
             if (livingTarget instanceof Player player) {
                 if (player.isCreative() || player.isSpectator()) {
                     ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                     this.discard();
+                    return;
                 }
             }
             double dx = livingTarget.getX() - getX();
@@ -276,11 +282,13 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.lifeSpamWithoutTarget = 0;
                 this.discard();
+                return;
             }
         } else if (!level.isClientSide() && (this.getOwner() == null
                 || (this.getOwner() instanceof LivingEntity livingEntity && livingEntity.isDeadOrDying()))) {
             ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
             this.discard();
+            return;
         }
 
         ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.3f, 0.3f, 0.3f, 1, 0.005f);
@@ -348,6 +356,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
                 livingEntity.hurtDuration = 1;
                 livingEntity.hurtDir = 1;
                 livingEntity.hurtTime = 1;
+                livingEntity.hurtMarked = false;
             }
         }
 
@@ -357,8 +366,10 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
             ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 5, 0.5f);
             super.onHitEntity(result);
             if (result.getEntity().hurtMarked) {
-                ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
-                this.discard();
+                if (!this.isRemoved()) {
+                    ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
+                    this.discard();
+                }
             }
         }
     }
