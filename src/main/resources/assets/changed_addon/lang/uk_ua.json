@@ -449,7 +449,7 @@
   "gui.changed_addon.catalyzer_gui.tooltip_put_the_powders_or_syringe": "Покладіть порошок або шприц",
   "gui.changed_addon.fight_to_keep_consciousness_minigame.button_fight": "           Боротися            ",
   "gui.changed_addon.fight_to_keep_consciousness_minigame.button_give_up": "     Здатися      ",
-  "gui.changed_addon.fight_to_keep_consciousness_minigame.label_text": "У вас залишилося %s тіківб ПОСПІШАЙТЕ!",
+  "gui.changed_addon.fight_to_keep_consciousness_minigame.label_text": "У вас залишилося %s тіків, ПОСПІШАЙТЕ!",
   "gui.changed_addon.informant_gui.form": "ID форми",
   "gui.changed_addon.informant_gui.label_empty": "?",
   "gui.changed_addon.informant_gui.tooltip_put_a_syringe_with_a_form": "Покладіть шприц з формою",
