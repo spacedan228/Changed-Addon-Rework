@@ -14,40 +14,31 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 
 public class VoidTransformationHandler {
 
     /**
-     * Check if player is in the void and trigger transformation if conditions are met.
-     */
-    public static void handlePlayerVoid(Player player) {
-        if (player.getLevel().isClientSide) return;
-        if (player.isSpectator()) return;
-
-        // Check if player is under world min height (void)
-        if(player.getY() > player.getLevel().getMinBuildHeight() - 6f) return;
-
-        triggerVoidTransformation(player);
-    }
-
-    /**
      * Cancel void damage if player is transformed.
      */
-    public static void handleVoidDamage(LivingDamageEvent event) {
-        if (!(event.getEntity() instanceof Player player)) return;
-        if (player.isSpectator()) return;
+    public static void handleVoidDamage(LivingAttackEvent event) {
+        if (!(event.getEntity() instanceof Player player) || player.isSpectator()) return;
+
+        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+        if (instance == null || !instance.is(ChangedAddonTransfurVariants.LUMINARA_FLOWER_BEAST)
+                || !(instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast)) return;
 
         // Only cancel OUT_OF_WORLD damage
         if(event.getSource() != DamageSource.OUT_OF_WORLD) return;
 
-        triggerVoidTransformation(player);
+        triggerVoidTransformation(player, luminaraFlowerBeast);
 
-        if(isVoidForm(player)) event.setCanceled(true);
+        event.setCanceled(true);
     }
 
     /**
@@ -57,18 +48,22 @@ public class VoidTransformationHandler {
      * - Give potion effects and flight
      * - Spawn explosion-like particles
      */
-    public static void triggerVoidTransformation(Player player) {
-        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        if(instance == null || !(instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity)
-                || luminaraFlowerBeastEntity.isAwakened()) return;
+    private static void triggerVoidTransformation(Player player, LuminaraFlowerBeastEntity luminaraFlowerBeast) {
+        if(luminaraFlowerBeast.isHyperAwakened()) return;
 
-        luminaraFlowerBeastEntity.setAwakened(true);
-        if (player.getInventory().contains(new ItemStack(Items.DRAGON_BREATH))) {
-            luminaraFlowerBeastEntity.setHyperAwakened(true);
-        }
+        boolean isAwakened = luminaraFlowerBeast.isAwakened();
+        if(!isAwakened) luminaraFlowerBeast.setAwakened(true);
+
+        if (tryExtractDragonBreath(player)) {
+            luminaraFlowerBeast.setHyperAwakened(true);
+            player.level.playSound(null, player, SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 5, 1);
+        } else if(isAwakened) return;
 
         // Cancel fall/void velocity and launch player upwards
-        player.setDeltaMovement(0, 8.0, 0); // strong vertical push
+        Vec3 vec = new Vec3(0, 8, 0);
+        if(luminaraFlowerBeast.isHyperAwakened()) vec = vec.scale(1.5);
+        player.setDeltaMovement(vec); // strong vertical push
+
         player.hurtMarked = true; // force velocity update to client
         DelayedTask.schedule(20, () -> {
             // Enable flight
@@ -113,14 +108,20 @@ public class VoidTransformationHandler {
                 SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
     }
 
-    /**
-     * Check if player is in the special void form.
-     */
-    public static boolean isVoidForm(Player player) {
-        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        return instance != null
-                && instance.is(ChangedAddonTransfurVariants.LUMINARA_FLOWER_BEAST.get())
-                && instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity
-                && !luminaraFlowerBeastEntity.isAwakened();
+    private static boolean tryExtractDragonBreath(Player player){
+        Inventory inv = player.getInventory();
+        ItemStack stack;
+        for(int i = 0; i < inv.getContainerSize(); i++){
+            stack = inv.getItem(i);
+            if(!stack.is(Items.DRAGON_BREATH)) continue;
+
+            if(!player.isCreative()) {
+                stack.shrink(1);
+                if(stack.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
+            }
+            return true;
+        }
+
+        return false;
     }
 }
