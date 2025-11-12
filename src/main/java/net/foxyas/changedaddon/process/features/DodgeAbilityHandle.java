@@ -53,9 +53,12 @@ public class DodgeAbilityHandle {
                     if (!(ability instanceof DodgeAbility dodgeAbility)) continue;
                     DodgeAbilityInstance dodgeAbilityInstance = changedEntity.getAbilityInstance(dodgeAbility);
                     if (dodgeAbilityInstance == null) continue;
+                    if (dodgeAbilityInstance.projectilesImmuneTicks > 0) {
+                        event.setCanceled(true);
+                    }
 
                     if (dodgeAbilityInstance.canUse() && dodgeAbilityInstance.canKeepUsing() && dodgeAbilityInstance.isDodgeActive()) {
-                        event.setCanceled(false);
+                        event.setCanceled(true);
                         dodgeAbilityInstance.executeDodgeEffects(changedEntity, attacker);
                         dodgeAbilityInstance.executeDodgeHandle(changedEntity, attacker);
                         break;
@@ -91,8 +94,12 @@ public class DodgeAbilityHandle {
                             AbstractAbility<?> key = dodgeAbilities.getKey();
                             AbstractAbilityInstance value = dodgeAbilities.getValue();
                             if (key instanceof DodgeAbility && value instanceof DodgeAbilityInstance dodgeInstance) {
+                                if (dodgeInstance.projectilesImmuneTicks > 0) {
+                                    event.setCanceled(true);
+                                }
+
                                 if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
-                                    event.setCanceled(false);
+                                    event.setCanceled(true);
                                     dodgeInstance.executeDodgeEffects(player, attacker);
                                     dodgeInstance.executeDodgeHandle(player, attacker);
                                     break;
@@ -156,7 +163,22 @@ public class DodgeAbilityHandle {
         }
 
         if (dodge == null) {
-            return;
+            List<Map.Entry<AbstractAbility<?>, AbstractAbilityInstance>> dodgeAbilityInstances = variant.abilityInstances.entrySet().stream().filter((entrySet) -> (entrySet.getKey() instanceof DodgeAbility && entrySet.getValue() instanceof DodgeAbilityInstance)).toList();
+            if (!dodgeAbilityInstances.isEmpty()) {
+                for (Map.Entry<AbstractAbility<?>, AbstractAbilityInstance> dodgeAbilities : dodgeAbilityInstances) {
+                    AbstractAbility<?> key = dodgeAbilities.getKey();
+                    AbstractAbilityInstance value = dodgeAbilities.getValue();
+                    if (key instanceof DodgeAbility && value instanceof DodgeAbilityInstance dodgeInstance) {
+                        if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
+                            dodge = dodgeInstance;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (dodge == null) {
+                return;
+            }
         }
 
         if (!dodge.isDodgeActive())
@@ -164,6 +186,10 @@ public class DodgeAbilityHandle {
 
         if (dodge.getDodgeAmount() <= 0) {
             dodge.getController().deactivateAbility();
+            return;
+        }
+
+        if (!dodge.canUse() && !dodge.canKeepUsing()) {
             return;
         }
 

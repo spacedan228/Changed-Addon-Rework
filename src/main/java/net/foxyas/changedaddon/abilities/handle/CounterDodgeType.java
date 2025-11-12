@@ -40,10 +40,11 @@ public class CounterDodgeType extends DodgeType {
         }
 
         if (this.shouldApplyIframes(dodgeAbilityInstance, levelAccessor, dodger, attacker, dodgeType, event, causeExhaustion) && dodger != null) {
-            dodger.invulnerableTime = 20 * 3;
-            dodger.hurtDuration = 20 * 3;
+            dodger.invulnerableTime = 10;
+            dodger.hurtDuration = (int) (20 * 0.25);
             dodger.hurtTime = dodger.hurtDuration;
             dodger.hurtMarked = false;
+            dodgeAbilityInstance.projectilesImmuneTicks = 30;
         }
     }
 

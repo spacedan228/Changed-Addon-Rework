@@ -39,6 +39,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     private int maxDodgeAmount = 4;
     private boolean dodgeActive = false;
     private int dodgeRegenCooldown = defaultRegenCooldown;
+    public int projectilesImmuneTicks = 0;
     public int canDodgeTicks = 0;
 
     public DodgeAbilityInstance(AbstractAbility<?> ability, IAbstractChangedEntity entity) {
@@ -397,6 +398,11 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         } else {
             this.canDodgeTicks = INF_DODGE_TICKS;
         }
+
+        if (projectilesImmuneTicks > 0) {
+            projectilesImmuneTicks --;
+        }
+
         boolean nonHurtFrame = entity.getEntity().hurtTime <= 10 && entity.getEntity().invulnerableTime <= 10;
         if (nonHurtFrame && !isDodgeActive() && dodgeAmount < maxDodgeAmount) {
             if (dodgeRegenCooldown <= 0) {
