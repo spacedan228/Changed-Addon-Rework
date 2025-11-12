@@ -19,6 +19,7 @@ import java.util.List;
 public class TimedKeypadBlockEntity extends KeypadBlockEntity {
 
     private int timer = 0;
+    private int lastTimerSet = timer;
     private boolean canTick = false;
     private int ticks = 0;
 
@@ -33,6 +34,7 @@ public class TimedKeypadBlockEntity extends KeypadBlockEntity {
 
     public void setCanTick(boolean canTick) {
         this.canTick = canTick;
+        this.lastTimerSet = timer;
     }
 
     public boolean canTick() {
@@ -49,12 +51,22 @@ public class TimedKeypadBlockEntity extends KeypadBlockEntity {
 
     public void setTimer(int timer) {
         this.timer = Math.max(0, Math.min(timer, 1000));
+        this.lastTimerSet = timer;
+    }
+
+    public int getLastTimerSet() {
+        return lastTimerSet;
+    }
+
+    public void setLastTimerSet(int lastTimerSet) {
+        this.lastTimerSet = lastTimerSet;
     }
 
     @Override
     protected void saveAdditional(@NotNull CompoundTag tag) {
         super.saveAdditional(tag);
         tag.putInt("timer", timer);
+        tag.putInt("lastTimerSet", lastTimerSet);
         tag.putBoolean("canTick", canTick);
     }
 
@@ -62,11 +74,12 @@ public class TimedKeypadBlockEntity extends KeypadBlockEntity {
     public void load(@NotNull CompoundTag tag) {
         super.load(tag);
         if (tag.contains("timer")) timer = tag.getInt("timer");
+        if (tag.contains("lastTimerSet")) lastTimerSet = tag.getInt("lastTimerSet");
         if (tag.contains("canTick")) canTick = tag.getBoolean("canTick");
     }
 
     private void playSound(SoundEvent event, float volume, float pitch) {
-        if (this.level.getServer() != null) {
+        if (this.level != null && this.level.getServer() != null) {
             ChangedSounds.broadcastSound(this.level.getServer(), event, this.worldPosition, volume, pitch);
         }
 
@@ -124,7 +137,7 @@ public class TimedKeypadBlockEntity extends KeypadBlockEntity {
             if (timer > 0) {
                 timer--;
             } else {
-                timer = 0;
+                timer = lastTimerSet;
                 lockKeypad(level, pos, getBlockState());
                 this.playLock();
                 canTick = false;
