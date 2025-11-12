@@ -38,8 +38,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PlayMessages;
@@ -114,19 +113,15 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     @Override
     public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
         if (patter.getLevel().isClientSide()) return;
-        MobEffectInstance effect = getPatEffect(patter);
-        if (patTarget instanceof Player player) {
-            patTarget.addEffect(effect, patter);
-        } else if (patTarget instanceof ChangedEntity changedEntity) {
-            changedEntity.addEffect(effect, patter);
-        }
+
+        patTarget.addEffect(getPatEffect(patter), patter);
     }
 
     @Override
     public void WhenPattedReaction(Player patter, InteractionHand hand) {
         if (patter.getLevel().isClientSide()) return;
-        MobEffectInstance effect = getPatEffect(this);
-        patter.addEffect(effect, this);
+
+        patter.addEffect(getPatEffect(this), this);
     }
 
     @Override
@@ -153,7 +148,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     public boolean isAwakened() {
-        return this.entityData.get(AWAKENED);
+        return this.entityData.get(AWAKENED) || isHyperAwakened();
     }
 
     public void setAwakened(boolean value) {
@@ -194,17 +189,9 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     public static class TransfurEvolveEventsHandle {
 
         @SubscribeEvent
-        public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
-            if (event.phase == TickEvent.Phase.END) {
-                VoidTransformationHandler.handlePlayerVoid(event.player);
-            }
-        }
-
-        @SubscribeEvent
-        public static void onLivingDamage(LivingDamageEvent event) {
+        public static void onLivingDamage(LivingAttackEvent event) {
             VoidTransformationHandler.handleVoidDamage(event);
         }
-
     }
 
     @Override

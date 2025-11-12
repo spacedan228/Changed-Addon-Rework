@@ -74,7 +74,7 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
         }
     }
 
-    @Inject(method = "updateSwimming", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "updateSwimming", at = @At("RETURN"))
     private void customUpdateSwimming(CallbackInfo ci) {
         Player self = ((Player) (Object) this);
         if (this.overrideSwimUpdate()) {
@@ -85,7 +85,6 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
 
     @Inject(method = "updateIsUnderwater", at = @At("RETURN"), cancellable = true)
     private void customUpdateUnderwater(CallbackInfoReturnable<Boolean> cir) {
-        Player self = ((Player) (Object) this);
         Boolean returnValue = cir.getReturnValue();
         if (returnValue != null) {
             if (!returnValue) {
