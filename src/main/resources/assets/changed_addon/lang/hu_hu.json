@@ -332,8 +332,6 @@
   "death.attack.untransfur_fail": "%1$s meghalt, amikor a visszatranszfurálási kísérlet sikertelen lett",
   "death.attack.untransfur_fail.player": "%1$s meghalt, amikor a visszatranszfurálási kísérlet sikertelen lett, miközben vele harcolt: %2$s",
 
-  "effect.changed_addon.fatigue": "Kimerültség",
-  "effect.changed_addon.fatigue.description": "Ideiglenesen korlátozza a képességeidet, ami egy visszatöltési időt okoz, mielőtt újra cselekedhetnél.",
   "effect.changed_addon.untransfur": "§7Visszatranszfur",
   "effect.changed_addon.untransfur.description": "Átfedésben jeleníti meg a visszatranszfur folyamatát. A haladás felgyorsul alvás közben. Amikor befejeződött, a visszatranszfur érvénybe lép.",
   "effect.changed_addon.latex_solvent": "Latexoldás",
@@ -698,5 +696,5 @@
   
   "text.changed_addon.display.hazard_body_suit.cant_have_helmet": "Mmph... Nyomja a fülem! Jobb, ha nem veszem fel.",
   
-  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Jobb egérgombbal válassza ki a második képességet"
+  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Nyomd meg a jobb egérgombot a második képesség kiválasztásához"
 }
