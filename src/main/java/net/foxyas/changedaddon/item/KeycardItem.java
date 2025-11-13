@@ -1,10 +1,14 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
+import net.foxyas.changedaddon.item.api.ColorHolder;
 import net.ltxprogrammer.changed.block.KeypadBlock;
 import net.ltxprogrammer.changed.block.entity.KeypadBlockEntity;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -19,17 +23,16 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class KeycardItem extends Item {
-
-    public static final byte[] DEFAULT_CODE = {};
-
+public class KeycardItem extends Item implements ColorHolder {
     public KeycardItem(Properties pProperties) {
         super(pProperties);
     }
@@ -48,6 +51,24 @@ public class KeycardItem extends Item {
         return tag != null && tag.contains("StoredCode") ? tag.getByteArray("StoredCode") : null;
     }
 
+    public static int getBottomColor(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains("BottomColor") ? tag.getInt("BottomColor") : 0xFFFFFF; // branco
+    }
+
+    public static int getTopColor(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains("TopColor") ? tag.getInt("TopColor") : 0xFFFFFF; // vermelho
+    }
+
+    public static void setBottomColor(ItemStack stack, int color) {
+        stack.getOrCreateTag().putInt("BottomColor", color);
+    }
+
+    public static void setTopColor(ItemStack stack, int color) {
+        stack.getOrCreateTag().putInt("TopColor", color);
+    }
+
     @Override
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         byte[] code = getCode(stack);
@@ -63,7 +84,8 @@ public class KeycardItem extends Item {
     @Override
     public @NotNull ItemStack getDefaultInstance() {
         ItemStack defaultInstance = super.getDefaultInstance();
-        setCode(defaultInstance, DEFAULT_CODE);
+        setTopColor(defaultInstance, -1);
+        setBottomColor(defaultInstance, new Color(255, 0, 0).getRGB());
         return defaultInstance;
     }
 
@@ -83,14 +105,12 @@ public class KeycardItem extends Item {
             return InteractionResult.PASS;
 
         byte[] itemCode = getCode(itemInHand);
-        if (itemCode == null || Arrays.equals(itemCode, DEFAULT_CODE)) {
+        if (itemCode == null) {
             if (keypadEntity.code != null && player.isShiftKeyDown()) {
                 setCode(itemInHand, keypadEntity.code);
                 playWrite(level, pos);
                 return InteractionResult.sidedSuccess(level.isClientSide());
             }
-
-
             return InteractionResult.PASS;
         }
 
@@ -131,4 +151,27 @@ public class KeycardItem extends Item {
 
     }
 
+    @Override
+    public void registerCustomColors(ItemColors itemColors, RegistryObject<Item> item) {
+        itemColors.register(
+                (stack, tintIndex) -> {
+                    /*
+                     * tintIndex 0 = layer0 (base/letters part)
+                     * tintIndex 1 = layer1 (top)
+                     * tintIndex 2 = layer2 (bottom)
+                     */
+
+                    if (tintIndex == 2) {
+                        // Cor da parte de baixo
+                        return getBottomColor(stack);
+                    } else if (tintIndex == 1) {
+                        // Cor da parte de cima
+                        return getTopColor(stack);
+                    }
+
+                    return -1; // fallback default
+                },
+                item.get()
+        );
+    }
 }

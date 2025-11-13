@@ -4,7 +4,9 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
 import net.foxyas.changedaddon.recipes.UnifuserRecipe;
 import net.foxyas.changedaddon.recipes.special.HaydenTransfurRecipe;
+import net.foxyas.changedaddon.recipes.special.KeycardColorRecipe;
 import net.foxyas.changedaddon.recipes.special.LaserPointerColoringRecipe;
+import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,6 +25,8 @@ public class ChangedAddonRecipeTypes {
     // Registrar suas receitas especiais
     public static final RegistryObject<RecipeSerializer<?>> LAZER_POINTER_COLORING =
             SERIALIZERS.register("laser_pointer_coloring", LaserPointerColoringRecipe.Serializer::new);
+    public static final RegistryObject<RecipeSerializer<?>> KEYCARD_COLOR =
+            SERIALIZERS.register("keycard_coloring",  KeycardColorRecipe.Serializer::new);
     public static final RegistryObject<RecipeSerializer<?>> HAYDEN_SYRINGE_RECIPE =
             SERIALIZERS.register("hayden_syringe_recipe", HaydenTransfurRecipe.Serializer::new);
     public static final RegistryObject<RecipeSerializer<CatalyzerRecipe>> CATALYZER_RECIPE =

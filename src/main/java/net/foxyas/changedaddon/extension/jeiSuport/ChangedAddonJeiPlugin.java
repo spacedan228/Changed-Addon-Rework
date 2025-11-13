@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.extension.jeiSuport;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -13,8 +14,10 @@ import net.foxyas.changedaddon.extension.jeiSuport.guisHandlers.FoxyasGuiContain
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
 import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
 import net.foxyas.changedaddon.recipes.UnifuserRecipe;
+import net.foxyas.changedaddon.recipes.special.KeycardColorRecipe;
 import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.item.Syringe;
@@ -26,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.ArmorDyeRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.jetbrains.annotations.NotNull;
@@ -62,6 +66,8 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
         List<UnifuserRecipe> allUnifuserRecipes = recipeManager.getAllRecipesFor(UnifuserRecipe.Type.INSTANCE);
         List<UnifuserRecipe> publicUnifuserRecipes = allUnifuserRecipes.stream().filter((unifuserRecipe) -> !unifuserRecipe.isRecipeHided()).toList();
         registration.addRecipes(JeiUnifuser_Type, publicUnifuserRecipes);
+
+        registration.addRecipes(KeycardColorRecipe.Type.INSTANCE, );
 
         //Items Info
         ChangedAddonJeiDescriptionHandler.registerDescriptions(registration);

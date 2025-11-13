@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.init;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.renderer.items.LaserItemDynamicRender;
 import net.foxyas.changedaddon.item.*;
+import net.foxyas.changedaddon.item.api.ColorHolder;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.foxyas.changedaddon.item.clothes.DyeableShorts;
@@ -18,12 +19,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -289,6 +288,15 @@ public class ChangedAddonItems {
                     (stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
             LaserItemDynamicRender.DynamicLaserColor(LASER_POINTER);
         });
+    }
+
+    @SubscribeEvent
+    public static void onItemColorsInit(ColorHandlerEvent.Item event) {
+        for (RegistryObject<Item> itemRegistryObject : REGISTRY.getEntries()) {
+            if (itemRegistryObject.isPresent() && itemRegistryObject.get() instanceof ColorHolder colorHolder) {
+                colorHolder.registerCustomColors(event.getItemColors(), itemRegistryObject);
+            }
+        }
     }
 
     private static RegistryObject<BlockItem> block(RegistryObject<? extends Block> block, CreativeModeTab tab) {

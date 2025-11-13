@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "changed_addon:item/keycard_base",
+    "layer1": "changed_addon:item/keycard_top",
+    "layer2": "changed_addon:item/keycard_bottom"
+  }
+}
