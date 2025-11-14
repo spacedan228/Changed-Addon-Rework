@@ -291,6 +291,8 @@
   "changed_addon.jei_descriptions.pot_with_cammonia": "Grants enough Untransfur Effect to fully reverse your transformation when consumed.",
   "changed_addon.jei_descriptions.luminara.riddle": "Where the world ends and the void devours all, \nthe beast must cast itself into the abyss. \nIn the silence where no flame dares burn, its soul is torn and remade. \nYet beware the breath of the dragon— \nfor those who fall touched by its venom do not merely evolve, \nbut awaken in Hyper radiance, burning brighter than the abyss itself.",
 
+  "jei.changed_addon.keycard_color": "Keycard Coloring",
+
   "changed_addon.latex_syringe.not_valid": "You hesitate. Something within warns you not to release what's inside.",
 
   "changed_addon.latex_totem.not_valid": "Totem reacted §cnegatively§r to your §bDNA§r",
@@ -535,6 +537,10 @@
   "item.changed_addon.keycard": "Keycard",
   "item.changed_addon.keycard.desc.nocode": "No code stored",
   "item.changed_addon.keycard.desc.code": "Code: %s",
+  "item.changed_addon.keycard.desc.color_top": "Colored Top",
+  "item.changed_addon.keycard.desc.color_top.data": "Color: %s",
+  "item.changed_addon.keycard.desc.color_bottom": "Colored Bottom",
+  "item.changed_addon.keycard.desc.color_bottom.data": "Color: %s",
   "item.changed_addon.keycard.message.used.success": "Code inserted automatically!",
 
   "item.changed_addon.laethin": "Laethin",
@@ -701,9 +707,5 @@
 
   "text.changed_addon.display.hazard_body_suit.cant_have_helmet": "Mmph... it’s squishing my ears! Better not wear it.",
 
-  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Press Right Mouse Button to select the Second Ability",
-
-
-
-  "jei.changed_addon.keycard_color": "Keycard Coloring"
+  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Press Right Mouse Button to select the Second Ability"
 }

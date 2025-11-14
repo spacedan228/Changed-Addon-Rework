@@ -12,6 +12,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -55,7 +56,7 @@ public class KeycardItem extends Item implements ColorHolder {
         return tag != null && tag.contains("StoredCode") ? tag.getByteArray("StoredCode") : null;
     }
 
-    public static boolean hasTopColor(ItemStack stack){
+    public static boolean hasTopColor(ItemStack stack) {
         CompoundTag tag = stack.getTag();
         return tag != null && tag.contains(TOP_COLOR) && tag.getInt(TOP_COLOR) != DEF_TOP;
     }
@@ -69,7 +70,7 @@ public class KeycardItem extends Item implements ColorHolder {
         stack.getOrCreateTag().putInt(TOP_COLOR, color);
     }
 
-    public static boolean hasBottomColor(ItemStack stack){
+    public static boolean hasBottomColor(ItemStack stack) {
         CompoundTag tag = stack.getTag();
         return tag != null && tag.contains(BOTTOM_COLOR) && tag.getInt(BOTTOM_COLOR) != DEF_BOTTOM;
     }
@@ -92,6 +93,22 @@ public class KeycardItem extends Item implements ColorHolder {
         } else {
             tooltip.add(new TranslatableComponent("item.changed_addon.keycard.desc.nocode")
                     .withStyle(ChatFormatting.RED));
+        }
+
+        if (flag.isAdvanced()) {
+            if (getTopColor(stack) != DEF_TOP) {
+                tooltip.add((new TranslatableComponent("item.changed_addon.keycard.desc.color_top.data", String.format("#%06X", getTopColor(stack)))).withStyle(ChatFormatting.GRAY));
+            }
+            if (getBottomColor(stack) != DEF_BOTTOM) {
+                tooltip.add((new TranslatableComponent("item.changed_addon.keycard.desc.color_bottom.data", String.format("#%06X", getBottomColor(stack)))).withStyle(ChatFormatting.GRAY));
+            }
+        } else {
+            if (getTopColor(stack) != DEF_TOP) {
+                tooltip.add((new TranslatableComponent("item.changed_addon.keycard.desc.color_top")).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            }
+            if (getBottomColor(stack) != DEF_BOTTOM) {
+                tooltip.add((new TranslatableComponent("item.changed_addon.keycard.desc.color_bottom")).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            }
         }
     }
 
@@ -145,6 +162,7 @@ public class KeycardItem extends Item implements ColorHolder {
         BlockPos pos = context.getClickedPos();
         BlockState blockState = level.getBlockState(pos);
         BlockEntity blockEntity = level.getBlockEntity(pos);
+        InteractionHand hand = context.getHand();
 
         if (player == null) return InteractionResult.PASS;
 
@@ -152,30 +170,40 @@ public class KeycardItem extends Item implements ColorHolder {
                 !(blockEntity instanceof KeypadBlockEntity keypadEntity))
             return InteractionResult.PASS;
 
+        if (blockState.getValue(KeypadBlock.POWERED)) {
+            return InteractionResult.PASS;
+        }
+
         byte[] itemCode = getCode(stack);
+        boolean clientSide = level.isClientSide();
         if (itemCode == null) {
             if (keypadEntity.code != null && player.isShiftKeyDown()) {
                 setCode(stack, keypadEntity.code);
                 playWrite(level, pos);
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                player.swing(hand);
+                return InteractionResult.sidedSuccess(clientSide);
             }
             return InteractionResult.PASS;
         }
-
         // Converte o código para lista de bytes (se o keypad usar isso)
         List<Byte> codeList = new ArrayList<>();
         for (byte b : itemCode)
             codeList.add(b);
 
         // Agora insere o código automaticamente no keypad
-        if (!level.isClientSide) {
-            keypadEntity.useCode(codeList);
-            player.displayClientMessage(
-                    new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN),
-                    true
-            );
+        if (!clientSide) {
+            if (!blockState.getValue(KeypadBlock.POWERED)) {
+                keypadEntity.useCode(codeList);
+                player.displayClientMessage(
+                        new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN),
+                        true
+                );
+                player.swing(hand);
+                return InteractionResult.sidedSuccess(false);
+            }
         }
-        return super.onItemUseFirst(stack, context);
+
+        return InteractionResult.sidedSuccess(clientSide);
     }
 
     private static void playLock(Level level, BlockPos pos) {
