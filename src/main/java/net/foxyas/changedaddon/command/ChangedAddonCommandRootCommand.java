@@ -8,7 +8,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.block.advanced.TimedKeypad;
+import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.variant.IDynamicCoatColors;
@@ -128,7 +128,7 @@ public class ChangedAddonCommandRootCommand {
                             }
 
                             Block block = blockItem.getBlock();
-                            if (!(block instanceof TimedKeypad)) {
+                            if (!(block instanceof TimedKeypadBlock)) {
                                 source.sendFailure(new TextComponent("The block must be a TimedKeypad."));
                                 return 0;
                             }

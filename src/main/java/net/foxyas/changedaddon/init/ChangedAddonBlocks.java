@@ -5,7 +5,7 @@ import net.foxyas.changedaddon.block.*;
 import net.foxyas.changedaddon.block.MultifaceBlock;
 import net.foxyas.changedaddon.block.advanced.HandScanner;
 import net.foxyas.changedaddon.block.advanced.PawsScanner;
-import net.foxyas.changedaddon.block.advanced.TimedKeypad;
+import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -69,7 +69,7 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> GENERATOR = REGISTRY.register("generator", GeneratorBlock::new);
     public static final RegistryObject<FoxtaCanBlock> FOXTA_CAN = REGISTRY.register("foxta_can", FoxtaCanBlock::new);
     public static final RegistryObject<SnepsiCanBlock> SNEPSI_CAN = REGISTRY.register("snepsi_can", SnepsiCanBlock::new);
-    public static final RegistryObject<Block> TIMED_KEYPAD = REGISTRY.register("timed_keypad", TimedKeypad::new);
+    public static final RegistryObject<Block> TIMED_KEYPAD = REGISTRY.register("timed_keypad", TimedKeypadBlock::new);
     public static final RegistryObject<Block> HAND_SCANNER = REGISTRY.register("hand_scanner", HandScanner::new);
     public static final RegistryObject<Block> PAWS_SCANNER = REGISTRY.register("paws_scanner", PawsScanner::new);
     public static final RegistryObject<Block> LUMINARA_BLOOM = REGISTRY.register("luminara_bloom", LuminaraBloomFlowerBlock::new);

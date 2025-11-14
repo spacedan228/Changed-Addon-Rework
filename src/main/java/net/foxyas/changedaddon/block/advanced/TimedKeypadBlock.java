@@ -29,9 +29,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
-public class TimedKeypad extends KeypadBlock {
+public class TimedKeypadBlock extends KeypadBlock {
 
-    public TimedKeypad() {
+    public TimedKeypadBlock() {
         super();
         drops = BuiltInLootTables.EMPTY;
     }

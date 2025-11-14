@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.block.advanced.TimedKeypad;
+import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
@@ -100,7 +100,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         ModelFile locked = models().getExistingFile(withSuffix(loc, "_locked"));
 
         getVariantBuilder(TIMED_KEYPAD.get()).forAllStatesExcept(state ->
-            new ConfiguredModel[]{new ConfiguredModel(state.getValue(TimedKeypad.POWERED) ? file : locked, 0,
+            new ConfiguredModel[]{new ConfiguredModel(state.getValue(TimedKeypadBlock.POWERED) ? file : locked, 0,
                     (int) ((state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 270) % 360), false)},
         IGNORE_LATEX);
     }

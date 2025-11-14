@@ -97,8 +97,50 @@ public class KeycardItem extends Item implements ColorHolder {
 
     @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
+//        Player player = context.getPlayer();
+//        ItemStack itemInHand = context.getItemInHand();
+//        Level level = context.getLevel();
+//        BlockPos pos = context.getClickedPos();
+//        BlockState blockState = level.getBlockState(pos);
+//        BlockEntity blockEntity = level.getBlockEntity(pos);
+//
+//        if (player == null) return InteractionResult.PASS;
+//
+//        if (!(blockState.getBlock() instanceof KeypadBlock keypadBlock) ||
+//                !(blockEntity instanceof KeypadBlockEntity keypadEntity))
+//            return InteractionResult.PASS;
+//
+//        byte[] itemCode = getCode(itemInHand);
+//        if (itemCode == null) {
+//            if (keypadEntity.code != null && player.isShiftKeyDown()) {
+//                setCode(itemInHand, keypadEntity.code);
+//                playWrite(level, pos);
+//                return InteractionResult.sidedSuccess(level.isClientSide());
+//            }
+//            return InteractionResult.PASS;
+//        }
+//
+//        // Converte o código para lista de bytes (se o keypad usar isso)
+//        List<Byte> codeList = new ArrayList<>();
+//        for (byte b : itemCode)
+//            codeList.add(b);
+//
+//        // Agora insere o código automaticamente no keypad
+//        if (!level.isClientSide) {
+//            keypadEntity.useCode(codeList);
+//            player.displayClientMessage(
+//                    new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN),
+//                    true
+//            );
+//            return InteractionResult.SUCCESS;
+//        }
+//
+        return super.useOn(context);
+    }
+
+    @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
-        ItemStack itemInHand = context.getItemInHand();
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockState blockState = level.getBlockState(pos);
@@ -110,10 +152,10 @@ public class KeycardItem extends Item implements ColorHolder {
                 !(blockEntity instanceof KeypadBlockEntity keypadEntity))
             return InteractionResult.PASS;
 
-        byte[] itemCode = getCode(itemInHand);
+        byte[] itemCode = getCode(stack);
         if (itemCode == null) {
             if (keypadEntity.code != null && player.isShiftKeyDown()) {
-                setCode(itemInHand, keypadEntity.code);
+                setCode(stack, keypadEntity.code);
                 playWrite(level, pos);
                 return InteractionResult.sidedSuccess(level.isClientSide());
             }
@@ -133,8 +175,7 @@ public class KeycardItem extends Item implements ColorHolder {
                     true
             );
         }
-
-        return InteractionResult.SUCCESS;
+        return super.onItemUseFirst(stack, context);
     }
 
     private static void playLock(Level level, BlockPos pos) {
