@@ -43,9 +43,9 @@ import java.util.Objects;
 @JeiPlugin
 public class ChangedAddonJeiPlugin implements IModPlugin {
 
-    static final RecipeType<CatalyzerRecipe> JeiCatalyzer_Type = new RecipeType<>(CatalyzerRecipeCategory.UID, CatalyzerRecipe.class);
-    static final RecipeType<UnifuserRecipe> JeiUnifuser_Type = new RecipeType<>(UnifuserRecipeCategory.UID, UnifuserRecipe.class);
-    static final RecipeType<KeycardColorRecipe> KEYCARD_COLOR_RECIPE = new RecipeType<>(KeycardColorRecipeCategory.ID, KeycardColorRecipe.class);
+    static final RecipeType<CatalyzerRecipe> CATALYZER_RECIPE_TYPE = new RecipeType<>(CatalyzerRecipeCategory.UID, CatalyzerRecipe.class);
+    static final RecipeType<UnifuserRecipe> UNIFUSER_RECIPE_TYPE = new RecipeType<>(UnifuserRecipeCategory.UID, UnifuserRecipe.class);
+    static final RecipeType<KeycardColorRecipe> KEYCARD_COLOR_RECIPE_TYPE = new RecipeType<>(KeycardColorRecipeCategory.ID, KeycardColorRecipe.class);
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
@@ -66,10 +66,10 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
         RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
         List<CatalyzerRecipe> allCatalyzerRecipes = recipeManager.getAllRecipesFor(CatalyzerRecipe.Type.INSTANCE);
         List<CatalyzerRecipe> publicCatalyzerRecipes = allCatalyzerRecipes.stream().filter((catalyzerRecipe -> !catalyzerRecipe.isHidden())).toList();
-        registration.addRecipes(JeiCatalyzer_Type, publicCatalyzerRecipes);
+        registration.addRecipes(CATALYZER_RECIPE_TYPE, publicCatalyzerRecipes);
         List<UnifuserRecipe> allUnifuserRecipes = recipeManager.getAllRecipesFor(UnifuserRecipe.Type.INSTANCE);
         List<UnifuserRecipe> publicUnifuserRecipes = allUnifuserRecipes.stream().filter((unifuserRecipe) -> !unifuserRecipe.isHidden()).toList();
-        registration.addRecipes(JeiUnifuser_Type, publicUnifuserRecipes);
+        registration.addRecipes(UNIFUSER_RECIPE_TYPE, publicUnifuserRecipes);
 
         List<CraftingRecipe> recipes = recipeManager.getAllRecipesFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING);
         List<KeycardColorRecipe> colorRecipes = new ArrayList<>();
@@ -78,7 +78,7 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             if(recipe instanceof KeycardColorRecipe keycardColorRecipe) colorRecipes.add(keycardColorRecipe);
         }
 
-        registration.addRecipes(KEYCARD_COLOR_RECIPE, colorRecipes);
+        registration.addRecipes(KEYCARD_COLOR_RECIPE_TYPE, colorRecipes);
 
         //Items Info
         ChangedAddonJeiDescriptionHandler.registerDescriptions(registration);
@@ -86,10 +86,10 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.CATALYZER.get().asItem()), JeiCatalyzer_Type);
-        registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.ADVANCED_CATALYZER.get().asItem()), JeiCatalyzer_Type);
-        registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.UNIFUSER.get().asItem()), JeiUnifuser_Type);
-        registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.ADVANCED_UNIFUSER.get().asItem()), JeiUnifuser_Type);
+        registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.CATALYZER.get().asItem()), CATALYZER_RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.ADVANCED_CATALYZER.get().asItem()), CATALYZER_RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.UNIFUSER.get().asItem()), UNIFUSER_RECIPE_TYPE);
+        registration.addRecipeCatalyst(new ItemStack(ChangedAddonBlocks.ADVANCED_UNIFUSER.get().asItem()), UNIFUSER_RECIPE_TYPE);
     }
 
 

@@ -37,18 +37,25 @@ public class KeycardColorRecipeCategory implements IRecipeCategory<KeycardColorR
 
     @Override
     public @NotNull RecipeType<KeycardColorRecipe> getRecipeType() {
-        return ChangedAddonJeiPlugin.KEYCARD_COLOR_RECIPE;
+        return ChangedAddonJeiPlugin.KEYCARD_COLOR_RECIPE_TYPE;
     }
 
-    @Override
-    public ResourceLocation getUid() {
+    /**
+     * getUid and getRecipeClass are marked to removal
+     * you are supposed to get the info from getRecipeType() method now
+     */
+
+    @SuppressWarnings("removal")
+    public @NotNull ResourceLocation getUid() {
         return ID;
     }
 
-    @Override
-    public Class<? extends KeycardColorRecipe> getRecipeClass() {
+    @SuppressWarnings("removal")
+    public @NotNull Class<? extends KeycardColorRecipe> getRecipeClass() {
         return KeycardColorRecipe.class;
     }
+
+    /// --- End of the for removal classes ---
 
     @Override
     public @NotNull Component getTitle() {
@@ -80,6 +87,6 @@ public class KeycardColorRecipeCategory implements IRecipeCategory<KeycardColorR
             }
         }
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 95, 19).addItemStack(keyCard).addItemStack();
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 95, 19).addItemStack(keyCard);
     }
 }

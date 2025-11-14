@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-@Deprecated
 public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
 
     public final static ResourceLocation UID = ChangedAddonMod.resourceLoc("jei_unifuser");
@@ -32,7 +31,7 @@ public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
 
     @Override
     public mezz.jei.api.recipe.@NotNull RecipeType<UnifuserRecipe> getRecipeType() {
-        return ChangedAddonJeiPlugin.JeiUnifuser_Type;
+        return ChangedAddonJeiPlugin.UNIFUSER_RECIPE_TYPE;
     }
 
     @Override
@@ -50,18 +49,24 @@ public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
         return this.icon;
     }
 
+
+    /**
+     * getUid and getRecipeClass are marked to removal
+     * you are supposed to get the info from getRecipeType() method now
+     */
+
     @Deprecated
-    @Override
     @SuppressWarnings("removal")
     public @NotNull Class<? extends UnifuserRecipe> getRecipeClass() {
         return UnifuserRecipe.class;
     }
 
-    @Override
     @SuppressWarnings("removal")
     public @NotNull ResourceLocation getUid() {
         return UID;
     }
+
+    /// --- End of the for removal classes ---
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, UnifuserRecipe recipe, @NotNull IFocusGroup focuses) {

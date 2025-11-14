@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-@Deprecated
 public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe> {
     public final static ResourceLocation UID = ChangedAddonMod.resourceLoc("jei_catalyzer");
     public final static ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/screens/jei_catalyzer_screen");
@@ -31,7 +30,7 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
 
     @Override
     public mezz.jei.api.recipe.@NotNull RecipeType<CatalyzerRecipe> getRecipeType() {
-        return ChangedAddonJeiPlugin.JeiCatalyzer_Type;
+        return ChangedAddonJeiPlugin.CATALYZER_RECIPE_TYPE;
     }
 
     @Override
@@ -49,18 +48,25 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
         return this.icon;
     }
 
+
+    /**
+     * getUid and getRecipeClass are marked to removal
+     * you are supposed to get the info from getRecipeType() method now
+     */
+
     @SuppressWarnings("removal")
     @Deprecated
-    @Override
     public @NotNull Class<? extends CatalyzerRecipe> getRecipeClass() {
         return CatalyzerRecipe.class;
     }
 
     @SuppressWarnings("removal")
-    @Override
     public @NotNull ResourceLocation getUid() {
         return UID;
     }
+
+    /// --- End of the for removal classes ---
+
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CatalyzerRecipe recipe, @NotNull IFocusGroup focuses) {
