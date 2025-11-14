@@ -10,7 +10,7 @@ import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.FoxyasUtils;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.EyeStyle;

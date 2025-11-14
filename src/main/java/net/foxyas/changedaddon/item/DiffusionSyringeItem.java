@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.foxyas.changedaddon.procedures.SummonEntityProcedure;
+import net.foxyas.changedaddon.procedure.SummonEntityProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.LivingEntity;

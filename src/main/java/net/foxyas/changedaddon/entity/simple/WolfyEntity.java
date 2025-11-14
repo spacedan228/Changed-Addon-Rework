@@ -1,12 +1,11 @@
 package net.foxyas.changedaddon.entity.simple;
 
-import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
-import net.foxyas.changedaddon.variants.VariantExtraStats;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.HairStyle;
@@ -20,7 +19,6 @@ import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
@@ -45,7 +43,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-import static net.foxyas.changedaddon.procedures.CreatureDietsHandleProcedure.DietType;
+import static net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure.DietType;
 
 public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats {
 

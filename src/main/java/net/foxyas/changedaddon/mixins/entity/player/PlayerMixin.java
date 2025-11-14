@@ -1,13 +1,13 @@
 package net.foxyas.changedaddon.mixins.entity.player;
 
-import net.foxyas.changedaddon.abilities.ClawsAbility;
+import net.foxyas.changedaddon.ability.ClawsAbility;
 import net.foxyas.changedaddon.client.renderer.items.HazardBodySuitClothingRenderer;
 import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
-import net.foxyas.changedaddon.variants.VariantExtraStats;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.data.AccessorySlotType;

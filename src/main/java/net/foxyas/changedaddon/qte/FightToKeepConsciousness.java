@@ -4,7 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.ClientboundOpenFTKCScreenPacket;
-import net.foxyas.changedaddon.procedures.SummonEntityProcedure;
+import net.foxyas.changedaddon.procedure.SummonEntityProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;

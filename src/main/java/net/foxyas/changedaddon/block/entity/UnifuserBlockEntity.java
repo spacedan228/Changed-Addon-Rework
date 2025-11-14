@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.block.entity;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
-import net.foxyas.changedaddon.recipes.UnifuserRecipe;
+import net.foxyas.changedaddon.recipe.UnifuserRecipe;
 import net.foxyas.changedaddon.menu.UnifuserGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

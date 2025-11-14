@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.defaults;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
+import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.block.AbstractLuminarCrystal;
 import net.foxyas.changedaddon.entity.api.CrawlFeature;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;

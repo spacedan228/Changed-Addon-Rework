@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
+import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.entity.api.BossWithMusic;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
 import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
@@ -13,7 +13,7 @@ import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;

@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.mixins.mods.nean;
 import dev.tr7zw.notenoughanimations.access.PlayerData;
 import dev.tr7zw.notenoughanimations.animations.vanilla.ElytraAnimation;
 import dev.tr7zw.notenoughanimations.versionless.animations.BodyPart;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.extension.RequiredMods;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.model.PlayerModel;

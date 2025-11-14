@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.potion;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
+import net.foxyas.changedaddon.procedure.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;

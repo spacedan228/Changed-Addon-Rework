@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.block.entity;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
-import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
+import net.foxyas.changedaddon.recipe.CatalyzerRecipe;
 import net.foxyas.changedaddon.menu.CatalyzerGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

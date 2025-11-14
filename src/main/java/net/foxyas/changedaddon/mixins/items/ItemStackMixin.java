@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.mixins.items;
 
-import net.foxyas.changedaddon.variants.VariantExtraStats;
+import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.world.entity.LivingEntity;

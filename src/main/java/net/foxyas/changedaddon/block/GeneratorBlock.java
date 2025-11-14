@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.block;
 
 import io.netty.buffer.Unpooled;
 import net.foxyas.changedaddon.block.entity.GeneratorBlockEntity;
-import net.foxyas.changedaddon.procedures.GeneratorUpdateTickProcedure;
+import net.foxyas.changedaddon.procedure.GeneratorUpdateTickProcedure;
 import net.foxyas.changedaddon.menu.GeneratorGuiMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

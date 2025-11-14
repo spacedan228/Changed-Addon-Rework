@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.process.variantsExtraStats;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.variants.VariantExtraStats;
+import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.player.Player;

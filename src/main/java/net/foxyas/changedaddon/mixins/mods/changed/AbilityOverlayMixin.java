@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.mixins.mods.changed;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
+import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.client.gui.AbilityOverlay;

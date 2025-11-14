@@ -10,9 +10,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.recipes.UnifuserRecipe;
+import net.foxyas.changedaddon.recipe.UnifuserRecipe;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -20,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 @Deprecated
 public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
+
     public final static ResourceLocation UID = ChangedAddonMod.resourceLoc("jei_unifuser");
     public final static ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/screens/jei_unifuser_screen");
     private final IDrawable background;
@@ -37,7 +37,7 @@ public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
 
     @Override
     public @NotNull Component getTitle() {
-        return new TextComponent((new TranslatableComponent("block.changed_addon.unifuser").getString()));
+        return new TranslatableComponent("block.changed_addon.unifuser");
     }
 
     @Override

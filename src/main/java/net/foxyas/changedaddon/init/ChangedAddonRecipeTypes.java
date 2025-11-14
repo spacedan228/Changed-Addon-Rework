@@ -1,12 +1,11 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
-import net.foxyas.changedaddon.recipes.UnifuserRecipe;
-import net.foxyas.changedaddon.recipes.special.HaydenTransfurRecipe;
-import net.foxyas.changedaddon.recipes.special.KeycardColorRecipe;
-import net.foxyas.changedaddon.recipes.special.LaserPointerColoringRecipe;
-import net.minecraft.world.item.crafting.CustomRecipe;
+import net.foxyas.changedaddon.recipe.CatalyzerRecipe;
+import net.foxyas.changedaddon.recipe.UnifuserRecipe;
+import net.foxyas.changedaddon.recipe.special.HaydenTransfurRecipe;
+import net.foxyas.changedaddon.recipe.special.KeycardColorRecipe;
+import net.foxyas.changedaddon.recipe.special.LaserPointerColoringRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

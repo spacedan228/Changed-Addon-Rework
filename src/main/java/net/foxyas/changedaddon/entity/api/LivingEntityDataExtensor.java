@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.variants.VariantExtraStats;
+import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.tags.FluidTags;

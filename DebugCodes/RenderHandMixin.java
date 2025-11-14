@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.mixins.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
-import net.foxyas.changedaddon.abilities.CarryAbility;
+import net.foxyas.changedaddon.ability.CarryAbility;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonTags;

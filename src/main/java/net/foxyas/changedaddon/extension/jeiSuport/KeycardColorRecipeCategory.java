@@ -6,24 +6,39 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.recipes.special.KeycardColorRecipe;
+import net.foxyas.changedaddon.recipe.special.KeycardColorRecipe;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.Tags;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class KeycardColorRecipeCategory implements IRecipeCategory<KeycardColorRecipe> {
 
+    public static final ResourceLocation ID = new ResourceLocation(ChangedAddonMod.MODID, "keycard_coloring");
+    private static final ResourceLocation TEX = ChangedAddonMod.textureLoc("textures/gui_vanilla");
     private final IDrawable icon;
+    private final IDrawable background;
 
-    public KeycardColorRecipeCategory(IGuiHelper helper) {
-        this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ChangedAddonItems.KEYCARD_ITEM.get()));
+    public KeycardColorRecipeCategory(IGuiHelper guiHelper) {
+        icon = guiHelper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ChangedAddonItems.KEYCARD_ITEM.get()));
+        background = guiHelper.drawableBuilder(TEX, 0, 0, 116, 54).setTextureSize(116, 54).build();
     }
 
-    public static final ResourceLocation ID =
-            new ResourceLocation(ChangedAddonMod.MODID, "keycard_coloring");
+    @Override
+    public @NotNull RecipeType<KeycardColorRecipe> getRecipeType() {
+        return ChangedAddonJeiPlugin.KEYCARD_COLOR_RECIPE;
+    }
 
     @Override
     public ResourceLocation getUid() {
@@ -36,26 +51,35 @@ public class KeycardColorRecipeCategory implements IRecipeCategory<KeycardColorR
     }
 
     @Override
-    public Component getTitle() {
-        return Component.translatable("jei.changed_addon.keycard_color");
+    public @NotNull Component getTitle() {
+        return new TranslatableComponent("jei.changed_addon.keycard_color");
     }
 
     @Override
-    public IDrawable getBackground() {
-        return guiHelper.createBlankDrawable(150, 60);
+    public @NotNull IDrawable getBackground() {
+        return background;
     }
 
     @Override
-    public IDrawable getIcon() {
+    public @NotNull IDrawable getIcon() {
         return this.icon;
     }
 
     @Override
-    public void setRecipe(IRecipeLayoutBuilder builder, KeycardColorRecipe recipe, IFocusGroup focus) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 10, 10);
-        builder.addSlot(RecipeIngredientRole.INPUT, 10, 40);
-        builder.addSlot(RecipeIngredientRole.INPUT, 40, 25);
+    public void setRecipe(@NotNull IRecipeLayoutBuilder builder, @NotNull KeycardColorRecipe recipe, @NotNull IFocusGroup focus) {
+        ItemStack keyCard = ChangedAddonItems.KEYCARD_ITEM.get().getDefaultInstance();
+        List<ItemStack> dyes = new ArrayList<>(List.of(Ingredient.of(Tags.Items.DYES).getItems()));
+        for (int y = 0; y < 3; ++y) {
+            for (int x = 0; x < 3; ++x) {
+                if(y == 1 && x == 1) {
+                    builder.addSlot(RecipeIngredientRole.INPUT, x * 18 + 1, y * 18 + 1).addItemStack(keyCard);
+                } else {
+                    Collections.shuffle(dyes);
+                    builder.addSlot(RecipeIngredientRole.INPUT, x * 18 + 1, y * 18 + 1).addItemStacks(dyes);
+                }
+            }
+        }
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 110, 25);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 95, 19).addItemStack(keyCard).addItemStack();
     }
 }

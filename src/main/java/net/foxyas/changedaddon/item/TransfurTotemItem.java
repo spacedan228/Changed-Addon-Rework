@@ -5,7 +5,7 @@ import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
-import net.foxyas.changedaddon.procedures.SummonDripParticlesProcedure;
+import net.foxyas.changedaddon.procedure.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.block.WhiteLatexTransportInterface;
 import net.ltxprogrammer.changed.entity.ChangedEntity;

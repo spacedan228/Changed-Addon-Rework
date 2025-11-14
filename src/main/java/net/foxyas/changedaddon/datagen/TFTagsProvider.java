@@ -24,7 +24,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import static net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants.*;
+import static net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants.*;
 
 public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
 

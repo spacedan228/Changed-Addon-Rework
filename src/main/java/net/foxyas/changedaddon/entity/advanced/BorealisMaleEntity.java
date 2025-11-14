@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.entity.advanced;
 
-import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedLeopardEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;

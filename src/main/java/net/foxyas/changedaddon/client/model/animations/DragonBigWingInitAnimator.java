@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.client.model.animations;
 
-import net.foxyas.changedaddon.abilities.WingFlapAbility;
+import net.foxyas.changedaddon.ability.WingFlapAbility;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator.AnimateStage;

@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.mixins.mods.changed;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.network.packet.VariantSecondAbilityActivate;
-import net.foxyas.changedaddon.variants.TransfurVariantInstanceExtensor;
+import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.client.gui.AbilityRadialScreen;
 import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;

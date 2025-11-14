@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.network.packet;
 
-import net.foxyas.changedaddon.abilities.PsychicGrab;
+import net.foxyas.changedaddon.ability.PsychicGrab;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.FriendlyByteBuf;

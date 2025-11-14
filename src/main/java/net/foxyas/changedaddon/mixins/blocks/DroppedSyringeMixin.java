@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.mixins.blocks;
 
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.block.entity.DroppedSyringeBlockEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.nbt.CompoundTag;

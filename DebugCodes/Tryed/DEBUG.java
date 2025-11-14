@@ -23,7 +23,7 @@ import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-import static net.foxyas.changedaddon.procedures.PlayerUtilProcedure.GlobalEntityUtil.getEntityByUUID;
+import static net.foxyas.changedaddon.procedure.PlayerUtilProcedure.GlobalEntityUtil.getEntityByUUID;
 
 @Mod.EventBusSubscriber
 public class DEBUG {

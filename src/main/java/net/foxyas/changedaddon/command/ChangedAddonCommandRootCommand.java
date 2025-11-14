@@ -11,7 +11,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.advanced.TimedKeypad;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.variants.IDynamicCoatColors;
+import net.foxyas.changedaddon.variant.IDynamicCoatColors;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.entity.BasicPlayerInfo;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;

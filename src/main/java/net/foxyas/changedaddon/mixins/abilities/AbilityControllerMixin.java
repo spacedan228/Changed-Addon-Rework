@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.mixins.abilities;
 
-import net.foxyas.changedaddon.abilities.interfaces.AbilityControllerExtension;
-import net.foxyas.changedaddon.abilities.interfaces.AbilityExtension;
+import net.foxyas.changedaddon.ability.api.AbilityControllerExtension;
+import net.foxyas.changedaddon.ability.api.AbilityExtension;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import org.spongepowered.asm.mixin.Final;

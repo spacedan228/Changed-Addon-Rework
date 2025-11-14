@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.network.packet;
 
-import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;

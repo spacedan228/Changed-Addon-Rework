@@ -10,9 +10,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
+import net.foxyas.changedaddon.recipe.CatalyzerRecipe;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +36,7 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
 
     @Override
     public @NotNull Component getTitle() {
-        return new TextComponent((new TranslatableComponent("block.changed_addon.catalyzer").getString()));
+        return new TranslatableComponent("block.changed_addon.catalyzer");
     }
 
     @Override

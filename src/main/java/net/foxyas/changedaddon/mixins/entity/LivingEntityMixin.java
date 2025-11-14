@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity;
 
-import net.foxyas.changedaddon.abilities.ToggleClimbAbilityInstance;
+import net.foxyas.changedaddon.ability.ToggleClimbAbilityInstance;
 import net.foxyas.changedaddon.entity.api.ExtraConditions;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;

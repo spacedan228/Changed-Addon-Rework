@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.process.features;
 
-import net.foxyas.changedaddon.abilities.DodgeAbility;
-import net.foxyas.changedaddon.abilities.DodgeAbilityInstance;
+import net.foxyas.changedaddon.ability.DodgeAbility;
+import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
@@ -26,7 +26,6 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 @Mod.EventBusSubscriber
 public class DodgeAbilityHandle {

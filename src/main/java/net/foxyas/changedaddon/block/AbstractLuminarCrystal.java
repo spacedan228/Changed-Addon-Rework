@@ -5,7 +5,7 @@ import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.block.AbstractLatexIceBlock;
 import net.ltxprogrammer.changed.block.TransfurCrystalBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;

@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.mixins.abilities;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.foxyas.changedaddon.abilities.interfaces.GrabEntityAbilityExtensor;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;

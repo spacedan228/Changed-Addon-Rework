@@ -701,5 +701,9 @@
 
   "text.changed_addon.display.hazard_body_suit.cant_have_helmet": "Mmph... it’s squishing my ears! Better not wear it.",
 
-  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Press Right Mouse Button to select the Second Ability"
+  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Press Right Mouse Button to select the Second Ability",
+
+
+
+  "jei.changed_addon.keycard_color": "Keycard Coloring"
 }

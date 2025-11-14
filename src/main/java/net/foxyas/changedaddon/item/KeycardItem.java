@@ -6,8 +6,6 @@ import net.ltxprogrammer.changed.block.KeypadBlock;
 import net.ltxprogrammer.changed.block.entity.KeypadBlockEntity;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,6 +31,12 @@ import java.util.Arrays;
 import java.util.List;
 
 public class KeycardItem extends Item implements ColorHolder {
+
+    private static final String TOP_COLOR = "TopColor";
+    private static final int DEF_TOP = 0xFFFFFF;
+    private static final String BOTTOM_COLOR = "BottomColor";
+    private static final int DEF_BOTTOM = 0xFF0000;
+
     public KeycardItem(Properties pProperties) {
         super(pProperties);
     }
@@ -51,22 +55,32 @@ public class KeycardItem extends Item implements ColorHolder {
         return tag != null && tag.contains("StoredCode") ? tag.getByteArray("StoredCode") : null;
     }
 
-    public static int getBottomColor(ItemStack stack) {
+    public static boolean hasTopColor(ItemStack stack){
         CompoundTag tag = stack.getTag();
-        return tag != null && tag.contains("BottomColor") ? tag.getInt("BottomColor") : 0xFFFFFF; // branco
+        return tag != null && tag.contains(TOP_COLOR) && tag.getInt(TOP_COLOR) != DEF_TOP;
     }
 
     public static int getTopColor(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        return tag != null && tag.contains("TopColor") ? tag.getInt("TopColor") : 0xFFFFFF; // vermelho
-    }
-
-    public static void setBottomColor(ItemStack stack, int color) {
-        stack.getOrCreateTag().putInt("BottomColor", color);
+        return tag != null && tag.contains(TOP_COLOR) ? tag.getInt(TOP_COLOR) : DEF_TOP; // vermelho
     }
 
     public static void setTopColor(ItemStack stack, int color) {
-        stack.getOrCreateTag().putInt("TopColor", color);
+        stack.getOrCreateTag().putInt(TOP_COLOR, color);
+    }
+
+    public static boolean hasBottomColor(ItemStack stack){
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(BOTTOM_COLOR) && tag.getInt(BOTTOM_COLOR) != DEF_BOTTOM;
+    }
+
+    public static int getBottomColor(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag != null && tag.contains(BOTTOM_COLOR) ? tag.getInt(BOTTOM_COLOR) : DEF_BOTTOM; // branco
+    }
+
+    public static void setBottomColor(ItemStack stack, int color) {
+        stack.getOrCreateTag().putInt(BOTTOM_COLOR, color);
     }
 
     @Override
@@ -82,14 +96,6 @@ public class KeycardItem extends Item implements ColorHolder {
     }
 
     @Override
-    public @NotNull ItemStack getDefaultInstance() {
-        ItemStack defaultInstance = super.getDefaultInstance();
-        setTopColor(defaultInstance, -1);
-        setBottomColor(defaultInstance, new Color(255, 0, 0).getRGB());
-        return defaultInstance;
-    }
-
-    @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
         Player player = context.getPlayer();
         ItemStack itemInHand = context.getItemInHand();
@@ -100,7 +106,7 @@ public class KeycardItem extends Item implements ColorHolder {
 
         if (player == null) return InteractionResult.PASS;
 
-        if (!(blockState.getBlock() instanceof KeypadBlock keypadBlock) ||
+        if (!(blockState.getBlock() instanceof KeypadBlock) ||
                 !(blockEntity instanceof KeypadBlockEntity keypadEntity))
             return InteractionResult.PASS;
 
@@ -148,7 +154,6 @@ public class KeycardItem extends Item implements ColorHolder {
         if (level.getServer() != null) {
             ChangedSounds.broadcastSound(level.getServer(), event, worldPosition, volume, pitch);
         }
-
     }
 
     @Override

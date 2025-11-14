@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.process;
 
-import net.foxyas.changedaddon.procedures.PlayerUtilProcedure;
-import net.foxyas.changedaddon.procedures.*;
+import net.foxyas.changedaddon.procedure.PlayerUtilProcedure;
+import net.foxyas.changedaddon.procedure.*;
 import net.foxyas.changedaddon.process.util.DelayedTask;
 import net.foxyas.changedaddon.process.util.FoxyasUtils;
 import net.minecraft.core.particles.ParticleType;

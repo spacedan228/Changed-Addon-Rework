@@ -1,8 +1,8 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.abilities.*;
-import net.foxyas.changedaddon.abilities.handle.CounterDodgeType;
+import net.foxyas.changedaddon.ability.*;
+import net.foxyas.changedaddon.ability.handle.CounterDodgeType;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.client.ChangedClient;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;

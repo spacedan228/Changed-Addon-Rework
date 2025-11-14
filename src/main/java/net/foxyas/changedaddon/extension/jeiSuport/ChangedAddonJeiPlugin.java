@@ -2,8 +2,9 @@ package net.foxyas.changedaddon.extension.jeiSuport;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.helpers.IGuiHelper;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
@@ -14,11 +15,10 @@ import net.foxyas.changedaddon.extension.jeiSuport.guisHandlers.FoxyasGuiContain
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
-import net.foxyas.changedaddon.recipes.CatalyzerRecipe;
-import net.foxyas.changedaddon.recipes.UnifuserRecipe;
-import net.foxyas.changedaddon.recipes.special.KeycardColorRecipe;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.recipe.CatalyzerRecipe;
+import net.foxyas.changedaddon.recipe.UnifuserRecipe;
+import net.foxyas.changedaddon.recipe.special.KeycardColorRecipe;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.minecraft.client.Minecraft;
@@ -29,11 +29,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.ArmorDyeRecipe;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,9 +42,10 @@ import java.util.Objects;
 
 @JeiPlugin
 public class ChangedAddonJeiPlugin implements IModPlugin {
-    public static mezz.jei.api.recipe.RecipeType<CatalyzerRecipe> JeiCatalyzer_Type = new mezz.jei.api.recipe.RecipeType<>(CatalyzerRecipeCategory.UID, CatalyzerRecipe.class);
-    public static mezz.jei.api.recipe.RecipeType<UnifuserRecipe> JeiUnifuser_Type = new mezz.jei.api.recipe.RecipeType<>(UnifuserRecipeCategory.UID, UnifuserRecipe.class);
 
+    static final RecipeType<CatalyzerRecipe> JeiCatalyzer_Type = new RecipeType<>(CatalyzerRecipeCategory.UID, CatalyzerRecipe.class);
+    static final RecipeType<UnifuserRecipe> JeiUnifuser_Type = new RecipeType<>(UnifuserRecipeCategory.UID, UnifuserRecipe.class);
+    static final RecipeType<KeycardColorRecipe> KEYCARD_COLOR_RECIPE = new RecipeType<>(KeycardColorRecipeCategory.ID, KeycardColorRecipe.class);
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
@@ -52,8 +54,10 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
-        registration.addRecipeCategories(new CatalyzerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-        registration.addRecipeCategories(new UnifuserRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        IGuiHelper guiHelper = registration.getJeiHelpers().getGuiHelper();
+        registration.addRecipeCategories(new CatalyzerRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new UnifuserRecipeCategory(guiHelper));
+        registration.addRecipeCategories(new KeycardColorRecipeCategory(guiHelper));
     }
 
     @Override
@@ -61,13 +65,20 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
 
         RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
         List<CatalyzerRecipe> allCatalyzerRecipes = recipeManager.getAllRecipesFor(CatalyzerRecipe.Type.INSTANCE);
-        List<CatalyzerRecipe> publicCatalyzerRecipes = allCatalyzerRecipes.stream().filter((catalyzerRecipe -> !catalyzerRecipe.isRecipeHided())).toList();
+        List<CatalyzerRecipe> publicCatalyzerRecipes = allCatalyzerRecipes.stream().filter((catalyzerRecipe -> !catalyzerRecipe.isHidden())).toList();
         registration.addRecipes(JeiCatalyzer_Type, publicCatalyzerRecipes);
         List<UnifuserRecipe> allUnifuserRecipes = recipeManager.getAllRecipesFor(UnifuserRecipe.Type.INSTANCE);
-        List<UnifuserRecipe> publicUnifuserRecipes = allUnifuserRecipes.stream().filter((unifuserRecipe) -> !unifuserRecipe.isRecipeHided()).toList();
+        List<UnifuserRecipe> publicUnifuserRecipes = allUnifuserRecipes.stream().filter((unifuserRecipe) -> !unifuserRecipe.isHidden()).toList();
         registration.addRecipes(JeiUnifuser_Type, publicUnifuserRecipes);
 
-        registration.addRecipes(KeycardColorRecipe.Type.INSTANCE, );
+        List<CraftingRecipe> recipes = recipeManager.getAllRecipesFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING);
+        List<KeycardColorRecipe> colorRecipes = new ArrayList<>();
+
+        for(CraftingRecipe recipe : recipes){
+            if(recipe instanceof KeycardColorRecipe keycardColorRecipe) colorRecipes.add(keycardColorRecipe);
+        }
+
+        registration.addRecipes(KEYCARD_COLOR_RECIPE, colorRecipes);
 
         //Items Info
         ChangedAddonJeiDescriptionHandler.registerDescriptions(registration);

@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.mixins;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.foxyas.changedaddon.variants.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.entity.LivingEntityDataExtension;
 import net.ltxprogrammer.changed.entity.UseItemMode;
