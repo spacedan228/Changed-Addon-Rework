@@ -28,6 +28,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
 public abstract class CustomMerchantTemplate extends Mob implements CustomMerchant, MenuProvider {
 
     private static final List<Function<CustomMerchantTemplate, CustomMerchantOffer>> buyOffers = List.of(

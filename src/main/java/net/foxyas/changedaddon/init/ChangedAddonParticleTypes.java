@@ -7,7 +7,6 @@ import net.foxyas.changedaddon.effect.particles.LaserPointParticle;
 import net.foxyas.changedaddon.effect.particles.ParticleProviderHolder;
 import net.foxyas.changedaddon.effect.particles.ThunderSparkOption;
 import net.foxyas.changedaddon.effect.particles.ThunderSparkParticle;
-import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -29,17 +28,13 @@ import java.util.function.Function;
 public class ChangedAddonParticleTypes {
 
     public static final DeferredRegister<ParticleType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.PARTICLE_TYPES, ChangedAddonMod.MODID);
-    public static final RegistryObject<ParticleType<SimpleParticleType>> SOLVENT_PARTICLE = REGISTRY.register("solvent_particle", () -> new SimpleParticleType(true));
 
+    public static final RegistryObject<ParticleType<SimpleParticleType>> SOLVENT_PARTICLE = REGISTRY.register("solvent_particle", () -> new SimpleParticleType(true));
     public static final RegistryObject<ParticleType<ThunderSparkOption>> THUNDER_SPARK = register("thunder_spark", ThunderSparkOption.DESERIALIZER, ThunderSparkOption::codec);
     public static final RegistryObject<ParticleType<LaserPointParticle.Option>> LASER_POINT = register("laser_point", LaserPointParticle.Option.DESERIALIZER, LaserPointParticle.Option::codec);
 
-    public static ThunderSparkOption thunderSpark(int lifeSpam) {
-        return new ThunderSparkOption(THUNDER_SPARK.get(), lifeSpam);
-    }
-
-    public static LaserPointParticle.Option laserPoint(Entity entity, Color3 color, float alpha) {
-        return new LaserPointParticle.Option(entity, color.toInt(), alpha);
+    public static ThunderSparkOption thunderSpark(int lifespan) {
+        return new ThunderSparkOption(THUNDER_SPARK.get(), lifespan);
     }
 
     public static LaserPointParticle.Option laserPoint(Entity entity, Color color) {
@@ -68,6 +63,4 @@ public class ChangedAddonParticleTypes {
         engine.register(LASER_POINT.get(), LaserPointParticle.Provider::new);
         engine.register(ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(), SolventParticleParticle::provider);
     }
-
 }
-

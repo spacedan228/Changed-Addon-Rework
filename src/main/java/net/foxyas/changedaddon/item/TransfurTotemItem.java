@@ -219,7 +219,7 @@ public class TransfurTotemItem extends Item {
             SummonDripParticlesProcedure.execute(player);
             PlayerUtil.UnTransfurPlayer(player);
             cooldown(player, stack, 100);
-            visualActivate(level, player, ChangedAddonSoundEvents.UNTRANSFUR);
+            visualActivate(level, player, ChangedAddonSoundEvents.UNTRANSFUR.get());
             grantAdvancement(player, "changed_addon:transfur_totem_advancement_1");
             return ar;
         }

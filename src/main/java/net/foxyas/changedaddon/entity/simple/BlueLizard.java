@@ -106,6 +106,6 @@ public class BlueLizard extends AbstractBasicChangedEntity implements ExtraCondi
     @Override
     public void WhenPattedReactionSpecific(Player patter, InteractionHand hand, Vec3 pattedLocation) {
         CustomPatReaction.super.WhenPattedReactionSpecific(patter, hand, pattedLocation);
-        this.level.playSound(null, this, ChangedAddonSoundEvents.GECKO_BEEP, SoundSource.AMBIENT, 1, 1);
+        this.level.playSound(null, this, ChangedAddonSoundEvents.GECKO_BEEP.get(), SoundSource.AMBIENT, 1, 1);
     }
 }

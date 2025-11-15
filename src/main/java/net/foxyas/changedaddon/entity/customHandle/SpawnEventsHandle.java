@@ -6,7 +6,7 @@ import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FenceBlock;
@@ -22,50 +22,30 @@ public class SpawnEventsHandle {
     @SubscribeEvent
     public static void whenSpawn(EntityJoinWorldEvent event) {
         Level level = event.getWorld();
+        Entity entity = event.getEntity();
 
-        if (event.getEntity() instanceof AbstractLuminarcticLeopard entity) {
-            if (entity.isBoss()) {
-                if (destroyBlock(entity, level)) {
-                    if (!level.isClientSide()) {
-                        level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 1, 1);
-                    } else {
-                        level.playLocalSound(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 1, 1, false);
-                    }
-                }
-            }
-        } else if (event.getEntity() instanceof Experiment10BossEntity entity) {
-            if (destroyBlock(entity, level)) {
-                if (!level.isClientSide()) {
-                    level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 1, 1);
-                } else {
-                    level.playLocalSound(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 1, 1, false);
-                }
-            }
-        } else if (event.getEntity() instanceof Experiment009BossEntity entity) {
-            if (destroyBlock(entity, level)) {
-                if (!level.isClientSide()) {
-                    level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 1, 1);
-                } else {
-                    level.playLocalSound(entity.blockPosition().getX(), entity.blockPosition().getY(), entity.blockPosition().getZ(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 1, 1, false);
-                }
-            }
+        if((!(entity instanceof AbstractLuminarcticLeopard leo) || !leo.isBoss())
+                && !(entity instanceof Experiment10BossEntity) && !(entity instanceof Experiment009BossEntity)) return;
+
+        if (destroyBlock(entity, level)) {
+            level.playSound(null, entity.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.BLOCKS, 1, 1);
         }
     }
 
-    private static boolean destroyBlock(LivingEntity entity, Level level) {
+    private static boolean destroyBlock(Entity entity, Level level) {
         BlockPos center = entity.blockPosition();
-        int radius = 3; // Raio da explosão
-        int radiusY = 3;
+        float radius = 3; // Raio da explosão
+        float radiusY = 3;
         boolean itBreak = false;
         for (BlockPos pos : BlockPos.betweenClosed(
                 center.offset(-radius, -radiusY, -radius),
                 center.offset(radius, radiusY, radius))) {
 
             // Cálculo da distância esférica
-            double dx = (pos.getX() - center.getX()) / (double) radius;
-            double dy = (pos.getY() - center.getY()) / (double) radiusY;
-            double dz = (pos.getZ() - center.getZ()) / (double) radius;
-            double distanceSq = dx * dx + dy * dy + dz * dz;
+            float dx = (pos.getX() - center.getX()) / radius;
+            float dy = (pos.getY() - center.getY()) / radiusY;
+            float dz = (pos.getZ() - center.getZ()) / radius;
+            float distanceSq = dx * dx + dy * dy + dz * dz;
 
             if (distanceSq <= 1.0) { // Somente dentro da esfera
                 if (level.getBlockState(pos).is(Blocks.OBSIDIAN)

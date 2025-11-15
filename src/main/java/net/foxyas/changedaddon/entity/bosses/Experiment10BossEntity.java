@@ -1,9 +1,7 @@
 package net.foxyas.changedaddon.entity.bosses;
 
-import net.foxyas.changedaddon.entity.api.BossWithMusic;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
-import net.foxyas.changedaddon.entity.customHandle.BossMusicTheme;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.ThrowWitherProjectileGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.WitherWave;
@@ -76,7 +74,7 @@ import java.util.UUID;
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, BossWithMusic, CustomPatReaction, PowderSnowWalkable {
+public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, CustomPatReaction, PowderSnowWalkable {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment10BossEntity.class, EntityDataSerializers.BOOLEAN);
@@ -144,16 +142,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(6);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0.25);
         attributes.getInstance(Attributes.ATTACK_KNOCKBACK).setBaseValue(0.8);
-    }
-
-    @Override
-    public boolean ShouldPlayMusic() {
-        return this.isAlive();
-    }
-
-    @Override
-    public @NotNull BossMusicTheme BossMusicTheme() {
-        return BossMusicTheme.EXP10;
     }
 
     @Override

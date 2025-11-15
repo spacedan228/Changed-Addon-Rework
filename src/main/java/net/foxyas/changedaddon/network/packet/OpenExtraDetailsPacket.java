@@ -1,8 +1,7 @@
 package net.foxyas.changedaddon.network.packet;
 
-import io.netty.buffer.Unpooled;
-import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.menu.TransfurSoundsGuiMenu;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -13,53 +12,47 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.level.GameType;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
 
-public record OpenExtraDetailsPacket(int type, int pressedMs) {
+public class OpenExtraDetailsPacket {
+
+    public OpenExtraDetailsPacket() {}
 
     public OpenExtraDetailsPacket(FriendlyByteBuf buf) {
-        this(buf.readVarInt(), buf.readVarInt());
+        this();
     }
 
-    public void encode(FriendlyByteBuf buf) {
-        buf.writeVarInt(type);
-        buf.writeVarInt(pressedMs);
-    }
+    public void encode(FriendlyByteBuf buf) {}
 
     public static void handler(OpenExtraDetailsPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> pressAction(context.getSender(), message.type));
+        context.enqueueWork(() -> pressAction(context.getSender()));
         context.setPacketHandled(true);
     }
 
-    public static void pressAction(Player player, int type) {
-        if (player == null || player.level.isClientSide) return;
+    private static void pressAction(Player player) {
+        if (player == null || player.level.isClientSide || player.isSpectator()) return;
 
-        if (type == 0) {
-            if (((ServerPlayer) player).gameMode.getGameModeForPlayer() == GameType.SPECTATOR) return;
-
-            if (ProcessTransfur.isPlayerTransfurred(player)) {
-                NetworkHooks.openGui((ServerPlayer) player, new MenuProvider() {
-                    @Override
-                    public @NotNull Component getDisplayName() {
-                        return new TextComponent("TransfurSoundsGui");
-                    }
-
-                    @Override
-                    public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
-                        return new TransfurSoundsGuiMenu(id, inventory, new FriendlyByteBuf(Unpooled.buffer()).writeBlockPos(player.blockPosition()));
-                    }
-                }, player.blockPosition());
-            } else {
-                ChangedAddonVariables.PlayerVariables vars = player.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
-                if (vars != null && vars.showWarns) {
-                    player.displayClientMessage(new TextComponent((new TranslatableComponent("changedaddon.when_not.transfur").getString())), true);
+        if (ProcessTransfur.isPlayerTransfurred(player)) {
+            NetworkHooks.openGui((ServerPlayer) player, new MenuProvider() {
+                @Override
+                public @NotNull Component getDisplayName() {
+                    return new TextComponent("TransfurSoundsGui");
                 }
+
+                @Override
+                public AbstractContainerMenu createMenu(int id, @NotNull Inventory inventory, @NotNull Player player) {
+                    return new TransfurSoundsGuiMenu(id, inventory);
+                }
+            });
+        } else {
+            ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
+            if (vars != null && vars.showWarns) {
+                player.displayClientMessage(new TranslatableComponent("changedaddon.when_not.transfur"), true);
             }
         }
     }

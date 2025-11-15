@@ -73,7 +73,7 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
         }
 
         // Play sound
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR, SoundSource.NEUTRAL, 1, 1);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR.get(), SoundSource.NEUTRAL, 1, 1);
     }
 
     protected void applyMobEffect(Player entity, MobEffect effect, int duration) {

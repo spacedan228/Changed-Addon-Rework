@@ -15,5 +15,4 @@ public class ChangedAddonCriteriaTriggers {
     public static final GrabEntityTrigger GRAB_ENTITY_TRIGGER = register(new GrabEntityTrigger());
     public static final LavaSwimmingTrigger LAVA_SWIMMING_TRIGGER = register(new LavaSwimmingTrigger());
     public static final SleepNextAPlushyTrigger SLEEP_NEXT_A_PLUSHY_TRIGGER = register(new SleepNextAPlushyTrigger());
-
 }

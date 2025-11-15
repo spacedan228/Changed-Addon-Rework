@@ -19,6 +19,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonBlockEntities {
+
     public static final DeferredRegister<BlockEntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, ChangedAddonMod.MODID);
 
     //Non generic Ones
@@ -54,6 +55,4 @@ public class ChangedAddonBlockEntities {
         event.registerBlockEntityRenderer(TIMED_KEYPAD_BLOCK_ENTITY.get(), TimedKeypadBlockEntityRenderer::new);
         event.registerBlockEntityRenderer(INFORMANT_BLOCK.get(), InformantBlockEntityRenderer::new);
     }
-
-
 }

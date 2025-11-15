@@ -898,11 +898,10 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     @Override
     public ResourceLocation getBossMusic() {
         if (this.computeHealthRatio() <= 0.5f) {
-            return ChangedAddonSoundEvents.EXP10_THEME.getLocation();
+            return ChangedAddonSoundEvents.EXP10_THEME.getId();
         }
 
-
-        return ChangedAddonSoundEvents.EXP9_THEME.getLocation();
+        return ChangedAddonSoundEvents.EXP9_THEME.getId();
     }
 
     @Override

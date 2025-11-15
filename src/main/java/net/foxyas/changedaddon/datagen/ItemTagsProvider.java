@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.init.ChangedTagsExtension;
+import net.foxyas.changedaddon.init.ChangedTags;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -39,11 +39,11 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
         tag(forgeStorageBlocksIridium).add(IRIDIUM_BLOCK.get());
 
 
-        tag(ChangedTagsExtension.AccessoryItemsTags.FULL_BODY)
+        tag(ChangedTags.AccessoryItems.FULL_BODY)
                 .add(HAZARD_BODY_SUIT.get());
-        tag(ChangedTagsExtension.AccessoryItemsTags.BODY).add(
+        tag(ChangedTags.AccessoryItems.BODY).add(
                 DYEABLE_TSHIRT.get());
-        tag(ChangedTagsExtension.AccessoryItemsTags.LEGS).add(
+        tag(ChangedTags.AccessoryItems.LEGS).add(
                 DYEABLE_SHORTS.get());
 
         tag(ChangedAddonTags.Items.METAL).add( //TODO add guns?

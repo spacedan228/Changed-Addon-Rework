@@ -38,11 +38,6 @@ import java.util.stream.StreamSupport;
 
 public class PlayerUtil {
 
-    public static void TransfurPlayer(Entity entity, TransfurVariant<?> latexVariant) {
-        LivingEntity livingEntity = (LivingEntity) entity;
-        ProcessTransfur.transfur(livingEntity, entity.getLevel(), latexVariant, true);
-    }
-
     public static void TransfurPlayer(Player player, String id, float progress) {
         ResourceLocation form = ResourceLocation.tryParse(id);
         TransfurVariant<?> latexVariant = form == null ? null : ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
@@ -92,7 +87,7 @@ public class PlayerUtil {
                 player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
                 player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
                 if (player.getLevel() instanceof ServerLevel serverLevel) {
-                    serverLevel.playSound(null, player.getX(), player.getEyeY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR, SoundSource.PLAYERS, 1, 1);
+                    serverLevel.playSound(null, player.getX(), player.getEyeY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR.get(), SoundSource.PLAYERS, 1, 1);
                 }
             }
         });

@@ -83,7 +83,7 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
 
         // Reproduz som para dark latex próximos
         PacketUtil.playSound(sLevel, DarkLatexPuddleBlock::isPlayerDLOrPuro,
-                x, y, z, ChangedAddonSoundEvents.WARN, SoundSource.BLOCKS, 1, 1);
+                x, y, z, ChangedAddonSoundEvents.WARN.get(), SoundSource.BLOCKS, 1, 1);
 
         // Aplica cooldown no bloco
         darkLatexPuddleBlockEntity.cooldown = 30;

@@ -2,19 +2,24 @@ package net.foxyas.changedaddon.extension.jeiSuport;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.vanilla.IJeiBrewingRecipe;
+import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.gui.FoxyasInventoryMenuScreen;
 import net.foxyas.changedaddon.enchantment.TransfurAspectEnchantment;
 import net.foxyas.changedaddon.extension.jeiSuport.guisHandlers.FoxyasGuiContainerHandler;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.init.ChangedAddonPotions;
 import net.foxyas.changedaddon.recipe.CatalyzerRecipe;
 import net.foxyas.changedaddon.recipe.UnifuserRecipe;
 import net.foxyas.changedaddon.recipe.special.KeycardColorRecipe;
@@ -29,6 +34,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -49,7 +56,7 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
 
     @Override
     public @NotNull ResourceLocation getPluginUid() {
-        return ResourceLocation.parse("changed_addon:jei_plugin");
+        return ChangedAddonMod.resourceLoc("jei_plugin");
     }
 
     @Override
@@ -61,7 +68,8 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipes(IRecipeRegistration registration) {
+    public void registerRecipes(@NotNull IRecipeRegistration registration) {
+        registerBrewingRecipes(registration);
 
         RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
         List<CatalyzerRecipe> allCatalyzerRecipes = recipeManager.getAllRecipesFor(CatalyzerRecipe.Type.INSTANCE);
@@ -98,6 +106,21 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
         ChangedAddonJeiGuiHandler.registerModMenusHandlers(registration);
     }
 
+
+    private void registerBrewingRecipes(IRecipeRegistration registration){
+        IVanillaRecipeFactory factory = registration.getVanillaRecipeFactory();
+        List<IJeiBrewingRecipe> brewingRecipes = new ArrayList<>();
+        ItemStack potion = new ItemStack(Items.POTION);
+        ItemStack potion2 = new ItemStack(Items.POTION);
+
+        PotionUtils.setPotion(potion, Potions.AWKWARD);
+        PotionUtils.setPotion(potion2, ChangedAddonPotions.LITIX_CAMMONIA_EFFECT.get());
+        brewingRecipes.add(factory.createBrewingRecipe(List.of(new ItemStack(ChangedAddonItems.LITIX_CAMONIA.get())), potion.copy(), potion2.copy()));
+        PotionUtils.setPotion(potion, Potions.AWKWARD);
+        PotionUtils.setPotion(potion2, ChangedAddonPotions.TRANSFUR_SICKNESS_POTION.get());
+        brewingRecipes.add(factory.createBrewingRecipe(List.of(new ItemStack(ChangedAddonItems.LAETHIN.get())), potion.copy(), potion2.copy()));
+        registration.addRecipes(RecipeTypes.BREWING, brewingRecipes);
+    }
 
     public static class ChangedAddonJeiGuiHandler {
         public static void registerModMenusHandlers(IGuiHandlerRegistration registration) {

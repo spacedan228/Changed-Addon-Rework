@@ -11,7 +11,6 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.tutorial.ChangedTutorial;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.Options;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ClientRegistry;
@@ -32,8 +31,7 @@ public class ChangedAddonKeyMappings {
         public void setDown(boolean isDown) {
             super.setDown(isDown);
             if (isDownOld != isDown && isDown) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new OpenExtraDetailsPacket(0, 0));
-                //OpenExtraDetailsMessage.pressAction(Minecraft.getInstance().player, 0, 0);
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new OpenExtraDetailsPacket());
             }
             isDownOld = isDown;
         }
@@ -79,39 +77,36 @@ public class ChangedAddonKeyMappings {
 
     @Mod.EventBusSubscriber({Dist.CLIENT})
     public static class KeyEventListener {
+
         @SubscribeEvent
         public static void onClientTick(TickEvent.ClientTickEvent event) {
-            if (Minecraft.getInstance().screen == null) {
-                OPEN_EXTRA_DETAILS.consumeClick();
-                TURN_OFF_TRANSFUR.consumeClick();
-                PAT_KEY.consumeClick();
-            }
+            if(Minecraft.getInstance().screen != null) return;
+
+            OPEN_EXTRA_DETAILS.consumeClick();
+            TURN_OFF_TRANSFUR.consumeClick();
+            PAT_KEY.consumeClick();
         }
 
         @SubscribeEvent
         public static void onKeyInput(InputEvent.KeyInputEvent event) {
             LocalPlayer local = Minecraft.getInstance().player;
-            Options options = Minecraft.getInstance().options;
-            if (local != null) {
-                if (Minecraft.getInstance().screen == null) {
-                    if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-                        if (event.getKey() == USE_SECOND_ABILITY.getKey().getValue()) {
-                            USE_SECOND_ABILITY.consumeClick();
-                            ProcessTransfur.ifPlayerTransfurred(local, (variant) -> {
-                                if (!variant.isTemporaryFromSuit() && variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor) {
-                                    boolean newState = event.getAction() != 0;
-                                    if (newState != transfurVariantInstanceExtensor.getSecondAbilityKeyState()) {
-                                        ChangedTutorial.triggerOnUseAbility(variant.getSelectedAbility());
-                                        transfurVariantInstanceExtensor.setSecondAbilityKeyState(newState);
-                                        ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
-                                    }
+            if(local == null || Minecraft.getInstance().screen != null) return;
 
-                                }
-                            });
-                        }
+            if(!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
+
+            if(event.getKey() != USE_SECOND_ABILITY.getKey().getValue()) return;
+
+            USE_SECOND_ABILITY.consumeClick();
+            ProcessTransfur.ifPlayerTransfurred(local, (variant) -> {
+                if (!variant.isTemporaryFromSuit() && variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor) {
+                    boolean newState = event.getAction() != 0;
+                    if (newState != transfurVariantInstanceExtensor.getSecondAbilityKeyState()) {
+                        ChangedTutorial.triggerOnUseAbility(variant.getSelectedAbility());
+                        transfurVariantInstanceExtensor.setSecondAbilityKeyState(newState);
+                        ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
                     }
                 }
-            }
+            });
         }
     }
 }

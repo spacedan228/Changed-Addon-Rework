@@ -111,7 +111,7 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
         if (blockEntity instanceof AbstractPlushyBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
-                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
+                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND.get(), SoundSource.BLOCKS, 1f, 1);
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide());
             }

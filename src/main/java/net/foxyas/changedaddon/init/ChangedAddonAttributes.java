@@ -15,6 +15,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class ChangedAddonAttributes {
 
     public static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(ForgeRegistries.ATTRIBUTES, ChangedAddonMod.MODID);
+
     public static final RegistryObject<Attribute> LATEX_RESISTANCE = ATTRIBUTES.register("latex_resistance", () -> (new RangedAttribute("attribute." + ChangedAddonMod.MODID + ".latex_resistance", 0, 0, 100)).setSyncable(true));
     public static final RegistryObject<Attribute> LATEX_INFECTION = ATTRIBUTES.register("latex_infection", () -> (new RangedAttribute("attribute." + ChangedAddonMod.MODID + ".latex_infection", 0, 0, 100)).setSyncable(true));
     public static final RegistryObject<Attribute> LATEX_SOLVENT_DAMAGE_MULTIPLIER = ATTRIBUTES.register("latex_solvent_damage_multiplier", () -> (new RangedAttribute("attribute." + ChangedAddonMod.MODID + ".latex_solvent_damage_multiplier", 0, 0, Float.MAX_VALUE)).setSyncable(true));

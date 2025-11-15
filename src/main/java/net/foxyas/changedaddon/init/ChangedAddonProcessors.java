@@ -14,11 +14,9 @@ import net.minecraftforge.registries.RegistryObject;
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonProcessors {
 
-    public static final DeferredRegister<StructureProcessorType<?>> PROCESSORS =
-            DeferredRegister.create(Registry.STRUCTURE_PROCESSOR_REGISTRY, ChangedAddonMod.MODID);
+    public static final DeferredRegister<StructureProcessorType<?>> PROCESSORS = DeferredRegister.create(Registry.STRUCTURE_PROCESSOR_REGISTRY, ChangedAddonMod.MODID);
 
-    public static final RegistryObject<StructureProcessorType<OffSetSpawnProcessor>> OFFSET_SPAWN =
-            PROCESSORS.register("offset_spawn", () -> () -> OffSetSpawnProcessor.CODEC);
+    public static final RegistryObject<StructureProcessorType<OffSetSpawnProcessor>> OFFSET_SPAWN = PROCESSORS.register("offset_spawn", () -> () -> OffSetSpawnProcessor.CODEC);
 
     @SubscribeEvent
     public static void register(FMLConstructModEvent event) {

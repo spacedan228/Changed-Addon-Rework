@@ -11,6 +11,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ChangedAddonAnimationEvents {
+
     public static DeferredRegister<AnimationEvent<?>> REGISTRY = ChangedRegistry.ANIMATION_EVENTS.createDeferred(ChangedAddonMod.MODID);
 
     public static RegistryObject<AnimationEvent<DodgeAnimationParameters>> DODGE_LEFT = register("dodge_left", DodgeAnimationParameters.CODEC);

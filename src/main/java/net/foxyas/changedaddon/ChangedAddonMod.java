@@ -37,7 +37,6 @@ public class ChangedAddonMod {
 
 
     public ChangedAddonMod() {
-        ChangedAddonTabs.load();
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
         ChangedAddonBlocks.REGISTRY.register(bus);
         ChangedAddonPaintingTypes.PAINTING_TYPES.register(bus);
@@ -56,8 +55,11 @@ public class ChangedAddonMod {
         ChangedAddonMobEffects.REGISTRY.register(bus);
         ChangedAddonPotions.REGISTRY.register(bus);
         ChangedAddonAnimationEvents.REGISTRY.register(bus);
+        ChangedAddonRecipeTypes.SERIALIZERS.register(bus);
+        ChangedAddonSoundEvents.SOUNDS.register(bus);
 
         ChangedAddonParticleTypes.REGISTRY.register(bus);
+        ChangedAddonVillagerProfessions.POI_TYPES.register(bus);
         ChangedAddonVillagerProfessions.PROFESSIONS.register(bus);
         ChangedAddonFluids.REGISTRY.register(bus);
         dataFixer = new ChangedAddonDataFixer();

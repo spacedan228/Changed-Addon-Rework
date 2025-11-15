@@ -12,12 +12,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonConfigs {
+
     @SubscribeEvent
     public static void register(FMLConstructModEvent event) {
         event.enqueueWork(() -> {
-            ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, ChangedAddonServerConfiguration.SPEC, "changed_addon-server.toml");
-            ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ChangedAddonClientConfiguration.SPEC, "changed_addon-client.toml");
-            ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ChangedAddonCommonConfiguration.SPEC, "changed_addon-common.toml");
+            ModLoadingContext context = ModLoadingContext.get();
+            context.registerConfig(ModConfig.Type.SERVER, ChangedAddonServerConfiguration.SPEC, "changed_addon-server.toml");
+            context.registerConfig(ModConfig.Type.CLIENT, ChangedAddonClientConfiguration.SPEC, "changed_addon-client.toml");
+            context.registerConfig(ModConfig.Type.COMMON, ChangedAddonCommonConfiguration.SPEC, "changed_addon-common.toml");
         });
     }
 }

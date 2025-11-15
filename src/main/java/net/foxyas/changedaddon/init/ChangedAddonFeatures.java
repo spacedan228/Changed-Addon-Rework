@@ -22,7 +22,9 @@ import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
 public class ChangedAddonFeatures {
+
     public static final DeferredRegister<Feature<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.FEATURES, ChangedAddonMod.MODID);
+
     private static final List<FeatureRegistration> FEATURE_REGISTRATIONS = new ArrayList<>();
     public static final RegistryObject<Feature<?>> IRIDIUM_ORE = register("iridium_ore", IridiumoreFeature::feature,
             new FeatureRegistration(GenerationStep.Decoration.UNDERGROUND_ORES, IridiumoreFeature.GENERATE_BIOMES, IridiumoreFeature::placedFeature));

@@ -70,7 +70,7 @@ public class TryGrabItemsGoal extends Goal {
                 .orElse(null);
 
         if (closestItem != null) {
-            prototype.getLevel().playSound(null, prototype.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
+            prototype.getLevel().playSound(null, prototype.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
             prototype.getNavigation().moveTo(closestItem, 0.25f);
             // Make entity look at a target position
             prototype.getLookControl().setLookAt(

@@ -45,7 +45,7 @@ public class GrabEntityPacketMixin {
             GrabEntityAbilityInstance ability = variant.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
             if (ability instanceof GrabEntityAbilityExtensor abilityExtensor && abilityExtensor.isSafeMode()) {
                 ci.cancel();
-                ChangedSounds.broadcastSound(sender, ChangedAddonSoundEvents.PLUSHY_SOUND, 1.0F, 1.0F);
+                ChangedSounds.broadcastSound(sender, ChangedAddonSoundEvents.PLUSHY_SOUND.get(), 1.0F, 1.0F);
             }
         }
     }

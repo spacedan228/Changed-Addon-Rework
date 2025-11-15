@@ -52,7 +52,7 @@ public class FindAndHarvestCropsGoal extends Goal {
     public void start() {
         targetCropPos = entity.findNearbyCrop(entity.getLevel(), entity.blockPosition(), searchRange);
         if (targetCropPos == null) return;
-        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
+        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
         if (entity.getLevel().isClientSide) {
             entity.getLevel().addParticle(
                     ChangedParticles.emote(entity, Emote.IDEA),

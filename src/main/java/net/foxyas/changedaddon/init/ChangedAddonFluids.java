@@ -14,12 +14,15 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 public class ChangedAddonFluids {
+
     public static final DeferredRegister<Fluid> REGISTRY = DeferredRegister.create(ForgeRegistries.FLUIDS, ChangedAddonMod.MODID);
+
     public static final RegistryObject<Fluid> LITIX_CAMONIA_FLUID = REGISTRY.register("litix_camonia_fluid", LitixCamoniaFluid.Source::new);
     public static final RegistryObject<Fluid> FLOWING_LITIX_CAMONIA_FLUID = REGISTRY.register("flowing_litix_camonia_fluid", LitixCamoniaFluid.Flowing::new);
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientSideHandler {
+
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
             ItemBlockRenderTypes.setRenderLayer(LITIX_CAMONIA_FLUID.get(), renderType -> renderType == RenderType.translucent());

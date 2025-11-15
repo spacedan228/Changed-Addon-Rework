@@ -73,7 +73,7 @@ public class SprayItem extends Item {
             }
         }
 
-        level.playSound(null, player, ChangedAddonSoundEvents.SPRAY_SOUND, SoundSource.PLAYERS, 1, 1);
+        level.playSound(null, player, ChangedAddonSoundEvents.SPRAY_SOUND.get(), SoundSource.PLAYERS, 1, 1);
 
         return InteractionResult.SUCCESS;
     }

@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class TransfurVisionReloadListener extends SimpleJsonResourceReloadListener {
+
     public static final Gson GSON = new GsonBuilder().create();
 
     public TransfurVisionReloadListener() {
@@ -40,5 +41,4 @@ public class TransfurVisionReloadListener extends SimpleJsonResourceReloadListen
 
         ChangedAddonMod.LOGGER.info("Loaded {} transfur visions", entries.size());
     }
-
 }

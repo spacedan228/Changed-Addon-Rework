@@ -117,7 +117,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
 
         grantAdvancement(player, "changed_addon:untransfur_advancement_2");
 
-        level.playSound(null, player, ChangedAddonSoundEvents.UNTRANSFUR, SoundSource.NEUTRAL, 1, 1);
+        level.playSound(null, player, ChangedAddonSoundEvents.UNTRANSFUR.get(), SoundSource.NEUTRAL, 1, 1);
     }
 
     private static void resetAdvancement(ServerPlayer player, String id) {

@@ -14,6 +14,7 @@ import java.util.Set;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ChangedAddonAccessoryRenderers {
+
     @SubscribeEvent
     public static void registerAccessoryRenderers(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {

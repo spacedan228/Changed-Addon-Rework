@@ -61,7 +61,7 @@ public class ApplyBonemealGoal extends Goal {
     public void start() {
         if (targetPos == null) return;
 
-        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
+        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
 
         if (entity.getLevel().isClientSide) {
             entity.getLevel().addParticle(

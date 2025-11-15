@@ -115,7 +115,7 @@ public class SnepPlushyBlock extends AbstractPlushyBlock {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
                     //plushBlockEntity.squeezedTicks = 4;
-                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND, SoundSource.BLOCKS, 1f, 1);
+                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND.get(), SoundSource.BLOCKS, 1f, 1);
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide());
             }

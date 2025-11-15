@@ -102,7 +102,7 @@ public class TheDecimatorItem extends Item {
                 }
             }
             // 💥 Partículas para indicar o ataque em área
-            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.HAMMER_SWING, SoundSource.PLAYERS, 1f, 1f);
+            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.HAMMER_SWING.get(), SoundSource.PLAYERS, 1f, 1f);
             double d0 = (double) (-Mth.sin(player.getYRot() * 0.017453292F)) * 1;
             double d1 = (double) Mth.cos(player.getYRot() * 0.017453292F) * 1;
             Level var7 = player.level;
@@ -155,7 +155,7 @@ public class TheDecimatorItem extends Item {
                 }
             }
             // 🔊 Reproduzir som de explosão no local
-            world.playSound(null, pos, ChangedAddonSoundEvents.HAMMER_GUN_SHOT, SoundSource.PLAYERS, 1.0f, 1.0f);
+            world.playSound(null, pos, ChangedAddonSoundEvents.HAMMER_GUN_SHOT.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
             // 💥 Criar uma partícula de explosão centralizada
             Vec3 center = Vec3.atCenterOf(pos);
             world.addParticle(ParticleTypes.EXPLOSION, center.x, center.y, center.z, 0, 0, 0);

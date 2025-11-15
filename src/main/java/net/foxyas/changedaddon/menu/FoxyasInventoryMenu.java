@@ -11,6 +11,10 @@ public class FoxyasInventoryMenu extends AbstractEntityMenu<LatexSnowFoxFoxyasEn
 
     public static final int X_OFFSET = -64, Y_OFFSET = 0;
 
+    public FoxyasInventoryMenu(int containerId, Inventory playerInv, FriendlyByteBuf data) {
+        this(containerId, playerInv, (LatexSnowFoxFoxyasEntity) playerInv.player.level.getEntity(data.readVarInt()));
+    }
+
     public FoxyasInventoryMenu(int containerId, Inventory playerInv, LatexSnowFoxFoxyasEntity foxyas) {
         super(ChangedAddonMenus.FOXYAS_INVENTORY_MENU.get(), containerId, playerInv, foxyas, X_OFFSET, Y_OFFSET);
         IItemHandler combinedInv = foxyas.getItemHandler();
@@ -30,9 +34,5 @@ public class FoxyasInventoryMenu extends AbstractEntityMenu<LatexSnowFoxFoxyasEn
                 addSlot(new SlotItemHandler(combinedInv, (6 + 9) + i * 9 + ii, 107 + 4 + (18 * 4) + ii * 18 + X_OFFSET, 18 + i * 18 + Y_OFFSET));
             }
         }
-    }
-
-    public FoxyasInventoryMenu(int containerId, Inventory playerInv, FriendlyByteBuf data) {
-        this(containerId, playerInv, (LatexSnowFoxFoxyasEntity) playerInv.player.level.getEntity(data.readVarInt()));
     }
 }

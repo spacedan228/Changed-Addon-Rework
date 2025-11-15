@@ -1,19 +1,25 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedEntities;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
 
@@ -30,43 +36,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
 
         tag(ChangedTags.EntityTypes.LATEX).add(LatexEntities.stream().map(Supplier::get)
                 .sorted(Comparator.comparing(entityType -> entityType.getRegistryName().getPath()))
-                .toList().toArray(new EntityType[0])); /*.add(
-                DAZED_LATEX.get(),
-                PURO_KIND_MALE.get(),
-                PURO_KIND_FEMALE.get(),
-                EXPERIMENT_009.get(),
-                EXPERIMENT_10.get(),
-                EXPERIMENT_009_BOSS.get(),
-                EXPERIMENT_10_BOSS.get(),
-                EXP_1_MALE.get(),
-                EXP_1_FEMALE.get(),
-                EXP_2_MALE.get(),
-                EXP_2_FEMALE.get(),
-                WOLFY.get(),
-                EXP_6.get(),
-                LATEX_SNOW_FOX_MALE.get(),
-                LATEX_SNOW_FOX_FEMALE.get(),
-                SNOW_LEOPARD_FEMALE_ORGANIC.get(),
-                SNOW_LEOPARD_MALE_ORGANIC.get(),
-                SNOW_LEOPARD_PARTIAL.get(),
-                LATEX_SNEP.get(),
-                LUMINARCTIC_LEOPARD_MALE.get(),
-                LUMINARCTIC_LEOPARD_FEMALE.get(),
-                LATEX_SQUID_TIGER_SHARK.get(),
-                LATEX_DRAGON_SNOW_LEOPARD_SHARK.get(),
-                CRYSTAL_GAS_CAT_MALE.get(),
-                CRYSTAL_GAS_CAT_FEMALE.get(),
-                VOID_FOX.get(),
-                LATEX_KITSUNE_MALE.get(),
-                LATEX_KITSUNE_FEMALE.get(),
-                LATEX_CALICO_CAT.get(),
-                LATEX_WIND_CAT_MALE.get(),
-                LATEX_WIND_CAT_FEMALE.get(),
-                LATEX_WHITE_SNOW_LEOPARD_MALE.get(),
-                LATEX_WHITE_SNOW_LEOPARD_FEMALE.get(),
-                LATEX_CHEETAH_MALE.get(),
-                LATEX_CHEETAH_FEMALE.get()
-                );*/
+                .toList().toArray(new EntityType[0]));
 
         tag(ChangedTags.EntityTypes.ORGANIC_LATEX).add(
                 BUNY.get(),
@@ -93,11 +63,11 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 ERIK.get());
 
         tag(ChangedAddonTags.EntityTypes.DRAGON_ENTITIES).add(
-                ChangedAddonAbilities.getCanGlideEntitiesArray()
+                getCanGlideEntitiesArray()
         );
 
         tag(ChangedAddonTags.EntityTypes.BEE_ENTITIES).add(
-                ChangedAddonAbilities.getBeeEntities()
+                getBeeEntities()
         );
 
         tag(ChangedAddonTags.EntityTypes.PACIFY_HANDLE_IMMUNE)
@@ -118,5 +88,23 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
         tag(ChangedAddonTags.EntityTypes.HAS_CLAWS);
 
         tag(ChangedTags.EntityTypes.CAN_WEAR_EXOSKELETON).add(canUseExoskeleton().toArray(new EntityType[0]));
+    }
+
+    private static EntityType<?>[] getCanGlideEntitiesArray() {
+        List<EntityType<?>> canGlideEntities = new ArrayList<>();
+        Collection<TransfurVariant<?>> transfurVariants = ChangedRegistry.TRANSFUR_VARIANT.get().getValues();
+        transfurVariants.forEach((transfurVariant) -> {
+            if (transfurVariant.canGlide) {
+                canGlideEntities.add(transfurVariant.getEntityType());
+            }
+        });
+
+        return canGlideEntities.toArray(new EntityType[0]);
+    }
+
+    private static EntityType<?>[] getBeeEntities() {
+        Stream<EntityType<?>> beeEntities = ForgeRegistries.ENTITIES.getValues().stream().filter((entityType) -> entityType.getRegistryName().toString().contains("latex_bee"));
+        List<EntityType<?>> canGlideEntities = new ArrayList<>(beeEntities.toList());
+        return canGlideEntities.toArray(new EntityType[0]);
     }
 }

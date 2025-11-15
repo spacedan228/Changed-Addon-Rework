@@ -14,14 +14,9 @@ import net.minecraftforge.registries.RegistryObject;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonMenus {
 
-    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> register(String registryname, IContainerFactory<T> containerFactory) {
-        return REGISTRY.register(registryname, () -> IForgeMenuType.create(containerFactory));
-    }
-
     public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, ChangedAddonMod.MODID);
-    public static final RegistryObject<MenuType<FoxyasInventoryMenu>> FOXYAS_INVENTORY_MENU = REGISTRY.register("foxyas_inventory_menu", () -> IForgeMenuType.create(FoxyasInventoryMenu::new));
 
-
+    public static final RegistryObject<MenuType<FoxyasInventoryMenu>> FOXYAS_INVENTORY_MENU = register("foxyas_inventory_menu", FoxyasInventoryMenu::new);
     public static final RegistryObject<MenuType<GeneratorGuiMenu>> GENERATORGUI = register("generator_gui", GeneratorGuiMenu::new);
     public static final RegistryObject<MenuType<CatalyzerGuiMenu>> CATALYZER_GUI = register("catalyzer_gui", CatalyzerGuiMenu::new);
     public static final RegistryObject<MenuType<UnifuserGuiMenu>> UNIFUSER_GUI = register("unifuser_gui", UnifuserGuiMenu::new);
@@ -29,4 +24,8 @@ public class ChangedAddonMenus {
     public static final RegistryObject<MenuType<InformantGuiMenu>> INFORMANT_MENU = register("informant_gui", InformantGuiMenu::new);
     public static final RegistryObject<MenuType<PrototypeMenu>> PROTOTYPE_MENU = register("prototype_menu", PrototypeMenu::new);
     public static final RegistryObject<MenuType<CustomMerchantMenu>> MERCHANT_MENU = register("merchant_menu", CustomMerchantMenu::new);
+
+    private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> register(String path, IContainerFactory<T> containerFactory) {
+        return REGISTRY.register(path, () -> IForgeMenuType.create(containerFactory));
+    }
 }

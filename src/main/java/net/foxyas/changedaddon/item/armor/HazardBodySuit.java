@@ -65,7 +65,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
 
     @Override
     public SoundEvent getEquipSound() {
-        return ChangedAddonSoundEvents.ARMOR_EQUIP;
+        return ChangedAddonSoundEvents.ARMOR_EQUIP.get();
     }
 
     @Override

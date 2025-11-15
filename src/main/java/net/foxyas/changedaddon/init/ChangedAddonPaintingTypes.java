@@ -10,8 +10,8 @@ import java.util.List;
 import static net.foxyas.changedaddon.ChangedAddonMod.MODID;
 
 public class ChangedAddonPaintingTypes {
-    public static final DeferredRegister<Motive> PAINTING_TYPES =
-            DeferredRegister.create(ForgeRegistries.PAINTING_TYPES, MODID);
+
+    public static final DeferredRegister<Motive> PAINTING_TYPES = DeferredRegister.create(ForgeRegistries.PAINTING_TYPES, MODID);
 
     public static final RegistryObject<Motive> LUMINARCTIC_LEOPARD_FEMALE_SELFIE = register("luminarctic_leopard_female_selfie", 48, 48);
     public static final RegistryObject<Motive> LUMINARCTIC_LEOPARD_MALE_SELFIE = register("luminarctic_leopard_male_selfie", 48, 48);

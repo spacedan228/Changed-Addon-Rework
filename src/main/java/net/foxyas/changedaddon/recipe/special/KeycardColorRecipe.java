@@ -98,8 +98,8 @@ public class KeycardColorRecipe extends CustomRecipe {
 
         if (keycard.isEmpty()) return ItemStack.EMPTY;
 
-        KeycardItem.setTopColor(keycard, ColorUtil.mixColors(topColors));
-        KeycardItem.setBottomColor(keycard, ColorUtil.mixColors(bottomColors));
+        if(!topColors.isEmpty()) KeycardItem.setTopColor(keycard, ColorUtil.mixColors(topColors));
+        if(!bottomColors.isEmpty()) KeycardItem.setBottomColor(keycard, ColorUtil.mixColors(bottomColors));
 
         return keycard;
     }

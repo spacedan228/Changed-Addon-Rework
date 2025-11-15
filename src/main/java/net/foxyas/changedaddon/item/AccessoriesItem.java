@@ -49,7 +49,7 @@ public abstract class AccessoriesItem extends ArmorItem {
 
             @Override
             public @NotNull SoundEvent getEquipSound() {
-                return ChangedAddonSoundEvents.ARMOR_EQUIP;
+                return ChangedAddonSoundEvents.ARMOR_EQUIP.get();
             }
 
             @Override

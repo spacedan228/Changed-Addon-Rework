@@ -114,6 +114,7 @@ public class ChangedAddonBlocks {
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientSideHandler {
+
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
             LatexInsulatorBlock.registerRenderLayer();
@@ -146,6 +147,7 @@ public class ChangedAddonBlocks {
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class CommonSideHandler {
+
         @SubscribeEvent
         public static void commonSetup(FMLCommonSetupEvent event) {
             event.enqueueWork(() -> {

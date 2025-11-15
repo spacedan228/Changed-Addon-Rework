@@ -48,7 +48,7 @@ public class FindChestGoal extends Goal {
         BlockPos targetChestPosOld = entity.getTargetChestPos();
         entity.setTargetChestPos(targetChestPos);
         if (targetChestPosOld != entity.getTargetChestPos()) {
-            entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA, SoundSource.MASTER, 1, 1);
+            entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
         }
 
         if (entity.getLevel().isClientSide) {

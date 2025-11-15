@@ -15,9 +15,9 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ChangedAddonEntityRenderers {
+
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
-
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), LatexSnowFoxMaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FEMALE.get(), LatexSnowFoxFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LUMINAR_CRYSTAL_SPEAR.get(), LuminarCrystalSpearRenderer::new);

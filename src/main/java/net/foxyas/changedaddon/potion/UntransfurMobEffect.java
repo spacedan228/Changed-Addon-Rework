@@ -100,7 +100,7 @@ public class UntransfurMobEffect extends MobEffect {
             player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
         }
 
-        level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR, SoundSource.NEUTRAL, 1, 1);
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR.get(), SoundSource.NEUTRAL, 1, 1);
     }
 
     @Override
