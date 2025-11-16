@@ -34,8 +34,8 @@ import java.util.List;
 
 public class TransfurAspectEnchantment extends Enchantment {
 
-    public TransfurAspectEnchantment(EquipmentSlot... pApplicableSlots) {
-        super(Rarity.RARE, EnchantmentCategory.WEAPON, pApplicableSlots);
+    public TransfurAspectEnchantment() {
+        super(Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
@@ -128,30 +128,30 @@ public class TransfurAspectEnchantment extends Enchantment {
 
         @SubscribeEvent
         public static void onItemTooltip(ItemTooltipEvent event) {
-            if(event.getPlayer() == null) return;
-            ItemStack stack = event.getItemStack();
-            List<Component> tooltip = event.getToolTip();
+            Player player = event.getPlayer();
+            if(player == null) return;
 
             // Get the Transfur Aspect enchantment level from the item
             int enchantLevel = EnchantmentHelper.getItemEnchantmentLevel(
-                    ChangedAddonEnchantments.TRANSFUR_ASPECT.get(), stack
+                    ChangedAddonEnchantments.TRANSFUR_ASPECT.get(), event.getItemStack()
             );
             if (enchantLevel <= 0) return; // Exit if the item doesn't have the enchantment
 
-            // Display detailed tooltip only when Shift is held
-            if (Screen.hasShiftDown()) {
-                // Use base value of 1.0 here; can be dynamically adjusted for the actual player stats
-                double baseValue = getTransfurDamage(event.getPlayer(), null, enchantLevel);
-
-                // Calculate the Transfur Damage using the same formula as in doPostAttack
-                double damage = baseValue * 0.75 * enchantLevel / 4.0;
-
-                // Add tooltip showing the damage
-                tooltip.add(new TextComponent("§r§e+" + String.format("%.2f", damage) + "§r Transfur Damage to Humanoids"));
-            } else {
+            List<Component> tooltip = event.getToolTip();
+            if(!Screen.hasShiftDown()) {
                 // If Shift not held, show hint
                 tooltip.add(new TextComponent("Press §e<Shift>§r for show tooltip"));
+                return;
             }
+
+            // Use base value of 1.0 here; can be dynamically adjusted for the actual player stats
+            float baseValue = getTransfurDamage(event.getPlayer(), null, enchantLevel);
+
+            // Calculate the Transfur Damage using the same formula as in doPostAttack
+            float damage = baseValue * 0.75f * enchantLevel / 4f;
+
+            // Add tooltip showing the damage
+            tooltip.add(new TextComponent("§r§e+" + String.format("%.2f", damage) + "§r Transfur Damage to Humanoids"));
         }
     }
 
@@ -168,5 +168,4 @@ public class TransfurAspectEnchantment extends Enchantment {
         //   - Extra multiplier (0.75) to soften scaling
         return (float) (baseValue * 0.75f * enchantLevel / 4.0);
     }
-
 }

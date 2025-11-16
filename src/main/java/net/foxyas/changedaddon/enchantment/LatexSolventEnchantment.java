@@ -22,8 +22,9 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class LatexSolventEnchantment extends Enchantment {
-    public LatexSolventEnchantment(EquipmentSlot... slots) {
-        super(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, slots);
+
+    public LatexSolventEnchantment() {
+        super(Enchantment.Rarity.RARE, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
     }
 
     @Override
