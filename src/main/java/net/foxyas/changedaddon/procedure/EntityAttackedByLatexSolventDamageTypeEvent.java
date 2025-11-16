@@ -22,12 +22,9 @@ public class EntityAttackedByLatexSolventDamageTypeEvent {
         Entity target = event.getEntity();
         DamageSource source = event.getSource();
 
-        // Verifica se o atacante possui o encantamento Solvent
-        if (source != ChangedAddonDamageSources.SOLVENT && !source.getMsgId().equals(ChangedAddonDamageSources.SOLVENT.getMsgId())) return;
-        if (!source.getMsgId().contains(ChangedAddonDamageSources.SOLVENT.getMsgId())) return;
+        if (source != ChangedAddonDamageSources.SOLVENT && !source.getMsgId().contains(ChangedAddonDamageSources.SOLVENT.getMsgId())) return;
 
         Level level = target.level;
-        // Toca som de extinção de fogo
         if (target instanceof Player player) {
             level.playSound(null, player, SoundEvents.FIRE_EXTINGUISH, SoundSource.MASTER, 0.5f, 0);
         } else {

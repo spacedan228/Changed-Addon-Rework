@@ -81,6 +81,7 @@ public class ChangedAddonLaethinminatorUtil {
         Color StartColor = new Color(255, 255, 255, 255);
         Color EndColor = new Color(255, 179, 179, 255);
         ParticleOptions particleOptions = getParticleOptions(StartColor, EndColor);
+        InteractionHand hand = player.getUsedItemHand();
 
         Vec3 eyePos = player.getEyePosition(1.0F);
         Vec3 lookDir = player.getLookAngle().normalize();
@@ -90,10 +91,13 @@ public class ChangedAddonLaethinminatorUtil {
             Vec3 targetVec = eyePosition.add(getRelativePosition(player, 0, 0, i, true));
             BlockPos targetPos = new BlockPos(targetVec);
 
-            Vec3 relativePosition = getRelativePosition(player, 0.25, 0, i * 0.5, true);
-            Vec3 maxRelativePosition = getRelativePosition(player, 0.25, 0, maxRange * 0.5, true);
+            double deltaX = hand == InteractionHand.MAIN_HAND ? 0.25 : -0.25;
+            if (player.getMainArm() == HumanoidArm.LEFT) deltaX = -deltaX;
+
+            Vec3 relativePosition = getRelativePosition(player, deltaX, 0, i * 0.5 + 1f, true);
+            Vec3 maxRelativePosition = getRelativePosition(player, deltaX, 0, maxRange * 0.5, true);
             Vec3 particlePos = relativePosition.add(0, 1.5f, 0);
-            ParticlesUtil.sendParticlesWithMotion(player, particleOptions, player.position().add(particlePos), new Vec3(0.25f, 0.25f, 0.25f), maxRelativePosition, 2, 0.25f);
+            ParticlesUtil.sendParticlesWithMotionAndOffset(player, particleOptions, player.position().add(particlePos), new Vec3(0.15f, 0.15f, 0.15f), maxRelativePosition, new Vec3(0.25f, 0.25f, 0.25f), 2, 0.05f);
 
             // Verifica se o bloco é ar; se for, ignora essa fileira
             if (world.getBlockState(targetPos).isAir()) {
@@ -168,7 +172,7 @@ public class ChangedAddonLaethinminatorUtil {
     @NotNull
     private static ParticleOptions getParticleOptions(Color StartColor, Color EndColor) {
         Vector3f startColor = new Vector3f((float) StartColor.getRed() / 255, (float) StartColor.getGreen() / 255, (float) StartColor.getBlue() / 255);
-        Vector3f endColor = new Vector3f((float) EndColor.getRed() / 255, (float) EndColor.getGreen() / 255, (float) EndColor.getBlue() / 255);
-        return ChangedParticles.gas(new Color3(StartColor.getRed(), StartColor.getGreen(), StartColor.getBlue()));
+        //Vector3f endColor = new Vector3f((float) EndColor.getRed() / 255, (float) EndColor.getGreen() / 255, (float) EndColor.getBlue() / 255);
+        return ChangedParticles.gas(Color3.fromInt(StartColor.getRGB()));
     }
 }
