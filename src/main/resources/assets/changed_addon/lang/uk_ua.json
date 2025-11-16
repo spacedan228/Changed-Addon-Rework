@@ -611,8 +611,8 @@
 
   "item.changed_addon.protogen_0senia0_spawn_egg": "Яйце виклику Протогена 0senia0",
 
-  "itemGroup.tab_changed_addon": "Changed Addon Plus",
-  "itemGroup.tab_changed_addon_combat_optional": "Опціональна зброя Changed Addon Plus",
+  "itemGroup.changed_addon_main_tab": "Changed Addon Plus",
+  "itemGroup.changed_addon_optional_combat_tab": "Опціональна зброя Changed Addon Plus",
 
   "key.categories.changed_addon": "Налаштування клавіш Changed Addon",
   "key.changed_addon.open_extra_details": "Відкрити трансфур екстра",

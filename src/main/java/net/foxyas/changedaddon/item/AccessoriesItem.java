@@ -77,7 +77,7 @@ public abstract class AccessoriesItem extends ArmorItem {
     public static class Chestplate extends AccessoriesItem {
 
         public Chestplate() {
-            super(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).fireResistant());
+            super(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).fireResistant());
         }
 
         public void initializeClient(Consumer<IItemRenderProperties> consumer) {

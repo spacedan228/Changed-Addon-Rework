@@ -43,7 +43,7 @@ public class CrowbarItem extends PickaxeItem {
             public @NotNull Ingredient getRepairIngredient() {
                 return Ingredient.of();
             }
-        }, 1, -2.6f, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON));
+        }, 1, -2.6f, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
     }
 
     @Override

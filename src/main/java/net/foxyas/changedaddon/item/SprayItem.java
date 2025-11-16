@@ -33,7 +33,7 @@ public class SprayItem extends Item {
     protected final LatexType latexType;
 
     public SprayItem(LatexType latexType) {
-        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).durability(64).rarity(Rarity.COMMON));
+        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).durability(64).rarity(Rarity.COMMON));
         this.latexType = latexType;
     }
 

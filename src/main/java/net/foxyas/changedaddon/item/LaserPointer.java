@@ -47,7 +47,7 @@ public class LaserPointer extends Item implements SpecializedAnimations {
     };
 
     public LaserPointer() {
-        super(new Properties().stacksTo(1).tab(ChangedAddonTabs.TAB_CHANGED_ADDON));
+        super(new Properties().stacksTo(1).tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
     }
 
     public static int getColor(ItemStack stack) {

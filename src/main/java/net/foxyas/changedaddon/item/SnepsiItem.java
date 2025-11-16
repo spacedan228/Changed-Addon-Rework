@@ -37,7 +37,7 @@ public class SnepsiItem extends BlockItem implements SpecializedItemRendering {
 
     public SnepsiItem() {
         super(ChangedAddonBlocks.SNEPSI_CAN.get(), new Item.Properties()
-                .tab(ChangedAddonTabs.TAB_CHANGED_ADDON)
+                .tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
                 .stacksTo(64)
                 .rarity(Rarity.RARE)
                 .food(new FoodProperties.Builder()

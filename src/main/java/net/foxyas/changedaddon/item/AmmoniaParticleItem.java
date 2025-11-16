@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AmmoniaParticleItem extends Item {
     public AmmoniaParticleItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(64).rarity(Rarity.COMMON));
+        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).rarity(Rarity.COMMON));
     }
 
     @Override

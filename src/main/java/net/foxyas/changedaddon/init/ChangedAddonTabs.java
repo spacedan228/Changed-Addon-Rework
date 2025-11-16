@@ -6,11 +6,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class ChangedAddonTabs {
 
-    public static final CreativeModeTab TAB_CHANGED_ADDON;
-    public static final CreativeModeTab TAB_CHANGED_ADDON_COMBAT_OPTIONAL;
+    public static final CreativeModeTab CHANGED_ADDON_MAIN_TAB;
+    public static final CreativeModeTab CHANGED_ADDON_OPTIONAL_COMBAT_TAB;
 
     static {
-        TAB_CHANGED_ADDON = new CreativeModeTab("tab_changed_addon") {
+        CHANGED_ADDON_MAIN_TAB = new CreativeModeTab("changed_addon_main_tab") {
             @Override
             public @NotNull ItemStack makeIcon() {
                 return new ItemStack(ChangedAddonItems.CHANGED_BOOK.get());
@@ -20,7 +20,7 @@ public class ChangedAddonTabs {
                 return false;
             }
         };
-        TAB_CHANGED_ADDON_COMBAT_OPTIONAL = new CreativeModeTab("tab_changed_addon_combat_optional") {
+        CHANGED_ADDON_OPTIONAL_COMBAT_TAB = new CreativeModeTab("changed_addon_optional_combat_tab") {
             @Override
             public @NotNull ItemStack makeIcon() {
                 return new ItemStack(ChangedAddonItems.ELECTRIC_KATANA.get());

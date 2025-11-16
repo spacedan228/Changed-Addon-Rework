@@ -22,7 +22,7 @@ public class TimedKeypadItem extends BlockItem {
     }
 
     public TimedKeypadItem() {
-        this(ChangedAddonBlocks.TIMED_KEYPAD.get(), new Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON));
+        this(ChangedAddonBlocks.TIMED_KEYPAD.get(), new Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
     }
 
     @Override

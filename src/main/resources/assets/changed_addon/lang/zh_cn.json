@@ -496,8 +496,8 @@
     "item.minecraft.tipped_arrow.effect.litix_cammonia_effect": "LitixCamonia箭",
     "item.minecraft.tipped_arrow.effect.transfur_sickness_potion": "兽化箭",
 
-    "itemGroup.tab_changed_addon": "Changed Addon Plus",
-    "itemGroup.tab_changed_addon_combat_optional": "Changed Addon Plus 战斗选项",
+    "itemGroup.changed_addon_main_tab": "Changed Addon Plus",
+    "itemGroup.changed_addon_optional_combat_tab": "Changed Addon Plus 战斗选项",
 
     "key.categories.changed_addon": "Changed Addon 按键绑定",
     "key.changed_addon.open_extra_details": "打开额外兽化信息",

@@ -27,7 +27,6 @@ import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +43,7 @@ public class KeycardItem extends Item implements ColorHolder {
     }
 
     public KeycardItem() {
-        super(new Properties().stacksTo(1).tab(ChangedAddonTabs.TAB_CHANGED_ADDON));
+        super(new Properties().stacksTo(1).tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
     }
 
     public static void setCode(ItemStack stack, byte[] code) {
@@ -178,11 +177,11 @@ public class KeycardItem extends Item implements ColorHolder {
         byte[] itemCode = getCode(stack);
         boolean clientSide = level.isClientSide();
         if (itemCode == null) {
-            if (keypadBlockEntity.code != null && player.isShiftKeyDown()) {
+            if (!clientSide && player.isShiftKeyDown() && keypadBlockEntity.code != null) {
                 setCode(stack, keypadBlockEntity.code);
                 playWrite(level, pos);
-                player.swing(hand);
-                return InteractionResult.sidedSuccess(clientSide);
+                player.swing(hand, true);
+                return InteractionResult.sidedSuccess(false);
             }
             return InteractionResult.PASS;
         }

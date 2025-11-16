@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 public class LitixCamoniaItem extends Item {
 
     public LitixCamoniaItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(64).rarity(Rarity.UNCOMMON));
+        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).rarity(Rarity.UNCOMMON));
     }
 
     private static final ResourceLocation advLocation = ChangedAddonMod.resourceLoc("craft_litix_camonia");

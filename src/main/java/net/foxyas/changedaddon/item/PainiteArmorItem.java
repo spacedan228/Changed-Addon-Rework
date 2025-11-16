@@ -61,7 +61,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
     public static class Helmet extends PainiteArmorItem {
         public Helmet() {
-            super(EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON_COMBAT_OPTIONAL).fireResistant());
+            super(EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
         }
 
         @Override
@@ -72,7 +72,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
     public static class Chestplate extends PainiteArmorItem {
         public Chestplate() {
-            super(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON_COMBAT_OPTIONAL).fireResistant());
+            super(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
         }
 
         @Override
@@ -83,7 +83,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
     public static class Leggings extends PainiteArmorItem {
         public Leggings() {
-            super(EquipmentSlot.LEGS, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON_COMBAT_OPTIONAL).fireResistant());
+            super(EquipmentSlot.LEGS, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
         }
 
         @Override
@@ -94,7 +94,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
     public static class Boots extends PainiteArmorItem {
         public Boots() {
-            super(EquipmentSlot.FEET, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON_COMBAT_OPTIONAL).fireResistant());
+            super(EquipmentSlot.FEET, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
         }
 
         @Override

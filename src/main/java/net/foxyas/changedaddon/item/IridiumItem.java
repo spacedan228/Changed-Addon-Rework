@@ -24,7 +24,7 @@ import java.util.Map;
 public class IridiumItem extends Item {
 
     public IridiumItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(64).fireResistant().rarity(Rarity.UNCOMMON));
+        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).fireResistant().rarity(Rarity.UNCOMMON));
     }
 
     @Override

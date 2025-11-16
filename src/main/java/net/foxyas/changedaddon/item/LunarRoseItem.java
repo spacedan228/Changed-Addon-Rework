@@ -82,7 +82,7 @@ public class LunarRoseItem extends ArmorItem {
             public float getKnockbackResistance() {
                 return 0f;
             }
-        }, EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).fireResistant().durability(-1));
+        }, EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).fireResistant().durability(-1));
     }
 
     @Override

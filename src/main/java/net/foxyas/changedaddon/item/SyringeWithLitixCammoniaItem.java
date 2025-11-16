@@ -35,7 +35,7 @@ import java.util.Random;
 public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
 
     public SyringeWithLitixCammoniaItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).durability(2).rarity(Rarity.UNCOMMON));
+        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).durability(2).rarity(Rarity.UNCOMMON));
     }
 
     @Override

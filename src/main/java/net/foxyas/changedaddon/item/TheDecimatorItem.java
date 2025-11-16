@@ -40,7 +40,7 @@ public class TheDecimatorItem extends Item {
     private static final UUID BASE_ATTACK_REACH_UUID = UUID.fromString("fa02d244-9771-415c-8789-fd03b5252c8c");
 
     public TheDecimatorItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON_COMBAT_OPTIONAL).durability(1025));
+        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).durability(1025));
     }
 
     private float AttackDamage() {

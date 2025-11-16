@@ -14,7 +14,7 @@ import java.util.List;
 
 public class Experiment009dnaItem extends Item {
     public Experiment009dnaItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(64).fireResistant().rarity(Rarity.RARE));
+        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).fireResistant().rarity(Rarity.RARE));
     }
 
     @Override

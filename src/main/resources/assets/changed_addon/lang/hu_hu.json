@@ -667,8 +667,8 @@
   "item.minecraft.tipped_arrow.effect.litix_cammonia_effect": "Litix-kamónia nyila",
   "item.minecraft.tipped_arrow.effect.transfur_sickness_potion": "Transzfur betegség nyila",
 
-  "itemGroup.tab_changed_addon": "Changed Addon Plus",
-  "itemGroup.tab_changed_addon_combat_optional": "Changed Addon Plus Opcionális harc",
+  "itemGroup.changed_addon_main_tab": "Changed Addon Plus",
+  "itemGroup.changed_addon_optional_combat_tab": "Changed Addon Plus Opcionális harc",
 
   "key.categories.changed_addon": "Changed Addon key bindek",
   "key.changed_addon.open_extra_details": "Transzfuráltak többleteinek nyitása",

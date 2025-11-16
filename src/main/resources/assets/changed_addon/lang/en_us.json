@@ -668,8 +668,8 @@
   "item.minecraft.tipped_arrow.effect.litix_cammonia_effect": "Arrow of LitixCammonia",
   "item.minecraft.tipped_arrow.effect.transfur_sickness_potion": "Arrow of Transfur Sickness",
 
-  "itemGroup.tab_changed_addon": "Changed Addon Plus",
-  "itemGroup.tab_changed_addon_combat_optional": "Changed Addon Plus Combat Optional",
+  "itemGroup.changed_addon_main_tab": "Changed Addon Plus",
+  "itemGroup.changed_addon_optional_combat_tab": "Changed Addon Plus Optional Combat",
 
   "key.categories.changed_addon": "Changed Addon Keybinds",
   "key.changed_addon.open_extra_details": "Open Transfur Extra",

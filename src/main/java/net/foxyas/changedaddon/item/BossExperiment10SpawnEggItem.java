@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 public class BossExperiment10SpawnEggItem extends SpecialSpawnEggItem {
 
     public BossExperiment10SpawnEggItem() {
-        super(ChangedAddonEntities.EXPERIMENT_10_BOSS, new Item.Properties().tab(ChangedAddonTabs.TAB_CHANGED_ADDON).stacksTo(4).fireResistant().rarity(Rarity.RARE));
+        super(ChangedAddonEntities.EXPERIMENT_10_BOSS, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(4).fireResistant().rarity(Rarity.RARE));
     }
 
     @Override

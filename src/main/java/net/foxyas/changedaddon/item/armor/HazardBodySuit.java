@@ -126,7 +126,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     protected boolean allowdedIn(@NotNull CreativeModeTab tab) {
         if (tab == ChangedTabs.TAB_CHANGED_ITEMS) {
             return false;
-        } else if (tab == ChangedAddonTabs.TAB_CHANGED_ADDON) {
+        } else if (tab == ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB) {
             return true;
         }
         return super.allowdedIn(tab);
