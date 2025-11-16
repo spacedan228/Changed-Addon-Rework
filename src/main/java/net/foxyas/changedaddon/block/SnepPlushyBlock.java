@@ -56,7 +56,7 @@ public class SnepPlushyBlock extends AbstractPlushyBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.SNEP_PLUSH.get(), renderType -> renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.SNEP_PLUSHY.get(), renderType -> renderType == RenderType.cutoutMipped());
     }
 
     @Override

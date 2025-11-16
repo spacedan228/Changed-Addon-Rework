@@ -43,9 +43,9 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<InformantBlock> INFORMANT_BLOCK = REGISTRY.register("informant_block", InformantBlock::new);
     public static final RegistryObject<Block> DORMANT_DARK_LATEX = REGISTRY.register("dormant_dark_latex", DormantDarkLatexBlock::new);
     public static final RegistryObject<Block> DORMANT_WHITE_LATEX = REGISTRY.register("dormant_white_latex", DormantWhiteLatexBlock::new);
-    public static final RegistryObject<SnepPlushyBlock> SNEP_PLUSH = REGISTRY.register("snep_plushy", SnepPlushyBlock::new);
-    public static final RegistryObject<WolfPlushyBlock> WOLF_PLUSH = REGISTRY.register("wolf_plushy", WolfPlushyBlock::new);
-    public static final RegistryObject<DarkLatexWolfPlushyBlock> DARK_LATEX_WOLF_PLUSH = REGISTRY.register("dark_latex_wolf_plushy", DarkLatexWolfPlushyBlock::new);
+    public static final RegistryObject<SnepPlushyBlock> SNEP_PLUSHY = REGISTRY.register("snep_plushy", SnepPlushyBlock::new);
+    public static final RegistryObject<WolfPlushyBlock> WOLF_PLUSHY = REGISTRY.register("wolf_plushy", WolfPlushyBlock::new);
+    public static final RegistryObject<DarkLatexWolfPlushyBlock> DARK_LATEX_WOLF_PLUSHY = REGISTRY.register("dark_latex_wolf_plushy", DarkLatexWolfPlushyBlock::new);
     public static final RegistryObject<Block> CONTAINMENT_CONTAINER = REGISTRY.register("containment_container", ContainmentContainerBlock::new);
     public static final RegistryObject<AdvancedUnifuserBlock> ADVANCED_UNIFUSER = REGISTRY.register("advanced_unifuser", AdvancedUnifuserBlock::new);
     public static final RegistryObject<AdvancedCatalyzerBlock> ADVANCED_CATALYZER = REGISTRY.register("advanced_catalyzer", AdvancedCatalyzerBlock::new);

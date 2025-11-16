@@ -58,7 +58,7 @@ public class FoxtaCanBlock extends HorizontalDirectionalBlock implements SimpleW
     @Override
     public void appendHoverText(ItemStack itemstack, @Nullable BlockGetter world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TranslatableComponent("item.changed_addon.foxta.desc"));
+        list.add(new TranslatableComponent("block.changed_addon.foxta_can.desc"));
     }
 
     @Override

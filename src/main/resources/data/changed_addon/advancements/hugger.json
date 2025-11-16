@@ -19,7 +19,7 @@
       "color": "red"
     },
     "description": {
-      "translate": "advancement.grab.hug.description"
+      "translate": "advancement.grab.hug.descr"
     },
     "frame": "challenge",
     "announce_to_chat": true,

@@ -27,9 +27,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.awt.*;
 
@@ -181,7 +178,7 @@ public class PatOverlay {
         if (lookedEntity instanceof LivingEntity) {
             TranslatableComponent patMessage = new TranslatableComponent("changed_addon.info.is_patable", key.isEmpty() ? "Not Key Set" : key, lookedEntity.getDisplayName().getString());
             patMessage.withStyle(style ->
-                    style.withColor(Color3.getColor("#FFFFFF").toInt())
+                    style.withColor(-1)
                             //.withBold(true)
                             .withItalic(true));
             return patMessage;

@@ -84,7 +84,7 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
             Stream<BlockPos> posStream = FoxyasUtils.betweenClosedStreamSphere(playerBlockPos, 3, 2);
             Vec3 position = player.getEyePosition();
             float intensity = 1 + (player.getInventory().items.stream().filter((itemStack -> itemStack.is(ChangedAddonItems.DARK_LATEX_WOLF_PLUSH.get()))).count() / 100f);
-            for (BlockPos plushyPos : posStream.filter((pos) -> world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get())).toList()) {
+            for (BlockPos plushyPos : posStream.filter((pos) -> world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSHY.get())).toList()) {
                 boolean canSeePlayer = canPlushySeePlayer(player, Vec3.atCenterOf(plushyPos), 360);
                 if(!canSeePlayer || event.updateWorld() || ProcessTransfur.isPlayerTransfurred(player)) continue;
 
@@ -142,7 +142,7 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSH.get(), renderType -> renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSHY.get(), renderType -> renderType == RenderType.cutoutMipped());
     }
 
     @Override

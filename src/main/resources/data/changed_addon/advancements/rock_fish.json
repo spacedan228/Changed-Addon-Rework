@@ -8,7 +8,7 @@
       "translate": "advancements.main.rock_fish.title"
     },
     "description": {
-      "translate": "advancements.main.rock_fish.description"
+      "translate": "advancements.main.rock_fish.descr"
     },
     "frame": "challenge",
     "show_toast": true,

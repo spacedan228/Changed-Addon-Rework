@@ -32,7 +32,7 @@ public class WolfPlushyBlock extends AbstractPlushyBlock {
 
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.WOLF_PLUSH.get(), renderType -> renderType == RenderType.cutoutMipped());
+        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.WOLF_PLUSHY.get(), renderType -> renderType == RenderType.cutoutMipped());
     }
 
     @Override
