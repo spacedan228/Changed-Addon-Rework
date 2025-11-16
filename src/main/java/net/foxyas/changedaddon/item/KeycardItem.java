@@ -210,6 +210,7 @@ public class KeycardItem extends Item implements ColorHolder {
                         new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN) :
                         new TranslatableComponent("item.changed_addon.keycard.message.used.fail").withStyle(ChatFormatting.RED);
 
+                if (!fail) playUnlock(level, pos);
                 player.displayClientMessage(chatComponent, true);
                 player.swing(hand);
 
@@ -229,7 +230,7 @@ public class KeycardItem extends Item implements ColorHolder {
     }
 
     private static void playUnlock(Level level, BlockPos pos) {
-        playSound(level, pos, ChangedSounds.CHIME2, 1.0F, 1.0F);
+        playSound(level, pos, ChangedSounds.SAVE, 1.0F, 1.0F);
     }
 
 
