@@ -3,9 +3,12 @@ package net.foxyas.changedaddon.util;
 import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.ltxprogrammer.changed.effect.particle.GasParticle;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedTags;
+import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleOptions;
@@ -87,8 +90,10 @@ public class ChangedAddonLaethinminatorUtil {
             Vec3 targetVec = eyePosition.add(getRelativePosition(player, 0, 0, i, true));
             BlockPos targetPos = new BlockPos(targetVec);
 
-            Vec3 particlePos = eyePos.add(lookDir.scale(i * 0.5));
-            ParticlesUtil.sendParticles(world, particleOptions, particlePos, 0.25f, 0.25f, 0.25f, 2, 0f);
+            Vec3 relativePosition = getRelativePosition(player, 0.25, 0, i * 0.5, true);
+            Vec3 maxRelativePosition = getRelativePosition(player, 0.25, 0, maxRange * 0.5, true);
+            Vec3 particlePos = relativePosition.add(0, 1.5f, 0);
+            ParticlesUtil.sendParticlesWithMotion(player, particleOptions, player.position().add(particlePos), new Vec3(0.25f, 0.25f, 0.25f), maxRelativePosition, 2, 0.25f);
 
             // Verifica se o bloco é ar; se for, ignora essa fileira
             if (world.getBlockState(targetPos).isAir()) {
@@ -107,7 +112,7 @@ public class ChangedAddonLaethinminatorUtil {
         for (ChangedEntity en : entityList) {
             boolean isAllied = player.isAlliedTo(en);
             if (player.canAttack(en)
-                    && player.canHit(en, 0)
+                    && player.canHit(en, player.getEyePosition().distanceTo(targetPos))
                     && !isAllied) {
                 en.hurt(ChangedAddonDamageSources.mobAttack(player).setProjectile(), 6f);
             }
@@ -164,6 +169,6 @@ public class ChangedAddonLaethinminatorUtil {
     private static ParticleOptions getParticleOptions(Color StartColor, Color EndColor) {
         Vector3f startColor = new Vector3f((float) StartColor.getRed() / 255, (float) StartColor.getGreen() / 255, (float) StartColor.getBlue() / 255);
         Vector3f endColor = new Vector3f((float) EndColor.getRed() / 255, (float) EndColor.getGreen() / 255, (float) EndColor.getBlue() / 255);
-        return new DustColorTransitionOptions(startColor, endColor, 1);
+        return ChangedParticles.gas(new Color3(StartColor.getRed(), StartColor.getGreen(), StartColor.getBlue()));
     }
 }

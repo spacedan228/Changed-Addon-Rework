@@ -104,10 +104,12 @@ public class LaethinminatorItem extends Item implements SpecializedAnimations {
             // HumanoidArm ContextArm = entity.livingEntity.getUsedItemHand() == InteractionHand.MAIN_HAND ? arm : arm.getOpposite();
 
             // Sets the arm rotation based on the player's head
-            model.getArm(arm).xRot = model.head.xRot - 1.570796f - (entity.livingEntity.isCrouching() ? 0.2617994F : 0.0F);
+            LivingEntity livingEntity = entity.livingEntity;
+            model.getArm(arm).xRot = model.head.xRot - 1.570796f - (livingEntity.isCrouching() ? 0.2617994F : 0.0F);
             model.getArm(arm).yRot = model.head.yRot;
 
             // Silly animation [Intentionally not smooth due to lack of partial ticks and design]
         }
+
     }
 }

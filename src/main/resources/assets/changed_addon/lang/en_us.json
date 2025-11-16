@@ -541,7 +541,9 @@
   "item.changed_addon.keycard.desc.color_top.data": "Color: %s",
   "item.changed_addon.keycard.desc.color_bottom": "Colored Bottom",
   "item.changed_addon.keycard.desc.color_bottom.data": "Color: %s",
-  "item.changed_addon.keycard.message.used.success": "Code inserted automatically!",
+  "item.changed_addon.keycard.message.used.success": "CODE>> INJECTED // STATUS: OK",
+  "item.changed_addon.keycard.message.used.fail": "!! SYNTAX-ERR :: CODE MISMATCH !!",
+
 
   "item.changed_addon.laethin": "Laethin",
   "item.changed_addon.laethin_syringe": "Laethin Syringe",

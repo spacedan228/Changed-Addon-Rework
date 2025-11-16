@@ -30,11 +30,12 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Supplier;
+
+import static net.foxyas.changedaddon.variant.TransfurVariantsInfo.*;
 
 public class ChangedAddonTransfurVariants {
 
@@ -751,18 +752,20 @@ public class ChangedAddonTransfurVariants {
     }
 
     // Just For organization.
-    static class VariantWithOwnerMap extends HashMap<TransfurVariant<?>, Component> {
+    public static class VariantWithOwnerMap extends HashMap<TransfurVariant<?>, Component> {
     }
 
     private static final Supplier<VariantWithOwnerMap> OCS = Suppliers.memoize(() -> {
         VariantWithOwnerMap variants = new VariantWithOwnerMap();
-        addWithOwnerName(variants, new TransfurVariant<?>[]{BOREALIS_MALE.get(), BOREALIS_FEMALE.get()});
-        addWithOwnerName(variants, new TransfurVariant<?>[]{HIMALAYAN_CRYSTAL_GAS_CAT_MALE.get(), HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE.get()});
+        addUnknownOwnerName(variants, new TransfurVariant<?>[]{BOREALIS_MALE.get(), BOREALIS_FEMALE.get()});
+        addUnknownOwnerName(variants, new TransfurVariant<?>[]{HIMALAYAN_CRYSTAL_GAS_CAT_MALE.get(), HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE.get()});
+
         addWithOwnerName(variants, new TransfurVariant<?>[]{LATEX_WIND_CAT_MALE.get(), LATEX_WIND_CAT_FEMALE.get()}, ComponentUtil.literal("Species by @BrownBakers"));
 
         addWithOwnerName(variants, MONGOOSE.get());
         addWithOwnerName(variants, BLUE_LIZARD.get());
-        addWithOwnerName(variants, FENGQI_WOLF.get());
+
+        addUnknownOwnerName(variants, FENGQI_WOLF.get());
 
         addWithOwnerName(variants, FOXTA_FOXY.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
         addWithOwnerName(variants, SNEPSI_LEOPARD.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
@@ -778,70 +781,9 @@ public class ChangedAddonTransfurVariants {
         return variants;
     });
 
-
     @Nullable
     public static Component getOcVariantComponent(TransfurVariant<?> transfurVariant) {
         return OCS.get().get(transfurVariant);
-    }
-
-    private static void addNoOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
-        map.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
-    }
-
-
-    private static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
-        map.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
-    }
-
-    private static void addWithOwnerName(VariantWithOwnerMap variants, TransfurVariant<?>[] transfurVariants) {
-        for (TransfurVariant<?> variant : transfurVariants) {
-            variants.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
-        }
-    }
-
-    private static void addWithOwnerName(VariantWithOwnerMap variants, ArrayList<TransfurVariant<?>> transfurVariants) {
-        for (TransfurVariant<?> variant : transfurVariants) {
-            variants.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
-        }
-    }
-
-    private static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant, Component component) {
-        map.put(variant, component);
-    }
-
-    private static void addWithOwnerName(VariantWithOwnerMap map, ArrayList<TransfurVariant<?>> variants, Component component) {
-        for (TransfurVariant<?> variant : variants) {
-            map.put(variant, component);
-        }
-    }
-
-    private static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?>[] variants, Component component) {
-        for (TransfurVariant<?> variant : variants) {
-            map.put(variant, component);
-        }
-    }
-
-    private static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant, String component) {
-        map.put(variant, ComponentUtil.literal(component));
-    }
-
-    private static void addWithOwnerName(VariantWithOwnerMap map, ArrayList<TransfurVariant<?>> variants, String component) {
-        for (TransfurVariant<?> variant : variants) {
-            map.put(variant, ComponentUtil.literal(component));
-        }
-    }
-
-    private static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?>[] variants, String component) {
-        for (TransfurVariant<?> variant : variants) {
-            map.put(variant, ComponentUtil.literal(component));
-        }
-    }
-
-    private static void addWithOwnerNameFrom(VariantWithOwnerMap map, @NotNull TransfurVariant<?> from, @NotNull TransfurVariant<?> to) {
-        Component component = map.get(from);
-        if (component != null) {
-            map.put(to, component);
-        }
     }
 
     public static boolean isVariantOC(TransfurVariant<?> transfurVariant, @Nullable Level level) {

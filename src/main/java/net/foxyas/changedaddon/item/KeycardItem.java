@@ -10,6 +10,7 @@ import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
@@ -167,7 +168,7 @@ public class KeycardItem extends Item implements ColorHolder {
         if (player == null) return InteractionResult.PASS;
 
         if (!(blockState.getBlock() instanceof KeypadBlock) ||
-                !(blockEntity instanceof KeypadBlockEntity keypadEntity))
+                !(blockEntity instanceof KeypadBlockEntity keypadBlockEntity))
             return InteractionResult.PASS;
 
         if (blockState.getValue(KeypadBlock.POWERED)) {
@@ -177,8 +178,8 @@ public class KeycardItem extends Item implements ColorHolder {
         byte[] itemCode = getCode(stack);
         boolean clientSide = level.isClientSide();
         if (itemCode == null) {
-            if (keypadEntity.code != null && player.isShiftKeyDown()) {
-                setCode(stack, keypadEntity.code);
+            if (keypadBlockEntity.code != null && player.isShiftKeyDown()) {
+                setCode(stack, keypadBlockEntity.code);
                 playWrite(level, pos);
                 player.swing(hand);
                 return InteractionResult.sidedSuccess(clientSide);
@@ -193,12 +194,26 @@ public class KeycardItem extends Item implements ColorHolder {
         // Agora insere o código automaticamente no keypad
         if (!clientSide) {
             if (!blockState.getValue(KeypadBlock.POWERED)) {
-                keypadEntity.useCode(codeList);
-                player.displayClientMessage(
-                        new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN),
-                        true
-                );
+                boolean fail = false;
+                keypadBlockEntity.useCode(codeList);
+                if (codeList.size() != keypadBlockEntity.code.length) {
+                    fail = true;
+                }
+
+                for (int idx = 0; idx < keypadBlockEntity.code.length; ++idx) {
+                    if (codeList.get(idx) != keypadBlockEntity.code[idx]) {
+                        fail = true;
+                        break;
+                    }
+                }
+
+                MutableComponent chatComponent = !fail ?
+                        new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN) :
+                        new TranslatableComponent("item.changed_addon.keycard.message.used.fail").withStyle(ChatFormatting.RED);
+
+                player.displayClientMessage(chatComponent, true);
                 player.swing(hand);
+
                 return InteractionResult.sidedSuccess(false);
             }
         }
