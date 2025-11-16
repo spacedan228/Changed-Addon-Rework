@@ -35,7 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static net.foxyas.changedaddon.variant.TransfurVariantsInfo.*;
+import static net.foxyas.changedaddon.variant.TransfurVariantsInfo.OCS;
 
 public class ChangedAddonTransfurVariants {
 
@@ -689,6 +689,20 @@ public class ChangedAddonTransfurVariants {
         public static final GenderedPair<BorealisMaleEntity, BorealisFemaleEntity> BOREALIS = new GenderedPair<>(BOREALIS_MALE, BOREALIS_FEMALE);
     }
 
+    //@Annotation: Dazed Maybe is of .faction(LatexType.WHITE_LATEX)
+
+    private static <T extends ChangedEntity> RegistryObject<TransfurVariant<T>> register(String name, TransfurVariant.Builder<T> builder) {
+        Objects.requireNonNull(builder);
+        return REGISTRY.register(name, builder::build);
+    }
+
+    private static <T extends ChangedEntity> RegistryObject<TransfurVariant<T>> register(String name, Supplier<TransfurVariant.Builder<T>> builder) {
+        return REGISTRY.register(name, () -> builder.get()
+                .build());
+    }
+
+    // Utils
+
     public static boolean isAquatic(TransfurVariantInstance<?> variantInstance) {
         ChangedEntity entity = variantInstance.getChangedEntity();
         TransfurVariant<?> variant = variantInstance.getParent();
@@ -751,36 +765,6 @@ public class ChangedAddonTransfurVariants {
         return variant != null ? variant : transfurVariant;
     }
 
-    // Just For organization.
-    public static class VariantWithOwnerMap extends HashMap<TransfurVariant<?>, Component> {
-    }
-
-    private static final Supplier<VariantWithOwnerMap> OCS = Suppliers.memoize(() -> {
-        VariantWithOwnerMap variants = new VariantWithOwnerMap();
-        addUnknownOwnerName(variants, new TransfurVariant<?>[]{BOREALIS_MALE.get(), BOREALIS_FEMALE.get()});
-        addUnknownOwnerName(variants, new TransfurVariant<?>[]{HIMALAYAN_CRYSTAL_GAS_CAT_MALE.get(), HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE.get()});
-
-        addWithOwnerName(variants, new TransfurVariant<?>[]{LATEX_WIND_CAT_MALE.get(), LATEX_WIND_CAT_FEMALE.get()}, ComponentUtil.literal("Species by @BrownBakers"));
-
-        addWithOwnerName(variants, MONGOOSE.get());
-        addWithOwnerName(variants, BLUE_LIZARD.get());
-
-        addUnknownOwnerName(variants, FENGQI_WOLF.get());
-
-        addWithOwnerName(variants, FOXTA_FOXY.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
-        addWithOwnerName(variants, SNEPSI_LEOPARD.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
-
-        addWithOwnerName(variants, HAYDEN_FENNEC_FOX.get(), ComponentUtil.literal("@haydenfencfoxo / @hayden_fencfoxo"));
-        addWithOwnerName(variants, REYN.get(), ComponentUtil.literal("@reyn"));
-        addWithOwnerName(variants, LYNX.get(), ComponentUtil.literal("@Smoopa"));
-
-        addWithOwnerName(variants, EXPERIMENT_009.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
-        addWithOwnerNameFrom(variants, EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get());
-        addWithOwnerName(variants, EXPERIMENT_10.get(), ComponentUtil.literal("@SuperNovaDragon"));
-        addWithOwnerNameFrom(variants, EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());
-        return variants;
-    });
-
     @Nullable
     public static Component getOcVariantComponent(TransfurVariant<?> transfurVariant) {
         return OCS.get().get(transfurVariant);
@@ -807,17 +791,5 @@ public class ChangedAddonTransfurVariants {
 
     public static List<TransfurVariant<?>> getHumanForms() {
         return new ArrayList<>(humanForms.stream().map(Supplier::get).toList());
-    }
-
-    //@Annotation: Dazed Maybe is of .faction(LatexType.WHITE_LATEX)
-
-    private static <T extends ChangedEntity> RegistryObject<TransfurVariant<T>> register(String name, TransfurVariant.Builder<T> builder) {
-        Objects.requireNonNull(builder);
-        return REGISTRY.register(name, builder::build);
-    }
-
-    private static <T extends ChangedEntity> RegistryObject<TransfurVariant<T>> register(String name, Supplier<TransfurVariant.Builder<T>> builder) {
-        return REGISTRY.register(name, () -> builder.get()
-                .build());
     }
 }
