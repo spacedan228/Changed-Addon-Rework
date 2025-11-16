@@ -13,8 +13,8 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
-public class ImpureammoniaItem extends Item {
-    public ImpureammoniaItem() {
+public class ImpureAmmoniaItem extends Item {
+    public ImpureAmmoniaItem() {
         super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).rarity(Rarity.COMMON));
     }
 
