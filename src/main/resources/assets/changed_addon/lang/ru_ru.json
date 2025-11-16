@@ -645,7 +645,7 @@
 
   "text.changed_addon.additionalHealth": "Дополнительное здоровье \u003d %s",
   "text.changed_addon.additionalHealth.Hearts": " Сердец",
-  "text.changed_addon.canGlide/Fly": "Скольжение/Полёт \u003d %s",
+  "text.changed_addon.canGlide/Fly": "Планирование/Полёт \u003d %s",
   "text.changed_addon.jumpStrength": "Сила прыжка \u003d %s",
   "text.changed_addon.land_speed": "Скорость на суше \u003d %s",
   "text.changed_addon.legs": "Количество ног \u003d %s",
@@ -678,6 +678,7 @@
   "changed_addon.ability.pollen_carry.description": "Позволяет собирать пыльцу и разносить её по близлежащим растениям, помогая им расти.",
   "changed_addon.ability.pollen_carry.display.can": "Я собрал немного пыльцы!",
   "changed_addon.ability.pollen_carry.display.cant": "Похоже, с этого я не смогу взять пыльцу.",
+  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Нажмите Правую кнопку мыши чтобы выбрать Вторую Способность",
 
   "effect.changed_addon.fatigue": "Усталость",
   "effect.changed_addon.fatigue.description": "Временно ограничивает ваши способности, добавляя задержку перед следующими действиями.",
@@ -702,5 +703,15 @@
   "item.changed_addon.experiment_10_dna.description": "§4Странная сфера...",
   "item.changed_addon.hazard_body_suit": "Защитный костюм",
   "item.changed_addon.red_latex_goo.description": "§4Странная субстанция...",
-  "item.changed_addon.transfur_totem.no_form_linked": "§6Форма не привязана"
+  "item.changed_addon.transfur_totem.no_form_linked": "§6Форма не привязана",
+  
+  "jei.changed_addon.keycard_color": "Раскраска Ключ карты",
+  "item.changed_addon.keycard.desc.color_top": "Цвет верха",
+  "item.changed_addon.keycard.desc.color_top.data": "Цвет: %s",
+  "item.changed_addon.keycard.desc.color_bottom": "Цвет низа",
+  "item.changed_addon.keycard.desc.color_bottom.data": "Цвет: %s"
+  "item.changed_addon.keycard": "Ключ карта",
+  "item.changed_addon.keycard.desc.nocode": "Код не задан",
+  "item.changed_addon.keycard.desc.code": "Код: %s",
+  "item.changed_addon.keycard.message.used.success": "Код задан успешно!"
 }
