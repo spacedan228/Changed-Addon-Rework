@@ -25,7 +25,10 @@ public class ApplyBonemealGoal extends Goal {
     private static final int searchRange = 12;
     private final PrototypeEntity entity;
     private final PathNavigation navigation;
+
+    private int cooldown;
     private BlockPos targetPos;
+    private int boneMealCooldown;
 
     public ApplyBonemealGoal(PrototypeEntity entity) {
         this.entity = entity;
@@ -50,11 +53,24 @@ public class ApplyBonemealGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if(cooldown > 0){
+            cooldown--;
+            return false;
+        }
+
         if (findBoneMeal(false).isEmpty()) return false;
 
         // Find a growable crop nearby
         targetPos = findGrowableCrop(entity.getLevel(), entity.blockPosition(), searchRange);
         return targetPos != null;
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        if(targetPos == null) return false;
+
+        BlockState state = entity.level.getBlockState(targetPos);
+        return state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state);
     }
 
     @Override
@@ -81,15 +97,22 @@ public class ApplyBonemealGoal extends Goal {
     public void tick() {
         if (targetPos == null) return;
         navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
+
+        if(boneMealCooldown > 0){
+            boneMealCooldown--;
+            return;
+        }
+
         if (entity.blockPosition().closerThan(targetPos, 3)) {
             applyBoneMeal(targetPos);
-            targetPos = null; // reset target after applying
+            boneMealCooldown = 10;
         }
     }
 
     @Override
     public void stop() {
-        super.stop();
+        cooldown = 20;
+        boneMealCooldown = 0;
     }
 
     private ItemStack findBoneMeal(boolean extract) {
@@ -108,7 +131,6 @@ public class ApplyBonemealGoal extends Goal {
     private BlockPos findGrowableCrop(Level level, BlockPos center, int range) {
         BlockPos closestGrowableCrop = null;
         double closestDist = Double.MAX_VALUE;
-
 
         BlockState state;
         for (BlockPos pos : BlockPos.betweenClosed(
@@ -148,6 +170,6 @@ public class ApplyBonemealGoal extends Goal {
         );
         entity.swing(entity.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
         fertilizable.performBonemeal(serverLevel, level.getRandom(), pos, state);
-        serverLevel.levelEvent(1505, targetPos, 1); // Bone meal particles
+        serverLevel.levelEvent(1505, targetPos, 8); // Bone meal particles
     }
 }
