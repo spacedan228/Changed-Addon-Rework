@@ -70,7 +70,7 @@ public class ApplyBonemealGoal extends Goal {
         if(targetPos == null) return false;
 
         BlockState state = entity.level.getBlockState(targetPos);
-        return state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state);
+        return state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state) && !findBoneMeal(false).isEmpty();
     }
 
     @Override
