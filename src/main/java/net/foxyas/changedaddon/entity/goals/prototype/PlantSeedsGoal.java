@@ -7,7 +7,6 @@ import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.BlockItem;
@@ -94,12 +93,7 @@ public class PlantSeedsGoal extends Goal {
     }
 
     private ItemStack findSeeds(boolean extract) {
-        ItemStack seeds = entity.getItemBySlot(EquipmentSlot.MAINHAND);
-        if (isSeed(seeds)) return seeds;
-
-        seeds = entity.getItemBySlot(EquipmentSlot.OFFHAND);
-        if (isSeed(seeds)) return seeds;
-
+        ItemStack seeds;
         for (int i = 0; i < entity.getItemHandler().getSlots(); i++) {
             seeds = entity.getItemHandler().getStackInSlot(i);
             if (isSeed(seeds)) {

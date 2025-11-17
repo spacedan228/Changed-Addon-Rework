@@ -8,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
@@ -16,6 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.EnumSet;
@@ -93,12 +93,7 @@ public class ApplyBonemealGoal extends Goal {
     }
 
     private ItemStack findBoneMeal(boolean extract) {
-        ItemStack boneMeal = entity.getItemBySlot(EquipmentSlot.MAINHAND);
-        if (!boneMeal.isEmpty() && boneMeal.is(Items.BONE_MEAL)) return boneMeal;
-
-        boneMeal = entity.getItemBySlot(EquipmentSlot.OFFHAND);
-        if (!boneMeal.isEmpty() && boneMeal.is(Items.BONE_MEAL)) return boneMeal;
-
+        ItemStack boneMeal;
         for (int i = 0; i < entity.getItemHandler().getSlots(); i++) {
             boneMeal = entity.getItemHandler().getStackInSlot(i);
             if (!boneMeal.isEmpty() && boneMeal.is(Items.BONE_MEAL)) {
@@ -121,8 +116,8 @@ public class ApplyBonemealGoal extends Goal {
                 center.offset(range, 1, range))) {
             state = level.getBlockState(pos);
 
-            if (state.getBlock() instanceof BonemealableBlock fertilizable
-                    && fertilizable.isValidBonemealTarget(level, pos, state, level.isClientSide())) {
+            if (state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state)
+                    && crop.isValidBonemealTarget(level, pos, state, level.isClientSide())) {
                 double dist = pos.distSqr(center);
                 if (dist < closestDist) {
                     closestDist = dist;
