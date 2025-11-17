@@ -26,13 +26,13 @@ public class TryGrabItemsGoal extends Goal {
         // Only run if there is at least one item nearby to pick up
         List<ItemEntity> nearbyItems = prototype.getLevel().getEntitiesOfClass(ItemEntity.class,
                         prototype.getBoundingBox().inflate(16.0),
-                        item -> !item.getItem().isEmpty())
-                .stream().filter((itemEntity) -> {
-                    ItemStack stack = itemEntity.getItem();
-                    return prototype.canTakeItem(stack) && prototype.wantsToPickUp(stack);
-                }).toList();
+                        item -> {
+                            ItemStack stack = item.getItem();
+                            return  prototype.canTakeItem(stack) && prototype.wantsToPickUp(stack);
+                        }
+        );
         this.nearbyItems = nearbyItems;
-        return !nearbyItems.isEmpty() && !prototype.isInventoryFull();
+        return !nearbyItems.isEmpty() && prototype.hasSpaceInInvOrHands();
     }
 
     @Override
@@ -109,15 +109,6 @@ public class TryGrabItemsGoal extends Goal {
                 ticksTrying++;
             }
         }
-
-//        List<ItemEntity> nearbyItems = prototype.getLevel().getEntitiesOfClass(ItemEntity.class,
-//                prototype.getBoundingBox().inflate(16.0),
-//                item -> !item.getItem().isEmpty());
-//
-//        if (nearbyItems.isEmpty()) {
-//            return;
-//        }
-
     }
 
     @Override

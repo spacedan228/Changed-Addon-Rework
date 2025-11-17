@@ -40,8 +40,7 @@ public class PlantSeedsGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        ItemStack seeds = findSeeds();
-        if (seeds.isEmpty()) return false;
+        if (findSeeds(false).isEmpty()) return false;
 
         // Look for farmland with air above to plant
         targetPos = findPlantableFarmland(entity.getLevel(), entity.blockPosition(), searchRange);
@@ -94,16 +93,17 @@ public class PlantSeedsGoal extends Goal {
         super.stop();
     }
 
-    private ItemStack findSeeds() {
+    private ItemStack findSeeds(boolean extract) {
         ItemStack seeds = entity.getItemBySlot(EquipmentSlot.MAINHAND);
         if (isSeed(seeds)) return seeds;
 
         seeds = entity.getItemBySlot(EquipmentSlot.OFFHAND);
         if (isSeed(seeds)) return seeds;
 
-        for (int i = 0; i < entity.getInventory().getContainerSize(); i++) {
-            seeds = entity.getInventory().getItem(i);
+        for (int i = 0; i < entity.getItemHandler().getSlots(); i++) {
+            seeds = entity.getItemHandler().getStackInSlot(i);
             if (isSeed(seeds)) {
+                if(extract) return entity.getItemHandler().extractItem(i, 1, false);
                 return seeds;
             }
         }
@@ -137,7 +137,7 @@ public class PlantSeedsGoal extends Goal {
         Level level = entity.getLevel();
         if (level.isClientSide) return;
 
-        ItemStack seeds = findSeeds();
+        ItemStack seeds = findSeeds(true);
         if (seeds.isEmpty()) return;
 
         // Place the crop block at target position
@@ -150,6 +150,5 @@ public class PlantSeedsGoal extends Goal {
         Block block = ((BlockItem) seeds.getItem()).getBlock();
         level.setBlock(pos, block.defaultBlockState(), 3);
         level.playSound(null, pos, block.defaultBlockState().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);
-        seeds.shrink(1);
     }
 }

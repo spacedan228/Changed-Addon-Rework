@@ -5,7 +5,6 @@ import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.entity.api.ItemHandlerHolder;
 import net.foxyas.changedaddon.entity.defaults.AbstractCanTameChangedEntity;
 import net.foxyas.changedaddon.entity.goals.prototype.*;
-import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.DynamicClipContext;
@@ -24,7 +23,6 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -43,7 +41,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -58,7 +55,6 @@ import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
-import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
@@ -71,45 +67,39 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.*;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
-import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.network.NetworkHooks;
-import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
-public class PrototypeEntity extends AbstractCanTameChangedEntity implements InventoryCarrier, MenuProvider, CustomPatReaction, IDynamicPawColor, ItemHandlerHolder {
+public class PrototypeEntity extends AbstractCanTameChangedEntity implements MenuProvider, CustomPatReaction, IDynamicPawColor, ItemHandlerHolder {
+
     // Constants
     public static final int MAX_HARVEST_TIMES = 32;
 
     // Fields
-    private final SimpleContainer inventory = new SimpleContainer(9);
     private int harvestsTimes = 0;
     private DepositType depositType = DepositType.BOTH;
     @Nullable
     private BlockPos targetChestPos = null;
 
-    private final CombinedInvWrapper combinedInv;
+    private final IItemHandlerModifiable hands = new EntityHandsInvWrapper(this);
+    private final ItemStackHandler inv = new ItemStackHandler(9);
+    private final CombinedInvWrapper handsInv = new CombinedInvWrapper(hands, inv);
+    private final CombinedInvWrapper combinedInv = new CombinedInvWrapper(new EntityArmorInvWrapper(this), hands, inv);
 
     // Constructors
-    public PrototypeEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
-        this(ChangedAddonEntities.PROTOTYPE.get(), world);
-    }
-
     public PrototypeEntity(EntityType<PrototypeEntity> type, Level world) {
         super(type, world);
         xpReward = 0;
         setPersistenceRequired();
-        combinedInv = new CombinedInvWrapper(new EntityArmorInvWrapper(this), new EntityHandsInvWrapper(this), new InvWrapper(inventory));
     }
 
     @Override
@@ -186,7 +176,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.put("Inventory", inventory.createTag());
+        tag.put("Inv", inv.serializeNBT());
         tag.putInt("harvestDone", harvestsTimes);
         tag.putString("DepositType", depositType.toString());
 
@@ -202,11 +192,19 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        inventory.fromTag(tag.getList("Inventory", 10));
+
+        if(tag.contains("Inventory")){//DataFix
+            SimpleContainer container = new SimpleContainer(9);
+            container.fromTag(tag.getList("Inventory", 10));
+            for(int i = 0; i < 9; i++){
+                inv.setStackInSlot(i, container.getItem(i));
+            }
+        } else inv.deserializeNBT(tag.getCompound("Inv"));
+
         if (tag.contains("harvestDone")) {
             harvestsTimes = tag.getInt("harvestsTimes");
         }
-        if (tag.contains("DepositeType")) {
+        if (tag.contains("DepositeType")) {//DataFix
             depositType = DepositType.valueOf(tag.getString("DepositeType").toUpperCase());
         } else if(tag.contains("DepositType")) {
             depositType = DepositType.valueOf(tag.getString("DepositType"));
@@ -296,16 +294,16 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public void baseTick() {
         super.baseTick();
-        if (isInventoryFull((itemStacks -> itemStacks.stream().filter(this::canTakeItem).count() >= 4)) && targetChestPos != null && blockPosition().closerThan(targetChestPos, 2.0)) {
+        if (wantsToDeposit() && targetChestPos != null && blockPosition().closerThan(targetChestPos, 2.0)) {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 depositToChest(serverLevel, targetChestPos);
             }
         }
 
-        if (tickCount % 120 == 0) {
-            if (harvestsTimes >= MAX_HARVEST_TIMES) {
-                harvestsTimes = 0;
-            }
+        if (tickCount % 120 != 0) return;
+
+        if (harvestsTimes >= MAX_HARVEST_TIMES) {
+            harvestsTimes = 0;
         }
     }
 
@@ -318,27 +316,17 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     protected void dropAllDeathLoot(@NotNull DamageSource pDamageSource) {
         super.dropAllDeathLoot(pDamageSource);
 
-        if(!inventory.isEmpty()) dropInventoryItems();
-    }
-
-    @Override
-    protected void dropEquipment() {
-        super.dropEquipment();
-
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            if(equipmentSlot.getType() != EquipmentSlot.Type.HAND) continue;
-
-            ItemStack stack = getItemBySlot(equipmentSlot);
+        ItemStack stack;
+        ItemEntity itemEntity;
+        for(int i = 0; i < combinedInv.getSlots(); i++){
+            stack = combinedInv.extractItem(i, combinedInv.getSlotLimit(i), false);
             if(stack.isEmpty()) continue;
 
-            ItemEntity itemEntity = new ItemEntity(level, getX(), getY() + 0.5, getZ(), stack.copy());
+            itemEntity = new ItemEntity(level, getX(), getY() + 0.5, getZ(), stack);
             itemEntity.setDeltaMovement(
-                    (level.random.nextDouble() - 0.5) * 0.2,
-                    0.2,
-                    (level.random.nextDouble() - 0.5) * 0.2
+                    (random.nextDouble() - 0.5) * 0.2, 0.2, (random.nextDouble() - 0.5) * 0.2
             );
             level.addFreshEntity(itemEntity);
-            setItemSlot(equipmentSlot, ItemStack.EMPTY);
         }
     }
 
@@ -346,12 +334,15 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     @Override
     public boolean canTakeItem(@NotNull ItemStack pItemstack) {
         if(pItemstack.isEmpty()) return false;
-        if (pickAbleItems().contains(pItemstack.getItem())
-                || (pItemstack.is(Tags.Items.CROPS) || (pItemstack.is(FORGE_FRUITS) || pItemstack.is(Tags.Items.SHEARS) || pItemstack.is(Tags.Items.SEEDS)))) {
+        if (canTakeItemNoArmor(pItemstack)) {
             return true;
         }
 
         return super.canTakeItem(pItemstack);
+    }
+
+    public boolean canTakeItemNoArmor(@NotNull ItemStack stack){
+        return stack.is(Tags.Items.CROPS) || (stack.is(FORGE_FRUITS) || stack.is(Tags.Items.SEEDS) || stack.is(Tags.Items.SHEARS) || pickAbleItems().contains(stack.getItem()));
     }
 
     @Override
@@ -360,33 +351,22 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
     }
 
     @Override
-    public boolean wantsToPickUp(@NotNull ItemStack pStack) {
-        if (hasSpaceInInvOrHands()) {
-            if (pStack.is(Tags.Items.CROPS) || (pStack.is(FORGE_FRUITS) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem()))) {
-                return true;
-            }
-        }
-        return super.wantsToPickUp(pStack);
-    }
-
-    @Override
     public boolean canHoldItem(@NotNull ItemStack pStack) {
-        return hasSpaceInInvOrHands() && (pStack.is(Tags.Items.CROPS) || (pStack.is(FORGE_FRUITS) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem())));
+        return hasSpaceInInvOrHands() && canTakeItem(pStack);
     }
 
     @Override
     protected void pickUpItem(@NotNull ItemEntity pItemEntity) {
         ItemStack pStack = pItemEntity.getItem();
-        if (pStack.is(Tags.Items.CROPS) || (pStack.is(FORGE_FRUITS) || pStack.is(Tags.Items.SEEDS) || pStack.is(Tags.Items.SHEARS) || pickAbleItems().contains(pStack.getItem()))) {
-            addToInventory(pStack);
+        if (canTakeItemNoArmor(pStack)) {
+            ItemStack remainder = ItemHandlerHelper.insertItem(handsInv, pStack, false);
+
+            if(remainder.isEmpty()){
+                pItemEntity.discard();
+            } else pItemEntity.setItem(remainder);
             return;
         }
         super.pickUpItem(pItemEntity);
-    }
-
-    @Override
-    public @NotNull SimpleContainer getInventory() {
-        return inventory;
     }
 
     // MenuProvider implementation
@@ -403,109 +383,75 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
     // Inventory management
     public boolean isInventoryFull() {
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            if (inventory.getItem(i).isEmpty()) return false;
+        for (int i = 0; i < handsInv.getSlots(); i++) {
+            if (handsInv.getStackInSlot(i).isEmpty()) return false;
         }
+
         return true;
     }
 
     public boolean hasSpaceInInvOrHands() {
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            if (inventory.getItem(i).isEmpty()) return true;
-        }
-
-        return getMainHandItem().isEmpty() || getOffhandItem().isEmpty();
+        return !isInventoryFull();
     }
 
-    public boolean isInventoryFull(Predicate<NonNullList<ItemStack>> listPredicate) {
-        NonNullList<ItemStack> itemStacks = getInventoryItems();
-        return listPredicate.test(itemStacks);
-    }
-
-    public NonNullList<ItemStack> getInventoryItems() {
-        NonNullList<ItemStack> itemStacks = NonNullList.create();
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            itemStacks.add(inventory.getItem(i));
+    public boolean wantsToDeposit(){
+        int crops = 0;
+        ItemStack stack;
+        for (int i = 0; i < handsInv.getSlots(); i++) {
+            stack = handsInv.getStackInSlot(i);
+            if(depositType.test(stack)) crops++;
+            if(crops >= 4) return true;
         }
-        return itemStacks;
-    }
 
-    public void addToInventory(ItemStack stack) {
-        for (int i = 0; i < getInventory().getContainerSize(); i++) {
-            ItemStack slot = getInventory().getItem(i);
-            if (slot.isEmpty()) {
-                getInventory().setItem(i, stack.copy());
-                stack.setCount(0);
-                return;
-            } else if (ItemStack.isSameItemSameTags(slot, stack)) {
-                int canAdd = Math.min(slot.getMaxStackSize() - slot.getCount(), stack.getCount());
-                slot.grow(canAdd);
-                stack.shrink(canAdd);
-                if (stack.isEmpty()) return;
-            }
-        }
-        if (isInventoryFull()) {
-            for (EquipmentSlot equipmentSlot : Arrays.stream(EquipmentSlot.values()).filter((equipmentSlot -> equipmentSlot.getType() == EquipmentSlot.Type.HAND)).toList()) {
-                ItemStack itemStack = getItemBySlot(equipmentSlot);
-                if (itemStack.isEmpty()) {
-                    setItemSlot(equipmentSlot, stack);
-                } else if (ItemStack.isSameItemSameTags(itemStack, stack)) {
-                    itemStack.grow(1);
-                    stack.shrink(1);
-                }
-            }
-        }
-    }
-
-    private void dropInventoryItems() {
-        if (level.isClientSide) return;
-
-        for (int i = 0; i < inventory.getContainerSize(); i++) {
-            ItemStack stack = inventory.getItem(i);
-            if (!stack.isEmpty()) {
-                ItemEntity itemEntity = new ItemEntity(level, getX(), getY() + 0.5, getZ(), stack.copy());
-                itemEntity.setDeltaMovement(
-                        (level.random.nextDouble() - 0.5) * 0.2,
-                        0.2,
-                        (level.random.nextDouble() - 0.5) * 0.2
-                );
-                level.addFreshEntity(itemEntity);
-                inventory.setItem(i, ItemStack.EMPTY);
-            }
-        }
-        inventory.setChanged();
+        return false;
     }
 
     // Crop and chest related methods
     public BlockPos tryFindNearbyChest(Level level, BlockPos center, int range) {
         List<ItemStack> carriedItems = new ArrayList<>();
-        for (int i = 0; i < getInventory().getContainerSize(); i++) {
-            ItemStack stack = getInventory().getItem(i);
-            if (!stack.isEmpty()) carriedItems.add(stack);
+        for (int i = 0; i < handsInv.getSlots(); i++) {//Deposit from hands & inv
+            ItemStack stack = handsInv.getStackInSlot(i);
+            if (!stack.isEmpty() && depositType.test(stack)) carriedItems.add(stack.copy());
         }
 
         BlockPos closestChest = null, bestChest = null;
         double closestDist = Double.MAX_VALUE, bestDist = closestDist;
         double dist;
+        boolean isFull, potentiallyBest;
 
         for (BlockPos pos : BlockPos.betweenClosed(center.offset(-range, -range, -range), center.offset(range, range, range))) {
-            BlockEntity be = level.getBlockEntity(pos);
-            if(!(be instanceof ChestBlockEntity chest)) continue;
+            if(!(level.getBlockEntity(pos) instanceof ChestBlockEntity chest)) continue;
 
             dist = pos.distSqr(center);
-            if(dist >= bestDist || isChestFull(chest)) continue;
+            if(dist >= bestDist) continue;
 
-            if(dist < closestDist) {
-                closestDist = dist;
-                closestChest = pos.immutable();
-            }
-
+            isFull = true;
+            potentiallyBest = false;
             for (int slot = 0; slot < chest.getContainerSize(); slot++) {
                 ItemStack chestItem = chest.getItem(slot);
-                if(chestItem.isEmpty()) continue;
+                if(chestItem.isEmpty()) {//If not full
+                    isFull = false;
+
+                    if(dist < closestDist) {
+                        closestDist = dist;
+                        closestChest = pos.immutable();
+                    }
+
+                    if(potentiallyBest){
+                        bestDist = dist;
+                        bestChest = pos.immutable();
+                        break;
+                    }
+                    continue;
+                }
 
                 for (ItemStack carried : carriedItems) {
                     if(!ItemStack.isSameItemSameTags(carried, chestItem)) continue;
+
+                    if(chestItem.getCount() >= chestItem.getMaxStackSize() && isFull) {
+                        potentiallyBest = true;
+                        break;
+                    }
 
                     bestDist = dist;
                     bestChest = pos.immutable();
@@ -577,7 +523,14 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
 
         // Drop items naturally (simulate player breaking)
         ItemStack tool = getMainHandItem();
-        Block.dropResources(state, level, pos, level.getBlockEntity(pos), this, tool);
+        List<ItemStack> drops = Block.getDrops(state, level, pos, level.getBlockEntity(pos), this, tool);
+
+        for(ItemStack stack : drops){
+            stack = ItemHandlerHelper.insertItem(handsInv, stack, false);
+            if(stack.isEmpty()) continue;
+
+            Block.popResource(level, pos, stack);
+        }
 
         // Replant at age 0
         level.setBlock(pos, crop.getStateForAge(0), 3);
@@ -594,67 +547,31 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Inv
             return;
         }
 
-        chest.startOpen(FakePlayerFactory.getMinecraft(level));
+        boolean anyInserted = false;
+        ItemStack stack, remainder;
+        IItemHandler handler = chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElseThrow();
+        for(int i = 0; i < handsInv.getSlots(); i++){
+            stack = handsInv.getStackInSlot(i);
+            if(stack.isEmpty() || !depositType.test(stack)) continue;
 
-        for (EquipmentSlot equipmentSlot : EquipmentSlot.values()) {
-            if(equipmentSlot.getType() != EquipmentSlot.Type.HAND) continue;
+            remainder = ItemHandlerHelper.insertItem(handler, stack, false);
+            if(remainder == stack) continue;
 
-            ItemStack stack = getItemBySlot(equipmentSlot);
-            if (!isChestFull(chest)) {
-                if (!stack.isEmpty() && depositType.test(stack)) {
-                    lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(chestPos.getX(), chestPos.getY() - 1, chestPos.getZ()));
-                    swing(isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-                    ItemStack remaining = HopperBlockEntity.addItem(null, chest, stack, null);
-                    chest.setChanged();
-                    setItemSlot(equipmentSlot, remaining);
-                    getInventory().setChanged();
-                    chest.triggerEvent(1, 1);
-                    if (state.getBlock() instanceof ChestBlock) {
-                        level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
-                        setHarvestsTimes(0);
-                    }
-                }
-            } else {
-                targetChestPos = tryFindNearbyChest(getLevel(), blockPosition(), 8);
-            }
+            anyInserted = true;
+            handsInv.setStackInSlot(i, remainder);
         }
 
-        for (int i = 0; i < getInventory().getContainerSize(); i++) {
-            ItemStack stack = getInventory().getItem(i);
-            if (!isChestFull(chest)) {
-                if (!stack.isEmpty() && (depositType.test(stack))) {
-                    // Make entity look at a target position
-                    getLookControl().setLookAt(
-                            chestPos.getX(), chestPos.getY(), chestPos.getZ(),
-                            30.0F, // yaw change speed (degrees per tick)
-                            30.0F  // pitch change speed
-                    );
-
-                    swing(isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-                    ItemStack remaining = HopperBlockEntity.addItem(null, chest, stack, null);
-                    chest.setChanged();
-                    getInventory().setItem(i, remaining);
-                    getInventory().setChanged();
-                    if ((i == 0 || i == inventory.getContainerSize()) && state.getBlock() instanceof ChestBlock) {
-                        level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
-                        setHarvestsTimes(0);
-                    }
-                    setTargetChestPos(null);
-                }
-            } else {
-                targetChestPos = tryFindNearbyChest(getLevel(), blockPosition(), 8);
+        if(anyInserted){
+            lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(chestPos.getX(), chestPos.getY() - 1, chestPos.getZ()));
+            swing(isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+            chest.startOpen(FakePlayerFactory.getMinecraft(level));
+            chest.triggerEvent(1, 1);
+            chest.setChanged();
+            if (state.getBlock() instanceof ChestBlock) {
+                level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
+                setHarvestsTimes(0);
             }
-        }
-    }
-
-    private boolean isChestFull(ChestBlockEntity chest) {
-        for (int i = 0; i < chest.getContainerSize(); i++) {
-            ItemStack stack = chest.getItem(i);
-            if (stack.isEmpty() || stack.getCount() < stack.getMaxStackSize()) {
-                return false;
-            }
-        }
-        return true;
+        } else setTargetChestPos(tryFindNearbyChest(level, blockPosition(), 8));
     }
 
     // Getters and setters

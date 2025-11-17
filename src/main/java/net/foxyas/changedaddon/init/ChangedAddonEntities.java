@@ -596,11 +596,10 @@ public class ChangedAddonEntities {
     );
 
     public static final RegistryObject<EntityType<PrototypeEntity>> PROTOTYPE = registerOrganicChangedEntity("prototype",
-            EntityType.Builder.<PrototypeEntity>of(PrototypeEntity::new, ChangedMobCategories.CHANGED)
+            EntityType.Builder.of(PrototypeEntity::new, ChangedMobCategories.CHANGED)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(64)
                     .setUpdateInterval(3)
-                    .setCustomClientFactory(PrototypeEntity::new)
                     .sized(0.7f, 1.93f));
 
     public static final RegistryObject<EntityType<LatexSnowFoxFoxyasEntity>> LATEX_SNOW_FOX_FOXYAS = registerChangedEntity("latex_snow_fox_foxyas",

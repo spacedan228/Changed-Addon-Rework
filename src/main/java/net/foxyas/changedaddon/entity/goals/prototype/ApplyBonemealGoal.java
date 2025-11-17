@@ -50,7 +50,7 @@ public class ApplyBonemealGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (findBoneMeal().isEmpty()) return false;
+        if (findBoneMeal(false).isEmpty()) return false;
 
         // Find a growable crop nearby
         targetPos = findGrowableCrop(entity.getLevel(), entity.blockPosition(), searchRange);
@@ -92,16 +92,17 @@ public class ApplyBonemealGoal extends Goal {
         super.stop();
     }
 
-    private ItemStack findBoneMeal() {
+    private ItemStack findBoneMeal(boolean extract) {
         ItemStack boneMeal = entity.getItemBySlot(EquipmentSlot.MAINHAND);
         if (!boneMeal.isEmpty() && boneMeal.is(Items.BONE_MEAL)) return boneMeal;
 
         boneMeal = entity.getItemBySlot(EquipmentSlot.OFFHAND);
         if (!boneMeal.isEmpty() && boneMeal.is(Items.BONE_MEAL)) return boneMeal;
 
-        for (int i = 0; i < entity.getInventory().getContainerSize(); i++) {
-            boneMeal = entity.getInventory().getItem(i);
+        for (int i = 0; i < entity.getItemHandler().getSlots(); i++) {
+            boneMeal = entity.getItemHandler().getStackInSlot(i);
             if (!boneMeal.isEmpty() && boneMeal.is(Items.BONE_MEAL)) {
+                if(extract) return entity.getItemHandler().extractItem(i, 1, false);
                 return boneMeal;
             }
         }
@@ -136,7 +137,7 @@ public class ApplyBonemealGoal extends Goal {
         Level level = entity.getLevel();
         if (!(level instanceof ServerLevel serverLevel)) return;
 
-        ItemStack boneMeal = findBoneMeal();
+        ItemStack boneMeal = findBoneMeal(true);
         if (boneMeal.isEmpty()) return;
 
         BlockState state = level.getBlockState(pos);
@@ -153,6 +154,5 @@ public class ApplyBonemealGoal extends Goal {
         entity.swing(entity.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
         fertilizable.performBonemeal(serverLevel, level.getRandom(), pos, state);
         serverLevel.levelEvent(1505, targetPos, 1); // Bone meal particles
-        boneMeal.shrink(1);
     }
 }

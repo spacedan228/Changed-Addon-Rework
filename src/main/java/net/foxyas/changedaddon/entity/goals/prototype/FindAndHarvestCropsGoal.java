@@ -30,7 +30,7 @@ public class FindAndHarvestCropsGoal extends Goal {
     @Override
     public boolean canUse() {
         // Can only harvest if inventory not full and there's a mature crop nearby
-        return (!entity.isInventoryFull() && entity.getHarvestsTimes() < PrototypeEntity.MAX_HARVEST_TIMES) && entity.findNearbyCrop(entity.getLevel(), entity.blockPosition(), searchRange) != null;
+        return (entity.hasSpaceInInvOrHands() && entity.getHarvestsTimes() < PrototypeEntity.MAX_HARVEST_TIMES) && entity.findNearbyCrop(entity.getLevel(), entity.blockPosition(), searchRange) != null;
     }
 
     @Override
