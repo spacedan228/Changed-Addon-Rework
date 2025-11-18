@@ -20,6 +20,7 @@ import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -32,6 +33,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.*;
+import net.minecraft.world.Container;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -60,7 +62,9 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.*;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
@@ -72,6 +76,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class PrototypeEntity extends AbstractCanTameChangedEntity implements MenuProvider, CustomPatReaction, IDynamicPawColor, ItemHandlerHolder {
 
@@ -101,6 +106,23 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         return combinedInv;
     }
 
+    // Just to Avoid Class Cast :P
+    protected CombinedInvWrapper getCombinedInv() {
+        return combinedInv;
+    }
+
+    // Just to Avoid Class Cast :P
+    protected CombinedInvWrapper getHandsInv() {
+        return handsInv;
+    }
+
+    // Just to Avoid Class Cast :P
+    protected ItemStackHandler getInv() {
+        return inv;
+    }
+
+    // Simulate a vanilla Inventory
+    // it internal inventory value will not be updated
     public SimpleContainer getInventory() {
         SimpleContainer container = new SimpleContainer(9);
         for (int i = 0; i < container.getContainerSize(); i++) {
@@ -108,6 +130,13 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
             container.setChanged();
         }
         return container;
+    }
+
+    // Again just to simulate a vanilla inventory
+    // this will update the internal inventory value, the SimpleContainer is just there,
+    // Because it may be needed for a "copy from" hanlde in the future
+    public void setItemInInventory(SimpleContainer container, int index, ItemStack stack) {
+        getCombinedInv().setStackInSlot(index, stack);
     }
 
     @Override
@@ -386,12 +415,29 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     @Override
     public @NotNull SlotAccess getSlot(int slot) {
         if (getEquipmentSlot(slot) == null) {
-            if (slot >= 0 && slot < this.getInventory().getContainerSize()) {
-                return SlotAccess.forContainer(this.getInventory(), slot);
+            if (slot >= 0 && slot < this.getCombinedInv().getSlots()) {
+                return getSlotAccess(this.combinedInv, slot, (itemStack) -> true);
             }
         }
 
         return super.getSlot(slot);
+    }
+
+    public SlotAccess getSlotAccess(final CombinedInvWrapper pInventory, final int pSlot, final Predicate<ItemStack> pStackFilter) {
+        return new SlotAccess() {
+            public @NotNull ItemStack get() {
+                return pInventory.getStackInSlot(pSlot);
+            }
+
+            public boolean set(@NotNull ItemStack itemStack) {
+                if (!pStackFilter.test(itemStack)) {
+                    return false;
+                } else {
+                    pInventory.setStackInSlot(pSlot, itemStack);
+                    return true;
+                }
+            }
+        };
     }
 
     @Nullable
