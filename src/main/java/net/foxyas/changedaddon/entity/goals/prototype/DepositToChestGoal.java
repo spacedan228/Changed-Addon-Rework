@@ -18,26 +18,22 @@ import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class DepositToChestGoal extends Goal {
 
     private final PrototypeEntity holder;
-    private final Supplier<CombinedInvWrapper> handsInvRef;
     private final int range;
 
     private int cooldown;
     private BlockPos chestPos;
     private int noPathTimeout;
 
-    public DepositToChestGoal(PrototypeEntity holder, Supplier<CombinedInvWrapper> handsInvRef, int range){
+    public DepositToChestGoal(PrototypeEntity holder, int range){
         this.holder = holder;
-        this.handsInvRef = handsInvRef;
         this.range = range;
         setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
     }
@@ -103,7 +99,7 @@ public class DepositToChestGoal extends Goal {
     }
 
     private BlockPos tryFindNearbyChest(Level level) {
-        CombinedInvWrapper handsInv = handsInvRef.get();
+        IItemHandler handsInv = holder.getHandsAndInv();
         PrototypeEntity.DepositType depositType = holder.getDepositType();
         List<ItemStack> carriedItems = new ArrayList<>();
         for (int i = 0; i < handsInv.getSlots(); i++) {
@@ -171,7 +167,7 @@ public class DepositToChestGoal extends Goal {
 
         boolean anyInserted = false;
         ItemStack stack, remainder;
-        CombinedInvWrapper handsInv = handsInvRef.get();
+        IItemHandler handsInv = holder.getHandsAndInv();
         IItemHandler handler = chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElseThrow();
         for(int i = 0; i < handsInv.getSlots(); i++){
             stack = handsInv.getStackInSlot(i);

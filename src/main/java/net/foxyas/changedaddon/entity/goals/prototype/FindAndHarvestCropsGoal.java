@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.goals.prototype;
 
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
+import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.minecraft.core.BlockPos;
@@ -10,15 +11,22 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public class FindAndHarvestCropsGoal extends Goal {
 
     private static final int searchRange = 10;
+
     private final PrototypeEntity entity;
     private final PathNavigation navigation;
+
     private BlockPos targetCropPos;
 
     public FindAndHarvestCropsGoal(PrototypeEntity entity) {
@@ -30,7 +38,7 @@ public class FindAndHarvestCropsGoal extends Goal {
     @Override
     public boolean canUse() {
         // Can only harvest if inventory not full and there's a mature crop nearby
-        return (entity.hasSpaceInInvOrHands() && entity.getHarvestsTimes() < PrototypeEntity.MAX_HARVEST_TIMES) && entity.findNearbyCrop(entity.getLevel(), entity.blockPosition(), searchRange) != null;
+        return (entity.hasSpaceInInvOrHands() && entity.getHarvestsTimes() < PrototypeEntity.MAX_HARVEST_TIMES) && findNearbyCrop(entity.getLevel(), entity.blockPosition()) != null;
     }
 
     @Override
@@ -50,7 +58,7 @@ public class FindAndHarvestCropsGoal extends Goal {
 
     @Override
     public void start() {
-        targetCropPos = entity.findNearbyCrop(entity.getLevel(), entity.blockPosition(), searchRange);
+        targetCropPos = findNearbyCrop(entity.getLevel(), entity.blockPosition());
         if (targetCropPos == null) return;
         entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
         if (entity.getLevel().isClientSide) {
@@ -73,7 +81,7 @@ public class FindAndHarvestCropsGoal extends Goal {
 
         if (targetCropPos != null) {
             if (entity.blockPosition().closerThan(targetCropPos, 2.5)) {
-                entity.harvestCrop((ServerLevel) level, targetCropPos);
+                harvestCrop((ServerLevel) level, targetCropPos);
 
                 // Look at crop and swing arm
 
@@ -91,15 +99,48 @@ public class FindAndHarvestCropsGoal extends Goal {
             }
         } else {
             // No crop found, try again next tick
-            targetCropPos = entity.findNearbyCrop(level, entity.blockPosition(), searchRange);
+            targetCropPos = findNearbyCrop(level, entity.blockPosition());
             if (targetCropPos != null) {
                 navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
             }
         }
     }
 
-    @Override
-    public void stop() {
-        super.stop();
+    private BlockPos findNearbyCrop(Level level, BlockPos center) {
+        BlockPos closestCrop = null;
+        double closestDist = Double.MAX_VALUE;
+        double dist;
+
+        for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(center, searchRange, searchRange).toList()) {
+            BlockState state = level.getBlockState(pos);
+            if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)) continue;
+
+            dist = pos.distSqr(center);
+            if (dist >= closestDist) continue;
+
+            closestDist = dist;
+            closestCrop = pos.immutable();
+        }
+        return closestCrop;
+    }
+
+    private void harvestCrop(ServerLevel level, BlockPos pos) {
+        BlockState state = level.getBlockState(pos);
+        if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)) return;
+
+        // Drop items naturally (simulate player breaking)
+        ItemStack tool = entity.getMainHandItem();
+        List<ItemStack> drops = Block.getDrops(state, level, pos, level.getBlockEntity(pos), entity, tool);
+        for (ItemStack stack : drops) {
+            stack = entity.addToInventory(stack, false);
+            if (stack.isEmpty()) continue;
+
+            Block.popResource(level, pos, stack);
+        }
+
+        // Replant at age 0
+        level.setBlock(pos, crop.getStateForAge(0), 3);
+        level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);
+        entity.addHarvestsTime();
     }
 }

@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.EnumSet;
 
@@ -93,11 +94,12 @@ public class PlantSeedsGoal extends Goal {
     }
 
     private ItemStack findSeeds(boolean extract) {
+        IItemHandler handsInv = entity.getHandsAndInv();
         ItemStack seeds;
-        for (int i = 0; i < entity.getItemHandler().getSlots(); i++) {
-            seeds = entity.getItemHandler().getStackInSlot(i);
+        for (int i = 0; i < handsInv.getSlots(); i++) {
+            seeds = handsInv.getStackInSlot(i);
             if (isSeed(seeds)) {
-                if(extract) return entity.getItemHandler().extractItem(i, 1, false);
+                if(extract) return handsInv.extractItem(i, 1, false);
                 return seeds;
             }
         }

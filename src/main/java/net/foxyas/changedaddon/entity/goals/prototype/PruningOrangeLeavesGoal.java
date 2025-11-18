@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.entity.goals.prototype;
 
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
+import net.foxyas.changedaddon.util.DynamicClipContext;
+import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.core.BlockPos;
@@ -14,15 +16,23 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.common.Tags;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class PruningOrangeLeavesGoal extends Goal {
 
     private final PrototypeEntity prototypeEntity;
+
     private BlockPos targetLeave;
     private ItemStack shears;
     private InteractionHand hand;
@@ -35,7 +45,7 @@ public class PruningOrangeLeavesGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
+        targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
         boolean hasShearsLikeItem = (prototypeEntity.getMainHandItem().getItem() instanceof HoeItem || prototypeEntity.getOffhandItem().getItem() instanceof HoeItem) ||
                 (prototypeEntity.getMainHandItem().is(Tags.Items.SHEARS) || prototypeEntity.getOffhandItem().is(Tags.Items.SHEARS));
 
@@ -53,11 +63,6 @@ public class PruningOrangeLeavesGoal extends Goal {
     }
 
     @Override
-    public boolean isInterruptable() {
-        return true;
-    }
-
-    @Override
     public boolean requiresUpdateEveryTick() {
         return true;
     }
@@ -67,7 +72,7 @@ public class PruningOrangeLeavesGoal extends Goal {
         super.tick();
         if (targetLeave != null && prototypeEntity.getLevel() instanceof ServerLevel serverLevel) {
             if (!serverLevel.getBlockState(targetLeave).is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
-                targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
+                targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
             }
         }
 
@@ -79,9 +84,44 @@ public class PruningOrangeLeavesGoal extends Goal {
         ticks++;
         if (ticks % 600 == 0) {
             if (targetLeave != null && targetLeave.distSqr(prototypeEntity.blockPosition()) > (16 * 16)) {
-                targetLeave = prototypeEntity.findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
+                targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
             }
         }
+    }
+
+    @Nullable
+    private BlockPos findNearbyOrangeLeaves(BlockPos center, int range, Vec3 eyePos) {
+        BlockPos best = null;
+        double bestDist = Double.MAX_VALUE;
+        double dist;
+
+        Level level = prototypeEntity.level;
+        // Evite .toList() para não alocar tudo; itere o stream diretamente
+        for (BlockPos pos : (Iterable<BlockPos>) FoxyasUtils.betweenClosedStreamSphere(center, range, range)::iterator) {
+            BlockState state = level.getBlockState(pos);
+            if (!state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) continue;
+
+            // Distância do olho ao centro do bloco (mais precisa)
+            dist = eyePos.distanceToSqr(Vec3.atCenterOf(pos));
+            if (dist >= bestDist) continue;
+
+            BlockHitResult hit = level.clip(eyeContext(pos));
+
+            if (hit.getType() == HitResult.Type.BLOCK && hit.getBlockPos().equals(pos)) {
+                bestDist = dist;
+                best = pos.immutable();
+            }
+        }
+        return best;
+    }
+
+    private @NotNull ClipContext eyeContext(BlockPos pos) {
+        return new DynamicClipContext(
+                prototypeEntity.getEyePosition(),
+                Vec3.atCenterOf(pos),
+                DynamicClipContext.IGNORE_TRANSLUCENT,
+                ClipContext.Fluid.ANY::canPick,
+                CollisionContext.of(prototypeEntity));
     }
 
     public void PrunOrangeLeaves() {

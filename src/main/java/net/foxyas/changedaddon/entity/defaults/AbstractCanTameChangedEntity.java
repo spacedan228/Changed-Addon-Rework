@@ -29,7 +29,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
@@ -193,7 +192,6 @@ public abstract class AbstractCanTameChangedEntity extends AbstractBasicChangedE
     @Override
     protected @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
-        Item item = itemstack.getItem();
         if (this.level.isClientSide) {
             boolean flag = this.isOwnedBy(player) || this.isTame();
             return flag ? InteractionResult.CONSUME : InteractionResult.PASS;

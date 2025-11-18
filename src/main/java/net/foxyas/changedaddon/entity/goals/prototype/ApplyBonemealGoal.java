@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.items.IItemHandler;
 
 import java.util.EnumSet;
 
@@ -116,11 +117,12 @@ public class ApplyBonemealGoal extends Goal {
     }
 
     private ItemStack findBoneMeal(boolean extract) {
+        IItemHandler handsInv = entity.getHandsAndInv();
         ItemStack boneMeal;
-        for (int i = 0; i < entity.getItemHandler().getSlots(); i++) {
-            boneMeal = entity.getItemHandler().getStackInSlot(i);
+        for (int i = 0; i < handsInv.getSlots(); i++) {
+            boneMeal = handsInv.getStackInSlot(i);
             if (!boneMeal.isEmpty() && boneMeal.is(Items.BONE_MEAL)) {
-                if(extract) return entity.getItemHandler().extractItem(i, 1, false);
+                if(extract) return handsInv.extractItem(i, 1, false);
                 return boneMeal;
             }
         }

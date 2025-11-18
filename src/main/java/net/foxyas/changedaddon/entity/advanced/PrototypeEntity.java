@@ -7,8 +7,6 @@ import net.foxyas.changedaddon.entity.defaults.AbstractCanTameChangedEntity;
 import net.foxyas.changedaddon.entity.goals.prototype.*;
 import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.util.ColorUtil;
-import net.foxyas.changedaddon.util.DynamicClipContext;
-import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.EyeStyle;
@@ -16,7 +14,6 @@ import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
-import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -26,7 +23,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.*;
@@ -42,17 +38,11 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.items.IItemHandler;
@@ -76,15 +66,13 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     public static final int MAX_HARVEST_TIMES = 32;
 
     // Fields
-    private int harvestsTimes = 0;
-    private DepositType depositType = DepositType.BOTH;
-    @Nullable
-    private BlockPos targetChestPos = null;
+    protected final IItemHandlerModifiable hands = new EntityHandsInvWrapper(this);
+    protected final ItemStackHandler inv = new ItemStackHandler(9);
+    protected final CombinedInvWrapper handsInv = new CombinedInvWrapper(hands, inv);
+    protected final CombinedInvWrapper combinedInv = new CombinedInvWrapper(new EntityArmorInvWrapper(this), hands, inv);
 
-    private final IItemHandlerModifiable hands = new EntityHandsInvWrapper(this);
-    private final ItemStackHandler inv = new ItemStackHandler(9);
-    private final CombinedInvWrapper handsInv = new CombinedInvWrapper(hands, inv);
-    private final CombinedInvWrapper combinedInv = new CombinedInvWrapper(new EntityArmorInvWrapper(this), hands, inv);
+    protected int harvestsTimes = 0;
+    protected DepositType depositType = DepositType.BOTH;
 
     // Constructors
     public PrototypeEntity(EntityType<PrototypeEntity> type, Level world) {
@@ -98,37 +86,17 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         return combinedInv;
     }
 
-    // Just to Avoid Class Cast :P
-    protected CombinedInvWrapper getCombinedInv() {
-        return combinedInv;
-    }
-
-    // Just to Avoid Class Cast :P
-    protected CombinedInvWrapper getHandsInv() {
+    public IItemHandler getHandsAndInv(){
         return handsInv;
     }
 
-    // Just to Avoid Class Cast :P
-    protected ItemStackHandler getInv() {
-        return inv;
-    }
-
-    // Simulate a vanilla Inventory
-    // it internal inventory value will not be updated
-    public SimpleContainer getInventory() {
-        SimpleContainer container = new SimpleContainer(9);
-        for (int i = 0; i < container.getContainerSize(); i++) {
-            container.setItem(i, combinedInv.getStackInSlot(i));
-            container.setChanged();
-        }
-        return container;
-    }
-
-    // Again just to simulate a vanilla inventory
-    // this will update the internal inventory value, the SimpleContainer is just there,
-    // Because it may be needed for a "copy from" hanlde in the future
-    public void setItemInInventory(SimpleContainer container, int index, ItemStack stack) {
-        getCombinedInv().setStackInSlot(index, stack);
+    /**
+     * @param stack ItemStack to insert.
+     * @param simulate If true, the insertion is only simulated.
+     * @return Remaining ItemStack.
+     */
+    public ItemStack addToInventory(ItemStack stack, boolean simulate){///Do not set, for armor {@link Mob#equipItemIfPossible}
+        return ItemHandlerHelper.insertItem(handsInv, stack, simulate);
     }
 
     @Override
@@ -165,7 +133,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         goalSelector.addGoal(30, new PruningOrangeLeavesGoal(this));
         goalSelector.addGoal(30, new FindAndHarvestCropsGoal(this));
         goalSelector.addGoal(25, new PlantSeedsGoal(this));
-        goalSelector.addGoal(20, new DepositToChestGoal(this, ()-> handsInv, 8));
+        goalSelector.addGoal(20, new DepositToChestGoal(this, 8));
         goalSelector.addGoal(15, new TryGrabItemsGoal(this));
         goalSelector.addGoal(15, new ApplyBonemealGoal(this));
     }
@@ -203,14 +171,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         tag.put("Inv", inv.serializeNBT());
         tag.putInt("harvestDone", harvestsTimes);
         tag.putString("DepositType", depositType.toString());
-
-        if (targetChestPos != null) {
-            CompoundTag nbt = new CompoundTag();
-            nbt.putInt("targetX", targetChestPos.getX());
-            nbt.putInt("targetY", targetChestPos.getY());
-            nbt.putInt("targetZ", targetChestPos.getZ());
-            tag.put("TargetChestPos", nbt);
-        }
     }
 
     @Override
@@ -232,14 +192,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
             depositType = DepositType.valueOf(tag.getString("DepositeType").toUpperCase());
         } else if (tag.contains("DepositType")) {
             depositType = DepositType.valueOf(tag.getString("DepositType"));
-        }
-
-        if (tag.contains("TargetChestPos")) {
-            CompoundTag nbt = tag.getCompound("TargetChestPos");
-            int x = nbt.getInt("targetX");
-            int y = nbt.getInt("targetY");
-            int z = nbt.getInt("targetZ");
-            targetChestPos = new BlockPos(x, y, z);
         }
     }
 
@@ -377,7 +329,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     protected void pickUpItem(@NotNull ItemEntity pItemEntity) {
         ItemStack pStack = pItemEntity.getItem();
         if (canTakeItemNoArmor(pStack)) {
-            ItemStack remainder = ItemHandlerHelper.insertItem(handsInv, pStack, false);
+            ItemStack remainder = addToInventory(pStack, false);
 
             if (remainder.isEmpty()) {
                 pItemEntity.discard();
@@ -396,35 +348,18 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     @Override
     public @NotNull SlotAccess getSlot(int slot) {
         if (getEquipmentSlot(slot) == null) {
-            if (slot >= 0 && slot < this.inv.getSlots()) {
-                return getSlotAccess(this.inv, slot, (itemStack) -> true);
+            if (slot >= 0 && slot < inv.getSlots()) {
+                return getSlotAccess(inv, slot, (itemStack) -> true);
             }
         }
 
         return super.getSlot(slot);
     }
 
-    public SlotAccess getSlotAccess(final CombinedInvWrapper pInventory, final int pSlot, final Predicate<ItemStack> pStackFilter) {
+    public static SlotAccess getSlotAccess(final IItemHandlerModifiable pInventory, final int pSlot, final Predicate<ItemStack> pStackFilter) {
         return new SlotAccess() {
             public @NotNull ItemStack get() {
-                return pInventory.getStackInSlot(pSlot);
-            }
-
-            public boolean set(@NotNull ItemStack itemStack) {
-                if (!pStackFilter.test(itemStack)) {
-                    return false;
-                } else {
-                    pInventory.setStackInSlot(pSlot, itemStack);
-                    return true;
-                }
-            }
-        };
-    }
-
-    public SlotAccess getSlotAccess(final ItemStackHandler pInventory, final int pSlot, final Predicate<ItemStack> pStackFilter) {
-        return new SlotAccess() {
-            public @NotNull ItemStack get() {
-                return pInventory.getStackInSlot(pSlot);
+                return pInventory.getStackInSlot(pSlot).copy();
             }
 
             public boolean set(@NotNull ItemStack itemStack) {
@@ -492,80 +427,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         return false;
     }
 
-    public BlockPos findNearbyCrop(Level level, BlockPos center, int range) {
-        BlockPos closestCrop = null;
-        double closestDist = Double.MAX_VALUE;
-        double dist;
-
-        for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(center, range, range).toList()) {
-            BlockState state = level.getBlockState(pos);
-            if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)) continue;
-
-            dist = pos.distSqr(center);
-            if (dist >= closestDist) continue;
-
-            closestDist = dist;
-            closestCrop = pos.immutable();
-        }
-        return closestCrop;
-    }
-
-    @Nullable
-    public BlockPos findNearbyOrangeLeaves(BlockPos center, int range, Vec3 eyePos) {
-        BlockPos best = null;
-        double bestDist = Double.MAX_VALUE;
-        double dist;
-
-        // Evite .toList() para não alocar tudo; itere o stream diretamente
-        for (BlockPos pos : (Iterable<BlockPos>) FoxyasUtils.betweenClosedStreamSphere(center, range, range)::iterator) {
-            BlockState state = level.getBlockState(pos);
-            if (!state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) continue;
-
-            // Distância do olho ao centro do bloco (mais precisa)
-            dist = eyePos.distanceToSqr(Vec3.atCenterOf(pos));
-            if (dist >= bestDist) continue;
-
-            BlockHitResult hit = level.clip(eyeContext(pos));
-
-            if (hit.getType() == HitResult.Type.BLOCK && hit.getBlockPos().equals(pos)) {
-                bestDist = dist;
-                best = pos.immutable();
-            }
-        }
-        return best;
-    }
-
-
-    private @NotNull ClipContext eyeContext(BlockPos pos) {
-        return new DynamicClipContext(
-                getEyePosition(),
-                Vec3.atCenterOf(pos),
-                DynamicClipContext.IGNORE_TRANSLUCENT,
-                ClipContext.Fluid.ANY::canPick,
-                CollisionContext.of(this));
-    }
-
-    public void harvestCrop(ServerLevel level, BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
-        if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)) return;
-
-        // Drop items naturally (simulate player breaking)
-        ItemStack tool = getMainHandItem();
-        List<ItemStack> drops = Block.getDrops(state, level, pos, level.getBlockEntity(pos), this, tool);
-
-        for (ItemStack stack : drops) {
-            stack = ItemHandlerHelper.insertItem(handsInv, stack, false);
-            if (stack.isEmpty()) continue;
-
-            Block.popResource(level, pos, stack);
-        }
-
-        // Replant at age 0
-        level.setBlock(pos, crop.getStateForAge(0), 3);
-        level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);
-        addHarvestsTime();
-    }
-
     // Getters and setters
     public List<Item> pickAbleItems() {
         return List.of(Items.BONE_MEAL, Items.SHEARS);
@@ -589,14 +450,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
 
     public void addHarvestsTime() {
         this.harvestsTimes++;
-    }
-
-    public @Nullable BlockPos getTargetChestPos() {
-        return targetChestPos;
-    }
-
-    public void setTargetChestPos(@Nullable BlockPos targetChestPos) {
-        this.targetChestPos = targetChestPos;
     }
 
     @Override
