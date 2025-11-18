@@ -18,9 +18,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.util.Color3;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -28,12 +26,10 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.*;
-import net.minecraft.world.Container;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -50,10 +46,7 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
@@ -62,10 +55,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.*;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
+import net.minecraftforge.items.ItemHandlerHelper;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.EntityArmorInvWrapper;
 import net.minecraftforge.items.wrapper.EntityHandsInvWrapper;
@@ -74,7 +67,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -170,13 +162,12 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     @Override
     public void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(50, new FindAndHarvestCropsGoal(this));
+        goalSelector.addGoal(30, new PruningOrangeLeavesGoal(this));
+        goalSelector.addGoal(30, new FindAndHarvestCropsGoal(this));
+        goalSelector.addGoal(25, new PlantSeedsGoal(this));
+        goalSelector.addGoal(20, new DepositToChestGoal(this, ()-> handsInv, 8));
         goalSelector.addGoal(15, new TryGrabItemsGoal(this));
-        goalSelector.addGoal(10, new FindChestGoal(this));
-        goalSelector.addGoal(30, new GotoTargetChestGoal(this));
-        goalSelector.addGoal(30, new PlantSeedsGoal(this));
-        goalSelector.addGoal(30, new ApplyBonemealGoal(this));
-        goalSelector.addGoal(50, new PruningOrangeLeavesGoal(this));
+        goalSelector.addGoal(15, new ApplyBonemealGoal(this));
     }
 
     @Override
@@ -327,20 +318,10 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     @Override
     public void baseTick() {
         super.baseTick();
-        tryToDepositItemsInTargetChest();
-
         if (tickCount % 120 != 0) return;
 
         if (harvestsTimes >= MAX_HARVEST_TIMES) {
             harvestsTimes = 0;
-        }
-    }
-
-    private void tryToDepositItemsInTargetChest() {
-        if (wantsToDeposit() && targetChestPos != null && blockPosition().closerThan(targetChestPos, 2.0)) {
-            if (getLevel() instanceof ServerLevel serverLevel) {
-                depositToChest(serverLevel, targetChestPos);
-            }
         }
     }
 
@@ -494,64 +475,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         return false;
     }
 
-    // Crop and chest related methods
-    public BlockPos tryFindNearbyChest(Level level, BlockPos center, int range) {
-        List<ItemStack> carriedItems = new ArrayList<>();
-        for (int i = 0; i < handsInv.getSlots(); i++) {//Deposit from hands & inv
-            ItemStack stack = handsInv.getStackInSlot(i);
-            if (!stack.isEmpty() && depositType.test(stack)) carriedItems.add(stack.copy());
-        }
-
-        BlockPos closestChest = null, bestChest = null;
-        double closestDist = Double.MAX_VALUE, bestDist = closestDist;
-        double dist;
-        boolean isFull, potentiallyBest;
-
-        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-range, -range, -range), center.offset(range, range, range))) {
-            if (!(level.getBlockEntity(pos) instanceof ChestBlockEntity chest)) continue;
-
-            dist = pos.distSqr(center);
-            if (dist >= bestDist) continue;
-
-            isFull = true;
-            potentiallyBest = false;
-            for (int slot = 0; slot < chest.getContainerSize(); slot++) {
-                ItemStack chestItem = chest.getItem(slot);
-                if (chestItem.isEmpty()) {//If not full
-                    isFull = false;
-
-                    if (dist < closestDist) {
-                        closestDist = dist;
-                        closestChest = pos.immutable();
-                    }
-
-                    if (potentiallyBest) {
-                        bestDist = dist;
-                        bestChest = pos.immutable();
-                        break;
-                    }
-                    continue;
-                }
-
-                for (ItemStack carried : carriedItems) {
-                    if (!ItemStack.isSameItemSameTags(carried, chestItem)) continue;
-
-                    if (chestItem.getCount() >= chestItem.getMaxStackSize() && isFull) {
-                        potentiallyBest = true;
-                        break;
-                    }
-
-                    bestDist = dist;
-                    bestChest = pos.immutable();
-                    break;
-                }
-                if (pos.equals(bestChest)) break;
-            }
-        }
-
-        return bestChest != null ? bestChest : closestChest;
-    }
-
     public BlockPos findNearbyCrop(Level level, BlockPos center, int range) {
         BlockPos closestCrop = null;
         double closestDist = Double.MAX_VALUE;
@@ -626,42 +549,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         addHarvestsTime();
     }
 
-    private void depositToChest(ServerLevel level, BlockPos chestPos) {
-        BlockState state = level.getBlockState(chestPos);
-        BlockEntity be = level.getBlockEntity(chestPos);
-
-        if (!(be instanceof ChestBlockEntity chest)) {
-            setTargetChestPos(null);
-            return;
-        }
-
-        boolean anyInserted = false;
-        ItemStack stack, remainder;
-        IItemHandler handler = chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElseThrow();
-        for (int i = 0; i < handsInv.getSlots(); i++) {
-            stack = handsInv.getStackInSlot(i);
-            if (stack.isEmpty() || !depositType.test(stack)) continue;
-
-            remainder = ItemHandlerHelper.insertItem(handler, stack, false);
-            if (remainder == stack) continue;
-
-            anyInserted = true;
-            handsInv.setStackInSlot(i, remainder);
-        }
-
-        if (anyInserted) {
-            lookAt(EntityAnchorArgument.Anchor.FEET, new Vec3(chestPos.getX(), chestPos.getY() - 1, chestPos.getZ()));
-            swing(isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-            chest.startOpen(FakePlayerFactory.getMinecraft(level));
-            chest.triggerEvent(1, 1);
-            chest.setChanged();
-            if (state.getBlock() instanceof ChestBlock) {
-                level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
-                setHarvestsTimes(0);
-            }
-        } else setTargetChestPos(tryFindNearbyChest(level, blockPosition(), 8));
-    }
-
     // Getters and setters
     public List<Item> pickAbleItems() {
         return List.of(Items.BONE_MEAL, Items.SHEARS);
@@ -703,7 +590,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     private static final TagKey<Item> FORGE_FRUITS = ItemTags.create(new ResourceLocation("forge", "fruits"));
 
     // Enums
-    public enum DepositType {
+    public enum DepositType implements Predicate<ItemStack> {
         SEEDS(Tags.Items.SEEDS),
         CROPS(FORGE_FRUITS, Tags.Items.CROPS),
         BOTH(FORGE_FRUITS, Tags.Items.CROPS, Tags.Items.SEEDS);
@@ -746,5 +633,4 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
             return this == SEEDS || this == BOTH;
         }
     }
-
 }
