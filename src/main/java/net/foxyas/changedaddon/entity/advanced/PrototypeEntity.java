@@ -396,8 +396,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     @Override
     public @NotNull SlotAccess getSlot(int slot) {
         if (getEquipmentSlot(slot) == null) {
-            if (slot >= 0 && slot < this.getCombinedInv().getSlots()) {
-                return getSlotAccess(this.combinedInv, slot, (itemStack) -> true);
+            if (slot >= 0 && slot < this.inv.getSlots()) {
+                return getSlotAccess(this.inv, slot, (itemStack) -> true);
             }
         }
 
@@ -405,6 +405,23 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     }
 
     public SlotAccess getSlotAccess(final CombinedInvWrapper pInventory, final int pSlot, final Predicate<ItemStack> pStackFilter) {
+        return new SlotAccess() {
+            public @NotNull ItemStack get() {
+                return pInventory.getStackInSlot(pSlot);
+            }
+
+            public boolean set(@NotNull ItemStack itemStack) {
+                if (!pStackFilter.test(itemStack)) {
+                    return false;
+                } else {
+                    pInventory.setStackInSlot(pSlot, itemStack);
+                    return true;
+                }
+            }
+        };
+    }
+
+    public SlotAccess getSlotAccess(final ItemStackHandler pInventory, final int pSlot, final Predicate<ItemStack> pStackFilter) {
         return new SlotAccess() {
             public @NotNull ItemStack get() {
                 return pInventory.getStackInSlot(pSlot);
