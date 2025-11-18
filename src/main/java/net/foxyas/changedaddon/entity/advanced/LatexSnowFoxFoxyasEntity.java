@@ -149,6 +149,11 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     }
 
     @Override
+    protected boolean targetSelectorTest(LivingEntity livingEntity) {
+        return false;
+    }
+
+    @Override
     protected void dropEquipment() {
         super.dropEquipment();
     }

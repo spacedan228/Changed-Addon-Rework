@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.api.ColorHolder;
+import net.ltxprogrammer.changed.block.Computer;
 import net.ltxprogrammer.changed.block.KeypadBlock;
 import net.ltxprogrammer.changed.block.entity.KeypadBlockEntity;
 import net.ltxprogrammer.changed.init.ChangedSounds;
@@ -46,9 +47,19 @@ public class KeycardItem extends Item implements ColorHolder {
         super(new Properties().stacksTo(1).tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
     }
 
-    public static void setCode(ItemStack stack, byte[] code) {
+    public static void setCode(ItemStack stack, byte @Nullable [] code) {
+        if (code == null) {
+            removeCode(stack);
+            return;
+        }
+
         CompoundTag tag = stack.getOrCreateTag();
         tag.putByteArray("StoredCode", code);
+    }
+
+    public static void removeCode(ItemStack stack) {
+        CompoundTag tag = stack.getOrCreateTag();
+        if (tag.contains("StoredCode")) tag.remove("StoredCode");
     }
 
     public static byte @Nullable [] getCode(ItemStack stack) {
@@ -166,17 +177,23 @@ public class KeycardItem extends Item implements ColorHolder {
 
         if (player == null) return InteractionResult.PASS;
 
+        // Try to clean the stored Keypad code from the keycard
+        if (blockState.getBlock() instanceof Computer computer) {
+            return handleComputerFeature(stack, level, player, pos, hand);
+        }
+
         if (!(blockState.getBlock() instanceof KeypadBlock) ||
                 !(blockEntity instanceof KeypadBlockEntity keypadBlockEntity))
             return InteractionResult.PASS;
 
-        if (blockState.getValue(KeypadBlock.POWERED)) {
-            return InteractionResult.PASS;
-        }
-
+        // Try to store the code from the keypad to the keycard
         byte[] itemCode = getCode(stack);
         boolean clientSide = level.isClientSide();
         if (itemCode == null) {
+            if (!blockState.getValue(KeypadBlock.POWERED)) {
+                return InteractionResult.PASS;
+            }
+
             if (!clientSide && player.isShiftKeyDown() && keypadBlockEntity.code != null) {
                 setCode(stack, keypadBlockEntity.code);
                 playWrite(level, pos);
@@ -185,6 +202,7 @@ public class KeycardItem extends Item implements ColorHolder {
             }
             return InteractionResult.PASS;
         }
+
         // Converte o código para lista de bytes (se o keypad usar isso)
         List<Byte> codeList = new ArrayList<>();
         for (byte b : itemCode)
@@ -192,6 +210,10 @@ public class KeycardItem extends Item implements ColorHolder {
 
         // Agora insere o código automaticamente no keypad
         if (!clientSide) {
+            if (blockState.getValue(KeypadBlock.POWERED)) {
+                return InteractionResult.PASS;
+            }
+
             if (!blockState.getValue(KeypadBlock.POWERED)) {
                 boolean fail = false;
                 keypadBlockEntity.useCode(codeList);
@@ -219,6 +241,46 @@ public class KeycardItem extends Item implements ColorHolder {
         }
 
         return InteractionResult.sidedSuccess(clientSide);
+    }
+
+    public @NotNull InteractionResult handleComputerFeature(ItemStack stack, Level level, Player player, BlockPos pos, InteractionHand hand) {
+        byte[] itemCode = getCode(stack);
+        boolean clientSide = level.isClientSide();
+
+        // Determine the opposite hand
+        InteractionHand otherHand = hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
+        ItemStack otherStack = player.getItemInHand(otherHand);
+
+        // --- If this keycard already has a code ---
+        if (itemCode != null) {
+
+            // SHIFT action: clear the code
+            if (!clientSide && player.isShiftKeyDown()) {
+                setCode(stack, null);
+                playWrite(level, pos);
+                player.swing(hand, true);
+                return InteractionResult.sidedSuccess(false);
+            }
+
+            // --- OTHER LOGIC: copy the code to the offhand keycard ---
+            if (!clientSide && !otherStack.isEmpty() && otherStack.getItem() instanceof KeycardItem) {
+
+                byte[] otherCode = getCode(otherStack);
+
+                // Only copy if the offhand keycard has no code
+                if (otherCode == null) {
+                    setCode(otherStack, itemCode.clone()); // Cloning to avoid sharing the same array
+                    playWrite(level, pos);
+                    player.swing(hand, true);
+                    return InteractionResult.sidedSuccess(false);
+                }
+            }
+
+            return InteractionResult.PASS;
+        }
+
+        // --- This keycard has no code ---
+        return InteractionResult.PASS;
     }
 
     private static void playLock(Level level, BlockPos pos) {

@@ -19,5 +19,5 @@
       "trigger": "minecraft:impossible"
     }
   },
-  "parent": "changed_addon:ammoniapoweradvancement"
+  "parent": "changed_addon:obtain_ammonia_particles"
 }

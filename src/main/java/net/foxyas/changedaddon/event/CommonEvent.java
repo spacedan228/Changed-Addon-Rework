@@ -10,6 +10,7 @@ import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -20,6 +21,7 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -27,9 +29,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -98,6 +102,24 @@ public class CommonEvent {
         tickUntransfur(player);
 
         triggerSwimRegret(player);
+    }
+
+    @SubscribeEvent
+    public static void onFarmlandTrampleWhenTransfured(BlockEvent.FarmlandTrampleEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfurVariant != null && transfurVariant.is(ChangedAddonTransfurVariants.PROTOTYPE)) {
+                event.setCanceled(true);
+            }
+            /* Todo?
+                maybe make the player only trample the dirt if the entity base of the variant can trample?
+            else if (transfurVariant != null) {
+                BlockState state = event.getState();
+                BlockPos pos = event.getPos();
+                float fallDistance = event.getFallDistance();
+                event.setCanceled(!(transfurVariant.getChangedEntity().canTrample(state, pos, fallDistance)));
+            }*/
+        }
     }
 
     @SubscribeEvent

@@ -64,8 +64,8 @@ public class ENLanguageProvider extends LanguageProvider {
 
     @Override
     protected void addTranslations() {
-        addAdvancement("ammoniacraft", "A different kind of ammonia!?", "You craft one Ammonia Powder");
-        addAdvancement("ammoniapoweradvancement", "Ammonia Particles", "Craft a ammonia particle");
+        addAdvancement("obtain_ammonia", "A different kind of ammonia!?", "You craft one Ammonia Powder");
+        addAdvancement("obtain_ammonia_particles", "Ammonia Particles", "Craft a ammonia particle");
         addAdvancement("begone", "I Catch a Big One!", "You caught a big one! now enjoy your new fish friend");
         addAdvancement("catalyzer_advancement", "A Catalyzer?", "You craft or get a Catalyzer");
         addAdvancement("changedaddon_advancement", "Changed Addon", "You downloaded the Changed Addon by Foxyas");
@@ -77,7 +77,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addAdvancement("impure_ammonia_craft", "DNA study is a fantastic thing", "You made one Impure Ammonia");
         addAdvancement("drink_foxta", "Foxyas brand Fanta :3", "Drink foxta for the first time  ");
         addAdvancement("drink_snepsi", "Wait this isn't pepsi!", "Drink snepsi for the first time");
-        addAdvancement("foxta_addictive", "Foxta Addctive!", "We take a big sippy, you drank 100 Foxtas!!!");
+        addAdvancement("foxta_addictive", "Foxta Addictive!", "We take a big sippy, you drank 100 Foxtas!!!");
         addAdvancement("foxyas_advancement", "§4Fox Killer", "§4You..§oMonster§r§4...Are you proud of that?");
         addAdvancement("friendly_transfur", "Friendly Transfur", "You got Transfurred by Foxyas");
         addAdvancement("gooey_friend", "Gooey Friend", "You are next to a Friendly Latex");
@@ -102,7 +102,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addAdvancement("pats_on_the_beast", "Bad Idea?...or Totally worth it?.", "Congratulations!!!, you just buffed the monster!, they will probably have no mercy of your soul now!, Good Luck!");
         addAdvancement("paticifier", "You're a §oPaticifier.§r", "You didn’t just pat, you §opaticified.§r§5, you made a gooey entity pacified by your pats, isn't permanent however");
         addAdvancement("pot_with_litix_camonia_use", "Yummy?", "You drank a liquid made from the dilution of litix-camonia. The taste is not bad besides it tastes like cherry!");
-        addAdvancement("snepsi_addictive", "Snepsi Addctive!", "We take a big sippy,You drink 100 Snepsis!");
+        addAdvancement("snepsi_addictive", "Snepsi Addictive!", "We take a big sippy,You drink 100 Snepsis!");
         addAdvancement("stealth_pats", "Hidden §cAffection§r", "Pet a Goo Creature while wearing a cloak to conceal and confuse them.");
         addAdvancement("swim_regret", "Regret!", "Swim in water with a form that has low swim speed for a minute");
         addAdvancement("times_used_untransfur_syringe_advancement", "Confused indecision?", "You used a Litix-Camonia Syringe more than 32 times, you are indecisive about your humanity, holy!");

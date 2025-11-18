@@ -20,7 +20,7 @@ public class AmmoniaItem extends Item {
     @Override
     public void onCraftedBy(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull Player entity) {
         if (entity instanceof ServerPlayer sPlayer) {
-            Advancement _adv = sPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:ammoniacraft"));
+            Advancement _adv = sPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:obtain_ammonia"));
             assert _adv != null;
             AdvancementProgress _ap = sPlayer.getAdvancements().getOrStartProgress(_adv);
             if (!_ap.isDone()) {

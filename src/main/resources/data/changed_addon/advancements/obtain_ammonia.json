@@ -4,10 +4,10 @@
       "item": "changed_addon:ammonia"
     },
     "title": {
-      "translate": "advancements.ammoniacraft.title"
+      "translate": "advancements.obtain_ammonia.title"
     },
     "description": {
-      "translate": "advancements.ammoniacraft.descr"
+      "translate": "advancements.obtain_ammonia.descr"
     },
     "frame": "task",
     "show_toast": true,
@@ -15,7 +15,7 @@
     "hidden": true
   },
   "criteria": {
-    "ammoniacraft": {
+    "obtain_ammonia": {
       "trigger": "minecraft:impossible"
     }
   },

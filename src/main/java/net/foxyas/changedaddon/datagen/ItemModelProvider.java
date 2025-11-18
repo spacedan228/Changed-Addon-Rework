@@ -1,12 +1,12 @@
 package net.foxyas.changedaddon.datagen;
 
-import com.mojang.authlib.yggdrasil.response.Response;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
+import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
@@ -28,7 +28,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         basicSpawnEgg(LATEX_KAYLA_SHARK_SPAWN_EGG);
         basicSpawnEgg(LATEX_BORDER_COLLIE_SPAWN_EGG);
 
-        layeredItem(KEYCARD_ITEM.get(),
+        layeredItemMirroredHands(KEYCARD_ITEM.get(),
                 List.of(
                         ResourceLocation.fromNamespaceAndPath(KEYCARD_ITEM.getId().getNamespace(), "item/" + KEYCARD_ITEM.getId().getPath() + "_base"),
                         ResourceLocation.fromNamespaceAndPath(KEYCARD_ITEM.getId().getNamespace(), "item/" + KEYCARD_ITEM.getId().getPath() + "_top"),
@@ -74,6 +74,38 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
                 ;
             }
         }
+
+        return builder;
+    }
+
+    public ItemModelBuilder layeredItemMirroredHands(Item item, List<ResourceLocation> layersTextures) {
+        ItemModelBuilder builder = getBuilder(item.toString());
+
+        if (!layersTextures.isEmpty()) {
+            for (int i = 0; i < layersTextures.size(); i++) {
+                ResourceLocation texture = layersTextures.get(i);
+                builder.parent(new ModelFile.UncheckedModelFile("item/generated"))
+                        .texture("layer" + i, texture)
+                ;
+            }
+        }
+
+        // === Adds the transforms in the display JSON ===
+        builder.transforms()
+                // thirdperson_lefthand
+                .transform(ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
+                .rotation(0, 180, 0)
+                .translation(0f, 3.0f, 1.0f)
+                .scale(0.55f, 0.55f, 0.55f)
+                .end()
+
+                // firstperson_lefthand
+                .transform(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND)
+                .rotation(0, 90, -25)
+                .translation(1.13f, 3.2f, 1.13f)
+                .scale(0.68f, 0.68f, 0.68f)
+                .end()
+        ;
 
         return builder;
     }

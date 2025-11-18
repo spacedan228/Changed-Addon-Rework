@@ -4,10 +4,10 @@
       "item": "changed_addon:ammonia_particle"
     },
     "title": {
-      "translate": "advancements.ammoniapoweradvancement.title"
+      "translate": "advancements.obtain_ammonia_particles.title"
     },
     "description": {
-      "translate": "advancements.ammoniapoweradvancement.descr"
+      "translate": "advancements.obtain_ammonia_particles.descr"
     },
     "frame": "task",
     "show_toast": true,
@@ -15,7 +15,7 @@
     "hidden": true
   },
   "criteria": {
-    "ammoniapoweradvancement": {
+    "obtain_ammonia_particles": {
       "trigger": "minecraft:impossible"
     }
   },
