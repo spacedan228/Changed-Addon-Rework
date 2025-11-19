@@ -1,23 +1,23 @@
 package net.foxyas.changedaddon.entity.goals.prototype;
 
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
+import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,37 +29,37 @@ import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.EnumSet;
+
 public class PruningOrangeLeavesGoal extends Goal {
 
     private final PrototypeEntity prototypeEntity;
 
+    private boolean lock;
     private BlockPos targetLeave;
-    private ItemStack shears;
-    private InteractionHand hand;
-    private int ticks = 0;
+    private int pruneCooldown;
 
     public PruningOrangeLeavesGoal(PrototypeEntity prototypeEntity) {
-        super();
         this.prototypeEntity = prototypeEntity;
+        setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     @Override
     public boolean canUse() {
-        targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
-        boolean hasShearsLikeItem = (prototypeEntity.getMainHandItem().getItem() instanceof HoeItem || prototypeEntity.getOffhandItem().getItem() instanceof HoeItem) ||
-                (prototypeEntity.getMainHandItem().is(Tags.Items.SHEARS) || prototypeEntity.getOffhandItem().is(Tags.Items.SHEARS));
+        if (lock) return false;
 
-        if (hasShearsLikeItem) {
-            if (prototypeEntity.getMainHandItem().is(Tags.Items.SHEARS) || prototypeEntity.getMainHandItem().getItem() instanceof HoeItem) {
-                shears = prototypeEntity.getMainHandItem();
-                hand = InteractionHand.MAIN_HAND;
-            } else if (prototypeEntity.getOffhandItem().is(Tags.Items.SHEARS) || prototypeEntity.getOffhandItem().getItem() instanceof HoeItem) {
-                shears = prototypeEntity.getOffhandItem();
-                hand = InteractionHand.OFF_HAND;
-            }
+        return !findShears().isEmpty();
+    }
+
+    @Override
+    public boolean canContinueToUse() {
+        if(targetLeave == null){
+            lock = true;
+            new DelayedTask(200, ()-> lock = false);
+            return false;
         }
 
-        return targetLeave != null && hasShearsLikeItem;
+        return !findShears().isEmpty();
     }
 
     @Override
@@ -68,25 +68,51 @@ public class PruningOrangeLeavesGoal extends Goal {
     }
 
     @Override
+    public void start() {
+        targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());;
+    }
+
+    @Override
     public void tick() {
-        super.tick();
-        if (targetLeave != null && prototypeEntity.getLevel() instanceof ServerLevel serverLevel) {
-            if (!serverLevel.getBlockState(targetLeave).is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
-                targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
-            }
+        Level level = prototypeEntity.level;
+        if(targetLeave == null || isBlockInvalid(level.getBlockState(targetLeave))){
+            targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
+            if(targetLeave == null) return;
         }
 
-        if (targetLeave != null && targetLeave.distSqr(prototypeEntity.blockPosition()) > (3.5f * 3.5f)) {
-            prototypeEntity.getLookControl().setLookAt(Vec3.atCenterOf(targetLeave));
-            prototypeEntity.getNavigation().moveTo(targetLeave.getX(), targetLeave.getY(), targetLeave.getZ(), 0.25f);
-        } else this.PrunOrangeLeaves();
+        prototypeEntity.getLookControl().setLookAt(targetLeave.getX(), targetLeave.getY(), targetLeave.getZ(),
+                30, 30);
+        prototypeEntity.getNavigation().moveTo(targetLeave.getX(), targetLeave.getY(), targetLeave.getZ(), 0.25f);
 
-        ticks++;
-        if (ticks % 600 == 0) {
-            if (targetLeave != null && targetLeave.distSqr(prototypeEntity.blockPosition()) > (16 * 16)) {
-                targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
-            }
+        if(pruneCooldown > 0){
+            pruneCooldown--;
+            return;
         }
+
+        if (targetLeave.distSqr(prototypeEntity.blockPosition()) <= (3.5f * 3.5f)) {
+            pruneOrangeLeaves();
+            targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
+            pruneCooldown = 5;
+        }
+    }
+
+    @Override
+    public void stop() {
+        prototypeEntity.getNavigation().stop();
+        targetLeave = null;
+        pruneCooldown = 0;
+    }
+
+    private ItemStack findShears(){
+        ItemStack shears = prototypeEntity.getMainHandItem();
+        if(!shears.isEmpty() && shears.is(Tags.Items.SHEARS)) return shears;
+
+        shears = prototypeEntity.getOffhandItem();
+        return !shears.isEmpty() && shears.is(Tags.Items.SHEARS) ? shears : ItemStack.EMPTY;
+    }
+
+    private boolean isBlockInvalid(BlockState state){
+        return !state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get());
     }
 
     @Nullable
@@ -99,7 +125,7 @@ public class PruningOrangeLeavesGoal extends Goal {
         // Evite .toList() para não alocar tudo; itere o stream diretamente
         for (BlockPos pos : (Iterable<BlockPos>) FoxyasUtils.betweenClosedStreamSphere(center, range, range)::iterator) {
             BlockState state = level.getBlockState(pos);
-            if (!state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) continue;
+            if (isBlockInvalid(state)) continue;
 
             // Distância do olho ao centro do bloco (mais precisa)
             dist = eyePos.distanceToSqr(Vec3.atCenterOf(pos));
@@ -124,46 +150,50 @@ public class PruningOrangeLeavesGoal extends Goal {
                 CollisionContext.of(prototypeEntity));
     }
 
-    public void PrunOrangeLeaves() {
-        if (this.prototypeEntity.getLevel() instanceof ServerLevel serverLevel) {
-            if (targetLeave == null) {
-                return;
-            }
-            BlockState state = serverLevel.getBlockState(targetLeave);
-            if (state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get())) {
-                BlockState newState = Blocks.OAK_LEAVES.defaultBlockState();
+    private void pruneOrangeLeaves() {
+        ItemStack shears = prototypeEntity.getMainHandItem();
+        InteractionHand hand = InteractionHand.MAIN_HAND;
+        if(shears.isEmpty() || !shears.is(Tags.Items.SHEARS)) {
+            shears = prototypeEntity.getOffhandItem();
+            if(shears.isEmpty() || !shears.is(Tags.Items.SHEARS)) return;
 
-                if (state.hasProperty(LeavesBlock.DISTANCE)) {
-                    newState = newState.setValue(LeavesBlock.DISTANCE, state.getValue(LeavesBlock.DISTANCE));
-                }
-
-                if (state.hasProperty(LeavesBlock.PERSISTENT)) {
-                    newState = newState.setValue(LeavesBlock.PERSISTENT, state.getValue(LeavesBlock.PERSISTENT));
-                }
-
-                int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, shears);
-                UniformInt uniformInt;
-
-                if (fortune > 0) {
-                    uniformInt = UniformInt.of(fortune, 8 * fortune);
-                } else {
-                    uniformInt = UniformInt.of(1, 8);
-                }
-
-                ItemStack orangeStack = new ItemStack(ChangedItems.ORANGE.get());
-                orangeStack.setCount(uniformInt.sample(prototypeEntity.getRandom()));
-                if (shears != null && !shears.isEmpty()) {
-                    this.shears.hurtAndBreak(1, prototypeEntity, (prototype) -> {
-                    });
-                    if (hand != null) {
-                        prototypeEntity.getLookControl().setLookAt(Vec3.atCenterOf(targetLeave));
-                        prototypeEntity.swing(hand, true);
-                    }
-                }
-                serverLevel.setBlockAndUpdate(targetLeave, newState);
-                LeavesBlock.popResource(serverLevel, targetLeave, orangeStack);
-                serverLevel.playSound(null, prototypeEntity, SoundEvents.SNOW_GOLEM_SHEAR, SoundSource.BLOCKS, 1, 1);
-            }
+            hand = InteractionHand.OFF_HAND;
         }
+
+        Level level = prototypeEntity.level;
+        BlockState state = level.getBlockState(targetLeave);
+        if(isBlockInvalid(state)) return;
+
+        BlockState newState = Blocks.OAK_LEAVES.defaultBlockState();
+
+        if (state.hasProperty(LeavesBlock.DISTANCE)) {
+            newState = newState.setValue(LeavesBlock.DISTANCE, state.getValue(LeavesBlock.DISTANCE));
+        }
+
+        if (state.hasProperty(LeavesBlock.PERSISTENT)) {
+            newState = newState.setValue(LeavesBlock.PERSISTENT, state.getValue(LeavesBlock.PERSISTENT));
+        }
+
+        int fortune = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, shears);
+        UniformInt uniformInt;
+
+        if (fortune > 0) {
+            uniformInt = UniformInt.of(fortune, 8 * fortune);
+        } else {
+            uniformInt = UniformInt.of(1, 8);
+        }
+
+        ItemStack orangeStack = new ItemStack(ChangedItems.ORANGE.get());
+        orangeStack.setCount(uniformInt.sample(prototypeEntity.getRandom()));
+        orangeStack = prototypeEntity.addToInventory(orangeStack, false);
+        if(!orangeStack.isEmpty()) Block.popResource(level, targetLeave, orangeStack);
+
+        shears.hurtAndBreak(1, prototypeEntity, (prototype) -> {});
+
+        prototypeEntity.getLookControl().setLookAt(Vec3.atCenterOf(targetLeave));
+        prototypeEntity.swing(hand);
+
+        level.setBlockAndUpdate(targetLeave, newState);
+        level.playSound(null, prototypeEntity, SoundEvents.SNOW_GOLEM_SHEAR, SoundSource.BLOCKS, 1, 1);
     }
 }

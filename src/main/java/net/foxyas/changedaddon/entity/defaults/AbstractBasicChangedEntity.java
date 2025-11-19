@@ -80,11 +80,6 @@ public abstract class AbstractBasicChangedEntity extends ChangedEntity {
     }
 
     @Override
-    protected void registerGoals() {
-        super.registerGoals();
-    }
-
-    @Override
     public @NotNull MobType getMobType() {
         return MobType.UNDEFINED;
     }

@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.goals.prototype;
 
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
+import net.foxyas.changedaddon.util.DelayedTask;
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.minecraft.core.BlockPos;
@@ -27,7 +28,7 @@ public class ApplyBonemealGoal extends Goal {
     private final PrototypeEntity entity;
     private final PathNavigation navigation;
 
-    private int cooldown;
+    private boolean lock;
     private BlockPos targetPos;
     private int boneMealCooldown;
 
@@ -54,28 +55,26 @@ public class ApplyBonemealGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if(cooldown > 0){
-            cooldown--;
-            return false;
-        }
+        if(lock) return false;
 
-        if (findBoneMeal(false).isEmpty()) return false;
-
-        // Find a growable crop nearby
-        targetPos = findGrowableCrop(entity.getLevel(), entity.blockPosition(), searchRange);
-        return targetPos != null;
+        return !findBoneMeal(false).isEmpty();
     }
 
     @Override
     public boolean canContinueToUse() {
-        if(targetPos == null) return false;
+        if(targetPos == null) {
+            lock = true;
+            new DelayedTask(200, () -> lock = false);
+            return false;
+        }
 
         BlockState state = entity.level.getBlockState(targetPos);
         return state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state) && !findBoneMeal(false).isEmpty();
     }
 
     @Override
-    public void start() {
+    public void start() {// Find a growable crop nearby
+        targetPos = findGrowableCrop(entity.getLevel(), entity.blockPosition(), searchRange);
         if (targetPos == null) return;
 
         entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
@@ -91,28 +90,38 @@ public class ApplyBonemealGoal extends Goal {
                     0.0f
             );
         }
-        navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
     }
 
     @Override
     public void tick() {
-        if (targetPos == null) return;
+        if (targetPos == null) {
+            targetPos = findGrowableCrop(entity.level, entity.blockPosition(), searchRange);
+            if(targetPos == null) return;
+        }
+
         navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
+        entity.getLookControl().setLookAt(
+                targetPos.getX(), targetPos.getY(), targetPos.getZ(),
+                30.0F, // yaw change speed (degrees per tick)
+                30.0F  // pitch change speed
+        );
 
         if(boneMealCooldown > 0){
             boneMealCooldown--;
             return;
         }
 
-        if (entity.blockPosition().closerThan(targetPos, 3)) {
+        if (entity.blockPosition().closerThan(targetPos, 2)) {
             applyBoneMeal(targetPos);
             boneMealCooldown = 10;
+            targetPos = findGrowableCrop(entity.level, entity.blockPosition(), searchRange);
         }
     }
 
     @Override
     public void stop() {
-        cooldown = 20;
+        entity.getNavigation().stop();
+        targetPos = null;
         boneMealCooldown = 0;
     }
 
@@ -165,11 +174,6 @@ public class ApplyBonemealGoal extends Goal {
         if (!(block instanceof BonemealableBlock fertilizable)
                 || !fertilizable.isValidBonemealTarget(level, pos, state, false)) return;
 
-        this.entity.getLookControl().setLookAt(
-                pos.getX(), pos.getY(), pos.getZ(),
-                30.0F, // yaw change speed (degrees per tick)
-                30.0F  // pitch change speed
-        );
         entity.swing(entity.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
         fertilizable.performBonemeal(serverLevel, level.getRandom(), pos, state);
         serverLevel.levelEvent(1505, targetPos, 8); // Bone meal particles

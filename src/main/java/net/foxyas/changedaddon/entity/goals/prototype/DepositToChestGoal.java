@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.goals.prototype;
 
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
+import net.foxyas.changedaddon.util.DelayedTask;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -11,7 +12,6 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.FakePlayerFactory;
@@ -28,14 +28,14 @@ public class DepositToChestGoal extends Goal {
     private final PrototypeEntity holder;
     private final int range;
 
-    private int cooldown;
+    private boolean lock;
     private BlockPos chestPos;
     private int noPathTimeout;
 
     public DepositToChestGoal(PrototypeEntity holder, int range){
         this.holder = holder;
         this.range = range;
-        setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
+        setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK));
     }
 
     @Override
@@ -45,10 +45,7 @@ public class DepositToChestGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if(cooldown > 0){
-            cooldown--;
-            return false;
-        }
+        if(lock) return false;
 
         return holder.wantsToDeposit() || holder.getHarvestsTimes() >= PrototypeEntity.MAX_HARVEST_TIMES;
     }
@@ -90,12 +87,22 @@ public class DepositToChestGoal extends Goal {
 
         if(navigation.isStuck() || (navigation.getPath() != null && !navigation.getPath().canReach())){
             noPathTimeout--;
-            cooldown = 100;
+            if(noPathTimeout <= 0){//No path, try again later
+                chestPos = null;
+                lock = true;
+                new DelayedTask(200, ()-> lock = false);
+            }
             return;
         }
 
         noPathTimeout = 100;
-        cooldown = 0;
+    }
+
+    @Override
+    public void stop() {
+        holder.getNavigation().stop();
+        chestPos = null;
+        noPathTimeout = 100;
     }
 
     private BlockPos tryFindNearbyChest(Level level) {
@@ -158,9 +165,7 @@ public class DepositToChestGoal extends Goal {
     }
 
     private void depositToChest(ServerLevel level) {
-        BlockEntity be = level.getBlockEntity(chestPos);
-
-        if(!(be instanceof ChestBlockEntity chest)) {
+        if(!(level.getBlockEntity(chestPos) instanceof ChestBlockEntity chest)) {
             chestPos = null;
             return;
         }
@@ -189,11 +194,5 @@ public class DepositToChestGoal extends Goal {
         chest.triggerEvent(1, 1);
         chest.setChanged();
         level.playSound(null, chestPos, SoundEvents.CHEST_OPEN, SoundSource.BLOCKS, 0.25f, 1);
-    }
-
-    @Override
-    public void stop() {
-        chestPos = null;
-        noPathTimeout = 100;
     }
 }

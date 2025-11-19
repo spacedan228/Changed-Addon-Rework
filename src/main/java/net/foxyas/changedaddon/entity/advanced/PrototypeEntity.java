@@ -130,12 +130,12 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     @Override
     public void registerGoals() {
         super.registerGoals();
-        goalSelector.addGoal(30, new PruningOrangeLeavesGoal(this));
-        goalSelector.addGoal(30, new FindAndHarvestCropsGoal(this));
-        goalSelector.addGoal(25, new PlantSeedsGoal(this));
-        goalSelector.addGoal(20, new DepositToChestGoal(this, 8));
-        goalSelector.addGoal(15, new TryGrabItemsGoal(this));
-        goalSelector.addGoal(15, new ApplyBonemealGoal(this));
+        goalSelector.addGoal(15, new PruningOrangeLeavesGoal(this));
+        goalSelector.addGoal(15, new FindAndHarvestCropsGoal(this));
+        goalSelector.addGoal(20, new PlantSeedsGoal(this));
+        goalSelector.addGoal(25, new DepositToChestGoal(this, 8));
+        goalSelector.addGoal(30, new TryGrabItemsGoal(this));
+        goalSelector.addGoal(30, new ApplyBonemealGoal(this));
     }
 
     @Override

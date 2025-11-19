@@ -22,7 +22,6 @@ import net.minecraftforge.event.entity.player.ItemFishedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -61,11 +60,9 @@ public class FishLatexEntityProcedure {
             return;
         if (entity instanceof ServerPlayer _player) {
             Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:bigone"));
-            AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);
+            AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);//FIXME advancement id
             if (!_ap.isDone()) {
-                Iterator _iterator = _ap.getRemainingCriteria().iterator();
-                while (_iterator.hasNext())
-                    _player.getAdvancements().award(_adv, (String) _iterator.next());
+                for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);
             }
         }
     }
