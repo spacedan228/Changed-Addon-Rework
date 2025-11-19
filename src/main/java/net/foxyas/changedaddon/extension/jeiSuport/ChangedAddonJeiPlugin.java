@@ -120,6 +120,10 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
         PotionUtils.setPotion(potion2, ChangedAddonPotions.TRANSFUR_SICKNESS_POTION.get());
         brewingRecipes.add(factory.createBrewingRecipe(List.of(new ItemStack(ChangedAddonItems.LAETHIN.get())), potion.copy(), potion2.copy()));
         registration.addRecipes(RecipeTypes.BREWING, brewingRecipes);
+
+        // This may be a better way to add Brewing Recipes
+        // registration.addRecipes(RecipeTypes.BREWING, List.of(UntransfurPotionJeiRecipeBrewing.getAllRecipes()));
+        // registration.addRecipes(RecipeTypes.BREWING, List.of(TransfurSicknessJeiRecipeBrewing.getAllRecipes()));
     }
 
     public static class ChangedAddonJeiGuiHandler {
