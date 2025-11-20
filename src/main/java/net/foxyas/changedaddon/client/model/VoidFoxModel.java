@@ -37,10 +37,6 @@ public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implement
 
     private final HumanoidAnimator<VoidFoxEntity, VoidFoxModel> animator;
 
-    //public float dodgeProgress = 0;
-    //public float partialTicks = 0;
-    //public boolean isReverse = false;
-
     public VoidFoxModel(ModelPart root) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
@@ -69,11 +65,71 @@ public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implement
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
+        PartDefinition RightLeg = partdefinition.addOrReplaceChild("RightLeg", CubeListBuilder.create(), PartPose.offset(-2.5F, 10.5F, 0.0F));
+
+        PartDefinition RightThigh_r1 = RightLeg.addOrReplaceChild("RightThigh_r1", CubeListBuilder.create().texOffs(48, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 7.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.2182F, 0.0F, 0.0F));
+
+        PartDefinition RightLowerLeg = RightLeg.addOrReplaceChild("RightLowerLeg", CubeListBuilder.create(), PartPose.offset(0.0F, 6.375F, -3.45F));
+
+        PartDefinition RightCalf_r1 = RightLowerLeg.addOrReplaceChild("RightCalf_r1", CubeListBuilder.create().texOffs(48, 40).addBox(-1.99F, -0.125F, -2.9F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.125F, 1.95F, 0.8727F, 0.0F, 0.0F));
+
+        PartDefinition RightFoot = RightLowerLeg.addOrReplaceChild("RightFoot", CubeListBuilder.create(), PartPose.offset(0.0F, 0.8F, 7.175F));
+
+        PartDefinition RightArch_r1 = RightFoot.addOrReplaceChild("RightArch_r1", CubeListBuilder.create().texOffs(13, 57).addBox(-2.0F, -8.45F, -0.725F, 4.0F, 6.0F, 3.0F, new CubeDeformation(0.005F)), PartPose.offsetAndRotation(0.0F, 7.075F, -4.975F, -0.3491F, 0.0F, 0.0F));
+
+        PartDefinition RightArchFur = RightFoot.addOrReplaceChild("RightArchFur", CubeListBuilder.create(), PartPose.offset(0.0F, 7.075F, -4.975F));
+
+        PartDefinition RightArchFur_r1 = RightArchFur.addOrReplaceChild("RightArchFur_r1", CubeListBuilder.create().texOffs(49, 76).addBox(-1.975F, -3.0F, -1.5F, 4.0F, 6.0F, 3.0F, new CubeDeformation(0.025F)), PartPose.offsetAndRotation(-0.1F, -4.3563F, 2.5923F, -0.3491F, 0.0148F, 0.0436F));
+
+        PartDefinition RightPad = RightFoot.addOrReplaceChild("RightPad", CubeListBuilder.create().texOffs(52, 32).addBox(-2.0F, 0.0F, -2.5F, 4.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 4.325F, -4.425F));
+
+        PartDefinition RightPawBeans = RightPad.addOrReplaceChild("RightPawBeans", CubeListBuilder.create().texOffs(19, 93).mirror().addBox(-2.0F, 9.475F, -0.375F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.075F)).mirror(false)
+                .texOffs(19, 89).mirror().addBox(-2.8F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false)
+                .texOffs(19, 87).mirror().addBox(-1.5F, 9.475F, -1.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false)
+                .texOffs(19, 91).mirror().addBox(-0.225F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false), PartPose.offset(1.0F, -8.5F, -0.05F));
+
+        PartDefinition LeftLeg = partdefinition.addOrReplaceChild("LeftLeg", CubeListBuilder.create(), PartPose.offset(2.5F, 10.5F, 0.0F));
+
+        PartDefinition LeftThigh_r1 = LeftLeg.addOrReplaceChild("LeftThigh_r1", CubeListBuilder.create().texOffs(32, 44).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 7.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.2182F, 0.0F, 0.0F));
+
+        PartDefinition LeftLowerLeg = LeftLeg.addOrReplaceChild("LeftLowerLeg", CubeListBuilder.create(), PartPose.offset(0.0F, 6.375F, -3.45F));
+
+        PartDefinition LeftCalf_r1 = LeftLowerLeg.addOrReplaceChild("LeftCalf_r1", CubeListBuilder.create().texOffs(48, 22).addBox(-2.01F, -0.125F, -2.9F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.125F, 1.95F, 0.8727F, 0.0F, 0.0F));
+
+        PartDefinition LeftFoot = LeftLowerLeg.addOrReplaceChild("LeftFoot", CubeListBuilder.create(), PartPose.offset(0.0F, 0.8F, 7.175F));
+
+        PartDefinition LeftArch_r1 = LeftFoot.addOrReplaceChild("LeftArch_r1", CubeListBuilder.create().texOffs(56, 11).addBox(-2.0F, -8.45F, -0.725F, 4.0F, 6.0F, 3.0F, new CubeDeformation(0.005F)), PartPose.offsetAndRotation(0.0F, 7.075F, -4.975F, -0.3491F, 0.0F, 0.0F));
+
+        PartDefinition LeftArchFur = LeftFoot.addOrReplaceChild("LeftArchFur", CubeListBuilder.create(), PartPose.offset(0.0F, 7.075F, -4.975F));
+
+        PartDefinition LeftArchFur_r1 = LeftArchFur.addOrReplaceChild("LeftArchFur_r1", CubeListBuilder.create().texOffs(49, 67).addBox(-2.025F, -3.0F, -1.5F, 4.0F, 6.0F, 3.0F, new CubeDeformation(0.025F)), PartPose.offsetAndRotation(0.1F, -4.3563F, 2.5923F, -0.3491F, -0.0148F, -0.0436F));
+
+        PartDefinition LeftPad = LeftFoot.addOrReplaceChild("LeftPad", CubeListBuilder.create().texOffs(24, 0).addBox(-2.0F, 0.0F, -2.5F, 4.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 4.325F, -4.425F));
+
+        PartDefinition LeftPawBeans = LeftPad.addOrReplaceChild("LeftPawBeans", CubeListBuilder.create().texOffs(11, 93).addBox(0.0F, 9.475F, -0.375F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.075F))
+                .texOffs(11, 89).addBox(1.8F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F))
+                .texOffs(11, 87).addBox(0.5F, 9.475F, -1.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F))
+                .texOffs(11, 91).addBox(-0.775F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)), PartPose.offset(-1.0F, -8.5F, -0.05F));
+
         PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 16).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
                 .texOffs(15, 32).addBox(-2.0F, -3.0F, -6.0F, 4.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(24, 22).addBox(-1.5F, -1.0F, -5.0F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -0.5F, 0.0F));
 
         PartDefinition Snout_r1 = Head.addOrReplaceChild("Snout_r1", CubeListBuilder.create().texOffs(24, 2).addBox(-1.0F, -29.625F, -0.95F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.5F, 26.0F, 0.0F, 0.1745F, 0.0F, 0.0F));
+
+        PartDefinition CheekFur = Head.addOrReplaceChild("CheekFur", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition LeftCheekFur = CheekFur.addOrReplaceChild("LeftCheekFur", CubeListBuilder.create(), PartPose.offsetAndRotation(0.2F, 0.0F, 0.0F, 0.0F, -0.2182F, 0.0F));
+
+        PartDefinition cube_r1 = LeftCheekFur.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(84, 46).addBox(-4.0F, -2.0F, 0.0F, 5.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-3.8F, -1.3F, -2.0F, 0.1848F, 1.1264F, 0.2041F));
+
+        PartDefinition cube_r2 = LeftCheekFur.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(84, 43).addBox(-4.0F, -2.0F, 0.0F, 5.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-3.8F, -0.3F, -2.0F, 0.0F, 1.1345F, 0.0F));
+
+        PartDefinition RightCheekFur = CheekFur.addOrReplaceChild("RightCheekFur", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.2F, 0.0F, 0.0F, 0.0F, 0.2182F, 0.0F));
+
+        PartDefinition cube_r3 = RightCheekFur.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(84, 52).mirror().addBox(-1.0F, -2.0F, 0.0F, 5.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(3.8F, -1.3F, -2.0F, 0.1848F, -1.1264F, -0.2041F));
+
+        PartDefinition cube_r4 = RightCheekFur.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(84, 49).mirror().addBox(-1.0F, -2.0F, 0.0F, 5.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(3.8F, -0.3F, -2.0F, 0.0F, -1.1345F, 0.0F));
 
         PartDefinition RightEar = Head.addOrReplaceChild("RightEar", CubeListBuilder.create(), PartPose.offset(-3.0F, -7.7F, 0.0F));
 
@@ -94,11 +150,69 @@ public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implement
 
         PartDefinition Torso = partdefinition.addOrReplaceChild("Torso", CubeListBuilder.create().texOffs(28, 28).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, -0.5F, 0.0F));
 
-        PartDefinition NeckFur = Torso.addOrReplaceChild("NeckFur", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition BodyFur = Torso.addOrReplaceChild("BodyFur", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        PartDefinition NeckFur_r1 = NeckFur.addOrReplaceChild("NeckFur_r1", CubeListBuilder.create().texOffs(11, 71).addBox(-2.5F, -2.5F, 0.0F, 6.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 5.0F, -1.9F, 0.2618F, 0.0F, 0.0F));
+        PartDefinition Neck = BodyFur.addOrReplaceChild("Neck", CubeListBuilder.create().texOffs(50, 88).addBox(-4.5F, -0.65F, -3.0F, 9.0F, 2.0F, 6.0F, new CubeDeformation(-0.3F)), PartPose.offset(0.0F, 0.25F, 0.0F));
 
-        PartDefinition NeckFur_r2 = NeckFur.addOrReplaceChild("NeckFur_r2", CubeListBuilder.create().texOffs(11, 66).addBox(-2.5F, -2.5F, 0.0F, 6.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 2.5F, -2.0F, 0.2618F, 0.0F, 0.0F));
+        PartDefinition Back = Neck.addOrReplaceChild("Back", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition BackBigFur = Back.addOrReplaceChild("BackBigFur", CubeListBuilder.create(), PartPose.offset(0.0652F, 1.5802F, 1.542F));
+
+        PartDefinition fur_r1 = BackBigFur.addOrReplaceChild("fur_r1", CubeListBuilder.create().texOffs(86, 36).mirror().addBox(-3.6904F, -1.4529F, -0.5F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, 0.5516F, 0.1395F, 2.9193F));
+
+        PartDefinition fur_r2 = BackBigFur.addOrReplaceChild("fur_r2", CubeListBuilder.create().texOffs(86, 33).mirror().addBox(-0.3096F, -1.4529F, -0.5F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-0.1304F, 1.0F, 0.0F, 0.5516F, -0.1395F, -2.9193F));
+
+        PartDefinition fur_r3 = BackBigFur.addOrReplaceChild("fur_r3", CubeListBuilder.create().texOffs(86, 30).mirror().addBox(-0.3096F, -1.4529F, -0.5F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-0.1304F, 0.0F, 0.0F, 0.5516F, -0.1395F, -2.9193F));
+
+        PartDefinition fur_r4 = BackBigFur.addOrReplaceChild("fur_r4", CubeListBuilder.create().texOffs(86, 27).mirror().addBox(-1.9107F, 0.0F, -0.75F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(86, 21).mirror().addBox(-1.9107F, 1.0F, 0.0F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-0.1545F, -0.6826F, 0.708F, -0.5672F, 0.0F, 0.0F));
+
+        PartDefinition fur_r5 = BackBigFur.addOrReplaceChild("fur_r5", CubeListBuilder.create().texOffs(86, 24).mirror().addBox(-1.9107F, 1.0F, 0.0F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-0.1545F, -1.1826F, 0.708F, -0.5672F, 0.0F, 0.0F));
+
+        PartDefinition fur_r6 = BackBigFur.addOrReplaceChild("fur_r6", CubeListBuilder.create().texOffs(86, 39).mirror().addBox(-3.6904F, -1.4529F, -0.5F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.5516F, 0.1395F, 2.9193F));
+
+        PartDefinition BackSmallFur = Back.addOrReplaceChild("BackSmallFur", CubeListBuilder.create(), PartPose.offset(-0.1848F, 3.0802F, 1.542F));
+
+        PartDefinition fur_r7 = BackSmallFur.addOrReplaceChild("fur_r7", CubeListBuilder.create().texOffs(80, 27).mirror().addBox(1.6904F, -0.4529F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(0.3696F, -1.0F, 0.0F, 0.5516F, -0.1395F, -2.9193F));
+
+        PartDefinition fur_r8 = BackSmallFur.addOrReplaceChild("fur_r8", CubeListBuilder.create().texOffs(80, 25).mirror().addBox(-3.6904F, -0.4529F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(0.0F, -1.0F, 0.0F, 0.5516F, 0.1395F, 2.9193F));
+
+        PartDefinition fur_r9 = BackSmallFur.addOrReplaceChild("fur_r9", CubeListBuilder.create().texOffs(80, 23).mirror().addBox(1.6904F, -0.4529F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(0.3696F, 0.0F, 0.0F, 0.5516F, -0.1395F, -2.9193F));
+
+        PartDefinition fur_r10 = BackSmallFur.addOrReplaceChild("fur_r10", CubeListBuilder.create().texOffs(80, 21).mirror().addBox(-3.6904F, -0.4529F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.5516F, 0.1395F, 2.9193F));
+
+        PartDefinition Front = Neck.addOrReplaceChild("Front", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition FrontBigFur = Front.addOrReplaceChild("FrontBigFur", CubeListBuilder.create(), PartPose.offset(0.0652F, 1.5802F, -1.542F));
+
+        PartDefinition fur_r11 = FrontBigFur.addOrReplaceChild("fur_r11", CubeListBuilder.create().texOffs(86, 15).addBox(-3.6904F, -1.4529F, -0.5F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0F, 1.0F, 0.0F, -0.5516F, -0.1395F, 2.9193F));
+
+        PartDefinition fur_r12 = FrontBigFur.addOrReplaceChild("fur_r12", CubeListBuilder.create().texOffs(86, 12).mirror().addBox(-0.3096F, -1.4529F, -0.5F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-0.1304F, 1.0F, 0.0F, -0.5516F, 0.1395F, -2.9193F));
+
+        PartDefinition fur_r13 = FrontBigFur.addOrReplaceChild("fur_r13", CubeListBuilder.create().texOffs(86, 9).mirror().addBox(-0.3096F, -1.4529F, -0.5F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)).mirror(false), PartPose.offsetAndRotation(-0.1304F, 0.0F, 0.0F, -0.5516F, 0.1395F, -2.9193F));
+
+        PartDefinition fur_r14 = FrontBigFur.addOrReplaceChild("fur_r14", CubeListBuilder.create().texOffs(86, 6).addBox(-1.9107F, 0.0F, -0.25F, 4.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
+                .texOffs(86, 0).addBox(-1.9107F, 1.0F, -1.0F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-0.1545F, -0.6826F, -0.708F, 0.5672F, 0.0F, 0.0F));
+
+        PartDefinition fur_r15 = FrontBigFur.addOrReplaceChild("fur_r15", CubeListBuilder.create().texOffs(86, 3).addBox(-1.9107F, 1.0F, -1.0F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(-0.1545F, -1.1826F, -0.708F, 0.5672F, 0.0F, 0.0F));
+
+        PartDefinition fur_r16 = FrontBigFur.addOrReplaceChild("fur_r16", CubeListBuilder.create().texOffs(86, 18).addBox(-3.6904F, -1.4529F, -0.5F, 4.0F, 2.0F, 1.0F, new CubeDeformation(-0.1F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5516F, -0.1395F, 2.9193F));
+
+        PartDefinition FrontSmallFur = Front.addOrReplaceChild("FrontSmallFur", CubeListBuilder.create(), PartPose.offset(-0.1848F, 3.0802F, -1.542F));
+
+        PartDefinition fur_r17 = FrontSmallFur.addOrReplaceChild("fur_r17", CubeListBuilder.create().texOffs(80, 6).mirror().addBox(1.6904F, -0.4529F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(0.3696F, -1.0F, 0.0F, -0.5516F, 0.1395F, -2.9193F));
+
+        PartDefinition fur_r18 = FrontSmallFur.addOrReplaceChild("fur_r18", CubeListBuilder.create().texOffs(80, 4).addBox(-3.6904F, -0.4529F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(0.0F, -1.0F, 0.0F, -0.5516F, -0.1395F, 2.9193F));
+
+        PartDefinition fur_r19 = FrontSmallFur.addOrReplaceChild("fur_r19", CubeListBuilder.create().texOffs(80, 2).mirror().addBox(1.6904F, -0.4529F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(0.3696F, 0.0F, 0.0F, -0.5516F, 0.1395F, -2.9193F));
+
+        PartDefinition fur_r20 = FrontSmallFur.addOrReplaceChild("fur_r20", CubeListBuilder.create().texOffs(80, 0).addBox(-3.6904F, -0.4529F, -0.5F, 2.0F, 1.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.5516F, -0.1395F, 2.9193F));
+
+        PartDefinition Body = BodyFur.addOrReplaceChild("Body", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
+
+        PartDefinition TorsoFur_r1 = Body.addOrReplaceChild("TorsoFur_r1", CubeListBuilder.create().texOffs(11, 71).addBox(-2.5F, -2.5F, 0.0F, 6.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 5.0F, -1.9F, 0.2618F, 0.0F, 0.0F));
+
+        PartDefinition TorsoFur_r2 = Body.addOrReplaceChild("TorsoFur_r2", CubeListBuilder.create().texOffs(11, 66).addBox(-2.5F, -2.5F, 0.0F, 6.0F, 5.0F, 0.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.5F, 2.5F, -2.0F, 0.2618F, 0.0F, 0.0F));
 
         PartDefinition Tail = Torso.addOrReplaceChild("Tail", CubeListBuilder.create(), PartPose.offset(0.0F, 10.0F, 0.4F));
 
@@ -120,6 +234,11 @@ public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implement
 
         PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(16, 40).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-5.0F, 1.5F, 0.0F));
 
+        PartDefinition RightArmPawBeans = RightArm.addOrReplaceChild("RightArmPawBeans", CubeListBuilder.create().texOffs(27, 93).mirror().addBox(-2.0F, 9.475F, -0.375F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.075F)).mirror(false)
+                .texOffs(27, 89).mirror().addBox(-2.8F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false)
+                .texOffs(27, 87).mirror().addBox(-1.5F, 9.475F, -1.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false)
+                .texOffs(27, 91).mirror().addBox(-0.225F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false), PartPose.offset(0.0F, -0.5F, 0.0F));
+
         PartDefinition RightArmFur = RightArm.addOrReplaceChild("RightArmFur", CubeListBuilder.create(), PartPose.offset(-2.0F, 7.5F, -2.4F));
 
         PartDefinition RightArmFur_r1 = RightArmFur.addOrReplaceChild("RightArmFur_r1", CubeListBuilder.create().texOffs(0, 91).addBox(-3.0F, -3.0F, 0.025F, 4.0F, 4.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(3.3F, 0.0F, 3.4F, 0.0F, -1.5708F, 0.0873F));
@@ -132,6 +251,11 @@ public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implement
 
         PartDefinition LeftArm = partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(0, 40).addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(5.0F, 1.5F, 0.0F));
 
+        PartDefinition LeftArmPawBeans = LeftArm.addOrReplaceChild("LeftArmPawBeans", CubeListBuilder.create().texOffs(35, 93).addBox(0.0F, 9.475F, -0.375F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.075F))
+                .texOffs(35, 89).addBox(1.8F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F))
+                .texOffs(35, 87).addBox(0.5F, 9.475F, -1.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F))
+                .texOffs(35, 91).addBox(-0.775F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)), PartPose.offset(0.0F, -0.5F, 0.0F));
+
         PartDefinition LeftArmFur = LeftArm.addOrReplaceChild("LeftArmFur", CubeListBuilder.create(), PartPose.offset(2.0F, 7.5F, -2.4F));
 
         PartDefinition LeftArmFur_r1 = LeftArmFur.addOrReplaceChild("LeftArmFur_r1", CubeListBuilder.create().texOffs(0, 71).mirror().addBox(-1.0F, -3.0F, 0.025F, 4.0F, 4.0F, 1.0F, new CubeDeformation(-0.25F)).mirror(false), PartPose.offsetAndRotation(-3.3F, 0.0F, 3.4F, 0.0F, 1.5708F, -0.0873F));
@@ -141,44 +265,6 @@ public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implement
         PartDefinition LeftArmFur_r3 = LeftArmFur.addOrReplaceChild("LeftArmFur_r3", CubeListBuilder.create().texOffs(0, 61).addBox(-3.0F, -3.0F, 0.025F, 4.0F, 4.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(0.0F, 0.0F, 3.7F, -0.0873F, 0.0F, 0.0F));
 
         PartDefinition LeftArmFur_r4 = LeftArmFur.addOrReplaceChild("LeftArmFur_r4", CubeListBuilder.create().texOffs(0, 56).addBox(-3.0F, -3.0F, 0.025F, 4.0F, 4.0F, 1.0F, new CubeDeformation(-0.25F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.1F, 0.0873F, 0.0F, 0.0F));
-
-        PartDefinition RightLeg = partdefinition.addOrReplaceChild("RightLeg", CubeListBuilder.create(), PartPose.offset(-2.5F, 10.5F, 0.0F));
-
-        PartDefinition RightThigh_r1 = RightLeg.addOrReplaceChild("RightThigh_r1", CubeListBuilder.create().texOffs(48, 0).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 7.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.2182F, 0.0F, 0.0F));
-
-        PartDefinition RightLowerLeg = RightLeg.addOrReplaceChild("RightLowerLeg", CubeListBuilder.create(), PartPose.offset(0.0F, 6.375F, -3.45F));
-
-        PartDefinition RightCalf_r1 = RightLowerLeg.addOrReplaceChild("RightCalf_r1", CubeListBuilder.create().texOffs(48, 40).addBox(-1.99F, -0.125F, -2.9F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.125F, 1.95F, 0.8727F, 0.0F, 0.0F));
-
-        PartDefinition RightFoot = RightLowerLeg.addOrReplaceChild("RightFoot", CubeListBuilder.create(), PartPose.offset(0.0F, 0.8F, 7.175F));
-
-        PartDefinition RightArch_r1 = RightFoot.addOrReplaceChild("RightArch_r1", CubeListBuilder.create().texOffs(13, 57).addBox(-2.0F, -8.45F, -0.725F, 4.0F, 6.0F, 3.0F, new CubeDeformation(0.005F)), PartPose.offsetAndRotation(0.0F, 7.075F, -4.975F, -0.3491F, 0.0F, 0.0F));
-
-        PartDefinition RightPad = RightFoot.addOrReplaceChild("RightPad", CubeListBuilder.create().texOffs(52, 32).addBox(-2.0F, 0.0F, -2.5F, 4.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 4.325F, -4.425F));
-
-        PartDefinition RightPawBeans = RightPad.addOrReplaceChild("RightPawBeans", CubeListBuilder.create().texOffs(19, 93).mirror().addBox(-2.0F, 9.475F, -0.375F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.075F)).mirror(false)
-                .texOffs(19, 89).mirror().addBox(-2.8F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false)
-                .texOffs(19, 87).mirror().addBox(-1.5F, 9.475F, -1.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false)
-                .texOffs(19, 91).mirror().addBox(-0.225F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)).mirror(false), PartPose.offset(1.0F, -8.5F, -0.05F));
-
-        PartDefinition LeftLeg = partdefinition.addOrReplaceChild("LeftLeg", CubeListBuilder.create(), PartPose.offset(2.5F, 10.5F, 0.0F));
-
-        PartDefinition LeftThigh_r1 = LeftLeg.addOrReplaceChild("LeftThigh_r1", CubeListBuilder.create().texOffs(32, 44).addBox(-2.0F, 0.0F, -2.0F, 4.0F, 7.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, -0.2182F, 0.0F, 0.0F));
-
-        PartDefinition LeftLowerLeg = LeftLeg.addOrReplaceChild("LeftLowerLeg", CubeListBuilder.create(), PartPose.offset(0.0F, 6.375F, -3.45F));
-
-        PartDefinition LeftCalf_r1 = LeftLowerLeg.addOrReplaceChild("LeftCalf_r1", CubeListBuilder.create().texOffs(48, 22).addBox(-2.01F, -0.125F, -2.9F, 4.0F, 6.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -2.125F, 1.95F, 0.8727F, 0.0F, 0.0F));
-
-        PartDefinition LeftFoot = LeftLowerLeg.addOrReplaceChild("LeftFoot", CubeListBuilder.create(), PartPose.offset(0.0F, 0.8F, 7.175F));
-
-        PartDefinition LeftArch_r1 = LeftFoot.addOrReplaceChild("LeftArch_r1", CubeListBuilder.create().texOffs(56, 11).addBox(-2.0F, -8.45F, -0.725F, 4.0F, 6.0F, 3.0F, new CubeDeformation(0.005F)), PartPose.offsetAndRotation(0.0F, 7.075F, -4.975F, -0.3491F, 0.0F, 0.0F));
-
-        PartDefinition LeftPad = LeftFoot.addOrReplaceChild("LeftPad", CubeListBuilder.create().texOffs(24, 0).addBox(-2.0F, 0.0F, -2.5F, 4.0F, 2.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 4.325F, -4.425F));
-
-        PartDefinition LeftPawBeans = LeftPad.addOrReplaceChild("LeftPawBeans", CubeListBuilder.create().texOffs(11, 93).addBox(0.0F, 9.475F, -0.375F, 2.0F, 1.0F, 2.0F, new CubeDeformation(0.075F))
-                .texOffs(11, 89).addBox(1.8F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F))
-                .texOffs(11, 87).addBox(0.5F, 9.475F, -1.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F))
-                .texOffs(11, 91).addBox(-0.775F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)), PartPose.offset(-1.0F, -8.5F, -0.05F));
 
         return LayerDefinition.create(meshdefinition, 96, 96);
     }
@@ -243,50 +329,7 @@ public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implement
     public void setupAnim(@NotNull VoidFoxEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-
-        //if (dodgeProgress > 0) {
-        //    playDodgeAnim(dodgeProgress);
-        //}
     }
-
-    /*public void playDodgeAnim(float progress) {
-        // Head
-        this.Head.xRot = (float) (Math.toRadians(0.0F) * progress) * (isReverse ? -1 : 1);
-        this.Head.yRot = (float) (Math.toRadians(-35.0F) * progress) * (isReverse ? -1 : 1);
-        this.Head.zRot = (float) (Math.toRadians(0.0F) * progress) * (isReverse ? -1 : 1);
-
-        // RightArm
-        this.RightArm.xRot = (float) (Math.toRadians(-58.2981F) * progress);
-        this.RightArm.yRot = (float) (Math.toRadians(72.5894F) * progress);
-        this.RightArm.zRot = (float) (Math.toRadians(13.897F) * progress);
-        this.RightArm.x += -0.3F * progress;
-        this.RightArm.y += -1.0F * progress;
-        this.RightArm.z += -1.4F * progress;
-
-        // LeftArm
-        this.LeftArm.xRot = (float) Math.toRadians(-58.2981F) * progress;
-        this.LeftArm.yRot = (float) Math.toRadians(-72.5894F) * progress;
-        this.LeftArm.zRot = (float) Math.toRadians(-13.897F) * progress;
-        this.LeftArm.x += -0.3F * progress;
-        this.LeftArm.y += -1.0F * progress;
-        this.LeftArm.z += -1.4F * progress;
-
-        // RightLeg
-        this.RightLeg.xRot += (float) Math.toRadians(0.0F) * progress;
-        this.RightLeg.yRot += (float) Math.toRadians(5.0F) * progress;
-        this.RightLeg.zRot += (float) Math.toRadians(0.0F) * progress;
-
-        // LeftLeg
-        this.LeftLeg.xRot += (float) Math.toRadians(0.0F) * progress;
-        this.LeftLeg.yRot += (float) Math.toRadians(-32.5F) * progress;
-        this.LeftLeg.zRot += (float) Math.toRadians(0.0F) * progress;
-
-        // Torso
-        this.Torso.xRot += (float) Math.toRadians(0.0F) * progress;
-        this.Torso.yRot += (float) Math.toRadians(0.0F) * progress;
-        this.Torso.zRot += (float) Math.toRadians(0.0F) * progress;
-
-    }*/
 
     public @NotNull ModelPart getArm(HumanoidArm p_102852_) {
         return p_102852_ == HumanoidArm.LEFT ? this.LeftArm : this.RightArm;

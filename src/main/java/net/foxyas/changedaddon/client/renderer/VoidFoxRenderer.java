@@ -8,6 +8,7 @@ import net.foxyas.changedaddon.client.renderer.layers.ParticlesTrailsLayer;
 import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
+import net.ltxprogrammer.changed.client.renderer.layers.EmissiveBodyLayer;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleWolfModel;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
@@ -26,6 +27,7 @@ public class VoidFoxRenderer extends AdvancedHumanoidRenderer<VoidFoxEntity, Voi
     public VoidFoxRenderer(EntityRendererProvider.Context context) {
         super(context, new VoidFoxModel(context.bakeLayer(VoidFoxModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(), CustomEyesLayer::scleraColor, CustomEyesLayer.fixedColorGlowing(Color3.WHITE), CustomEyesLayer.fixedColorGlowing(Color3.WHITE), CustomEyesLayer::noRender, CustomEyesLayer::noRender));
+        this.addLayer(new EmissiveBodyLayer<>(this, ResourceLocation.parse("changed_addon:textures/entities/void_fox/void_fox_glowing_layer.png")));
         this.addLayer(new ParticlesTrailsLayer<>(this, 0.025f, ParticleTypes.ASH));
         this.addLayer(new ParticlesTrailsLayer<>(this, 0.0025f, ParticleTypes.END_ROD));
         this.addLayer(new ModelFlickerLayer<>(this));
@@ -71,6 +73,6 @@ public class VoidFoxRenderer extends AdvancedHumanoidRenderer<VoidFoxEntity, Voi
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull VoidFoxEntity entity) {
-        return ResourceLocation.parse("changed_addon:textures/entities/void_fox_dark.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/void_fox/void_fox_new.png");
     }
 }

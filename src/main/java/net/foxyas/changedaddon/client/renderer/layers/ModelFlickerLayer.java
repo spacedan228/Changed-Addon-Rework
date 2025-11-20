@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.renderer.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -21,7 +22,9 @@ public class ModelFlickerLayer<M extends AdvancedHumanoidModel<T>, T extends Cha
     @Override
     public void render(@NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight, @NotNull T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         float healthRatio = entity.computeHealthRatio();
-        if (healthRatio >= 0.5f) return;
+        if (entity instanceof VoidFoxEntity voidFoxEntity) {
+            if  (!voidFoxEntity.isMoreOp()) return;
+        }
 
         float intensity = 1.0f - healthRatio;
         float flickerSpeed = 40f + 90f * (intensity * 2);

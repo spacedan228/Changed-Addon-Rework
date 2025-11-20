@@ -73,7 +73,7 @@ public class ParticlesTrailsLayer<M extends AdvancedHumanoidModel<T>, T extends 
         }
     }
 
-    private List<ModelPart> getRelevantParts(AdvancedHumanoidModel<?> model) {
+    protected List<ModelPart> getRelevantParts(AdvancedHumanoidModel<?> model) {
         List<ModelPart> parts = new ArrayList<>(List.of(model.getHead(), model.getTorso()));
         parts.addAll(ModelUtils.getTailFromModelIfAny(model));
         parts.addAll(List.of(
@@ -89,7 +89,7 @@ public class ParticlesTrailsLayer<M extends AdvancedHumanoidModel<T>, T extends 
         return parts.get(random.nextInt(parts.size()));
     }
 
-    private Vec3 getWorldPositionFromPart(T entity, AdvancedHumanoidModel<?> model, ModelPart part) {
+    protected Vec3 getWorldPositionFromPart(T entity, AdvancedHumanoidModel<?> model, ModelPart part) {
         if (part == model.getHead()) {
             return FoxyasUtils.getRelativePositionEyes(entity, new Vec3(0, 0, 0.1f));
         } else if (ModelUtils.getTailFromModelIfAny(model).contains(part)) {
@@ -101,7 +101,7 @@ public class ParticlesTrailsLayer<M extends AdvancedHumanoidModel<T>, T extends 
         }
     }
 
-    private void spawnParticle(T entity, boolean isHead, Vec3 pos) {
+    protected void spawnParticle(T entity, boolean isHead, Vec3 pos) {
         for (ParticleOptions particle : particles) {
             double dx = entity.getRandom().nextDouble(isHead ? -0.5 : -0.25, isHead ? 0.5 : 0.25);
             double dy = entity.getRandom().nextDouble(isHead ? -0.5 : -0.25, isHead ? 0.5 : 0.25);

@@ -20,7 +20,7 @@ import java.util.List;
 
 public class MaleExp1Model extends AdvancedHumanoidModel<Exp1MaleEntity> implements AdvancedHumanoidModelInterface<Exp1MaleEntity, MaleExp1Model> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("snowfox"), "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("male_exp1"), "main");
 
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
