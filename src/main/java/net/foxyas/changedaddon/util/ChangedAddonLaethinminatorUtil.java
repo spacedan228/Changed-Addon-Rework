@@ -3,14 +3,12 @@ package net.foxyas.changedaddon.util;
 import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
-import net.ltxprogrammer.changed.effect.particle.GasParticle;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -118,7 +116,7 @@ public class ChangedAddonLaethinminatorUtil {
             if (player.canAttack(en)
                     && player.canHit(en, player.getEyePosition().distanceTo(targetPos))
                     && !isAllied) {
-                en.hurt(ChangedAddonDamageSources.mobAttack(player).setProjectile(), 6f);
+                en.hurt(ChangedAddonDamageSources.mobLatesSolventAttack(player).setProjectile(), 6f);
             }
         }
     }

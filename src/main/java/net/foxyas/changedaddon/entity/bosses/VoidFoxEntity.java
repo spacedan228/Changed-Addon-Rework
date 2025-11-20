@@ -15,9 +15,7 @@ import net.foxyas.changedaddon.entity.goals.void_fox.VoidFoxAntiFlyingAttack;
 import net.foxyas.changedaddon.entity.goals.void_fox.VoidFoxDashAttack;
 import net.foxyas.changedaddon.entity.projectile.AbstractVoidFoxParticleProjectile;
 import net.foxyas.changedaddon.entity.projectile.VoidFoxParticleProjectile;
-import net.foxyas.changedaddon.init.ChangedAddonAbilities;
-import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
+import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -58,6 +56,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
@@ -632,7 +631,8 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     }
 
     public void subDodgeHealth(float value) {
-        this.entityData.set(DODGE_HEALTH, this.getDodgeHealth() - value);
+        float pValue = Math.max(this.getDodgeHealth() - value, 0);
+        this.entityData.set(DODGE_HEALTH, pValue);
     }
 
     public void addDodgeHealth(float value) {
@@ -649,7 +649,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        boolean willHit = this.getDodgeHealth() < amount;
+        boolean willHit = this.getDodgeHealth() - amount <= 0;
 
         if (source.getEntity() instanceof AbstractVoidFoxParticleProjectile
                 || source.getDirectEntity() instanceof AbstractVoidFoxParticleProjectile) {
@@ -694,6 +694,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                 this.hurtDodgeHealth(source, amount);
                 return false;
             } else {
+                this.hurtDodgeHealth(source, amount);
                 this.RegisterDamage(amount);
                 //this.setDodging(source.getEntity());
                 return super.hurt(source, amount);
@@ -714,14 +715,91 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         return super.hurt(source, amount);
     }
 
-    public boolean hurtDodgeHealth(@NotNull DamageSource source, float amount) {
-        if (!source.isFire()) {
-            this.subDodgeHealth(amount);
+    public boolean hurtDodgeHealth(@NotNull DamageSource damageSource, float damageAmount) {
+        if (!damageSource.isFire()) {
+
+            // Apply normal mitigations
+            damageAmount = this.getDamageAfterArmorAbsorb(damageSource, damageAmount);
+            damageAmount = this.getDamageAfterMagicAbsorb(damageSource, damageAmount);
+
+            // Subtract from dodge health
+            this.subDodgeHealth(damageAmount);
+
+            // Counter-attack trigger: solvent projectile
+            if (damageSource.isProjectile() && damageSource.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.getMsgId())) {
+                Entity attacker = damageSource.getDirectEntity();
+
+                if (attacker != null) {
+
+                    /* =======================================================
+                     * 1) Teleport behind the attacker (or fallback into them)
+                     * ======================================================= */
+
+                    // Vector pointing BEHIND the attacker
+                    Vec3 behind = attacker.getViewVector(0).scale(-0.5);
+
+                    boolean teleportedBehind = this.randomTeleport(
+                            attacker.getX() + behind.x,
+                            attacker.getY(),
+                            attacker.getZ() + behind.z,
+                            true
+                    );
+
+                    if (!teleportedBehind) {
+                        // Fallback: teleport in front of the attacker
+                        Vec3 inFront = attacker.getViewVector(0).scale(0.25);
+                        boolean teleportedInFront = this.randomTeleport(
+                                attacker.getX() + inFront.x,
+                                attacker.getY(),
+                                attacker.getZ() + inFront.z,
+                                true
+                        );
+
+                        // Fallback: teleport directly on top of the attacker
+                        if (!teleportedInFront) {
+                            Vec3 pos = attacker.position();
+                            this.teleportToWithTicket(pos.x, pos.y, pos.z);
+                        }
+                    }
+
+                    /* =======================================================
+                     * 2) Apply a knockback burst to the attacker
+                     * ======================================================= */
+
+                    // Direction: mob → attacker
+                    double dx = attacker.getX() - this.getX();
+                    double dy = attacker.getY() - this.getY();
+                    double dz = attacker.getZ() - this.getZ();
+                    double distance = Math.max(0.2, Math.sqrt(dx * dx + dy * dy + dz * dz));
+
+                    double force = 1.25; // knockback force
+
+                    attacker.push(
+                            (dx / distance) * force,
+                            (dy / distance) * force,
+                            (dz / distance) * force
+                    );
+
+                    attacker.hurtMarked = true; // sync movement with the client
+
+                    // Apply cooldown to the player's item
+                    if (attacker instanceof Player player) {
+                        final Item laethinminator = ChangedAddonItems.LAETHINMINATOR.get();
+                        if (player.getUseItem().is(laethinminator)) {
+                            player.getCooldowns().addCooldown(laethinminator, 600);
+                            player.stopUsingItem();
+                        }
+                    }
+                }
+            }
+
+            // Register dodge damage in combat tracker
+            this.getCombatTracker().recordDamage(damageSource, this.getDodgeHealth(), damageAmount);
             return true;
         }
-
         return false;
     }
+
 
     private void setDodging(Entity entity) {
         if (entity != null) {
@@ -860,9 +938,13 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
 
             }
             if (this.getDodgeHealth() > 0) {
+                this.dodgeHealthBossBar.setVisible(true);
+                this.bossBar.setVisible(false);
                 this.dodgeHealthBossBar.setProgress(this.getDodgeHealth() / this.getMaxDodgeHealth());
                 this.dodgeHealthBossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_12);
             } else {
+                this.bossBar.setVisible(true);
+                this.dodgeHealthBossBar.setVisible(false);
                 this.bossBar.setProgress(this.getHealth() / this.getMaxHealth());
                 this.bossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
             }
@@ -894,9 +976,8 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     @Override
     public void startSeenByPlayer(@NotNull ServerPlayer player) {
         super.startSeenByPlayer(player);
-        if (this.getDodgeHealth() > 0) {
-            this.dodgeHealthBossBar.addPlayer(player);
-        } else this.bossBar.addPlayer(player);
+        this.dodgeHealthBossBar.addPlayer(player);
+        this.bossBar.addPlayer(player);
 
         player.displayClientMessage(
                 new TextComponent("A dark presence spreads through the land...\nWill you dare to confront its origin?").withStyle((style -> {
@@ -958,13 +1039,14 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         super.setTarget(entity);
     }
 
+    // Don't know why but getId do not work fine with the BossMusicHandler
     @Override
     public ResourceLocation getBossMusic() {
-        if (this.computeHealthRatio() <= 0.5f) {
-            return ChangedAddonSoundEvents.EXP10_THEME.getId();
+        if (this.isMoreOp()) {
+            return ChangedAddonSoundEvents.EXP10_THEME.get().getLocation();
         }
 
-        return ChangedAddonSoundEvents.EXP9_THEME.getId();
+        return ChangedAddonSoundEvents.EXP9_THEME.get().getLocation();
     }
 
     @Override
