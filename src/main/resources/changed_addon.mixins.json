@@ -42,6 +42,7 @@
     "items.ItemStackMixin",
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",
+    "mods.changed.EmoteParticleOptionMixin",
     "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin",
     "world.LevelStorageAccessMixin",

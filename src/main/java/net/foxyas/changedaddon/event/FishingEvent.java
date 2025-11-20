@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.procedure;
+package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.init.ChangedAddonEnchantments;
 import net.ltxprogrammer.changed.entity.beast.*;
@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Random;
 
 @Mod.EventBusSubscriber
-public class FishLatexEntityProcedure {
+public class FishingEvent {
 
     private static final Random RANDOM = new Random();
 
@@ -58,11 +58,12 @@ public class FishLatexEntityProcedure {
     public static void AddAdvancement(Player entity) {
         if (entity == null)
             return;
-        if (entity instanceof ServerPlayer _player) {
-            Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:bigone"));
-            AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);//FIXME advancement id
-            if (!_ap.isDone()) {
-                for (String s : _ap.getRemainingCriteria()) _player.getAdvancements().award(_adv, s);
+        if (entity instanceof ServerPlayer serverPlayer) {
+            Advancement advancement = serverPlayer.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:big_one"));
+            assert advancement != null;
+            AdvancementProgress advancementProgress = serverPlayer.getAdvancements().getOrStartProgress(advancement);
+            if (!advancementProgress.isDone()) {
+                for (String s : advancementProgress.getRemainingCriteria()) serverPlayer.getAdvancements().award(advancement, s);
             }
         }
     }

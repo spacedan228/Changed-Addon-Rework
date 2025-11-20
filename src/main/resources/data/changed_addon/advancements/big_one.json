@@ -4,10 +4,10 @@
       "item": "minecraft:salmon_bucket"
     },
     "title": {
-      "translate": "advancements.begone.title"
+      "translate": "advancements.big_one.title"
     },
     "description": {
-      "translate": "advancements.begone.descr"
+      "translate": "advancements.big_one.descr"
     },
     "frame": "challenge",
     "show_toast": true,
@@ -15,7 +15,7 @@
     "hidden": true
   },
   "criteria": {
-    "bigone": {
+    "big_one": {
       "trigger": "minecraft:impossible"
     }
   },

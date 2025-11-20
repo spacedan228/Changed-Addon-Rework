@@ -66,7 +66,7 @@ public class ENLanguageProvider extends LanguageProvider {
     protected void addTranslations() {
         addAdvancement("obtain_ammonia", "A different kind of ammonia!?", "You craft one Ammonia Powder");
         addAdvancement("obtain_ammonia_particles", "Ammonia Particles", "Craft a ammonia particle");
-        addAdvancement("begone", "I Catch a Big One!", "You caught a big one! now enjoy your new fish friend");
+        addAdvancement("big_one", "I Catch a Big One!", "You caught a big one! now enjoy your new fish friend");
         addAdvancement("catalyzer_advancement", "A Catalyzer?", "You craft or get a Catalyzer");
         addAdvancement("changedaddon_advancement", "Changed Addon", "You downloaded the Changed Addon by Foxyas");
         addAdvancement("compressed_ammonia_advancement", "Compressed!!", "You craft an Ammonia Compressed");
