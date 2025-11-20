@@ -4,6 +4,8 @@ import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.item.SpecializedAnimations;
 import net.ltxprogrammer.changed.item.Syringe;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -52,6 +54,7 @@ public abstract class AbstractSyringeItem extends Item implements SpecializedAni
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack pStack, @NotNull Level pLevel, @NotNull LivingEntity pLivingEntity) {
         applyEffectsAfterUse(pStack, pLevel, pLivingEntity);
+        if(pLivingEntity instanceof ServerPlayer player) player.awardStat(Stats.ITEM_USED.get(this));
         return onUse(pStack, ChangedItems.SYRINGE.get().getDefaultInstance(), pLivingEntity);
     }
 
