@@ -28,7 +28,7 @@ public class LatexSolventMobEffect extends MobEffect {
     }
 
     @Override
-    public void applyEffectTick(LivingEntity entity, int amplifier) {
+    public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
         if (ProcessTransfur.getEntityVariant(entity).map(var -> var.getEntityType().is(ChangedTags.EntityTypes.LATEX)).orElse(false)) {
             entity.hurt(ChangedAddonDamageSources.LATEX_SOLVENT, amplifier + 2);
         }
