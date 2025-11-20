@@ -14,8 +14,6 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.IItemHandler;
@@ -94,7 +92,8 @@ public class ApplyBonemealGoal extends Goal {
 
     @Override
     public void tick() {
-        if (targetPos == null) {
+        Level level = entity.level;
+        if (targetPos == null || isBlockInvalid(level, level.getBlockState(targetPos), targetPos)) {
             targetPos = findGrowableCrop(entity.level, entity.blockPosition(), searchRange);
             if(targetPos == null) return;
         }
@@ -125,6 +124,11 @@ public class ApplyBonemealGoal extends Goal {
         boneMealCooldown = 0;
     }
 
+    private boolean isBlockInvalid(Level level, BlockState state, BlockPos pos){
+        return !(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)
+                || crop.isValidBonemealTarget(level, pos, state, level.isClientSide());
+    }
+
     private ItemStack findBoneMeal(boolean extract) {
         IItemHandler handsInv = entity.getHandsAndInv();
         ItemStack boneMeal;
@@ -149,13 +153,12 @@ public class ApplyBonemealGoal extends Goal {
                 center.offset(range, 1, range))) {
             state = level.getBlockState(pos);
 
-            if (state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state)
-                    && crop.isValidBonemealTarget(level, pos, state, level.isClientSide())) {
-                double dist = pos.distSqr(center);
-                if (dist < closestDist) {
-                    closestDist = dist;
-                    closestGrowableCrop = pos.immutable();
-                }
+            if(isBlockInvalid(level, state, pos)) continue;
+
+            double dist = pos.distSqr(center);
+            if (dist < closestDist) {
+                closestDist = dist;
+                closestGrowableCrop = pos.immutable();
             }
         }
         return closestGrowableCrop;
@@ -169,13 +172,10 @@ public class ApplyBonemealGoal extends Goal {
         if (boneMeal.isEmpty()) return;
 
         BlockState state = level.getBlockState(pos);
-        Block block = state.getBlock();
-
-        if (!(block instanceof BonemealableBlock fertilizable)
-                || !fertilizable.isValidBonemealTarget(level, pos, state, false)) return;
+        if(isBlockInvalid(level, state, pos)) return;
 
         entity.swing(entity.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
-        fertilizable.performBonemeal(serverLevel, level.getRandom(), pos, state);
-        serverLevel.levelEvent(1505, targetPos, 8); // Bone meal particles
+        ((CropBlock)state.getBlock()).performBonemeal(serverLevel, level.getRandom(), pos, state);
+        level.levelEvent(1505, targetPos, 8); // Bone meal particles
     }
 }

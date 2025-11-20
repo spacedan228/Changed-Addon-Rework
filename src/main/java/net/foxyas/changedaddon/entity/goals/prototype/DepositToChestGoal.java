@@ -62,10 +62,18 @@ public class DepositToChestGoal extends Goal {
 
     @Override
     public void tick() {
-        if(chestPos == null) return;
+        Level level = holder.level;
+        if(chestPos == null || !(level.getBlockEntity(chestPos) instanceof ChestBlockEntity)) {
+            chestPos = tryFindNearbyChest(level);
+            if(chestPos == null) {
+                lock = true;
+                new DelayedTask(200, ()-> lock = false);
+                return;
+            }
+        }
 
         PathNavigation navigation = holder.getNavigation();
-        if(!(holder.level.getBlockEntity(chestPos) instanceof ChestBlockEntity)){
+        if(!(level.getBlockEntity(chestPos) instanceof ChestBlockEntity)){
             navigation.stop();
             chestPos = null;
             return;
@@ -73,7 +81,7 @@ public class DepositToChestGoal extends Goal {
 
         if(holder.blockPosition().closerThan(chestPos, 2.0)){
             navigation.stop();
-            depositToChest((ServerLevel) holder.level);
+            depositToChest((ServerLevel) level);
             chestPos = null;
             return;
         }

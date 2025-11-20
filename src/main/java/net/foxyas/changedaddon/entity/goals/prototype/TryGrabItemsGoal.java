@@ -13,6 +13,7 @@ import java.util.List;
 public class TryGrabItemsGoal extends Goal {
 
     private final PrototypeEntity prototype;
+
     private List<ItemEntity> nearbyItems;
     private int ticksTrying = 0;
 
@@ -84,11 +85,7 @@ public class TryGrabItemsGoal extends Goal {
 
     @Override
     public void tick() {
-        super.tick();
-
-        if (nearbyItems.isEmpty()) {
-            return;
-        }
+        if (nearbyItems.isEmpty()) return;
 
         ItemEntity closestItem = nearbyItems.stream().filter((itemEntity) -> {
                     ItemStack stack = itemEntity.getItem();

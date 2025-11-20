@@ -83,8 +83,9 @@ public class PlantSeedsGoal extends Goal {
 
     @Override
     public void tick() {
-        if(targetPos == null){
-            targetPos = findPlantableFarmland(entity.level, entity.blockPosition(), searchRange);
+        Level level = entity.level;
+        if(targetPos == null || isBlockInvalid(level, level.getBlockState(targetPos.below()), targetPos)){
+            targetPos = findPlantableFarmland(level, entity.blockPosition(), searchRange);
             if(targetPos == null) return;
         }
 
@@ -101,7 +102,7 @@ public class PlantSeedsGoal extends Goal {
         }
 
         if (entity.blockPosition().closerThan(targetPos, 3)) {
-            plantSeedAt(targetPos);
+            plantSeedAt();
             targetPos = null; // reset target after planting
         }
     }
@@ -111,6 +112,10 @@ public class PlantSeedsGoal extends Goal {
         entity.getNavigation().stop();
         targetPos = null;
         plantCooldown = 0;
+    }
+
+    private boolean isBlockInvalid(Level level, BlockState state, BlockPos above){
+        return state.getBlock() != Blocks.FARMLAND || !level.getBlockState(above).isAir();
     }
 
     private ItemStack findSeeds(boolean extract) {
@@ -140,31 +145,29 @@ public class PlantSeedsGoal extends Goal {
                 center.offset(-range, -1, -range),
                 center.offset(range, 1, range))) {
             BlockState soil = level.getBlockState(pos);
-            BlockState above = level.getBlockState(pos.above());
-
-            if (soil.getBlock() == Blocks.FARMLAND && above.isAir()) {
-                return pos.above();
-            }
+            if(isBlockInvalid(level, soil, pos.above())) continue;
+            return pos.above();
         }
         return null;
     }
 
-    private void plantSeedAt(BlockPos pos) {
+    private void plantSeedAt() {
         Level level = entity.getLevel();
-        if (level.isClientSide) return;
 
         ItemStack seeds = findSeeds(true);
         if (seeds.isEmpty()) return;
 
+        if(isBlockInvalid(level, level.getBlockState(targetPos.below()), targetPos)) return;
+
         // Place the crop block at target position
-        this.entity.getLookControl().setLookAt(
-                pos.getX(), pos.getY(), pos.getZ(),
+        entity.getLookControl().setLookAt(
+                targetPos.getX(), targetPos.getY(), targetPos.getZ(),
                 30.0F, // yaw change speed (degrees per tick)
                 30.0F  // pitch change speed
         );
         entity.swing(entity.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
         Block block = ((BlockItem) seeds.getItem()).getBlock();
-        level.setBlock(pos, block.defaultBlockState(), 3);
-        level.playSound(null, pos, block.defaultBlockState().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);
+        level.setBlock(targetPos, block.defaultBlockState(), 3);
+        level.playSound(null, targetPos, block.defaultBlockState().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);
     }
 }

@@ -94,12 +94,9 @@ public class FindAndHarvestCropsGoal extends Goal {
     @Override
     public void tick() {
         Level level = entity.getLevel();
-
-        if(targetCropPos == null){// Try to find crop
+        if(targetCropPos == null || isBlockInvalid(level.getBlockState(targetCropPos))){// Try to find crop
             targetCropPos = findNearbyCrop(level, entity.blockPosition());
-            if(targetCropPos == null) {
-                return;//cancel goal - no crops
-            }
+            if(targetCropPos == null) return;//cancel goal - no crops
         }
 
         navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
@@ -128,14 +125,17 @@ public class FindAndHarvestCropsGoal extends Goal {
         harvestCooldown = 0;
     }
 
+    private boolean isBlockInvalid(BlockState state){
+        return !(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state);
+    }
+
     private BlockPos findNearbyCrop(Level level, BlockPos center) {
         BlockPos closestCrop = null;
         double closestDist = Double.MAX_VALUE;
         double dist;
 
         for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(center, searchRange, searchRange).toList()) {
-            BlockState state = level.getBlockState(pos);
-            if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)) continue;
+            if (isBlockInvalid(level.getBlockState(pos))) continue;
 
             dist = pos.distSqr(center);
             if (dist >= closestDist) continue;
@@ -148,7 +148,7 @@ public class FindAndHarvestCropsGoal extends Goal {
 
     private void harvestCrop(ServerLevel level) {
         BlockState state = level.getBlockState(targetCropPos);
-        if (!(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state)) return;
+        if (isBlockInvalid(state)) return;
 
         this.entity.getLookControl().setLookAt(
                 targetCropPos.getX(), targetCropPos.getY(), targetCropPos.getZ(),
@@ -168,7 +168,7 @@ public class FindAndHarvestCropsGoal extends Goal {
         }
 
         // Replant at age 0
-        level.setBlock(targetCropPos, crop.getStateForAge(0), 3);
+        level.setBlock(targetCropPos, ((CropBlock)state.getBlock()).getStateForAge(0), 3);
         level.levelEvent(null, 2001, targetCropPos, Block.getId(state));//Particles
         level.playSound(null, targetCropPos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1, 1);
         entity.addHarvestsTime();
