@@ -9,12 +9,12 @@ plugins {
 
 version = '2.0.0'
 group = 'com.foxyas.changed_addon'
-archivesBaseName = 'changed_addon'
+archivesBaseName = 'ChangedAddon-m1.20.1'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'parchment', version: '2022.11.06-1.18.2'
+    mappings channel: 'parchment', version: '2023.09.03-1.20.1'
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -78,7 +78,7 @@ repositories {
 
     maven {
         name = "Changed"
-        url = "https://raw.githubusercontent.com/LtxProgrammer/Changed-Minecraft-Mod/1.18.2-rel/mcmodsrepo/"
+        url = "https://raw.githubusercontent.com/Foxyas/Changed-Minecraft-Mod/0.15-features/mcmodsrepo/"
     }
 
     /*maven {
@@ -108,7 +108,7 @@ mixin {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.3.0' //Forge Version
+    minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}" //Forge Version
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
@@ -118,13 +118,16 @@ dependencies {
     }
 
   //implementation fg.deobf('net.ltxprogrammer.changed:Changed-m1.18.2-f40.2.0:v0.14b') //Changed Local File
-    implementation fg.deobf("net.ltxprogrammer.changed:Changed-m1.18.2-f40.2.0:v0.14.1c") {
+    implementation fg.deobf("net.ltxprogrammer.changed:Changed-m1.20.1-f47.4.0:v0.15.0") {
         changing = true
     }//Changed
 
-    implementation fg.deobf("dev.tr7zw:notenoughanimations-forge-1.7.0-mc1.18.2:1.7.0")
-    implementation fg.deobf("dev.tr7zw:firstperson-forge-2.3.2-mc1.18.2:2.3.2")
-    implementation fg.deobf("curse.maven:playeranimator-658587:4418152") // Forge 1.18.2 v1.0.2
+    compileOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
+    compileOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-forge-api:${jeiVersion}")
+
+    //implementation fg.deobf("dev.tr7zw:notenoughanimations-forge-1.7.0-mc1.18.2:1.7.0")
+    //implementation fg.deobf("dev.tr7zw:firstperson-forge-2.3.2-mc1.18.2:2.3.2")
+    //implementation fg.deobf("curse.maven:playeranimator-658587:4418152") // Forge 1.18.2 v1.0.2
     //compileOnly
     //implementation fg.deobf("curse.maven:tinkers-construct-74072:5748362")
     //implementation fg.deobf("curse.maven:mantle-74924:5979027")
