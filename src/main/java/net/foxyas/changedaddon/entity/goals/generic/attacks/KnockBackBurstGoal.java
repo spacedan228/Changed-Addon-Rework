@@ -78,7 +78,7 @@ public class KnockBackBurstGoal extends Goal {
                 livingEntity.hurtMarked = true; // força sincronização de movimento no cliente
                 livingEntity.getLevel().playSound(null, mob, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1, 1);
                 if (livingEntity instanceof Player player) {
-                    player.displayClientMessage(new TextComponent("That's ENOUGH").withStyle((style) -> {
+                    player.displayClientMessage(Component.literal("That's ENOUGH").withStyle((style) -> {
                         Style newStyle = style;
                         Color color = new Color(0, 0, 0);
                         newStyle = newStyle.withColor(color.getRGB()).withBold(true).withItalic(true);

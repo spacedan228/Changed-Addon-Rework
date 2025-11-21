@@ -90,12 +90,12 @@ public class TransfurTotemItem extends Item {
         }
 
         if (Screen.hasShiftDown() && !Screen.hasAltDown() && !Screen.hasControlDown())
-            tooltip.add(1, new TextComponent(("§6Form=" + itemTag.getString("form"))));
+            tooltip.add(1, Component.literal(("§6Form=" + itemTag.getString("form"))));
         else if (Screen.hasAltDown() && Screen.hasControlDown())
             tooltip.add(1, (Component.translatable("item.changed_addon.transfur_totem.desc_1")));
         else {
             String ID = Syringe.getVariantDescriptionId(stack);
-            tooltip.add(1, new TextComponent(("§6(" + Component.translatable(ID).getString() + ")")));
+            tooltip.add(1, Component.literal(("§6(" + Component.translatable(ID).getString() + ")")));
         }
     }
 
@@ -210,7 +210,7 @@ public class TransfurTotemItem extends Item {
         }
 
         if (form.isEmpty()) {
-            player.displayClientMessage(new TextComponent("No form linked, please link one with §e<Shift+Click>"), true);
+            player.displayClientMessage(Component.literal("No form linked, please link one with §e<Shift+Click>"), true);
             return ar;
         }
 
@@ -277,7 +277,7 @@ public class TransfurTotemItem extends Item {
                     level.playSound(null, player, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1, 0);
 
                     if (!target.level.isClientSide())
-                        target.displayClientMessage(new TextComponent((Component.translatable("changed_addon.latex_totem.not_valid").getString())), true);
+                        target.displayClientMessage(Component.literal((Component.translatable("changed_addon.latex_totem.not_valid").getString())), true);
 
                     return InteractionResult.SUCCESS;
                 }
@@ -360,7 +360,7 @@ public class TransfurTotemItem extends Item {
         if (level.isClientSide()) Minecraft.getInstance().gameRenderer.displayItemActivation(itemstack);
 
         if (entity instanceof ServerPlayer _player) {
-            player.displayClientMessage(new TextComponent("The totem you were carrying has been activated"), true);
+            player.displayClientMessage(Component.literal("The totem you were carrying has been activated"), true);
 
             Advancement _adv = _player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:transfur_totem_advancement_2"));
             AdvancementProgress _ap = _player.getAdvancements().getOrStartProgress(_adv);

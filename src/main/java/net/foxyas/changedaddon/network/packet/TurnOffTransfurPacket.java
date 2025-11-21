@@ -41,7 +41,7 @@ public record TurnOffTransfurPacket(int type, int pressedMs) {
             if (tf.getParent().transfurMode != TransfurMode.NONE) {
                 tf.transfurMode = mode == TransfurMode.NONE ? tf.getParent().transfurMode : TransfurMode.NONE;
                 if (player.getLevel().isClientSide()) {
-                    player.displayClientMessage(new TranslatableComponent("key.changed_addon.turn_off_transfur.safe_mode", tf.transfurMode != TransfurMode.NONE), false);
+                    player.displayClientMessage(Component.translatable("key.changed_addon.turn_off_transfur.safe_mode", tf.transfurMode != TransfurMode.NONE), false);
                 }
             }
 
@@ -50,7 +50,7 @@ public record TurnOffTransfurPacket(int type, int pressedMs) {
                     boolean safeMode = !abilityExtensor.isSafeMode();
                     abilityExtensor.setSafeMode(safeMode);
                     if (player.getLevel().isClientSide()) {
-                        player.displayClientMessage(new TranslatableComponent("key.changed_addon.turn_off_transfur.grab_safe_mode", safeMode), false);
+                        player.displayClientMessage(Component.translatable("key.changed_addon.turn_off_transfur.grab_safe_mode", safeMode), false);
                     }
                 }
             }

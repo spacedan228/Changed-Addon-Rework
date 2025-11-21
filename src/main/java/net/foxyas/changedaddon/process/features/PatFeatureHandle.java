@@ -133,7 +133,7 @@ public class PatFeatureHandle {
             TargetPat.WhenPattedReactionSpecific(player, emptyHand, entityHitResult.getLocation());
             TargetPat.WhenPattedReaction(player, emptyHand);
             TargetPat.WhenPattedReactionSimple();
-            //p.displayClientMessage(new TextComponent("pat_message:" + target.getDisplayName().getString()), false);
+            //p.displayClientMessage(Component.literal("pat_message:" + target.getDisplayName().getString()), false);
         }
 
         ProcessPatFeature.GlobalPatReactionEvent globalPatReactionEvent = new ProcessPatFeature.GlobalPatReactionEvent(level, player, emptyHand, target, entityHitResult.getLocation());

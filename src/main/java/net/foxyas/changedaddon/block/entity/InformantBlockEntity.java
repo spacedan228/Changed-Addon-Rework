@@ -148,7 +148,7 @@ public class InformantBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull Component getDefaultName() {
-        return new TextComponent("Informant Block");
+        return Component.literal("Informant Block");
     }
 
     @Override

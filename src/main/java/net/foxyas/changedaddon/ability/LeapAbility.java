@@ -55,7 +55,7 @@ public class LeapAbility extends SimpleAbility {
 
             // Grant Advancement
             if (motionY * multiplier >= 0.75) {
-                //player.displayClientMessage(new TextComponent("Message" + motionY * multiplier), true);
+                //player.displayClientMessage(Component.literal("Message" + motionY * multiplier), true);
                 grantAdvancement(player, "changed_addon:leaper");
             }
         }
@@ -100,7 +100,7 @@ public class LeapAbility extends SimpleAbility {
 
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.leap");
+        return Component.translatable("changed_addon.ability.leap");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

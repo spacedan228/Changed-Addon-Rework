@@ -164,7 +164,7 @@ public class HandScanner extends Block {
 
         if (!allow) {
             ChangedSounds.broadcastSound(Objects.requireNonNull(level.getServer()), ChangedSounds.BUZZER1, pos, 1.0F, 1.0F);
-            player.displayClientMessage(new TextComponent("You cannot use this lock in your current form!"), true);
+            player.displayClientMessage(Component.literal("You cannot use this lock in your current form!"), true);
             return InteractionResult.CONSUME;
         }
 

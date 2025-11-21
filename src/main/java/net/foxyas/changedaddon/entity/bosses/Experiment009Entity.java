@@ -5,12 +5,13 @@ import net.foxyas.changedaddon.entity.goals.exp9.*;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedDamageSources;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -252,7 +253,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         if (source.getMsgId().equals("trident")) {
             if (this.getLevel().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(new TextComponent("§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!"), true);
+                    player.displayClientMessage(Component.literal("§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!"), true);
                 }
             }
             return super.hurt(source, amount * 0.5f);
@@ -268,7 +269,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         if (source.isProjectile()) {
             if (this.getLevel().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(new TextComponent("§l§o§4Coward! Is distance all you can rely on? How PATHETIC!!!"), true);
+                    player.displayClientMessage(Component.literal("§l§o§4Coward! Is distance all you can rely on? How PATHETIC!!!"), true);
                 }
             }
             return super.hurt(source, amount * 0.5f);

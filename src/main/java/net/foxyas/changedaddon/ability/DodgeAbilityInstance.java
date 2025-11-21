@@ -156,9 +156,9 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         }
         if (dodger instanceof Player player) {
             if (!ultraInstinct) {
-                player.displayClientMessage(new TranslatableComponent("changed_addon.ability.dodge.dodge_amount_left", this.getDodgeStaminaRatio()), false);
+                player.displayClientMessage(Component.translatable("changed_addon.ability.dodge.dodge_amount_left", this.getDodgeStaminaRatio()), false);
             } else {
-                player.displayClientMessage(new TranslatableComponent("changed_addon.ability.dodge.ultra_instinct"), true);
+                player.displayClientMessage(Component.translatable("changed_addon.ability.dodge.ultra_instinct"), true);
             }
             if (causeExhaustion && !ultraInstinct) {
                 player.causeFoodExhaustion(8f);
@@ -321,7 +321,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     public void setUltraInstinct(boolean ultraInstinct) {
         if (ultraInstinct) {
             if (this.entity.getEntity() instanceof Player player) {
-                player.displayClientMessage(new TranslatableComponent("changed_addon.ability.dodge.ultra_instinct.activated"), false);
+                player.displayClientMessage(Component.translatable("changed_addon.ability.dodge.ultra_instinct.activated"), false);
             }
         }
         this.ultraInstinct = ultraInstinct;
@@ -351,7 +351,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
                 if (!ultraInstinct) {
                     player.displayClientMessage(
-                            new TranslatableComponent("changed_addon.ability.dodge.dodge_amount", getDodgeStaminaRatio()),
+                            Component.translatable("changed_addon.ability.dodge.dodge_amount", getDodgeStaminaRatio()),
                             true
                     );
                 }
@@ -369,7 +369,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 }
                 if (!ultraInstinct) {
                     player.displayClientMessage(
-                            new TranslatableComponent("changed_addon.ability.dodge.dodge_amount", getDodgeStaminaRatio()), true);
+                            Component.translatable("changed_addon.ability.dodge.dodge_amount", getDodgeStaminaRatio()), true);
                 }
             }
         }
@@ -413,12 +413,12 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                     if (!(player.getLevel().isClientSide())) {
                         if (!ultraInstinct) {
                             player.displayClientMessage(
-                                    new TranslatableComponent("changed_addon.ability.dodge.dodge_amount",
+                                    Component.translatable("changed_addon.ability.dodge.dodge_amount",
                                             getDodgeStaminaRatio()),
                                     true
                             );
                         } else {
-                            player.displayClientMessage(new TranslatableComponent("changed_addon.ability.dodge.ultra_instinct"),
+                            player.displayClientMessage(Component.translatable("changed_addon.ability.dodge.ultra_instinct"),
                                     true);
                         }
                     }

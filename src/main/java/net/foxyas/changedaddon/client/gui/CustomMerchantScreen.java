@@ -25,8 +25,8 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
 
     /** The GUI texture for the villager merchant GUI. */
     private static final ResourceLocation VILLAGER_LOCATION = ResourceLocation.parse("textures/gui/container/villager2.png");
-    private static final Component TRADES_LABEL = new TranslatableComponent("merchant.trades");
-    private static final Component DEPRECATED_TOOLTIP = new TranslatableComponent("merchant.deprecated");
+    private static final Component TRADES_LABEL = Component.translatable("merchant.trades");
+    private static final Component DEPRECATED_TOOLTIP = Component.translatable("merchant.deprecated");
     /** The integer value corresponding to the currently selected merchant recipe. */
     private int shopItem;
     private final TradeOfferButton[] tradeOfferButtons = new TradeOfferButton[7];

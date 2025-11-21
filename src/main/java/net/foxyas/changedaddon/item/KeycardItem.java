@@ -99,26 +99,26 @@ public class KeycardItem extends Item implements ColorHolder {
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         byte[] code = getCode(stack);
         if (code != null) {
-            tooltip.add(new TranslatableComponent("item.changed_addon.keycard.desc.code", Arrays.toString(code))
+            tooltip.add(Component.translatable("item.changed_addon.keycard.desc.code", Arrays.toString(code))
                     .withStyle(ChatFormatting.GRAY));
         } else {
-            tooltip.add(new TranslatableComponent("item.changed_addon.keycard.desc.nocode")
+            tooltip.add(Component.translatable("item.changed_addon.keycard.desc.nocode")
                     .withStyle(ChatFormatting.RED));
         }
 
         if (flag.isAdvanced()) {
             if (getTopColor(stack) != DEF_TOP) {
-                tooltip.add((new TranslatableComponent("item.changed_addon.keycard.desc.color_top.data", String.format("#%06X", getTopColor(stack)))).withStyle(ChatFormatting.GRAY));
+                tooltip.add((Component.translatable("item.changed_addon.keycard.desc.color_top.data", String.format("#%06X", getTopColor(stack)))).withStyle(ChatFormatting.GRAY));
             }
             if (getBottomColor(stack) != DEF_BOTTOM) {
-                tooltip.add((new TranslatableComponent("item.changed_addon.keycard.desc.color_bottom.data", String.format("#%06X", getBottomColor(stack)))).withStyle(ChatFormatting.GRAY));
+                tooltip.add((Component.translatable("item.changed_addon.keycard.desc.color_bottom.data", String.format("#%06X", getBottomColor(stack)))).withStyle(ChatFormatting.GRAY));
             }
         } else {
             if (getTopColor(stack) != DEF_TOP) {
-                tooltip.add((new TranslatableComponent("item.changed_addon.keycard.desc.color_top")).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+                tooltip.add((Component.translatable("item.changed_addon.keycard.desc.color_top")).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             }
             if (getBottomColor(stack) != DEF_BOTTOM) {
-                tooltip.add((new TranslatableComponent("item.changed_addon.keycard.desc.color_bottom")).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+                tooltip.add((Component.translatable("item.changed_addon.keycard.desc.color_bottom")).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
             }
         }
     }
@@ -157,7 +157,7 @@ public class KeycardItem extends Item implements ColorHolder {
 //        if (!level.isClientSide) {
 //            keypadEntity.useCode(codeList);
 //            player.displayClientMessage(
-//                    new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN),
+//                    Component.translatable("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN),
 //                    true
 //            );
 //            return InteractionResult.SUCCESS;
@@ -229,8 +229,8 @@ public class KeycardItem extends Item implements ColorHolder {
                 }
 
                 MutableComponent chatComponent = !fail ?
-                        new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN) :
-                        new TranslatableComponent("item.changed_addon.keycard.message.used.fail").withStyle(ChatFormatting.RED);
+                        Component.translatable("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN) :
+                        Component.translatable("item.changed_addon.keycard.message.used.fail").withStyle(ChatFormatting.RED);
 
                 if (!fail) playUnlock(level, pos);
                 player.displayClientMessage(chatComponent, true);

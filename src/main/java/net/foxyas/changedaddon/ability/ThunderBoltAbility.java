@@ -58,7 +58,7 @@ public class ThunderBoltAbility extends SimpleAbility {
 
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.thunder");
+        return Component.translatable("changed_addon.ability.thunder");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

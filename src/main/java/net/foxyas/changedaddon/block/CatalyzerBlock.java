@@ -90,18 +90,18 @@ public class CatalyzerBlock extends HorizontalDirectionalBlock implements Entity
             if (catalyzerBlockEntity.startRecipe) {
                 catalyzerBlockEntity.startRecipe = false;
                 level.setBlockAndUpdate(pos, blockstate);
-                player.displayClientMessage(new TextComponent("you stop the " + name), true);
+                player.displayClientMessage(Component.literal("you stop the " + name), true);
                 return InteractionResult.SUCCESS;
             } else {
                 catalyzerBlockEntity.startRecipe = true;
                 level.setBlockAndUpdate(pos, blockstate);
-                player.displayClientMessage(new TextComponent("you start the " + name), true);
+                player.displayClientMessage(Component.literal("you start the " + name), true);
                 return InteractionResult.SUCCESS;
             }
         }
 
         if (player instanceof ServerPlayer sPlayer) {
-            NetworkHooks.openGui(sPlayer, catalyzerBlockEntity, pos);
+            NetworkHooks.openScreen(sPlayer, catalyzerBlockEntity, pos);
         }
 
         return InteractionResult.SUCCESS;

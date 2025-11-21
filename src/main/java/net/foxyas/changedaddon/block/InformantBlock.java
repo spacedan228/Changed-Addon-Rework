@@ -67,7 +67,7 @@ public class InformantBlock extends HorizontalDirectionalBlock implements Entity
         if (!(entity instanceof ServerPlayer sPlayer) || !(blockEntity instanceof InformantBlockEntity info))
             return InteractionResult.PASS;
 
-        NetworkHooks.openGui(sPlayer, info, pos);
+        NetworkHooks.openScreen(sPlayer, info, pos);
 
         return InteractionResult.SUCCESS;
     }

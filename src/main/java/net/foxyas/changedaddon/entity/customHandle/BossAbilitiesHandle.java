@@ -343,7 +343,7 @@ public record BossAbilitiesHandle(AbstractLuminarcticLeopard boss) {
             Vec3 directionToBoss = boss.position().subtract(player.position()).normalize(); // Vetor direção do jogador para o boss
             double dotProduct = lookVec.dot(directionToBoss); // Produto escalar para verificar alinhamento
 
-            //player.displayClientMessage(new TextComponent("Dot Value = " + dotProduct), true); //Debug
+            //player.displayClientMessage(Component.literal("Dot Value = " + dotProduct), true); //Debug
             // Se o ângulo entre o olhar e o boss for menor que 30 graus
             if (dotProduct > 0.95) { // ~30 graus de tolerância (cos(30º) ≈ 0.866)
                 // Verifica se a visão está limpa

@@ -136,17 +136,17 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             // Item Information
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.TRANSFUR_TOTEM.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.latex_totem"));
             registration.addIngredientInfo(new ItemStack(ChangedAddonItems.EXPERIMENT_009_DNA.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.exp9_dna"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.SYRINGE_WITH_LITIX_CAMMONIA.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.litix_cammonia_syringe"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LAETHIN_SYRINGE.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.laethin_syringe"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.POT_WITH_CAMONIA.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.pot_with_cammonia"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.DIFFUSION_SYRINGE.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.diffusion_syringe"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.IRIDIUM.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.iridium_use"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.INFORMANT_BLOCK.get()), VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.informant_block"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LUNAR_ROSE.get()), VanillaTypes.ITEM_STACK, new TextComponent(new TranslatableComponent("changed_addon.jei_descriptions.lunar_rose").getString().replace("#", "\n")));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.SYRINGE_WITH_LITIX_CAMMONIA.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.litix_cammonia_syringe"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LAETHIN_SYRINGE.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.laethin_syringe"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.POT_WITH_CAMONIA.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.pot_with_cammonia"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.DIFFUSION_SYRINGE.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.diffusion_syringe"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.IRIDIUM.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.iridium_use"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.INFORMANT_BLOCK.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.informant_block"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LUNAR_ROSE.get()), VanillaTypes.ITEM_STACK, Component.literal(Component.translatable("changed_addon.jei_descriptions.lunar_rose").getString().replace("#", "\n")));
 
             ItemStack stack = new ItemStack(ChangedItems.LATEX_SYRINGE.get());
             Syringe.setVariant(stack, ChangedAddonTransfurVariants.LUMINARA_FLOWER_BEAST.get().getFormId());
-            registration.addIngredientInfo(stack, VanillaTypes.ITEM_STACK, new TranslatableComponent("changed_addon.jei_descriptions.luminara.riddle"));
+            registration.addIngredientInfo(stack, VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.luminara.riddle"));
 
             addSharedDescriptions(registration, List.of(
                     ChangedAddonItems.BLUE_WOLF_CRYSTAL_FRAGMENT.get(),
@@ -166,8 +166,8 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             for (int i = 1; i < 6; i++) { // Começa em 1 para ignorar o nível 0
                 float math = LatexSolventMath(i) * 100;
                 EnchantmentHelper.setEnchantments(Map.of(ChangedAddonEnchantments.LATEX_SOLVENT.get(), i), enchantedBookWithSolvent);
-                String text = new TranslatableComponent("enchantment.changed_addon.latex_solvent.jei_desc", Math.round(math)).getString().replace(" T ", "% ");
-                registration.addIngredientInfo(enchantedBookWithSolvent, VanillaTypes.ITEM_STACK, new TextComponent(text));
+                String text = Component.translatable("enchantment.changed_addon.latex_solvent.jei_desc", Math.round(math)).getString().replace(" T ", "% ");
+                registration.addIngredientInfo(enchantedBookWithSolvent, VanillaTypes.ITEM_STACK, Component.literal(text));
             }
         }
 
@@ -176,7 +176,7 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             for (int i = 1; i < 6; i++) { // Começa em 1 para ignorar o nível 0
                 float math = TransfurAspectMath(i);
                 EnchantmentHelper.setEnchantments(Map.of(ChangedAddonEnchantments.TRANSFUR_ASPECT.get(), i), enchantedBookWithEnchantment);
-                registration.addIngredientInfo(enchantedBookWithEnchantment, VanillaTypes.ITEM_STACK, new TranslatableComponent("enchantment.changed_addon.transfur_aspect.jei_desc", math));
+                registration.addIngredientInfo(enchantedBookWithEnchantment, VanillaTypes.ITEM_STACK, Component.translatable("enchantment.changed_addon.transfur_aspect.jei_desc", math));
             }
         }
 
@@ -184,7 +184,7 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             ItemStack enchantedBookWithChangedLure = new ItemStack(Items.ENCHANTED_BOOK);
             for (int i = 1; i < 6; i++) { // Começa em 1 para ignorar o nível 0
                 EnchantmentHelper.setEnchantments(Map.of(ChangedAddonEnchantments.CHANGED_LURE.get(), i), enchantedBookWithChangedLure);
-                registration.addIngredientInfo(enchantedBookWithChangedLure, VanillaTypes.ITEM_STACK, new TranslatableComponent("enchantment.changed_addon.changed_lure.desc"));
+                registration.addIngredientInfo(enchantedBookWithChangedLure, VanillaTypes.ITEM_STACK, Component.translatable("enchantment.changed_addon.changed_lure.desc"));
             }
         }
 
@@ -202,7 +202,7 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
 
         private static void addSharedDescriptions(IRecipeRegistration registration, List<Item> items, String translationKey) {
             items.forEach(item ->
-                    registration.addIngredientInfo(new ItemStack(item), VanillaTypes.ITEM_STACK, new TranslatableComponent(translationKey))
+                    registration.addIngredientInfo(new ItemStack(item), VanillaTypes.ITEM_STACK, Component.translatable(translationKey))
             );
         }
     }

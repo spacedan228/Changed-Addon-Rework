@@ -42,7 +42,7 @@ public class PotWithCamoniaItem extends Item {
                         player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.UNTRANSFUR.get(), 1800, 0, false, false));
                     if ((entity.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonVariables.PlayerVariables())).showWarns) {
                         if (entity instanceof Player _player && !_player.level.isClientSide())
-                            _player.displayClientMessage(new TextComponent("for some reason this seems to have slowed effect"), true);
+                            _player.displayClientMessage(Component.literal("for some reason this seems to have slowed effect"), true);
                     }
                 }
             }

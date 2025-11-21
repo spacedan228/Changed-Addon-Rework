@@ -24,13 +24,13 @@ public class DashAbility extends SimpleAbility {
 
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.dash");
+        return Component.translatable("changed_addon.ability.dash");
     }
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         Collection<Component> description = new ArrayList<>(super.getAbilityDescription(entity));
-        description.add(new TranslatableComponent("changed_addon.ability.dash.desc"));
+        description.add(Component.translatable("changed_addon.ability.dash.desc"));
         return description;
     }
 

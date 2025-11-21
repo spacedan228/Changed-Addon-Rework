@@ -48,10 +48,10 @@ public record GeneratorGuiButtonPacket(int buttonId, BlockPos pos) {
 
             if (enabled) {
                 blockEntity.getTileData().putBoolean("turn_on", false);
-                player.displayClientMessage(new TextComponent("generator disabled"), true);
+                player.displayClientMessage(Component.literal("generator disabled"), true);
             } else {
                 blockEntity.getTileData().putBoolean("turn_on", true);
-                player.displayClientMessage(new TextComponent("generator enabled"), true);
+                player.displayClientMessage(Component.literal("generator enabled"), true);
             }
 
             level.sendBlockUpdated(pos, state, state, 3);

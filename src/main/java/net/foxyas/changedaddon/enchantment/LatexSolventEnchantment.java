@@ -102,9 +102,9 @@ public class LatexSolventEnchantment extends Enchantment {
             double math = 0 + EnchantLevel * 0.2;
             if (!(stack.getItem() instanceof BowItem) && !(stack.getItem() instanceof CrossbowItem)) {
                 if (EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get(), stack) != 0) {
-                    TextComponent spaceText = new TextComponent(" ");
+                    TextComponent spaceText = Component.literal(" ");
                     String mathInText = "§r§e+" + String.format("%.2f", math * 100);
-                    TextComponent latexSolventDamageInText = new TextComponent((mathInText + "%§r §nLatex Solvent Damage"));
+                    TextComponent latexSolventDamageInText = Component.literal((mathInText + "%§r §nLatex Solvent Damage"));
 
                     int idx = -1;
                     for (int i = 0; i < tooltip.size(); i++) {
@@ -119,9 +119,9 @@ public class LatexSolventEnchantment extends Enchantment {
                     } else {
                         //Fall Back
                         if (Screen.hasShiftDown()) {
-                            tooltip.add(new TextComponent(("§r§e+" + String.format("%.2f", math * 100) + "%§r §nLatex Solvent Damage")));
+                            tooltip.add(Component.literal(("§r§e+" + String.format("%.2f", math * 100) + "%§r §nLatex Solvent Damage")));
                         } else {
-                            tooltip.add(new TextComponent("Press §e<Shift>§r for show tooltip"));
+                            tooltip.add(Component.literal("Press §e<Shift>§r for show tooltip"));
                         }
                     }
                 }

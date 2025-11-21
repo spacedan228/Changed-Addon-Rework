@@ -115,7 +115,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
     @Override
     public @NotNull Component getDefaultName() {
-        return new TextComponent("unifuser");
+        return Component.literal("unifuser");
     }
 
     @Override
@@ -125,7 +125,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
     @Override
     public @NotNull Component getDisplayName() {
-        return new TextComponent("Unifuser");
+        return Component.literal("Unifuser");
     }
 
     @Override

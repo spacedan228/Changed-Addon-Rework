@@ -42,7 +42,7 @@ public abstract class AbilityRadialScreenMixin {
 //                    }
 //                }
 //
-//                list.add(new TranslatableComponent("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
+//                list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
 //                cir.setReturnValue(list);
 //            }
 //        }
@@ -66,21 +66,21 @@ public abstract class AbilityRadialScreenMixin {
                     if (abilityInstance != null) {
                         ResourceLocation registryName = abilityInstance.getAbility().getRegistryName();
                         if (registryName == null) {
-                            list.add(new TranslatableComponent("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
+                            list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
                             break;
                         }
                         
                         boolean contains = component.toString().contains(registryName.toString());
                         if (contains) {
                             // BEFORE ID
-                            list.add(i, new TranslatableComponent("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
+                            list.add(i, Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
                             itAdded = true;
                             break;
                         }
                     }
                 }
 
-                if (!itAdded) list.add(new TranslatableComponent("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
+                if (!itAdded) list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
 
                 cir.setReturnValue(list);
             }
@@ -100,7 +100,7 @@ public abstract class AbilityRadialScreenMixin {
 //            remap = false)
 //    private ImmutableList.Builder<Component> addRightClickTip(ImmutableList.Builder<Component> builder, int section) {
 //        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-//            builder.add(new TranslatableComponent("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
+//            builder.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
 //                    //.withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
 //        }
 //        return builder;

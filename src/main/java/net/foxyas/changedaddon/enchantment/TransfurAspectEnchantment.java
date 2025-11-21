@@ -140,7 +140,7 @@ public class TransfurAspectEnchantment extends Enchantment {
             List<Component> tooltip = event.getToolTip();
             if(!Screen.hasShiftDown()) {
                 // If Shift not held, show hint
-                tooltip.add(new TextComponent("Press §e<Shift>§r for show tooltip"));
+                tooltip.add(Component.literal("Press §e<Shift>§r for show tooltip"));
                 return;
             }
 
@@ -151,7 +151,7 @@ public class TransfurAspectEnchantment extends Enchantment {
             float damage = baseValue * 0.75f * enchantLevel / 4f;
 
             // Add tooltip showing the damage
-            tooltip.add(new TextComponent("§r§e+" + String.format("%.2f", damage) + "§r Transfur Damage to Humanoids"));
+            tooltip.add(Component.literal("§r§e+" + String.format("%.2f", damage) + "§r Transfur Damage to Humanoids"));
         }
     }
 

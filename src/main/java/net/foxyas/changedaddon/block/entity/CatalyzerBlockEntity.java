@@ -114,7 +114,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull Component getDefaultName() {
-        return new TextComponent("catalyzer");
+        return Component.literal("catalyzer");
     }
 
     @Override
@@ -124,7 +124,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull Component getDisplayName() {
-        return new TextComponent("Catalyzer");
+        return Component.literal("Catalyzer");
     }
 
     @Override

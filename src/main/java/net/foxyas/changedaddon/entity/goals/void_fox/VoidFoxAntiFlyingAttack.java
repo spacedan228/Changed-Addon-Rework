@@ -319,7 +319,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
             protected void onHitEntity(@NotNull EntityHitResult result) {
                 super.onHitEntity(result);
                 if (result.getEntity() instanceof Player player && player.getAbilities().flying) {
-                    player.displayClientMessage(new TextComponent("Flying will not help you! so is better STOP!").withStyle((style -> {
+                    player.displayClientMessage(Component.literal("Flying will not help you! so is better STOP!").withStyle((style -> {
                         Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                         returnStyle = returnStyle.withItalic(true);
                         return returnStyle;
@@ -349,7 +349,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
                     protected void onHitEntity(@NotNull EntityHitResult result) {
                         super.onHitEntity(result);
                         if (result.getEntity() instanceof Player player && player.getAbilities().flying) {
-                            player.displayClientMessage(new TextComponent("Flying will not help you! so is better STOP!").withStyle((style -> {
+                            player.displayClientMessage(Component.literal("Flying will not help you! so is better STOP!").withStyle((style -> {
                                 Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                                 returnStyle = returnStyle.withItalic(true);
                                 return returnStyle;

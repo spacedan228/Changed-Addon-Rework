@@ -46,13 +46,13 @@ public class WindPassiveAbility extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.wind_control_passive");
+        return Component.translatable("changed_addon.ability.wind_control_passive");
     }
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         Collection<Component> list = new ArrayList<>(super.getAbilityDescription(entity));
-        list.add(new TranslatableComponent("changed_addon.ability.wind_control_passive.desc"));
+        list.add(Component.translatable("changed_addon.ability.wind_control_passive.desc"));
         return list;
     }
 
@@ -87,8 +87,8 @@ public class WindPassiveAbility extends SimpleAbility {
     public void TurnOnPassive(IAbstractChangedEntity entity) {
         this.isActive = !this.isActive;
         entity.displayClientMessage(this.isActive ?
-                        new TranslatableComponent("changed_addon.ability.passive.toggle.on") :
-                        new TranslatableComponent("changed_addon.ability.passive.toggle.off")
+                        Component.translatable("changed_addon.ability.passive.toggle.on") :
+                        Component.translatable("changed_addon.ability.passive.toggle.off")
                 , true);
     }
 }

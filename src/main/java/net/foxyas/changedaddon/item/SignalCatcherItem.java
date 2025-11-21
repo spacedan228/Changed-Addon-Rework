@@ -68,7 +68,7 @@ public class SignalCatcherItem extends Item {
     public void releaseUsing(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull LivingEntity entity, int time) {
         if (!itemstack.getOrCreateTag().getBoolean("set")) {
             if (entity instanceof Player player && !player.level.isClientSide())
-                player.displayClientMessage(new TextComponent("§o§bNo Location Found §l[Not Close Enough]"), false);
+                player.displayClientMessage(Component.literal("§o§bNo Location Found §l[Not Close Enough]"), false);
         }
     }
 
@@ -86,14 +86,14 @@ public class SignalCatcherItem extends Item {
         double deltaZ = z - player.getZ();
         double distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
         if (!Screen.hasShiftDown()) {
-            tooltip.add(new TextComponent("Hold §6<Shift>§r for Info"));
+            tooltip.add(Component.literal("Hold §6<Shift>§r for Info"));
         } else {
-            tooltip.add(new TextComponent("Hold §b<Right Click>§r to scan a 32 block area"));
-            tooltip.add(new TextComponent("Hold §c<Shift + Right Click>§r to perform a Super scan and scan 120 block area"));
+            tooltip.add(Component.literal("Hold §b<Right Click>§r to scan a 32 block area"));
+            tooltip.add(Component.literal("Hold §c<Shift + Right Click>§r to perform a Super scan and scan 120 block area"));
         }
-        tooltip.add(new TextComponent(("§oCoords §l" + x + " " + y + " " + z)));
+        tooltip.add(Component.literal(("§oCoords §l" + x + " " + y + " " + z)));
         if (stack.getOrCreateTag().getBoolean("set")) {
-            tooltip.add(new TextComponent(("§oDistance §l" + Math.round(distance))));
+            tooltip.add(Component.literal(("§oDistance §l" + Math.round(distance))));
         }
     }
 
@@ -138,7 +138,7 @@ public class SignalCatcherItem extends Item {
             level.playSound(null, firstFound, SoundEvents.CONDUIT_DEACTIVATE, SoundSource.BLOCKS, 1.5f, 1);
             level.playSound(null, player, SoundEvents.CONDUIT_ACTIVATE, SoundSource.PLAYERS, 1.5f, 1);
         } else if (!player.level.isClientSide()) {
-            player.displayClientMessage(new TextComponent("No Signal Block Found"), false);
+            player.displayClientMessage(Component.literal("No Signal Block Found"), false);
         }
     }
 
@@ -153,20 +153,20 @@ public class SignalCatcherItem extends Item {
     private static void displayFoundLocations(Player player, List<BlockPos> positions) {
         boolean isCreative = player.isCreative();
 
-        player.displayClientMessage(new TextComponent("Signal Blocks found at:"), false); // Mensagem inicial
+        player.displayClientMessage(Component.literal("Signal Blocks found at:"), false); // Mensagem inicial
 
         for (int i = 0; i < positions.size(); i++) {
             BlockPos pos = positions.get(i);
 
             // Cria o texto básico da posição
             String positionText = String.format("Block %d: [%d, %d, %d]", i + 1, pos.getX(), pos.getY(), pos.getZ());
-            TextComponent message = new TextComponent(positionText);
+            TextComponent message = Component.literal(positionText);
 
             if (isCreative) {
                 // Adiciona eventos ao texto apenas para jogadores criativos
                 Style style = Style.EMPTY
                         .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/tp %d %d %d", pos.getX(), pos.getY(), pos.getZ())))
-                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponent("Click to copy the teleport command")));
+                        .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to copy the teleport command")));
 
                 message.setStyle(style);
             }

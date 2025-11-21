@@ -158,20 +158,20 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         MutableComponent landSpeedInfo = Component.translatable("text.changed_addon.land_speed")
                 .append("")
                 .append(landSpeedPct == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%"));
+                        ? Component.literal("§7None§r")
+                        : Component.literal((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%"));
 
         MutableComponent swimSpeedInfo = Component.translatable("text.changed_addon.swim_speed")
                 .append("")
                 .append(swimSpeedPct == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%"));
+                        ? Component.literal("§7None§r")
+                        : Component.literal((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%"));
 
         MutableComponent additionalHealthInfo = Component.translatable("text.changed_addon.additionalHealth")
                 .append("")
                 .append(extraHp == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
+                        ? Component.literal("§7None§r")
+                        : Component.literal((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
                 .append(Component.translatable("text.changed_addon.additionalHealth.Hearts"));
 
         TranslatableComponent miningStrengthInfo = Component.translatable("text.changed_addon.miningStrength", miningStrength);
@@ -179,14 +179,14 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         MutableComponent jumpStrengthInfo = Component.translatable("text.changed_addon.jumpStrength")
                 .append("")
                 .append(jumpStrengthPct == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
+                        ? Component.literal("§7None§r")
+                        : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
 
         MutableComponent canGlideInfo = Component.translatable("text.changed_addon.canGlide/Fly")
                 .append("")
                 .append(canFlyOrGlide
-                        ? new TextComponent("§aTrue§r")
-                        : new TextComponent("§cFalse§r"));
+                        ? Component.literal("§aTrue§r")
+                        : Component.literal("§cFalse§r"));
 
 
         // Verifica se o mouse está sobre cada ícone e exibe a tooltip correspondente
@@ -240,8 +240,8 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
                 this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK, 1, 1);
             }
 
-            //this.minecraft.player.displayClientMessage(new TextComponent("Mouse Position : X =" + mouseX + " and Y =" + mouseY), false);
-            //this.minecraft.player.displayClientMessage(new TextComponent("Mouse Position2 : X =" + (mouseX - leftPos) + " and Y =" + (mouseY - topPos)), false);
+            //this.minecraft.player.displayClientMessage(Component.literal("Mouse Position : X =" + mouseX + " and Y =" + mouseY), false);
+            //this.minecraft.player.displayClientMessage(Component.literal("Mouse Position2 : X =" + (mouseX - leftPos) + " and Y =" + (mouseY - topPos)), false);
         }
 
         return super.mouseClicked(mouseX, mouseY, keyCode);
@@ -355,20 +355,20 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         var a = Component.translatable("text.changed_addon.land_speed")
                 .append("")
                 .append(landSpeedPct == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%"));
+                        ? Component.literal("§7None§r")
+                        : Component.literal((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%"));
 
         var b = Component.translatable("text.changed_addon.swim_speed")
                 .append("")
                 .append(swimSpeedPct == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%"));
+                        ? Component.literal("§7None§r")
+                        : Component.literal((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%"));
 
         var c = Component.translatable("text.changed_addon.additionalHealth")
                 .append("")
                 .append(extraHp == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
+                        ? Component.literal("§7None§r")
+                        : Component.literal((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
                 .append(Component.translatable("text.changed_addon.additionalHealth.Hearts"));
 
         var d = Component.translatable("text.changed_addon.miningStrength", miningStrength);
@@ -376,14 +376,14 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         var e = Component.translatable("text.changed_addon.jumpStrength")
                 .append("")
                 .append(jumpStrengthPct == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
+                        ? Component.literal("§7None§r")
+                        : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
 
         var f = Component.translatable("text.changed_addon.canGlide/Fly")
                 .append("")
                 .append(canFlyOrGlide
-                        ? new TextComponent("§aTrue§r")
-                        : new TextComponent("§cFalse§r"));
+                        ? Component.literal("§aTrue§r")
+                        : Component.literal("§cFalse§r"));
 
         this.font.draw(poseStack, a, 5, 44, -12829636);
 

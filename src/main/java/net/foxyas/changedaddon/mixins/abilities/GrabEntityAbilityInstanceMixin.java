@@ -170,11 +170,11 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         if (level.isClientSide() && this.isSafeMode()) {
             ci.cancel();
             if (this.instructionTicks == 180) {
-                getSelf().entity.displayClientMessage(new TranslatableComponent("ability.changed_addon.grab_entity.extender.how_to_release", AbstractAbilityInstance.KeyReference.ABILITY.getName(level)), true);
+                getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_release", AbstractAbilityInstance.KeyReference.ABILITY.getName(level)), true);
             } else if (this.instructionTicks == 120) {
-                getSelf().entity.displayClientMessage(new TranslatableComponent("ability.changed_addon.grab_entity.extender.how_to_hug", AbstractAbilityInstance.KeyReference.ATTACK.getName(level)), true);
+                getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_hug", AbstractAbilityInstance.KeyReference.ATTACK.getName(level)), true);
             } else if (this.instructionTicks == 60) {
-                getSelf().entity.displayClientMessage(new TranslatableComponent("ability.changed_addon.grab_entity.extender.how_to_hug.tightly", AbstractAbilityInstance.KeyReference.USE.getName(level)), true);
+                getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_hug.tightly", AbstractAbilityInstance.KeyReference.USE.getName(level)), true);
             }
 
             if (this.instructionTicks > 0) {

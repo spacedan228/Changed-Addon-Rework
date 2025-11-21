@@ -88,9 +88,9 @@ public class ProcessPatFeature {
             }
 
             if (!player.level.isClientSide()) {
-                player.displayClientMessage(new TranslatableComponent("key.changed_addon.pat_message", target.getDisplayName().getString()), true);
+                player.displayClientMessage(Component.translatable("key.changed_addon.pat_message", target.getDisplayName().getString()), true);
                 if (target instanceof Player targetPlayer) {
-                    targetPlayer.displayClientMessage(new TranslatableComponent("key.changed_addon.pat_received", player.getDisplayName().getString()), true);
+                    targetPlayer.displayClientMessage(Component.translatable("key.changed_addon.pat_received", player.getDisplayName().getString()), true);
                 }
             }
 

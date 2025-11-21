@@ -141,7 +141,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     @Override
     public void WhenPattedReaction(Player patter, InteractionHand hand) {
         CustomPatReaction.super.WhenPattedReaction(patter, hand);
-        if (patter.level.isClientSide) return;
+        if (patter.level().isClientSide) return;
 
         if (!isTame()) {
             tame(patter);
@@ -154,7 +154,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         boolean shouldFollow = !isFollowingOwner();
         setFollowOwner(shouldFollow);
 
-        patter.displayClientMessage(new TranslatableComponent(shouldFollow ? "text.changed.tamed.follow" : "text.changed.tamed.wander", getDisplayName()), false);
+        patter.displayClientMessage(Component.translatable(shouldFollow ? "text.changed.tamed.follow" : "text.changed.tamed.wander", getDisplayName()), false);
         jumping = false;
         navigation.stop();
         setTarget(null);
@@ -241,13 +241,13 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
-            if (!getLevel().isClientSide) {
+            if (!level().isClientSide) {
                 depositType = depositType.nextDepositType();
             }
-            player.displayClientMessage(new TranslatableComponent("entity.changed_addon.prototype.deposit_type.switch", depositType.getFormatedName()), true);
+            player.displayClientMessage(Component.translatable("entity.changed_addon.prototype.deposit_type.switch", depositType.getFormatedName()), true);
         } else {
-            if (!getLevel().isClientSide) {
-                NetworkHooks.openGui((ServerPlayer) player, this, buf -> buf.writeVarInt(getId()));
+            if (!level().isClientSide) {
+                NetworkHooks.openScreen((ServerPlayer) player, this, buf -> buf.writeVarInt(getId()));
             }
         }
 
@@ -255,16 +255,16 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
             if (isTameItem(itemstack) && getHealth() < getMaxHealth()) {
                 itemstack.shrink(1);
                 heal(2.0F);
-                if (level instanceof ServerLevel _level) {
+                if (level() instanceof ServerLevel _level) {
                     _level.sendParticles(ParticleTypes.HEART, (this.getX()), (this.getY() + 1), (this.getZ()), 7, 0.3, 0.3, 0.3, 1); //Spawn Heal Particles
                 }
-                this.gameEvent(GameEvent.MOB_INTERACT, this.eyeBlockPosition());
+                this.gameEvent(GameEvent.ENTITY_INTERACT, this);
                 return InteractionResult.SUCCESS;
             }
         }
 
         player.swing(hand);
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.sidedSuccess(level().isClientSide);
     }
 
     @Override
@@ -292,11 +292,11 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
             stack = combinedInv.extractItem(i, combinedInv.getSlotLimit(i), false);
             if (stack.isEmpty()) continue;
 
-            itemEntity = new ItemEntity(level, getX(), getY() + 0.5, getZ(), stack);
+            itemEntity = new ItemEntity(level(), getX(), getY() + 0.5, getZ(), stack);
             itemEntity.setDeltaMovement(
                     (random.nextDouble() - 0.5) * 0.2, 0.2, (random.nextDouble() - 0.5) * 0.2
             );
-            level.addFreshEntity(itemEntity);
+            level().addFreshEntity(itemEntity);
         }
     }
 
@@ -457,7 +457,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         return Color.CYAN;
     }
 
-    private static final TagKey<Item> FORGE_FRUITS = ItemTags.create(new ResourceLocation("forge", "fruits"));
+    private static final TagKey<Item> FORGE_FRUITS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "fruits"));
 
     // Enums
     public enum DepositType implements Predicate<ItemStack> {

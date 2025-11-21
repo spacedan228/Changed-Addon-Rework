@@ -59,7 +59,7 @@ public class ClientEvent {
 //        if (hasInformantBlock || isCreative) {
 //            if (hasInformantBlock && !Screen.hasShiftDown()) {
 //                String variantName = Component.translatable(Syringe.getVariantDescriptionId(itemstack)).getString();
-//                tooltip.add(new TextComponent("Hold ").append(new TextComponent("<Shift>").withStyle(style -> style.withColor(0xFFD700)))
+//                tooltip.add(Component.literal("Hold ").append(Component.literal("<Shift>").withStyle(style -> style.withColor(0xFFD700)))
 //                        .append(" to show the stats of the " + variantName + " Transfur"));
 //            }
 
@@ -71,61 +71,61 @@ public class ClientEvent {
                 int index = Math.min(tooltip.size(), 3);
 
                 float extraHp = TransfurVariantUtils.GetExtraHp(tf, entity) / 2f;
-                tooltip.add(index, new TranslatableComponent("text.changed_addon.additionalHealth")
+                tooltip.add(index, Component.translatable("text.changed_addon.additionalHealth")
                         .append("")
                         .append(extraHp == 0
-                                ? new TextComponent("§7None§r")
-                                : new TextComponent((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
-                        .append(new TranslatableComponent("text.changed_addon.additionalHealth.Hearts")));
+                                ? Component.literal("§7None§r")
+                                : Component.literal((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
+                        .append(Component.translatable("text.changed_addon.additionalHealth.Hearts")));
 
                 index++;
-                tooltip.add(index, new TranslatableComponent("text.changed_addon.miningStrength", TransfurVariantUtils.getMiningStrength(tf)));
+                tooltip.add(index, Component.translatable("text.changed_addon.miningStrength", TransfurVariantUtils.getMiningStrength(tf)));
 
                 index++;
                 float landSpeed = TransfurVariantUtils.GetLandSpeed(tf, entity);
                 float landSpeedPct = landSpeed == 0 ? 0 : (landSpeed - 1) * 100;
-                tooltip.add(index, new TranslatableComponent("text.changed_addon.land_speed")
+                tooltip.add(index, Component.translatable("text.changed_addon.land_speed")
                         .append("")
                         .append(landSpeedPct == 0
-                                ? new TextComponent("§7None§r")
-                                : new TextComponent((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%")));
+                                ? Component.literal("§7None§r")
+                                : Component.literal((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%")));
 
                 index++;
                 float swimSpeed = TransfurVariantUtils.GetSwimSpeed(tf, entity);
                 float swimSpeedPct = swimSpeed == 0 ? 0 : (swimSpeed - 1) * 100;
-                tooltip.add(index, new TranslatableComponent("text.changed_addon.swim_speed")
+                tooltip.add(index, Component.translatable("text.changed_addon.swim_speed")
                         .append("")
                         .append(swimSpeedPct == 0
-                                ? new TextComponent("§7None§r")
-                                : new TextComponent((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%")));
+                                ? Component.literal("§7None§r")
+                                : Component.literal((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%")));
 
                 index++;
                 float jumpStrength = TransfurVariantUtils.GetJumpStrength(tf);
                 float jumpStrengthPct = jumpStrength == 0 ? 0 : (jumpStrength - 1) * 100;
-                tooltip.add(index, new TranslatableComponent("text.changed_addon.jumpStrength")
+                tooltip.add(index, Component.translatable("text.changed_addon.jumpStrength")
                         .append("")
                         .append(jumpStrengthPct == 0
-                                ? new TextComponent("§7None§r")
-                                : new TextComponent((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%")));
+                                ? Component.literal("§7None§r")
+                                : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%")));
 
                 index++;
-                tooltip.add(index, new TranslatableComponent("text.changed_addon.canGlide/Fly")
+                tooltip.add(index, Component.translatable("text.changed_addon.canGlide/Fly")
                         .append("")
                         .append(TransfurVariantUtils.CanGlideAndFly(tf)
-                                ? new TextComponent("§aTrue§r")
-                                : new TextComponent("§cFalse§r")));
+                                ? Component.literal("§aTrue§r")
+                                : Component.literal("§cFalse§r")));
             }
 
             if (ChangedAddonTransfurVariants.isVariantOC(loc, entity.getLevel())) {
                 Component ocVariantComponent = ChangedAddonTransfurVariants.getOcVariantComponent(tf);
-                MutableComponent append = new TextComponent("§8OC Transfur");
+                MutableComponent append = Component.literal("§8OC Transfur");
                 if (ocVariantComponent != null) append.append("\n").append(ocVariantComponent);
                 tooltip.add(append);
             }
         }
 
         if (ChangedAddonTransfurVariants.isBossVariant(tf)) {
-            tooltip.add(new TextComponent("§8Boss Version"));
+            tooltip.add(Component.literal("§8Boss Version"));
         }
     }
 }

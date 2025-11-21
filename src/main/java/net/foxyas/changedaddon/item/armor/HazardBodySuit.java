@@ -136,7 +136,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     public void accessoryDamaged(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
         LivingEntity wearer = slotContext.wearer();
         /*if (wearer instanceof Player player) {
-            player.displayClientMessage(new TextComponent("Iframes =" + player.invulnerableTime + "\n"
+            player.displayClientMessage(Component.literal("Iframes =" + player.invulnerableTime + "\n"
                     + player.hurtDir + "\n"
                     + player.hurtDuration + "\n"
                     + player.hurtMarked + "\n"

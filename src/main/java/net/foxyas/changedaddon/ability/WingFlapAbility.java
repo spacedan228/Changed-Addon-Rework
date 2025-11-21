@@ -59,7 +59,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
 
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.wing_flap");
+        return Component.translatable("changed_addon.ability.wing_flap");
     }
 
     @Override
@@ -231,7 +231,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
 
 
             if (player.level.isClientSide() && ChangedAddonClientConfiguration.WING_FLAP_INFO.get()) {
-                player.displayClientMessage(new TextComponent("Ticks = " + getController().getHoldTicks()), true);
+                player.displayClientMessage(Component.literal("Ticks = " + getController().getHoldTicks()), true);
             }
         }
 
@@ -272,7 +272,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
         public void tickIdle() {
             super.tickIdle();
             this.lastDashPower = dashPower;
-            //this.entity.displayClientMessage(new TextComponent("VALUE = " + this.lastDashPower) , true);
+            //this.entity.displayClientMessage(Component.literal("VALUE = " + this.lastDashPower) , true);
         }
     }
 }

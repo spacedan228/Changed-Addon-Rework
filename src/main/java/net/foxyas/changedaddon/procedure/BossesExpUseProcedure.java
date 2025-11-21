@@ -22,7 +22,7 @@ public class BossesExpUseProcedure {
                 || variant == ChangedAddonTransfurVariants.EXPERIMENT_10.get()
                 || variant == ChangedAddonTransfurVariants.EXPERIMENT_10_BOSS.get()) {
             event.setCanceled(true);
-            event.player.displayClientMessage(new TranslatableComponent("changed_addon.latex_syringe.not_valid"), true);
+            event.player.displayClientMessage(Component.translatable("changed_addon.latex_syringe.not_valid"), true);
         }
     }
 }

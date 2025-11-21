@@ -68,7 +68,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
             applyUntransfurEffect(player, duration);
 
             if (isOrganic && ChangedAddonVariables.ofOrDefault(player).showWarns) {
-                player.displayClientMessage(new TextComponent("For some reason, this seems to have a slowed effect"), true);
+                player.displayClientMessage(Component.literal("For some reason, this seems to have a slowed effect"), true);
             }
         } else if (entity.getType().is(ChangedTags.EntityTypes.LATEX)) {
             applyUntransfurEffect(player, 400);

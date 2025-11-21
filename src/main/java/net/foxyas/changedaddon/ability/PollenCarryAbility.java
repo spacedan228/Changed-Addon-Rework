@@ -17,12 +17,12 @@ public class PollenCarryAbility extends AbstractAbility<PollenCarryAbilityInstan
 
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.pollen_carry");
+        return Component.translatable("changed_addon.ability.pollen_carry");
     }
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
-        return List.of(new TranslatableComponent("changed_addon.ability.pollen_carry.description"));
+        return List.of(Component.translatable("changed_addon.ability.pollen_carry.description"));
     }
 
     @Override

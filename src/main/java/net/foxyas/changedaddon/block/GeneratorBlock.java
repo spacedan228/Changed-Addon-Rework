@@ -47,7 +47,7 @@ public class GeneratorBlock extends Block implements EntityBlock {
     @Override
     public void appendHoverText(ItemStack itemstack, @Nullable BlockGetter world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TextComponent("W.I.P"));
+        list.add(Component.literal("W.I.P"));
     }
 
     @Override
@@ -89,10 +89,10 @@ public class GeneratorBlock extends Block implements EntityBlock {
     @Override
     public @NotNull InteractionResult use(BlockState blockstate, Level world, BlockPos pos, Player entity, InteractionHand hand, BlockHitResult hit) {
         if (entity instanceof ServerPlayer player) {
-            NetworkHooks.openGui(player, new MenuProvider() {
+            NetworkHooks.openScreen(player, new MenuProvider() {
                 @Override
                 public @NotNull Component getDisplayName() {
-                    return new TextComponent("Generator");
+                    return Component.literal("Generator");
                 }
 
                 @Override

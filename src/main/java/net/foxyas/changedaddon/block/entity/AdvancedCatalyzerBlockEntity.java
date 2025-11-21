@@ -20,11 +20,11 @@ public class AdvancedCatalyzerBlockEntity extends CatalyzerBlockEntity {
 
     @Override
     public @NotNull Component getDefaultName() {
-        return new TextComponent("advanced_catalyzer");
+        return Component.literal("advanced_catalyzer");
     }
 
     @Override
     public @NotNull Component getDisplayName() {
-        return new TextComponent("Advanced Catalyzer");
+        return Component.literal("Advanced Catalyzer");
     }
 }

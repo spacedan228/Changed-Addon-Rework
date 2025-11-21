@@ -105,7 +105,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull Component getDefaultName() {
-        return new TextComponent("generator");
+        return Component.literal("generator");
     }
 
     @Override
@@ -115,7 +115,7 @@ public class GeneratorBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public @NotNull Component getDisplayName() {
-        return new TextComponent("Generator");
+        return Component.literal("Generator");
     }
 
     @Override

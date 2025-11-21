@@ -40,7 +40,7 @@ public class GooCoreBlock extends Block {
     @Override
     public void appendHoverText(ItemStack itemstack, @Nullable BlockGetter world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TextComponent("A Gooey Core which appears to be covered in obsidian"));
+        list.add(Component.literal("A Gooey Core which appears to be covered in obsidian"));
     }
 
     @Override

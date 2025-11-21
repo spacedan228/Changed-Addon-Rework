@@ -49,7 +49,7 @@ public class TimedKeypadBlock extends KeypadBlock {
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         if (player.isShiftKeyDown() && !state.getValue(KeypadBlock.POWERED)) {
-            /*player.displayClientMessage(new TextComponent("Pos:" + (hitResult.getLocation().subtract(hitResult.getBlockPos().getX(),
+            /*player.displayClientMessage(Component.literal("Pos:" + (hitResult.getLocation().subtract(hitResult.getBlockPos().getX(),
                             hitResult.getBlockPos().getY(),
                             hitResult.getBlockPos().getZ()))),
                     true);*/

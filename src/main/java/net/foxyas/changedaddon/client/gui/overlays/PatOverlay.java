@@ -195,9 +195,9 @@ public class PatOverlay {
             TextComponent patMessage;
 
             if (lookedEntity.hasCustomName()) {
-                patMessage = new TextComponent(lookedEntity.getCustomName().getString());
+                patMessage = Component.literal(lookedEntity.getCustomName().getString());
             } else {
-                patMessage = new TextComponent(lookedEntity.getDisplayName().getString());
+                patMessage = Component.literal(lookedEntity.getDisplayName().getString());
             }
             patMessage.withStyle(style ->
                     style.withColor(Color3.getColor("#FFFFFF").toInt())
@@ -205,7 +205,7 @@ public class PatOverlay {
                             .withItalic(true));
             return patMessage;
         } else {
-            return new TextComponent("");
+            return Component.literal("");
         }
     }
 

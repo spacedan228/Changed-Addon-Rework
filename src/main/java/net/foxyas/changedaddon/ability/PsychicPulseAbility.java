@@ -57,7 +57,7 @@ public class PsychicPulseAbility extends SimpleAbility {
 
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.psychic_pulse");
+        return Component.translatable("changed_addon.ability.psychic_pulse");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

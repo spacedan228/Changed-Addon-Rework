@@ -28,10 +28,10 @@ import java.util.stream.Stream;
 
 public class TransfurMe {
 
-    private static final SimpleCommandExceptionType NOT_LATEX_FORM = new SimpleCommandExceptionType(new TranslatableComponent("command.changed.error.not_latex_form"));
-    private static final SimpleCommandExceptionType NOT_CAUSE = new SimpleCommandExceptionType(new TranslatableComponent("command.changed.error.not_cause"));
-    private static final SimpleCommandExceptionType USED_BY_OTHER_MOD = new SimpleCommandExceptionType(new TranslatableComponent("command.changed.error.used_by_other_mod"));
-    private static final SimpleCommandExceptionType NO_SPECIAL_FORM = new SimpleCommandExceptionType(new TranslatableComponent("command.changed.error.no_special_form"));
+    private static final SimpleCommandExceptionType NOT_LATEX_FORM = new SimpleCommandExceptionType(Component.translatable("command.changed.error.not_latex_form"));
+    private static final SimpleCommandExceptionType NOT_CAUSE = new SimpleCommandExceptionType(Component.translatable("command.changed.error.not_cause"));
+    private static final SimpleCommandExceptionType USED_BY_OTHER_MOD = new SimpleCommandExceptionType(Component.translatable("command.changed.error.used_by_other_mod"));
+    private static final SimpleCommandExceptionType NO_SPECIAL_FORM = new SimpleCommandExceptionType(Component.translatable("command.changed.error.no_special_form"));
     private static final ResourceLocation RANDOM_VARIANT = Changed.modResource("random");
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
@@ -79,7 +79,7 @@ public class TransfurMe {
             doTransfur(player, source, key, transfurCause);
         }
 
-        source.sendSuccess(new TranslatableComponent("command.changed.success.transfurred.one", player.getScoreboardName(), form.toString()), false);
+        source.sendSuccess(Component.translatable("command.changed.success.transfurred.one", player.getScoreboardName(), form.toString()), false);
 
         return Command.SINGLE_SUCCESS;
     }

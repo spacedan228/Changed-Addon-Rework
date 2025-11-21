@@ -20,11 +20,11 @@ public class AdvancedUnifuserBlockEntity extends UnifuserBlockEntity {
 
     @Override
     public @NotNull Component getDefaultName() {
-        return new TextComponent("advanced_unifuser");
+        return Component.literal("advanced_unifuser");
     }
 
     @Override
     public @NotNull Component getDisplayName() {
-        return new TextComponent("Advanced Unifuser");
+        return Component.literal("Advanced Unifuser");
     }
 }

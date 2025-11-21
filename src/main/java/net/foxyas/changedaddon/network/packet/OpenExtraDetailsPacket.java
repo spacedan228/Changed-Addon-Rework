@@ -37,10 +37,10 @@ public class OpenExtraDetailsPacket {
         if (player == null || player.level.isClientSide || player.isSpectator()) return;
 
         if (ProcessTransfur.isPlayerTransfurred(player)) {
-            NetworkHooks.openGui((ServerPlayer) player, new MenuProvider() {
+            NetworkHooks.openScreen((ServerPlayer) player, new MenuProvider() {
                 @Override
                 public @NotNull Component getDisplayName() {
-                    return new TextComponent("TransfurSoundsGui");
+                    return Component.literal("TransfurSoundsGui");
                 }
 
                 @Override
@@ -51,7 +51,7 @@ public class OpenExtraDetailsPacket {
         } else {
             ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
             if (vars != null && vars.showWarns) {
-                player.displayClientMessage(new TranslatableComponent("changedaddon.when_not.transfur"), true);
+                player.displayClientMessage(Component.translatable("changedaddon.when_not.transfur"), true);
             }
         }
     }

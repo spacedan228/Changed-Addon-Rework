@@ -90,19 +90,19 @@ public class UnifuserBlock extends HorizontalDirectionalBlock implements EntityB
                 unifuserBlockEntity.startRecipe = false;
                 unifuserBlockEntity.setChanged();
                 world.setBlockAndUpdate(pos, blockstate);
-                player.displayClientMessage(new TextComponent("you stop the " + name), true);
+                player.displayClientMessage(Component.literal("you stop the " + name), true);
                 return InteractionResult.SUCCESS;
             } else {
                 unifuserBlockEntity.startRecipe = true;
                 unifuserBlockEntity.setChanged();
                 world.setBlockAndUpdate(pos, blockstate);
-                player.displayClientMessage(new TextComponent("you start the " + name), true);
+                player.displayClientMessage(Component.literal("you start the " + name), true);
                 return InteractionResult.SUCCESS;
             }
         }
 
         if (player instanceof ServerPlayer sPlayer) {
-            NetworkHooks.openGui(sPlayer, unifuserBlockEntity, pos);
+            NetworkHooks.openScreen(sPlayer, unifuserBlockEntity, pos);
         }
 
         return InteractionResult.SUCCESS;

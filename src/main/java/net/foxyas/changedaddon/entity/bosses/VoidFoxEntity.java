@@ -196,7 +196,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             public void start() {
                 super.start();
                 if (getTarget() instanceof Player player) {
-                    player.displayClientMessage(new TextComponent("Flying will not help you").withStyle((style -> {
+                    player.displayClientMessage(Component.literal("Flying will not help you").withStyle((style -> {
                         Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                         returnStyle = returnStyle.withItalic(true);
                         return returnStyle;
@@ -226,7 +226,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             public void start() {
                 super.start();
                 if (getTarget() instanceof Player player) {
-                    player.displayClientMessage(new TextComponent("Here i go!").withStyle((style -> {
+                    player.displayClientMessage(Component.literal("Here i go!").withStyle((style -> {
                         Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                         returnStyle = returnStyle.withItalic(true);
                         return returnStyle;
@@ -287,7 +287,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             public void start() {
                 super.start();
                 if (getTarget() instanceof Player player) {
-                    player.displayClientMessage(new TextComponent("Lest DANCE").withStyle((style -> {
+                    player.displayClientMessage(Component.literal("Lest DANCE").withStyle((style -> {
                         Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                         returnStyle = returnStyle.withItalic(true);
                         return returnStyle;
@@ -314,7 +314,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                         FoxyasUtils.repairArmor(getTarget(), 25);
                     }
                     if (getTarget() instanceof Player player) {
-                        player.displayClientMessage(new TextComponent("Heh nice one").withStyle((style -> {
+                        player.displayClientMessage(Component.literal("Heh nice one").withStyle((style -> {
                             Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                             returnStyle = returnStyle.withItalic(true);
                             return returnStyle;
@@ -363,7 +363,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             public void start() {
                 super.start();
                 if (getTarget() instanceof Player player) {
-                    player.displayClientMessage(new TextComponent("can you keep up with me?").withStyle((style -> {
+                    player.displayClientMessage(Component.literal("can you keep up with me?").withStyle((style -> {
                         Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                         returnStyle = returnStyle.withItalic(true);
                         return returnStyle;
@@ -390,7 +390,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                         FoxyasUtils.repairArmor(getTarget(), 25);
                     }
                     if (getTarget() instanceof Player player) {
-                        player.displayClientMessage(new TextComponent("Heh it seems so").withStyle((style -> {
+                        player.displayClientMessage(Component.literal("Heh it seems so").withStyle((style -> {
                             Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                             returnStyle = returnStyle.withItalic(true);
                             return returnStyle;
@@ -439,7 +439,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             @Override
             public void start() {
                 if (getTarget() instanceof Player player) {
-                    player.displayClientMessage(new TextComponent("can you keep up with me like this?").withStyle((style -> {
+                    player.displayClientMessage(Component.literal("can you keep up with me like this?").withStyle((style -> {
                         Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                         returnStyle = returnStyle.withItalic(true);
                         return returnStyle;
@@ -467,7 +467,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                         FoxyasUtils.repairArmor(getTarget(), 25);
                     }
                     if (getTarget() instanceof Player player) {
-                        player.displayClientMessage(new TextComponent("Wow yeah it seems so").withStyle((style -> {
+                        player.displayClientMessage(Component.literal("Wow yeah it seems so").withStyle((style -> {
                             Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                             returnStyle = returnStyle.withItalic(true);
                             return returnStyle;
@@ -897,7 +897,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                     Vec3 knock = living.position().subtract(this.position()).normalize().scale(1.2);
                     living.push(knock.x, knock.y * 1.25f, knock.z);
                     if (living instanceof Player player) {
-                        player.displayClientMessage(new TextComponent("ENOUGH OF THIS").withStyle((style -> {
+                        player.displayClientMessage(Component.literal("ENOUGH OF THIS").withStyle((style -> {
                             Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                             returnStyle = returnStyle.withItalic(true);
                             return returnStyle;
@@ -980,7 +980,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         this.bossBar.addPlayer(player);
 
         player.displayClientMessage(
-                new TextComponent("A dark presence spreads through the land...\nWill you dare to confront its origin?").withStyle((style -> {
+                Component.literal("A dark presence spreads through the land...\nWill you dare to confront its origin?").withStyle((style -> {
                     Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                     returnStyle = returnStyle.withItalic(true);
                     return returnStyle;
@@ -1117,7 +1117,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                 if (source != null && voidFox.computeHealthRatio() > 0.5f) {
                     if (((voidFox.getHealth() - amount) / voidFox.getMaxHealth()) <= 0.5f) {
                         if (source instanceof Player player) {
-                            player.displayClientMessage(new TextComponent("I will hasten the arrival of your death").withStyle((style -> {
+                            player.displayClientMessage(Component.literal("I will hasten the arrival of your death").withStyle((style -> {
                                 Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
                                 returnStyle = returnStyle.withItalic(true);
                                 return returnStyle;

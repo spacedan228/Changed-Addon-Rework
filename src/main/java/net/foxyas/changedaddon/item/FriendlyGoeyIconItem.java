@@ -19,6 +19,6 @@ public class FriendlyGoeyIconItem extends Item {
     @Override
     public void appendHoverText(@NotNull ItemStack itemstack, Level world, @NotNull List<Component> list, @NotNull TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TextComponent("§4THIS IS ONE DEV ITEM YOU CAN'T DO ANYTHING WITH THIS"));
+        list.add(Component.literal("§4THIS IS ONE DEV ITEM YOU CAN'T DO ANYTHING WITH THIS"));
     }
 }

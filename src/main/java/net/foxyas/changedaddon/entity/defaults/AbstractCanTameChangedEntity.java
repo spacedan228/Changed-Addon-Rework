@@ -203,7 +203,7 @@ public abstract class AbstractCanTameChangedEntity extends AbstractBasicChangedE
                     if (this.level instanceof ServerLevel _level) {
                         _level.sendParticles(ParticleTypes.HEART, (this.getX()), (this.getY() + 1), (this.getZ()), 7, 0.3, 0.3, 0.3, 1); //Spawn Heal Particles
                     }
-                    this.gameEvent(GameEvent.MOB_INTERACT, this.eyeBlockPosition());
+                    this.gameEvent(GameEvent.ENTITY_INTERACT, this.eyeBlockPosition());
                     return InteractionResult.SUCCESS;
                 } else {
                     InteractionResult interactionresult = super.mobInteract(player, hand);
@@ -211,7 +211,7 @@ public abstract class AbstractCanTameChangedEntity extends AbstractBasicChangedE
                         boolean shouldFollow = !this.isFollowingOwner();
                         this.setFollowOwner(shouldFollow);
 
-                        player.displayClientMessage(new TranslatableComponent(shouldFollow ? "text.changed.tamed.follow" : "text.changed.tamed.wander", this.getDisplayName()), true);
+                        player.displayClientMessage(Component.translatable(shouldFollow ? "text.changed.tamed.follow" : "text.changed.tamed.wander", this.getDisplayName()), true);
                         this.jumping = false;
                         this.navigation.stop();
                         this.setTarget(null);

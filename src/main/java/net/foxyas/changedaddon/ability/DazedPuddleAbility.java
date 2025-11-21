@@ -22,7 +22,7 @@ public class DazedPuddleAbility extends SimpleAbility {
 
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("ability.changed.puddle");
+        return Component.translatable("ability.changed.puddle");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

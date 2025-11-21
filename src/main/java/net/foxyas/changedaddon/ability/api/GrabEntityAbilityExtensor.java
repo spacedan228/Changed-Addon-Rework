@@ -23,7 +23,7 @@ public interface GrabEntityAbilityExtensor {
     default void runHug(@NotNull LivingEntity livingEntity) {
         if (grabber() instanceof Player player) {
             if (!player.getLevel().isClientSide()) {
-                player.displayClientMessage(new TranslatableComponent("ability.changed_addon.grab_entity.extender.hugger", livingEntity.getDisplayName()), true);
+                player.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.hugger", livingEntity.getDisplayName()), true);
                 if (player instanceof ServerPlayer serverPlayer) {
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug");
                 }
@@ -32,7 +32,7 @@ public interface GrabEntityAbilityExtensor {
             }
             if (livingEntity instanceof Player grabbedPlayer) {
                 if (!grabbedPlayer.getLevel().isClientSide())
-                    grabbedPlayer.displayClientMessage(new TranslatableComponent("ability.changed_addon.grab_entity.extender.hugged", player.getDisplayName()), true);
+                    grabbedPlayer.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.hugged", player.getDisplayName()), true);
             }
         }
     }
@@ -48,7 +48,7 @@ public interface GrabEntityAbilityExtensor {
     default void runTightHug(@NotNull LivingEntity livingEntity) {
         if (grabber() instanceof Player player) {
             if (!player.getLevel().isClientSide()) {
-                player.displayClientMessage(new TranslatableComponent("ability.changed_addon.grab_entity.extender.hugger.tight", livingEntity.getDisplayName()), true);
+                player.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.hugger.tight", livingEntity.getDisplayName()), true);
                 if (player instanceof ServerPlayer serverPlayer) {
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug");
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug_tight");
@@ -58,7 +58,7 @@ public interface GrabEntityAbilityExtensor {
             }
             if (livingEntity instanceof Player grabbedPlayer) {
                 if (!grabbedPlayer.getLevel().isClientSide()) {
-                    grabbedPlayer.displayClientMessage(new TranslatableComponent("ability.changed_addon.grab_entity.extender.hugged.tight", player.getDisplayName()), true);
+                    grabbedPlayer.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.hugged.tight", player.getDisplayName()), true);
                 }
             }
         }

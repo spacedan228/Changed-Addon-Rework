@@ -29,7 +29,7 @@ public class MouseCirclePullMinigameScreen extends CircleMinigameScreen {
 
         drawProgressBar(poseStack, halfWidth, halfHeight + 25, partialTick);
 
-        RenderUtil.drawCentered(font, poseStack, new TranslatableComponent("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", KeyPressMinigameScreen.getTimeRemaining(player)), halfWidth, halfHeight - 40, -1);
+        RenderUtil.drawCentered(font, poseStack, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", KeyPressMinigameScreen.getTimeRemaining(player)), halfWidth, halfHeight - 40, -1);
         RenderUtil.drawCentered(font, poseStack, KeyPressMinigameScreen.getProgressText(player), halfWidth, halfHeight - 20, -1);
 
         drawCircles(poseStack);

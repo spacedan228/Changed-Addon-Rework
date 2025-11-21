@@ -105,7 +105,7 @@ public class ComboBurstGoal extends Goal {
 
             if (livingEntity instanceof Player player) {
                 player.displayClientMessage(
-                        new TextComponent("That's ENOUGH").withStyle(style -> {
+                        Component.literal("That's ENOUGH").withStyle(style -> {
                             return style
                                     .withBold(true)
                                     .withItalic(true)

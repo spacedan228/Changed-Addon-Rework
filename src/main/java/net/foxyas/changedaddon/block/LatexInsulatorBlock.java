@@ -148,7 +148,7 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
                 } else {
                     if ((entity.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonVariables.PlayerVariables())).showWarns) {
                         if (entity instanceof Player _player && !_player.level.isClientSide())
-                            _player.displayClientMessage(new TextComponent((Component.translatable("changedaddon.untransfur.Immune").getString())), true);
+                            _player.displayClientMessage(Component.literal((Component.translatable("changedaddon.untransfur.Immune").getString())), true);
                     }
                 }
             }

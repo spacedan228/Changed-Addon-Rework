@@ -66,7 +66,7 @@ public abstract class CustomMerchantTemplate extends Mob implements CustomMercha
 
         if (!getOffers().isEmpty()) {
             setTradingPlayer(player);
-            NetworkHooks.openGui((ServerPlayer) player, this, buf -> offers.writeToStream(buf));
+            NetworkHooks.openScreen((ServerPlayer) player, this, buf -> offers.writeToStream(buf));
         }
 
         return InteractionResult.CONSUME;
@@ -74,7 +74,7 @@ public abstract class CustomMerchantTemplate extends Mob implements CustomMercha
 
     @Override
     public @NotNull Component getDisplayName() {
-        return new TextComponent("Custom Merchant Template");
+        return Component.literal("Custom Merchant Template");
     }
 
     @Override

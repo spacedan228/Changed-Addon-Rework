@@ -290,7 +290,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
 
     private void maybeSendReactionToPlayer(DamageSource source) {
         if (this.getLevel().random.nextFloat() <= 0.25f && source.getEntity() instanceof Player player) {
-            player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
+            player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
         }
     }
 
@@ -553,10 +553,10 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         }
 
         List<TranslatableComponent> translatableComponentList = new ArrayList<>();
-        translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp10.pat.type_0"));
-        translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp10.pat.type_1"));
-        translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp10.pat.type_2"));
-        translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp10.pat.type_3"));
+        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_0"));
+        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_1"));
+        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_2"));
+        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_3"));
         player.getLevel().addParticle(
                 ChangedParticles.emote(this, Emote.ANGRY),
                 this.getX(),

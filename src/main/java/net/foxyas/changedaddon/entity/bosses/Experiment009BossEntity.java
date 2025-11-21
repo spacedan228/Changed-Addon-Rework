@@ -13,6 +13,7 @@ import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedDamageSources;
@@ -23,7 +24,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -346,7 +347,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         if (source.getMsgId().equals("trident")) {
             if (this.getLevel().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
+                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
                 }
             }
             return super.hurt(source, amount * 0.5f);
@@ -368,7 +369,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         if (source.isProjectile()) {
             if (this.getLevel().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
+                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
                 }
             }
             return super.hurt(source, amount * 0.5f);
@@ -740,9 +741,9 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
 
 
         List<TranslatableComponent> translatableComponentList = new ArrayList<>();
-        translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp9.pat.type_1"));
-        translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp9.pat.type_2"));
-        translatableComponentList.add(new TranslatableComponent("changed_addon.entity_dialogues.exp9.pat.type_3"));
+        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp9.pat.type_1"));
+        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp9.pat.type_2"));
+        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp9.pat.type_3"));
 
         ParticlesUtil.sendParticles(player.getLevel(),
                 ChangedParticles.emote(this, Emote.ANGRY),

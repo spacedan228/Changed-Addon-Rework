@@ -39,7 +39,7 @@ public class BiomassItem extends Item {
                 player.causeFoodExhaustion((float) (4 * 4));
             }
 
-            if(!level.isClientSide) player.displayClientMessage(new TextComponent((Component.translatable("item.changed_addon.biomass.eat").getString())), true);
+            if(!level.isClientSide) player.displayClientMessage(Component.literal((Component.translatable("item.changed_addon.biomass.eat").getString())), true);
         }
 
         return itemstack.isEmpty() ? ItemStack.EMPTY : itemstack; // Retorna vazio se all o item foi consumido

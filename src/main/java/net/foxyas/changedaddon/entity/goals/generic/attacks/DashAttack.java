@@ -99,7 +99,7 @@ public class DashAttack extends Goal {
         this.dashDirection.scale(this.dashSpeed);
 
         if (target instanceof Player player) {
-            //player.displayClientMessage(new TextComponent("Ticks = " + tickCount), true);
+            //player.displayClientMessage(Component.literal("Ticks = " + tickCount), true);
         }
 
         // Preparando o dash

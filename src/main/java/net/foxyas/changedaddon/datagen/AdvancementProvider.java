@@ -59,8 +59,8 @@ public class AdvancementProvider extends net.minecraft.data.advancements.Advance
         add(consumer, id, b -> b
                 .display(
                         icon,
-                        new TextComponent(title),
-                        new TextComponent(description),
+                        Component.literal(title),
+                        Component.literal(description),
                         null,
                         FrameType.TASK,
                         true,
@@ -79,8 +79,8 @@ public class AdvancementProvider extends net.minecraft.data.advancements.Advance
                 .parent(Advancement.Builder.advancement().build(parent)) // or fileHelper support if needed
                 .display(
                         icon,
-                        new TextComponent(title),
-                        new TextComponent(description),
+                        Component.literal(title),
+                        Component.literal(description),
                         null,
                         FrameType.TASK,
                         true,
@@ -98,8 +98,8 @@ public class AdvancementProvider extends net.minecraft.data.advancements.Advance
         add(consumer, id, b -> b
                 .display(
                         icon,
-                        new TextComponent(id.getPath()),
-                        new TextComponent(""),
+                        Component.literal(id.getPath()),
+                        Component.literal(""),
                         null,
                         FrameType.CHALLENGE,
                         false,

@@ -194,7 +194,7 @@ public abstract class AbstractCanTameSnepChangedEntity extends AbstractSnowLeopa
                     if (this.level instanceof ServerLevel _level) {
                         _level.sendParticles(ParticleTypes.HEART, (this.getX()), (this.getY() + 1), (this.getZ()), 7, 0.3, 0.3, 0.3, 1); //Spawn Heal Particles
                     }
-                    this.gameEvent(GameEvent.MOB_INTERACT, this.eyeBlockPosition());
+                    this.gameEvent(GameEvent.ENTITY_INTERACT, this.eyeBlockPosition());
                     return InteractionResult.SUCCESS;
                 } else {
                     InteractionResult interactionresult = super.mobInteract(player, hand);

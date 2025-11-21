@@ -40,13 +40,13 @@ public class KeyPressMinigameScreen extends Screen {
         player = minecraft.player;
 
         button_fight = new Button(0, 0, 166, 20,
-                new TranslatableComponent("gui.changed_addon.fight_to_keep_consciousness_minigame.button_fight"),
+                Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.button_fight"),
                 e ->
                         ChangedAddonMod.PACKET_HANDLER.sendToServer(new ServerboundProgressFTKCPacket())
         );
 
         button_give_up = new Button(0, 0, 166, 20,
-                new TranslatableComponent("gui.changed_addon.fight_to_keep_consciousness_minigame.button_give_up"),
+                Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.button_give_up"),
                 e -> minecraft.setScreen(null)
         );
     }
@@ -94,7 +94,7 @@ public class KeyPressMinigameScreen extends Screen {
 
         super.render(poseStack, mouseX, mouseY, partialTick);
 
-        RenderUtil.drawCentered(font, poseStack, new TranslatableComponent("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", getTimeRemaining(player)), halfWidth, halfHeight - 50, -12829636);
+        RenderUtil.drawCentered(font, poseStack, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", getTimeRemaining(player)), halfWidth, halfHeight - 50, -12829636);
         RenderUtil.drawCentered(font, poseStack, getProgressText(player), halfWidth, halfHeight + 7, -12829636);
     }
 

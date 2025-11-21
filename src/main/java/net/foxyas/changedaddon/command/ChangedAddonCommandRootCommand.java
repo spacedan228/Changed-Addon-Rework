@@ -42,7 +42,7 @@ public class ChangedAddonCommandRootCommand {
                                     ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
                                     if (vars == null) return 0;
 
-                                    player.displayClientMessage(new TextComponent(("reset transfur progress is " + vars.resetTransfurAdvancements)), true);
+                                    player.displayClientMessage(Component.literal(("reset transfur progress is " + vars.resetTransfurAdvancements)), true);
                                     return Command.SINGLE_SUCCESS;
                                 })
                         )
@@ -56,11 +56,11 @@ public class ChangedAddonCommandRootCommand {
                                     boolean newVal = BoolArgumentType.getBool(arguments, "turn");
 
                                     if (newVal == vars.resetTransfurAdvancements) {
-                                        player.displayClientMessage(new TextComponent("§cNothing changed, it already had that value"), false);
+                                        player.displayClientMessage(Component.literal("§cNothing changed, it already had that value"), false);
                                         return Command.SINGLE_SUCCESS;
                                     }
 
-                                    player.displayClientMessage(new TextComponent("You " + (newVal ? "Activated" : "Disabled") + " the Transfur Reset Achievements"), false);
+                                    player.displayClientMessage(Component.literal("You " + (newVal ? "Activated" : "Disabled") + " the Transfur Reset Achievements"), false);
 
                                     vars.resetTransfurAdvancements = newVal;
                                     vars.syncPlayerVariables(player);
@@ -89,7 +89,7 @@ public class ChangedAddonCommandRootCommand {
                                     ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
                                     if (vars == null) return 0;
 
-                                    player.displayClientMessage(new TextComponent("Warns is §4" + vars.showWarns), true);
+                                    player.displayClientMessage(Component.literal("Warns is §4" + vars.showWarns), true);
                                     return Command.SINGLE_SUCCESS;
                                 })
                         )
@@ -102,7 +102,7 @@ public class ChangedAddonCommandRootCommand {
                                     float newSize = getSize(FloatArgumentType.getFloat(arguments, "size"), true);
                                     Changed.config.client.basicPlayerInfo.setSize(newSize); // Change Size
                                     ChangedAddonMod.LOGGER.info("Size changed to: {} for player: {}", newSize, player.getName().getString()); // Command Classic Log
-                                    player.displayClientMessage(new TextComponent("Size changed to: " + newSize), false); // Chat log for the player
+                                    player.displayClientMessage(Component.literal("Size changed to: " + newSize), false); // Chat log for the player
 
                                     return Command.SINGLE_SUCCESS;
                                 })
@@ -117,19 +117,19 @@ public class ChangedAddonCommandRootCommand {
                             CommandSourceStack source = context.getSource();
 
                             if (!(source.getEntity() instanceof ServerPlayer player)) {
-                                source.sendFailure(new TextComponent("This command can only be used by players."));
+                                source.sendFailure(Component.literal("This command can only be used by players."));
                                 return 0;
                             }
 
                             ItemStack heldItem = player.getMainHandItem();
                             if (!(heldItem.getItem() instanceof BlockItem blockItem)) {
-                                source.sendFailure(new TextComponent("You must be holding a block item."));
+                                source.sendFailure(Component.literal("You must be holding a block item."));
                                 return 0;
                             }
 
                             Block block = blockItem.getBlock();
                             if (!(block instanceof TimedKeypadBlock)) {
-                                source.sendFailure(new TextComponent("The block must be a TimedKeypad."));
+                                source.sendFailure(Component.literal("The block must be a TimedKeypad."));
                                 return 0;
                             }
 
@@ -137,7 +137,7 @@ public class ChangedAddonCommandRootCommand {
                             CompoundTag tag = heldItem.getOrCreateTag();
                             tag.putInt("TimerValue", timerValue);
 
-                            source.sendSuccess(new TextComponent("Timer set to " + timerValue + "."), false);
+                            source.sendSuccess(Component.literal("Timer set to " + timerValue + "."), false);
                             return 1;
                         })
                 )
@@ -153,7 +153,7 @@ public class ChangedAddonCommandRootCommand {
                                                         .executes(context -> {
                                                             Player player = context.getSource().getPlayerOrException();
                                                             if (!IDynamicCoatColors.playerHasTransfurWithExtraColors(player)) {
-                                                                throw new CommandRuntimeException(new TextComponent("You don't have any extra colors!"));
+                                                                throw new CommandRuntimeException(Component.literal("You don't have any extra colors!"));
                                                             }
                                                             Color3 color3;
                                                             String StringColor = StringArgumentType.getString(context, "colorOrHex");
@@ -166,7 +166,7 @@ public class ChangedAddonCommandRootCommand {
                                                                 }
 
                                                                 if (color3 == null) {
-                                                                    context.getSource().sendFailure(new TextComponent("Failed to parse color. Are you sure you are using the correct code?"));
+                                                                    context.getSource().sendFailure(Component.literal("Failed to parse color. Are you sure you are using the correct code?"));
                                                                     return 0;
                                                                 }
                                                             }
@@ -177,16 +177,16 @@ public class ChangedAddonCommandRootCommand {
                                                                 TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
                                                                 if (transfur != null && transfur.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                                                                     avaliEntity.setColor(layer, color3);
-                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), false);
+                                                                    context.getSource().sendSuccess(Component.literal("Set color for layer " + layer), false);
                                                                     return 1;
                                                                 } else if (transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors dynamicColors) {
                                                                     dynamicColors.setColor(layer, color3);
-                                                                    context.getSource().sendSuccess(new TextComponent("Set color for layer " + layer), false);
+                                                                    context.getSource().sendSuccess(Component.literal("Set color for layer " + layer), false);
                                                                     return 1;
                                                                 }
                                                             }
 
-                                                            context.getSource().sendFailure(new TextComponent("Failed to set color."));
+                                                            context.getSource().sendFailure(Component.literal("Failed to set color."));
                                                             return 0;
                                                         }))))
                                 .then(Commands.literal("setStyle")
@@ -207,16 +207,16 @@ public class ChangedAddonCommandRootCommand {
                                                         TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
                                                         if (transfur != null && transfur.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                                                             avaliEntity.setStyleOfColor(style);
-                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), false);
+                                                            context.getSource().sendSuccess(Component.literal("Set style to " + style), false);
                                                             return 1;
                                                         } else if (transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors dynamicColor) {
                                                             dynamicColor.setStyleOfColor(style);
-                                                            context.getSource().sendSuccess(new TextComponent("Set style to " + style), false);
+                                                            context.getSource().sendSuccess(Component.literal("Set style to " + style), false);
                                                             return 1;
                                                         }
                                                     }
 
-                                                    context.getSource().sendFailure(new TextComponent("Failed to set style."));
+                                                    context.getSource().sendFailure(Component.literal("Failed to set style."));
                                                     return 0;
                                                 })))
                         ));

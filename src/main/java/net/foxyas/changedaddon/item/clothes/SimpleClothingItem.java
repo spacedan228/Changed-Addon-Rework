@@ -51,13 +51,13 @@ public class SimpleClothingItem extends Item implements Wearable, Clothing, Exte
     public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> builder, @NotNull TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, level, builder, tooltipFlag);
         if (tooltipFlag.isAdvanced()) {
-            builder.add((new TextComponent(this.getClothingState(stack).toString())).withStyle(ChatFormatting.DARK_GRAY));
+            builder.add((Component.literal(this.getClothingState(stack).toString())).withStyle(ChatFormatting.DARK_GRAY));
         }
 
     }
 
     protected void addInteractInstructions(Consumer<Component> builder) {
-        builder.accept((new TranslatableComponent(INTERACT_INSTRUCTIONS, Minecraft.getInstance().options.keyUse.getTranslatedKeyMessage())).withStyle(ChatFormatting.GRAY));
+        builder.accept((Component.translatable(INTERACT_INSTRUCTIONS, Minecraft.getInstance().options.keyUse.getTranslatedKeyMessage())).withStyle(ChatFormatting.GRAY));
     }
 
     protected void createClothingStateDefinition(StateDefinition.Builder<SimpleClothingItem, ClothingState> builder) {

@@ -172,7 +172,7 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (getOffers().isEmpty() || player.isShiftKeyDown()) {
             if(level.isClientSide) return InteractionResult.SUCCESS;
-            NetworkHooks.openGui((ServerPlayer) player, getMenuProvider(), buf -> buf.writeVarInt(getId()));
+            NetworkHooks.openScreen((ServerPlayer) player, getMenuProvider(), buf -> buf.writeVarInt(getId()));
             return InteractionResult.CONSUME;
         }
 

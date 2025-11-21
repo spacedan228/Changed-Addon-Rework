@@ -64,7 +64,7 @@ public class PsychicGrab extends SimpleAbility {
 
     @Override
     public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.psychic_grab");
+        return Component.translatable("changed_addon.ability.psychic_grab");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
@@ -74,7 +74,7 @@ public class PsychicGrab extends SimpleAbility {
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         Collection<Component> descriptions = new ArrayList<>(super.getAbilityDescription(entity));
-        descriptions.add(new TranslatableComponent("changed_addon.ability.psychic_grab.description"));
+        descriptions.add(Component.translatable("changed_addon.ability.psychic_grab.description"));
         return descriptions;
     }
 
@@ -202,7 +202,7 @@ public class PsychicGrab extends SimpleAbility {
         super.tick(entity);
         /*if (entity.getEntity() instanceof Player player) {
             this.controller = abilityInstance.getController();
-            player.displayClientMessage(new TextComponent("Hold Ticks:" + controller.getHoldTicks()), true);
+            player.displayClientMessage(Component.literal("Hold Ticks:" + controller.getHoldTicks()), true);
         }*/ // it works
         Entity target = getTarget(entity.getLevel(), TargetID);
         if (target != null) {
