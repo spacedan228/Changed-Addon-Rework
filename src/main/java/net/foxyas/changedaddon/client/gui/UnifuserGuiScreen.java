@@ -8,7 +8,7 @@ import net.foxyas.changedaddon.menu.UnifuserGuiMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -40,13 +40,13 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
         this.renderTooltip(ms, mouseX, mouseY);
         if (menu.isSlotEmpty(36))
             if (mouseX > leftPos + 10 && mouseX < leftPos + 34 && mouseY > topPos + 41 && mouseY < topPos + 65)
-                this.renderTooltip(ms, new TranslatableComponent("gui.changed_addon.unifuser_gui.tooltip_place_the_powders"), mouseX, mouseY);
+                this.renderTooltip(ms, Component.translatable("gui.changed_addon.unifuser_gui.tooltip_place_the_powders"), mouseX, mouseY);
         if (menu.isSlotEmpty(38))
             if (mouseX > leftPos + 45 && mouseX < leftPos + 69 && mouseY > topPos + 53 && mouseY < topPos + 77)
-                this.renderTooltip(ms, new TranslatableComponent("gui.changed_addon.unifuser_gui.tooltip_place_a_syringe_with_dna"), mouseX, mouseY);
+                this.renderTooltip(ms, Component.translatable("gui.changed_addon.unifuser_gui.tooltip_place_a_syringe_with_dna"), mouseX, mouseY);
         if (menu.isSlotEmpty(39))
             if (mouseX > leftPos + 10 && mouseX < leftPos + 34 && mouseY > topPos + 65 && mouseY < topPos + 89)
-                this.renderTooltip(ms, new TranslatableComponent("gui.changed_addon.unifuser_gui.tooltip_put_the_second_ingredient"), mouseX, mouseY);
+                this.renderTooltip(ms, Component.translatable("gui.changed_addon.unifuser_gui.tooltip_put_the_second_ingredient"), mouseX, mouseY);
     }
 
     @Override
@@ -82,12 +82,12 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
     protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
         this.font.draw(poseStack, getMachineState(level, pos), 9, 10, -12829636);
         if (menu.getUnifuser().isSlotFull(3))
-            this.font.draw(poseStack, new TranslatableComponent("gui.changed_addon.unifuser_gui.label_full"), 153, 78, -12829636);
+            this.font.draw(poseStack, Component.translatable("gui.changed_addon.unifuser_gui.label_full"), 153, 78, -12829636);
         this.font.draw(poseStack, getRecipeState(level, pos), 89, 47, -12829636);
     }
 
     public static String getMachineState(Level level, BlockPos pos) {
-        String block = new TranslatableComponent("block." + ForgeRegistries.BLOCKS.getKey((level.getBlockState(pos)).getBlock()).toString().replace(":", ".")).getString();
+        String block = Component.translatable("block." + ForgeRegistries.BLOCKS.getKey((level.getBlockState(pos)).getBlock()).toString().replace(":", ".")).getString();
 
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity instanceof UnifuserBlockEntity unifuserBlockEntity) {

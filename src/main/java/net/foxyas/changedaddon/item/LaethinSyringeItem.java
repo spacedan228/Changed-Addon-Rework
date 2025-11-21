@@ -10,7 +10,7 @@ import net.ltxprogrammer.changed.item.SpecializedAnimations;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -41,14 +41,14 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
 
         if (!ProcessTransfur.isPlayerTransfurred(player)) {
             if (playerVars.showWarns && !player.level.isClientSide())
-                player.displayClientMessage(new TranslatableComponent("changedaddon.untransfur.no_effect"), true);
+                player.displayClientMessage(Component.translatable("changedaddon.untransfur.no_effect"), true);
             return;
         }
 
         if (ProcessTransfur.isPlayerNotLatex(player)) {
             applyMobEffect(player, ChangedAddonMobEffects.UNTRANSFUR.get(), 1000);
             if (playerVars.showWarns && !player.level.isClientSide())
-                player.displayClientMessage(new TranslatableComponent("changedaddon.untransfur.slow_effect"), true);
+                player.displayClientMessage(Component.translatable("changedaddon.untransfur.slow_effect"), true);
             return;
         }
 

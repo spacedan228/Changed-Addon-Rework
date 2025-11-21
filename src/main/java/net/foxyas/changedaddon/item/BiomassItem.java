@@ -1,8 +1,7 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +39,7 @@ public class BiomassItem extends Item {
                 player.causeFoodExhaustion((float) (4 * 4));
             }
 
-            if(!level.isClientSide) player.displayClientMessage(new TextComponent((new TranslatableComponent("item.changed_addon.biomass.eat").getString())), true);
+            if(!level.isClientSide) player.displayClientMessage(new TextComponent((Component.translatable("item.changed_addon.biomass.eat").getString())), true);
         }
 
         return itemstack.isEmpty() ? ItemStack.EMPTY : itemstack; // Retorna vazio se all o item foi consumido

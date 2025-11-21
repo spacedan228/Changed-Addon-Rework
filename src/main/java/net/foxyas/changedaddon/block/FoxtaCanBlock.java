@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -58,7 +58,7 @@ public class FoxtaCanBlock extends HorizontalDirectionalBlock implements SimpleW
     @Override
     public void appendHoverText(ItemStack itemstack, @Nullable BlockGetter world, List<Component> list, TooltipFlag flag) {
         super.appendHoverText(itemstack, world, list, flag);
-        list.add(new TranslatableComponent("block.changed_addon.foxta_can.desc"));
+        list.add(Component.translatable("block.changed_addon.foxta_can.desc"));
     }
 
     @Override

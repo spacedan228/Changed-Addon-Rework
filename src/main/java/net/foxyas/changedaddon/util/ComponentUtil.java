@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.util;
 
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 
 public class ComponentUtil {
 

@@ -12,7 +12,7 @@ import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.recipe.CatalyzerRecipe;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +35,7 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
 
     @Override
     public @NotNull Component getTitle() {
-        return new TranslatableComponent("block.changed_addon.catalyzer");
+        return Component.translatable("block.changed_addon.catalyzer");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 51, 36).addItemStack(new ItemStack(ChangedAddonItems.CATALYZER_BLOCK_ILLUSTRATIVE_ITEM.get())) // Substitua por um item adequado
                 .addTooltipCallback((recipeSlotView, tooltip) -> {
                     // Adiciona uma nova linha ao tooltip com o progresso da receita
-                    tooltip.add(new TranslatableComponent("changed_addon.gui.catalyzer.nitrogen_usage", progressSpeed, nitrogenUsage));
+                    tooltip.add(Component.translatable("changed_addon.gui.catalyzer.nitrogen_usage", progressSpeed, nitrogenUsage));
                 });
     }
 }

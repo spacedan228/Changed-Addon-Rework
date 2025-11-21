@@ -4,7 +4,7 @@ import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.network.chat.TextComponent;
+
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;

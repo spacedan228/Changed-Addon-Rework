@@ -17,8 +17,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -57,7 +56,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         this.imageHeight = 195;
 
         form = new EditBox(Minecraft.getInstance().font, this.leftPos + 44, this.topPos + 13, 90, 10,
-                new TranslatableComponent("gui.changed_addon.informant_gui.form"));
+                Component.translatable("gui.changed_addon.informant_gui.form"));
         form.setTextColor(new Color(0, 205, 255).getRGB());
         //form.setBordered(false);
         //form.setAlpha(0.25f);
@@ -92,12 +91,12 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         this.renderTooltip(stack, mouseX, mouseY);
 
         if (mouseX > leftPos + 25 && mouseX < leftPos + 34 && mouseY > topPos + 4 && mouseY < topPos + 13) {
-            this.renderTooltip(stack, new TranslatableComponent("gui.changed_addon.informant_gui.tooltip_type_the_form"), mouseX, mouseY);
+            this.renderTooltip(stack, Component.translatable("gui.changed_addon.informant_gui.tooltip_type_the_form"), mouseX, mouseY);
         }
 
         if (menu.getStackInSlot().isEmpty()) {
             if (mouseX > leftPos + 151 && mouseX < leftPos + 168 && mouseY > topPos + 88 && mouseY < topPos + 105) {
-                this.renderTooltip(stack, new TranslatableComponent("gui.changed_addon.informant_gui.tooltip_put_a_syringe_with_a_form"), mouseX, mouseY);
+                this.renderTooltip(stack, Component.translatable("gui.changed_addon.informant_gui.tooltip_put_a_syringe_with_a_form"), mouseX, mouseY);
             }
         }
 
@@ -156,34 +155,34 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         float swimSpeedPct = swimSpeed == 0 ? 0 : (swimSpeed - 1) * 100;
         float jumpStrengthPct = jumpStrength == 0 ? 0 : (jumpStrength - 1) * 100;
 
-        MutableComponent landSpeedInfo = new TranslatableComponent("text.changed_addon.land_speed")
+        MutableComponent landSpeedInfo = Component.translatable("text.changed_addon.land_speed")
                 .append("")
                 .append(landSpeedPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%"));
 
-        MutableComponent swimSpeedInfo = new TranslatableComponent("text.changed_addon.swim_speed")
+        MutableComponent swimSpeedInfo = Component.translatable("text.changed_addon.swim_speed")
                 .append("")
                 .append(swimSpeedPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%"));
 
-        MutableComponent additionalHealthInfo = new TranslatableComponent("text.changed_addon.additionalHealth")
+        MutableComponent additionalHealthInfo = Component.translatable("text.changed_addon.additionalHealth")
                 .append("")
                 .append(extraHp == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
-                .append(new TranslatableComponent("text.changed_addon.additionalHealth.Hearts"));
+                .append(Component.translatable("text.changed_addon.additionalHealth.Hearts"));
 
-        TranslatableComponent miningStrengthInfo = new TranslatableComponent("text.changed_addon.miningStrength", miningStrength);
+        TranslatableComponent miningStrengthInfo = Component.translatable("text.changed_addon.miningStrength", miningStrength);
 
-        MutableComponent jumpStrengthInfo = new TranslatableComponent("text.changed_addon.jumpStrength")
+        MutableComponent jumpStrengthInfo = Component.translatable("text.changed_addon.jumpStrength")
                 .append("")
                 .append(jumpStrengthPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
 
-        MutableComponent canGlideInfo = new TranslatableComponent("text.changed_addon.canGlide/Fly")
+        MutableComponent canGlideInfo = Component.translatable("text.changed_addon.canGlide/Fly")
                 .append("")
                 .append(canFlyOrGlide
                         ? new TextComponent("§aTrue§r")
@@ -353,34 +352,34 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         double swimSpeedPct = swimSpeed == 0 ? 0 : (swimSpeed - 1) * 100;
         double jumpStrengthPct = jumpStrength == 0 ? 0 : (jumpStrength - 1) * 100;
 
-        var a = new TranslatableComponent("text.changed_addon.land_speed")
+        var a = Component.translatable("text.changed_addon.land_speed")
                 .append("")
                 .append(landSpeedPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%"));
 
-        var b = new TranslatableComponent("text.changed_addon.swim_speed")
+        var b = Component.translatable("text.changed_addon.swim_speed")
                 .append("")
                 .append(swimSpeedPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%"));
 
-        var c = new TranslatableComponent("text.changed_addon.additionalHealth")
+        var c = Component.translatable("text.changed_addon.additionalHealth")
                 .append("")
                 .append(extraHp == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
-                .append(new TranslatableComponent("text.changed_addon.additionalHealth.Hearts"));
+                .append(Component.translatable("text.changed_addon.additionalHealth.Hearts"));
 
-        var d = new TranslatableComponent("text.changed_addon.miningStrength", miningStrength);
+        var d = Component.translatable("text.changed_addon.miningStrength", miningStrength);
 
-        var e = new TranslatableComponent("text.changed_addon.jumpStrength")
+        var e = Component.translatable("text.changed_addon.jumpStrength")
                 .append("")
                 .append(jumpStrengthPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
 
-        var f = new TranslatableComponent("text.changed_addon.canGlide/Fly")
+        var f = Component.translatable("text.changed_addon.canGlide/Fly")
                 .append("")
                 .append(canFlyOrGlide
                         ? new TextComponent("§aTrue§r")
@@ -398,7 +397,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
 
         this.font.draw(poseStack, f, 5, 82, -12829636);*/
 
-        this.font.draw(poseStack, new TranslatableComponent("gui.changed_addon.informant_gui.label_empty"), 27.5f, 5.5f, -12829636);
+        this.font.draw(poseStack, Component.translatable("gui.changed_addon.informant_gui.label_empty"), 27.5f, 5.5f, -12829636);
     }
 
     @Override
@@ -423,7 +422,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
 
         if (input.isEmpty()) {
             suggestionIndex = -1;
-            form.setSuggestion(new TranslatableComponent("gui.changed_addon.informant_gui.form").getString());
+            form.setSuggestion(Component.translatable("gui.changed_addon.informant_gui.form").getString());
             return;
         }
 

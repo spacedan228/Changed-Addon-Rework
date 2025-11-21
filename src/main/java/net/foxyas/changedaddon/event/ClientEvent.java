@@ -13,8 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -59,15 +58,15 @@ public class ClientEvent {
 
 //        if (hasInformantBlock || isCreative) {
 //            if (hasInformantBlock && !Screen.hasShiftDown()) {
-//                String variantName = new TranslatableComponent(Syringe.getVariantDescriptionId(itemstack)).getString();
+//                String variantName = Component.translatable(Syringe.getVariantDescriptionId(itemstack)).getString();
 //                tooltip.add(new TextComponent("Hold ").append(new TextComponent("<Shift>").withStyle(style -> style.withColor(0xFFD700)))
 //                        .append(" to show the stats of the " + variantName + " Transfur"));
 //            }
 
         if (entity.isCreative()) {
             if (!Screen.hasShiftDown()) {
-                String variantName = new TranslatableComponent(Syringe.getVariantDescriptionId(itemstack)).getString();
-                tooltip.add(new TranslatableComponent("item.changed_addon.latex_syringe.tooltip", variantName));
+                String variantName = Component.translatable(Syringe.getVariantDescriptionId(itemstack)).getString();
+                tooltip.add(Component.translatable("item.changed_addon.latex_syringe.tooltip", variantName));
             } else {
                 int index = Math.min(tooltip.size(), 3);
 

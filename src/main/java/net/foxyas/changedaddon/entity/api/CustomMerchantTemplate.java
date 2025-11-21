@@ -6,7 +6,7 @@ import net.foxyas.changedaddon.menu.CustomMerchantOffers;
 import net.foxyas.changedaddon.util.CustomMerchantUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;

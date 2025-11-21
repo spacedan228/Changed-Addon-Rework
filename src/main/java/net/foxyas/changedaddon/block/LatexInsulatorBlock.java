@@ -13,8 +13,7 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -149,7 +148,7 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
                 } else {
                     if ((entity.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonVariables.PlayerVariables())).showWarns) {
                         if (entity instanceof Player _player && !_player.level.isClientSide())
-                            _player.displayClientMessage(new TextComponent((new TranslatableComponent("changedaddon.untransfur.Immune").getString())), true);
+                            _player.displayClientMessage(new TextComponent((Component.translatable("changedaddon.untransfur.Immune").getString())), true);
                     }
                 }
             }

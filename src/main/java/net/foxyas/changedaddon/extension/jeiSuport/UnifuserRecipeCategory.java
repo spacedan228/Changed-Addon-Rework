@@ -12,7 +12,7 @@ import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.recipe.UnifuserRecipe;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +36,7 @@ public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
 
     @Override
     public @NotNull Component getTitle() {
-        return new TranslatableComponent("block.changed_addon.unifuser");
+        return Component.translatable("block.changed_addon.unifuser");
     }
 
     @Override
@@ -80,7 +80,7 @@ public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 64, 36).addItemStack(new ItemStack(ChangedAddonItems.UNIFUSER_BLOCK_ILLUSTRATIVE_ITEM.get())) // Substitua por um item adequado
                 .addTooltipCallback((recipeSlotView, tooltip) -> {
                     // Adiciona uma nova linha ao tooltip com o progresso da receita
-                    tooltip.add(new TranslatableComponent("changed_addon.gui.recipe_progress", progressSpeed));
+                    tooltip.add(Component.translatable("changed_addon.gui.recipe_progress", progressSpeed));
                 });
     }
 }

@@ -6,7 +6,8 @@ import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.minecraft.network.chat.TranslatableComponent;
+
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -20,8 +21,8 @@ public class CarryAbility extends AbstractAbility<CarryAbilityInstance> {
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.carry");
+    public Component getAbilityName(IAbstractChangedEntity entity) {
+        return Component.translatable("changed_addon.ability.carry");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

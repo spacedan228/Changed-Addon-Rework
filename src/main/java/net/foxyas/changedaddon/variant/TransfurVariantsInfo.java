@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.variant;
 
 import com.google.common.base.Suppliers;
-import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -19,23 +18,23 @@ public class TransfurVariantsInfo {
         TransfurVariantsInfo.addUnknownOwnerName(variants, new TransfurVariant<?>[]{BOREALIS_MALE.get(), BOREALIS_FEMALE.get()});
         TransfurVariantsInfo.addUnknownOwnerName(variants, new TransfurVariant<?>[]{HIMALAYAN_CRYSTAL_GAS_CAT_MALE.get(), HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE.get()});
 
-        TransfurVariantsInfo.addWithOwnerName(variants, new TransfurVariant<?>[]{LATEX_WIND_CAT_MALE.get(), LATEX_WIND_CAT_FEMALE.get()}, ComponentUtil.literal("Species by @BrownBakers"));
+        TransfurVariantsInfo.addWithOwnerName(variants, new TransfurVariant<?>[]{LATEX_WIND_CAT_MALE.get(), LATEX_WIND_CAT_FEMALE.get()}, Component.literal("Species by @BrownBakers"));
 
         TransfurVariantsInfo.addWithOwnerName(variants, MONGOOSE.get());
         TransfurVariantsInfo.addWithOwnerName(variants, BLUE_LIZARD.get());
 
         TransfurVariantsInfo.addUnknownOwnerName(variants, FENGQI_WOLF.get());
 
-        TransfurVariantsInfo.addWithOwnerName(variants, FOXTA_FOXY.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
-        TransfurVariantsInfo.addWithOwnerName(variants, SNEPSI_LEOPARD.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
+        TransfurVariantsInfo.addWithOwnerName(variants, FOXTA_FOXY.get(), Component.literal("Free for use but made By @Foxyas"));
+        TransfurVariantsInfo.addWithOwnerName(variants, SNEPSI_LEOPARD.get(), Component.literal("Free for use but made By @Foxyas"));
 
-        TransfurVariantsInfo.addWithOwnerName(variants, HAYDEN_FENNEC_FOX.get(), ComponentUtil.literal("@haydenfencfoxo / @hayden_fencfoxo"));
-        TransfurVariantsInfo.addWithOwnerName(variants, REYN.get(), ComponentUtil.literal("@reyn"));
-        TransfurVariantsInfo.addWithOwnerName(variants, LYNX.get(), ComponentUtil.literal("@Smoopa"));
+        TransfurVariantsInfo.addWithOwnerName(variants, HAYDEN_FENNEC_FOX.get(), Component.literal("@haydenfencfoxo / @hayden_fencfoxo"));
+        TransfurVariantsInfo.addWithOwnerName(variants, REYN.get(), Component.literal("@reyn"));
+        TransfurVariantsInfo.addWithOwnerName(variants, LYNX.get(), Component.literal("@Smoopa"));
 
-        TransfurVariantsInfo.addWithOwnerName(variants, EXPERIMENT_009.get(), ComponentUtil.literal("Free for use but made By @Foxyas"));
+        TransfurVariantsInfo.addWithOwnerName(variants, EXPERIMENT_009.get(), Component.literal("Free for use but made By @Foxyas"));
         TransfurVariantsInfo.addWithOwnerNameFrom(variants, EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get());
-        TransfurVariantsInfo.addWithOwnerName(variants, EXPERIMENT_10.get(), ComponentUtil.literal("@SuperNovaDragon"));
+        TransfurVariantsInfo.addWithOwnerName(variants, EXPERIMENT_10.get(), Component.literal("@SuperNovaDragon"));
         TransfurVariantsInfo.addWithOwnerNameFrom(variants, EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());
         return variants;
     });
@@ -45,38 +44,38 @@ public class TransfurVariantsInfo {
     }
 
     public static void addNoOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
-        map.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
+        map.put(variant, Component.literal("Free For Use, No Owner"));
     }
 
     public static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
-        map.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
+        map.put(variant, Component.literal("Free For Use, No Owner"));
     }
 
     public static void addUnknownOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
-        map.put(variant, ComponentUtil.literal("Not free for use, Unknown owner"));
+        map.put(variant, Component.literal("Not free for use, Unknown owner"));
     }
 
     public static void addUnknownOwnerName(VariantWithOwnerMap map, TransfurVariant<?>[] transfurVariants) {
         for (TransfurVariant<?> variant : transfurVariants) {
-            map.put(variant, ComponentUtil.literal("Not free for use, Unknown owner"));
+            map.put(variant, Component.literal("Not free for use, Unknown owner"));
         }
     }
 
     public static void addUnknownOwnerName(VariantWithOwnerMap map, ArrayList<TransfurVariant<?>> transfurVariants) {
         for (TransfurVariant<?> variant : transfurVariants) {
-            map.put(variant, ComponentUtil.literal("Not free for use, Unknown owner"));
+            map.put(variant, Component.literal("Not free for use, Unknown owner"));
         }
     }
 
     public static void addWithOwnerName(VariantWithOwnerMap variants, TransfurVariant<?>[] transfurVariants) {
         for (TransfurVariant<?> variant : transfurVariants) {
-            variants.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
+            variants.put(variant, Component.literal("Free For Use, No Owner"));
         }
     }
 
     public static void addWithOwnerName(VariantWithOwnerMap variants, ArrayList<TransfurVariant<?>> transfurVariants) {
         for (TransfurVariant<?> variant : transfurVariants) {
-            variants.put(variant, ComponentUtil.literal("Free For Use, No Owner"));
+            variants.put(variant, Component.literal("Free For Use, No Owner"));
         }
     }
 
@@ -97,18 +96,18 @@ public class TransfurVariantsInfo {
     }
 
     public static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant, String component) {
-        map.put(variant, ComponentUtil.literal(component));
+        map.put(variant, Component.literal(component));
     }
 
     public static void addWithOwnerName(VariantWithOwnerMap map, ArrayList<TransfurVariant<?>> variants, String component) {
         for (TransfurVariant<?> variant : variants) {
-            map.put(variant, ComponentUtil.literal(component));
+            map.put(variant, Component.literal(component));
         }
     }
 
     public static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?>[] variants, String component) {
         for (TransfurVariant<?> variant : variants) {
-            map.put(variant, ComponentUtil.literal(component));
+            map.put(variant, Component.literal(component));
         }
     }
 

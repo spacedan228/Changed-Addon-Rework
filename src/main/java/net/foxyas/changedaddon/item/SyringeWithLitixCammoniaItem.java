@@ -12,8 +12,7 @@ import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -145,7 +144,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
     }
 
     private static void sendMessage(Player player, String key) {
-        player.displayClientMessage(new TranslatableComponent(key), true);
+        player.displayClientMessage(Component.translatable(key), true);
     }
 
     private static ChangedAddonVariables.PlayerVariables getVars(Player entity) {

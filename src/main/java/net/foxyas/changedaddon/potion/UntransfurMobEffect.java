@@ -11,8 +11,7 @@ import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -64,7 +63,7 @@ public class UntransfurMobEffect extends MobEffect {
         if (!ProcessTransfur.isPlayerTransfurred(player)) {
             if (vars.showWarns) {
                 if (!player.level.isClientSide())
-                    player.displayClientMessage(new TextComponent((new TranslatableComponent("changedaddon.untransfur.no_effect").getString())), true);
+                    player.displayClientMessage(new TextComponent((Component.translatable("changedaddon.untransfur.no_effect").getString())), true);
             }
             return;
         }

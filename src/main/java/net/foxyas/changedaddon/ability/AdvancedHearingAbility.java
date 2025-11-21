@@ -4,7 +4,6 @@ import net.foxyas.changedaddon.mixins.entity.MobAccessor;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -29,7 +28,7 @@ public class AdvancedHearingAbility extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return new TranslatableComponent("changed_addon.ability.advanced_hearing");
+        return Component.translatable("changed_addon.ability.advanced_hearing");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
@@ -57,18 +56,18 @@ public class AdvancedHearingAbility extends SimpleAbility {
 
         if(!(User instanceof Player player)) return;
 
-        if (!User.getLevel().isClientSide()) {
+        if (!User.level().isClientSide()) {
             User.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 20 * 3), User);
         }
 
-        List<PathfinderMob> livingEntityList = User.getLevel().getEntities(EntityTypeTest.forClass(PathfinderMob.class), User.getBoundingBox().inflate(30), (e) -> !e.isShiftKeyDown() && e != User && e instanceof Enemy);
+        List<PathfinderMob> livingEntityList = User.level().getEntities(EntityTypeTest.forClass(PathfinderMob.class), User.getBoundingBox().inflate(30), (e) -> !e.isShiftKeyDown() && e != User && e instanceof Enemy);
         if(livingEntityList.isEmpty()) return;
         for (PathfinderMob living : livingEntityList) {
             living.addEffect(new MobEffectInstance(MobEffects.GLOWING, 20 * 10), User);
             if (!(living instanceof MobAccessor mobAccessor)) continue;
 
             if (mobAccessor.callGetAmbientSound() != null) {
-                living.getLevel().playSound(player, living, mobAccessor.callGetAmbientSound(), SoundSource.AMBIENT, 2f, 1f);
+                living.level().playSound(player, living, mobAccessor.callGetAmbientSound(), SoundSource.AMBIENT, 2f, 1f);
             }
         }
     }

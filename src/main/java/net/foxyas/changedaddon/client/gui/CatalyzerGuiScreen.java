@@ -7,7 +7,7 @@ import net.foxyas.changedaddon.menu.CatalyzerGuiMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.level.Level;
@@ -42,7 +42,7 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         this.renderTooltip(ms, mouseX, mouseY);
         if (menu.isSlotEmpty(36))
             if (mouseX > leftPos + 18 && mouseX < leftPos + 42 && mouseY > topPos + 40 && mouseY < topPos + 64)
-                this.renderTooltip(ms, new TranslatableComponent("gui.changed_addon.catalyzer_gui.tooltip_put_the_powders_or_syringe"), mouseX, mouseY);
+                this.renderTooltip(ms, Component.translatable("gui.changed_addon.catalyzer_gui.tooltip_put_the_powders_or_syringe"), mouseX, mouseY);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
         this.font.draw(poseStack,
                 getMachineState(level, pos), 6, 20, -12829636);
         if (catalyzer.isSlotFull(1))
-            this.font.draw(poseStack, new TranslatableComponent("gui.changed_addon.catalyzer_gui.label_full"), 151, 65, -12829636);
+            this.font.draw(poseStack, Component.translatable("gui.changed_addon.catalyzer_gui.label_full"), 151, 65, -12829636);
         this.font.draw(poseStack,
                 getRecipeState(level, pos), 90, 34, -12829636);
     }

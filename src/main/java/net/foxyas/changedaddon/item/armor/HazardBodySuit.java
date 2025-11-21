@@ -24,7 +24,7 @@ import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
@@ -64,7 +64,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     }
 
     @Override
-    public SoundEvent getEquipSound() {
+    public SoundEvent getEquipSound(ItemStack itemStack) {
         return ChangedAddonSoundEvents.ARMOR_EQUIP.get();
     }
 
@@ -84,7 +84,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
             if (transfurVariant != null && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())
                     && !transfurVariant.is(ChangedTransfurVariants.LATEX_HUMAN.get())) {
-                player.displayClientMessage(ComponentUtil.translatable("text.changed_addon.display.hazard_body_suit.cant_have_helmet"), true);
+                player.displayClientMessage(Component.translatable("text.changed_addon.display.hazard_body_suit.cant_have_helmet"), true);
                 canChange = false;
             }
         }
@@ -102,7 +102,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                 this.getClothingState(slotContext.stack()).cycle(HELMET)
         );
 
-        SoundEvent changeSound = this.getEquipSound();
+        SoundEvent changeSound = this.getEquipSound(slotContext.stack());
         if (changeSound != null) {
             slotContext.wearer().playSound(changeSound, 1.0F, 1.0F);
         }
@@ -116,20 +116,10 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
 
     @Override
     protected void addInteractInstructions(Consumer<Component> builder) {
-        builder.accept(new TranslatableComponent(
+        builder.accept(Component.translatable(
                 INTERACT_INSTRUCTIONS,
                 Minecraft.getInstance().options.keyUse.getTranslatedKeyMessage()
         ).withStyle(ChatFormatting.GRAY));
-    }
-
-    @Override
-    protected boolean allowdedIn(@NotNull CreativeModeTab tab) {
-        if (tab == ChangedTabs.TAB_CHANGED_ITEMS) {
-            return false;
-        } else if (tab == ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB) {
-            return true;
-        }
-        return super.allowdedIn(tab);
     }
 
     @Override

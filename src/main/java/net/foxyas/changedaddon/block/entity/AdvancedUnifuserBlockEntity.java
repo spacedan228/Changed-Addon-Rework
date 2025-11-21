@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.block.entity;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 

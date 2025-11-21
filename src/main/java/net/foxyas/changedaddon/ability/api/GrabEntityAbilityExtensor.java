@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.ability.api;
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;

@@ -22,7 +22,7 @@ public class TimedKeypadItem extends BlockItem {
     }
 
     public TimedKeypadItem() {
-        this(ChangedAddonBlocks.TIMED_KEYPAD.get(), new Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
+        this(ChangedAddonBlocks.TIMED_KEYPAD.get(), new Properties()); // Fixme: .tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
     }
 
     @Override
@@ -30,7 +30,7 @@ public class TimedKeypadItem extends BlockItem {
         super.appendHoverText(pStack, pLevel, pTooltip, pFlag);
         CompoundTag tag = pStack.getOrCreateTag();
         if (tag.contains("TimerValue")) {
-            pTooltip.add(ComponentUtil.translatable("block.changed_addon.timed_keypad.info", tag.getInt("TimerValue")));
+            pTooltip.add(Component.translatable("block.changed_addon.timed_keypad.info", tag.getInt("TimerValue")));
         }
     }
 }

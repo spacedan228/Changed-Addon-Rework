@@ -14,8 +14,7 @@ import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -176,14 +175,14 @@ public class PatOverlay {
     private static TranslatableComponent getPatInfo(Entity lookedEntity) {
         String key = ChangedAddonKeyMappings.PAT_KEY.getTranslatedKeyMessage().getString();
         if (lookedEntity instanceof LivingEntity) {
-            TranslatableComponent patMessage = new TranslatableComponent("changed_addon.info.is_patable", key.isEmpty() ? "Not Key Set" : key, lookedEntity.getDisplayName().getString());
+            TranslatableComponent patMessage = Component.translatable("changed_addon.info.is_patable", key.isEmpty() ? "Not Key Set" : key, lookedEntity.getDisplayName().getString());
             patMessage.withStyle(style ->
                     style.withColor(-1)
                             //.withBold(true)
                             .withItalic(true));
             return patMessage;
         } else {
-            return new TranslatableComponent("block.minecraft.air");
+            return Component.translatable("block.minecraft.air");
         }
     }
 

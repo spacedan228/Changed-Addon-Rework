@@ -23,8 +23,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -80,23 +79,23 @@ public class TransfurTotemItem extends Item {
         CompoundTag itemTag = stack.getOrCreateTag();
         String form = itemTag.getString("form");
         if (form.isEmpty()) {
-            tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
+            tooltip.add(1, (Component.translatable("item.changed_addon.transfur_totem.no_form_linked")));
             return;
         }
 
         TransfurVariant<?> variant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(ResourceLocation.parse(form));
         if (variant == null) {
-            tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.no_form_linked")));
+            tooltip.add(1, (Component.translatable("item.changed_addon.transfur_totem.no_form_linked")));
             return;
         }
 
         if (Screen.hasShiftDown() && !Screen.hasAltDown() && !Screen.hasControlDown())
             tooltip.add(1, new TextComponent(("§6Form=" + itemTag.getString("form"))));
         else if (Screen.hasAltDown() && Screen.hasControlDown())
-            tooltip.add(1, (new TranslatableComponent("item.changed_addon.transfur_totem.desc_1")));
+            tooltip.add(1, (Component.translatable("item.changed_addon.transfur_totem.desc_1")));
         else {
             String ID = Syringe.getVariantDescriptionId(stack);
-            tooltip.add(1, new TextComponent(("§6(" + new TranslatableComponent(ID).getString() + ")")));
+            tooltip.add(1, new TextComponent(("§6(" + Component.translatable(ID).getString() + ")")));
         }
     }
 
@@ -112,7 +111,7 @@ public class TransfurTotemItem extends Item {
         else if (latexForm.startsWith("changed_addon:form")) {
             cooldown(player, itemstack, 50);
             visualActivate(level, player, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR);
-            player.displayClientMessage(new TranslatableComponent("changed_addon.latex_totem.not_valid"), true);
+            player.displayClientMessage(Component.translatable("changed_addon.latex_totem.not_valid"), true);
         } else if (latexForm.startsWith("changed:special"))
             linkForm(level, player, itemstack, tf, "changed:form_light_latex_wolf");
     }
@@ -278,7 +277,7 @@ public class TransfurTotemItem extends Item {
                     level.playSound(null, player, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1, 0);
 
                     if (!target.level.isClientSide())
-                        target.displayClientMessage(new TextComponent((new TranslatableComponent("changed_addon.latex_totem.not_valid").getString())), true);
+                        target.displayClientMessage(new TextComponent((Component.translatable("changed_addon.latex_totem.not_valid").getString())), true);
 
                     return InteractionResult.SUCCESS;
                 }
@@ -398,8 +397,8 @@ public class TransfurTotemItem extends Item {
 
             event.shouldKeepConscious = true;
             if (event.player instanceof ServerPlayer serverPlayer) {
-                TranslatableComponent text = new TranslatableComponent("changed_addon.latex_totem.tittle.text_1");
-                TranslatableComponent text2 = new TranslatableComponent("changed_addon.latex_totem.tittle.text_2");
+                TranslatableComponent text = Component.translatable("changed_addon.latex_totem.tittle.text_1");
+                TranslatableComponent text2 = Component.translatable("changed_addon.latex_totem.tittle.text_2");
                 serverPlayer.displayClientMessage(text, true);
                 serverPlayer.sendMessage(text, ChatType.CHAT, serverPlayer.getUUID());
                 serverPlayer.sendMessage(text2, ChatType.CHAT, serverPlayer.getUUID());

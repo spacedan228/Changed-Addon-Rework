@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.ability;
 import net.foxyas.changedaddon.ability.handle.CounterDodgeType;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.resources.ResourceLocation;
 
 public class DodgeAbility extends AbstractAbility<DodgeAbilityInstance> {

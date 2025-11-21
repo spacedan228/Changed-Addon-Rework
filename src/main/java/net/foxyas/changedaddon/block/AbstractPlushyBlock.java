@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
@@ -65,7 +66,7 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
     }
 
     @Override
-    public BlockPathTypes getAiPathNodeType(BlockState state, BlockGetter world, BlockPos pos, Mob entity) {
+    public BlockPathTypes getBlockPathType(BlockState state, BlockGetter world, BlockPos pos, Mob entity) {
         return BlockPathTypes.BLOCKED;
     }
 
@@ -132,7 +133,7 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
     }
 
     @Override
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel serverLevel, @NotNull BlockPos pos, @NotNull Random p_60465_) {
+    public void tick(@NotNull BlockState state, @NotNull ServerLevel serverLevel, @NotNull BlockPos pos, @NotNull RandomSource p_60465_) {
         super.tick(state, serverLevel, pos, p_60465_);
         BlockEntity blockEntity = serverLevel.getBlockEntity(pos);
         if (blockEntity instanceof AbstractPlushyBlockEntity abstractPlushyBlockEntity && abstractPlushyBlockEntity.isSqueezed()) {

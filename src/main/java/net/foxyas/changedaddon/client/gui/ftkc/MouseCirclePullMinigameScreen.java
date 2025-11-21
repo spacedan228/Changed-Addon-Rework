@@ -4,8 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.packet.ServerboundProgressFTKCPacket;
 import net.foxyas.changedaddon.util.RenderUtil;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
