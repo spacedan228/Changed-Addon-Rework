@@ -6,6 +6,7 @@ import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
+import net.foxyas.changedaddon.mixins.entity.CombatTrackerAccessor;
 import net.foxyas.changedaddon.util.ComponentUtil;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
@@ -145,9 +146,10 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         if (wearer.hurtMarked || !nonHurtFrame) return;
         if (amount <= 0) return;
         if (wearer.isDamageSourceBlocked(source)) return;
-        if (!wearer.getCombatTracker().isTakingDamage()) return;
+        if (!(wearer.getCombatTracker() instanceof CombatTrackerAccessor combatTrackerAccessor && combatTrackerAccessor.isTakingDamage())) return;
 
-        if (!source.isBypassArmor() && !(source instanceof ChangedDamageSources.TransfurDamageSource)) {
+        DamageSource transfurSource = ChangedDamageSources.TRANSFUR.source(wearer.level().registryAccess());
+        if (!source.isBypassArmor() && !(source instanceof ChangedDamageSources.entityTransfur()) {
             this.applyDamage(source, amount, slotContext);
         } else if (source instanceof ChangedDamageSources.TransfurDamageSource) {
             this.applyDamage(source, amount, slotContext);

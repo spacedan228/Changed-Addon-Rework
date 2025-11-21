@@ -21,6 +21,7 @@
     "enchantments.InfinityEnchantmentMixin",
     "entity.AccessoryEntitiesAccessor",
     "entity.ChangedEntityMixin",
+    "entity.CombatTrackerAccessor",
     "entity.EntityMixin",
     "entity.IronGolemMixin",
     "entity.ItemEntityMixin",
