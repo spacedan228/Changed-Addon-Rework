@@ -6,7 +6,6 @@ import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -50,10 +49,8 @@ public class HaydenFennecFoxEntity extends AbstractBasicOrganicChangedEntity {
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
         if (source.getDirectEntity() instanceof LivingEntity living) {
-            if (source instanceof EntityDamageSource entityDamageSource) {
-                if (entityDamageSource.msgId.contains("mob")) {
-                    return super.hurt(entityDamageSource, amount * 0.9f);
-                }
+            if (source.getMsgId().contains("mob")) {
+                return super.hurt(source, amount * 0.9f);
             }
         }
 
