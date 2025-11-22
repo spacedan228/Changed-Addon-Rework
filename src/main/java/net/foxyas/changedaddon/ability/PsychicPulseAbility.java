@@ -5,6 +5,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.minecraft.core.Registry;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
@@ -56,7 +57,7 @@ public class PsychicPulseAbility extends SimpleAbility {
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.psychic_pulse");
     }
 

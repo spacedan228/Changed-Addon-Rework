@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.ability;
 
-import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.ability.handle.CounterDodgeType;
 import net.foxyas.changedaddon.client.model.animations.parameters.DodgeAnimationParameters;
 import net.foxyas.changedaddon.init.ChangedAddonAnimationEvents;
@@ -13,7 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -28,6 +27,9 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
+
+import java.util.Random;
 
 public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
@@ -76,16 +78,17 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         Vec3 motion = attacker.getEyePosition().subtract(dodger.getEyePosition()).scale(-0.25);
         Vec3 dodgerPos = dodger.position().add(0, 0.5f, 0);
 
-        if (dodger.getLevel() instanceof ServerLevel serverLevel) {
+        if (dodger.level() instanceof ServerLevel serverLevel) {
             int steps = 3;         // número de partículas por linha
             int lines = 5;          // quantas linhas paralelas
             float spread = 1;    // afastamento lateral das linhas
 
             for (int l = 0; l < lines; l++) {
                 // gera um deslocamento lateral aleatório (x,z) em círculo
-                Vec3 lateralOffset = new Vec3(dodger.getRandom().nextFloat(-spread, spread),
-                        dodger.getRandom().nextFloat(-spread, spread),
-                        dodger.getRandom().nextFloat(-spread, spread));
+                Random random = new Random();
+                Vec3 lateralOffset = new Vec3(random.nextFloat(-spread, spread),
+                        random.nextFloat(-spread, spread),
+                        random.nextFloat(-spread, spread));
                 if (l == 0) {
                     lateralOffset = Vec3.ZERO;
                 }
@@ -201,7 +204,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     }
 
     public void executeDodgeAnimations(LevelAccessor levelAccessor, LivingEntity dodger) {
-        ChangedSounds.broadcastSound(dodger, ChangedSounds.BOW2, 2.5f, 1);
+        ChangedSounds.broadcastSound(dodger, ChangedSounds.CARDBOARD_BOX_OPEN, 2.5f, 1);
         if (this.getDodgeType().shouldPlayDodgeAnimation()) {
             int randomValue = levelAccessor.getRandom().nextInt(6);
             switch (randomValue) {
@@ -255,7 +258,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 double dy = (dodger.getRandom().nextInt(16) - 8); // vertical offset -8 to +7
 
                 // Calculate target position
-                BlockPos targetPos = new BlockPos(dodger.getX() + dx, dodger.getY() + dy, dodger.getZ() + dz);
+                BlockPos targetPos = new BlockPos((int) (dodger.getX() + dx), (int) (dodger.getY() + dy), (int) (dodger.getZ() + dz));
                 if (dodger.randomTeleport(targetPos.getX(), targetPos.getY(), targetPos.getZ(), true)) {
                     // Optional: play sound & particles like Enderman
                     levelAccessor.playSound(null, dodger.blockPosition(),
@@ -293,11 +296,11 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     }
 
     public void executeDodgeHandle(LivingEntity dodger, Entity attacker) {
-        this.executeDodgeHandle(dodger.getLevel(), attacker, dodger, null, true);
+        this.executeDodgeHandle(dodger.level(), attacker, dodger, null, true);
     }
 
     public void executeDodgeEffects(LivingEntity dodger, Entity attacker) {
-        this.executeDodgeEffects(dodger.getLevel(), attacker, dodger, null);
+        this.executeDodgeEffects(dodger.level(), attacker, dodger, null);
     }
 
     private void spawnDodgeParticles(ServerLevel level, Entity entity, float middle, float xV, float yV, float zV, int count, float speed) {
@@ -343,7 +346,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     @Override
     public void startUsing() {
         if (entity.getEntity() instanceof Player player && this.getController().getHoldTicks() == 0) {
-            if (!(player.getLevel().isClientSide())) {
+            if (!(player.level().isClientSide())) {
                 if (this.dodgeType instanceof CounterDodgeType) {
                     this.canDodgeTicks = 60;
                     return;
@@ -363,7 +366,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     public void tick() {
         //super.tick();
         if (entity.getEntity() instanceof Player player) {
-            if (!(player.getLevel().isClientSide())) {
+            if (!(player.level().isClientSide())) {
                 if (this.dodgeType instanceof CounterDodgeType) {
                     return;
                 }
@@ -400,7 +403,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         }
 
         if (projectilesImmuneTicks > 0) {
-            projectilesImmuneTicks --;
+            projectilesImmuneTicks--;
         }
 
         boolean nonHurtFrame = entity.getEntity().hurtTime <= 10 && entity.getEntity().invulnerableTime <= 10;
@@ -410,7 +413,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 dodgeRegenCooldown = 5;
 
                 if (entity.getEntity() instanceof Player player) {
-                    if (!(player.getLevel().isClientSide())) {
+                    if (!(player.level().isClientSide())) {
                         if (!ultraInstinct) {
                             player.displayClientMessage(
                                     Component.translatable("changed_addon.ability.dodge.dodge_amount",

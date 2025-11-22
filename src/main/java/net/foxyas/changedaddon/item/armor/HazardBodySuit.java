@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.foxyas.changedaddon.mixins.entity.CombatTrackerAccessor;
 import net.foxyas.changedaddon.util.ComponentUtil;
@@ -24,12 +23,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,7 +38,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -46,7 +46,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -148,10 +148,9 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         if (wearer.isDamageSourceBlocked(source)) return;
         if (!(wearer.getCombatTracker() instanceof CombatTrackerAccessor combatTrackerAccessor && combatTrackerAccessor.isTakingDamage())) return;
 
-        DamageSource transfurSource = ChangedDamageSources.TRANSFUR.source(wearer.level().registryAccess());
-        if (!source.isBypassArmor() && !(source instanceof ChangedDamageSources.entityTransfur()) {
+        if (!source.is(DamageTypeTags.BYPASSES_ARMOR) && !(source.is(ChangedDamageSources.TRANSFUR.key()))) {
             this.applyDamage(source, amount, slotContext);
-        } else if (source instanceof ChangedDamageSources.TransfurDamageSource) {
+        } else if (source.is(ChangedDamageSources.TRANSFUR.key())) {
             this.applyDamage(source, amount, slotContext);
         }
     }
@@ -224,7 +223,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                 this.getClothingState(slotContext.stack()).setValue(HELMET, value)
         );
 
-        SoundEvent changeSound = this.getEquipSound();
+        SoundEvent changeSound = this.getEquipSound(slotContext.stack());
         if (changeSound != null) {
             slotContext.wearer().playSound(changeSound, 1.0F, 1.0F);
         }
@@ -236,13 +235,13 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                 this.getClothingState(slotContext.stack()).setValue(HELMET, false)
         );
 
-        SoundEvent changeSound = ChangedSounds.EXOSKELETON_CHIME;
+        SoundEvent changeSound = ChangedSounds.EXOSKELETON_CHIME.get();
         slotContext.wearer().playSound(changeSound, 1.0F, 0.5F);
     }
 
     public void applyDamage(DamageSource damageSource, float amount, AccessorySlotContext<?> slotContext) {
         if (amount <= 0) return;
-        if (damageSource.isFire() && damageSource != DamageSource.LAVA) return;
+        if (damageSource.is(DamageTypeTags.IS_FIRE) && !damageSource.is(DamageTypes.LAVA)) return;
 
         amount /= 4.0F;
         if (amount < 1.0F) {
@@ -250,15 +249,15 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         }
         ItemStack itemStack = slotContext.stack();
         LivingEntity player = slotContext.wearer();
-        if ((!damageSource.isFire() || !itemStack.getItem().isFireResistant())) {
+        if ((!damageSource.is(DamageTypeTags.IS_FIRE) || !itemStack.getItem().isFireResistant())) {
             itemStack.hurtAndBreak((int) amount, player, (livingEntity) -> {
                 if (!itemStack.isEmpty()) {
                     if (!livingEntity.isSilent()) {
-                        livingEntity.level.playSound(null, livingEntity,
+                        livingEntity.level().playSound(null, livingEntity,
                                 this.getBreakSound(itemStack),
                                 livingEntity.getSoundSource(),
                                 0.8F,
-                                0.8F + livingEntity.level.random.nextFloat() * 0.4F);
+                                0.8F + livingEntity.level().random.nextFloat() * 0.4F);
                     }
 
                     //livingEntity.spawnItemParticles(pStack, 5);
@@ -272,7 +271,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
                         vec31 = vec31.xRot(-livingEntity.getXRot() * ((float) Math.PI / 180F));
                         vec31 = vec31.yRot(-livingEntity.getYRot() * ((float) Math.PI / 180F));
                         vec31 = vec31.add(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ());
-                        if (livingEntity.level instanceof ServerLevel serverLevel) //Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server specific variant
+                        if (livingEntity.level() instanceof ServerLevel serverLevel) //Forge: Fix MC-2518 spawnParticle is nooped on server, need to use server specific variant
                         {
                             serverLevel.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, itemStack), vec31.x, vec31.y, vec31.z, 1, vec3.x, vec3.y + 0.05D, vec3.z, 0.0D);
                         }
@@ -377,7 +376,9 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     @Override
     @OnlyIn(Dist.CLIENT)
     public @Nullable String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        ResourceLocation itemId = stack.getItem().getRegistryName();
+        ResourceLocation itemId = ForgeRegistries.ITEMS.getKey(stack.getItem());
+        if (itemId == null) return null; // Shutup the warnings
+
         if (entity instanceof ChangedEntity changedEntity) {
             if (changedEntity instanceof LatexHuman latexHuman && latexHuman.getUnderlyingPlayer() instanceof AbstractClientPlayer abstractClientPlayer) {
                 return String.format("%s:textures/models/hazard_suit/%s_%s_%s.png", itemId.getNamespace(), itemId.getPath(), getHelmetState(stack), getPlayerModelStyle(abstractClientPlayer));

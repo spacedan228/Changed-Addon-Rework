@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.extension.jeiSuport;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -11,11 +12,16 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.recipe.CatalyzerRecipe;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe> {
     public final static ResourceLocation UID = ChangedAddonMod.resourceLoc("jei_catalyzer");
@@ -38,9 +44,14 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
         return Component.translatable("block.changed_addon.catalyzer");
     }
 
-    @Override
+
     public @NotNull IDrawable getBackground() {
         return this.background;
+    }
+
+    @Override
+    public void draw(CatalyzerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+        IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -71,14 +82,15 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, CatalyzerRecipe recipe, @NotNull IFocusGroup focuses) {
         builder.addSlot(RecipeIngredientRole.INPUT, 12, 18).addIngredients(recipe.getIngredients().get(0));
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 18).addItemStack(recipe.getResultItem());
+        ClientLevel level = Objects.requireNonNull(Minecraft.getInstance().level);
+        builder.addSlot(RecipeIngredientRole.OUTPUT, 96, 18).addItemStack(recipe.getResultItem(level.registryAccess()));
 
         // Exibir o campo progress como um texto ou barra de progresso
         float progressSpeed = recipe.getProgressSpeed();
         float nitrogenUsage = recipe.getNitrogenUsage();
 
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 51, 36).addItemStack(new ItemStack(ChangedAddonItems.CATALYZER_BLOCK_ILLUSTRATIVE_ITEM.get())) // Substitua por um item adequado
-                .addTooltipCallback((recipeSlotView, tooltip) -> {
+                .addRichTooltipCallback((recipeSlotView, tooltip) -> {
                     // Adiciona uma nova linha ao tooltip com o progresso da receita
                     tooltip.add(Component.translatable("changed_addon.gui.catalyzer.nitrogen_usage", progressSpeed, nitrogenUsage));
                 });

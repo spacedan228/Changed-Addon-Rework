@@ -8,7 +8,6 @@ import net.ltxprogrammer.changed.block.WolfCrystalBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.init.ChangedItems;
-import net.ltxprogrammer.changed.init.ChangedMaterials;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
@@ -31,8 +30,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -52,7 +50,7 @@ public class AbstractWolfCrystalExtender {
 
         @SubscribeEvent
         public static void colorTheCrystal(PlayerInteractEvent.RightClickBlock event) {
-            Level level = event.getWorld();
+            Level level = event.getLevel();
             BlockPos pos = event.getPos();
             ItemStack itemStack = event.getItemStack();
             BlockState currentState = level.getBlockState(pos);
@@ -76,15 +74,15 @@ public class AbstractWolfCrystalExtender {
                     if (!newBlock.defaultBlockState().equals(currentState)) {
                         level.setBlockAndUpdate(pos, newBlock.defaultBlockState());
                         playDyeUseSound(level, pos);
-                        event.getPlayer().swing(event.getHand());
+                        event.getEntity().swing(event.getHand());
 
                         // Consome o corante se o jogador não estiver no modo criativo
-                        if (!event.getPlayer().isCreative()) {
+                        if (!event.getEntity().isCreative()) {
                             itemStack.shrink(1);
                         }
 
                         // Código para conceder um avanço ao jogador
-                        grantAdvancement(event.getPlayer(), "changed_addon:crystal_dyer");
+                        grantAdvancement(event.getEntity(), "changed_addon:crystal_dyer");
                     }
                 }
             }
@@ -120,10 +118,11 @@ public class AbstractWolfCrystalExtender {
 
         public AbstractWolfCrystalBlock() {
             super(
-                    BlockBehaviour.Properties.of(Material.ICE_SOLID, MaterialColor.COLOR_RED)
+                    BlockBehaviour.Properties.of()  //Fixme : (Material.ICE_SOLID, MaterialColor.COLOR_RED)
+                            .mapColor(MapColor.COLOR_RED)
                             .friction(0.98F)
                             .sound(SoundType.AMETHYST)
-                            .strength(2.0F, 2.0F).noDrops()
+                            .strength(2.0F, 2.0F).noLootTable()
             );
         }
 
@@ -166,11 +165,11 @@ public class AbstractWolfCrystalExtender {
         public AbstractWolfCrystalSmall(Supplier<? extends Item> fragment) {
             super(ChangedTransfurVariants.CRYSTAL_WOLF, fragment,
 
-                    BlockBehaviour.Properties.of(ChangedMaterials.LATEX_CRYSTAL)
+                    BlockBehaviour.Properties.copy(ChangedBlocks.WOLF_CRYSTAL_SMALL.get()) // Fixme : (ChangedMaterials.LATEX_CRYSTAL)
                             .sound(SoundType.AMETHYST_CLUSTER)
                             .noOcclusion()
                             .dynamicShape()
-                            .strength(1.7F, 0.2F).noDrops()
+                            .strength(1.7F, 0.2F).noLootTable()
             );
         }
 
@@ -178,11 +177,11 @@ public class AbstractWolfCrystalExtender {
         public AbstractWolfCrystalSmall() {
             super(ChangedTransfurVariants.CRYSTAL_WOLF, ChangedItems.WOLF_CRYSTAL_FRAGMENT,
 
-                    BlockBehaviour.Properties.of(ChangedMaterials.LATEX_CRYSTAL)
+                    BlockBehaviour.Properties.copy(ChangedBlocks.WOLF_CRYSTAL_SMALL.get()) // Fixme: (ChangedMaterials.LATEX_CRYSTAL)
                             .sound(SoundType.AMETHYST_CLUSTER)
                             .noOcclusion()
                             .dynamicShape()
-                            .strength(1.7F, 0.2F).noDrops()
+                            .strength(1.7F, 0.2F).noLootTable()
             );
         }
 

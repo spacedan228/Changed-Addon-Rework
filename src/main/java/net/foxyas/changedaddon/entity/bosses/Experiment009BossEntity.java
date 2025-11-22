@@ -740,7 +740,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         }
 
 
-        List<TranslatableComponent> translatableComponentList = new ArrayList<>();
+        List<Component> translatableComponentList = new ArrayList<>();
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp9.pat.type_1"));
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp9.pat.type_2"));
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp9.pat.type_3"));

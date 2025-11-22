@@ -7,21 +7,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.OreBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.common.TierSortingRegistry;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
-public class IridiumOreBlock extends OreBlock {
+public class IridiumOreBlock extends DropExperienceBlock {
 
     public IridiumOreBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.QUARTZ).sound(SoundType.STONE).strength(20f, 25f).requiresCorrectToolForDrops(),
+        super(BlockBehaviour.Properties.copy(Blocks.STONE).mapColor(MapColor.QUARTZ).sound(SoundType.STONE).strength(20f, 25f).requiresCorrectToolForDrops(),
                 UniformInt.of(20, 40)
         );
     }

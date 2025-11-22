@@ -7,11 +7,13 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.item.Syringe;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -19,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class HaydenTransfurRecipe extends CustomRecipe {
 
-    public HaydenTransfurRecipe(ResourceLocation p_43833_) {
-        super(p_43833_);
+    public HaydenTransfurRecipe(ResourceLocation location) {
+        super(location, CraftingBookCategory.MISC);
     }
 
     @Override
@@ -48,7 +50,7 @@ public class HaydenTransfurRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer inv) {
+    public @NotNull ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess registryAccess) {
         ItemStack center = inv.getItem(4);
         if (center.is(ChangedItems.LATEX_SYRINGE.get())) {
             TransfurVariant<?> variant = Syringe.getVariant(center);
@@ -92,17 +94,17 @@ public class HaydenTransfurRecipe extends CustomRecipe {
             // Nada para escrever
         }
 
-        @Override
+
         public ResourceLocation getRegistryName() {
             return ID;
         }
 
-        @Override
+
         public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
             return this;
         }
 
-        @Override
+
         public Class<RecipeSerializer<?>> getRegistryType() {
             return (Class<RecipeSerializer<?>>) (Class<?>) RecipeSerializer.class;
         }

@@ -14,7 +14,7 @@ public class TurnFeralSnepAbility extends AbstractAbility<TurnFeralSnepAbilityIn
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.turn_feral");
     }
 

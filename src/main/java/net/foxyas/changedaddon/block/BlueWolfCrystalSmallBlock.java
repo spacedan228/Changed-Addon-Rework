@@ -4,7 +4,9 @@ import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.ltxprogrammer.changed.block.DarkLatexBlock;
 import net.ltxprogrammer.changed.block.WolfCrystalBlock;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
+import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -13,8 +15,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import static net.ltxprogrammer.changed.block.AbstractLatexBlock.getLatexed;
 
 public class BlueWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.AbstractWolfCrystalSmall {
     public BlueWolfCrystalSmallBlock() {
@@ -38,6 +38,6 @@ public class BlueWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.Abstr
         return blockStateOn.getBlock() == ChangedAddonBlocks.BLUE_WOLF_CRYSTAL_BLOCK.get()
                 || blockStateOn.getBlock() instanceof WolfCrystalBlock
                 || blockStateOn.getBlock() instanceof DarkLatexBlock
-                || getLatexed(blockStateOn) == LatexType.DARK_LATEX;
+                || LatexCoverState.getAt(level, blockPos.below()).getType() instanceof SpreadingLatexType.DarkLatex ;
     }
 }

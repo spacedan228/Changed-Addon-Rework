@@ -9,12 +9,13 @@ import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.mixin.gui.ForgeIngameGuiMixin;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
-
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,13 +25,9 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-
-import java.awt.*;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 
 import static net.foxyas.changedaddon.process.features.PatFeatureHandle.canPlayerPat;
-import static net.minecraft.client.gui.GuiComponent.drawCenteredString;
 
 @OnlyIn(Dist.CLIENT) //@Mod.EventBusSubscriber({Dist.CLIENT})
 public class PatOverlay {
@@ -172,10 +169,10 @@ public class PatOverlay {
     }
 
 
-    private static TranslatableComponent getPatInfo(Entity lookedEntity) {
+    private static Component getPatInfo(Entity lookedEntity) {
         String key = ChangedAddonKeyMappings.PAT_KEY.getTranslatedKeyMessage().getString();
         if (lookedEntity instanceof LivingEntity) {
-            TranslatableComponent patMessage = Component.translatable("changed_addon.info.is_patable", key.isEmpty() ? "Not Key Set" : key, lookedEntity.getDisplayName().getString());
+            MutableComponent patMessage = Component.translatable("changed_addon.info.is_patable", key.isEmpty() ? "Not Key Set" : key, lookedEntity.getDisplayName().getString());
             patMessage.withStyle(style ->
                     style.withColor(-1)
                             //.withBold(true)
@@ -190,9 +187,9 @@ public class PatOverlay {
         return ChangedAddonKeyMappings.PAT_KEY.getTranslatedKeyMessage().getString();
     }
 
-    private static TextComponent PatInfo2(Entity lookedEntity) {
+    private static Component PatInfo2(Entity lookedEntity) {
         if (lookedEntity instanceof LivingEntity) {
-            TextComponent patMessage;
+            MutableComponent patMessage;
 
             if (lookedEntity.hasCustomName()) {
                 patMessage = Component.literal(lookedEntity.getCustomName().getString());
@@ -209,7 +206,7 @@ public class PatOverlay {
         }
     }
 
-    public static void renderPatIconOverlay(ForgeIngameGui forgeIngameGui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public static void renderPatIconOverlay(ForgeGui forgeIngameGui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
         if (!ChangedAddonClientConfiguration.PAT_OVERLAY.get()) {
             return;
         }
@@ -225,7 +222,7 @@ public class PatOverlay {
 
         if (entity != null && !entity.isSpectator()) {
             if (entity.getMainHandItem().isEmpty() || entity.getOffhandItem().isEmpty()) {
-                Entity lookedEntity = PlayerUtil.getEntityLookingAt(entity, entity.getReachDistance());
+                Entity lookedEntity = PlayerUtil.getEntityLookingAt(entity, entity.getEntityReach());
                 if (lookedEntity != null && isPatableEntity(entity, lookedEntity) && isEntityInPassiveStage(lookedEntity) && isKeySet()) {
                     if (!getPatInfo(entity).getString().isEmpty()) {
                         if (!lookedEntity.isInvisible() && canPlayerPat(entity)) {

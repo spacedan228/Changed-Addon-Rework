@@ -11,6 +11,7 @@ import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -21,7 +22,7 @@ import net.minecraft.world.entity.player.Player;
 public class DazedPuddleAbility extends SimpleAbility {
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("ability.changed.puddle");
     }
 
@@ -32,7 +33,7 @@ public class DazedPuddleAbility extends SimpleAbility {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         if (entity.getChangedEntity() instanceof DazedLatexEntity dazedLatexEntity) {
-            entity.getEntity().playSound(ChangedSounds.POISON, 1, 1);
+            entity.getEntity().playSound(ChangedSounds.TRANSFUR_BY_LATEX.get(), 1, 1);
             dazedLatexEntity.setMorphed(true);
         }
     }

@@ -29,8 +29,8 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
@@ -154,7 +154,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
 
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
-        if (!this.remove && facing != null && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        if (!this.remove && facing != null && capability == ForgeCapabilities.ITEM_HANDLER)
             return handlers[facing.ordinal()].cast();
         return super.getCapability(capability, facing);
     }
@@ -198,7 +198,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
         }
 
         IItemHandlerModifiable handler = (IItemHandlerModifiable)
-                blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElse(null);
+                blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
         if (handler == null) return;
 
         if (handler.getStackInSlot(0).isEmpty()) {
@@ -230,7 +230,7 @@ public class CatalyzerBlockEntity extends RandomizableContainerBlockEntity imple
             }
 
             if (catalyzer.recipeProgress >= 100) {
-                ItemStack output = recipe.getResultItem();
+                ItemStack output = recipe.getResultItem(level.registryAccess());
 
                 if (handler.insertItem(1, output.copy(), true).isEmpty()) {
                     NonNullList<ItemStack> remainingItems = recipe.getRemainingItems(catalyzer.getContainer());

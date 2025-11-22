@@ -41,7 +41,7 @@ public class ThunderPathAbility extends AbstractAbility<ThunderPathAbility.Insta
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.thunder_path");
     }
 

@@ -7,19 +7,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.OreBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DropExperienceBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.common.TierSortingRegistry;
 import org.jetbrains.annotations.NotNull;
 
-public class DeepslatePainiteOreBlock extends OreBlock {
+public class DeepslatePainiteOreBlock extends DropExperienceBlock {
 
     public DeepslatePainiteOreBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_RED).sound(SoundType.STONE).strength(15f, 25f).requiresCorrectToolForDrops(),
+        super(BlockBehaviour.Properties.copy(Blocks.STONE).mapColor(MapColor.COLOR_RED).sound(SoundType.STONE).strength(15f, 25f).requiresCorrectToolForDrops(),
                 UniformInt.of(20, 35)
         );
     }
@@ -33,6 +33,7 @@ public class DeepslatePainiteOreBlock extends OreBlock {
     public int getLightBlock(@NotNull BlockState state, @NotNull BlockGetter worldIn, @NotNull BlockPos pos) {
         return 0;
     }
+
 
     @Override
     public boolean canHarvestBlock(BlockState state, BlockGetter world, BlockPos pos, Player player) {

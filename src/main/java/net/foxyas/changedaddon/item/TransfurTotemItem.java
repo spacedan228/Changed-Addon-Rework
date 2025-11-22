@@ -397,8 +397,8 @@ public class TransfurTotemItem extends Item {
 
             event.shouldKeepConscious = true;
             if (event.player instanceof ServerPlayer serverPlayer) {
-                TranslatableComponent text = Component.translatable("changed_addon.latex_totem.tittle.text_1");
-                TranslatableComponent text2 = Component.translatable("changed_addon.latex_totem.tittle.text_2");
+                Component text = Component.translatable("changed_addon.latex_totem.tittle.text_1");
+                Component text2 = Component.translatable("changed_addon.latex_totem.tittle.text_2");
                 serverPlayer.displayClientMessage(text, true);
                 serverPlayer.sendMessage(text, ChatType.CHAT, serverPlayer.getUUID());
                 serverPlayer.sendMessage(text2, ChatType.CHAT, serverPlayer.getUUID());

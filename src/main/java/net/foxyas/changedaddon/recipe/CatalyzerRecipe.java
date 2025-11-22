@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -12,8 +13,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.crafting.NBTIngredient;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -41,7 +41,7 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
 
         // Verifica se a lista de ingredientes não está vazia
         if (!recipeItems.isEmpty()) {
-            if (NBTIngredient.of(this.output).test(pContainer.getItem(1))) {
+            if (StrictNBTIngredient.of(this.output).test(pContainer.getItem(1))) {
                 return true;
             }
         }
@@ -60,7 +60,7 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public @NotNull ItemStack assemble(@NotNull SimpleContainer pContainer) {
+    public @NotNull ItemStack assemble(@NotNull SimpleContainer pContainer, @NotNull RegistryAccess registryAccess) {
         return output;
     }
 
@@ -70,7 +70,7 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
     }
 
     @Override
-    public @NotNull ItemStack getResultItem() {
+    public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
         return output.copy();
     }
 
@@ -104,7 +104,7 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
         }
     }
 
-    public static class Serializer implements RecipeSerializer<CatalyzerRecipe>, IForgeRegistryEntry<RecipeSerializer<?>> {
+    public static class Serializer implements RecipeSerializer<CatalyzerRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath("changed_addon", "catalyzer");
 
@@ -118,7 +118,7 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
                 Ingredient ingredient;
                 if (ingredientElement.isJsonObject() && ingredientElement.getAsJsonObject().has("nbt")) {
                     ItemStack stack = ShapedRecipe.itemStackFromJson(ingredientElement.getAsJsonObject());
-                    ingredient = NBTIngredient.of(stack);
+                    ingredient = StrictNBTIngredient.of(stack);
                     ChangedAddonMod.LOGGER.info("Parsing nbt recipe with id {} of type {}", pRecipeId, Type.ID);
                 } else {
                     ingredient = Ingredient.fromJson(ingredientElement);
@@ -155,17 +155,14 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
             buf.writeFloat(recipe.getNitrogenUsage());
         }
 
-        @Override
         public ResourceLocation getRegistryName() {
             return ID;
         }
 
-        @Override
         public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
             return this;
         }
 
-        @Override
         public Class<RecipeSerializer<?>> getRegistryType() {
             return (Class<RecipeSerializer<?>>) (Class<?>) RecipeSerializer.class;
         }

@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -552,12 +553,12 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, this, "pats_on_the_beast");
         }
 
-        List<TranslatableComponent> translatableComponentList = new ArrayList<>();
+        List<Component> translatableComponentList = new ArrayList<>();
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_0"));
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_1"));
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_2"));
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_3"));
-        player.getLevel().addParticle(
+        player.level().addParticle(
                 ChangedParticles.emote(this, Emote.ANGRY),
                 this.getX(),
                 this.getY() + (double) this.getDimensions(this.getPose()).height + 0.65,

@@ -7,12 +7,14 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
 import net.foxyas.changedaddon.item.KeycardItem;
 import net.foxyas.changedaddon.util.ColorUtil;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -21,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 public class KeycardColorRecipe extends CustomRecipe {
 
     public KeycardColorRecipe(ResourceLocation id) {
-        super(id);
+        super(id, CraftingBookCategory.MISC);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class KeycardColorRecipe extends CustomRecipe {
 
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer container) {
+    public @NotNull ItemStack assemble(CraftingContainer container, @NotNull RegistryAccess registryAccess) {
         ItemStack keycard = ItemStack.EMPTY;
 
         IntList topColors = new IntArrayList();
@@ -133,17 +135,14 @@ public class KeycardColorRecipe extends CustomRecipe {
             // Nada para escrever
         }
 
-        @Override
         public ResourceLocation getRegistryName() {
             return ID;
         }
 
-        @Override
         public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
             return this;
         }
 
-        @Override
         public Class<RecipeSerializer<?>> getRegistryType() {
             return (Class<RecipeSerializer<?>>) (Class<?>) RecipeSerializer.class;
         }

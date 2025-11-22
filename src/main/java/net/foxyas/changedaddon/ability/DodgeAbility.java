@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.ability;
 import net.foxyas.changedaddon.ability.handle.CounterDodgeType;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public class DodgeAbility extends AbstractAbility<DodgeAbilityInstance> {
@@ -34,7 +34,7 @@ public class DodgeAbility extends AbstractAbility<DodgeAbilityInstance> {
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.dodge");
     }
 

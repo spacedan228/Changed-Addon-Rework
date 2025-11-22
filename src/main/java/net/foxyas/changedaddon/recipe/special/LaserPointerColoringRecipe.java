@@ -3,12 +3,14 @@ package net.foxyas.changedaddon.recipe.special;
 import com.google.gson.JsonObject;
 import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
 import net.foxyas.changedaddon.item.LaserPointer;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -18,7 +20,7 @@ import static net.foxyas.changedaddon.init.ChangedAddonItems.LASER_POINTER;
 
 public class LaserPointerColoringRecipe extends CustomRecipe {
     public LaserPointerColoringRecipe(ResourceLocation id) {
-        super(id);
+        super(id, CraftingBookCategory.MISC);
     }
 
     @Override
@@ -45,7 +47,7 @@ public class LaserPointerColoringRecipe extends CustomRecipe {
     }
 
     @Override
-    public @NotNull ItemStack assemble(CraftingContainer container) {
+    public @NotNull ItemStack assemble(CraftingContainer container, @NotNull RegistryAccess registryAccess) {
         ItemStack pointer = ItemStack.EMPTY;
 
         int totalR = 0;
@@ -126,17 +128,14 @@ public class LaserPointerColoringRecipe extends CustomRecipe {
             // Nada para escrever
         }
 
-        @Override
         public ResourceLocation getRegistryName() {
             return ID;
         }
 
-        @Override
         public RecipeSerializer<?> setRegistryName(ResourceLocation name) {
             return this;
         }
 
-        @Override
         public Class<RecipeSerializer<?>> getRegistryType() {
             return (Class<RecipeSerializer<?>>) (Class<?>) RecipeSerializer.class;
         }

@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.ability;
 
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
@@ -15,7 +15,7 @@ public class DissolveAbility extends AbstractAbility<DissolveAbilityInstance> {
 
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.dissolve");
     }
 

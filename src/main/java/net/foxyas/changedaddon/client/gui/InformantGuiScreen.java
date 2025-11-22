@@ -12,6 +12,7 @@ import net.foxyas.changedaddon.menu.InformantGuiMenu;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
@@ -84,25 +85,25 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
     }
 
     @Override
-    public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(stack);
-        super.render(stack, mouseX, mouseY, partialTicks);
-        form.render(stack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(stack, mouseX, mouseY);
+    public void render(@NotNull GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(pGuiGraphics);
+        super.render(pGuiGraphics, mouseX, mouseY, partialTicks);
+        form.render(pGuiGraphics, mouseX, mouseY, partialTicks);
+        this.renderTooltip(pGuiGraphics, mouseX, mouseY);
 
         if (mouseX > leftPos + 25 && mouseX < leftPos + 34 && mouseY > topPos + 4 && mouseY < topPos + 13) {
-            this.renderTooltip(stack, Component.translatable("gui.changed_addon.informant_gui.tooltip_type_the_form"), mouseX, mouseY);
+            pGuiGraphics.renderTooltip(font, Component.translatable("gui.changed_addon.informant_gui.tooltip_type_the_form"), mouseX, mouseY);
         }
 
         if (menu.getStackInSlot().isEmpty()) {
             if (mouseX > leftPos + 151 && mouseX < leftPos + 168 && mouseY > topPos + 88 && mouseY < topPos + 105) {
-                this.renderTooltip(stack, Component.translatable("gui.changed_addon.informant_gui.tooltip_put_a_syringe_with_a_form"), mouseX, mouseY);
+                pGuiGraphics.renderTooltip(font, Component.translatable("gui.changed_addon.informant_gui.tooltip_put_a_syringe_with_a_form"), mouseX, mouseY);
             }
         }
 
         if (!filteredSuggestions.isEmpty() && form.isFocused()) {
-            int x = form.x;
-            int y = form.y + form.getHeight() + 2;
+            int x = form.getX();
+            int y = form.getY() + form.getHeight() + 2;
             int width = form.getWidth();
             int height = 12;
 
@@ -113,8 +114,8 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
                 int bgColor = i == suggestionIndex ? Bgcolor.getRGB() : color.getRGB();
                 RenderSystem.enableBlend();
                 RenderSystem.defaultBlendFunc();
-                fill(stack, x, y + i * height, x + width, y + (i + 1) * height, bgColor);
-                this.font.draw(stack, suggestion, x + 2, y + i * height + 2, 0xFFFFFF);
+                pGuiGraphics.fill(x, y + i * height, x + width, y + (i + 1) * height, bgColor);
+                pGuiGraphics.drawString(font, suggestion, x + 2, y + i * height + 2, 0xFFFFFF);
                 RenderSystem.disableBlend();
             }
         }
@@ -141,7 +142,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
 
             int centerX = leftPos + imageWidth / 2;
             int centerY = topPos + imageHeight / 2;
-            InventoryScreen.renderEntityInInventory(centerX, centerY, 30, centerX - mouseX, centerY - (26 + 26) - mouseY, entity);
+            InventoryScreen.renderEntityInInventoryFollowsMouse(pGuiGraphics, centerX, centerY, 30, centerX - mouseX, centerY - (26 + 26) - mouseY, entity);
         }
 
         float hp = TransfurVariantUtils.GetExtraHp(tf, player);
@@ -174,7 +175,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
                         : Component.literal((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
                 .append(Component.translatable("text.changed_addon.additionalHealth.Hearts"));
 
-        TranslatableComponent miningStrengthInfo = Component.translatable("text.changed_addon.miningStrength", miningStrength);
+        Component miningStrengthInfo = Component.translatable("text.changed_addon.miningStrength", miningStrength);
 
         MutableComponent jumpStrengthInfo = Component.translatable("text.changed_addon.jumpStrength")
                 .append("")
@@ -192,24 +193,24 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         // Verifica se o mouse está sobre cada ícone e exibe a tooltip correspondente
         if (mouseX > iconX && mouseX < iconX + iconSize) {
             if (mouseY > iconYHealth && mouseY < iconYHealth + iconSize) {
-                renderTooltip(stack, additionalHealthInfo, mouseX, mouseY);
+                pGuiGraphics.renderTooltip(font, additionalHealthInfo, mouseX, mouseY);
             } else if (mouseY > iconYLandSpeed && mouseY < iconYLandSpeed + iconSize) {
-                renderTooltip(stack, landSpeedInfo, mouseX, mouseY);
+                pGuiGraphics.renderTooltip(font, landSpeedInfo, mouseX, mouseY);
             } else if (mouseY > iconYSwimSpeed && mouseY < iconYSwimSpeed + iconSize) {
-                renderTooltip(stack, List.of(swimSpeedInfo), Optional.empty(), mouseX, mouseY);
+                pGuiGraphics.renderTooltip(font, List.of(swimSpeedInfo), Optional.empty(), mouseX, mouseY);
             } else if (mouseY > iconYJump && mouseY < iconYJump + iconSize) {
-                renderTooltip(stack, jumpStrengthInfo, mouseX, mouseY);
+                pGuiGraphics.renderTooltip(font, jumpStrengthInfo, mouseX, mouseY);
             }
         }
     }
 
     @Override
-    protected void renderBg(@NotNull PoseStack ms, float partialTicks, int gx, int gy) {
+    protected void renderBg(@NotNull GuiGraphics pGuiGraphics, float partialTicks, int gx, int gy) {
         RenderSystem.setShaderColor(1, 1, 1, 1);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, texture);
-        blit(ms, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
+        pGuiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
         RenderSystem.disableBlend();
     }
 
@@ -228,16 +229,16 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
             //Check if the mouse is inside the "hitbox"
             if (mouseX > iconX && mouseX < iconX + iconSize) {
                 if (mouseY > iconYHealth && mouseY < iconYHealth + iconSize) {
-                    this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK, 1, 1);
+                    this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 1, 1);
                 } else if (mouseY > iconYLandSpeed && mouseY < iconYLandSpeed + iconSize) {
-                    this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK, 1, 1);
+                    this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 1, 1);
                 } else if (mouseY > iconYSwimSpeed && mouseY < iconYSwimSpeed + iconSize) {
-                    this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK, 1, 1);
+                    this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 1, 1);
                 } else if (mouseY > iconYJump && mouseY < iconYJump + iconSize) {
-                    this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK, 1, 1);
+                    this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 1, 1);
                 }
             } else if (mouseX > leftPos + (25) && mouseX < leftPos + (34) && mouseY > topPos + (4) && mouseY < topPos + (13)) {
-                this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK, 1, 1);
+                this.minecraft.player.playSound(SoundEvents.UI_BUTTON_CLICK.get(), 1, 1);
             }
 
             //this.minecraft.player.displayClientMessage(Component.literal("Mouse Position : X =" + mouseX + " and Y =" + mouseY), false);
@@ -260,7 +261,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
                 if (suggestionIndex >= 0 && suggestionIndex < filteredSuggestions.size()) {
                     form.setValue(filteredSuggestions.get(suggestionIndex));
                     if (form.isFocused()) {
-                        form.setFocus(false);
+                        form.setFocused(false);
                     }
                     return true;
                 }
@@ -289,7 +290,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
             if (!form.isFocused()) {
                 this.minecraft.player.closeContainer();
             } else {
-                form.setFocus(false);
+                form.setFocused(false);
             }
             return true;
         }
@@ -308,7 +309,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
     }
 
     @Override
-    protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics pGuiGraphics, int mouseX, int mouseY) {
         // TODO Rewrite this to look more clean AND only display the EXTRA info like (Can Glide,Mining Speed, etc)
         /*String formIdString = form.getValue();
         if (!filteredSuggestions.isEmpty() && suggestionIndex >= 0) {
@@ -397,23 +398,19 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
 
         this.font.draw(poseStack, f, 5, 82, -12829636);*/
 
-        this.font.draw(poseStack, Component.translatable("gui.changed_addon.informant_gui.label_empty"), 27.5f, 5.5f, -12829636);
+        pGuiGraphics.drawString(font, Component.translatable("gui.changed_addon.informant_gui.label_empty"), 27, 5, -12829636);
     }
 
     @Override
     public void onClose() {
         super.onClose();
-        Minecraft.getInstance().keyboardHandler.setSendRepeatsToGui(false);
     }
 
     @Override
     public void init() {
         super.init();
-        form.x = this.leftPos + 44;
-        form.y = this.topPos + 13;
-
-        assert this.minecraft != null;
-        this.minecraft.keyboardHandler.setSendRepeatsToGui(true);
+        form.setX(this.leftPos + 44);
+        form.setY(this.topPos + 13);
         addWidget(form);
     }
 

@@ -61,7 +61,7 @@ public class ShockWaveAbility extends SimpleAbility {
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.shock_wave");
     }
 

@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.ToolAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -84,6 +85,11 @@ public class TheDecimatorItem extends Item {
     }
 
     @Override
+    public boolean canPerformAction(ItemStack stack, ToolAction toolAction) {
+        return super.canPerformAction(stack, toolAction);
+    }
+
+    @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity target) {
         if (player.getAttackStrengthScale(0.0f) >= 0.9 && player.onGround()) {
             // ⚔ Área de efeito: Raio de 1.5 blocos ao redor do alvo
@@ -91,14 +97,15 @@ public class TheDecimatorItem extends Item {
             AABB attackArea = target.getBoundingBox().inflate(radius, 0.25, radius);
             List<LivingEntity> nearbyEntities = player.level().getEntitiesOfClass(LivingEntity.class, attackArea);
             // 🔥 Knockback em todos os alvos próximos (exceto o atacante)
-            for (LivingEntity entity : nearbyEntities) {
-                if (entity != target && entity != player && !player.isAlliedTo(entity)
-                        && (!(entity instanceof ArmorStand) || !((ArmorStand) entity).isMarker())
-                        && player.canHit(entity, 0)) {
-                    Vec3 knockbackVec = target.position().subtract(entity.position()).normalize();
+            double entityReachSq = Mth.square(player.getEntityReach()); // Use entity reach instead of constant 9.0. Vanilla uses bottom center-to-center checks here, so don't update this to use canReach, since it uses closest-corner checks.
+            for (LivingEntity livingEntity : nearbyEntities) {
+                if (livingEntity != target && livingEntity != player && !player.isAlliedTo(livingEntity)
+                        && (!(livingEntity instanceof ArmorStand) || !((ArmorStand) livingEntity).isMarker())
+                        && player.distanceToSqr(livingEntity) < entityReachSq) {
+                    Vec3 knockbackVec = target.position().subtract(livingEntity.position()).normalize();
                     // 🏹 Knockback horizontal (respeita resistência)
-                    entity.knockback(0.8, knockbackVec.x, knockbackVec.z);
-                    entity.hurt(DamageSource.mobAttack(player), 7f / nearbyEntities.size());
+                    livingEntity.knockback(0.8, knockbackVec.x, knockbackVec.z);
+                    livingEntity.hurt(player.level().damageSources().mobAttack(player), 7f / nearbyEntities.size());
                 }
             }
             // 💥 Partículas para indicar o ataque em área
@@ -133,7 +140,7 @@ public class TheDecimatorItem extends Item {
             List<LivingEntity> attackHitBox = world.getEntitiesOfClass(LivingEntity.class, attackArea);
             for (LivingEntity livingEntity : attackHitBox) {
                 if (livingEntity != player) {
-                    livingEntity.hurt(DamageSource.mobAttack(player), 6.5f);
+                    livingEntity.hurt(player.level().damageSources().mobAttack(player), 6.5f);
                 }
                 Vec3 vecMath = livingEntity.position().subtract(Vec3.atCenterOf(pos)).normalize();
                 var distance = vecMath.length();

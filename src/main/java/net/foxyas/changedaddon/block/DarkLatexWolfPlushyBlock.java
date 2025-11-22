@@ -18,19 +18,20 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -51,7 +52,7 @@ import java.util.stream.Stream;
 public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
 
     public DarkLatexWolfPlushyBlock() {
-        super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL)
+        super(BlockBehaviour.Properties.copy(Blocks.WHITE_WOOL).sound(SoundType.WOOL)
                 .strength(0.5f, 5f)
                 .noOcclusion()
                 .isRedstoneConductor((bs, br, bp) -> false));
@@ -75,18 +76,18 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
 
         @SubscribeEvent
         public static void onPlayerWakeUp(PlayerWakeUpEvent event) {
-            if (event.getPlayer().getLevel().isClientSide) return;
+            if (event.getEntity().level().isClientSide) return;
 
-            Player player = event.getPlayer();
-            Level world = player.getLevel();
-            Random random = player.getRandom();
+            Player player = event.getEntity();
+            Level world = player.level();
+            RandomSource random = player.getRandom();
             BlockPos playerBlockPos = player.blockPosition();
             Stream<BlockPos> posStream = FoxyasUtils.betweenClosedStreamSphere(playerBlockPos, 3, 2);
             Vec3 position = player.getEyePosition();
             float intensity = 1 + (player.getInventory().items.stream().filter((itemStack -> itemStack.is(ChangedAddonItems.DARK_LATEX_WOLF_PLUSH.get()))).count() / 100f);
             for (BlockPos plushyPos : posStream.filter((pos) -> world.getBlockState(pos).is(ChangedAddonBlocks.DARK_LATEX_WOLF_PLUSHY.get())).toList()) {
                 boolean canSeePlayer = canPlushySeePlayer(player, Vec3.atCenterOf(plushyPos), 360);
-                if(!canSeePlayer || event.updateWorld() || ProcessTransfur.isPlayerTransfurred(player)) continue;
+                if(!canSeePlayer || event.updateLevel() || ProcessTransfur.isPlayerTransfurred(player)) continue;
 
                 float randomValue = random.nextFloat();
                 float luck = player.getLuck() / 100f;
@@ -113,7 +114,7 @@ public class DarkLatexWolfPlushyBlock extends AbstractPlushyBlock {
          * @return true if visible and within FOV, false otherwise.
          */
         public static boolean canPlushySeePlayer(LivingEntity targetEntity, Vec3 plushyPos, double fovDegrees) {
-            Level level = targetEntity.level;
+            Level level = targetEntity.level();
             Vec3 from = targetEntity.getEyePosition(1.0F);
 
             // First, check field of view using dot product

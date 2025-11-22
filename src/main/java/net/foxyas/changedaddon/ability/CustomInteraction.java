@@ -21,11 +21,11 @@ public class CustomInteraction extends AbstractAbility<CustomInteractionInstance
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.custom_interaction");
     }
 
-    public ResourceLocation getTexture(IAbstractChangedEntity entity) {
+    public ResourceLocation getTexture(IAbstractChangedEntity ignoredEntity) {
         return ResourceLocation.parse("changed_addon:textures/screens/normal_paw.png");
     }
 
@@ -47,11 +47,11 @@ public class CustomInteraction extends AbstractAbility<CustomInteractionInstance
                 description.add(Component.translatable("changed_addon.ability.custom_interaction.have_interaction.avali"));
                 description.add(Component.translatable("changed_addon.ability.custom_interaction.have_interaction.avali.extra", avaliEntity.getDimensionScale()));
             } else if (entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
-                TranslatableComponent luminaraBeastDescription = Component.translatable("changed_addon.ability.custom_interaction.have_interaction.luminara_beast");
+                Component luminaraBeastDescription = Component.translatable("changed_addon.ability.custom_interaction.have_interaction.luminara_beast");
                 String string = luminaraBeastDescription.getString();
                 description.add(Component.literal(string).withStyle((style -> style.withObfuscated(!luminaraFlowerBeast.isHyperAwakened()))));
                 if (luminaraFlowerBeast.isHyperAwakened()) {
-                    TranslatableComponent luminaraBeastDescriptionExtra = Component.translatable("changed_addon.ability.custom_interaction.have_interaction.luminara_beast.extra", luminaraFlowerBeast.spawnParticles);
+                    Component luminaraBeastDescriptionExtra = Component.translatable("changed_addon.ability.custom_interaction.have_interaction.luminara_beast.extra", luminaraFlowerBeast.spawnParticles);
                     description.add(luminaraBeastDescriptionExtra);
                 }
             } else if (entity.getChangedEntity() instanceof AbstractLuminarcticLeopard) {

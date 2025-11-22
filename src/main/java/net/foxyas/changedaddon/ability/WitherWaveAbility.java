@@ -65,7 +65,7 @@ public class WitherWaveAbility extends SimpleAbility {
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.wither_wave");
     }
 

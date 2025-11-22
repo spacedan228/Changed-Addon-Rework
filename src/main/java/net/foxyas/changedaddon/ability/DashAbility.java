@@ -23,7 +23,7 @@ public class DashAbility extends SimpleAbility {
     }
 
     @Override
-    public TranslatableComponent getAbilityName(IAbstractChangedEntity entity) {
+    public Component getAbilityName(IAbstractChangedEntity entity) {
         return Component.translatable("changed_addon.ability.dash");
     }
 
@@ -66,15 +66,15 @@ public class DashAbility extends SimpleAbility {
     }
 
     private static void playEffects(LivingEntity player, Vec3 motion) {
-        if (!player.level.isClientSide()) {
-            if (player.isOnGround()) {
-                player.level.playSound(null, player.blockPosition(), ChangedSounds.BOW2,
+        if (!player.level().isClientSide()) {
+            if (player.onGround()) {
+                player.level().playSound(null, player.blockPosition(), ChangedSounds.CARDBOARD_BOX_OPEN.get(),
                         player.getSoundSource(), 2.5F, 1.0F);
             } else {
-                player.level.playSound(null, player.blockPosition(), SoundEvents.SNOWBALL_THROW,
+                player.level().playSound(null, player.blockPosition(), SoundEvents.SNOWBALL_THROW,
                         player.getSoundSource(), 2.5F, 0);
             }
-            if (player.getLevel() instanceof ServerLevel serverLevel) {
+            if (player.level() instanceof ServerLevel serverLevel) {
                 ParticlesUtil.sendParticles(serverLevel, ParticleTypes.POOF, player.getEyePosition(), (float) motion.x(), (float) motion.y(), (float) motion.z(), 0, 1);
             }
         }

@@ -247,7 +247,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
         // Concluir receita
         if (hasRecipe && unifuser.recipeProgress >= 100) {
-            ItemStack result = recipe.getResultItem();
+            ItemStack result = recipe.getResultItem(level.registryAccess());
 
             boolean canOutput = handler.insertItem(3, result.copy(), true).isEmpty();
 
