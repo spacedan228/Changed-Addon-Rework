@@ -21,7 +21,7 @@ public class PatEntityTrigger extends SimpleCriterionTrigger<PatEntityTrigger.Tr
     }
 
     @Override
-    protected @NotNull TriggerInstance createInstance(JsonObject jsonObject, EntityPredicate.@NotNull Composite p_66249_, @NotNull DeserializationContext p_66250_) {
+    protected @NotNull TriggerInstance createInstance(JsonObject jsonObject, @NotNull ContextAwarePredicate p_66249_, @NotNull DeserializationContext p_66250_) {
         // Verificação de presença de cada slot de armadura e desserialização dos predicados
         ItemPredicate headSlot = jsonObject.has("head") ? ItemPredicate.fromJson(jsonObject.get("head")) : ItemPredicate.ANY;
         ItemPredicate chestSlot = jsonObject.has("chest") ? ItemPredicate.fromJson(jsonObject.get("chest")) : ItemPredicate.ANY;
@@ -61,7 +61,7 @@ public class PatEntityTrigger extends SimpleCriterionTrigger<PatEntityTrigger.Tr
         private final EntityTypePredicate entityType;
         private final String name;
 
-        public TriggerInstance(EntityPredicate.Composite playerPredicate, String name, ItemPredicate headSlot, ItemPredicate chestSlot, ItemPredicate legsSlot, ItemPredicate feetSlot, EntityTypePredicate entityType) {
+        public TriggerInstance(@NotNull ContextAwarePredicate playerPredicate, String name, ItemPredicate headSlot, ItemPredicate chestSlot, ItemPredicate legsSlot, ItemPredicate feetSlot, EntityTypePredicate entityType) {
             super(PatEntityTrigger.ID, playerPredicate);
             this.name = name;
             this.headSlot = headSlot;
@@ -71,7 +71,7 @@ public class PatEntityTrigger extends SimpleCriterionTrigger<PatEntityTrigger.Tr
             this.entityType = entityType;
         }
 
-        public TriggerInstance(EntityPredicate.Composite playerPredicate, ItemPredicate headSlot, ItemPredicate chestSlot, ItemPredicate legsSlot, ItemPredicate feetSlot, EntityTypePredicate entityType) {
+        public TriggerInstance(@NotNull ContextAwarePredicate playerPredicate, ItemPredicate headSlot, ItemPredicate chestSlot, ItemPredicate legsSlot, ItemPredicate feetSlot, EntityTypePredicate entityType) {
             super(PatEntityTrigger.ID, playerPredicate);
             this.name = null;
             this.headSlot = headSlot;

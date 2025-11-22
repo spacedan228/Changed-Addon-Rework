@@ -8,7 +8,6 @@ import net.foxyas.changedaddon.util.CustomMerchantUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -52,19 +51,19 @@ public abstract class AbstractTraderChangedEntity extends ChangedEntity implemen
         return LootTable.lootTable();
     }
 
-    protected CustomMerchantOffers makeOffers(){
+    protected CustomMerchantOffers makeOffers() {
         return CustomMerchantUtil.makeOffers(this, buyOffers, 2, sellOffers, 2);
     }
 
-    protected void calculateNextReset(){
+    protected void calculateNextReset() {
         nextOfferReset = level.getGameTime() + 48000;
     }
 
     @Override
     protected @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        if(level.isClientSide || getTradingPlayer() != null) return InteractionResult.SUCCESS;
+        if (level.isClientSide || getTradingPlayer() != null) return InteractionResult.SUCCESS;
 
-        if(level.getGameTime() >= nextOfferReset){
+        if (level.getGameTime() >= nextOfferReset) {
             offers = makeOffers();
             calculateNextReset();
         }
@@ -108,13 +107,13 @@ public abstract class AbstractTraderChangedEntity extends ChangedEntity implemen
     }
 
     @Override
-    public void setTradingPlayer(@Nullable Player tradingPlayer) {
-        this.tradingPlayer = tradingPlayer;
+    public @Nullable Player getTradingPlayer() {
+        return tradingPlayer;
     }
 
     @Override
-    public @Nullable Player getTradingPlayer() {
-        return tradingPlayer;
+    public void setTradingPlayer(@Nullable Player tradingPlayer) {
+        this.tradingPlayer = tradingPlayer;
     }
 
     @Override
@@ -123,7 +122,8 @@ public abstract class AbstractTraderChangedEntity extends ChangedEntity implemen
     }
 
     @Override
-    public void overrideOffers(@NotNull CustomMerchantOffers offers) {}
+    public void overrideOffers(@NotNull CustomMerchantOffers offers) {
+    }
 
     @Override
     public void notifyTrade(CustomMerchantOffer offer) {

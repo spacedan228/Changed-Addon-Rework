@@ -56,11 +56,12 @@ import java.util.List;
 
 public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats, CustomPatReaction, PowderSnowWalkable {
 
+    public static final CreatureDietsHandleProcedure.DietType LUMINARA_DIET = CreatureDietsHandleProcedure.DietType.create("LUMINARA", ChangedAddonTags.TransfurTypes.DRAGON_LIKE, ChangedAddonTags.Items.DRAGON_DIET, List.of(Items.CHORUS_FRUIT, ChangedItems.ORANGE.get()));
     private static final EntityDataAccessor<Boolean> AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HYPER_AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
+    public boolean spawnParticles = true;
     private boolean attributesApplied;
     private boolean attributesAppliedEntity;
-    public boolean spawnParticles = true;
 
     public LuminaraFlowerBeastEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), world);
@@ -68,6 +69,90 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     public LuminaraFlowerBeastEntity(EntityType<? extends ChangedEntity> type, Level level) {
         super(type, level);
+    }
+
+    /**
+     * Main logic for the transformation effect:
+     * - Transform player into void form
+     * - Launch them upwards
+     * - Give potion effects and flight
+     * - Spawn explosion-like particles
+     */
+    private static void triggerVoidTransformation(Player player, LuminaraFlowerBeastEntity luminaraFlowerBeast) {
+        if (luminaraFlowerBeast.isHyperAwakened()) return;
+
+        boolean isAwakened = luminaraFlowerBeast.isAwakened();
+        if (!isAwakened) luminaraFlowerBeast.setAwakened(true);
+
+        if (tryExtractDragonBreath(player)) {
+            luminaraFlowerBeast.setHyperAwakened(true);
+            player.level.playSound(null, player, SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 5, 1);
+        } else if (isAwakened) return;
+
+        // Cancel fall/void velocity and launch player upwards
+        Vec3 vec = new Vec3(0, 8, 0);
+        if (luminaraFlowerBeast.isHyperAwakened()) vec = vec.scale(1.5);
+        player.setDeltaMovement(vec); // strong vertical push
+
+        player.hurtMarked = true; // force velocity update to client
+        DelayedTask.schedule(20, () -> {
+            // Enable flight
+            player.getAbilities().mayfly = true;
+            player.getAbilities().flying = true; // auto fly
+            player.onUpdateAbilities();
+        });
+
+        // Grant effects
+        player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20 * 10, 1));
+        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 10, 2));
+
+        // Explosion-like particles
+        if (!(player.level instanceof ServerLevel serverLevel)) return;
+
+        float radius = 1f;
+        float angle = 22.5f;
+        float angleTheta, anglePhi;
+        double x, y, z;
+        Vec3 pos;
+        for (float theta = 0; theta < 360; theta += angle) {
+            angleTheta = theta * Mth.DEG_TO_RAD;
+
+            for (float phi = 0; phi <= 180; phi += angle) {
+                anglePhi = phi * Mth.DEG_TO_RAD;
+                x = player.getX() + Mth.sin(anglePhi) * Mth.cos(angleTheta) * radius;
+                y = player.getY() + Mth.cos(anglePhi) * radius;
+                z = player.getZ() + Mth.sin(anglePhi) * Mth.sin(angleTheta) * radius;
+                pos = new Vec3(x, y, z);
+                ParticlesUtil.sendParticlesWithMotion(
+                        player.getLevel(),
+                        ParticleTypes.REVERSE_PORTAL,
+                        pos,
+                        Vec3.ZERO,
+                        pos.subtract(player.position()),
+                        1, 1
+                );
+            }
+        }
+
+        serverLevel.playSound(null, player.blockPosition(),
+                SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
+    }
+
+    private static boolean tryExtractDragonBreath(Player player) {
+        Inventory inv = player.getInventory();
+        ItemStack stack;
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            stack = inv.getItem(i);
+            if (!stack.is(Items.DRAGON_BREATH)) continue;
+
+            if (!player.isCreative()) {
+                stack.shrink(1);
+                if (stack.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     public Vec3 getMouthPosition() {
@@ -112,8 +197,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_KNOCKBACK), 2.0f);
     }
 
-    public static final CreatureDietsHandleProcedure.DietType LUMINARA_DIET = CreatureDietsHandleProcedure.DietType.create("LUMINARA", ChangedAddonTags.TransfurTypes.DRAGON_LIKE, ChangedAddonTags.Items.DRAGON_DIET, List.of(Items.CHORUS_FRUIT, ChangedItems.ORANGE.get()));
-
     @Override
     public List<CreatureDietsHandleProcedure.DietType> getExtraDietTypes() {
         return List.of(LUMINARA_DIET);
@@ -147,7 +230,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
         return new MobEffectInstance(ChangedAddonMobEffects.UNTRANSFUR.get(), 600);
     }
-
 
     @Override
     protected void defineSynchedData() {
@@ -249,7 +331,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
             );
         }
     }
-
 
     @Override
     public void baseTick() {
@@ -381,95 +462,11 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
                     || !(instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast)) return;
 
             // Only cancel OUT_OF_WORLD damage
-            if(event.getSource() != DamageSource.OUT_OF_WORLD) return;
+            if (event.getSource() != DamageSource.OUT_OF_WORLD) return;
 
             triggerVoidTransformation(player, luminaraFlowerBeast);
 
             event.setCanceled(true);
         }
-    }
-
-    /**
-     * Main logic for the transformation effect:
-     * - Transform player into void form
-     * - Launch them upwards
-     * - Give potion effects and flight
-     * - Spawn explosion-like particles
-     */
-    private static void triggerVoidTransformation(Player player, LuminaraFlowerBeastEntity luminaraFlowerBeast) {
-        if(luminaraFlowerBeast.isHyperAwakened()) return;
-
-        boolean isAwakened = luminaraFlowerBeast.isAwakened();
-        if(!isAwakened) luminaraFlowerBeast.setAwakened(true);
-
-        if (tryExtractDragonBreath(player)) {
-            luminaraFlowerBeast.setHyperAwakened(true);
-            player.level.playSound(null, player, SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 5, 1);
-        } else if(isAwakened) return;
-
-        // Cancel fall/void velocity and launch player upwards
-        Vec3 vec = new Vec3(0, 8, 0);
-        if(luminaraFlowerBeast.isHyperAwakened()) vec = vec.scale(1.5);
-        player.setDeltaMovement(vec); // strong vertical push
-
-        player.hurtMarked = true; // force velocity update to client
-        DelayedTask.schedule(20, () -> {
-            // Enable flight
-            player.getAbilities().mayfly = true;
-            player.getAbilities().flying = true; // auto fly
-            player.onUpdateAbilities();
-        });
-
-        // Grant effects
-        player.addEffect(new MobEffectInstance(MobEffects.SATURATION, 20 * 10, 1));
-        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 10, 2));
-
-        // Explosion-like particles
-        if(!(player.level instanceof ServerLevel serverLevel)) return;
-
-        float radius = 1f;
-        float angle = 22.5f;
-        float angleTheta, anglePhi;
-        double x, y, z;
-        Vec3 pos;
-        for (float theta = 0; theta < 360; theta += angle) {
-            angleTheta = theta * Mth.DEG_TO_RAD;
-
-            for (float phi = 0; phi <= 180; phi += angle) {
-                anglePhi = phi * Mth.DEG_TO_RAD;
-                x = player.getX() + Mth.sin(anglePhi) * Mth.cos(angleTheta) * radius;
-                y = player.getY() + Mth.cos(anglePhi) * radius;
-                z = player.getZ() + Mth.sin(anglePhi) * Mth.sin(angleTheta) * radius;
-                pos = new Vec3(x, y, z);
-                ParticlesUtil.sendParticlesWithMotion(
-                        player.getLevel(),
-                        ParticleTypes.REVERSE_PORTAL,
-                        pos,
-                        Vec3.ZERO,
-                        pos.subtract(player.position()),
-                        1, 1
-                );
-            }
-        }
-
-        serverLevel.playSound(null, player.blockPosition(),
-                SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
-    }
-
-    private static boolean tryExtractDragonBreath(Player player){
-        Inventory inv = player.getInventory();
-        ItemStack stack;
-        for(int i = 0; i < inv.getContainerSize(); i++){
-            stack = inv.getItem(i);
-            if(!stack.is(Items.DRAGON_BREATH)) continue;
-
-            if(!player.isCreative()) {
-                stack.shrink(1);
-                if(stack.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
-            }
-            return true;
-        }
-
-        return false;
     }
 }

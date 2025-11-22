@@ -44,8 +44,7 @@ public class Exp6Entity extends AbstractCanTameSnepChangedEntity {
         setPersistenceRequired();
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -143,7 +142,7 @@ public class Exp6Entity extends AbstractCanTameSnepChangedEntity {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

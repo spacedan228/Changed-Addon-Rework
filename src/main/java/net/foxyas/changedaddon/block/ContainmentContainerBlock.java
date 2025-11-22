@@ -6,7 +6,7 @@ import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.block.CustomFallable;
-import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.*;
@@ -22,6 +22,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -38,7 +39,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -56,7 +56,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
     public static final VoxelShape SHAPE_WHOLE = Block.box(4.0, 0.0, 4.0, 12.0, 16.0, 12.0);
 
     public ContainmentContainerBlock() {
-        super(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.GLASS).strength(3f, 5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false).requiresCorrectToolForDrops());
+        super(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.GLASS).strength(3f, 5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false).requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
     }
 
@@ -156,7 +156,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
     }
 
     @Override
-    public void tick(@NotNull BlockState state, ServerLevel level, @NotNull BlockPos pos, @NotNull Random p_60465_) {
+    public void tick(@NotNull BlockState state, ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource p_60465_) {
         level.scheduleTick(pos, this, this.getDelayAfterPlace());
         if (pos.getY() >= level.getMinBuildHeight() && !this.canSurvive(state, level, pos)) {
             Optional<ContainmentContainerBlockEntity> blockEntity = level.getBlockEntity(pos, ChangedAddonBlockEntities.CONTAINMENT_CONTAINER.get());
@@ -184,7 +184,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
                 level.addFreshEntity(changedEntity);
             } else {
                 if (blockEntity.getTransfurVariant().is(ChangedTransfurVariants.GAS_WOLF.get())
-                        || blockEntity.getTransfurVariant().getRegistryName().toString().contains("gas")) {
+                        || blockEntity.getTransfurVariant().getFormId().toString().contains("gas")) {
                     if (level instanceof ServerLevel serverLevel) {
                         serverLevel.sendParticles(ChangedParticles.gas(blockEntity.getTransfurVariant().getColors().getFirst()), blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f, 5, 0.5, 0.5, 0.5, 0);
                         serverLevel.sendParticles(ChangedParticles.gas(blockEntity.getTransfurVariant().getColors().getSecond()), blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f, 5, 0.5, 0.5, 0.5, 0);
@@ -206,7 +206,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
                 level.addFreshEntity(changedEntity);
             } else {
                 if (blockEntity.getTransfurVariant().is(ChangedTransfurVariants.GAS_WOLF.get())
-                        || blockEntity.getTransfurVariant().getRegistryName().toString().contains("gas")) {
+                        || blockEntity.getTransfurVariant().getFormId().toString().contains("gas")) {
                     if (level instanceof ServerLevel serverLevel) {
                         serverLevel.sendParticles(ChangedParticles.gas(blockEntity.getTransfurVariant().getColors().getFirst()), blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f, 5, 0.5, 0.5, 0.5, 0);
                         serverLevel.sendParticles(ChangedParticles.gas(blockEntity.getTransfurVariant().getColors().getSecond()), blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f, 5, 0.5, 0.5, 0.5, 0);
@@ -233,7 +233,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
                 level.sendBlockUpdated(pos, state, state, 3);
                 level.updateNeighborsAt(pos, this);
                 ItemStack normalSyringe = new ItemStack(ChangedItems.SYRINGE.get());
-                ItemStack glassFlask = new ItemStack(ChangedItems.getBlockItem(ChangedBlocks.ERLENMEYER_FLASK.get()));
+                ItemStack glassFlask = new ItemStack(ChangedBlocks.ERLENMEYER_FLASK.get());
                 if (selectedItem.getItem() instanceof LatexSyringe) {
                     if (!player.isCreative()) {
                         selectedItem.shrink(1);
@@ -286,7 +286,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
 
         });
         if (this.getFallDistance(falling) >= 3.0 && level.getFluidState(pos).isEmpty()) {
-            level.playSound(null, pos, ChangedSounds.CRASH, SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, pos, ChangedSounds.CONTAINER_BREAK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             blockEntity.ifPresent((containerBlock) -> {
                 if (containerBlock.getTransfurVariant() != null) {
                     if (!containerBlock.isTransfurNotLatex(containerBlock.getTransfurVariant())) {

@@ -49,6 +49,16 @@ public class SummonLightningGoal extends Goal {
         damageProvider = damage;
     }
 
+    public static void lightning(Level level, double x, double y, double z, float damage) {
+        LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
+        assert lightning != null;
+        lightning.moveTo(x, y, z);
+        if (damage > 0) {
+            lightning.setDamage(damage);
+        } else lightning.setVisualOnly(true);
+        level.addFreshEntity(lightning);
+    }
+
     @Override
     public boolean requiresUpdateEveryTick() {
         return true;
@@ -141,16 +151,6 @@ public class SummonLightningGoal extends Goal {
 
         strikePos = null;
         aboveWaterPos = null;
-    }
-
-    public static void lightning(Level level, double x, double y, double z, float damage) {
-        LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(level);
-        assert lightning != null;
-        lightning.moveTo(x, y, z);
-        if(damage > 0) {
-            lightning.setDamage(damage);
-        } else lightning.setVisualOnly(true);
-        level.addFreshEntity(lightning);
     }
 
     public void applyKnockBack(AABB hitbox) {

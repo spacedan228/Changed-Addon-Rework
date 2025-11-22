@@ -70,7 +70,7 @@ public abstract class AbstractGenericParticleProjectile extends ParriableProject
 
     @Override
     protected void onHitEntity(@NotNull EntityHitResult pResult) {
-       super.onHitEntity(pResult);
+        super.onHitEntity(pResult);
     }
 
     @Override

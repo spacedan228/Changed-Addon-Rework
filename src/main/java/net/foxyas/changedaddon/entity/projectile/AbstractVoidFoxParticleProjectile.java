@@ -497,7 +497,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

@@ -60,7 +60,7 @@ public class TransfurAspectEnchantment extends Enchantment {
     @Override
     public void doPostAttack(@NotNull LivingEntity pAttacker, @NotNull Entity pTarget, int pLevel) {
         super.doPostAttack(pAttacker, pTarget, pLevel);
-        if (pAttacker.getLevel().isClientSide()) return;
+        if (pAttacker.level().isClientSide()) return;
 
         if (!(pAttacker instanceof Player player)) {
             if (pAttacker instanceof ChangedEntity changedEntity) {
@@ -128,7 +128,7 @@ public class TransfurAspectEnchantment extends Enchantment {
 
         @SubscribeEvent
         public static void onItemTooltip(ItemTooltipEvent event) {
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
             if(player == null) return;
 
             // Get the Transfur Aspect enchantment level from the item
@@ -145,7 +145,7 @@ public class TransfurAspectEnchantment extends Enchantment {
             }
 
             // Use base value of 1.0 here; can be dynamically adjusted for the actual player stats
-            float baseValue = getTransfurDamage(event.getPlayer(), null, enchantLevel);
+            float baseValue = getTransfurDamage(event.getEntity(), null, enchantLevel);
 
             // Calculate the Transfur Damage using the same formula as in doPostAttack
             float damage = baseValue * 0.75f * enchantLevel / 4f;

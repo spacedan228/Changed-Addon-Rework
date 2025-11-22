@@ -47,6 +47,8 @@ import static net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure.Die
 
 public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats {
 
+    public static final DietType WOLFY_DIET = DietType.create("WOLFY", ChangedAddonTags.TransfurTypes.WOLF_DIET, ChangedAddonTags.Items.WOLF_DIET, List.of(ChangedAddonItems.FOXTA.get(), ChangedItems.ORANGE.get()));
+
     public WolfyEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.WOLFY.get(), world);
     }
@@ -59,41 +61,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         setPersistenceRequired();
     }
 
-    public static void init() {
-    }
 
-    @Mod.EventBusSubscriber
-    public static class WolfyAttackedEvent {
-
-        @SubscribeEvent
-        public static void onEntityAttacked(LivingAttackEvent event) {
-            Entity entity = event.getEntity();
-            if (!(entity instanceof Player player)) return;
-
-            TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (instance == null || !instance.is(ChangedAddonTransfurVariants.WOLFY)) return;
-
-            DamageSource damagesource = event.getSource();
-            if (damagesource instanceof EntityDamageSource _entityDamageSource && _entityDamageSource.isThorns()) {
-                event.setCanceled(true);
-                return;
-            }
-
-            if (damagesource.isFire()) {
-                event.setCanceled(true);
-                return;
-            }
-
-            if (damagesource.isExplosion()) {
-                event.setCanceled(true);
-                return;
-            }
-
-            if (damagesource == DamageSource.LIGHTNING_BOLT) {
-                event.setCanceled(true);
-            }
-        }
-    }
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -134,7 +102,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -247,8 +215,6 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         return super.getMyRidingOffset();
     }
 
-    public static final DietType WOLFY_DIET = DietType.create("WOLFY", ChangedAddonTags.TransfurTypes.WOLF_DIET, ChangedAddonTags.Items.WOLF_DIET, List.of(ChangedAddonItems.FOXTA.get(), ChangedItems.ORANGE.get()));
-
     @Override
     public List<DietType> getExtraDietTypes() {
         return List.of(WOLFY_DIET);
@@ -273,6 +239,39 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         if (source.isFire())
             return false;
         return super.hurt(source, amount);
+    }
+
+    @Mod.EventBusSubscriber
+    public static class WolfyAttackedEvent {
+
+        @SubscribeEvent
+        public static void onEntityAttacked(LivingAttackEvent event) {
+            Entity entity = event.getEntity();
+            if (!(entity instanceof Player player)) return;
+
+            TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (instance == null || !instance.is(ChangedAddonTransfurVariants.WOLFY)) return;
+
+            DamageSource damagesource = event.getSource();
+            if (damagesource instanceof EntityDamageSource _entityDamageSource && _entityDamageSource.isThorns()) {
+                event.setCanceled(true);
+                return;
+            }
+
+            if (damagesource.isFire()) {
+                event.setCanceled(true);
+                return;
+            }
+
+            if (damagesource.isExplosion()) {
+                event.setCanceled(true);
+                return;
+            }
+
+            if (damagesource == DamageSource.LIGHTNING_BOLT) {
+                event.setCanceled(true);
+            }
+        }
     }
 
 }

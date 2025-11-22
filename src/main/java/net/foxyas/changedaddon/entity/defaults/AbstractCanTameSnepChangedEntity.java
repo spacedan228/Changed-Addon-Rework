@@ -13,7 +13,6 @@ import net.minecraft.Util;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -53,6 +52,10 @@ public abstract class AbstractCanTameSnepChangedEntity extends AbstractSnowLeopa
         super(type, level);
     }
 
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable();
+    }
+
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(6, new LatexFollowOwnerGoal<>(this, 0.35D, 10.0F, 2.0F, false));
@@ -69,10 +72,6 @@ public abstract class AbstractCanTameSnepChangedEntity extends AbstractSnowLeopa
 
     public boolean isBiped() {
         return true;
-    }
-
-    public static LootTable.@NotNull Builder getLoot() {
-        return LootTable.lootTable();
     }
 
     @Override

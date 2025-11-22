@@ -35,8 +35,7 @@ public class LynxEntity extends ChangedEntity implements PowderSnowWalkable, Var
         setAttributes(this.getAttributes());
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -49,10 +48,6 @@ public class LynxEntity extends ChangedEntity implements PowderSnowWalkable, Var
         return builder;
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -65,7 +60,7 @@ public class LynxEntity extends ChangedEntity implements PowderSnowWalkable, Var
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

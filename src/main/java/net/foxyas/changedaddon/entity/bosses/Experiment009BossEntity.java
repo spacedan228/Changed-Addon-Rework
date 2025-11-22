@@ -13,31 +13,32 @@ import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.*;
-import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedDamageSources;
 import net.ltxprogrammer.changed.init.ChangedParticles;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -45,7 +46,8 @@ import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -68,10 +70,7 @@ import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
@@ -85,7 +84,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
     private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.BLUE, ServerBossEvent.BossBarOverlay.NOTCHED_6);
     private boolean shouldBleed;
 
-    public Experiment009BossEntity(PlayMessages.SpawnEntity packet, Level world) {
+    public Experiment009BossEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXPERIMENT_009_BOSS.get(), world);
     }
 
@@ -97,8 +96,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         setPersistenceRequired();
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -113,8 +111,10 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         return builder;
     }
 
-    public EntityDamageSource getThunderDmg() {
-        return new EntityDamageSource(DamageSource.LIGHTNING_BOLT.getMsgId(), this);
+    public DamageSource getThunderDmg() {
+        DamageSource damageSource = this.level().damageSources().lightningBolt();
+        Holder<DamageType> pType = damageSource.typeHolder();
+        return new DamageSource(pType, this);
     }
 
     @Override
@@ -164,13 +164,9 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
 
     @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ResourceLocation.parse("changed:humanoids")));
+        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(ChangedTags.EntityTypes.HUMANOIDS);
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -199,7 +195,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -279,7 +275,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             Player playerInControl = this.getUnderlyingPlayer();
             TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(playerInControl);
             if (transfurVariantInstance != null) {
-                if (playerInControl.getLevel().getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.NEED_PERMISSION_FOR_BOSS_TRANSFUR)) {
+                if (playerInControl.level().getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.NEED_PERMISSION_FOR_BOSS_TRANSFUR)) {
                     if (!getPlayerVars(playerInControl).Exp009TransfurAllowed) {
                         ProcessTransfur.setPlayerTransfurVariant(playerInControl, ChangedAddonTransfurVariants.EXPERIMENT_009.get(), TransfurContext.hazard(TransfurCause.GRAB_ABSORB), 1, false);
                     }
@@ -288,20 +284,6 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 if (dodgeAbilityInstance != null && dodgeAbilityInstance.getMaxDodgeAmount() < 10) {
                     dodgeAbilityInstance.setMaxDodgeAmount(10);
                     dodgeAbilityInstance.setDodgeAmount(10);
-                }
-            }
-        }
-    }
-
-    @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
-    public static class WhenAttackAEntity {
-        @SubscribeEvent
-        public static void WhenAttack(LivingAttackEvent event) {
-            LivingEntity target = event.getEntityLiving();
-            Entity source = event.getSource().getEntity();
-            if (source instanceof Experiment009BossEntity experiment009BossEntity) {
-                if (experiment009BossEntity.isPhase3()) {
-                    experiment009BossEntity.heal(0.5f);
                 }
             }
         }
@@ -336,56 +318,54 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
     public boolean hurt(DamageSource source, float amount) {
         if (source.getDirectEntity() instanceof ThrownPotion || source.getDirectEntity() instanceof AreaEffectCloud)
             return false;
-        if (source == DamageSource.FALL)
+        if (source.is(DamageTypeTags.IS_FALL))
             return false;
-        if (source == DamageSource.CACTUS)
+        if (source.is(DamageTypes.CACTUS))
             return false;
-        if (source == DamageSource.DROWN)
+        if (source.is(DamageTypes.DROWN))
             return false;
-        if (source == DamageSource.LIGHTNING_BOLT)
+        if (source.is(DamageTypes.LIGHTNING_BOLT))
             return false;
         if (source.getMsgId().equals("trident")) {
-            if (this.getLevel().random.nextFloat() <= 0.25f) {
+            if (this.level().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
                     player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
                 }
             }
             return super.hurt(source, amount * 0.5f);
         }
-        if (source == DamageSource.ANVIL)
+       if (source.is(DamageTypes.FALLING_ANVIL))
             return false;
-        if (source == DamageSource.DRAGON_BREATH)
+       if (source.is(DamageTypes.DRAGON_BREATH))
             return false;
-        if (source == DamageSource.WITHER)
+       if (source.is(DamageTypes.WITHER))
             return false;
         if (source.getMsgId().equals("witherSkull"))
             return false;
-        if (source == DamageSource.IN_WALL) {
+       if (source.is(DamageTypes.IN_WALL)) {
             Exp9AttacksHandle.TeleportAttack.Teleport(this, this.getTarget() == null
-                    ? this.getLevel().getNearestPlayer(this.getX(), this.getY(), this.getZ(), 32d, true)
+                    ? this.level().getNearestPlayer(this.getX(), this.getY(), this.getZ(), 32d, true)
                     : this.getTarget());
             return false;
         }
-        if (source.isProjectile()) {
-            if (this.getLevel().random.nextFloat() <= 0.25f) {
+        if (source.is(DamageTypeTags.IS_PROJECTILE)) {
+            if (this.level().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
                     player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
                 }
             }
             return super.hurt(source, amount * 0.5f);
         }
-
-        if (source instanceof EntityDamageSource entityDamageSource) {
-            if (entityDamageSource.isThorns()) {
+        if (source.is(DamageTypes.THORNS)) {
                 return super.hurt(source, 0);
-            }
         }
+
         return super.hurt(source, amount);
     }
 
     @Override
     public boolean isDamageSourceBlocked(@NotNull DamageSource pDamageSource) {
-        if (pDamageSource == ChangedDamageSources.ELECTROCUTION) {
+        if (pDamageSource.is(ChangedDamageSources.ELECTROCUTION.key())) {
             return true;
         }
         return super.isDamageSourceBlocked(pDamageSource);
@@ -486,7 +466,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
 
     @Override
     public void die(@NotNull DamageSource damageSource) {
-        if (damageSource instanceof EntityDamageSource entityDamageSource && entityDamageSource.getDirectEntity() != null) {
+        if (damageSource.getDirectEntity() != null) {
             this.playSound(SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
             for (int theta = 0; theta < 360; theta += 25) { // Ângulo horizontal
                 double angleTheta = Math.toRadians(theta);
@@ -526,19 +506,20 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             if (shouldBleed && (this.computeHealthRatio() / 0.4f) > 0.25f && this.tickCount % 4 == 0) {
                 this.setHealth(this.getHealth() - 0.25f);
             }
-            if (this.getRandom().nextFloat() < 1 - Math.min(0.95, computeHealthRatio())) {
+            Random randomSource = new Random();
+            if (randomSource.nextFloat() < 1 - Math.min(0.95, computeHealthRatio())) {
                 if (this.isPhase2()) {
                     if (this.shouldBleed) {
-                        ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.01f);
-                        ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.05f);
+                        ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.01f);
+                        ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.05f);
                     } else {
-                        if (this.getRandom().nextFloat() > 0.95) {
-                            ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 10, 0.01f);
+                        if (randomSource.nextFloat() > 0.95) {
+                            ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 10, 0.01f);
                         }
-                        ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 10, 1);
+                        ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 10, 1);
                     }
                 } else {
-                    ParticlesUtil.sendParticles(this.getLevel(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, this.getRandom().nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 5, 1);
+                    ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 5, 1);
                 }
             }
 
@@ -557,7 +538,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             colors[0] = new Color(70, 199, 255);
             colors[1] = new Color(13, 160, 208);
             ParticleOptions dustColor = getParticleOptions(colors[0], colors[1]);
-            PlayerUtilProcedure.ParticlesUtil.sendParticles(this.getLevel(), dustColor, this.position().add(0, 0.5, 0), 0.35f, 0.70f, 0.35f, 5, 0);
+            PlayerUtilProcedure.ParticlesUtil.sendParticles(this.level(), dustColor, this.position().add(0, 0.5, 0), 0.35f, 0.70f, 0.35f, 5, 0);
             */
             } else {
                 removeStatModifiers();
@@ -641,7 +622,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             lightning.setCause(null);
             lightning.setDamage(6f);
             this.level.addFreshEntity(lightning);
-            ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
+            ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
         }
     }
 
@@ -651,10 +632,9 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             lightning.moveTo(pos.x(), pos.y(), pos.z());
             lightning.setCause(null);
             this.level.addFreshEntity(lightning);
-            ParticlesUtil.sendParticles(this.getLevel(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
+            ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
         }
     }
-
 
     public void setSpeed(Experiment009BossEntity entity) {
         AttributeModifier speedModifier = new AttributeModifier(UUID.fromString("10-0-0-0-0"), "Speed", -0.4, AttributeModifier.Operation.MULTIPLY_BASE);
@@ -674,7 +654,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             setCrawlingPoseIfNeeded(target);
             crawlToTarget(target);
         } else {
-            BlockPos pPos = new BlockPos(this.getX(), this.getEyeY(), this.getZ());
+            BlockPos pPos = new BlockPos((int) this.getX(),(int) this.getEyeY(),(int) this.getZ());
             BlockState blockState = this.level.getBlockState(pPos.above());
 
             Pose currentPose = this.getPose();
@@ -697,11 +677,11 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
 
     public void setCrawlingPoseIfNeeded(LivingEntity target) {
         if (target.getPose() == Pose.SWIMMING && this.getPose() != Pose.SWIMMING) {
-            if (target.getY() < this.getEyeY() && !target.level.getBlockState(new BlockPos(target.getX(), target.getEyeY(), target.getZ()).above()).isAir()) {
+            if (target.getY() < this.getEyeY() && !target.level.getBlockState(new BlockPos((int) target.getX(), (int) target.getEyeY(), (int) target.getZ()).above()).isAir()) {
                 this.setPose(Pose.SWIMMING);
             }
         } else {
-            if (!this.isSwimming() && this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir()) {
+            if (!this.isSwimming() && this.level.getBlockState(new BlockPos((int) this.getX(),(int) this.getEyeY(),(int) this.getZ()).above()).isAir()) {
                 this.setPose(Pose.STANDING);
             }
         }
@@ -727,14 +707,14 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 this.setPose(Pose.STANDING);
                 this.setSwimming(false);
             }
-        } else if (this.getPose() == Pose.SWIMMING && !this.isInWater() && (this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir() || this.canEnterPose(Pose.STANDING))) {
+        } else if (this.getPose() == Pose.SWIMMING && !this.isInWater() && (this.level.getBlockState(new BlockPos((int) this.getX(),(int) this.getEyeY(),(int) this.getZ()).above()).isAir() || this.canEnterPose(Pose.STANDING))) {
             this.setPose(Pose.STANDING);
         }
     }
 
     @Override
     public void WhenPattedReaction(Player player, InteractionHand hand) {
-        if (!(player.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (!(player.level() instanceof ServerLevel serverLevel)) return;
         if (player instanceof ServerPlayer serverPlayer) {
             ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, this, "pats_on_the_beast");
         }
@@ -745,7 +725,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp9.pat.type_2"));
         translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp9.pat.type_3"));
 
-        ParticlesUtil.sendParticles(player.getLevel(),
+        ParticlesUtil.sendParticles(player.level(),
                 ChangedParticles.emote(this, Emote.ANGRY),
                 this.getX(),
                 this.getY() + (double) this.getDimensions(this.getPose()).height + 0.65,
@@ -769,5 +749,19 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             mobEffectInstance = new MobEffectInstance(MobEffects.DAMAGE_BOOST, 20, 0, true, true, true);
         }
         this.addEffect(mobEffectInstance);
+    }
+
+    @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
+    public static class WhenAttackAEntity {
+        @SubscribeEvent
+        public static void WhenAttack(LivingAttackEvent event) {
+            LivingEntity target = event.getEntity();
+            Entity source = event.getSource().getEntity();
+            if (source instanceof Experiment009BossEntity experiment009BossEntity) {
+                if (experiment009BossEntity.isPhase3()) {
+                    experiment009BossEntity.heal(0.5f);
+                }
+            }
+        }
     }
 }

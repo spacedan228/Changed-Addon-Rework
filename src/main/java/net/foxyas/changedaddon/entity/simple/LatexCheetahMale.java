@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
@@ -32,15 +32,17 @@ public class LatexCheetahMale extends AbstractCheetahEntity {
 
     @SubscribeEvent
     public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
+        //Fixme add the biome modifier in the data folder
         if (SPAWN_BIOMES.contains(event.getName())) {
             event.getSpawns().getSpawner(ChangedMobCategories.CHANGED)
                     .add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), 20, 1, 4));
         }
     }
 
-    public static void init() {
-        SpawnPlacements.register(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)));
+    @SubscribeEvent
+    public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {
+        event.register(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)), SpawnPlacementRegisterEvent.Operation.OR);
     }
 
     @Override

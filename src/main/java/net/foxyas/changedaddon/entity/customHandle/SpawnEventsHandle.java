@@ -24,7 +24,7 @@ public class SpawnEventsHandle {
         Level level = event.getWorld();
         Entity entity = event.getEntity();
 
-        if((!(entity instanceof AbstractLuminarcticLeopard leo) || !leo.isBoss())
+        if ((!(entity instanceof AbstractLuminarcticLeopard leo) || !leo.isBoss())
                 && !(entity instanceof Experiment10BossEntity) && !(entity instanceof Experiment009BossEntity)) return;
 
         if (destroyBlock(entity, level)) {

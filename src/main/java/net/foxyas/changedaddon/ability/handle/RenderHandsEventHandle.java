@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.ability.handle;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.ability.CarryAbilityInstance;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
@@ -25,6 +24,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import static com.mojang.math.Axis.*;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class RenderHandsEventHandle {
@@ -66,7 +67,7 @@ public class RenderHandsEventHandle {
             PoseStack stack = event.getPoseStack();
             MultiBufferSource buffer = event.getMultiBufferSource();
             int light = event.getPackedLight();
-            float partialTicks = event.getPartialTicks(); //Useless for now
+            float partialTicks = event.getPartialTick(); //Useless for now
             float equipProgress = extraHandShowProgress <= VISIBLE_HAND_PROGRESS ? event.getEquipProgress() : extraHandShowProgress; // event.getEquipProgress();
 
             EntityRenderer<? super LivingEntity> entRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
@@ -85,15 +86,15 @@ public class RenderHandsEventHandle {
                         float f4 = -0.4F * Mth.sin(pSwingProgress * (float) Math.PI);
 
                         stack.translate(f * (f2 + 0.64000005F), f3 + -0.6F + equipProgress * -0.6F, f4 + -0.71999997F);// 0 here is an inaccessible variable from ItemInHandRenderer
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
+                        stack.mulPose(YP.rotationDegrees(f * 45.0F));
                         float f5 = Mth.sin(pSwingProgress * pSwingProgress * (float) Math.PI);
                         float f6 = Mth.sin(f1 * (float) Math.PI);
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
-                        stack.mulPose(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
+                        stack.mulPose(YP.rotationDegrees(f * f6 * 70.0F));
+                        stack.mulPose(ZP.rotationDegrees(f * f5 * -20.0F));
                         stack.translate(f * -1.0F, 3.6F, 3.5D);
-                        stack.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
-                        stack.mulPose(Vector3f.XP.rotationDegrees(200.0F));
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
+                        stack.mulPose(ZP.rotationDegrees(f * 120.0F));
+                        stack.mulPose(XP.rotationDegrees(200.0F));
+                        stack.mulPose(YP.rotationDegrees(f * -135.0F));
                         stack.translate(f * 5.6F, 0.0D, 0.0D);
                         if (rightHand) {
                             if (player.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {

@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
 import net.minecraft.network.chat.Style;
-
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;

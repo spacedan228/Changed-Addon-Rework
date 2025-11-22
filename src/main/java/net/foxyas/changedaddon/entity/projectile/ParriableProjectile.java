@@ -38,7 +38,6 @@ import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
 
 public abstract class ParriableProjectile extends Projectile {
@@ -292,7 +291,7 @@ public abstract class ParriableProjectile extends Projectile {
                     if (piercedAndKilledEntities != null && shotFromCrossbow()) {
                         CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayer, piercedAndKilledEntities);
                     } else if (!entity.isAlive() && shotFromCrossbow()) {
-                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayer, Arrays.asList(entity));
+                        CriteriaTriggers.KILLED_BY_CROSSBOW.trigger(serverplayer, List.of(entity));
                     }
                 }
             }
@@ -397,12 +396,16 @@ public abstract class ParriableProjectile extends Projectile {
         return Entity.MovementEmission.NONE;
     }
 
+    public double getBaseDamage() {
+        return baseDamage;
+    }
+
     public void setBaseDamage(double pBaseDamage) {
         baseDamage = pBaseDamage;
     }
 
-    public double getBaseDamage() {
-        return baseDamage;
+    public int getKnockback() {
+        return knockback;
     }
 
     /**
@@ -410,10 +413,6 @@ public abstract class ParriableProjectile extends Projectile {
      */
     public void setKnockback(int pKnockback) {
         knockback = pKnockback;
-    }
-
-    public int getKnockback() {
-        return knockback;
     }
 
     /**
@@ -425,17 +424,6 @@ public abstract class ParriableProjectile extends Projectile {
 
     protected float getEyeHeight(@NotNull Pose pPose, @NotNull EntityDimensions pSize) {
         return 0.13F;
-    }
-
-    /**
-     * Whether the arrow has a stream of critical hit particles flying behind it.
-     */
-    public void setCritArrow(boolean pCritArrow) {
-        setFlag(FLAG_CRIT, pCritArrow);
-    }
-
-    public void setPierceLevel(byte pPierceLevel) {
-        entityData.set(PIERCE_LEVEL, pPierceLevel);
     }
 
     private void setFlag(int pId, boolean pValue) {
@@ -457,6 +445,13 @@ public abstract class ParriableProjectile extends Projectile {
     }
 
     /**
+     * Whether the arrow has a stream of critical hit particles flying behind it.
+     */
+    public void setCritArrow(boolean pCritArrow) {
+        setFlag(FLAG_CRIT, pCritArrow);
+    }
+
+    /**
      * Whether the arrow was shot from a crossbow.
      */
     public boolean shotFromCrossbow() {
@@ -466,6 +461,10 @@ public abstract class ParriableProjectile extends Projectile {
 
     public byte getPierceLevel() {
         return entityData.get(PIERCE_LEVEL);
+    }
+
+    public void setPierceLevel(byte pPierceLevel) {
+        entityData.set(PIERCE_LEVEL, pPierceLevel);
     }
 
     public void setEnchantmentEffectsFromEntity(LivingEntity pShooter, float pVelocity) {
@@ -491,14 +490,6 @@ public abstract class ParriableProjectile extends Projectile {
     }
 
     /**
-     * Sets if this arrow can noClip
-     */
-    public void setNoPhysics(boolean pNoPhysics) {
-        noPhysics = pNoPhysics;
-        setFlag(FLAG_NO_PHYSICS, pNoPhysics);
-    }
-
-    /**
      * Whether the arrow can noClip
      */
     public boolean isNoPhysics() {
@@ -507,6 +498,14 @@ public abstract class ParriableProjectile extends Projectile {
         } else {
             return (entityData.get(ID_FLAGS) & FLAG_NO_PHYSICS) != 0;
         }
+    }
+
+    /**
+     * Sets if this arrow can noClip
+     */
+    public void setNoPhysics(boolean pNoPhysics) {
+        noPhysics = pNoPhysics;
+        setFlag(FLAG_NO_PHYSICS, pNoPhysics);
     }
 
     /**

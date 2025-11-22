@@ -43,8 +43,7 @@ public class SnowLeopardFemaleOrganicEntity extends AbstractCanTameSnepChangedEn
         setPersistenceRequired();
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -144,7 +143,7 @@ public class SnowLeopardFemaleOrganicEntity extends AbstractCanTameSnepChangedEn
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

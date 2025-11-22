@@ -16,7 +16,7 @@ public class LavaSwimmingTrigger extends SimpleCriterionTrigger<LavaSwimmingTrig
     }
 
     @Override
-    protected @NotNull Instance createInstance(@NotNull JsonObject json, EntityPredicate.@NotNull Composite playerPredicate, @NotNull DeserializationContext context) {
+    protected @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
         return new Instance(playerPredicate);
     }
 
@@ -25,7 +25,7 @@ public class LavaSwimmingTrigger extends SimpleCriterionTrigger<LavaSwimmingTrig
     }
 
     public static class Instance extends AbstractCriterionTriggerInstance {
-        public Instance(EntityPredicate.Composite playerPredicate) {
+        public Instance(@NotNull ContextAwarePredicate playerPredicate) {
             super(ID, playerPredicate);
         }
 

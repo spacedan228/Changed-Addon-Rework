@@ -20,7 +20,6 @@ import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.EyeStyle;
-import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
@@ -35,7 +34,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Style;
-
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -77,6 +75,8 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     public static final int MAX_1_COOLDOWN = 120;
     public static final int MAX_2_COOLDOWN = 120;
     private static final int MAX_COOLDOWN = 120;
+    private static final EntityDataAccessor<Float> DODGE_HEALTH = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Float> MAX_DODGE_HEALTH = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.FLOAT);
     public final ServerBossEvent bossBar = getBossBar();
     public final ServerBossEvent dodgeHealthBossBar = getDodgeHealthBossBar();
     public int timesUsedAttack1, timesUsedAttack2, timesUsedAttack3, timesUsedAttack4/*, timesUsedAttack5*/ = 0;
@@ -86,9 +86,6 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     private int AttackInUse;
     private int ticksInUse;
     private int ticksTakeDmgFromFire = 0;
-
-    private static final EntityDataAccessor<Float> DODGE_HEALTH = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<Float> MAX_DODGE_HEALTH = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.FLOAT);
 
     public VoidFoxEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.VOID_FOX.get(), world);
@@ -106,8 +103,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         return MAX_COOLDOWN;
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
@@ -153,10 +149,6 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         this.entityData.define(DODGE_HEALTH, getMaxDodgeHealth());
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -168,7 +160,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -639,12 +631,12 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         this.entityData.set(DODGE_HEALTH, this.getDodgeHealth() + value);
     }
 
-    public void setMaxDodgeHealth(float maxDodgeHealth) {
-        this.entityData.set(MAX_DODGE_HEALTH, maxDodgeHealth);
-    }
-
     public float getMaxDodgeHealth() {
         return this.entityData.get(MAX_DODGE_HEALTH);
+    }
+
+    public void setMaxDodgeHealth(float maxDodgeHealth) {
+        this.entityData.set(MAX_DODGE_HEALTH, maxDodgeHealth);
     }
 
     @Override

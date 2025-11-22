@@ -20,7 +20,7 @@ public class SleepNextAPlushyTrigger extends SimpleCriterionTrigger<SleepNextAPl
     }
 
     @Override
-    protected @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull EntityPredicate.Composite playerPredicate, @NotNull DeserializationContext context) {
+    protected @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
         // pega o nome se existir
         JsonElement elem = json.get("name");
         String name = (elem != null && elem.isJsonPrimitive() && elem.getAsJsonPrimitive().isString())
@@ -55,7 +55,7 @@ public class SleepNextAPlushyTrigger extends SimpleCriterionTrigger<SleepNextAPl
         private final TransfurPredicate transfurPredicate;
         private final boolean needWakeUp;
 
-        public Instance(EntityPredicate.Composite playerPredicate, TransfurPredicate transfurPredicate, boolean needWakeUp, @Nullable String name) {
+        public Instance(@NotNull ContextAwarePredicate playerPredicate, TransfurPredicate transfurPredicate, boolean needWakeUp, @Nullable String name) {
             super(ID, playerPredicate);
             this.transfurPredicate = transfurPredicate != null ? transfurPredicate : TransfurPredicate.ANY;
             this.name = name;

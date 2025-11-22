@@ -24,12 +24,13 @@ import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -124,6 +125,10 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         // Condições atendidas, pode spawnar
     }
 
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable();
+    }
+
     public boolean canDodge(DodgeAbilityInstance abilityInstance) {
         return true;
     }
@@ -145,12 +150,12 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     }
 
     @Override
-    protected int getExperienceReward(@NotNull Player player) {
+    public int getExperienceReward() {
         if (this.isBoss()) {
-            return super.getExperienceReward(player) * 50;
+            return super.getExperienceReward() * 50;
         }
 
-        return super.getExperienceReward(player);
+        return super.getExperienceReward();
     }
 
     @Override
@@ -263,7 +268,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
                                     double z = this.getZ() + Math.sin(anglePhi) * Math.sin(angleTheta) * 4.0;
                                     Vec3 pos = new Vec3(x, y, z);
                                     ParticlesUtil.sendParticles(
-                                            this.getLevel(),
+                                            this.level(),
                                             ParticleTypes.GLOW,
                                             pos,
                                             0.3f, 0.2f, 0.3f,
@@ -395,23 +400,23 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
                 setDodging(attacker);
             }
         }
-        if (source.isProjectile() && source.getDirectEntity() instanceof AbstractArrow abstractArrow && abstractArrow.getPierceLevel() <= 0 && this.isBoss()) {
+        if (source.is(DamageTypeTags.IS_PROJECTILE) && source.getDirectEntity() instanceof AbstractArrow abstractArrow && abstractArrow.getPierceLevel() <= 0 && this.isBoss()) {
             // Animação de esquiva e "ignorar" o dano
 
             Entity attacker = source.getDirectEntity() != null ? source.getDirectEntity() : source.getEntity();
             setDodging(attacker);
             return false;
-        } else if (source.isProjectile() && !this.isBoss()) {
+        } else if (source.is(DamageTypeTags.IS_PROJECTILE) && !this.isBoss()) {
             return super.hurt(source, amount);
-        } else if (source.isProjectile() &&
+        } else if (source.is(DamageTypeTags.IS_PROJECTILE) &&
                 source.getDirectEntity() instanceof AbstractArrow abstractArrow &&
                 abstractArrow.getPierceLevel() > 0 && this.isBoss()) {
             return super.hurt(source, amount);
         }
 
         // Dano de fogo ou explosão extremamente reduzido
-        if (this.isBoss() && (source.isFire() || source.isExplosion())) {
-            if (source.isFire()) {
+        if (this.isBoss() && (source.is(DamageTypeTags.IS_FIRE) || source.is(DamageTypeTags.IS_EXPLOSION))) {
+            if (source.is(DamageTypeTags.IS_FIRE)) {
                 return super.hurt(source, amount * 0.75f);
             }
             return super.hurt(source, amount * 0.25f);
@@ -460,13 +465,11 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     public static class WhenAttackAEntity {
         @SubscribeEvent
         public static void WhenAttack(LivingHurtEvent event) {
-            LivingEntity target = event.getEntityLiving();
+            LivingEntity target = event.getEntity();
             Entity source = event.getSource().getEntity();
 
-            if (event.getSource() instanceof EntityDamageSource entityDamageSource) {
-                if (entityDamageSource.isThorns()) {
-                    return;
-                }
+            if (event.getSource().is(DamageTypes.THORNS)) {
+                return;
             }
 
             if (source instanceof AbstractLuminarcticLeopard lumi && lumi.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
@@ -487,7 +490,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
 
         @SubscribeEvent
         public static void onEntityDrop(LivingDropsEvent event) {
-            LivingEntity entity = event.getEntityLiving();
+            LivingEntity entity = event.getEntity();
             Level level = entity.level;
 
             // Verifica se é um mob específico, por exemplo, um Luminarctic Leopard
@@ -505,9 +508,5 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
                 }
             }
         }
-    }
-
-    public static LootTable.@NotNull Builder getLoot() {
-        return LootTable.lootTable();
     }
 }

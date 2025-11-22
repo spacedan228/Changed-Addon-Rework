@@ -27,19 +27,19 @@ import java.util.Optional;
 @ParametersAreNonnullByDefault
 public interface ChangedEntityExtension {
 
-    default boolean isPacified() {
-        return false;
-    }
-
-    default void setPacified(boolean value) {
-    }
-
     static ChangedEntityExtension of(ChangedEntity entity) {
         return (ChangedEntityExtension) entity;
     }
 
     static boolean isNeutralTo(ChangedEntity entity, LivingEntity target) {
         return of(entity).isNeutralTo(target);
+    }
+
+    default boolean isPacified() {
+        return false;
+    }
+
+    default void setPacified(boolean value) {
     }
 
     boolean isNeutralTo(LivingEntity target);

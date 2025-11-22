@@ -43,13 +43,13 @@ public class Exp1FemaleEntity extends ChangedEntity implements GenderedEntity, P
 
     //@SubscribeEvent
     //public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-        //if (SPAWN_BIOMES.contains(event.getName()))
-        //    event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.EXP_1_FEMALE.get(), 20, 1, 4));
+    //if (SPAWN_BIOMES.contains(event.getName()))
+    //    event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.EXP_1_FEMALE.get(), 20, 1, 4));
     //}
 
     public static void init() {
         //SpawnPlacements.register(ChangedAddonEntities.EXP_1_FEMALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                //(entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)));
+        //(entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -79,10 +79,6 @@ public class Exp1FemaleEntity extends ChangedEntity implements GenderedEntity, P
         return Color3.getColor("#E5E5E5");
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -133,7 +129,7 @@ public class Exp1FemaleEntity extends ChangedEntity implements GenderedEntity, P
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

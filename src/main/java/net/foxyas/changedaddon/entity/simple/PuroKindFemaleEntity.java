@@ -41,8 +41,7 @@ public class PuroKindFemaleEntity extends AbstractDarkLatexWolf {
         setPersistenceRequired();
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -96,7 +95,7 @@ public class PuroKindFemaleEntity extends AbstractDarkLatexWolf {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

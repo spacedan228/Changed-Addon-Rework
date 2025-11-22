@@ -12,18 +12,18 @@ import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.network.protocol.game.ClientboundSetPassengersPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.Nullable;
 
 public class CarryAbilityInstance extends AbstractAbilityInstance {
@@ -69,7 +69,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
         LivingEntity e = entity.getEntity();
 
         // Client-side check (Useless for now)
-        if (e.getLevel().isClientSide() && e instanceof LocalPlayer player) {
+        if (e.level().isClientSide() && e instanceof LocalPlayer player) {
             if (player.getFirstPassenger() != null) {
             }
         }
@@ -88,7 +88,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
 
         // Caso especial de água sem coluna de bolhas
         Level level = e.level;
-        if (e.isEyeInFluid(FluidTags.WATER) && !level.getBlockState(new BlockPos(e.getX(), e.getEyeY(), e.getZ())).is(Blocks.BUBBLE_COLUMN)) {
+        if (e.getEyeInFluidType() == ForgeMod.WATER_TYPE.get() && !level.getBlockState(new BlockPos((int) e.getX(), (int) e.getEyeY(), (int) e.getZ())).is(Blocks.BUBBLE_COLUMN)) {
             dropPassenger(e);
         }
 
@@ -111,7 +111,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
 
 
     public static @Nullable Entity carryTarget(Player player) {
-        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(player, ((float) player.getAttackRange()), true);
+        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(player, ((float) player.getEntityReach()), true);
         if (hitResult == null) {
             return null;
         }
@@ -157,7 +157,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
 
     // Toca o som (opcional)
     private static void soundPlay(Player player) {
-        player.level.playSound(null, player.blockPosition(), ChangedSounds.BOW2, SoundSource.PLAYERS, 2.5f, 1.0f);
+        player.level.playSound(null, player.blockPosition(), ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.PLAYERS, 2.5f, 1.0f);
     }
 
 

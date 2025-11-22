@@ -49,8 +49,7 @@ public class VoidFoxParticleProjectile extends AbstractVoidFoxParticleProjectile
         this.target = target;
     }
 
-    public static void init() {
-    }
+
 
     @Override
     public boolean discardOnNoDmgImpact() {

@@ -26,22 +26,18 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 public class ThunderDiveGoal extends Goal {
-    private enum Phase {ASCEND, DIVE}
-
+    protected final IntProvider cooldownProvider;
     private final PathfinderMob mob;
     private final double ascendBoost;     // impulso Y inicial
     private final double ascendHoldY;     // altura alvo acima do chão antes do mergulho
     private final double diveSpeedXZ;     // velocidade lateral no mergulho
     private final double diveSpeedY;      // velocidade vertical para baixo
     private final float ringRadius;       // raio base dos círculos de raio
+    public int cooldown = 0;
     private Phase phase;
     private int ticks;
     private BlockPos startGroundPos;
-    protected final IntProvider cooldownProvider;
-    public int cooldown = 0;
     private Vec3 lateral = Vec3.ZERO;
-
-
     public ThunderDiveGoal(PathfinderMob mob,
                            IntProvider cooldownProvider,
                            double ascendBoost,
@@ -57,6 +53,40 @@ public class ThunderDiveGoal extends Goal {
         this.diveSpeedY = diveSpeedY;
         this.ringRadius = ringRadius;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
+    }
+
+    public static void spawnThunderCircle(ServerLevel level, BlockPos center, double radius, int bolts) {
+        // garante que os strikes ocorram no topo do terreno naquele XZ
+        for (int i = 0; i < bolts; i++) {
+            double angle = (2 * Math.PI * i) / bolts;
+            double x = center.getX() + 0.5 + radius * Math.cos(angle);
+            double z = center.getZ() + 0.5 + radius * Math.sin(angle);
+
+            int topY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(x), Mth.floor(z));
+
+            if (level.dimensionType().hasCeiling()) {
+                // Começa do teto e desce até achar espaço
+                int maxY = level.getHeight() - 1;
+                for (int y = maxY; y > 0; y--) {
+                    BlockPos checkPos = new BlockPos(x, y, z);
+                    // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
+                    if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(checkPos.above())) {
+                        topY = y;
+                        break;
+                    }
+                }
+            }
+
+            BlockPos strikePos = new BlockPos(Mth.floor(x), topY, Mth.floor(z));
+
+            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
+            if (bolt != null) {
+                bolt.moveTo(strikePos.getX() + 0.5, strikePos.getY(), strikePos.getZ() + 0.5);
+                bolt.setVisualOnly(false); // true = só visual (sem dano/fogo)
+                bolt.setDamage(2f);
+                level.addFreshEntity(bolt);
+            }
+        }
     }
 
     @Override
@@ -224,37 +254,5 @@ public class ThunderDiveGoal extends Goal {
     }
 
 
-    public static void spawnThunderCircle(ServerLevel level, BlockPos center, double radius, int bolts) {
-        // garante que os strikes ocorram no topo do terreno naquele XZ
-        for (int i = 0; i < bolts; i++) {
-            double angle = (2 * Math.PI * i) / bolts;
-            double x = center.getX() + 0.5 + radius * Math.cos(angle);
-            double z = center.getZ() + 0.5 + radius * Math.sin(angle);
-
-            int topY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(x), Mth.floor(z));
-
-            if (level.dimensionType().hasCeiling()) {
-                // Começa do teto e desce até achar espaço
-                int maxY = level.getHeight() - 1;
-                for (int y = maxY; y > 0; y--) {
-                    BlockPos checkPos = new BlockPos(x, y, z);
-                    // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
-                    if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(checkPos.above())) {
-                        topY = y;
-                        break;
-                    }
-                }
-            }
-
-            BlockPos strikePos = new BlockPos(Mth.floor(x), topY, Mth.floor(z));
-
-            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
-            if (bolt != null) {
-                bolt.moveTo(strikePos.getX() + 0.5, strikePos.getY(), strikePos.getZ() + 0.5);
-                bolt.setVisualOnly(false); // true = só visual (sem dano/fogo)
-                bolt.setDamage(2f);
-                level.addFreshEntity(bolt);
-            }
-        }
-    }
+    private enum Phase {ASCEND, DIVE}
 }

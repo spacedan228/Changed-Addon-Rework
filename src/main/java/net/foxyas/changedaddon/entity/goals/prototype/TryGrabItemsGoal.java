@@ -26,11 +26,11 @@ public class TryGrabItemsGoal extends Goal {
     public boolean canUse() {
         // Only run if there is at least one item nearby to pick up
         List<ItemEntity> nearbyItems = prototype.getLevel().getEntitiesOfClass(ItemEntity.class,
-                        prototype.getBoundingBox().inflate(16.0),
-                        item -> {
-                            ItemStack stack = item.getItem();
-                            return  prototype.canTakeItem(stack) && prototype.wantsToPickUp(stack);
-                        }
+                prototype.getBoundingBox().inflate(16.0),
+                item -> {
+                    ItemStack stack = item.getItem();
+                    return prototype.canTakeItem(stack) && prototype.wantsToPickUp(stack);
+                }
         );
         this.nearbyItems = nearbyItems;
         return !nearbyItems.isEmpty() && prototype.hasSpaceInInvOrHands();

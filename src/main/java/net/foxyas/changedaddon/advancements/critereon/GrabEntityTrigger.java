@@ -20,7 +20,7 @@ public class GrabEntityTrigger extends SimpleCriterionTrigger<GrabEntityTrigger.
     }
 
     @Override
-    protected @NotNull Instance createInstance(@NotNull JsonObject json, EntityPredicate.@NotNull Composite playerPredicate, @NotNull DeserializationContext context) {
+    protected @NotNull Instance createInstance(@NotNull JsonObject json, @NotNull ContextAwarePredicate playerPredicate, @NotNull DeserializationContext context) {
         // pega o nome se existir
         JsonElement elem = json.get("name");
         String name = (elem != null && elem.isJsonPrimitive() && elem.getAsJsonPrimitive().isString())
@@ -48,7 +48,7 @@ public class GrabEntityTrigger extends SimpleCriterionTrigger<GrabEntityTrigger.
         private final String name;
         private final TransfurPredicate transfurPredicate;
 
-        public Instance(EntityPredicate.Composite playerPredicate, TransfurPredicate transfurPredicate, @Nullable String name) {
+        public Instance(@NotNull ContextAwarePredicate playerPredicate, TransfurPredicate transfurPredicate, @Nullable String name) {
             super(ID, playerPredicate);
             this.transfurPredicate = transfurPredicate != null ? transfurPredicate : TransfurPredicate.ANY;
             this.name = name;

@@ -8,7 +8,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CompoundIngredient;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -23,7 +23,7 @@ public final class CustomMerchantUtil {
 
     public static <T extends LivingEntity> CustomMerchantOffers makeOffers(T merchant, List<Function<T, CustomMerchantOffer>> buyOffers, int maxBuyOffers, List<Function<T, CustomMerchantOffer>> sellOffers, int maxSellOffers){
         CustomMerchantOffers offers = new CustomMerchantOffers();
-        Random random = merchant.getRandom();
+        Random random = new Random();
 
         List<Function<T, CustomMerchantOffer>> possibleOffers = new ArrayList<>(buyOffers);
         Collections.shuffle(possibleOffers, random);
@@ -52,7 +52,7 @@ public final class CustomMerchantUtil {
     }
 
     public static Ingredient emeraldsIngredient(int count){
-        return NBTIngredient.of(new ItemStack(Items.EMERALD, count));
+        return StrictNBTIngredient.of(new ItemStack(Items.EMERALD, count));
     }
 
     public static Ingredient single(ItemLike item){
@@ -68,7 +68,7 @@ public final class CustomMerchantUtil {
     }
 
     public static Ingredient withCount(ItemLike item, int count){
-        return NBTIngredient.of(new ItemStack(item, count));
+        return StrictNBTIngredient.of(new ItemStack(item, count));
     }
 
     public static Ingredient pairWithCount(RegistryObject<? extends ItemLike> first, RegistryObject<? extends ItemLike> second, int count){
@@ -76,6 +76,6 @@ public final class CustomMerchantUtil {
     }
 
     public static Ingredient withCount(RegistryObject<? extends ItemLike> item, int count){
-        return NBTIngredient.of(new ItemStack(item.get(), count));
+        return StrictNBTIngredient.of(new ItemStack(item.get(), count));
     }
 }

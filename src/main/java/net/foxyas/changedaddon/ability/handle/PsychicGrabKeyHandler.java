@@ -13,7 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 public class PsychicGrabKeyHandler {
 
     @SubscribeEvent
-    public static void onKeyPressed(InputEvent.KeyInputEvent event) {
+    public static void onKeyPressed(InputEvent.Key event) {
         if (PsychicGrab.Keys.contains(event.getKey()) && Minecraft.getInstance().screen == null) {
             ChangedAddonMod.PACKET_HANDLER.sendToServer(new KeyPressPacket(event.getKey()));
         }

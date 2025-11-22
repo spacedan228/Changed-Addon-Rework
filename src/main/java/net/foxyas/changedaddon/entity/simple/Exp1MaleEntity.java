@@ -86,10 +86,6 @@ public class Exp1MaleEntity extends ChangedEntity implements GenderedEntity, Pow
         return 700;
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -135,7 +131,7 @@ public class Exp1MaleEntity extends ChangedEntity implements GenderedEntity, Pow
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

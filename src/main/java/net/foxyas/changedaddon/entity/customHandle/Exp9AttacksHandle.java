@@ -52,7 +52,7 @@ public class Exp9AttacksHandle {
                 return false; // Evita atacar jogadores no modo criativo ou spectator
             }
 
-            return target != null && target.isOnGround() && (boss.distanceTo(target) >= 7.5 && boss.distanceTo(target) <= 18) && (boss.isPhase2() || (!boss.isPhase2() && random.nextFloat() <= 0.25f));
+            return target != null && target.onGround() && (boss.distanceTo(target) >= 7.5 && boss.distanceTo(target) <= 18) && (boss.isPhase2() || (!boss.isPhase2() && random.nextFloat() <= 0.25f));
         }
 
         @Override
@@ -101,7 +101,7 @@ public class Exp9AttacksHandle {
         }
 
         private void whenStopUsing() {
-            if (!boss.isOnGround()) { // Se o boss estiver no ar
+            if (!boss.onGround()) { // Se o boss estiver no ar
                 double x = boss.getX();
                 double z = boss.getZ();
 
@@ -151,7 +151,7 @@ public class Exp9AttacksHandle {
                 double ratio = (double) i / maxAmount;
                 Vec3 spawnPos = this.boss.getEyePosition().add(posDifference.scale(ratio));
                 ParticlesUtil.sendParticles(
-                        this.boss.getLevel(),
+                        this.boss.level(),
                         ChangedAddonParticleTypes.thunderSpark(1),
                         spawnPos,
                         0.25f, 0.25f, 0.25f,
@@ -229,7 +229,7 @@ public class Exp9AttacksHandle {
                 return false; // Evita atacar jogadores no modo criativo ou spectator
             }
 
-            return target != null && target.isOnGround() && (boss.distanceTo(target) >= 7.5 && boss.distanceTo(target) <= 18) && (boss.isPhase2() || (!boss.isPhase2() && random.nextFloat() <= 0.25f));
+            return target != null && target.onGround() && (boss.distanceTo(target) >= 7.5 && boss.distanceTo(target) <= 18) && (boss.isPhase2() || (!boss.isPhase2() && random.nextFloat() <= 0.25f));
         }
 
         @Override
@@ -279,7 +279,7 @@ public class Exp9AttacksHandle {
         }
 
         private void whenStopUsing() {
-            if (!boss.isOnGround()) { // Se o boss estiver no ar
+            if (!boss.onGround()) { // Se o boss estiver no ar
                 double x = boss.getX();
                 double z = boss.getZ();
 
@@ -379,7 +379,7 @@ public class Exp9AttacksHandle {
                 double ratio = (double) i / maxAmount;
                 Vec3 spawnPos = this.boss.getEyePosition().add(posDifference.scale(ratio));
                 ParticlesUtil.sendParticles(
-                        this.boss.getLevel(),
+                        this.boss.level(),
                         ChangedAddonParticleTypes.thunderSpark(1),
                         spawnPos,
                         0.25f, 0.25f, 0.25f,
@@ -430,7 +430,7 @@ public class Exp9AttacksHandle {
 
         public void run() {
             thunderWave();
-             // Reseta a AI
+            // Reseta a AI
         }
 
         public LivingEntity getTarget() {
@@ -443,7 +443,7 @@ public class Exp9AttacksHandle {
                     for (int i = 0; i < 5; i++) {
                         double offsetX = (boss.getRandom().nextDouble() - 0.5) * 6;
                         double offsetZ = (boss.getRandom().nextDouble() - 0.5) * 6;
-                        BlockPos pos = new BlockPos(this.boss.getX() + offsetX, this.boss.getY(), this.boss.getZ() + offsetZ);
+                        BlockPos pos = new BlockPos((int) (this.boss.getX() + offsetX), (int) this.boss.getY(), (int) (this.boss.getZ() + offsetZ));
                         if (serverLevel.getBlockState(pos.below()).getBlock() != Blocks.AIR) {
                             this.boss.SpawnThunderBolt(pos);
                         }
@@ -483,7 +483,7 @@ public class Exp9AttacksHandle {
 
         public void run() {
             thunderSpeed();
-             // Reseta a AI
+            // Reseta a AI
         }
 
         private void thunderSpeed() {
@@ -531,7 +531,7 @@ public class Exp9AttacksHandle {
 
         public void run() {
             thunderShock();
-             // Reseta a AI
+            // Reseta a AI
         }
 
         private void thunderShock() {
@@ -560,7 +560,7 @@ public class Exp9AttacksHandle {
 
                     BlockHitResult hitResult = this.boss.level.clip(new ClipContext(this.boss.getEyePosition(1f), this.boss.getEyePosition(1f).add(this.boss.getViewVector(1f).scale(5)), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, this.boss)); //adicione aqui um get block
                     //BlockState blockState = this.boss.level.getBlockState(new BlockPos(pos));
-                    var state = this.boss.getLevel().getBlockState(hitResult.getBlockPos());
+                    var state = this.boss.level().getBlockState(hitResult.getBlockPos());
 
                     // Verificando se o bloco é metálico (exemplo usando ferro, mas pode ser expandido)
                     if (hitResult.getType() == HitResult.Type.MISS) {
@@ -710,14 +710,14 @@ public class Exp9AttacksHandle {
                     for (int i = 0; i < 7; i++) {
                         double offsetX = (boss.getRandom().nextDouble() - 0.5) * 10;
                         double offsetZ = (boss.getRandom().nextDouble() - 0.5) * 10;
-                        BlockPos pos = new BlockPos(this.boss.getX() + offsetX, this.boss.getY(), this.boss.getZ() + offsetZ);
+                        BlockPos pos = new BlockPos((int) (this.boss.getX() + offsetX), (int) this.boss.getY(), (int) (this.boss.getZ() + offsetZ));
                         this.boss.SpawnThunderBolt(pos);
                     }
                 } else {
                     for (int i = 0; i < 12; i++) {
                         double offsetX = (boss.getRandom().nextDouble() - 0.5) * 20;
                         double offsetZ = (boss.getRandom().nextDouble() - 0.5) * 20;
-                        BlockPos pos = new BlockPos(this.boss.getX() + offsetX, this.boss.getY(), this.boss.getZ() + offsetZ);
+                        BlockPos pos = new BlockPos((int) (this.boss.getX() + offsetX), (int) this.boss.getY(), (int) (this.boss.getZ() + offsetZ));
                         this.boss.SpawnThunderBolt(pos);
                     }
                 }
@@ -746,7 +746,7 @@ public class Exp9AttacksHandle {
 
         @Override
         public boolean canUse() {
-            return boss.getTarget() != null && (boss.isOnGround() || boss.getTarget().isOnGround()) && boss.getHealth() / boss.getMaxHealth() <= 0.5 && this.boss.distanceTo(boss.getTarget()) >= 8;
+            return boss.getTarget() != null && (boss.onGround() || boss.getTarget().onGround()) && boss.getHealth() / boss.getMaxHealth() <= 0.5 && this.boss.distanceTo(boss.getTarget()) >= 8;
         }
 
         @Override
@@ -786,7 +786,7 @@ public class Exp9AttacksHandle {
 
         @Override
         public boolean canUse() {
-            return boss.getTarget() != null && (boss.isOnGround() || boss.getTarget().isOnGround()) && boss.getRandom().nextFloat() <= (boss.isPhase2() ? 0.35f : 0.25f) && this.boss.distanceTo(boss.getTarget()) >= 1.5;
+            return boss.getTarget() != null && (boss.onGround() || boss.getTarget().onGround()) && boss.getRandom().nextFloat() <= (boss.isPhase2() ? 0.35f : 0.25f) && this.boss.distanceTo(boss.getTarget()) >= 1.5;
         }
 
         @Override

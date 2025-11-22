@@ -58,7 +58,7 @@ public class ChangedAddonEntities {
     public static @NotNull List<EntityType<?>> getAddonHumanoidsChangedEntities() {
         ArrayList<EntityType<?>> entityTypes = new ArrayList<>();
         LatexEntitiesThatCanUseAccessories.stream().map(Supplier::get)
-                .sorted(Comparator.comparing(entityType -> entityType.getRegistryName().getPath()))
+                .sorted(Comparator.comparing(entityType -> ForgeRegistries.ENTITY_TYPES.getKey(entityType).getPath()))
                 .forEach(entityTypes::add);
         return entityTypes;
     }
@@ -81,7 +81,7 @@ public class ChangedAddonEntities {
     // ========================================================== /Datagen ========================================================= //
 
     //Todo: Make this Class a bit less Chaotic
-    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITIES, ChangedAddonMod.MODID);
+    public static final DeferredRegister<EntityType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, ChangedAddonMod.MODID);
 
     /// Latex Changed Entity Registers
     private static <T extends Entity> RegistryObject<EntityType<T>> registerChangedEntity(String registryName, EntityType.Builder<T> entityTypeBuilder) {
@@ -693,63 +693,14 @@ public class ChangedAddonEntities {
     @SubscribeEvent
     public static void init(@NotNull FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            PrototypeEntity.init();
-            LatexSnowFoxFoxyasEntity.init();
             LatexSnowFoxMaleEntity.init();
             LatexSnowFoxFemaleEntity.init();
             DazedLatexEntity.init();
-            PuroKindMaleEntity.init();
-            PuroKindFemaleEntity.init();
-            BunyEntity.init();
-            SnowLeopardFemaleOrganicEntity.init();
-            Experiment009Entity.init();
             MirrorWhiteTigerEntity.init();
-            SnowLeopardMaleOrganicEntity.init();
-            Experiment10Entity.init();
-            Exp2MaleEntity.init();
-            Exp2FemaleEntity.init();
-            WolfyEntity.init();
-            ErikEntity.init();
-            Exp6Entity.init();
-            ReynEntity.init();
-            Experiment009BossEntity.init();
-            Experiment10BossEntity.init();
             Exp1MaleEntity.init();
             Exp1FemaleEntity.init();
-            LatexSnepEntity.init();
-            LuminarcticLeopardMaleEntity.init();
-            LuminarcticLeopardFemaleEntity.init();
-            LatexSquidTigerSharkEntity.init();
-            LynxEntity.init();
-            FoxtaFoxyEntity.init();
-            SnepsiLeopardEntity.init();
-            BagelEntity.init();
-            LatexDragonSnowLeopardSharkEntity.init();
-            CrystalGasCatMaleEntity.init();
-            CrystalGasCatFemaleEntity.init();
-            VoidFoxEntity.init();
-            FengQIWolfEntity.init();
-            HaydenFennecFoxEntity.init();
-            SnowLeopardPartialEntity.init();
-            VoidFoxParticleProjectile.init();
-            BlueLizard.init();
-            AvaliEntity.init();
-            LatexKitsuneMaleEntity.init();
-            LatexKitsuneFemaleEntity.init();
-            LatexCalicoCatEntity.init();
-            ProtogenEntity.init();
-            MongooseEntity.init();
-            BorealisMaleEntity.init();
-            BorealisFemaleEntity.init();
-            LatexWindCatFemaleEntity.init();
-            LatexWindCatMaleEntity.init();
-            LatexWhiteSnowLeopardMale.init();
-            LatexWhiteSnowLeopardFemale.init();
-            LuminaraFlowerBeastEntity.init();
             LatexCheetahFemale.init();
             LatexCheetahMale.init();
-            Protogen0senia0Entity.init();
-            LatexBorderCollieEntity.init();
         });
     }
 

@@ -10,10 +10,10 @@ import javax.annotation.Nullable;
 
 public interface CustomMerchant {
 
-    void setTradingPlayer(@Nullable Player tradingPlayer);
-
     @Nullable
     Player getTradingPlayer();
+
+    void setTradingPlayer(@Nullable Player tradingPlayer);
 
     CustomMerchantOffers getOffers();
 
@@ -36,16 +36,17 @@ public interface CustomMerchant {
         private final Player source;
         private CustomMerchantOffers offers = new CustomMerchantOffers();
 
-        public Client(Player source){
+        public Client(Player source) {
             this.source = source;
         }
 
         @Override
-        public void setTradingPlayer(@Nullable Player tradingPlayer) {}
-
-        @Override
         public @Nullable Player getTradingPlayer() {
             return source;
+        }
+
+        @Override
+        public void setTradingPlayer(@Nullable Player tradingPlayer) {
         }
 
         @Override
@@ -64,7 +65,8 @@ public interface CustomMerchant {
         }
 
         @Override
-        public void notifyTradeUpdated(ItemStack stack) {}
+        public void notifyTradeUpdated(ItemStack stack) {
+        }
 
         @Override
         public SoundEvent getNotifyTradeSound() {

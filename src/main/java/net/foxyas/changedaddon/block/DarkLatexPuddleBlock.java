@@ -4,9 +4,10 @@ import net.foxyas.changedaddon.block.entity.DarkLatexPuddleBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.network.PacketUtil;
-import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -14,20 +15,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -45,7 +43,7 @@ import java.util.Random;
 public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements EntityBlock, NonLatexCoverableBlock {
 
     public DarkLatexPuddleBlock() {
-        super(BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.SLIME_BLOCK).strength(1f, 10f).speedFactor(0.8f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
+        super(BlockBehaviour.Properties.copy(Blocks.STONE).sound(SoundType.SLIME_BLOCK).strength(1f, 10f).speedFactor(0.8f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
@@ -56,13 +54,13 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
 
     private static boolean isPlayerDLOrPuro(Player player) {
         return ProcessTransfur.getPlayerTransfurVariantSafe(player).map(tf ->
-                tf.getLatexType() == LatexType.DARK_LATEX || tf.getFormId().toString().contains("puro_kind")).orElse(false);
+                tf.getLatexType() == ChangedLatexTypes.DARK_LATEX.get() || tf.getFormId().toString().contains("puro_kind")).orElse(false);
     }
 
     private static void alertNearbyDL(Level level, double x, double y, double z, Entity entity) {
         // I Want to allow the players to be able to use the armor stand as a "bait" in farms
         if (!(level instanceof ServerLevel sLevel)/* || entity instanceof ArmorStand */) return;
-        if (entity instanceof ChangedEntity chEntity && chEntity.getLatexType() == LatexType.DARK_LATEX) return;
+        if (entity instanceof ChangedEntity chEntity && chEntity.getLatexType() == ChangedLatexTypes.DARK_LATEX.get()) return;
         if (entity instanceof Player player) {
             if (isPlayerDLOrPuro(player)) return;
             if (player.isSteppingCarefully()) return;
@@ -70,7 +68,7 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
         }
 
 
-        BlockPos pos = new BlockPos(x, y, z);
+        BlockPos pos = new BlockPos((int) x, (int) y, (int) z);
         BlockEntity be = level.getBlockEntity(pos);
         if (be == null) return;
         if (!(be instanceof DarkLatexPuddleBlockEntity darkLatexPuddleBlockEntity)) return;
@@ -93,7 +91,7 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
         // Atração de dark latex
         AABB area = AABB.ofSize(center, 20, 20, 20); // raio de 10 blocos
         level.getEntitiesOfClass(ChangedEntity.class, area, e ->
-                        e != entity && e.getTransfurVariant().getLatexType() == LatexType.DARK_LATEX && !e.getTransfurVariant().getFormId().toString().contains("puro_kind"))
+                        e != entity && LatexType.getEntityLatexType(e) == ChangedLatexTypes.DARK_LATEX.get() && !e.getTransfurVariant().getFormId().toString().contains("puro_kind"))
                 .forEach(nearby -> nearby.getNavigation().moveTo(x, y, z, 0.3));
     }
 
@@ -148,7 +146,7 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
     }
 
     @Override
-    public void tick(BlockState state, ServerLevel level, BlockPos pos, Random random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (blockEntity == null) return;
         if (!(blockEntity instanceof DarkLatexPuddleBlockEntity darkLatexPuddleBlockEntity)) return;

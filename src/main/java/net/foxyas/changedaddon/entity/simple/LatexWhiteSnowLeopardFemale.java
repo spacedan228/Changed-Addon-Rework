@@ -14,8 +14,7 @@ public class LatexWhiteSnowLeopardFemale extends AbstractSnowLeopard {
         super(p_19870_, p_19871_);
     }
 
-    public static void init() {
-    }
+
 
     @Override
     public Color3 getTransfurColor(TransfurCause cause) {

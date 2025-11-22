@@ -5,9 +5,9 @@ import net.minecraft.world.entity.player.Player;
 
 public class AttributesHandle {
 
+    public static final float DefaultPlayerFlySpeed = 0.05F;
+
     public static AttributeMap DefaultPlayerAttributes() {
         return new AttributeMap(Player.createAttributes().build());
     }
-
-    public static final float DefaultPlayerFlySpeed = 0.05F;
 }

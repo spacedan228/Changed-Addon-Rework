@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;

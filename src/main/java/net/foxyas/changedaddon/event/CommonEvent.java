@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.event;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock;
 import net.foxyas.changedaddon.command.ChangedAddonAdminCommand;
 import net.foxyas.changedaddon.command.ChangedAddonCommandRootCommand;
 import net.foxyas.changedaddon.command.TransfurMe;
@@ -13,6 +14,7 @@ import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
+import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedSounds;
@@ -29,16 +31,27 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
 public class CommonEvent {
+
+    @SubscribeEvent
+    public static void denyBlockSpread(SpreadingLatexType.CoveringBlockEvent event) {
+        LevelAccessor level = event.level;
+        BlockPos blockPos = event.blockPos;
+        BlockState blockState = level.getBlockState(blockPos);
+        if (blockState.getBlock() instanceof ConditionalLatexCoverableBlock conditionalLatexCoverableBlock) {
+            event.setCanceled(!conditionalLatexCoverableBlock.canBeSpread(level, blockState, blockPos));
+        }
+    }
 
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event){
@@ -59,21 +72,21 @@ public class CommonEvent {
     //Var sync
     @SubscribeEvent
     public static void onPlayerLoggedInSyncPlayerVariables(PlayerEvent.PlayerLoggedInEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (!player.level.isClientSide())
             ChangedAddonVariables.ofOrDefault(player).syncPlayerVariables(player);
     }
 
     @SubscribeEvent
     public static void onPlayerRespawnedSyncPlayerVariables(PlayerEvent.PlayerRespawnEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (!player.level.isClientSide())
             ChangedAddonVariables.ofOrDefault(player).syncPlayerVariables(player);
     }
 
     @SubscribeEvent
     public static void onPlayerChangedDimensionSyncPlayerVariables(PlayerEvent.PlayerChangedDimensionEvent event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         if (!player.level.isClientSide())
             ChangedAddonVariables.ofOrDefault(player).syncPlayerVariables(player);
     }
@@ -85,7 +98,7 @@ public class CommonEvent {
         ChangedAddonVariables.PlayerVariables original = ChangedAddonVariables.ofOrDefault(originalPl);
         originalPl.invalidateCaps();
 
-        ChangedAddonVariables.PlayerVariables clone = ChangedAddonVariables.ofOrDefault(event.getPlayer());
+        ChangedAddonVariables.PlayerVariables clone = ChangedAddonVariables.ofOrDefault(event.getEntity());
         original.copyTo(clone, event.isWasDeath());
     }
     //

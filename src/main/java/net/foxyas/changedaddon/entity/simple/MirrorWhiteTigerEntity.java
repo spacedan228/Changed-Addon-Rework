@@ -104,10 +104,6 @@ public class MirrorWhiteTigerEntity extends ChangedEntity implements PowderSnowW
         return HairStyle.BALD.get();
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     public @Nullable List<HairStyle> getValidHairStyles() {
         return HairStyle.Collection.MALE.getStyles();
@@ -123,7 +119,7 @@ public class MirrorWhiteTigerEntity extends ChangedEntity implements PowderSnowW
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

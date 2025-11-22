@@ -21,7 +21,7 @@ import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -99,7 +99,7 @@ public class ChangedAddonCommandRootCommand {
                                 .executes(arguments -> {
                                     Player player = (Player) arguments.getSource().getEntityOrException();
 
-                                    float newSize = getSize(FloatArgumentType.getFloat(arguments, "size"), true);
+                                    float newSize = getSize(player, FloatArgumentType.getFloat(arguments, "size"), true);
                                     Changed.config.client.basicPlayerInfo.setSize(newSize); // Change Size
                                     ChangedAddonMod.LOGGER.info("Size changed to: {} for player: {}", newSize, player.getName().getString()); // Command Classic Log
                                     player.displayClientMessage(Component.literal("Size changed to: " + newSize), false); // Chat log for the player
@@ -137,7 +137,7 @@ public class ChangedAddonCommandRootCommand {
                             CompoundTag tag = heldItem.getOrCreateTag();
                             tag.putInt("TimerValue", timerValue);
 
-                            source.sendSuccess(Component.literal("Timer set to " + timerValue + "."), false);
+                            source.sendSuccess(() -> Component.literal("Timer set to " + timerValue + "."), false);
                             return 1;
                         })
                 )
@@ -177,11 +177,11 @@ public class ChangedAddonCommandRootCommand {
                                                                 TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
                                                                 if (transfur != null && transfur.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                                                                     avaliEntity.setColor(layer, color3);
-                                                                    context.getSource().sendSuccess(Component.literal("Set color for layer " + layer), false);
+                                                                    context.getSource().sendSuccess(() -> Component.literal("Set color for layer " + layer), false);
                                                                     return 1;
                                                                 } else if (transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors dynamicColors) {
                                                                     dynamicColors.setColor(layer, color3);
-                                                                    context.getSource().sendSuccess(Component.literal("Set color for layer " + layer), false);
+                                                                    context.getSource().sendSuccess(() -> Component.literal("Set color for layer " + layer), false);
                                                                     return 1;
                                                                 }
                                                             }
@@ -207,11 +207,11 @@ public class ChangedAddonCommandRootCommand {
                                                         TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
                                                         if (transfur != null && transfur.getChangedEntity() instanceof AvaliEntity avaliEntity) {
                                                             avaliEntity.setStyleOfColor(style);
-                                                            context.getSource().sendSuccess(Component.literal("Set style to " + style), false);
+                                                            context.getSource().sendSuccess(() -> Component.literal("Set style to " + style), false);
                                                             return 1;
                                                         } else if (transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors dynamicColor) {
                                                             dynamicColor.setStyleOfColor(style);
-                                                            context.getSource().sendSuccess(Component.literal("Set style to " + style), false);
+                                                            context.getSource().sendSuccess(() -> Component.literal("Set style to " + style), false);
                                                             return 1;
                                                         }
                                                     }
@@ -224,13 +224,14 @@ public class ChangedAddonCommandRootCommand {
         dispatcher.register(Commands.literal("setTransfurColor").redirect(TransfurColorsCommandNode.getChild("TransfurColors")));
     }
 
-    private static float getSize(float size, boolean overrideSize) {
-        float SIZE_TOLERANCE = BasicPlayerInfo.getSizeTolerance();
-        if (size < 1.0f - SIZE_TOLERANCE) {
-            ChangedAddonMod.LOGGER.atWarn().log("Size value is too low: {}, The Size Value is going to be auto set to 0.95", size); // Too Low Warn
-        } else if (size > 1.0f + SIZE_TOLERANCE) {
-            ChangedAddonMod.LOGGER.atWarn().log("Size value is too high: {}, The Size Value is going to be auto set to 1.05", size); // Too High Warn
+    private static float getSize(Player player, float size, boolean overrideSize) {
+        float MINIMUM_SIZE_TOLERANCE = BasicPlayerInfo.getSizeMinimum(player);
+        float MAX_SIZE_TOLERANCE = BasicPlayerInfo.getSizeMaximum(player);
+        if (size < MINIMUM_SIZE_TOLERANCE) {
+            ChangedAddonMod.LOGGER.atWarn().log("Size value is too low: {}, The Size Value will probably to be auto set to 0.95", size); // Too Low Warn
+        } else if (size > MAX_SIZE_TOLERANCE) {
+            ChangedAddonMod.LOGGER.atWarn().log("Size value is too high: {}, The Size Value will probably to be auto set to 1.05", size); // Too High Warn
         }
-        return overrideSize ? Mth.clamp(size, 1.0f - SIZE_TOLERANCE, 1.0f + SIZE_TOLERANCE) : size;
+        return overrideSize ? Mth.clamp(size, MINIMUM_SIZE_TOLERANCE, MAX_SIZE_TOLERANCE) : size;
     }
 }

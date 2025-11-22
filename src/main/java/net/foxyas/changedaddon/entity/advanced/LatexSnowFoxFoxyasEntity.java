@@ -12,7 +12,6 @@ import net.foxyas.changedaddon.menu.CustomMerchantOffers;
 import net.foxyas.changedaddon.menu.FoxyasInventoryMenu;
 import net.foxyas.changedaddon.util.CustomMerchantUtil;
 import net.ltxprogrammer.changed.data.AccessorySlots;
-import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedItems;
@@ -53,11 +52,11 @@ import static net.foxyas.changedaddon.util.CustomMerchantUtil.*;
 
 public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInventory {
 
+    public static final float FOXYAS_SCALE = 0.85f;
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> buyOffers = List.of(
             (entity) ->
                     new CustomMerchantOffer(withCount(ChangedItems.ORANGE, 3), single(Items.GLASS_BOTTLE), defStack(ChangedAddonItems.ORANGE_JUICE), 16)
     );
-
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> sellOffers = List.of(
             (entity) ->
                     new CustomMerchantOffer(Ingredient.of(emeralds(4)), defStack(ChangedAddonItems.OPENED_CANNED_SOUP), 16),
@@ -80,12 +79,7 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
         setPersistenceRequired();
     }
 
-    protected CustomMerchantOffers makeOffers() {
-        return CustomMerchantUtil.makeOffers(this, buyOffers, buyOffers.size(), sellOffers, sellOffers.size());
-    }
 
-    public static void init() {
-    }
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -97,9 +91,8 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
         return builder;
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
+    protected CustomMerchantOffers makeOffers() {
+        return CustomMerchantUtil.makeOffers(this, buyOffers, buyOffers.size(), sellOffers, sellOffers.size());
     }
 
     @Override
@@ -108,7 +101,7 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -171,15 +164,13 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     @Override
     public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         if (getOffers().isEmpty() || player.isShiftKeyDown()) {
-            if(level.isClientSide) return InteractionResult.SUCCESS;
+            if (level.isClientSide) return InteractionResult.SUCCESS;
             NetworkHooks.openScreen((ServerPlayer) player, getMenuProvider(), buf -> buf.writeVarInt(getId()));
             return InteractionResult.CONSUME;
         }
 
         return super.mobInteract(player, hand);
     }
-
-    public static final float FOXYAS_SCALE = 0.85f;
 
     @Override
     public float getScale() {

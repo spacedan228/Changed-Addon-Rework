@@ -8,6 +8,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -43,21 +44,22 @@ public class WitherWaveAbility extends SimpleAbility {
         if (player.isInWaterOrRain()) {
             Zone = 24;
         }
-        List<Entity> _entfound = world.getEntitiesOfClass(Entity.class, new AABB(_center, _center).inflate(Zone, Zone, Zone), e -> true).stream().sorted(Comparator.comparingDouble(_entcnd -> _entcnd.distanceToSqr(_center)))
-                .collect(Collectors.toList());
-        for (Entity entityiterator : _entfound) {
-            if (player != entityiterator && entityiterator instanceof LivingEntity _entity) {
-                if (_entity instanceof Player player1) {
+
+        List<Entity> collect = world.getEntitiesOfClass(Entity.class, new AABB(_center, _center).inflate(Zone, Zone, Zone), e -> true).stream().sorted(Comparator.comparingDouble(_entcnd -> _entcnd.distanceToSqr(_center)))
+                .toList();
+        for (Entity entityiterator : collect) {
+            if (player != entityiterator && entityiterator instanceof LivingEntity livingEntity) {
+                if (livingEntity instanceof Player player1) {
                     if (player1.isSpectator() || player1.isCreative()) {
                         return;
                     }
                 }
-                if (!_entity.level.isClientSide()) {
+                if (!livingEntity.level.isClientSide()) {
                     MobEffectInstance Effect = new MobEffectInstance(MobEffects.WITHER, 60, 1, false, false, true);
                     Effect.setCurativeItems(List.of(new ItemStack(Items.MILK_BUCKET, 1)));
-                    _entity.addEffect(Effect);
-                    ChangedSounds.broadcastSound(_entity, SoundEvents.COMPOSTER_READY, 5, 0);
-                    ChangedSounds.broadcastSound(player, SoundEvents.WITHER_SHOOT, 5, 1);
+                    livingEntity.addEffect(Effect);
+                    ChangedSounds.broadcastSound(livingEntity, SoundEvents.COMPOSTER_READY.getLocation(), 5, 0);
+                    ChangedSounds.broadcastSound(player, SoundEvents.WITHER_SHOOT.getLocation(), 5, 1);
                     player.causeFoodExhaustion(4f);
                 }
             }
@@ -108,6 +110,5 @@ public class WitherWaveAbility extends SimpleAbility {
     @Override
     public void tick(IAbstractChangedEntity entity) {
         super.tick(entity);
-        //execute(entity.getLevel(),entity.getEntity());
     }
 }

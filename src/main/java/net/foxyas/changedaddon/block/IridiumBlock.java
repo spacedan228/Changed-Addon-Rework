@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.block;
 
-import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;

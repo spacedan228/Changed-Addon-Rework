@@ -26,15 +26,6 @@ public class Protogen0senia0Entity extends AbstractProtogenEntity implements IDy
         this(ChangedAddonEntities.PROTOGEN_0SENIA0.get(), level);
     }
 
-    public boolean isOrganic() {
-        return true;
-    }
-
-    @Override
-    public Color3 getTransfurColor(TransfurCause cause) {
-        return Color3.parseHex("#4d0ddb");
-    }
-
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 3f);
@@ -47,11 +38,19 @@ public class Protogen0senia0Entity extends AbstractProtogenEntity implements IDy
         return builder;
     }
 
-    @Override
-    protected void setAttributes(AttributeMap attributes) {
+
+
+    public boolean isOrganic() {
+        return true;
     }
 
-    public static void init() {
+    @Override
+    public Color3 getTransfurColor(TransfurCause cause) {
+        return Color3.parseHex("#4d0ddb");
+    }
+
+    @Override
+    protected void setAttributes(AttributeMap attributes) {
     }
 
     @Override

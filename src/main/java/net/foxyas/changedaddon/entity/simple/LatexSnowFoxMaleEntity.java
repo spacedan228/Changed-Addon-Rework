@@ -91,10 +91,6 @@ public class LatexSnowFoxMaleEntity extends ChangedEntity implements GenderedEnt
         return 700;
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -140,7 +136,7 @@ public class LatexSnowFoxMaleEntity extends ChangedEntity implements GenderedEnt
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

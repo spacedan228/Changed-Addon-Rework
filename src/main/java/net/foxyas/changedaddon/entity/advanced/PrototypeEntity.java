@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -64,13 +63,12 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
 
     // Constants
     public static final int MAX_HARVEST_TIMES = 32;
-
+    private static final TagKey<Item> FORGE_FRUITS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "fruits"));
     // Fields
     protected final IItemHandlerModifiable hands = new EntityHandsInvWrapper(this);
     protected final ItemStackHandler inv = new ItemStackHandler(9);
     protected final CombinedInvWrapper handsInv = new CombinedInvWrapper(hands, inv);
     protected final CombinedInvWrapper combinedInv = new CombinedInvWrapper(new EntityArmorInvWrapper(this), hands, inv);
-
     protected int harvestsTimes = 0;
     protected DepositType depositType = DepositType.BOTH;
 
@@ -81,32 +79,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         setPersistenceRequired();
     }
 
-    @Override
-    public IItemHandler getItemHandler() {
-        return combinedInv;
-    }
-
-    public IItemHandler getHandsAndInv(){
-        return handsInv;
-    }
-
-    /**
-     * @param stack ItemStack to insert.
-     * @param simulate If true, the insertion is only simulated.
-     * @return Remaining ItemStack.
-     */
-    public ItemStack addToInventory(ItemStack stack, boolean simulate){///Do not set, for armor {@link Mob#equipItemIfPossible}
-        return ItemHandlerHelper.insertItem(handsInv, stack, simulate);
-    }
-
-    @Override
-    protected float getEquipmentDropChance(@NotNull EquipmentSlot pSlot) {
-        return 2;
-    }
-
     // Static methods
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
@@ -120,6 +94,63 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         builder.add(Attributes.FOLLOW_RANGE, 40);
         builder.add(ForgeMod.SWIM_SPEED.get(), 0.95f);
         return builder;
+    }
+
+    public static SlotAccess getSlotAccess(final IItemHandlerModifiable pInventory, final int pSlot, final Predicate<ItemStack> pStackFilter) {
+        return new SlotAccess() {
+            public @NotNull ItemStack get() {
+                return pInventory.getStackInSlot(pSlot).copy();
+            }
+
+            public boolean set(@NotNull ItemStack itemStack) {
+                if (!pStackFilter.test(itemStack)) {
+                    return false;
+                } else {
+                    pInventory.setStackInSlot(pSlot, itemStack);
+                    return true;
+                }
+            }
+        };
+    }
+
+    @Nullable
+    protected static EquipmentSlot getEquipmentSlot(int pIndex) {
+        if (pIndex == 100 + EquipmentSlot.HEAD.getIndex()) {
+            return EquipmentSlot.HEAD;
+        } else if (pIndex == 100 + EquipmentSlot.CHEST.getIndex()) {
+            return EquipmentSlot.CHEST;
+        } else if (pIndex == 100 + EquipmentSlot.LEGS.getIndex()) {
+            return EquipmentSlot.LEGS;
+        } else if (pIndex == 100 + EquipmentSlot.FEET.getIndex()) {
+            return EquipmentSlot.FEET;
+        } else if (pIndex == 98) {
+            return EquipmentSlot.MAINHAND;
+        } else {
+            return pIndex == 99 ? EquipmentSlot.OFFHAND : null;
+        }
+    }
+
+    @Override
+    public IItemHandler getItemHandler() {
+        return combinedInv;
+    }
+
+    public IItemHandler getHandsAndInv() {
+        return handsInv;
+    }
+
+    /**
+     * @param stack    ItemStack to insert.
+     * @param simulate If true, the insertion is only simulated.
+     * @return Remaining ItemStack.
+     */
+    public ItemStack addToInventory(ItemStack stack, boolean simulate) {///Do not set, for armor {@link Mob#equipItemIfPossible}
+        return ItemHandlerHelper.insertItem(handsInv, stack, simulate);
+    }
+
+    @Override
+    protected float getEquipmentDropChance(@NotNull EquipmentSlot pSlot) {
+        return 2;
     }
 
     // Entity overrides
@@ -356,40 +387,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         return super.getSlot(slot);
     }
 
-    public static SlotAccess getSlotAccess(final IItemHandlerModifiable pInventory, final int pSlot, final Predicate<ItemStack> pStackFilter) {
-        return new SlotAccess() {
-            public @NotNull ItemStack get() {
-                return pInventory.getStackInSlot(pSlot).copy();
-            }
-
-            public boolean set(@NotNull ItemStack itemStack) {
-                if (!pStackFilter.test(itemStack)) {
-                    return false;
-                } else {
-                    pInventory.setStackInSlot(pSlot, itemStack);
-                    return true;
-                }
-            }
-        };
-    }
-
-    @Nullable
-    protected static EquipmentSlot getEquipmentSlot(int pIndex) {
-        if (pIndex == 100 + EquipmentSlot.HEAD.getIndex()) {
-            return EquipmentSlot.HEAD;
-        } else if (pIndex == 100 + EquipmentSlot.CHEST.getIndex()) {
-            return EquipmentSlot.CHEST;
-        } else if (pIndex == 100 + EquipmentSlot.LEGS.getIndex()) {
-            return EquipmentSlot.LEGS;
-        } else if (pIndex == 100 + EquipmentSlot.FEET.getIndex()) {
-            return EquipmentSlot.FEET;
-        } else if (pIndex == 98) {
-            return EquipmentSlot.MAINHAND;
-        } else {
-            return pIndex == 99 ? EquipmentSlot.OFFHAND : null;
-        }
-    }
-
     // MenuProvider implementation
     @Override
     public @NotNull Component getDisplayName() {
@@ -456,8 +453,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     public Color getPawBeansColor() {
         return Color.CYAN;
     }
-
-    private static final TagKey<Item> FORGE_FRUITS = ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "fruits"));
 
     // Enums
     public enum DepositType implements Predicate<ItemStack> {

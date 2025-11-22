@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -62,6 +61,10 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
         super(type, level);
     }
 
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable();
+    }
+
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(6, new LatexFollowOwnerGoal<>(this, 0.35D, 10.0F, 2.0F, false));
@@ -77,10 +80,6 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
     @Override
     public void setIsUnfusedFromHost(boolean value) {
         this.entityData.set(UNFUSED_FROM_HOST, value);
-    }
-
-    public static LootTable.@NotNull Builder getLoot() {
-        return LootTable.lootTable();
     }
 
     @Override
@@ -145,7 +144,7 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
         tag.putBoolean("FollowOwner", this.isFollowingOwner());
     }
 
-     @Override
+    @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
         return super.targetSelectorTest(livingEntity) && livingEntity != this.getOwner();
     }

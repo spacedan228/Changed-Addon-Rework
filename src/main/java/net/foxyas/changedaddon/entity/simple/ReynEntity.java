@@ -1,7 +1,10 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.HairStyle;
+import net.ltxprogrammer.changed.entity.TransfurCause;
+import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
@@ -45,8 +48,7 @@ public class ReynEntity extends ChangedEntity {
         setNoAi(false);
     }
 
-    public static void init() {
-    }
+
 	/*
 	@Override
 	public void readAdditionalSaveData(CompoundTag tag) {
@@ -135,10 +137,6 @@ public class ReynEntity extends ChangedEntity {
         return Color3.getColor("##4c4c4c");
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -177,7 +175,7 @@ public class ReynEntity extends ChangedEntity {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

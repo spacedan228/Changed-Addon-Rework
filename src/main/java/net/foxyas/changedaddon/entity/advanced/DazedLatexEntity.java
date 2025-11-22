@@ -20,6 +20,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -37,7 +38,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
@@ -77,19 +78,17 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     @SubscribeEvent
-    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
+    public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {
+        event.register(ChangedAddonEntities.DAZED_LATEX.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DazedLatexEntity::canSpawnNear, SpawnPlacementRegisterEvent.Operation.OR);
+
+        //Fixme add the biome modifier in the data folder
         if (SPAWN_BIOMES.contains(event.getName())) {
             event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 125, 1, 4));
         }
     }
 
     public static void init() {
-        SpawnPlacements.register(
-                ChangedAddonEntities.DAZED_LATEX.get(),
-                SpawnPlacements.Type.ON_GROUND,
-                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                DazedLatexEntity::canSpawnNear
-        );
+        SpawnPlacements.register(ChangedAddonEntities.DAZED_LATEX.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DazedLatexEntity::canSpawnNear);
     }
 
     public static boolean isDarkEnoughToSpawn(ServerLevelAccessor p_33009_, BlockPos p_33010_, Random p_33011_) {
@@ -103,7 +102,7 @@ public class DazedLatexEntity extends ChangedEntity {
         }
     }
 
-    private static boolean canSpawnNear(EntityType<DazedLatexEntity> entityType, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, Random random) {
+    private static boolean canSpawnNear(EntityType<DazedLatexEntity> entityType, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
         if (world.getDifficulty() == Difficulty.PEACEFUL) {
             return false;
         }
@@ -179,15 +178,15 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     protected void setAttributes(AttributeMap attributes) {
-        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()),3);
-        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH),26);
-        safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE),40.0f);
-        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED),1.075F);
-        safeSetBaseValue(attributes.getInstance(ForgeMod.SWIM_SPEED.get()),1.025F);
-        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE),3.0f);
-        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR),0);
-        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS),0);
-        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE),0);
+        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()), 3);
+        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH), 26);
+        safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE), 40.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED), 1.075F);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.SWIM_SPEED.get()), 1.025F);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE), 3.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 0);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 0);
+        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE), 0);
     }
 
     protected void setMorphedAttributes(AttributeMap attributes) {
@@ -271,23 +270,6 @@ public class DazedLatexEntity extends ChangedEntity {
         }
     }
 
-    @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
-    public static class WhenTransfuredEntity {
-        @SubscribeEvent
-        public static void WhenDazedTransfur(ProcessTransfur.TransfurAttackEvent event) {
-            LivingEntity target = event.target;
-            IAbstractChangedEntity source = event.context.source;
-            if (source == null) {
-                return;
-            }
-            if (source.getChangedEntity() instanceof DazedLatexEntity dazedLatexEntity) {
-                dazedLatexEntity.willTransfurTarget = ProcessTransfur.willTransfur(target,
-                        (float) dazedLatexEntity.getAttributeValue(ChangedAttributes.TRANSFUR_DAMAGE.get()));
-            }
-
-        }
-    }
-
     public Color3 getHairColor(int i) {
         return Color3.getColor("#E5E5E5");
     }
@@ -298,14 +280,9 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
-
-    @Override
     public TransfurMode getTransfurMode() {
         if (this.getReplicationTimes() > 0) {
-            if (willTransfurTarget){
+            if (willTransfurTarget) {
                 subReplicationTimes(1);
             }
             return TransfurMode.REPLICATION;
@@ -344,7 +321,7 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -389,5 +366,22 @@ public class DazedLatexEntity extends ChangedEntity {
     @Override
     public @NotNull SoundEvent getDeathSound() {
         return SoundEvents.GENERIC_DEATH;
+    }
+
+    @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
+    public static class WhenTransfuredEntity {
+        @SubscribeEvent
+        public static void WhenDazedTransfur(ProcessTransfur.TransfurAttackEvent event) {
+            LivingEntity target = event.target;
+            IAbstractChangedEntity source = event.context.source;
+            if (source == null) {
+                return;
+            }
+            if (source.getChangedEntity() instanceof DazedLatexEntity dazedLatexEntity) {
+                dazedLatexEntity.willTransfurTarget = ProcessTransfur.willTransfur(target,
+                        (float) dazedLatexEntity.getAttributeValue(ChangedAttributes.TRANSFUR_DAMAGE.get()));
+            }
+
+        }
     }
 }

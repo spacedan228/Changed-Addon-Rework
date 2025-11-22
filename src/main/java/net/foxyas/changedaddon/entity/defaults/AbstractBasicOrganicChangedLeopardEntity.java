@@ -2,12 +2,12 @@ package net.foxyas.changedaddon.entity.defaults;
 
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.HairStyle;
-import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.beast.AbstractSnowLeopard;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,17 +34,10 @@ public abstract class AbstractBasicOrganicChangedLeopardEntity extends AbstractS
         super(type, level);
     }
 
-    public static void init() {
-    }
+
 
     public static LootTable.@NotNull Builder getLoot() {
         return LootTable.lootTable();
-    }
-
-    protected void safeSetBaseValue(@org.jetbrains.annotations.Nullable AttributeInstance instance, double value) {
-        if (instance != null) {
-            instance.setBaseValue(value);
-        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -56,6 +49,12 @@ public abstract class AbstractBasicOrganicChangedLeopardEntity extends AbstractS
         builder = builder.add(Attributes.ATTACK_DAMAGE, 3);
         builder = builder.add(Attributes.FOLLOW_RANGE, 16);
         return builder;
+    }
+
+    protected void safeSetBaseValue(@org.jetbrains.annotations.Nullable AttributeInstance instance, double value) {
+        if (instance != null) {
+            instance.setBaseValue(value);
+        }
     }
 
     protected void setAttributes(AttributeMap attributes) {
@@ -80,17 +79,12 @@ public abstract class AbstractBasicOrganicChangedLeopardEntity extends AbstractS
     }
 
     @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
-
-    @Override
     public @Nullable List<HairStyle> getValidHairStyles() {
         return HairStyle.Collection.MALE.getStyles();
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

@@ -33,7 +33,7 @@ public class InductionCoilGoal extends Goal {
     protected int duration;
     protected Iterable<ItemStack> items;
 
-    public InductionCoilGoal(PathfinderMob holder, IntProvider cooldown, float tooFar, IntProvider duration, FloatProvider damage){
+    public InductionCoilGoal(PathfinderMob holder, IntProvider cooldown, float tooFar, IntProvider duration, FloatProvider damage) {
         this.holder = holder;
         cooldownProvider = cooldown;
         tooFarSqr = tooFar * tooFar;
@@ -54,14 +54,14 @@ public class InductionCoilGoal extends Goal {
     @Override
     public boolean canUse() {
         target = holder.getTarget();
-        if(target == null || !target.isAlive()) return false;
+        if (target == null || !target.isAlive()) return false;
 
         Path path = holder.getNavigation().getPath();
         boolean stuck = (path != null && !path.canReach()) || holder.distanceToSqr(target) > tooFarSqr;
 
-        if(cooldown > 0){
+        if (cooldown > 0) {
             cooldown--;
-            if(stuck) cooldown--;
+            if (stuck) cooldown--;
             return false;
         }
 
@@ -77,7 +77,7 @@ public class InductionCoilGoal extends Goal {
     public void start() {
         duration = durationProvider.sample(holder.getRandom());
 
-        if(target instanceof Player player){
+        if (target instanceof Player player) {
             items = Iterables.concat(target.getHandSlots(), target.getArmorSlots(), Iterables.limit(player.getInventory().items, 9));
         } else items = Iterables.concat(target.getHandSlots(), target.getArmorSlots());
 
@@ -86,23 +86,23 @@ public class InductionCoilGoal extends Goal {
 
     @Override
     public void tick() {
-        if(duration <= 0) return;
+        if (duration <= 0) return;
         Path path = holder.getNavigation().getPath();
-        if((path == null || path.canReach()) && holder.distanceToSqr(target) < tooFarSqr) duration--;
+        if ((path == null || path.canReach()) && holder.distanceToSqr(target) < tooFarSqr) duration--;
 
         spawnParticles();
 
-        if(holder.tickCount % 20 != 0) return;
+        if (holder.tickCount % 20 != 0) return;
 
         Random random = holder.getRandom();
         int metal = 0, slots = 0;
-        for(ItemStack stack : items){
+        for (ItemStack stack : items) {
             slots++;
-            if(stack.is(ChangedAddonTags.Items.METAL)) {
+            if (stack.is(ChangedAddonTags.Items.METAL)) {
                 hurtAndBreak(stack, (int) Math.max(2, stack.getMaxDamage() * 0.02f), random);
                 metal++;
             }
-            if(stack.is(ChangedAddonTags.Items.PARTIAL_METAL)) {
+            if (stack.is(ChangedAddonTags.Items.PARTIAL_METAL)) {
                 hurtAndBreak(stack, (int) Math.max(1, stack.getMaxDamage() * 0.01f), random);
                 metal++;
             }
@@ -113,26 +113,26 @@ public class InductionCoilGoal extends Goal {
         target.setSecondsOnFire(5);
     }
 
-    protected void spawnParticles(){
+    protected void spawnParticles() {
         final float radius = 2;
         float rad;
         float x, z;
         float ringHeight = target.getBbHeight() / 4 + 0.1f;
-        for(int ring = 0; ring < 4; ring++){
-            for(int i = 0; i < 10; i++){
+        for (int ring = 0; ring < 4; ring++) {
+            for (int i = 0; i < 10; i++) {
                 rad = i * 36 * Mth.DEG_TO_RAD;
                 x = Mth.cos(rad) * radius;
                 z = Mth.sin(rad) * radius;
 
-                ((ServerLevel)holder.level).sendParticles(ParticleTypes.ELECTRIC_SPARK,
+                ((ServerLevel) holder.level).sendParticles(ParticleTypes.ELECTRIC_SPARK,
                         target.getX() + x - 0.05, target.getY() + ringHeight * ring - 0.05, target.getZ() + z - 0.05,
                         5, 0.1, 0.1, 0.1, 0);
             }
         }
     }
 
-    protected void hurtAndBreak(ItemStack stack, int damage, Random random){
-        if(!stack.isDamageableItem() || !stack.hurt(damage, random, null)) return;
+    protected void hurtAndBreak(ItemStack stack, int damage, Random random) {
+        if (!stack.isDamageableItem() || !stack.hurt(damage, random, null)) return;
 
         stack.shrink(1);
         stack.setDamageValue(0);

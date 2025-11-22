@@ -19,14 +19,14 @@ import net.minecraft.world.phys.Vec3;
 import java.util.EnumSet;
 
 public class ThunderStrikeGoal extends Goal {
+    protected final IntProvider cooldownProvider;
     private final PathfinderMob pathfinderMob;
     private final double jumpPower;
     private final int duration; // ticks de duração do ataque
+    public int cooldown = 0;
     private int tickCounter;
     private BlockPos groundPos;
     private LivingEntity target;
-    protected final IntProvider cooldownProvider;
-    public int cooldown = 0;
 
     public ThunderStrikeGoal(PathfinderMob pathfinderMob, IntProvider cooldownProvider, double jumpPower, int duration) {
         this.pathfinderMob = pathfinderMob;
@@ -117,7 +117,7 @@ public class ThunderStrikeGoal extends Goal {
                 );
 
         for (LivingEntity livingEntity : list) {
-            livingEntity.push(0,0.5f,0);
+            livingEntity.push(0, 0.5f, 0);
         }
     }
 

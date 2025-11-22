@@ -82,7 +82,7 @@ public class LuminarCrystalSpearEntity extends AbstractArrow implements ItemSupp
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

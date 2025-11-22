@@ -20,7 +20,7 @@ public class LookAndFollowTradingPlayerSink extends Goal {
 
     @Override
     public boolean canUse() {
-        if(!(mob instanceof CustomMerchant merchant)) return false;
+        if (!(mob instanceof CustomMerchant merchant)) return false;
 
         Player tradingPlayer = merchant.getTradingPlayer();
         return tradingPlayer != null && tradingPlayer.distanceTo(mob) <= 16;
@@ -38,7 +38,7 @@ public class LookAndFollowTradingPlayerSink extends Goal {
 
     @Override
     public void start() {
-        if(!(mob instanceof CustomMerchant merchant)) return;
+        if (!(mob instanceof CustomMerchant merchant)) return;
 
         Player tradingPlayer = merchant.getTradingPlayer();
         if (tradingPlayer != null) {
@@ -51,7 +51,7 @@ public class LookAndFollowTradingPlayerSink extends Goal {
 
     @Override
     public void tick() {
-        if(!(mob instanceof CustomMerchant merchant)) return;
+        if (!(mob instanceof CustomMerchant merchant)) return;
 
         Player tradingPlayer = merchant.getTradingPlayer();
         if (tradingPlayer != null) {

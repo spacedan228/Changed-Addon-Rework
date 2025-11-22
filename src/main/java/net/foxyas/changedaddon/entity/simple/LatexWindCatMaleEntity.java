@@ -15,8 +15,7 @@ public class LatexWindCatMaleEntity extends ChangedEntity implements GenderedEnt
         super(p_19870_, level);
     }
 
-    public static void init() {
-    }
+
 
     protected void setAttributes(AttributeMap attributes) {
         super.setAttributes(attributes);

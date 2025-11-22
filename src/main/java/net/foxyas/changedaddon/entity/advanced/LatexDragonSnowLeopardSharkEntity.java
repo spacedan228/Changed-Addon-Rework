@@ -32,8 +32,7 @@ public class LatexDragonSnowLeopardSharkEntity extends AbstractLatexShark {
         setPersistenceRequired();
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
@@ -46,7 +45,7 @@ public class LatexDragonSnowLeopardSharkEntity extends AbstractLatexShark {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

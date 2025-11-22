@@ -13,7 +13,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -121,7 +120,7 @@ public abstract class AbstractCanTameChangedEntity extends AbstractBasicChangedE
         tag.putBoolean("FollowOwner", this.isFollowingOwner());
     }
 
-     @Override
+    @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
         return super.targetSelectorTest(livingEntity) && livingEntity != this.getOwner();
     }

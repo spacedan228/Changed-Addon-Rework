@@ -32,8 +32,7 @@ public class LatexSquidTigerSharkEntity extends AbstractAquaticEntity {
         setNoAi(false);
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -48,7 +47,7 @@ public class LatexSquidTigerSharkEntity extends AbstractAquaticEntity {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

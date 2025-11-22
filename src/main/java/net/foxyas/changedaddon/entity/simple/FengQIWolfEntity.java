@@ -37,8 +37,7 @@ public class FengQIWolfEntity extends ChangedEntity implements GenderedEntity, P
         setNoAi(false);
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -72,10 +71,6 @@ public class FengQIWolfEntity extends ChangedEntity implements GenderedEntity, P
         return 700;
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -118,7 +113,7 @@ public class FengQIWolfEntity extends ChangedEntity implements GenderedEntity, P
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

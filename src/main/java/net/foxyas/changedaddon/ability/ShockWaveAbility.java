@@ -8,7 +8,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedEffects;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -50,10 +50,10 @@ public class ShockWaveAbility extends SimpleAbility {
                     }
                 }
                 if (!_entity.level.isClientSide()) {
-                    MobEffectInstance Effect = new MobEffectInstance(ChangedEffects.SHOCK, 40, 0, false, false, true);
+                    MobEffectInstance Effect = new MobEffectInstance(ChangedEffects.SHOCK.get(), 40, 0, false, false, true);
                     Effect.setCurativeItems(List.of());
                     _entity.addEffect(Effect);
-                    ChangedSounds.broadcastSound(_entity, ChangedSounds.PARALYZE1, 5, 1);
+                    ChangedSounds.broadcastSound(_entity, ChangedSounds.TSC_WEAPON_SHOCK, 5, 1);
                     player.causeFoodExhaustion(4f);
                 }
             }

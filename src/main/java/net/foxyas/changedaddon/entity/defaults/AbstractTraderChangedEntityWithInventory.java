@@ -57,6 +57,23 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
         calculateNextReset();
     }
 
+    @Nullable
+    protected static EquipmentSlot getEquipmentSlot(int pIndex) {
+        if (pIndex == 100 + EquipmentSlot.HEAD.getIndex()) {
+            return EquipmentSlot.HEAD;
+        } else if (pIndex == 100 + EquipmentSlot.CHEST.getIndex()) {
+            return EquipmentSlot.CHEST;
+        } else if (pIndex == 100 + EquipmentSlot.LEGS.getIndex()) {
+            return EquipmentSlot.LEGS;
+        } else if (pIndex == 100 + EquipmentSlot.FEET.getIndex()) {
+            return EquipmentSlot.FEET;
+        } else if (pIndex == 98) {
+            return EquipmentSlot.MAINHAND;
+        } else {
+            return pIndex == 99 ? EquipmentSlot.OFFHAND : null;
+        }
+    }
+
     @Override
     public IItemHandler getItemHandler() {
         return combinedInv;
@@ -71,7 +88,7 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
     protected void dropAllDeathLoot(@NotNull DamageSource pDamageSource) {
         super.dropAllDeathLoot(pDamageSource);
 
-        if(!inventory.isEmpty()) dropInventoryItems();
+        if (!inventory.isEmpty()) dropInventoryItems();
     }
 
     @Override
@@ -134,23 +151,6 @@ public abstract class AbstractTraderChangedEntityWithInventory extends AbstractT
         }
 
         return super.getSlot(slot);
-    }
-
-    @Nullable
-    protected static EquipmentSlot getEquipmentSlot(int pIndex) {
-        if (pIndex == 100 + EquipmentSlot.HEAD.getIndex()) {
-            return EquipmentSlot.HEAD;
-        } else if (pIndex == 100 + EquipmentSlot.CHEST.getIndex()) {
-            return EquipmentSlot.CHEST;
-        } else if (pIndex == 100 + EquipmentSlot.LEGS.getIndex()) {
-            return EquipmentSlot.LEGS;
-        } else if (pIndex == 100 + EquipmentSlot.FEET.getIndex()) {
-            return EquipmentSlot.FEET;
-        } else if (pIndex == 98) {
-            return EquipmentSlot.MAINHAND;
-        } else {
-            return pIndex == 99 ? EquipmentSlot.OFFHAND : null;
-        }
     }
 
     // MenuProvider implementation

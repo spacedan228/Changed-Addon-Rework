@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.foxyas.changedaddon.fluid.LitixCamoniaFluid;
-import net.ltxprogrammer.changed.block.NonLatexCoverableBlock;
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

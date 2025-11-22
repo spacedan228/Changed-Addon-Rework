@@ -29,8 +29,7 @@ public class SnepsiLeopardEntity extends LatexSnowLeopardMale {
         setNoAi(false);
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
@@ -53,7 +52,7 @@ public class SnepsiLeopardEntity extends LatexSnowLeopardMale {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

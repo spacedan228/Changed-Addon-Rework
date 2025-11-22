@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class LatexKaylaSharkEntity extends LatexTigerShark implements GenderedEntity {
 
-    protected static final EntityDataAccessor<Boolean> GLOWING_STATE = SynchedEntityData.defineId(LatexKaylaSharkEntity.class, EntityDataSerializers.BOOLEAN);;
+    protected static final EntityDataAccessor<Boolean> GLOWING_STATE = SynchedEntityData.defineId(LatexKaylaSharkEntity.class, EntityDataSerializers.BOOLEAN);
 
     public LatexKaylaSharkEntity(EntityType<? extends LatexKaylaSharkEntity> type, Level level) {
         super(type, level);
@@ -41,18 +41,42 @@ public class LatexKaylaSharkEntity extends LatexTigerShark implements GenderedEn
         this(ChangedAddonEntities.LATEX_KAYLA_SHARK.get(), level);
     }
 
+    public static LootTable.@NotNull Builder getLoot() {
+        return LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.PINK_DYE)
+                                .setWeight(1)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))))
+                        .add(LootItem.lootTableItem(ChangedItems.LATEX_BASE::get)
+                                .setWeight(2)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))))
+                        .add(LootItem.lootTableItem(Items.COD)
+                                .setWeight(2)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F))))
+                        .add(LootItem.lootTableItem(Items.SALMON)
+                                .setWeight(2)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F))))
+                        .add(LootItem.lootTableItem(Items.TROPICAL_FISH)
+                                .setWeight(1)
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F))))
+                        .when(LootItemKilledByPlayerCondition.killedByPlayer())
+                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 3)))
+                );
+    }
+
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(GLOWING_STATE, false);
     }
 
-    public void setGlowingState(boolean value) {
-        this.entityData.set(GLOWING_STATE, value);
-    }
-
     public boolean getGlowingState() {
         return this.entityData.get(GLOWING_STATE);
+    }
+
+    public void setGlowingState(boolean value) {
+        this.entityData.set(GLOWING_STATE, value);
     }
 
     @Override
@@ -96,29 +120,5 @@ public class LatexKaylaSharkEntity extends LatexTigerShark implements GenderedEn
         basicPlayerInfo.setRightIrisColor(Color3.parseHex("#4cc4f5"));
 
         return finalizedSpawn;
-    }
-
-    public static LootTable.@NotNull Builder getLoot() {
-        return LootTable.lootTable()
-                .withPool(LootPool.lootPool()
-                        .setRolls(ConstantValue.exactly(1))
-                        .add(LootItem.lootTableItem(Items.PINK_DYE)
-                                .setWeight(1)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 3.0F))))
-                        .add(LootItem.lootTableItem(ChangedItems.LATEX_BASE::get)
-                                .setWeight(2)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1.0F, 2.0F))))
-                        .add(LootItem.lootTableItem(Items.COD)
-                                .setWeight(2)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F))))
-                        .add(LootItem.lootTableItem(Items.SALMON)
-                                .setWeight(2)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 2.0F))))
-                        .add(LootItem.lootTableItem(Items.TROPICAL_FISH)
-                                .setWeight(1)
-                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(0.0F, 1.0F))))
-                        .when(LootItemKilledByPlayerCondition.killedByPlayer())
-                        .apply(LootingEnchantFunction.lootingMultiplier(UniformGenerator.between(0, 3)))
-                );
     }
 }

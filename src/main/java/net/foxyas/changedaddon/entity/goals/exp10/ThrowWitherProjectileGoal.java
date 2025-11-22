@@ -17,13 +17,13 @@ import org.jetbrains.annotations.NotNull;
 public class ThrowWitherProjectileGoal extends Goal {
 
     public final Mob holder;
-    public int cooldown;
+    public final float distance;
     protected final IntProvider cooldownProvider;
     protected final IntProvider maxUseTimesProvider;
+    public int cooldown;
     public int maxUseTimes;
     public int usedTimes;
     public int tick;
-    public final float distance;
 
     public ThrowWitherProjectileGoal(Mob holder, IntProvider cooldownProvider, IntProvider maxUseTimesProvider) {
         super();

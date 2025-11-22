@@ -84,10 +84,6 @@ public class LatexSnowFoxFemaleEntity extends ChangedEntity implements GenderedE
         return Color3.getColor("#E5E5E5");
     }
 
-    @Override
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -138,7 +134,7 @@ public class LatexSnowFoxFemaleEntity extends ChangedEntity implements GenderedE
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

@@ -27,6 +27,7 @@ import java.util.Random;
 
 public class ClawsComboAttackGoal extends Goal {
 
+    private static final DustParticleOptions PARTICLE = new DustParticleOptions(new Vector3f(1, 1, 1), 1);
     protected final PathfinderMob holder;
     protected final Random random;
     protected final IntProvider cooldownProvider;
@@ -34,7 +35,6 @@ public class ClawsComboAttackGoal extends Goal {
     protected final IntProvider castDurationProvider;
     protected final FloatProvider damageProvider;
     protected final DamageSource source;
-
     protected LivingEntity target;
     protected int cooldown;
     protected int attacks;
@@ -99,8 +99,6 @@ public class ClawsComboAttackGoal extends Goal {
     protected void pickAttackPos() {
         attackPos = target.position();
     }
-
-    private static final DustParticleOptions PARTICLE = new DustParticleOptions(new Vector3f(1, 1, 1), 1);
 
     @Override
     public void tick() {

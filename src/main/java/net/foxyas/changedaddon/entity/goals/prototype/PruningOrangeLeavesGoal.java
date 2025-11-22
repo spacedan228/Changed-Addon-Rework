@@ -53,9 +53,9 @@ public class PruningOrangeLeavesGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if(targetLeave == null){
+        if (targetLeave == null) {
             lock = true;
-            new DelayedTask(200, ()-> lock = false);
+            new DelayedTask(200, () -> lock = false);
             return false;
         }
 
@@ -69,22 +69,22 @@ public class PruningOrangeLeavesGoal extends Goal {
 
     @Override
     public void start() {
-        targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());;
+        targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
     }
 
     @Override
     public void tick() {
         Level level = prototypeEntity.level;
-        if(targetLeave == null || isBlockInvalid(level.getBlockState(targetLeave))){
+        if (targetLeave == null || isBlockInvalid(level.getBlockState(targetLeave))) {
             targetLeave = findNearbyOrangeLeaves(prototypeEntity.blockPosition(), 10, prototypeEntity.getEyePosition());
-            if(targetLeave == null) return;
+            if (targetLeave == null) return;
         }
 
         prototypeEntity.getLookControl().setLookAt(targetLeave.getX(), targetLeave.getY(), targetLeave.getZ(),
                 30, 30);
         prototypeEntity.getNavigation().moveTo(targetLeave.getX(), targetLeave.getY(), targetLeave.getZ(), 0.25f);
 
-        if(pruneCooldown > 0){
+        if (pruneCooldown > 0) {
             pruneCooldown--;
             return;
         }
@@ -103,15 +103,15 @@ public class PruningOrangeLeavesGoal extends Goal {
         pruneCooldown = 0;
     }
 
-    private ItemStack findShears(){
+    private ItemStack findShears() {
         ItemStack shears = prototypeEntity.getMainHandItem();
-        if(!shears.isEmpty() && shears.is(Tags.Items.SHEARS)) return shears;
+        if (!shears.isEmpty() && shears.is(Tags.Items.SHEARS)) return shears;
 
         shears = prototypeEntity.getOffhandItem();
         return !shears.isEmpty() && shears.is(Tags.Items.SHEARS) ? shears : ItemStack.EMPTY;
     }
 
-    private boolean isBlockInvalid(BlockState state){
+    private boolean isBlockInvalid(BlockState state) {
         return !state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get());
     }
 
@@ -152,16 +152,16 @@ public class PruningOrangeLeavesGoal extends Goal {
     private void pruneOrangeLeaves() {
         ItemStack shears = prototypeEntity.getMainHandItem();
         InteractionHand hand = InteractionHand.MAIN_HAND;
-        if(shears.isEmpty() || !shears.is(Tags.Items.SHEARS)) {
+        if (shears.isEmpty() || !shears.is(Tags.Items.SHEARS)) {
             shears = prototypeEntity.getOffhandItem();
-            if(shears.isEmpty() || !shears.is(Tags.Items.SHEARS)) return;
+            if (shears.isEmpty() || !shears.is(Tags.Items.SHEARS)) return;
 
             hand = InteractionHand.OFF_HAND;
         }
 
         Level level = prototypeEntity.level;
         BlockState state = level.getBlockState(targetLeave);
-        if(isBlockInvalid(state)) return;
+        if (isBlockInvalid(state)) return;
 
         BlockState newState = Blocks.OAK_LEAVES.defaultBlockState();
 
@@ -185,9 +185,10 @@ public class PruningOrangeLeavesGoal extends Goal {
         ItemStack orangeStack = new ItemStack(ChangedItems.ORANGE.get());
         orangeStack.setCount(uniformInt.sample(prototypeEntity.getRandom()));
         orangeStack = prototypeEntity.addToInventory(orangeStack, false);
-        if(!orangeStack.isEmpty()) Block.popResource(level, targetLeave, orangeStack);
+        if (!orangeStack.isEmpty()) Block.popResource(level, targetLeave, orangeStack);
 
-        shears.hurtAndBreak(1, prototypeEntity, (prototype) -> {});
+        shears.hurtAndBreak(1, prototypeEntity, (prototype) -> {
+        });
 
         prototypeEntity.getLookControl().setLookAt(Vec3.atCenterOf(targetLeave));
         prototypeEntity.swing(hand);

@@ -34,8 +34,7 @@ public class CrystalGasCatFemaleEntity extends LatexWatermelonCat implements Gen
         setNoAi(false);
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
@@ -67,7 +66,7 @@ public class CrystalGasCatFemaleEntity extends LatexWatermelonCat implements Gen
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 

@@ -1,7 +1,10 @@
 package net.foxyas.changedaddon.entity.partials;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.entity.ComplexRenderer;
+import net.ltxprogrammer.changed.entity.Gender;
+import net.ltxprogrammer.changed.entity.PowderSnowWalkable;
+import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.beast.AbstractSnowLeopard;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
@@ -36,8 +39,7 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
         setPersistenceRequired();
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();

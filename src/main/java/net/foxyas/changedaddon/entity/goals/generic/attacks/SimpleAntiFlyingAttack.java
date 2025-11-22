@@ -25,10 +25,10 @@ public class SimpleAntiFlyingAttack extends Goal {
     private final Mob attacker;
     private final int delay;
     private final IntProvider cooldownProvider;
-    public int cooldown;
     private final float minRange;
     private final float maxRange;
     private final float damage;
+    public int cooldown;
     private LivingEntity target;
     private int ticks = 0;
 
@@ -152,7 +152,7 @@ public class SimpleAntiFlyingAttack extends Goal {
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
             pos.set(attacker.blockPosition());
 
-            while (level.isEmptyBlock(pos)){
+            while (level.isEmptyBlock(pos)) {
                 pos.move(0, -1, 0);
             }
             pos.move(0, 1, 0);

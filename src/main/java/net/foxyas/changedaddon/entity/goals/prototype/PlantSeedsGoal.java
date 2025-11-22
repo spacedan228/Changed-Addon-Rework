@@ -45,16 +45,16 @@ public class PlantSeedsGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if(lock) return false;
+        if (lock) return false;
 
         return !findSeeds(false).isEmpty();
     }
 
     @Override
     public boolean canContinueToUse() {
-        if(targetPos == null){
+        if (targetPos == null) {
             lock = true;
-            new DelayedTask(100, ()-> lock = false);
+            new DelayedTask(100, () -> lock = false);
             return false;
         }
 
@@ -84,9 +84,9 @@ public class PlantSeedsGoal extends Goal {
     @Override
     public void tick() {
         Level level = entity.level;
-        if(targetPos == null || isBlockInvalid(level, level.getBlockState(targetPos.below()), targetPos)){
+        if (targetPos == null || isBlockInvalid(level, level.getBlockState(targetPos.below()), targetPos)) {
             targetPos = findPlantableFarmland(level, entity.blockPosition(), searchRange);
-            if(targetPos == null) return;
+            if (targetPos == null) return;
         }
 
         navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
@@ -96,7 +96,7 @@ public class PlantSeedsGoal extends Goal {
                 30.0F  // pitch change speed
         );
 
-        if(plantCooldown > 0){
+        if (plantCooldown > 0) {
             plantCooldown--;
             return;
         }
@@ -114,7 +114,7 @@ public class PlantSeedsGoal extends Goal {
         plantCooldown = 0;
     }
 
-    private boolean isBlockInvalid(Level level, BlockState state, BlockPos above){
+    private boolean isBlockInvalid(Level level, BlockState state, BlockPos above) {
         return state.getBlock() != Blocks.FARMLAND || !level.getBlockState(above).isAir();
     }
 
@@ -124,7 +124,7 @@ public class PlantSeedsGoal extends Goal {
         for (int i = 0; i < handsInv.getSlots(); i++) {
             seeds = handsInv.getStackInSlot(i);
             if (isSeed(seeds)) {
-                if(extract) return handsInv.extractItem(i, 1, false);
+                if (extract) return handsInv.extractItem(i, 1, false);
                 return seeds;
             }
         }
@@ -149,10 +149,10 @@ public class PlantSeedsGoal extends Goal {
                 center.offset(-range, -1, -range),
                 center.offset(range, 1, range))) {
             state = level.getBlockState(pos);
-            if(isBlockInvalid(level, state, pos.above())) continue;
+            if (isBlockInvalid(level, state, pos.above())) continue;
 
             dist = (float) pos.distSqr(center);
-            if(dist >= closestDist) continue;
+            if (dist >= closestDist) continue;
 
             closestDist = dist;
             closestFarmland = pos.immutable();
@@ -166,7 +166,7 @@ public class PlantSeedsGoal extends Goal {
         ItemStack seeds = findSeeds(true);
         if (seeds.isEmpty()) return;
 
-        if(isBlockInvalid(level, level.getBlockState(targetPos.below()), targetPos)) return;
+        if (isBlockInvalid(level, level.getBlockState(targetPos.below()), targetPos)) return;
 
         // Place the crop block at target position
         entity.getLookControl().setLookAt(

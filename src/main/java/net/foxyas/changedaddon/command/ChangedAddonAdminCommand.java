@@ -12,15 +12,16 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -36,7 +37,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -199,20 +199,19 @@ public class ChangedAddonAdminCommand {
                             return Command.SINGLE_SUCCESS;
                         })
                 )
-//                .then(Commands.literal("setBlocksInfectionType")
-//                        .then(Commands.argument("minPos", BlockPosArgument.blockPos())
-//                                .then(Commands.argument("maxPos", BlockPosArgument.blockPos())
-//                                        .then(Commands.literal("white_latex")
-//                                                .executes(ctx -> setBlockInfection(ctx, LatexType.WHITE_LATEX))
-//                                        ).then(Commands.literal("dark_latex")
-//                                                .executes(ctx -> setBlockInfection(ctx, LatexType.DARK_LATEX))
-//                                        ).then(Commands.literal("neutral")
-//                                                .executes(ctx -> setBlockInfection(ctx, LatexType.NEUTRAL))
-//                                        )
-//                                )
-//                        )
-//                )
-                // Fixme : tweak this class
+                .then(Commands.literal("setBlocksInfectionType")
+                        .then(Commands.argument("minPos", BlockPosArgument.blockPos())
+                                .then(Commands.argument("maxPos", BlockPosArgument.blockPos())
+                                        .then(Commands.literal("white_latex")
+                                                .executes(ctx -> setBlockInfection(ctx, ChangedLatexTypes.WHITE_LATEX.get()))
+                                        ).then(Commands.literal("dark_latex")
+                                                .executes(ctx -> setBlockInfection(ctx, ChangedLatexTypes.DARK_LATEX.get()))
+                                        ).then(Commands.literal("neutral")
+                                                .executes(ctx -> setBlockInfection(ctx, ChangedLatexTypes.NONE.get()))
+                                        )
+                                )
+                        )
+                )
         );
     }
 
@@ -234,38 +233,37 @@ public class ChangedAddonAdminCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-//    private static int setBlockInfection(CommandContext<CommandSourceStack> ctx, LatexType enumValue) {
-//        CommandSourceStack source = ctx.getSource();
-//        ServerLevel world = source.getLevel();
-//
-//        BlockPos minPos;
-//        BlockPos maxPos;
-//        try {
-//            minPos = BlockPosArgument.getLoadedBlockPos(ctx, "minPos");
-//            maxPos = BlockPosArgument.getLoadedBlockPos(ctx, "maxPos");
-//        } catch (CommandSyntaxException e) {
-//            source.sendFailure(Component.literal("One or both of the selected position are not loaded!"));
-//            return 0;
-//        }
-//
-//        long value = BlockPos.betweenClosedStream(minPos, maxPos).count();
-//
-//        if (value > Short.MAX_VALUE) {
-//            source.sendFailure(Component.literal("Too many blocks selected: " + value + " > " + Short.MAX_VALUE));
-//            return 0;
-//        }
-//
-//        for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
-//            BlockState state = world.getBlockState(pos);
-//            if (state.hasProperty(AbstractLatexBlock.COVERED)) {
-//                BlockState newState = state.setValue(AbstractLatexBlock.COVERED, enumValue);
-//                world.setBlock(pos, newState, 3);
-//            }
-//        }
-//
-//        source.sendSuccess(() -> Component.literal("Set Infection of " + value + " blocks to " + enumValue.toString().toLowerCase().replace("_", " ")), true);
-//        return 1;
-//    }
+    private static int setBlockInfection(CommandContext<CommandSourceStack> ctx, LatexType latexType) {
+        CommandSourceStack source = ctx.getSource();
+        ServerLevel world = source.getLevel();
+
+        BlockPos minPos;
+        BlockPos maxPos;
+        try {
+            minPos = BlockPosArgument.getLoadedBlockPos(ctx, "minPos");
+            maxPos = BlockPosArgument.getLoadedBlockPos(ctx, "maxPos");
+        } catch (CommandSyntaxException e) {
+            source.sendFailure(Component.literal("One or both of the selected position are not loaded!"));
+            return 0;
+        }
+
+        long value = BlockPos.betweenClosedStream(minPos, maxPos).count();
+
+        if (value > Short.MAX_VALUE) {
+            source.sendFailure(Component.literal("Too many blocks selected: " + value + " > " + Short.MAX_VALUE));
+            return 0;
+        }
+
+        for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
+            LatexCoverState latexCoverState = LatexCoverState.getAt(world, pos);
+            if (!latexCoverState.is(ChangedLatexTypes.NONE.get())) {
+                LatexCoverState.setAtAndUpdate(world, pos, ChangedLatexTypes.NONE.get().defaultCoverState());
+            }
+        }
+
+        source.sendSuccess(() -> Component.literal("Set Infection of " + value + " blocks to " + latexType.toString().toLowerCase().replace("_", " ")), true);
+        return 1;
+    }
 
     private static int setUltraInstinctDodge(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();

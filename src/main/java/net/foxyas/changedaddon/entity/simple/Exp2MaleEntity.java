@@ -34,6 +34,8 @@ import java.util.Objects;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
 public class Exp2MaleEntity extends AbstractExp2SnepChangedEntity {
+    private static final List<SoundEvent> sounds = List.of(SoundEvents.CAT_AMBIENT, SoundEvents.CAT_PURR, SoundEvents.CAT_PURREOW);
+
     public Exp2MaleEntity(PlayMessages.SpawnEntity packet, Level world) {
         this(ChangedAddonEntities.EXP_2_MALE.get(), world);
     }
@@ -46,8 +48,7 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntity {
         setPersistenceRequired();
     }
 
-    public static void init() {
-    }
+
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
@@ -147,7 +148,7 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntity {
     }
 
     @Override
-    public @NotNull Packet<?> getAddEntityPacket() {
+    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
@@ -207,8 +208,6 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntity {
     public @NotNull SoundEvent getDeathSound() {
         return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.death")));
     }
-
-    private static final List<SoundEvent> sounds = List.of(SoundEvents.CAT_AMBIENT, SoundEvents.CAT_PURR, SoundEvents.CAT_PURREOW);
 
     @Override
     public void WhenPattedReactionSimple() {
