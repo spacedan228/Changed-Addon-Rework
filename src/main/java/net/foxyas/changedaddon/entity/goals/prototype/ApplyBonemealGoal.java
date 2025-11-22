@@ -145,7 +145,7 @@ public class ApplyBonemealGoal extends Goal {
 
     private BlockPos findGrowableCrop(Level level, BlockPos center, int range) {
         BlockPos closestGrowableCrop = null;
-        double closestDist = Double.MAX_VALUE;
+        float closestDist = Float.MAX_VALUE, dist;
 
         BlockState state;
         for (BlockPos pos : BlockPos.betweenClosed(
@@ -155,7 +155,7 @@ public class ApplyBonemealGoal extends Goal {
 
             if(isBlockInvalid(level, state, pos)) continue;
 
-            double dist = pos.distSqr(center);
+            dist = (float) pos.distSqr(center);
             if (dist < closestDist) {
                 closestDist = dist;
                 closestGrowableCrop = pos.immutable();

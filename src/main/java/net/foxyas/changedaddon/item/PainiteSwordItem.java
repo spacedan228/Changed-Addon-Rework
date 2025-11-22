@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
@@ -35,6 +34,6 @@ public class PainiteSwordItem extends SwordItem {
             public @NotNull Ingredient getRepairIngredient() {
                 return Ingredient.of(new ItemStack(ChangedAddonItems.PAINITE.get()));
             }
-        }, 3, -2.4f, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
+        }, 3, -2.4f, new Item.Properties().fireResistant());
     }
 }

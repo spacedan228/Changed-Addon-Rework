@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -35,6 +34,6 @@ public class PainiteAxeItem extends AxeItem {
             public @NotNull Ingredient getRepairIngredient() {
                 return Ingredient.of(new ItemStack(ChangedAddonItems.PAINITE.get()));
             }
-        }, 1, -2.8f, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
+        }, 1, -2.8f, new Item.Properties().fireResistant());
     }
 }

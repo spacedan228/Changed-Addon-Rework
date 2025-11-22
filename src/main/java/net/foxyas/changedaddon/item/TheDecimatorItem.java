@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.item;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -37,10 +36,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class TheDecimatorItem extends Item {
+
     private static final UUID BASE_ATTACK_REACH_UUID = UUID.fromString("fa02d244-9771-415c-8789-fd03b5252c8c");
 
     public TheDecimatorItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).durability(1025));
+        super(new Item.Properties().durability(1025));
     }
 
     private float AttackDamage() {
@@ -85,11 +85,11 @@ public class TheDecimatorItem extends Item {
 
     @Override
     public boolean onLeftClickEntity(ItemStack stack, Player player, Entity target) {
-        if (player.getAttackStrengthScale(0.0f) >= 0.9 && player.isOnGround()) {
+        if (player.getAttackStrengthScale(0.0f) >= 0.9 && player.onGround()) {
             // ⚔ Área de efeito: Raio de 1.5 blocos ao redor do alvo
             double radius = 1.25;
             AABB attackArea = target.getBoundingBox().inflate(radius, 0.25, radius);
-            List<LivingEntity> nearbyEntities = player.level.getEntitiesOfClass(LivingEntity.class, attackArea);
+            List<LivingEntity> nearbyEntities = player.level().getEntitiesOfClass(LivingEntity.class, attackArea);
             // 🔥 Knockback em todos os alvos próximos (exceto o atacante)
             for (LivingEntity entity : nearbyEntities) {
                 if (entity != target && entity != player && !player.isAlliedTo(entity)
@@ -102,10 +102,10 @@ public class TheDecimatorItem extends Item {
                 }
             }
             // 💥 Partículas para indicar o ataque em área
-            player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.HAMMER_SWING.get(), SoundSource.PLAYERS, 1f, 1f);
+            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), ChangedAddonSoundEvents.HAMMER_SWING.get(), SoundSource.PLAYERS, 1f, 1f);
             double d0 = (double) (-Mth.sin(player.getYRot() * 0.017453292F)) * 1;
             double d1 = (double) Mth.cos(player.getYRot() * 0.017453292F) * 1;
-            Level var7 = player.level;
+            Level var7 = player.level();
             if (var7 instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.SWEEP_ATTACK, player.getX() + d0, player.getY(0.5), player.getZ() + d1, 0, d0, 0.0, d1, 0.0);
             }
@@ -192,8 +192,8 @@ public class TheDecimatorItem extends Item {
         builder.putAll(super.getAttributeModifiers(equipmentSlot, stack));
         builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Tool modifier", AttackDamage(), AttributeModifier.Operation.ADDITION));
         builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Tool modifier", AttackSpeed(), AttributeModifier.Operation.ADDITION));
-        builder.put(ForgeMod.REACH_DISTANCE.get(), new AttributeModifier(BASE_ATTACK_REACH_UUID, "Tool modifier", 0.5f, AttributeModifier.Operation.ADDITION));
-        builder.put(ForgeMod.ATTACK_RANGE.get(), new AttributeModifier(BASE_ATTACK_REACH_UUID, "Tool modifier", 0.5f, AttributeModifier.Operation.ADDITION));
+        builder.put(ForgeMod.BLOCK_REACH.get(), new AttributeModifier(BASE_ATTACK_REACH_UUID, "Tool modifier", 0.5f, AttributeModifier.Operation.ADDITION));
+        builder.put(ForgeMod.ENTITY_REACH.get(), new AttributeModifier(BASE_ATTACK_REACH_UUID, "Tool modifier", 0.5f, AttributeModifier.Operation.ADDITION));
         return builder.build();
     }
 }

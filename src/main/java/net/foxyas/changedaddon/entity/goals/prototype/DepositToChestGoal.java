@@ -96,7 +96,6 @@ public class DepositToChestGoal extends Goal {
         if(navigation.isStuck() || (navigation.getPath() != null && !navigation.getPath().canReach())){
             noPathTimeout--;
             if(noPathTimeout <= 0){//No path, try again later
-                chestPos = null;
                 lock = true;
                 new DelayedTask(200, ()-> lock = false);
             }

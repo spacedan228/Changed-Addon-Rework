@@ -12,7 +12,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.IModBusEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -36,10 +35,10 @@ public class ChangedAddonMod {
     public static ChangedAddonDataFixer dataFixer;
 
 
-    public ChangedAddonMod() {
-        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+    public ChangedAddonMod(IEventBus bus) {
         ChangedAddonBlocks.REGISTRY.register(bus);
         ChangedAddonPaintingTypes.PAINTING_TYPES.register(bus);
+        ChangedAddonTabs.TABS.register(bus);
 
         ChangedAddonItemTiers.init();
         ChangedAddonAttributes.ATTRIBUTES.register(bus);
@@ -62,6 +61,7 @@ public class ChangedAddonMod {
         ChangedAddonVillagerProfessions.POI_TYPES.register(bus);
         ChangedAddonVillagerProfessions.PROFESSIONS.register(bus);
         ChangedAddonFluids.REGISTRY.register(bus);
+
         dataFixer = new ChangedAddonDataFixer();
     }
 

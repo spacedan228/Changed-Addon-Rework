@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
@@ -11,20 +10,21 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class PainiteArmorItem extends ArmorItem {
-    public PainiteArmorItem(EquipmentSlot slot, Item.Properties properties) {
+
+    public PainiteArmorItem(ArmorItem.Type type, Item.Properties properties) {
         super(new ArmorMaterial() {
 
             final int[] durability = new int[]{13, 15, 16, 11};
             final int[] defence = new int[]{3, 6, 8, 3};
 
             @Override
-            public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
-                return durability[slot.getIndex()] * 40;
+            public int getDurabilityForType(@NotNull Type pType) {
+                return durability[pType.getSlot().getIndex()] * 40;
             }
 
             @Override
-            public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
-                return defence[slot.getIndex()];
+            public int getDefenseForType(@NotNull Type pType) {
+                return defence[pType.getSlot().getIndex()];
             }
 
             @Override
@@ -56,12 +56,12 @@ public abstract class PainiteArmorItem extends ArmorItem {
             public float getKnockbackResistance() {
                 return 0.1f;
             }
-        }, slot, properties);
+        }, type, properties);
     }
 
     public static class Helmet extends PainiteArmorItem {
         public Helmet() {
-            super(EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
+            super(Type.HELMET, new Item.Properties().fireResistant());
         }
 
         @Override
@@ -72,7 +72,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
     public static class Chestplate extends PainiteArmorItem {
         public Chestplate() {
-            super(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
+            super(Type.CHESTPLATE, new Item.Properties().fireResistant());
         }
 
         @Override
@@ -83,7 +83,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
     public static class Leggings extends PainiteArmorItem {
         public Leggings() {
-            super(EquipmentSlot.LEGS, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
+            super(Type.LEGGINGS, new Item.Properties().fireResistant());
         }
 
         @Override
@@ -94,7 +94,7 @@ public abstract class PainiteArmorItem extends ArmorItem {
 
     public static class Boots extends PainiteArmorItem {
         public Boots() {
-            super(EquipmentSlot.FEET, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB).fireResistant());
+            super(Type.BOOTS, new Item.Properties().fireResistant());
         }
 
         @Override

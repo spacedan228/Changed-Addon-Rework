@@ -85,8 +85,8 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 0.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 0.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE), 0.0f);
-        safeSetBaseValue(attributes.getInstance(ForgeMod.REACH_DISTANCE.get()), 4.5F);
-        safeSetBaseValue(attributes.getInstance(ForgeMod.ATTACK_RANGE.get()), 3.0F);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.BLOCK_REACH.get()), 4.5F);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.ENTITY_REACH.get()), 3.0F);
         safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_KNOCKBACK), 0.0f);
     }
 
@@ -107,8 +107,8 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE), 6.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 10.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 6.0f);
-        safeSetBaseValue(attributes.getInstance(ForgeMod.REACH_DISTANCE.get()), 6.0F);
-        safeSetBaseValue(attributes.getInstance(ForgeMod.ATTACK_RANGE.get()), 4.0F);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.BLOCK_REACH.get()), 6.0F);
+        safeSetBaseValue(attributes.getInstance(ForgeMod.ENTITY_REACH.get()), 4.0F);
         safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_KNOCKBACK), 2.0f);
     }
 

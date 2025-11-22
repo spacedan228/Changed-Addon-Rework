@@ -118,8 +118,7 @@ public class PruningOrangeLeavesGoal extends Goal {
     @Nullable
     private BlockPos findNearbyOrangeLeaves(BlockPos center, int range, Vec3 eyePos) {
         BlockPos best = null;
-        double bestDist = Double.MAX_VALUE;
-        double dist;
+        float bestDist = Float.MAX_VALUE, dist;
 
         Level level = prototypeEntity.level;
         // Evite .toList() para não alocar tudo; itere o stream diretamente
@@ -128,7 +127,7 @@ public class PruningOrangeLeavesGoal extends Goal {
             if (isBlockInvalid(state)) continue;
 
             // Distância do olho ao centro do bloco (mais precisa)
-            dist = eyePos.distanceToSqr(Vec3.atCenterOf(pos));
+            dist = (float) eyePos.distanceToSqr(Vec3.atCenterOf(pos));
             if (dist >= bestDist) continue;
 
             BlockHitResult hit = level.clip(eyeContext(pos));

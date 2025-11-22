@@ -141,14 +141,23 @@ public class PlantSeedsGoal extends Goal {
     }
 
     private BlockPos findPlantableFarmland(Level level, BlockPos center, int range) {
+        BlockPos closestFarmland = null;
+        float closestDist = Float.MAX_VALUE, dist;
+
+        BlockState state;
         for (BlockPos pos : BlockPos.betweenClosed(
                 center.offset(-range, -1, -range),
                 center.offset(range, 1, range))) {
-            BlockState soil = level.getBlockState(pos);
-            if(isBlockInvalid(level, soil, pos.above())) continue;
-            return pos.above();
+            state = level.getBlockState(pos);
+            if(isBlockInvalid(level, state, pos.above())) continue;
+
+            dist = (float) pos.distSqr(center);
+            if(dist >= closestDist) continue;
+
+            closestDist = dist;
+            closestFarmland = pos.immutable();
         }
-        return null;
+        return closestFarmland;
     }
 
     private void plantSeedAt() {

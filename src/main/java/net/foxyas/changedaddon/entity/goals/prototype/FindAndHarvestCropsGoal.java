@@ -131,13 +131,12 @@ public class FindAndHarvestCropsGoal extends Goal {
 
     private BlockPos findNearbyCrop(Level level, BlockPos center) {
         BlockPos closestCrop = null;
-        double closestDist = Double.MAX_VALUE;
-        double dist;
+        float closestDist = Float.MAX_VALUE, dist;
 
         for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(center, searchRange, searchRange).toList()) {
             if (isBlockInvalid(level.getBlockState(pos))) continue;
 
-            dist = pos.distSqr(center);
+            dist = (float) pos.distSqr(center);
             if (dist >= closestDist) continue;
 
             closestDist = dist;

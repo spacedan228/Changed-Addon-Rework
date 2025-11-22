@@ -191,8 +191,8 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     protected void setMorphedAttributes(AttributeMap attributes) {
-        safeMulBaseValue(attributes.getInstance(ForgeMod.ATTACK_RANGE.get()), 0.5f);
-        safeMulBaseValue(attributes.getInstance(ForgeMod.REACH_DISTANCE.get()), 0.5f);
+        safeMulBaseValue(attributes.getInstance(ForgeMod.ENTITY_REACH.get()), 0.5f);
+        safeMulBaseValue(attributes.getInstance(ForgeMod.BLOCK_REACH.get()), 0.5f);
     }
 
     protected void safeSetBaseValue(@Nullable AttributeInstance instance, double value) {
