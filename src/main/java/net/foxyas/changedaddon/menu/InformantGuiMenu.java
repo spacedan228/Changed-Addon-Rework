@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,7 +33,7 @@ public class InformantGuiMenu extends AbstractMenu {
         this.blockEntity = blockEntity;
         access = ContainerLevelAccess.create(level, blockEntity.getBlockPos());
 
-        slot = new SlotItemHandler(blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().get(), 0, 152, 89);
+        slot = new SlotItemHandler(blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().get(), 0, 152, 89);
 
         createPlayerHotbar(inv, 0, 31);
         createPlayerInventory(inv, 0, 31);

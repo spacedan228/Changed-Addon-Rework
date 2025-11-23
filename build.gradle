@@ -125,7 +125,7 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-forge-api:${jeiVersion}")
 
-    //implementation fg.deobf("dev.tr7zw:notenoughanimations-forge-1.7.0-mc1.18.2:1.7.0")
+    implementation fg.deobf("dev.tr7zw:notenoughanimations-forge-1.10.0-mc1.20.1:1.10.0")
     //implementation fg.deobf("dev.tr7zw:firstperson-forge-2.3.2-mc1.18.2:2.3.2")
     //implementation fg.deobf("curse.maven:playeranimator-658587:4418152") // Forge 1.18.2 v1.0.2
     //compileOnly

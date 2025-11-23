@@ -5,6 +5,7 @@ import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
@@ -48,16 +48,17 @@ public class LatexSnowFoxMaleEntity extends ChangedEntity implements GenderedEnt
         setNoAi(false);
     }
 
-    @SubscribeEvent
-    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-        if (SPAWN_BIOMES.contains(event.getName()))
-            event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), 20, 1, 4));
-    }
-
-    public static void init() {
-        SpawnPlacements.register(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)));
-    }
+// TODO make the datapack to config this spawn
+//    @SubscribeEvent
+//    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
+//        if (SPAWN_BIOMES.contains(event.getName()))
+//            event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), 20, 1, 4));
+//    }
+//
+//    public static void init() {
+//        SpawnPlacements.register(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+//                (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)));
+//    }
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();

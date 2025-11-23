@@ -401,7 +401,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addGamerule(FIGHT_TO_KEEP_CONSCIOUSNESS, "Fight to keep consciousness", "Allow the Fight to keep consciousness QuickTime Event to happen (it only happens when the player will lose their conscience otherwise no)");
         addGamerule(NEED_PERMISSION_FOR_BOSS_TRANSFUR, "Need Permission For Transfur into a Boss Transfur", "When On the player Need Permission For Transfur into a Boss Transfur");
         addGamerule(PAINITE_GENERATION, "Painite Generation", "Activate the generation of painite ore");
-        addGamerule(NEED_FULL_SOURCE_TO_SPREAD, "Latex blocks need an full source to spread", "When On the Latex Blocks gonna need a full source connected to them to be able to spread");
+        //addGamerule(NEED_FULL_SOURCE_TO_SPREAD, "Latex blocks need an full source to spread", "When On the Latex Blocks gonna need a full source connected to them to be able to spread");
 
         addGuiO("catalyzer.nitrogen_usage", "ProgressSpeed is %1$s per tick and use %2$s of Nitrogen Power");
         addGuiO("recipe_progress", "ProgressSpeed is %s per tick");

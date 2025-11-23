@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.mobs;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;

@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
+import java.nio.file.Path;
 
 @Mixin(LevelStorageSource.class)
 public abstract class LevelStorageSourceMixin {
@@ -21,7 +22,7 @@ public abstract class LevelStorageSourceMixin {
             method = "readLightweightData",
             at = @At("RETURN")
     )
-    private static void onReadLightweightData(File p_202313_, CallbackInfoReturnable<Tag> cir) {
+    private static void onReadLightweightData(Path pFile, CallbackInfoReturnable<Tag> cir) {
         if (cir.getReturnValue() == null) return;
 
         Tag tag = cir.getReturnValue();

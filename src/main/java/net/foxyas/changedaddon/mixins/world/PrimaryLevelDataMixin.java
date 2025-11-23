@@ -26,7 +26,7 @@ public abstract class PrimaryLevelDataMixin {
 
     @Inject(method = "updatePlayerTag", at = @At("RETURN"))
     private void updateChangedAddonPLayerTag(CallbackInfo callback) {
-        if (this.playerDataVersion >= SharedConstants.getCurrentVersion().getWorldVersion() && ChangedAddonMod.dataFixer != null)
+        if (this.playerDataVersion >= SharedConstants.getCurrentVersion().getDataVersion().getVersion() && ChangedAddonMod.dataFixer != null)
             ChangedAddonMod.dataFixer.updateCompoundTag(DataFixTypes.PLAYER, this.loadedPlayerTag);
     }
 

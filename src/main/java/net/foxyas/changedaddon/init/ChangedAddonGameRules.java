@@ -14,6 +14,8 @@ public class ChangedAddonGameRules {
     public static final GameRules.Key<GameRules.IntegerValue> TICKS_TO_DARK_LATEX_MASK_TRANSFUR = GameRules.register("changed_addon:tickToDarkLatexMaskTransfur", GameRules.Category.PLAYER, GameRules.IntegerValue.create(0));
     public static final GameRules.Key<GameRules.BooleanValue> CHANGED_ADDON_CREATURE_DIETS = GameRules.register("changed_addon:doCreatureDiets", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true));
     public static final GameRules.Key<GameRules.BooleanValue> NEED_PERMISSION_FOR_BOSS_TRANSFUR = GameRules.register("changed_addon:needPermissionForBossTransfur", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
-    public static final GameRules.Key<GameRules.BooleanValue> NEED_FULL_SOURCE_TO_SPREAD = GameRules.register("changed_addon:blocksNeedFullSourceToSpread", GameRules.Category.MISC, GameRules.BooleanValue.create(false));
     public static final GameRules.Key<GameRules.BooleanValue> CHANGED_ENTITIES_SPAWN_DRESSED = GameRules.register("changed_addon:changedEntitiesSpawnDressed", GameRules.Category.MOBS, GameRules.BooleanValue.create(false));
+
+    //public static final GameRules.Key<GameRules.BooleanValue> NEED_FULL_SOURCE_TO_SPREAD = GameRules.register("changed_addon:blocksNeedFullSourceToSpread", GameRules.Category.MISC, GameRules.BooleanValue.create(false));
+
 }

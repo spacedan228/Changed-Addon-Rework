@@ -8,7 +8,6 @@
     "abilities.AbilityControllerMixin",
     "abilities.GrabEntityAbilityInstanceMixin",
     "abilities.GrabEntityPacketMixin",
-    "blocks.AbstractLatexBlockMixin",
     "blocks.BlockMixin",
     "blocks.CrossCollisionBlockMixin",
     "blocks.DroppedSyringeMixin",
@@ -48,7 +47,7 @@
     "mods.nean.NEAElytraAnimationMixin",
     "world.LevelStorageAccessMixin",
     "world.LevelStorageSourceMixin",
-    "world.NbtUtilsMixin",
+    "world.DataFixTypesMixin",
     "world.PrimaryLevelDataMixin"
   ],
   "injectors": {

@@ -12,7 +12,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +39,7 @@ public class UnifuserGuiMenu extends AbstractMenu {
 
         if(!(level.getBlockEntity(pos) instanceof UnifuserBlockEntity be)) throw new IllegalStateException();
         unifuser = be;
-        IItemHandler internal = unifuser.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).resolve().orElseThrow();
+        IItemHandler internal = unifuser.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElseThrow();
 
         createPlayerHotbar(inv, 12, 21);
         createPlayerInventory(inv, 12, 21);
