@@ -1,26 +1,36 @@
 package net.foxyas.changedaddon.init;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.gui.overlays.HazardSuitHelmetOverlay;
 import net.foxyas.changedaddon.client.gui.overlays.PatOverlay;
 import net.foxyas.changedaddon.client.gui.overlays.UntransfurOverlayOverlay;
 import net.ltxprogrammer.changed.client.ChangedOverlays;
 import net.minecraft.client.gui.screens.Overlay;
+import net.minecraft.data.models.blockstates.PropertyDispatch;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.client.gui.IIngameOverlay;
-import net.minecraftforge.client.gui.OverlayRegistry;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @OnlyIn(Dist.CLIENT)
-@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.FORGE, value = {Dist.CLIENT})
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = {Dist.CLIENT})
 public class ChangedAddonOverlays {
 
-    public static final IIngameOverlay HAZARD_HELMET = OverlayRegistry.registerOverlayBottom(ChangedAddonMod.resourceLocString("hazard_helmet"), HazardSuitHelmetOverlay::renderHelmetOverlay);
-    public static final IIngameOverlay UNTRANSFUR_PROGRESS = OverlayRegistry.registerOverlayAbove(ChangedOverlays.DANGER_ELEMENT,ChangedAddonMod.resourceLocString("untransfur_progress"), UntransfurOverlayOverlay::renderUntransfurProgressOverlay);
-    public static final IIngameOverlay PAT_ICON = OverlayRegistry.registerOverlayBottom(ChangedAddonMod.resourceLocString("pat_icon"), PatOverlay::renderPatIconOverlay);
+    public static final ResourceLocation PAT_ICON = ChangedAddonMod.resourceLoc("hazard_helmet");
+    public static final ResourceLocation UNTRANSFUR_PROGRESS = ChangedAddonMod.resourceLoc("untransfur_progress");
+    public static final ResourceLocation HAZARD_HELMET = ChangedAddonMod.resourceLoc("pat_icon");
 
+
+    @SubscribeEvent
+    public static void registerOverlays(RegisterGuiOverlaysEvent event) {
+        event.registerBelowAll(HAZARD_HELMET.getPath(), HazardSuitHelmetOverlay::renderHelmetOverlay);
+        event.registerAbove(ChangedOverlays.DANGER_OVERLAY, UNTRANSFUR_PROGRESS.getPath(), UntransfurOverlayOverlay::renderUntransfurProgressOverlay);
+        event.registerBelowAll(PAT_ICON.getPath(), PatOverlay::renderPatIconOverlay);
+    }
 
 
 }

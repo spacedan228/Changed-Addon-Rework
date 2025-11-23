@@ -10,6 +10,7 @@ import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -84,7 +85,7 @@ public class HazardSuitHelmetOverlay {
         return false;
     }
 
-    public static void renderHelmetOverlay(ForgeGui forgeIngameGui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public static void renderHelmetOverlay(ForgeGui forgeIngameGui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
 
@@ -103,10 +104,9 @@ public class HazardSuitHelmetOverlay {
 
             // --- Color and texture stuff
             RenderSystem.setShaderColor(1, 1, 1, 1);
-            RenderSystem.setShaderTexture(0, OVERLAY_TEXTURE);
 
             // --- Render overlay
-            GuiComponent.blit(poseStack, 0, 0, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
+            guiGraphics.blit(OVERLAY_TEXTURE, 0, 0, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
 
             // --- Reset the data of the RenderSystem
             RenderSystem.depthMask(true);

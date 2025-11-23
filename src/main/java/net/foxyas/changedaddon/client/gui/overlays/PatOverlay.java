@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.client.gui.overlays;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonKeyMappings;
@@ -9,11 +8,10 @@ import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.mixin.gui.ForgeIngameGuiMixin;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +25,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 
+import java.awt.*;
+
 import static net.foxyas.changedaddon.process.features.PatFeatureHandle.canPlayerPat;
 
 @OnlyIn(Dist.CLIENT) //@Mod.EventBusSubscriber({Dist.CLIENT})
@@ -35,81 +35,6 @@ public class PatOverlay {
     //Todo: Make this a InGameOverlay check ChangedAddonOverlays to examples
 
     public static final ResourceLocation TEXTURE = ResourceLocation.parse("changed_addon:textures/screens/paw_normal.png");
-
-    //@SubscribeEvent(priority = EventPriority.NORMAL)
-    public static void eventHandler(RenderGameOverlayEvent.Pre event) {
-
-        if (!ChangedAddonClientConfiguration.PAT_OVERLAY.get()) {
-            return;
-        }
-
-        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
-
-            int w = event.getWindow().getGuiScaledWidth();
-            int h = event.getWindow().getGuiScaledHeight();
-
-            double posX = ChangedAddonClientConfiguration.PAT_OVERLAY_X.get();
-            double posY = h - ChangedAddonClientConfiguration.PAT_OVERLAY_Y.get();
-
-            float floatPosX = (float) posX;
-            float floatPosY = (float) posY;
-
-
-            Player entity = Minecraft.getInstance().player;
-
-            if (entity != null && !entity.isSpectator()) {
-                if (entity.getMainHandItem().isEmpty() || entity.getOffhandItem().isEmpty()) {
-                    Entity lookedEntity = PlayerUtil.getEntityLookingAt(entity, entity.getReachDistance());
-                    if (lookedEntity != null && isPatableEntity(entity, lookedEntity) && isEntityInPassiveStage(lookedEntity) && isKeySet()) {
-                        if (!getPatInfo(entity).getString().isEmpty()) {
-                            if (!lookedEntity.isInvisible() && canPlayerPat(entity)) {
-                                if (!ChangedAddonClientConfiguration.PAW_STYLE_PAT_OVERLAY.get()) {
-                                    drawCenteredString(event.getMatrixStack(), Minecraft.getInstance().font,
-                                            getPatInfo(lookedEntity), (int) floatPosX, (int) floatPosY, -1);
-                                } else {
-                                    TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(entity);
-                                    Minecraft mc = Minecraft.getInstance();
-                                    PoseStack poseStack = event.getMatrixStack();
-                                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                                    RenderSystem.setShaderTexture(0, TEXTURE);
-
-                                    int x = ((int) posX); // Posição X na tela
-                                    int y = ((int) posY); // Posição Y na tela
-                                    int largura = 19; // Largura da imagem
-                                    int altura = 19; // Altura da imagem
-                                    float troubleShotXValue = floatPosX + 9;
-                                    float troubleShotYValue = floatPosY + 20;
-
-                                    if (instance != null) {
-                                        if (instance.getChangedEntity() instanceof IDynamicPawColor iDynamicPawColor) {
-                                            Color pawColor = iDynamicPawColor.getPawBeansColor();
-                                            RenderSystem.setShaderColor(pawColor.getRed() / 255f, pawColor.getGreen() / 255f, pawColor.getBlue() / 255f, pawColor.getAlpha() / 255f);
-                                            // Renderiza a imagem na tela
-                                            GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
-                                            drawCenteredString(event.getMatrixStack(), mc.font,
-                                                    getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, pawColor.getRGB());
-                                        } else {
-                                            // Renderiza a imagem na tela
-                                            GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
-                                            drawCenteredString(event.getMatrixStack(), mc.font,
-                                                    getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, Color3.getColor("#ffabab").toInt());
-                                        }
-                                    } else {
-                                        // Renderiza a imagem na tela
-                                        GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
-                                        drawCenteredString(event.getMatrixStack(), mc.font,
-                                                getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, Color3.getColor("#ffabab").toInt());
-                                    }
-
-
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     private static boolean isEntityInPassiveStage(Entity lookedEntity) {
         if (lookedEntity instanceof ChangedEntity changedEntity) {
@@ -145,7 +70,7 @@ public class PatOverlay {
 
 
     private static boolean isLineOfSightClear(Player player, Entity entity) {
-        var level = player.getLevel();
+        var level = player.level();
         var playerEyePos = player.getEyePosition(1.0F); // Posição dos olhos do jogador
         var entityEyePos = entity.getBoundingBox().getCenter(); // Centro da entidade
 
@@ -206,7 +131,7 @@ public class PatOverlay {
         }
     }
 
-    public static void renderPatIconOverlay(ForgeGui forgeIngameGui, PoseStack poseStack, float partialTick, int screenWidth, int screenHeight) {
+    public static void renderPatIconOverlay(ForgeGui forgeGui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
         if (!ChangedAddonClientConfiguration.PAT_OVERLAY.get()) {
             return;
         }
@@ -227,13 +152,10 @@ public class PatOverlay {
                     if (!getPatInfo(entity).getString().isEmpty()) {
                         if (!lookedEntity.isInvisible() && canPlayerPat(entity)) {
                             if (!ChangedAddonClientConfiguration.PAW_STYLE_PAT_OVERLAY.get()) {
-                                drawCenteredString(poseStack, Minecraft.getInstance().font,
-                                        getPatInfo(lookedEntity), (int) floatPosX, (int) floatPosY, -1);
+                                guiGraphics.drawCenteredString(forgeGui.getFont(), getPatInfo(lookedEntity), (int) floatPosX, (int) floatPosY, -1);
                             } else {
                                 TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(entity);
                                 Minecraft mc = Minecraft.getInstance();
-                                RenderSystem.setShader(GameRenderer::getPositionTexShader);
-                                RenderSystem.setShaderTexture(0, TEXTURE);
 
                                 int x = ((int) posX); // Posição X na tela
                                 int y = ((int) posY); // Posição Y na tela
@@ -247,20 +169,17 @@ public class PatOverlay {
                                         Color pawColor = iDynamicPawColor.getPawBeansColor();
                                         RenderSystem.setShaderColor(pawColor.getRed() / 255f, pawColor.getGreen() / 255f, pawColor.getBlue() / 255f, pawColor.getAlpha() / 255f);
                                         // Renderiza a imagem na tela
-                                        GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
-                                        drawCenteredString(poseStack, mc.font,
-                                                getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, pawColor.getRGB());
+                                        guiGraphics.blit(TEXTURE, x, y, 0, 0, largura, altura, largura, altura);
+                                        guiGraphics.drawCenteredString(mc.font, getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, pawColor.getRGB());
                                     } else {
                                         // Renderiza a imagem na tela
-                                        GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
-                                        drawCenteredString(poseStack, mc.font,
-                                                getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, Color3.getColor("#ffabab").toInt());
+                                        guiGraphics.blit(TEXTURE, x, y, 0, 0, largura, altura, largura, altura);
+                                        guiGraphics.drawCenteredString(mc.font, getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, Color3.getColor("#ffabab").toInt());
                                     }
                                 } else {
                                     // Renderiza a imagem na tela
-                                    GuiComponent.blit(poseStack, x, y, 0, 0, largura, altura, largura, altura);
-                                    drawCenteredString(poseStack, mc.font,
-                                            getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, Color3.getColor("#ffabab").toInt());
+                                    guiGraphics.blit(TEXTURE, x, y, 0, 0, largura, altura, largura, altura);
+                                    guiGraphics.drawCenteredString(mc.font, getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, Color3.getColor("#ffabab").toInt());
                                 }
 
                             }
