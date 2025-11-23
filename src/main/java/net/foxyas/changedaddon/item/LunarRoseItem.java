@@ -29,7 +29,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -122,8 +122,8 @@ public class LunarRoseItem extends ArmorItem {
         }
     }
 
-    public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(new IItemRenderProperties() {
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
 
             final Supplier<HumanoidModel<?>> MODEL = Suppliers.memoize(() ->
                     new HumanoidModel<>(new ModelPart(Collections.emptyList(), Map.of("head", new ModelNewHyperFlower<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelNewHyperFlower.LAYER_LOCATION)).HyperFlowerModel, "hat", new ModelPart(Collections.emptyList(), Collections.emptyMap()),
@@ -132,7 +132,7 @@ public class LunarRoseItem extends ArmorItem {
                             new ModelPart(Collections.emptyList(), Collections.emptyMap())))));
 
             @Override
-            public HumanoidModel<?> getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
+            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
                 HumanoidModel<?> armorModel = MODEL.get();
                 armorModel.crouching = living.isShiftKeyDown();
                 armorModel.riding = defaultModel.riding;

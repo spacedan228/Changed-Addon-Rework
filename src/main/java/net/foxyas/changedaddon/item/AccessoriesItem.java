@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -27,19 +28,19 @@ import java.util.function.Supplier;
 
 public abstract class AccessoriesItem extends ArmorItem {
 
-    public AccessoriesItem(EquipmentSlot slot, Item.Properties properties) {
+    public AccessoriesItem(ArmorItem.Type type, Item.Properties properties) {
         super(new ArmorMaterial() {
 
             final int[] durability = new int[]{13, 15, 16, 11};
 
             @Override
-            public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
-                return durability[slot.getIndex()] * 45;
+            public int getDurabilityForType(@NotNull Type pType) {
+                return durability[pType.getSlot().getIndex()] * 45;
             }
 
             @Override
-            public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
-                return slot == EquipmentSlot.CHEST ? 2 : 0;
+            public int getDefenseForType(@NotNull Type pType) {
+                return pType.getSlot() == EquipmentSlot.CHEST ? 2 : 0;
             }
 
             @Override
@@ -71,17 +72,17 @@ public abstract class AccessoriesItem extends ArmorItem {
             public float getKnockbackResistance() {
                 return 0f;
             }
-        }, slot, properties);
+        }, type, properties);
     }
 
     public static class Chestplate extends AccessoriesItem {
 
         public Chestplate() {
-            super(EquipmentSlot.CHEST, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).fireResistant());
+            super(Type.CHESTPLATE, new Item.Properties()); //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).fireResistant());
         }
 
-        public void initializeClient(Consumer<IItemRenderProperties> consumer) {
-            consumer.accept(new IItemRenderProperties() {
+        public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+            consumer.accept(new IClientItemExtensions() {
 
                 final Supplier<HumanoidModel<?>> MODEL = Suppliers.memoize(() -> {
                     ModelAccessories<?> ma = new ModelAccessories<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelAccessories.LAYER_LOCATION));
@@ -92,7 +93,7 @@ public abstract class AccessoriesItem extends ArmorItem {
                 });
 
                 @Override
-                public HumanoidModel<?> getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
+                public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
                     HumanoidModel<?> armorModel = MODEL.get();
                     armorModel.crouching = living.isShiftKeyDown();
                     armorModel.riding = defaultModel.riding;

@@ -19,7 +19,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,15 +30,16 @@ import java.util.function.Supplier;
 
 public class DarkLatexCoatItem extends ArmorItem {
 
-    public DarkLatexCoatItem(EquipmentSlot slot, Properties properties) {
+    public DarkLatexCoatItem(ArmorItem.Type type, Properties properties) {
         super(new ArmorMaterial() {
+
             @Override
-            public int getDurabilityForSlot(@NotNull EquipmentSlot p_40410_) {
+            public int getDurabilityForType(@NotNull Type pType) {
                 return 0;
             }
 
             @Override
-            public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
+            public int getDefenseForType(@NotNull Type pType) {
                 return 0;
             }
 
@@ -71,7 +72,7 @@ public class DarkLatexCoatItem extends ArmorItem {
             public float getKnockbackResistance() {
                 return 0f;
             }
-        }, slot, properties);
+        }, type, properties);
     }
 
     @Override
@@ -80,8 +81,8 @@ public class DarkLatexCoatItem extends ArmorItem {
     }
 
     // Method para definir o modelo da armadura no lado do cliente
-    public void initializeClient(@NotNull Consumer<IItemRenderProperties> consumer) {
-        consumer.accept(new IItemRenderProperties() {
+    public void initializeClient(@NotNull Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
 
             final Supplier<HumanoidModel<?>> MODEL = Suppliers.memoize(() -> {
                 DarkLatexCoatModel<?> coat = new DarkLatexCoatModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(DarkLatexCoatModel.LAYER_LOCATION));
@@ -95,7 +96,7 @@ public class DarkLatexCoatItem extends ArmorItem {
             });
 
             @Override
-            public HumanoidModel<?> getArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
+            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity living, ItemStack stack, EquipmentSlot slot, HumanoidModel defaultModel) {
                 HumanoidModel<?> armorModel = MODEL.get();
                 armorModel.crouching = living.isShiftKeyDown();
                 armorModel.riding = defaultModel.riding;
