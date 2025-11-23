@@ -7,8 +7,7 @@ import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.flag.FeatureFlagSet;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -37,13 +36,8 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLootSubProvider {
 
     public static final LootItemCondition.Builder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
 
-    protected BlockLoot(Set<Item> pExplosionResistant, FeatureFlagSet pEnabledFeatures) {
-        super(pExplosionResistant, pEnabledFeatures);
-    }
-
     public BlockLoot() {
-        super();
-
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags());
     }
 
     @Override

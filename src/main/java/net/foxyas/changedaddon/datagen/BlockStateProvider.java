@@ -2,9 +2,9 @@ package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
-import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.minecraft.core.Direction;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
@@ -27,8 +27,8 @@ import static net.foxyas.changedaddon.init.ChangedAddonBlocks.*;
 
 public class BlockStateProvider extends net.minecraftforge.client.model.generators.BlockStateProvider {
 
-    public BlockStateProvider(DataGenerator gen, ExistingFileHelper exFileHelper) {
-        super(gen, ChangedAddonMod.MODID, exFileHelper);
+    public BlockStateProvider(PackOutput output, ExistingFileHelper exFileHelper) {
+        super(output, ChangedAddonMod.MODID, exFileHelper);
     }
 
     @Override
@@ -79,21 +79,6 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         createMultiface(WHITE_LATEX_COVER_BLOCK, false);
     }
 
-    private final Property<?>[] IGNORE_LATEX = new Property[]{AbstractLatexBlock.COVERED};
-
-    private Property<?>[] makeIgnore(Property<?>... ignore){
-        Property<?>[] ignore1;
-        if(ignore == null || ignore.length == 0){
-            ignore1 = IGNORE_LATEX;
-        } else {
-            ignore1 = new Property[ignore.length + 1];
-            System.arraycopy(ignore, 0, ignore1, 0, ignore.length);
-            ignore1[ignore1.length - 1] = AbstractLatexBlock.COVERED;
-        }
-
-        return ignore1;
-    }
-
     private void timedKeypad(){
         ResourceLocation loc = blockLoc(TIMED_KEYPAD.getId());
         ModelFile file = models().getExistingFile(loc);
@@ -101,8 +86,8 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
 
         getVariantBuilder(TIMED_KEYPAD.get()).forAllStatesExcept(state ->
             new ConfiguredModel[]{new ConfiguredModel(state.getValue(TimedKeypadBlock.POWERED) ? file : locked, 0,
-                    (int) ((state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 270) % 360), false)},
-        IGNORE_LATEX);
+                    (int) ((state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 270) % 360), false)}
+        );
     }
 
     private ResourceLocation blockLoc(ResourceLocation loc){
@@ -115,7 +100,6 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
 
     private void simpleBlock(RegistryObject<? extends Block> block, Property<?>... ignore){
         ConfiguredModel[] model = new ConfiguredModel[]{new ConfiguredModel(models().getExistingFile(blockLoc(block.getId())))};
-        ignore = makeIgnore(ignore);
 
         getVariantBuilder(block.get()).forAllStatesExcept(state -> model, ignore);
     }
@@ -124,7 +108,6 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         ResourceLocation loc = blockLoc(block.getId());
         Block bl = block.get();
         ModelFile file = models().getExistingFile(loc);
-        ignore = makeIgnore(ignore);
 
         getVariantBuilder(bl).forAllStatesExcept(state ->
                         ConfiguredModel.builder().modelFile(file)
@@ -162,8 +145,8 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
                 case Y -> configure(models, ConfiguredModel::new);
                 case Z -> configure(models, model -> new ConfiguredModel(model, 90, 0, false));
                 case X -> configure(models, model -> new ConfiguredModel(model, 90, 90, false));
-            },
-        AbstractLatexBlock.COVERED);
+            }
+        );
 
         simpleBlockItem(block, models[itemModelIndex]);
     }
@@ -194,7 +177,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
                     .condition(prop, true);
         }
 
-        itemModels().getBuilder(block.get().asItem().getRegistryName().getPath()).parent(model);
+        itemModels().getBuilder(BuiltInRegistries.ITEM.getKey(block.get().asItem()).getPath()).parent(model);
     }
 
     private void createMultiface(RegistryObject<? extends Block> block, boolean generatedItem) {
@@ -215,7 +198,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
                     .condition(prop, true);
         }
 
-        if (generatedItem) itemModels().getBuilder(block.get().asItem().getRegistryName().getPath()).parent(model);
+        if (generatedItem) itemModels().getBuilder(BuiltInRegistries.ITEM.getKey(block.get().asItem()).getPath()).parent(model);
     }
 
     private static int getXRotation(Direction dir) {

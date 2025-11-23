@@ -8,7 +8,7 @@ import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -28,8 +28,8 @@ import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
 
 public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTagsProvider {
 
-    public EntityTypeTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator.getPackOutput(), lookupProvider, ChangedAddonMod.MODID, existingFileHelper);
+    public EntityTypeTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, ChangedAddonMod.MODID, existingFileHelper);
     }
 
     @Override

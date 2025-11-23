@@ -5,7 +5,7 @@ import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -25,8 +25,8 @@ public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsP
     private static final TagKey<Block> forgeOresIridium = BlockTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ores/iridium"));
     private static final TagKey<Block> forgeStorageBlocksIridium = BlockTags.create(ResourceLocation.fromNamespaceAndPath("forge", "storage_blocks/iridium"));
 
-    public BlockTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator.getPackOutput(), lookupProvider, ChangedAddonMod.MODID, existingFileHelper);
+    public BlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(output, lookupProvider, ChangedAddonMod.MODID, existingFileHelper);
     }
 
     @Override

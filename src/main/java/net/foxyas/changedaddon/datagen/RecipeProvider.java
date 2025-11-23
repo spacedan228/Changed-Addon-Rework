@@ -5,9 +5,10 @@ import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -24,13 +25,13 @@ import static net.minecraft.world.item.Items.TINTED_GLASS;
 
 public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
 
-    public RecipeProvider(DataGenerator generator) {
-        super(generator);
+    public RecipeProvider(PackOutput output) {
+        super(output);
     }
 
     @Override
-    protected void buildCraftingRecipes(@NotNull Consumer<FinishedRecipe> recipeConsumer) {
-        ShapedRecipeBuilder.shaped(LUMINAR_CRYSTAL_SPEAR.get())
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> recipeConsumer) {
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, LUMINAR_CRYSTAL_SPEAR.get())
                 .pattern("SHS")
                 .pattern("ITI")
                 .pattern(" S ")
@@ -44,7 +45,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
         String iridium = getHasName(IRIDIUM.get());
         CriterionTriggerInstance hasIridium = has(IRIDIUM.get());
 
-        ShapedRecipeBuilder.shaped(IRIDIUM_BLOCK.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, IRIDIUM_BLOCK.get())
                 .pattern("III")
                 .pattern("III")
                 .pattern("III")
@@ -52,7 +53,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
                 .unlockedBy(iridium, hasIridium)
                 .save(recipeConsumer);
 
-        ShapedRecipeBuilder.shaped(ELECTRIC_KATANA.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.COMBAT, ELECTRIC_KATANA.get())
                 .pattern(" ID")
                 .pattern("RPI")
                 .pattern("BR ")
@@ -64,7 +65,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
                 .unlockedBy(iridium, hasIridium)
                 .save(recipeConsumer);
 
-        ShapedRecipeBuilder.shaped(ADVANCED_CATALYZER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ADVANCED_CATALYZER.get())
                 .pattern("CIC")
                 .pattern("ITI")
                 .pattern("BRB")
@@ -76,7 +77,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
                 .unlockedBy(iridium, hasIridium)
                 .save(recipeConsumer);
 
-        ShapedRecipeBuilder.shaped(ADVANCED_UNIFUSER.get())
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ADVANCED_UNIFUSER.get())
                 .pattern("CRC")
                 .pattern("IUI")
                 .pattern("CBC")
@@ -88,7 +89,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
                 .unlockedBy(iridium, hasIridium)
                 .save(recipeConsumer);
 
-        ShapedRecipeBuilder.shaped(REINFORCED_CROSS_BLOCK.get(), 32)
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, REINFORCED_CROSS_BLOCK.get(), 32)
                 .pattern("NIN")
                 .pattern("ICI")
                 .pattern("NIN")
@@ -122,7 +123,7 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
     }
 
     private ShapedRecipeBuilder reinforce(ItemLike result, ItemLike input, String criterionName, CriterionTriggerInstance criterion) {
-        return ShapedRecipeBuilder.shaped(result)
+        return ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, result)
                 .pattern("IW")
                 .define('I', ItemTagsProvider.forgeIngotsIridium)
                 .define('W', input)

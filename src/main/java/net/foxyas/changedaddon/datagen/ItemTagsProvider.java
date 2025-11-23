@@ -15,6 +15,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -27,12 +28,12 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
     static final TagKey<Item> forgeIngotsIridium = ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/iridium"));
     static final TagKey<Item> forgeStorageBlocksIridium = ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "storage_blocks/iridium"));
 
-    public ItemTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> pParentProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator.getPackOutput(), lookupProvider, lo, ChangedAddonMod.MODID, existingFileHelper);
+    public ItemTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> tagLookup, @Nullable ExistingFileHelper existingFileHelper) {
+        super(generator.getPackOutput(), lookupProvider, tagLookup, ChangedAddonMod.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider pProvider) {
+    protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         tag(Tags.Items.RAW_MATERIALS).add(RAW_IRIDIUM.get());
         tag(forgeRawIridium).add(RAW_IRIDIUM.get());
 

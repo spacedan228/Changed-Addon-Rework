@@ -1,12 +1,11 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
-import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
@@ -18,8 +17,8 @@ import static net.foxyas.changedaddon.init.ChangedAddonItems.*;
 
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider {
 
-    public ItemModelProvider(DataGenerator generator, ExistingFileHelper existingFileHelper) {
-        super(generator, ChangedAddonMod.MODID, existingFileHelper);
+    public ItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+        super(output, ChangedAddonMod.MODID, existingFileHelper);
     }
 
     @Override
@@ -93,14 +92,14 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         // === Adds the transforms in the display JSON ===
         builder.transforms()
                 // thirdperson_lefthand
-                .transform(ItemTransforms.TransformType.THIRD_PERSON_LEFT_HAND)
+                .transform(ItemDisplayContext.THIRD_PERSON_LEFT_HAND)
                 .rotation(0, 180, 0)
                 .translation(0f, 3.0f, 1.0f)
                 .scale(0.55f, 0.55f, 0.55f)
                 .end()
 
                 // firstperson_lefthand
-                .transform(ItemTransforms.TransformType.FIRST_PERSON_LEFT_HAND)
+                .transform(ItemDisplayContext.FIRST_PERSON_LEFT_HAND)
                 .rotation(0, 90, -25)
                 .translation(1.13f, 3.2f, 1.13f)
                 .scale(0.68f, 0.68f, 0.68f)

@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.datagen.lang;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
@@ -23,8 +23,8 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
 
     protected final String modid;
 
-    public LanguageProvider(DataGenerator gen, String modid, String locale) {
-        super(gen, modid, locale);
+    public LanguageProvider(PackOutput output, String modid, String locale) {
+        super(output, modid, locale);
         this.modid = modid;
     }
 

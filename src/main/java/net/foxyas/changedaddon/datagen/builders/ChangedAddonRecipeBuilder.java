@@ -10,6 +10,7 @@ import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.NBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ChangedAddonRecipeBuilder implements RecipeBuilder {
+
     private final ItemStack result;
     private final List<Ingredient> ingredients = Lists.newArrayList();
     private final Advancement.Builder advancement = Advancement.Builder.advancement();
@@ -158,7 +160,7 @@ public class ChangedAddonRecipeBuilder implements RecipeBuilder {
     public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, @NotNull ResourceLocation pRecipeId) {
         this.ensureValid(pRecipeId);
         this.advancement.parent(ResourceLocation.parse("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(pRecipeId)).rewards(AdvancementRewards.Builder.recipe(pRecipeId)).requirements(RequirementsStrategy.OR);
-        pFinishedRecipeConsumer.accept(new ChangedAddonRecipeBuilder.Result(this.type, pRecipeId, this.result, this.group == null ? "" : this.group, this.ingredients, this.progressSpeed, this.nitrogenUsage, this.advancement, ResourceLocation.fromNamespaceAndPath(pRecipeId.getNamespace(), "recipes/" + this.result.getItem().getItemCategory().getRecipeFolderName() + "/" + pRecipeId.getPath())));
+        pFinishedRecipeConsumer.accept(new ChangedAddonRecipeBuilder.Result(this.type, pRecipeId, this.result, this.group == null ? "" : this.group, this.ingredients, this.progressSpeed, this.nitrogenUsage, this.advancement, ResourceLocation.fromNamespaceAndPath(pRecipeId.getNamespace(), "recipes/" + RecipeCategory.MISC + "/" + pRecipeId.getPath())));
     }
 
     /**
@@ -224,7 +226,7 @@ public class ChangedAddonRecipeBuilder implements RecipeBuilder {
 
             // Serializa o resultado com NBT se existir
             if(result.getDamageValue() == 0) result.getOrCreateTag().remove("Damage");
-            JsonObject jsonobject = NBTIngredient.of(result).toJson().getAsJsonObject();
+            JsonObject jsonobject = StrictNBTIngredient.of(result).toJson().getAsJsonObject();
             pJson.add("output", jsonobject);
 
             // ✅ Adiciona propriedades customizadas
