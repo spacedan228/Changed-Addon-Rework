@@ -13,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -30,8 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.material.Material;
-import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -84,7 +84,7 @@ public class PawsScanner extends Block {
     );
 
     public PawsScanner() {
-        super(Properties.of(Material.METAL, MaterialColor.COLOR_BLACK).sound(SoundType.METAL).strength(3.0F, 3.0F).dynamicShape());
+        super(Properties.copy(Blocks.IRON_BLOCK).mapColor(MapColor.COLOR_BLACK).sound(SoundType.METAL).strength(3.0F, 3.0F).dynamicShape());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(POWERED, Boolean.FALSE));
     }
 
@@ -195,7 +195,9 @@ public class PawsScanner extends Block {
                 if (shouldActivate(state, level, pos, entity)) {
                     level.setBlock(pos, state.setValue(POWERED, true), 3);
                     updateRedstoneSignal(level, pos);
-                    ChangedSounds.broadcastSound(Objects.requireNonNull(level.getServer()), ChangedSounds.CHIME2, pos, 1.0F, 1.0F);
+                    if (level instanceof ServerLevel serverLevel) {
+                        ChangedSounds.broadcastSound(serverLevel, ChangedSounds.KEYPAD_UNLOCK_SUCCESS, pos, 1.0F, 1.0F);
+                    }
                     level.scheduleTick(pos, this, 10); // Delay para reavaliar
                 }
             }
@@ -210,18 +212,18 @@ public class PawsScanner extends Block {
     }
 
     @Override
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull Random random) {
+    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         boolean hasEntity = shouldActivate(state, level, pos);
         boolean isPowered = state.getValue(POWERED);
 
         if (hasEntity && !isPowered) {
             level.setBlock(pos, state.setValue(POWERED, true), 3);
             updateRedstoneSignal(level, pos);
-            ChangedSounds.broadcastSound(level.getServer(), ChangedSounds.CHIME2, pos, 1.0F, 1.0F);
+            ChangedSounds.broadcastSound(level, ChangedSounds.KEYPAD_UNLOCK_SUCCESS, pos, 1.0F, 1.0F);
         } else if (!hasEntity && isPowered) {
             level.setBlock(pos, state.setValue(POWERED, false), 3);
             updateRedstoneSignal(level, pos);
-            ChangedSounds.broadcastSound(level.getServer(), ChangedSounds.KEY, pos, 0.6F, 1.0F);
+            ChangedSounds.broadcastSound(level, ChangedSounds.KEYPAD_LOCK, pos, 0.6F, 1.0F);
         }
 
         if (hasEntity) {

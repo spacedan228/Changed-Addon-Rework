@@ -21,8 +21,8 @@ public class KeypadUpgradeEvent {
 
     @SubscribeEvent
     public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        Player player = event.getPlayer();
-        Level level = event.getWorld();
+        Player player = event.getEntity();
+        Level level = event.getLevel();
         BlockPos pos = event.getPos();
         BlockState state = level.getBlockState(pos);
 

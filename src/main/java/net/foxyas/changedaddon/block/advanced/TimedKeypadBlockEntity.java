@@ -7,10 +7,12 @@ import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,27 +80,29 @@ public class TimedKeypadBlockEntity extends KeypadBlockEntity {
         if (tag.contains("canTick")) canTick = tag.getBoolean("canTick");
     }
 
-    private void playSound(SoundEvent event, float volume, float pitch) {
+    private void playSound(RegistryObject<SoundEvent> event, float volume, float pitch) {
         if (this.level != null && this.level.getServer() != null) {
-            ChangedSounds.broadcastSound(this.level.getServer(), event, this.worldPosition, volume, pitch);
+            if (this.level instanceof ServerLevel serverLevel) {
+                ChangedSounds.broadcastSound(serverLevel, event, this.worldPosition, volume, pitch);
+            }
         }
 
     }
 
     public void playUnlockSuccess() {
-        this.playSound(ChangedSounds.CHIME2, 1.0F, 1.0F);
+        this.playSound(ChangedSounds.KEYPAD_UNLOCK_SUCCESS, 1.0F, 1.0F);
     }
 
     public void playUnlockFail() {
-        this.playSound(ChangedSounds.BUZZER1, 1.0F, 1.0F);
+        this.playSound(ChangedSounds.KEYPAD_UNLOCK_FAIL, 1.0F, 1.0F);
     }
 
     public void playLock() {
-        this.playSound(ChangedSounds.KEY, 1.0F, 1.0F);
+        this.playSound(ChangedSounds.KEYPAD_LOCK, 1.0F, 1.0F);
     }
 
     public void playTimerAdjust(boolean isPositive) {
-        this.playSound(ChangedSounds.KEY, 1.0F, isPositive ? 1f : 0.75f);
+        this.playSound(ChangedSounds.KEYPAD_LOCK, 1.0F, isPositive ? 1f : 0.75f);
     }
 
     @Override

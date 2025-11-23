@@ -150,8 +150,10 @@ public class HandScanner extends Block {
                 }
             }
             if (canChange) {
-                ChangedSounds.broadcastSound(Objects.requireNonNull(level.getServer()).overworld(), ChangedSounds.TRANSFUR_HURT, pos, 0.25F, 2.0F);
-                ChangedSounds.broadcastSound(Objects.requireNonNull(level.getServer()).overworld(), ChangedSounds.KEYPAD_LOCK, pos, 0.5F, 1.0F);
+                if (level instanceof ServerLevel serverLevel) {
+                    ChangedSounds.broadcastSound(serverLevel, ChangedSounds.TRANSFUR_HURT, pos, 0.25F, 2.0F);
+                    ChangedSounds.broadcastSound(serverLevel, ChangedSounds.KEYPAD_LOCK, pos, 0.5F, 1.0F);
+                }
                 if (state.getValue(LOCK_TYPE) == LockType.HUMAN) {
                     level.setBlock(pos, state.setValue(LOCK_TYPE, LockType.TRANSFURRED), 3);
                 } else if (state.getValue(LOCK_TYPE) == LockType.TRANSFURRED) {
@@ -163,18 +165,23 @@ public class HandScanner extends Block {
         }
 
         if (!allow) {
-            ChangedSounds.broadcastSound(Objects.requireNonNull(level.getServer()).overworld(), ChangedSounds.KEYPAD_UNLOCK_FAIL, pos, 1.0F, 1.0F);
+            if (level instanceof ServerLevel serverLevel) {
+                ChangedSounds.broadcastSound(serverLevel, ChangedSounds.KEYPAD_UNLOCK_FAIL, pos, 1.0F, 1.0F);
+            }
             player.displayClientMessage(Component.literal("You cannot use this lock in your current form!"), true);
             return InteractionResult.CONSUME;
         }
 
         if (!state.getValue(POWERED)) {
-            ChangedSounds.broadcastSound(Objects.requireNonNull(level.getServer()).overworld(), ChangedSounds.CARDBOARD_BOX_OPEN, pos, 0.25F, 2.0F);
+            if (level instanceof ServerLevel serverLevel) {
+                ChangedSounds.broadcastSound(serverLevel, ChangedSounds.CARDBOARD_BOX_OPEN, pos, 0.25F, 2.0F);
+            }
             level.setBlock(pos, state.setValue(POWERED, true), 3);
         } else {
-
-            ChangedSounds.broadcastSound(Objects.requireNonNull(level.getServer()).overworld(), ChangedSounds.TRANSFUR_HURT, pos, 0.25F, 2.0F);
-            ChangedSounds.broadcastSound(Objects.requireNonNull(level.getServer()).overworld(), ChangedSounds.KEYPAD_LOCK, pos, 0.5F, 1.0F);
+            if (level instanceof ServerLevel serverLevel) {
+                ChangedSounds.broadcastSound(serverLevel, ChangedSounds.TRANSFUR_HURT, pos, 0.25F, 2.0F);
+                ChangedSounds.broadcastSound(serverLevel, ChangedSounds.KEYPAD_LOCK, pos, 0.5F, 1.0F);
+            }
             level.setBlock(pos, state.setValue(POWERED, false), 3);
         }
         updateRedstoneSignal(level, pos, state.getBlock());
@@ -194,7 +201,7 @@ public class HandScanner extends Block {
     public void tick(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.tick(state, world, pos, random);
         if (state.getValue(POWERED)) {
-            ChangedSounds.broadcastSound(world.getServer().overworld(), ChangedSounds.KEYPAD_UNLOCK_SUCCESS, pos, 1.0F, 1.0F);
+            ChangedSounds.broadcastSound(world, ChangedSounds.KEYPAD_UNLOCK_SUCCESS, pos, 1.0F, 1.0F);
         }
     }
 

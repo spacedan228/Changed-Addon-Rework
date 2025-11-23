@@ -23,6 +23,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.common.ForgeSpawnEggItem;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -292,10 +293,10 @@ public class ChangedAddonItems {
     }
 
     @SubscribeEvent
-    public static void onItemColorsInit(ColorHandlerEvent.Item event) {
+    public static void onItemColorsInit(RegisterColorHandlersEvent.Item event) {
         for (RegistryObject<Item> itemRegistryObject : REGISTRY.getEntries()) {
             if (itemRegistryObject.isPresent() && itemRegistryObject.get() instanceof ColorHolder colorHolder) {
-                colorHolder.registerCustomColors(event.getItemColors(), itemRegistryObject);
+                colorHolder.registerCustomColors(event, itemRegistryObject);
             }
         }
     }

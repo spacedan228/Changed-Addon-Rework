@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +30,7 @@ public class YellowWolfCrystalBlockBlock extends AbstractWolfCrystalExtender.Abs
             return super.canSustainPlant(state, world, pos, facing, plantable);
     }
 
-    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull Random random) {
+    public void tick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         super.tick(state, level, pos, random);
         BlockPos above = pos.above();
         if (level.getBlockState(above).is(Blocks.AIR)) {

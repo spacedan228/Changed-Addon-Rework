@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -176,7 +177,7 @@ public class TimedKeypadBlock extends KeypadBlock {
     }
 
     @Override
-    public void tick(BlockState blockState, ServerLevel level, BlockPos blockPos, Random random) {
+    public void tick(BlockState blockState, ServerLevel level, BlockPos blockPos, RandomSource random) {
         super.tick(blockState, level, blockPos, random);
     }
 

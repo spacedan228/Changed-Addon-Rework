@@ -7,12 +7,12 @@ import net.ltxprogrammer.changed.block.KeypadBlock;
 import net.ltxprogrammer.changed.block.entity.KeypadBlockEntity;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,6 +24,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +45,7 @@ public class KeycardItem extends Item implements ColorHolder {
     }
 
     public KeycardItem() {
-        super(new Properties().stacksTo(1).tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
+        super(new Properties().stacksTo(1));  //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
     }
 
     public static void setCode(ItemStack stack, byte @Nullable [] code) {
@@ -284,26 +285,28 @@ public class KeycardItem extends Item implements ColorHolder {
     }
 
     private static void playLock(Level level, BlockPos pos) {
-        playSound(level, pos, ChangedSounds.KEY, 1.0F, 1.0F);
+        playSound(level, pos, ChangedSounds.KEYPAD_LOCK, 1.0F, 1.0F);
     }
 
     private static void playWrite(Level level, BlockPos pos) {
-        playSound(level, pos, ChangedSounds.CHIME2, 1.0F, 1.0F);
+        playSound(level, pos, ChangedSounds.KEYPAD_UNLOCK_SUCCESS, 1.0F, 1.0F);
     }
 
     private static void playUnlock(Level level, BlockPos pos) {
-        playSound(level, pos, ChangedSounds.SAVE, 1.0F, 1.0F);
+        playSound(level, pos, ChangedSounds.RETINAL_SCAN, 1.0F, 1.0F);
     }
 
 
-    private static void playSound(Level level, BlockPos worldPosition, SoundEvent event, float volume, float pitch) {
+    private static void playSound(Level level, BlockPos worldPosition, RegistryObject<SoundEvent> event, float volume, float pitch) {
         if (level.getServer() != null) {
-            ChangedSounds.broadcastSound(level.getServer(), event, worldPosition, volume, pitch);
+            if (level instanceof ServerLevel serverLevel) {
+                ChangedSounds.broadcastSound(serverLevel, event, worldPosition, volume, pitch);
+            }
         }
     }
 
     @Override
-    public void registerCustomColors(ItemColors itemColors, RegistryObject<Item> item) {
+    public void registerCustomColors(RegisterColorHandlersEvent.Item itemColors, RegistryObject<Item> item) {
         itemColors.register(
                 (stack, tintIndex) -> {
                     /*
