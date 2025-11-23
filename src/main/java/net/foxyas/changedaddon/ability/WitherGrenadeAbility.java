@@ -44,7 +44,7 @@ public class WitherGrenadeAbility extends SimpleAbility {
     }
 
     public void shootProjectile(LivingEntity livingEntity) {
-        if (!(livingEntity.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (!(livingEntity.level() instanceof ServerLevel serverLevel)) return;
 
         Vec3 lookVector = livingEntity.getViewVector(1).scale(1.05f);
         WitherParticleProjectile projectile = new WitherParticleProjectile(ChangedAddonEntities.WITHER_PARTICLE_PROJECTILE.get(), serverLevel);

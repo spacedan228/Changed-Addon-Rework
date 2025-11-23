@@ -94,7 +94,7 @@ public class ReynEntity extends ChangedEntity {
 		BlockPos entityPos = this.blockPosition();
 
 		// Nível de luz no bloco (inclui luz de blocos e luz do céu)
-		Level level = this.getLevel();
+		Level level = this.level();
 
 		// Obtém a luz do bloco (luz artificial, como tochas)
 		int blockLight = level.getBrightness(LightLayer.BLOCK, entityPos);

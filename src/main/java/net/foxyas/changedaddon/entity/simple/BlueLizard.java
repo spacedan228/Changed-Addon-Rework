@@ -60,7 +60,7 @@ public class BlueLizard extends AbstractBasicChangedEntity implements ExtraCondi
                     box.maxX + offset.x, maxY, box.maxZ + offset.z
             );
 
-            if (!this.getLevel().noCollision(this, checkBox)) {
+            if (!this.level().noCollision(this, checkBox)) {
                 return true;
             }
         }

@@ -60,7 +60,7 @@ public class WitherParticleProjectile extends AbstractGenericParticleProjectile 
     }
 
     public void ApplyExplosionParticlesAndDamage() {
-        if (!(this.getLevel() instanceof ServerLevel serverLevel))
+        if (!(this.level() instanceof ServerLevel serverLevel))
             return;
 
         double radius = 1.0f;

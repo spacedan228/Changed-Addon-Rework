@@ -70,7 +70,7 @@ public class WindControlAbility extends SimpleAbility {
 
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
-        if (!entity.getLevel().isClientSide()) {
+        if (!entity.level().isClientSide()) {
             runAbility(entity.getEntity());
             this.setDirty(entity);
         }
@@ -85,7 +85,7 @@ public class WindControlAbility extends SimpleAbility {
     }
 
     public void runDash(LivingEntity living) {
-        if (living.getLevel().isClientSide()) {
+        if (living.level().isClientSide()) {
             return; // Only run on server
         }
 
@@ -99,11 +99,11 @@ public class WindControlAbility extends SimpleAbility {
         living.hurtMarked = true; // Force motion update
 
         // Optional: play sound effect
-        living.getLevel().playSound(null, living.blockPosition(),
-                ChangedSounds.BOW2, SoundSource.PLAYERS, 1.0F, 1.0F);
+        living.level().playSound(null, living.blockPosition(),
+                ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
 
         // Optional: spawn particles
-        if (living.getLevel() instanceof ServerLevel serverLevel) {
+        if (living.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ParticleTypes.CLOUD,
                     living.getX(), living.getY(), living.getZ(),
                     10, 0.3, 0.2, 0.3, 0.05);
@@ -112,7 +112,7 @@ public class WindControlAbility extends SimpleAbility {
 
 
     public void runAbilityShift(LivingEntity living) {
-        Level level = living.getLevel();
+        Level level = living.level();
         if (level.isClientSide()) {
             return;
         }
@@ -138,7 +138,7 @@ public class WindControlAbility extends SimpleAbility {
         living.swing(InteractionHand.MAIN_HAND, true);
         level.playSound(null, living.blockPosition(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 1.0F, 1.0F);
 
-        if (living.getLevel() instanceof ServerLevel serverLevel) {
+        if (living.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ParticleTypes.CLOUD,
                     living.getX(), living.getY(), living.getZ(),
                     10, 0.3, 0.2, 0.3, 0.05);

@@ -104,7 +104,7 @@ public class WitherWaveAbility extends SimpleAbility {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         super.startUsing(entity);
-        execute(entity.getLevel(), entity.getEntity());
+        execute(entity.level(), entity.getEntity());
     }
 
     @Override

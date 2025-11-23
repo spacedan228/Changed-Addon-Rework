@@ -141,7 +141,7 @@ public class TurnFeralSnepAbilityInstance extends AbstractAbilityInstance {
                 variantInstance.ifHasAbility(ChangedAddonAbilities.TURN_FERAL_SNEP.get(), abilityInstance ->
                         abilityInstance.setOldVariant(entity.getTransfurVariant())
                 );
-                entity.getEntity().getLevel().playSound(null, entity.getEntity(), ChangedSounds.POISON, SoundSource.PLAYERS, 1, 1);
+                entity.getEntity().level().playSound(null, entity.getEntity(), ChangedSounds.TRANSFUR_BY_LATEX.get(), SoundSource.PLAYERS, 1, 1);
             }
         }
     }

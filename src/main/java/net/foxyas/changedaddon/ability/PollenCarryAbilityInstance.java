@@ -44,7 +44,7 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
         LivingEntity livingEntity = entity.getEntity();
         HitResult entityBlockHitLookingAt = PlayerUtil.getEntityBlockHitLookingAt(livingEntity, livingEntity instanceof Player player ? player.getReachDistance() : 4, 1, false);
         if (entityBlockHitLookingAt.getType() != HitResult.Type.MISS && entityBlockHitLookingAt instanceof BlockHitResult blockHitResult) {
-            Level level = livingEntity.getLevel();
+            Level level = livingEntity.level();
             BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());
             Item item = blockState.getBlock().asItem();
             ItemStack itemStack = new ItemStack(item);
@@ -63,7 +63,7 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
         if(withPollenTicks <= 0) return;
 
         LivingEntity livingEntity = entity.getEntity();
-        Level level = livingEntity.getLevel();
+        Level level = livingEntity.level();
         if (level instanceof ServerLevel serverLevel) {
             if (livingEntity.tickCount % 10 == 0) {
                 ParticlesUtil.sendParticles(serverLevel, ParticleTypes.FALLING_NECTAR, livingEntity.position().add(0, 1, 0), 0.3f, 0.3f, 0.3f, 5, 1);

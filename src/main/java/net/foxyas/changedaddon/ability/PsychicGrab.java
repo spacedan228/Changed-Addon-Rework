@@ -98,19 +98,19 @@ public class PsychicGrab extends SimpleAbility {
 
     @Override
     public UseType getUseType(IAbstractChangedEntity entity) {
-        Entity target = getTarget(entity.getEntity().getLevel(), TargetID);
+        Entity target = getTarget(entity.getEntity().level(), TargetID);
         return (target != null) ? UseType.HOLD : UseType.INSTANT;
     }
 
     @Override
     public int getCoolDown(IAbstractChangedEntity entity) {
-        Entity target = getTarget(entity.getLevel(), TargetID);
+        Entity target = getTarget(entity.level(), TargetID);
         return (target == null) ? 15 : 0;
     }
 
     @Override
     public boolean canUse(IAbstractChangedEntity entity) {
-        Entity target = getTarget(entity.getLevel(), TargetID);
+        Entity target = getTarget(entity.level(), TargetID);
         LivingEntity self = entity.getEntity();
 
         if (target != null) {
@@ -138,7 +138,7 @@ public class PsychicGrab extends SimpleAbility {
 
     @Override
     public boolean canKeepUsing(IAbstractChangedEntity entity) {
-        Entity target = getTarget(entity.getLevel(), TargetID);
+        Entity target = getTarget(entity.level(), TargetID);
         LivingEntity self = entity.getEntity();
         if (target != null) {
             if (entity.getEntity().distanceTo(target) > 10) {
@@ -156,12 +156,12 @@ public class PsychicGrab extends SimpleAbility {
 
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
-        if (entity.getLevel().isClientSide()) {
+        if (entity.level().isClientSide()) {
             return;
         }
-        Entity target = getTarget(entity.getLevel(), TargetID);
+        Entity target = getTarget(entity.level(), TargetID);
         Entity lookingAt = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6);
-        if (entity.getEntity().isShiftKeyDown() || getTargetByID(entity.getLevel(), TargetID) == null) {
+        if (entity.getEntity().isShiftKeyDown() || getTargetByID(entity.level(), TargetID) == null) {
             if (lookingAt == null) {
                 return;
             }
@@ -204,12 +204,12 @@ public class PsychicGrab extends SimpleAbility {
             this.controller = abilityInstance.getController();
             player.displayClientMessage(Component.literal("Hold Ticks:" + controller.getHoldTicks()), true);
         }*/ // it works
-        Entity target = getTarget(entity.getLevel(), TargetID);
+        Entity target = getTarget(entity.level(), TargetID);
         if (target != null) {
             if (entity.getEntity().isShiftKeyDown()) {
                 if (entity.getAbilityInstance(this) != null && entity.getAbilityInstance(this).getController().getHoldTicks() <= 3) {
                     Entity lookingAt = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6);
-                    if (lookingAt != null && lookingAt != getTargetByID(entity.getLevel(), TargetID)) {
+                    if (lookingAt != null && lookingAt != getTargetByID(entity.level(), TargetID)) {
                         TargetID = lookingAt.getUUID();
                     }
                     return;

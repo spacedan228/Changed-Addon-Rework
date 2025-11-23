@@ -152,7 +152,7 @@ public class LuminarCrystalSpearEntity extends AbstractArrow implements ItemSupp
     /*@Override
     protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
-        if (this.getLevel() instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) {
             BlockState hitState = serverLevel.getBlockState(result.getBlockPos());
             if (hitState.is(ChangedAddonBlocks.LUMINAR_CRYSTAL_BLOCK.get()) || hitState.isAir()) {
                 return;
@@ -199,7 +199,7 @@ public class LuminarCrystalSpearEntity extends AbstractArrow implements ItemSupp
     @Override
     protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
-        if (this.getLevel() instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) {
             BlockState hitState = serverLevel.getBlockState(result.getBlockPos());
             if (hitState.is(ChangedAddonBlocks.LUMINAR_CRYSTAL_BLOCK.get()) || hitState.isAir()) {
                 return;

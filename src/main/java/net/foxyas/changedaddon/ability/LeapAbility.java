@@ -28,7 +28,7 @@ public class LeapAbility extends SimpleAbility {
             return;
         }
 
-        if (!player.isOnGround() || player.isInWater() || player.isSpectator()) {
+        if (!player.onGround() || player.isInWater() || player.isSpectator()) {
             return;
         }
 
@@ -64,7 +64,7 @@ public class LeapAbility extends SimpleAbility {
 
     private static void playSound(Player player) {
         if (!player.level.isClientSide()) {
-            player.level.playSound(null, player.blockPosition(), ChangedSounds.BOW2,
+            player.level.playSound(null, player.blockPosition(), ChangedSounds.CARDBOARD_BOX_OPEN.get(),
                     player.getSoundSource(), 2.5F, 1.0F);
         }
     }

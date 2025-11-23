@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Supplier;
@@ -42,10 +43,10 @@ public abstract class SpecialSpawnEggItem extends Item {
         int x = pos.getX(), y = pos.getY(), z = pos.getZ();
 
         Entity entityToSpawn = supplier.get().create(level);
-        if(entityToSpawn == null) return InteractionResult.FAIL;//This shouldn't happen!
+        if (entityToSpawn == null) return InteractionResult.FAIL;//This shouldn't happen!
         float yRot = player.getRandom().nextFloat() * 360F;
 
-        switch (direction){
+        switch (direction) {
             case UP -> entityToSpawn.moveTo(x + 0.5, y + 1, z + 0.5, yRot, 0);
             case DOWN -> entityToSpawn.moveTo(x + 0.5, y - 1.5, z + 0.5, yRot, 0);
             case EAST -> entityToSpawn.moveTo(x + 1.5, y, z + 0.5, yRot, 0);
@@ -54,7 +55,8 @@ public abstract class SpecialSpawnEggItem extends Item {
             case SOUTH -> entityToSpawn.moveTo(x + 0.5, y, z + 1.5, yRot, 0);
         }
 
-        if(entityToSpawn instanceof Mob mob) mob.finalizeSpawn(level, level.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+        if (entityToSpawn instanceof Mob mob)
+            ForgeEventFactory.onFinalizeSpawn(mob, level, level.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
         level.addFreshEntity(entityToSpawn);
 
         if (!player.isCreative() && !player.isSpectator()) context.getItemInHand().shrink(1);
@@ -64,5 +66,6 @@ public abstract class SpecialSpawnEggItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
-    protected void postSpawn(ServerLevel level, Player player, Entity spawnedEntity){}
+    protected void postSpawn(ServerLevel level, Player player, Entity spawnedEntity) {
+    }
 }

@@ -40,7 +40,7 @@ public class LeapSmashGoal extends Goal {
             return false;
         }
         if (target == null || !target.isAlive()) return false;
-        if (!mob.isOnGround()) return false;
+        if (!mob.onGround()) return false;
         return mob.distanceTo(target) >= 3; // only if target within 10 blocks
     }
 
@@ -76,12 +76,12 @@ public class LeapSmashGoal extends Goal {
     public void tick() {
         leapTicks++;
 
-        if (mob.isOnGround() && wasInAir) {
+        if (mob.onGround() && wasInAir) {
             performSmash();
             stop();
         }
 
-        if (!mob.isOnGround()) {
+        if (!mob.onGround()) {
             wasInAir = true;
             mob.getNavigation().stop();
             if (leapTicks >= 40) {
@@ -139,7 +139,7 @@ public class LeapSmashGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return leapTicks < 60 && !mob.isOnGround();
+        return leapTicks < 60 && !mob.onGround();
     }
 
     @Override

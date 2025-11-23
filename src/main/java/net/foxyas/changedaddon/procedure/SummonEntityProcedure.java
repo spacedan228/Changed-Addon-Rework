@@ -9,15 +9,16 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.event.ForgeEventFactory;
 
 
 public class SummonEntityProcedure {
 
     public static void execute(Level world, Player player) {
-        if(!(world instanceof ServerLevel level)) return;
+        if (!(world instanceof ServerLevel level)) return;
 
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        if(instance == null) return;
+        if (instance == null) return;
 
         ChangedEntity fakeEntity = instance.getChangedEntity();
 
@@ -28,7 +29,7 @@ public class SummonEntityProcedure {
         entityToSpawn.setYHeadRot(0);
         if (!player.level.isClientSide() && player.getServer() != null) {
             if (entityToSpawn instanceof Mob mob) {
-                mob.finalizeSpawn(level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                ForgeEventFactory.onFinalizeSpawn(mob, level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
             }
             world.addFreshEntity(entityToSpawn);
         }

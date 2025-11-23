@@ -64,7 +64,7 @@ public class SimpleAntiFlyingAttack extends Goal {
             }
             return player.getAbilities().flying && attacker.distanceTo(player) <= maxRange;
         }
-        return target != null && !target.isOnGround() &&
+        return target != null && !target.onGround() &&
                 attacker.distanceTo(target) >= minRange && attacker.distanceTo(target) <= maxRange;
     }
 
@@ -74,16 +74,16 @@ public class SimpleAntiFlyingAttack extends Goal {
             if (player.isCreative() || player.isSpectator()) {
                 return false;
             }
-            return player.isAlive() && !player.isOnGround();
+            return player.isAlive() && !player.onGround();
         }
-        return target != null && target.isAlive() && !target.isOnGround();
+        return target != null && target.isAlive() && !target.onGround();
     }
 
     @Override
     public void start() {
         /*
         *
-        attacker.getLevel().playSound(null, attacker, ChangedSounds.BOW2, SoundSource.HOSTILE, 2, 1);
+        attacker.getLevel().playSound(null, attacker, ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.HOSTILE, 2, 1);
         if (attacker.getEyePosition().distanceTo(target.getEyePosition()) <= 2f) {
             teleportAndKnockbackInAir(1);
         }
@@ -110,17 +110,17 @@ public class SimpleAntiFlyingAttack extends Goal {
         ticks++;
         if (ticks % delay == 0) {
             if (target instanceof Player player && player.isAlive()
-                    && !player.isOnGround() && player.getAbilities().flying) {
-                if (attacker.distanceTo(target) <= 2 && attacker.isOnGround()) {
+                    && !player.onGround() && player.getAbilities().flying) {
+                if (attacker.distanceTo(target) <= 2 && attacker.onGround()) {
                     slam();
                 }
             } else if (target instanceof Player player && player.isAlive()
-                    && !player.isOnGround() && player.isFallFlying()) {
-                if (attacker.isOnGround()) {
+                    && !player.onGround() && player.isFallFlying()) {
+                if (attacker.onGround()) {
                     slam();
                 }
             }
-            if (!target.isOnGround() && attacker.isOnGround()) {
+            if (!target.onGround() && attacker.onGround()) {
                 slam();
             }
         } else {
@@ -147,7 +147,7 @@ public class SimpleAntiFlyingAttack extends Goal {
 
     @Override
     public void stop() {
-        if (!attacker.isOnGround() && !attacker.getFeetBlockState().getFluidState().isEmpty()) {
+        if (!attacker.onGround() && !attacker.getFeetBlockState().getFluidState().isEmpty()) {
             Level level = attacker.level;
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
             pos.set(attacker.blockPosition());

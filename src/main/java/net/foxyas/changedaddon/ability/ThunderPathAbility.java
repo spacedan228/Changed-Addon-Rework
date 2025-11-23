@@ -163,7 +163,7 @@ public class ThunderPathAbility extends AbstractAbility<ThunderPathAbility.Insta
 
         @Override
         public void tick() {
-            if (!(owner.getEntity() instanceof Player player) || !(owner.getLevel() instanceof ServerLevel serverLevel))
+            if (!(owner.getEntity() instanceof Player player) || !(owner.level() instanceof ServerLevel serverLevel))
                 return;
 
             AbstractAbilityInstance abilityInstance = this;

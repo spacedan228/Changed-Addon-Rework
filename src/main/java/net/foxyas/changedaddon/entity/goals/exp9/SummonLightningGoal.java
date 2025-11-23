@@ -77,7 +77,7 @@ public class SummonLightningGoal extends Goal {
         }
 
         target = holder.getTarget();
-        return target != null && target.isAlive() && target.isOnGround();
+        return target != null && target.isAlive() && target.onGround();
     }
 
     @Override

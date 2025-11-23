@@ -113,6 +113,6 @@ public class ThunderBoltAbility extends SimpleAbility {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         super.startUsing(entity);
-        SummonLightBolt(entity.getEntity(), entity.getLevel(), ReachAmount(entity));
+        SummonLightBolt(entity.getEntity(), entity.level(), ReachAmount(entity));
     }
 }

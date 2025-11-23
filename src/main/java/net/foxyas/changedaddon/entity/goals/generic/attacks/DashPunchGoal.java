@@ -36,7 +36,7 @@ public class DashPunchGoal extends Goal {
         }
 
         target = mob.getTarget();
-        return target != null && target.isAlive() && mob.distanceTo(target) < 16 && mob.isOnGround();
+        return target != null && target.isAlive() && mob.distanceTo(target) < 16 && mob.onGround();
     }
 
     @Override

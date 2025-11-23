@@ -122,7 +122,7 @@ public class LuminarCrystalSpearItem extends Item implements Vanishable {
                         f3 *= f5 / f4;
                         player.push(f1, f2, f3);
                         player.startAutoSpinAttack(20);
-                        if (player.isOnGround()) {
+                        if (player.onGround()) {
                             float f6 = 1.1999999F;
                             player.move(MoverType.SELF, new Vec3(0.0D, 1.1999999F, 0.0D));
                         }

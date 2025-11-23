@@ -284,7 +284,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     private void maybeSendReactionToPlayer(DamageSource source) {
-        if (this.getLevel().random.nextFloat() <= 0.25f && source.getEntity() instanceof Player player) {
+        if (this.level().random.nextFloat() <= 0.25f && source.getEntity() instanceof Player player) {
             player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
         }
     }
@@ -516,7 +516,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             if (distance > 3) {
                 if (entity.getLastHurtByMob() == Target) {
                     entity.teleportTo(Target.getX(), Target.getY(), Target.getZ());
-                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.BOW2, SoundSource.HOSTILE, 10, 1, true);
+                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.HOSTILE, 10, 1, true);
                     TpCooldown = 40;
                 } else {
                     if (Targets != null && !(Targets instanceof ServerPlayer)) {
@@ -527,7 +527,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
                         }
                     }// Check if the entity in not null and is instance of server player if is will check if the gametype and if is not Creative and Spectator return true
                     entity.teleportTo(Target.getX(), Target.getY(), Target.getZ());
-                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.BOW2, SoundSource.HOSTILE, 10, 1, true);
+                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.HOSTILE, 10, 1, true);
                     TpCooldown = 40;
                 }
 

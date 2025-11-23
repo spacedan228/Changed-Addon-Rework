@@ -799,7 +799,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         }
         this.getNavigation().stop();
         if (this.dodgeAbilityInstance != null) {
-            this.dodgeAbilityInstance.executeDodgeAnimations(this.getLevel(), this);
+            this.dodgeAbilityInstance.executeDodgeAnimations(this.level(), this);
             this.dodgeAbilityInstance.setDodgeActivate(true);
         }
     }
@@ -877,7 +877,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         if (!this.level.isClientSide) {
             if (ticksTakeDmgFromFire > 5) {
                 ticksTakeDmgFromFire = 0;
-                this.getLevel().playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, SoundSource.HOSTILE, 1.0F, 1.0F);
+                this.level().playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, SoundSource.HOSTILE, 1.0F, 1.0F);
                 if (this.level instanceof ServerLevel server) {
                     server.sendParticles(
                             ParticleTypes.EXPLOSION_EMITTER,
@@ -885,7 +885,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                             1, 0, 0, 0, 0
                     );
                 }
-                for (LivingEntity living : this.getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(8), (livingEntity -> !livingEntity.isSpectator() && !livingEntity.is(this)))) {
+                for (LivingEntity living : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(8), (livingEntity -> !livingEntity.isSpectator() && !livingEntity.is(this)))) {
                     Vec3 knock = living.position().subtract(this.position()).normalize().scale(1.2);
                     living.push(knock.x, knock.y * 1.25f, knock.z);
                     if (living instanceof Player player) {
@@ -896,7 +896,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                         })), true);
                     }
                 }
-                this.getLevel().playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 1.0F, 1.0F);
+                this.level().playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 1.0F, 1.0F);
                 this.setRemainingFireTicks(0);
                 // int totalProjectiles = 12; // número de projéteis
                 double radius = 1.5;

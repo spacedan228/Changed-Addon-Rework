@@ -18,7 +18,7 @@ public class VariantsDetails {
 
     @SubscribeEvent
     public static void entityJump(LivingEvent.LivingJumpEvent event) {
-        if(!(event.getEntityLiving() instanceof Player player) || player.isOnGround()
+        if(!(event.getEntityLiving() instanceof Player player) || player.onGround()
                 || !player.level.isClientSide || !(player.level instanceof ClientLevel clientLevel)) return;
 
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);

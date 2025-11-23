@@ -53,7 +53,7 @@ public abstract class AbstractGenericParticleProjectile extends ParriableProject
     }
 
     protected void spawnParticle() {
-        if (this.getLevel() instanceof ServerLevel serverLevel) {
+        if (this.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(particleOptions, this.getX(), this.getY() + 0.1D, this.getZ(), 0, 0, 0, 0, 1);
         }
     }

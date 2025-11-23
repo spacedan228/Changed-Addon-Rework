@@ -54,7 +54,7 @@ public class ComboAbilityGoal extends Goal {
         target = attacker.getTarget();
 
         if (target instanceof Player player && (player.isCreative() || player.isSpectator())) return false;
-        return target != null && target.isOnGround() &&
+        return target != null && target.onGround() &&
                 attacker.distanceTo(target) >= minRange && attacker.distanceTo(target) <= maxRange &&
                 attacker.getRandom().nextFloat() < 0.5f;
     }
@@ -94,7 +94,7 @@ public class ComboAbilityGoal extends Goal {
         if (shouldEnd && phase < 22) {
             slam();
         }
-        if (!attacker.isOnGround()) {
+        if (!attacker.onGround()) {
             BlockPos pos = attacker.blockPosition();
             int groundY = attacker.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
 

@@ -229,7 +229,7 @@ public record BossAbilitiesHandle(AbstractLuminarcticLeopard boss) {
 
     // Arctic Dash Ability
     public void arcticDash() {
-        if (boss.isActivatedAbility() && boss.AbilitiesTicksCooldown <= 0 && boss.isOnGround()) { // Executa quando o cooldown for 0
+        if (boss.isActivatedAbility() && boss.AbilitiesTicksCooldown <= 0 && boss.onGround()) { // Executa quando o cooldown for 0
             // Primeiro Dash: Direção do olhar do boss
             Vec3 lookDirection = boss.getLookAngle().normalize();
             boss.setDeltaMovement(lookDirection.scale(2.5)); // Dash rápido na direção do olhar
@@ -251,7 +251,7 @@ public record BossAbilitiesHandle(AbstractLuminarcticLeopard boss) {
                         entity.playSound(SoundEvents.BEACON_AMBIENT, 4.5f, 0);
                     }
                 }
-                boss.playSound(ChangedSounds.BOW2, 4.5f, 1);
+                boss.playSound(ChangedSounds.CARDBOARD_BOX_OPEN.get(), 4.5f, 1);
                 boss.AbilitiesTicksCooldown = 60; // Set cooldown for the next activation
                 this.boss.DashingTicks = 0;
             }

@@ -99,14 +99,14 @@ public class ThunderDiveGoal extends Goal {
         LivingEntity t = mob.getTarget();
         if (cooldown > 0) {
             cooldown--;
-            if (t != null && (t.isFallFlying() || !t.isOnGround())) {
+            if (t != null && (t.isFallFlying() || !t.onGround())) {
                 cooldown -= 2;
             } else if (t instanceof Player player && player.getAbilities().flying) {
                 cooldown -= 2;
             }
             return false;
         }
-        return t != null && t.isAlive() && mob.isOnGround();
+        return t != null && t.isAlive() && mob.onGround();
     }
 
     @Override
@@ -119,7 +119,7 @@ public class ThunderDiveGoal extends Goal {
         LivingEntity t = mob.getTarget();
         Vec3 dir = (t != null ? mob.position().vectorTo(t.position()).normalize() : Vec3.ZERO);
         mob.setDeltaMovement(mob.getDeltaMovement().add(dir.x * 0.2, ascendBoost, dir.z * 0.2));
-        ChangedSounds.broadcastSound(mob, ChangedSounds.BOW2, 1, 1);
+        ChangedSounds.broadcastSound(mob, ChangedSounds.CARDBOARD_BOX_OPEN.get(), 1, 1);
 
         // pairar levemente enquanto sobe
         mob.setNoGravity(true);
@@ -129,7 +129,7 @@ public class ThunderDiveGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        return phase != null && !mob.isOnGround();
+        return phase != null && !mob.onGround();
     }
 
     @Override

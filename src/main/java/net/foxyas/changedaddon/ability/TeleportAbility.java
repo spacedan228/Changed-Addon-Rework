@@ -67,7 +67,7 @@ public class TeleportAbility extends SimpleAbility {
         LivingEntity living = entity.getEntity();
         if (living instanceof Player player) {
             Vec3 eyeLocation = FoxyasUtils.getRelativePositionEyes(player, 0f, 0f, 16f);
-            BlockHitResult blockHitResult = player.getLevel().clip(new ClipContext(player.getEyePosition(), eyeLocation, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+            BlockHitResult blockHitResult = player.level().clip(new ClipContext(player.getEyePosition(), eyeLocation, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
             Vec3 location = blockHitResult.getLocation();
             player.teleportToWithTicket(location.x, location.y, location.z);
             player.causeFoodExhaustion(4f);
@@ -75,7 +75,7 @@ public class TeleportAbility extends SimpleAbility {
             if (entity.getChangedEntity() instanceof AbstractKitsuneEntity) {
                 applyKitsuneTeleportEffects(entity, player);
             } else {
-                Level levelAccessor = player.getLevel();
+                Level levelAccessor = player.level();
                 levelAccessor.playSound(null, player.blockPosition(),
                         SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
                 if (levelAccessor instanceof ServerLevel serverLevel) {
@@ -90,11 +90,11 @@ public class TeleportAbility extends SimpleAbility {
     private void applyKitsuneTeleportEffects(IAbstractChangedEntity entity, Player player) {
         Color startColor = new Color(0xffeeee);
         Color endColor = new Color(0xFFCECE);
-        ParticlesUtil.sendColorTransitionParticles(player.getLevel(), player, startColor, endColor, 1, 0.25f, 0.25f, 0.25f, 10, 0.25f);
-        Random random = entity.getLevel().getRandom();
+        ParticlesUtil.sendColorTransitionParticles(player.level(), player, startColor, endColor, 1, 0.25f, 0.25f, 0.25f, 10, 0.25f);
+        Random random = entity.level().getRandom();
         float pitch = random.nextFloat() + 1;
         float volume = 0.5f;
-        player.getLevel().playSound(null, player, SoundEvents.FOX_TELEPORT, SoundSource.MASTER, volume, pitch);
+        player.level().playSound(null, player, SoundEvents.FOX_TELEPORT, SoundSource.MASTER, volume, pitch);
     }
 
     @Override

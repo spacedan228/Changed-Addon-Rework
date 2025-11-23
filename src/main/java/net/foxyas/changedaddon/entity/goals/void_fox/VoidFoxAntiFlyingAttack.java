@@ -71,7 +71,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
             }
             return player.getAbilities().flying && attacker.distanceTo(player) <= maxRange;
         }
-        return target != null && !target.isOnGround() &&
+        return target != null && !target.onGround() &&
                 attacker.distanceTo(target) >= minRange && attacker.distanceTo(target) <= maxRange;
     }
 
@@ -81,9 +81,9 @@ public class VoidFoxAntiFlyingAttack extends Goal {
             if (player.isCreative() || player.isSpectator()) {
                 return false;
             }
-            return player.isAlive() && !player.isOnGround();
+            return player.isAlive() && !player.onGround();
         }
-        return target != null && target.isAlive() && !target.isOnGround();
+        return target != null && target.isAlive() && !target.onGround();
     }
 
     @Override
@@ -115,24 +115,24 @@ public class VoidFoxAntiFlyingAttack extends Goal {
         ticks++;
         if (ticks % delay == 0) {
             if (target instanceof Player player && player.isAlive()
-                    && !player.isOnGround() && player.getAbilities().flying) {
+                    && !player.onGround() && player.getAbilities().flying) {
                 if (attacker.distanceTo(target) >= 2) {
                     shootProjectile(target);
                     attacker.getLevel().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
-                } else if (attacker.distanceTo(target) <= 2 && attacker.isOnGround()) {
+                } else if (attacker.distanceTo(target) <= 2 && attacker.onGround()) {
                     slam();
                 }
             } else if (target instanceof Player player && player.isAlive()
-                    && !player.isOnGround() && player.isFallFlying()) {
-                if (attacker.getEyePosition().distanceTo(target.getEyePosition()) <= 2f && attacker.isOnGround()) {
+                    && !player.onGround() && player.isFallFlying()) {
+                if (attacker.getEyePosition().distanceTo(target.getEyePosition()) <= 2f && attacker.onGround()) {
                     slam();
                 } else {
                     shootProjectile(target);
                     attacker.getLevel().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
                 }
             }
-            if (!target.isOnGround()) {
-                if (attacker.getEyePosition().distanceTo(target.getEyePosition()) <= 2f && attacker.isOnGround()) {
+            if (!target.onGround()) {
+                if (attacker.getEyePosition().distanceTo(target.getEyePosition()) <= 2f && attacker.onGround()) {
                     slam();
                 } else {
                     shootProjectile(target);
@@ -151,7 +151,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
 
     @Override
     public void stop() {
-        if (!attacker.isOnGround()) {
+        if (!attacker.onGround()) {
             BlockPos pos = attacker.blockPosition();
             int groundY = attacker.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
 

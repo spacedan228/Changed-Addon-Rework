@@ -18,6 +18,7 @@ import net.minecraft.world.item.FishingRodItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.player.ItemFishedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -63,7 +64,8 @@ public class FishingEvent {
             assert advancement != null;
             AdvancementProgress advancementProgress = serverPlayer.getAdvancements().getOrStartProgress(advancement);
             if (!advancementProgress.isDone()) {
-                for (String s : advancementProgress.getRemainingCriteria()) serverPlayer.getAdvancements().award(advancement, s);
+                for (String s : advancementProgress.getRemainingCriteria())
+                    serverPlayer.getAdvancements().award(advancement, s);
             }
         }
     }
@@ -122,7 +124,7 @@ public class FishingEvent {
 
                             // Finaliza o spawn da entidade
                             if (entityToSpawn instanceof Mob _mobToSpawn) {
-                                _mobToSpawn.finalizeSpawn(_level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                                ForgeEventFactory.onFinalizeSpawn(_mobToSpawn, _level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                             }
 
                             // Adiciona a entidade ao mundo

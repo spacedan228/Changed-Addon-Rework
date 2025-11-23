@@ -37,7 +37,7 @@ public class PsychicHoldAbility extends SimpleAbility {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         super.startUsing(entity);
-        //execute(entity.getLevel(),entity);
+        //execute(entity.level(),entity);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class PsychicHoldAbility extends SimpleAbility {
         // Selecionar apenas entidades relevantes
         List<Entity> nearbyEntities = player.level.getEntitiesOfClass(Entity.class,
                 new AABB(playerPos, playerPos).inflate(maxRange / 2.0),
-                e -> e instanceof FallingBlockEntity || e.getType().is(EntityTypeTags.IMPACT_PROJECTILES) && !e.isOnGround());
+                e -> e instanceof FallingBlockEntity || e.getType().is(EntityTypeTags.IMPACT_PROJECTILES) && !e.onGround());
 
         // Adicionar exaustão enquanto usa a habilidade
         if (!player.isSpectator() && !nearbyEntities.isEmpty()) {
@@ -66,7 +66,7 @@ public class PsychicHoldAbility extends SimpleAbility {
             Vec3 toPlayer = playerPos.subtract(projectilePos).normalize(); // Direção do jogador
             double distance = projectilePos.distanceTo(playerPos);
 
-            if (projectile.isOnGround()) {
+            if (projectile.onGround()) {
                 return;
             }
 

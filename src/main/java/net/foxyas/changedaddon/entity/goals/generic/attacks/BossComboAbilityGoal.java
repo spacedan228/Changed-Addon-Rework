@@ -53,7 +53,7 @@ public class BossComboAbilityGoal extends Goal {
             return false;
         }
 
-        return target != null && target.isOnGround() &&
+        return target != null && target.onGround() &&
                 (entity.distanceTo(target) >= minDistance && entity.distanceTo(target) <= maxDistance) &&
                 random.nextFloat() <= activationChance;
     }

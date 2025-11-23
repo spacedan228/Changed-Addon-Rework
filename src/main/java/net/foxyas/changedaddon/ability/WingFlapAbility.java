@@ -84,7 +84,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
                 return 5;
             } else if (player.isFallFlying()) {
                 return 45;
-            } else if (player.isOnGround()) {
+            } else if (player.onGround()) {
                 return 10;
             }
         }
@@ -98,7 +98,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
                 return 10;
             } else if (player.isFallFlying()) {
                 return 25;
-            } else if (player.isOnGround()) {
+            } else if (player.onGround()) {
                 return 20;
             }
         }
@@ -116,22 +116,22 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
         }
 
         private static void playSound(Player player) {
-            if (!player.level.isClientSide()) {
-                player.level.playSound(null, player.blockPosition(), ChangedSounds.BOW2,
+            if (!player.level().isClientSide()) {
+                player.level().playSound(null, player.blockPosition(), ChangedSounds.CARDBOARD_BOX_OPEN.get(),
                         player.getSoundSource(), 2.5F, 1.0F);
             }
         }
 
         private static void playFlapSound(Player player) {
-            if (!player.level.isClientSide()) {
-                player.level.playSound(null, player.blockPosition(), SoundEvents.ENDER_DRAGON_FLAP,
+            if (!player.level().isClientSide()) {
+                player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_DRAGON_FLAP,
                         player.getSoundSource(), 2.5F, 1.0F);
             }
         }
 
         private static void playFlapSound(Player player, float pitch) {
-            if (!player.level.isClientSide()) {
-                player.level.playSound(null, player.blockPosition(), SoundEvents.ENDER_DRAGON_FLAP,
+            if (!player.level().isClientSide()) {
+                player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_DRAGON_FLAP,
                         player.getSoundSource(), 2.5F, pitch);
             }
         }
@@ -170,7 +170,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
             }
 
             if (entity.getEntity() instanceof Player player) {
-                if (!player.isOnGround() && !player.getAbilities().flying && !player.isFallFlying()) {
+                if (!player.onGround() && !player.getAbilities().flying && !player.isFallFlying()) {
                     return false;
                 }
             }
@@ -187,7 +187,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
             }
 
             if (entity.getEntity() instanceof Player player) {
-                if (!player.isOnGround() && !player.getAbilities().flying && !player.isFallFlying()) {
+                if (!player.onGround() && !player.getAbilities().flying && !player.isFallFlying()) {
                     return false;
                 }
             }
@@ -230,7 +230,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
             }
 
 
-            if (player.level.isClientSide() && ChangedAddonClientConfiguration.WING_FLAP_INFO.get()) {
+            if (player.level().isClientSide() && ChangedAddonClientConfiguration.WING_FLAP_INFO.get()) {
                 player.displayClientMessage(Component.literal("Ticks = " + getController().getHoldTicks()), true);
             }
         }
@@ -256,7 +256,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
                 playFlapSound(player);
                 exhaustPlayer(player, 4F * dashPower);
                 this.dashPower = 0;
-            } else if (player.isOnGround() && player.getXRot() <= -45 && readyToDash) {
+            } else if (player.onGround() && player.getXRot() <= -45 && readyToDash) {
                 this.readyToDash = false;
                 double speed = 2 * dashPower;
                 player.setDeltaMovement(player.getDeltaMovement().add(player.getViewVector(1).multiply(0, speed, 0)));

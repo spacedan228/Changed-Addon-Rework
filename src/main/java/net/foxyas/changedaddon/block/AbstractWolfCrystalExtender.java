@@ -50,7 +50,7 @@ public class AbstractWolfCrystalExtender {
 
         @SubscribeEvent
         public static void colorTheCrystal(PlayerInteractEvent.RightClickBlock event) {
-            Level level = event.getLevel();
+            Level level = event.level();
             BlockPos pos = event.getPos();
             ItemStack itemStack = event.getItemStack();
             BlockState currentState = level.getBlockState(pos);

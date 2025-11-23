@@ -308,7 +308,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     private void spawnHyperAwakenedParticles() {
         if (this.random.nextInt(10) == 0) {
             ParticlesUtil.sendParticles(
-                    this.getLevel(),
+                    this.level(),
                     ParticleTypes.PORTAL, this.position().add(0, this.getBbHeight() / 2, 0),
                     0.25f,
                     0.25f,
@@ -363,7 +363,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     public void tryToPacifyNearbyEntities(double range) {
-        List<LivingEntity> nearChangedBeasts = this.getLevel().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(range), (entity) -> FoxyasUtils.canEntitySeeOtherIgnoreGlass(entity, this, 90f));
+        List<LivingEntity> nearChangedBeasts = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(range), (entity) -> FoxyasUtils.canEntitySeeOtherIgnoreGlass(entity, this, 90f));
         for (LivingEntity livingEntity : nearChangedBeasts) {
             if (livingEntity instanceof ChangedEntity changedEntity) {
                 if (changedEntity.getType().is(ChangedAddonTags.EntityTypes.PACIFY_IMMUNE)) {

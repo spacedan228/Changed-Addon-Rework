@@ -101,7 +101,7 @@ public class DEBUG {
             event.getPlayer().displayClientMessage(new TextComponent("X = " + DeltaX + "\n" + "Y = " + DeltaY + "\n" + "Z = " + DeltaZ), false);
         }
         if (event.getMessage().startsWith("Show Info")) {
-            new DelayedTask(40, () -> event.getPlayer().displayClientMessage(new TextComponent("X = " + StructureUtil.isStructureNearby(event.getPlayer().getLevel(), event.getPlayer().getOnPos(), "changed_addon:dazed_latex_meteor", 3)), false));
+            new DelayedTask(40, () -> event.getPlayer().displayClientMessage(new TextComponent("X = " + StructureUtil.isStructureNearby(event.getPlayer().level(), event.getPlayer().getOnPos(), "changed_addon:dazed_latex_meteor", 3)), false));
         }
 
     }
@@ -232,19 +232,19 @@ public class DEBUG {
             return;
         }
         if (PARTICLETEST && event.player.isShiftKeyDown()) {
-            ParticlesUtil.sendParticles(event.player.getLevel(), ParticleTypes.GLOW, event.player.getEyePosition().add(FoxyasUtils.getRelativePosition(event.player, DeltaX, DeltaY, DeltaZ, true)), 0f, 0f, 0f, 4, 0);
+            ParticlesUtil.sendParticles(event.player.level(), ParticleTypes.GLOW, event.player.getEyePosition().add(FoxyasUtils.getRelativePosition(event.player, DeltaX, DeltaY, DeltaZ, true)), 0f, 0f, 0f, 4, 0);
         }
 
         if (MOTIONTEST != 0) {
             Player player = event.player;
             if (MOTIONTEST == 1) {
-                if (player.getLevel().isClientSide()) {
+                if (player.level().isClientSide()) {
                     Vec3 motion = player.getDeltaMovement();
                     double speed = motion.length();
                     ChangedAddonMod.LOGGER.info("Client Player Speed is:{}", speed);
                 }
             } else if (MOTIONTEST == 2) {
-                if (!player.getLevel().isClientSide() && player instanceof ServerPlayer serverPlayer) {
+                if (!player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
                     /*Vec3 oldPos = new Vec3(player.xOld, player.yOld, player.zOld);
                     Vec3 playerPosition = player.position();
                     Vec3 posRelative = playerPosition.subtract(oldPos);

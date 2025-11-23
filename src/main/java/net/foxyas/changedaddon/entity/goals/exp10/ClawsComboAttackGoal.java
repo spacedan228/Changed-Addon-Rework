@@ -129,7 +129,7 @@ public class ClawsComboAttackGoal extends Goal {
         this.doDashEffect(); // Effect stuff
         holder.swing(InteractionHand.MAIN_HAND);
 
-        holder.level.playSound(null, holder, ChangedSounds.BOW2, SoundSource.HOSTILE, 1.0f, 1.0f);
+        holder.level.playSound(null, holder, ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.HOSTILE, 1.0f, 1.0f);
 
         if (attacks == 0) {
             applyKnockbackAndHurt(6, 2, 3);
@@ -197,7 +197,7 @@ public class ClawsComboAttackGoal extends Goal {
     public void doDashEffect() {// Efeito visual
         if (holder.level instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(PARTICLE, holder.getX(), holder.getY(0.5f), holder.getZ(), 4, 0.25, 0.25f, 0.25f, 0.05);
-            holder.level.playSound(null, holder.getX(), holder.getY(), holder.getZ(), ChangedSounds.BOW2, SoundSource.PLAYERS, 1f, 0.75f);
+            holder.level.playSound(null, holder.getX(), holder.getY(), holder.getZ(), ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.PLAYERS, 1f, 0.75f);
         }
     }
 

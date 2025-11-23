@@ -246,7 +246,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         if (source == DamageSource.LIGHTNING_BOLT)
             return false;
         if (source.getMsgId().equals("trident")) {
-            if (this.getLevel().random.nextFloat() <= 0.25f) {
+            if (this.level().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
                     player.displayClientMessage(Component.literal("§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!"), true);
                 }
@@ -262,7 +262,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         if (source.getMsgId().equals("witherSkull"))
             return false;
         if (source.isProjectile()) {
-            if (this.getLevel().random.nextFloat() <= 0.25f) {
+            if (this.level().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
                     player.displayClientMessage(Component.literal("§l§o§4Coward! Is distance all you can rely on? How PATHETIC!!!"), true);
                 }

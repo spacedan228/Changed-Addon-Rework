@@ -23,6 +23,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -94,7 +95,7 @@ public class UnfuseAbility extends SimpleAbility {
             ChangedEntity changedEntity = transfurVariantInstance.getChangedEntity();
             if (changedEntity instanceof ICoatLikeEntity iCoatLikeEntity) {
                 Player host = transfurVariantInstance.getHost();
-                entityUnfused = changedEntity.getType().create(host.getLevel());
+                entityUnfused = changedEntity.getType().create(host.level());
                 if (!(entityUnfused instanceof ChangedEntity changedEntityUnfused)) {
                     return;
                 }
@@ -111,10 +112,10 @@ public class UnfuseAbility extends SimpleAbility {
                 if (target != null && target.distanceTo(host) < 5 && FoxyasUtils.canEntitySeeOther(changedEntityUnfused, target)) {
                     changedEntityUnfused.setTarget(target);
                 }
-                if (host.getLevel() instanceof ServerLevel serverLevel) {
-                    changedEntityUnfused.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(changedEntityUnfused.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                if (host.level() instanceof ServerLevel serverLevel) {
+                    ForgeEventFactory.onFinalizeSpawn(changedEntityUnfused, serverLevel, serverLevel.getCurrentDifficultyAt(changedEntityUnfused.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
                     serverLevel.addFreshEntity(changedEntityUnfused);
-                    serverLevel.playSound(null, host, ChangedSounds.POISON, SoundSource.PLAYERS, 1, 1);
+                    serverLevel.playSound(null, host, ChangedSounds.TRANSFUR_BY_LATEX.get(), SoundSource.PLAYERS, 1, 1);
                     PlayerUtil.UnTransfurPlayer(host);
                 }
             }

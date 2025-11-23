@@ -88,12 +88,12 @@ public class PsychicPulseAbility extends SimpleAbility {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         super.startUsing(entity);
-        //execute(entity.getLevel(),entity.getEntity());
+        //execute(entity.level(),entity.getEntity());
     }
 
     @Override
     public void tick(IAbstractChangedEntity entity) {
         super.tick(entity);
-        execute(entity.getLevel(), entity.getEntity());
+        execute(entity.level(), entity.getEntity());
     }
 }
