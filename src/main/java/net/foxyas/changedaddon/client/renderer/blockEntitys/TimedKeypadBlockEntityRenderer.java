@@ -1,9 +1,10 @@
 package net.foxyas.changedaddon.client.renderer.blockEntitys;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlockEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -30,19 +31,19 @@ public class TimedKeypadBlockEntityRenderer implements BlockEntityRenderer<Timed
             switch (direction) {
                 case NORTH -> {
                     poseStack.translate(0.06f, 0.51, 0.85f);
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(-90));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(-90));
                 }
                 case SOUTH -> {
                     poseStack.translate(0.94f, 0.51f, 0.15f);
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
                 }
                 case EAST -> {
                     poseStack.translate(0.15f, 0.51f, 0.06f);
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(-180));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(-180));
                 }
                 case WEST -> {
                     poseStack.translate(0.85f, 0.51f, 0.94);
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(0));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(0));
                 }
             }
         }
@@ -74,9 +75,9 @@ public class TimedKeypadBlockEntityRenderer implements BlockEntityRenderer<Timed
                 false,
                 poseStack.last().pose(),
                 bufferSource,
-                false,
+                Font.DisplayMode.NORMAL,
                 0,
-                light
+                light, false
         );
         poseStack.popPose();
 

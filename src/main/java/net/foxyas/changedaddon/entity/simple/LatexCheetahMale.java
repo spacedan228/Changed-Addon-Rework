@@ -30,14 +30,15 @@ public class LatexCheetahMale extends AbstractCheetahEntity {
         super(entityType, level);
     }
 
-    @SubscribeEvent
-    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-        //Fixme add the biome modifier in the data folder
-        if (SPAWN_BIOMES.contains(event.getName())) {
-            event.getSpawns().getSpawner(ChangedMobCategories.CHANGED)
-                    .add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), 20, 1, 4));
-        }
-    }
+    // Todo: add the spawn handle in the datapack
+//    @SubscribeEvent
+//    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
+//        //Fixme add the biome modifier in the data folder
+//        if (SPAWN_BIOMES.contains(event.getName())) {
+//            event.getSpawns().getSpawner(ChangedMobCategories.CHANGED)
+//                    .add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), 20, 1, 4));
+//        }
+//    }
 
     @SubscribeEvent
     public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {

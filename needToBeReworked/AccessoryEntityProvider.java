@@ -10,11 +10,14 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.init.ChangedTags;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 
@@ -22,6 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static net.ltxprogrammer.changed.init.ChangedAccessorySlots.*;
 
@@ -51,10 +55,10 @@ public class AccessoryEntityProvider implements DataProvider {
     }
 
     @Override
-    public void run(@NotNull HashCache cache) {
+    public @NotNull CompletableFuture<?> run(@NotNull CachedOutput cache) {
         registerEntityAccessories();
 
-        Path basePath = this.generator.getOutputFolder();
+        Path basePath = this.generator.getPackOutput().getOutputFolder();
         Appender appender;
         for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
             appender = entry.getValue();
@@ -65,12 +69,10 @@ public class AccessoryEntityProvider implements DataProvider {
             }
 
             Path path = createPath(basePath, entry.getKey());
-            try {
-                DataProvider.save(GSON, cache, appender.toJson(), path);
-            } catch (IOException e) {
-                LOGGER.error("Couldn't save accessory entities to file {}", path, e);
-            }
+            DataProvider.saveStable(cache,appender.toJson(), path);
         }
+
+        return CompletableFuture.completedFuture(null);
     }
 
     public Appender add(@NotNull String fileName) {
@@ -145,7 +147,7 @@ public class AccessoryEntityProvider implements DataProvider {
             root.add("slots", slotAr);
 
             for (EntityType<?> type : entities) {
-                entityAr.add(type.getRegistryName().toString());
+                entityAr.add(ForgeRegistries.ENTITY_TYPES.getKey(type).toString());
             }
 
             for (TagKey<EntityType<?>> typeTagKey : entityTypesTags) {
@@ -153,7 +155,7 @@ public class AccessoryEntityProvider implements DataProvider {
             }
 
             for (AccessorySlotType slot : slots) {
-                slotAr.add(slot.getRegistryName().toString());
+                slotAr.add(ChangedRegistry.ACCESSORY_SLOTS.getKey(slot).toString());
             }
 
             return root;

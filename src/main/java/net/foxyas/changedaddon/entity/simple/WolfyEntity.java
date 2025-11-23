@@ -22,9 +22,10 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -131,7 +132,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     public boolean variantOverrideIsInWater() {
         if (this.maybeGetUnderlying() instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            return transfurVariant != null && player.getLevel().getFluidState(player.blockPosition()).is(FluidTags.LAVA);
+            return transfurVariant != null && player.level().getFluidState(player.blockPosition()).is(FluidTags.LAVA);
         }
 
         return false;
@@ -233,11 +234,11 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (source == DamageSource.LIGHTNING_BOLT)
+        if (source.is(DamageTypes.LIGHTNING_BOLT))
             return false;
-        if (source.isExplosion())
+        if (source.is(DamageTypeTags.IS_EXPLOSION))
             return false;
-        if (source.isFire())
+        if (source.is(DamageTypeTags.IS_FIRE))
             return false;
         return super.hurt(source, amount);
     }
@@ -254,22 +255,22 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
             if (instance == null || !instance.is(ChangedAddonTransfurVariants.WOLFY)) return;
 
             DamageSource damagesource = event.getSource();
-            if (damagesource instanceof EntityDamageSource _entityDamageSource && _entityDamageSource.isThorns()) {
+            if (damagesource.is(DamageTypes.THORNS)) {
                 event.setCanceled(true);
                 return;
             }
 
-            if (damagesource.isFire()) {
+            if (damagesource.is(DamageTypeTags.IS_FIRE)) {
                 event.setCanceled(true);
                 return;
             }
 
-            if (damagesource.isExplosion()) {
+            if (damagesource.is(DamageTypeTags.IS_EXPLOSION)) {
                 event.setCanceled(true);
                 return;
             }
 
-            if (damagesource == DamageSource.LIGHTNING_BOLT) {
+            if (damagesource.is(DamageTypes.LIGHTNING_BOLT)) {
                 event.setCanceled(true);
             }
         }

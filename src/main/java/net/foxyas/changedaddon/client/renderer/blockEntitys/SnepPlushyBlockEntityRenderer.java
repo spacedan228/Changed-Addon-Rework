@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.client.renderer.blockEntitys;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.entity.SnepPlushyBlockEntity;
 import net.minecraft.client.model.Model;
@@ -46,13 +46,13 @@ public class SnepPlushyBlockEntityRenderer implements BlockEntityRenderer<SnepPl
                 case NORTH:
                     break; // Sem rotação adicional necessária
                 case SOUTH:
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(180));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(180));
                     break;
                 case WEST:
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
                     break;
                 case EAST:
-                    poseStack.mulPose(Vector3f.YP.rotationDegrees(-90));
+                    poseStack.mulPose(Axis.YP.rotationDegrees(-90));
                     break;
             }
         }

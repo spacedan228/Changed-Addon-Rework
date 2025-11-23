@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.client.renderer.layers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ModelUtils;
 import net.ltxprogrammer.changed.client.renderer.layers.FirstPersonLayer;
@@ -16,9 +15,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +87,7 @@ public class ParticlesTrailsLayer<M extends AdvancedHumanoidModel<T>, T extends 
         return parts;
     }
 
-    private ModelPart getRandomPart(List<ModelPart> parts, Random random) {
+    private ModelPart getRandomPart(List<ModelPart> parts, RandomSource random) {
         return parts.get(random.nextInt(parts.size()));
     }
 
@@ -93,7 +95,7 @@ public class ParticlesTrailsLayer<M extends AdvancedHumanoidModel<T>, T extends 
         if (part == model.getHead()) {
             return FoxyasUtils.getRelativePositionEyes(entity, new Vec3(0, 0, 0.1f));
         } else if (ModelUtils.getTailFromModelIfAny(model).contains(part)) {
-            Vector3f offset = DEFAULT_OFFSET.copy();
+            Vector3f offset = DEFAULT_OFFSET;
             offset.add(0, 0, 0.5f);
             return ModelUtils.getWorldSpaceFromModelPart(part, offset, WORLD_OFFSET, entity, Vec3.ZERO, ENTITY_ROTATION, poseStack, false);
         } else {
@@ -103,9 +105,9 @@ public class ParticlesTrailsLayer<M extends AdvancedHumanoidModel<T>, T extends 
 
     protected void spawnParticle(T entity, boolean isHead, Vec3 pos) {
         for (ParticleOptions particle : particles) {
-            double dx = entity.getRandom().nextDouble(isHead ? -0.5 : -0.25, isHead ? 0.5 : 0.25);
-            double dy = entity.getRandom().nextDouble(isHead ? -0.5 : -0.25, isHead ? 0.5 : 0.25);
-            double dz = entity.getRandom().nextDouble(isHead ? -0.5 : -0.25, isHead ? 0.5 : 0.25);
+            double dx = entity.getRandom().nextGaussian() * (isHead ? 0.5 : 0.25);
+            double dy = entity.getRandom().nextGaussian() * (isHead ? 0.5 : 0.25);
+            double dz = entity.getRandom().nextGaussian() * (isHead ? 0.5 : 0.25);
 
             entity.level().addParticle(
                     particle,

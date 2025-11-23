@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.FluidTags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -16,7 +17,7 @@ public class FluidTagsProvider extends net.minecraft.data.tags.FluidTagsProvider
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider pProvider) {
         tag(FluidTags.WATER).add(LITIX_CAMONIA_FLUID.get(), FLOWING_LITIX_CAMONIA_FLUID.get());
     }
 }

@@ -30,9 +30,7 @@ public class LatexWindCatMaleEntity extends ChangedEntity implements GenderedEnt
         return Gender.MALE;
     }
 
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
+
 
     public TransfurMode getTransfurMode() {
         return this.getRandom().nextBoolean() ? TransfurMode.ABSORPTION : TransfurMode.REPLICATION;

@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.ltxprogrammer.changed.init.ChangedTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -12,21 +13,24 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.*;
 
-public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider {
+public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsProvider {
 
     private static final TagKey<Block> forgeOresIridium = BlockTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ores/iridium"));
     private static final TagKey<Block> forgeStorageBlocksIridium = BlockTags.create(ResourceLocation.fromNamespaceAndPath("forge", "storage_blocks/iridium"));
 
-    public BlockTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator, ChangedAddonMod.MODID, existingFileHelper);
+    public BlockTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(generator.getPackOutput(), lookupProvider, ChangedAddonMod.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.@NotNull Provider pProvider) {
         tag(Tags.Blocks.ORES).add(IRIDIUM_ORE.get());
         tag(forgeOresIridium).add(IRIDIUM_ORE.get());
         tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(IRIDIUM_ORE.get());

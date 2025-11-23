@@ -4,16 +4,20 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.init.ChangedTags;
 import net.ltxprogrammer.changed.init.ChangedItems;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.CompletableFuture;
 
 import static net.foxyas.changedaddon.init.ChangedAddonItems.*;
 
@@ -23,12 +27,12 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
     static final TagKey<Item> forgeIngotsIridium = ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "ingots/iridium"));
     static final TagKey<Item> forgeStorageBlocksIridium = ItemTags.create(ResourceLocation.fromNamespaceAndPath("forge", "storage_blocks/iridium"));
 
-    public ItemTagsProvider(DataGenerator generator, BlockTagsProvider blocks, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator, blocks, ChangedAddonMod.MODID, existingFileHelper);
+    public ItemTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider, CompletableFuture<TagsProvider.TagLookup<Block>> pParentProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(generator.getPackOutput(), lookupProvider, lo, ChangedAddonMod.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider pProvider) {
         tag(Tags.Items.RAW_MATERIALS).add(RAW_IRIDIUM.get());
         tag(forgeRawIridium).add(RAW_IRIDIUM.get());
 

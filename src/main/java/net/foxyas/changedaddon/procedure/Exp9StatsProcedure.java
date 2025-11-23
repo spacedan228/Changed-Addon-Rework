@@ -30,8 +30,8 @@ public class Exp9StatsProcedure {
 
         boolean reduceDamage =
                 source.isBypassInvul() ||
-                        source.isFire() ||
-                        (source.isFire() && entity.isOnFire());
+                        source.is(DamageTypeTags.IS_FIRE) ||
+                        (source.is(DamageTypeTags.IS_FIRE) && entity.isOnFire());
 
         if (reduceDamage && event instanceof LivingHurtEvent hurtEvent) {
             hurtEvent.setAmount(Math.round(amount / 2f));

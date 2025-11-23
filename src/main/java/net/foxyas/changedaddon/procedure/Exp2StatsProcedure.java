@@ -49,7 +49,7 @@ public class Exp2StatsProcedure {
         boolean entityIsExp2Entity = entity instanceof Exp2MaleEntity || entity instanceof Exp2FemaleEntity;
         boolean attackerIsExp2Entity = attacker instanceof Exp2MaleEntity || attacker instanceof Exp2FemaleEntity;
 
-        if (isExp2 && source.isFire()) {
+        if (isExp2 && source.is(DamageTypeTags.IS_FIRE)) {
             double result = amount / 2;
             result += result * 0.35;
             if (event instanceof LivingHurtEvent hurtEvent) hurtEvent.setAmount(Math.round((float) result));

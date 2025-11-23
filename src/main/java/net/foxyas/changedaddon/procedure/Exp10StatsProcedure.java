@@ -30,7 +30,7 @@ public class Exp10StatsProcedure {
         double Phase2Math;
         double Phase3Math;
         if (entity instanceof Player player && ProcessTransfur.getPlayerTransfurVariant(player) != null && ProcessTransfur.getPlayerTransfurVariant(player).getFormId().toString().startsWith("changed_addon:form_experiment_10")) {
-            if ((damagesource).isFire()) {
+            if ((damagesource).is(DamageTypeTags.IS_FIRE)) {
                 math = amount / 2;
                 Phase2Math = math * 0.5;
                 Phase3Math = math + Phase2Math;

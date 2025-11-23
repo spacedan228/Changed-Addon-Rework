@@ -85,9 +85,7 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
         return Color3.WHITE;
     }
 
-    public LatexType getLatexType() {
-        return LatexType.NEUTRAL;
-    }
+
 
     @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {

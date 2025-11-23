@@ -7,17 +7,20 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTags;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -25,17 +28,17 @@ import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
 
 public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTagsProvider {
 
-    public EntityTypeTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator, ChangedAddonMod.MODID, existingFileHelper);
+    public EntityTypeTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(generator.getPackOutput(), lookupProvider, ChangedAddonMod.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags() {
+    public void addTags(HolderLookup.@NotNull Provider pProvider) {
         tag(ChangedTags.EntityTypes.HUMANOIDS).add(
                 ERIK.get());
 
         tag(ChangedTags.EntityTypes.LATEX).add(LatexEntities.stream().map(Supplier::get)
-                .sorted(Comparator.comparing(entityType -> entityType.getRegistryName().getPath()))
+                .sorted(Comparator.comparing(entityType -> ForgeRegistries.ENTITY_TYPES.getKey(entityType).getPath()))
                 .toList().toArray(new EntityType[0]));
 
         tag(ChangedTags.EntityTypes.ORGANIC_LATEX).add(
@@ -103,7 +106,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
     }
 
     private static EntityType<?>[] getBeeEntities() {
-        Stream<EntityType<?>> beeEntities = ForgeRegistries.ENTITIES.getValues().stream().filter((entityType) -> entityType.getRegistryName().toString().contains("latex_bee"));
+        Stream<EntityType<?>> beeEntities = ForgeRegistries.ENTITY_TYPES.getValues().stream().filter((entityType) -> ForgeRegistries.ENTITY_TYPES.getKey(entityType).toString().contains("latex_bee"));
         List<EntityType<?>> canGlideEntities = new ArrayList<>(beeEntities.toList());
         return canGlideEntities.toArray(new EntityType[0]);
     }

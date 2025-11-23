@@ -9,6 +9,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
@@ -21,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -28,152 +30,12 @@ import static net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants.*;
 
 public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
 
-    public TFTagsProvider(DataGenerator generator, @Nullable ExistingFileHelper existingFileHelper) {
-        super(generator, new Registry<>(ChangedRegistry.TRANSFUR_VARIANT.get().getRegistryKey(), Lifecycle.stable()) {
-            @Override
-            public @Nullable ResourceLocation getKey(@NotNull TransfurVariant<?> p_123006_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getKey(p_123006_);
-            }
-
-            @Override
-            public @NotNull Optional<ResourceKey<TransfurVariant<?>>> getResourceKey(@NotNull TransfurVariant<?> p_123008_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getResourceKey(p_123008_);
-            }
-
-            @Override
-            public int getId(@Nullable TransfurVariant<?> p_122977_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getID(p_122977_);
-            }
-
-            @Override
-            public @Nullable TransfurVariant<?> get(@Nullable ResourceKey<TransfurVariant<?>> p_122980_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getRaw(p_122980_.location());
-            }
-
-            @Override
-            public @Nullable TransfurVariant<?> get(@Nullable ResourceLocation p_123002_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getRaw(p_123002_);
-            }
-
-            @Override
-            public @NotNull Lifecycle lifecycle(@NotNull TransfurVariant<?> p_123012_) {
-                return Lifecycle.stable();
-            }
-
-            @Override
-            public @NotNull Lifecycle elementsLifecycle() {
-                return Lifecycle.stable();
-            }
-
-            @Override
-            public @NotNull Set<ResourceLocation> keySet() {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getKeys();
-            }
-
-            @Override
-            public @NotNull Set<Map.Entry<ResourceKey<TransfurVariant<?>>, TransfurVariant<?>>> entrySet() {
-                return Set.of();
-            }
-
-            @Override
-            public @NotNull Optional<Holder<TransfurVariant<?>>> getRandom(@NotNull Random p_205998_) {
-                return Optional.empty();
-            }
-
-            @Override
-            public boolean containsKey(@NotNull ResourceLocation p_123011_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().containsKey(p_123011_);
-            }
-
-            @Override
-            public boolean containsKey(@NotNull ResourceKey<TransfurVariant<?>> p_175475_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().containsKey(p_175475_.location());
-            }
-
-            @Override
-            public @NotNull Registry<TransfurVariant<?>> freeze() {
-                return this;
-            }
-
-            @Override
-            public @NotNull Holder<TransfurVariant<?>> getOrCreateHolder(@NotNull ResourceKey<TransfurVariant<?>> p_206057_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getHolder(p_206057_).get();
-            }
-
-            @Override
-            public Holder.@NotNull Reference<TransfurVariant<?>> createIntrusiveHolder(@NotNull TransfurVariant<?> p_206068_) {
-                return Holder.Reference.createStandAlone(this, ResourceKey.create(key(), ChangedRegistry.TRANSFUR_VARIANT.get().getKey(p_206068_)));
-            }
-
-            @Override
-            public @NotNull Optional<Holder<TransfurVariant<?>>> getHolder(int p_206051_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getHolder(ChangedRegistry.TRANSFUR_VARIANT.get().getKey(p_206051_));
-            }
-
-            @Override
-            public @NotNull Optional<Holder<TransfurVariant<?>>> getHolder(@NotNull ResourceKey<TransfurVariant<?>> p_206050_) {
-                return ChangedRegistry.TRANSFUR_VARIANT.get().getHolder(p_206050_);
-            }
-
-            @Override
-            public @NotNull Stream<Holder.Reference<TransfurVariant<?>>> holders() {
-                return Stream.empty();
-            }
-
-            @Override
-            public @NotNull Optional<HolderSet.Named<TransfurVariant<?>>> getTag(@NotNull TagKey<TransfurVariant<?>> p_206052_) {
-                return Optional.empty();
-            }
-
-            @Override
-            public HolderSet.@NotNull Named<TransfurVariant<?>> getOrCreateTag(@NotNull TagKey<TransfurVariant<?>> p_206045_) {
-                return new HolderSet.Named<>(this, TagKey.create(key(), ResourceLocation.parse("null")));
-            }
-
-            @Override
-            public @NotNull Stream<Pair<TagKey<TransfurVariant<?>>, HolderSet.Named<TransfurVariant<?>>>> getTags() {
-                return Stream.empty();
-            }
-
-            @Override
-            public @NotNull Stream<TagKey<TransfurVariant<?>>> getTagNames() {
-                return Stream.empty();
-            }
-
-            @Override
-            public boolean isKnownTagName(@NotNull TagKey<TransfurVariant<?>> p_205983_) {
-                return false;
-            }
-
-            @Override
-            public void resetTags() {
-
-            }
-
-            @Override
-            public void bindTags(@NotNull Map<TagKey<TransfurVariant<?>>, List<Holder<TransfurVariant<?>>>> p_205997_) {
-
-            }
-
-            @Override
-            public @Nullable TransfurVariant<?> byId(int p_122651_) {
-                return null;
-            }
-
-            @Override
-            public int size() {
-                return 0;
-            }
-
-            @Override
-            public @NotNull Iterator<TransfurVariant<?>> iterator() {
-                return ObjectIterators.EMPTY_ITERATOR;
-            }
-        }, ChangedAddonMod.MODID, existingFileHelper);
+    public TFTagsProvider(DataGenerator generator, CompletableFuture<HolderLookup.Provider> pLookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+        super(generator.getPackOutput(), ChangedRegistry.TRANSFUR_VARIANT.get().getRegistryKey(), pLookupProvider, ChangedAddonMod.MODID, existingFileHelper);
     }
 
     @Override
-    protected void addTags() {
+    protected void addTags(HolderLookup.Provider pProvider) {
         tag(ChangedAddonTags.TransfurTypes.ABLE_TO_CARRY).add(EXP6.get());
         tag(ChangedAddonTags.TransfurTypes.CAUSE_FREEZING).add(LUMINARCTIC_LEOPARD_MALE.get(), LUMINARCTIC_LEOPARD_FEMALE.get());
         tag(ChangedAddonTags.TransfurTypes.GLOWING_VARIANTS).add(EXPERIMENT_009.get(), EXPERIMENT_009_BOSS.get(), EXPERIMENT_10.get(), EXPERIMENT_10_BOSS.get());

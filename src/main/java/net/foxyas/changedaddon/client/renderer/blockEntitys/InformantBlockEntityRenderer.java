@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.client.renderer.blockEntitys;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.foxyas.changedaddon.block.entity.InformantBlockEntity;
 import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
 import net.foxyas.changedaddon.mixins.client.renderer.LivingEntityRendererAccessor;
@@ -70,12 +70,12 @@ public class InformantBlockEntityRenderer implements BlockEntityRenderer<Informa
 
         poseStack.pushPose();
         poseStack.translate(.5, 1.75, .5);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(90));
+        poseStack.mulPose(Axis.YP.rotationDegrees(90));
         poseStack.scale(.5f, .5f, .5f);
         float speed = 1.25f;
         float rotation = (Minecraft.getInstance().player.tickCount * speed + partialTick) % 360;
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(rotation));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(180));
+        poseStack.mulPose(Axis.YP.rotationDegrees(rotation));
+        poseStack.mulPose(Axis.XP.rotationDegrees(180));
 
         AdvancedHumanoidModel model = renderer.getModel();
         ResourceLocation texture = ((LivingEntityRenderer) renderer).getTextureLocation(entity);

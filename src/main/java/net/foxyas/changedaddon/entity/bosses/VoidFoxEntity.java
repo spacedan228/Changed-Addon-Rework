@@ -651,7 +651,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             return f;
         }
 
-        if (source.isFire()) {
+        if (source.is(DamageTypeTags.IS_FIRE)) {
             ticksTakeDmgFromFire++;
         }
 
@@ -709,7 +709,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     }
 
     public boolean hurtDodgeHealth(@NotNull DamageSource damageSource, float damageAmount) {
-        if (!damageSource.isFire()) {
+        if (!damageSource.is(DamageTypeTags.IS_FIRE)) {
 
             // Apply normal mitigations
             damageAmount = this.getDamageAfterArmorAbsorb(damageSource, damageAmount);

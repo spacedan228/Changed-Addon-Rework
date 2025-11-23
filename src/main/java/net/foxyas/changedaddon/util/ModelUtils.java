@@ -1,10 +1,7 @@
 package net.foxyas.changedaddon.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
+import com.mojang.math.Axis;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
@@ -16,14 +13,17 @@ import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.*;
 
 import javax.annotation.Nullable;
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -59,25 +59,25 @@ public class ModelUtils {
 
         // Aplica as transformações da entidade (opcional)
         stack.translate(entity.getX() + entityPosOffset.x(), entity.getEyeY() + entityPosOffset.y() + (entity instanceof Player player && player.isShiftKeyDown() ? 0.225d : 0d), entity.getZ() + entityPosOffset.z());
-        stack.mulPose(Vector3f.YP.rotationDegrees(entity instanceof Player player ? -player.yBodyRotO : -entity.yRotO));
+        stack.mulPose(Axis.YP.rotationDegrees(entity instanceof Player player ? -player.yBodyRotO : -entity.yRotO));
         if (affectEntityViewXrot) {
-            stack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot()));
+            stack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
         }
 
         // Aplica as transformações do ModelPart
         part.xRot *= 1;
         part.yRot *= 1;
         part.zRot *= 1;
-        stack.mulPose(Vector3f.YP.rotationDegrees((float) Rotation.y()));
-        stack.mulPose(Vector3f.XP.rotationDegrees((float) Rotation.x()));
-        stack.mulPose(Vector3f.ZP.rotationDegrees((float) Rotation.z()));
+        stack.mulPose(Axis.YP.rotationDegrees((float) Rotation.y()));
+        stack.mulPose(Axis.XP.rotationDegrees((float) Rotation.x()));
+        stack.mulPose(Axis.ZP.rotationDegrees((float) Rotation.z()));
         part.translateAndRotate(stack);
 
 
         // Aplica o offset local
         Matrix4f matrix = stack.last().pose();
         Vector4f pos = new Vector4f(Offset.x(), Offset.y(), Offset.z(), 1.0F);
-        pos.transform(matrix);
+        pos.mul(matrix);
 
         return new Vec3(pos.x(), pos.y(), pos.z());
     }
@@ -142,15 +142,15 @@ public class ModelUtils {
                 entity.getEyeY() + entityPosOffset.y() + (entity instanceof Player player && player.isShiftKeyDown() ? 0.225d : 0d),
                 entity.getZ() + entityPosOffset.z()
         );
-        stack.mulPose(Vector3f.YP.rotationDegrees(entity instanceof LivingEntity livingEntity ? -livingEntity.yBodyRotO : -entity.yRotO));
+        stack.mulPose(Axis.YP.rotationDegrees(entity instanceof LivingEntity livingEntity ? -livingEntity.yBodyRotO : -entity.yRotO));
         if (affectEntityViewXrot) {
-            stack.mulPose(Vector3f.XP.rotationDegrees(entity.getXRot()));
+            stack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
         }
 
         // Aplica rotações personalizadas
-        stack.mulPose(Vector3f.YP.rotationDegrees((float) Rotation.y()));
-        stack.mulPose(Vector3f.XP.rotationDegrees((float) Rotation.x()));
-        stack.mulPose(Vector3f.ZP.rotationDegrees((float) Rotation.z()));
+        stack.mulPose(Axis.YP.rotationDegrees((float) Rotation.y()));
+        stack.mulPose(Axis.XP.rotationDegrees((float) Rotation.x()));
+        stack.mulPose(Axis.ZP.rotationDegrees((float) Rotation.z()));
 
         // Aplica transformações da ModelPart
         part.translateAndRotate(stack);
@@ -165,7 +165,7 @@ public class ModelUtils {
         // Converte posição final
         Matrix4f matrix = stack.last().pose();
         Vector4f pos = new Vector4f(vec3.x(), vec3.y(), vec3.z(), 1.0F);
-        pos.transform(matrix);
+        pos.mul(matrix);
 
         return new Vec3(pos.x(), pos.y(), pos.z());
     }
@@ -193,7 +193,7 @@ public class ModelUtils {
 
 
     public static AABB getModelPartBounds(ModelPart part) {
-        ModelPart.Cube partCube = part.getRandomCube(new Random());
+        ModelPart.Cube partCube = part.getRandomCube(RandomSource.create());
         return new AABB(partCube.minX, partCube.minY, partCube.minZ, partCube.maxX, partCube.maxY, partCube.maxZ);
     }
 
@@ -236,9 +236,9 @@ public class ModelUtils {
      */
 
     public static void applyMirroredRotation(ModelPart part, PoseStack stack) {
-        stack.mulPose(Vector3f.ZP.rotation(-part.zRot));
-        stack.mulPose(Vector3f.YP.rotation(-part.yRot));
-        stack.mulPose(Vector3f.XP.rotation(-part.xRot));
+        stack.mulPose(Axis.ZP.rotation(-part.zRot));
+        stack.mulPose(Axis.YP.rotation(-part.yRot));
+        stack.mulPose(Axis.XP.rotation(-part.xRot));
     }
 
 
@@ -276,19 +276,19 @@ public class ModelUtils {
         if (xRot == 0 && yRot == 0 && zRot == 0) {
             return local;
         }
-        Quaternion q = Quaternion.ONE.copy(); // Identidade
+        Quaternionf q = new Quaternionf(); // Identidade
 
         if (zRot != 0.0F) {
-            q.mul(Vector3f.ZP.rotationDegrees(zRot));
+            q.mul(Axis.ZP.rotationDegrees(zRot));
         }
         if (yRot != 0.0F) {
-            q.mul(Vector3f.YP.rotationDegrees(yRot));
+            q.mul(Axis.YP.rotationDegrees(yRot));
         }
         if (xRot != 0.0F) {
-            q.mul(Vector3f.XP.rotationDegrees(xRot));
+            q.mul(Axis.XP.rotationDegrees(xRot));
         }
         Vector3f localVector = new Vector3f((float) local.x, (float) local.y, (float) local.z);
-        localVector.transform(q);
+        q.transform(localVector);
         return new Vec3(localVector.x(), localVector.y(), localVector.z());
     }
 
@@ -401,13 +401,13 @@ public class ModelUtils {
         // Cria o quaternário baseado nas rotações em ordem ZYX
         Quaternion q = Quaternion.ONE.copy(); // identidade
         if (part.zRot != 0.0F) {
-            q.mul(Vector3f.ZP.rotation(part.zRot));
+            q.mul(Axis.ZP.rotation(part.zRot));
         }
         if (part.yRot != 0.0F) {
-            q.mul(Vector3f.YP.rotation(part.yRot));
+            q.mul(Axis.YP.rotation(part.yRot));
         }
         if (part.xRot != 0.0F) {
-            q.mul(Vector3f.XP.rotation(part.xRot));
+            q.mul(Axis.XP.rotation(part.xRot));
         }
         return q;
     }

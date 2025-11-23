@@ -18,7 +18,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
@@ -37,13 +36,14 @@ public class LatexCheetahFemale extends AbstractCheetahEntity {
                 (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)), SpawnPlacementRegisterEvent.Operation.OR);
     }
 
-    @SubscribeEvent
-    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-        if (SPAWN_BIOMES.contains(event.getName())) {
-            event.getSpawns().getSpawner(ChangedMobCategories.CHANGED)
-                    .add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_FEMALE.get(), 20, 1, 4));
-        }
-    }
+    // TODO MAKE THE SPAWN HANDLE IN DATAPACK
+//    @SubscribeEvent
+//    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
+//        if (SPAWN_BIOMES.contains(event.getName())) {
+//            event.getSpawns().getSpawner(ChangedMobCategories.CHANGED)
+//                    .add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_FEMALE.get(), 20, 1, 4));
+//        }
+//    }
 
     @Override
     protected @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand hand) {

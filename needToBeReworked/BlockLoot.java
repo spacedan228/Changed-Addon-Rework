@@ -7,6 +7,8 @@ import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -27,14 +29,25 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
+
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.*;
 
-public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
+public class BlockLoot extends net.minecraft.data.loot.BlockLootSubProvider {
 
     public static final LootItemCondition.Builder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
 
+    protected BlockLoot(Set<Item> pExplosionResistant, FeatureFlagSet pEnabledFeatures) {
+        super(pExplosionResistant, pEnabledFeatures);
+    }
+
+    public BlockLoot() {
+        super();
+
+    }
+
     @Override
-    protected void addTables() {
+    protected void generate() {
         dropSelf(LATEX_INSULATOR.get());
 
         add(IRIDIUM_ORE.get(), createOreDrop(IRIDIUM_ORE.get(), ChangedAddonItems.RAW_IRIDIUM.get()));
