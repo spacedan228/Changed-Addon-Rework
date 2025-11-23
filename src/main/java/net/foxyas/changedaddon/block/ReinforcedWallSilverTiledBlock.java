@@ -4,16 +4,17 @@ import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverable
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+
 import org.jetbrains.annotations.NotNull;
 
 public class ReinforcedWallSilverTiledBlock extends Block implements NonLatexCoverableBlock {
 
     public ReinforcedWallSilverTiledBlock() {
-        super(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.NETHERITE_BLOCK).strength(6f, 30f));
+        super(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.NETHERITE_BLOCK).strength(6f, 30f));
     }
 
     @Override

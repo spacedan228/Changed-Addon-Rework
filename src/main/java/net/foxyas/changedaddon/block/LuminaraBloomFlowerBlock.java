@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +32,6 @@ import net.minecraft.world.level.block.FlowerBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
 
     public LuminaraBloomFlowerBlock() {
         super(ChangedAddonMobEffects.UNTRANSFUR, 60,
-                BlockBehaviour.Properties.of(Material.PLANT)
+                BlockBehaviour.Properties.copy(Blocks.POPPY)
                         .emissiveRendering((state, blockGetter, blockPos) -> true)
                         .hasPostProcess((state, blockGetter, blockPos) -> true)
                         .noCollission().dynamicShape().instabreak().sound(SoundType.GRASS));
@@ -66,7 +66,7 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
     }
 
     @Override
-    public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull Random pRandom) {
+    public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull RandomSource pRandom) {
         super.tick(pState, pLevel, pPos, pRandom);
         tryToPacifyNearbyEntities(pLevel, pPos, 64);
         pLevel.scheduleTick(pPos, this, 10);
@@ -123,13 +123,13 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
     }
 
     @Override
-    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Random random) {
+    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, RandomSource random) {
         if (random.nextFloat() >= 0.25) return;
 
         Vec3 offset = state.getOffset(level, pos);
-        float x = (float) offset.x + pos.getX() + 0.5f + random.nextFloat(-0.3f, 0.3f);
+        float x = (float) offset.x + pos.getX() + 0.5f + (float) (random.nextGaussian() * 0.3f);
         float y = (float) offset.y + pos.getY() + 0.5625f;
-        float z = (float) offset.z + pos.getZ() + 0.5f + random.nextFloat(-0.3f, 0.3f);
+        float z = (float) offset.z + pos.getZ() + 0.5f + (float) (random.nextGaussian() * 0.3f);
 
         level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, x, y, z, 0, 0.01D, 0);
         if (level instanceof ClientLevel clientLevel) {
@@ -148,7 +148,7 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
     }
 
     @Override
-    public boolean isValidBonemealTarget(@NotNull BlockGetter blockGetter, @NotNull BlockPos blockPos, @NotNull BlockState blockState, boolean pIsClient) {
+    public boolean isValidBonemealTarget(@NotNull LevelReader blockGetter, @NotNull BlockPos blockPos, @NotNull BlockState blockState, boolean pIsClient) {
         return BlockPos.betweenClosedStream(new AABB(blockPos, blockPos).inflate(3, 1, 3))
                 .anyMatch(pos -> {
                     BlockState normal = blockGetter.getBlockState(pos);
@@ -158,12 +158,12 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
     }
 
     @Override
-    public boolean isBonemealSuccess(@NotNull Level level, @NotNull Random random, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
+    public boolean isBonemealSuccess(@NotNull Level level, @NotNull RandomSource random, @NotNull BlockPos blockPos, @NotNull BlockState blockState) {
         return true;
     }
 
     @Override
-    public void performBonemeal(@NotNull ServerLevel serverLevel, @NotNull Random random, @NotNull BlockPos pos, @NotNull BlockState state) {
+    public void performBonemeal(@NotNull ServerLevel serverLevel, @NotNull RandomSource random, @NotNull BlockPos pos, @NotNull BlockState state) {
 
         //Vanilla like behavior
         int tries = 16;

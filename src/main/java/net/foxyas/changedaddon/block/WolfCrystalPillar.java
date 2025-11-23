@@ -7,16 +7,17 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+
 import org.jetbrains.annotations.NotNull;
 
 public class WolfCrystalPillar extends RotatedPillarBlock implements NonLatexCoverableBlock {
 
     public WolfCrystalPillar() {
-        super(Properties.of(Material.ICE_SOLID)
+        super(Properties.copy(Blocks.BLUE_ICE)
                 .friction(0.98F)
                 .sound(SoundType.AMETHYST)
                 .strength(2.0F, 2.0F).noOcclusion().requiresCorrectToolForDrops());

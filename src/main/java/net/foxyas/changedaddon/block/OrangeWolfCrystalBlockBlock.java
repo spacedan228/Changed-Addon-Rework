@@ -35,7 +35,7 @@ public class OrangeWolfCrystalBlockBlock extends AbstractWolfCrystalExtender.Abs
         BlockPos above = pos.above();
         if (level.getBlockState(above).is(Blocks.AIR)) {
             level.setBlock(above, ChangedAddonBlocks.ORANGE_WOLF_CRYSTAL_SMALL.get().defaultBlockState(), 3);
-            level.playSound(null, pos, ChangedSounds.ICE2, SoundSource.BLOCKS, 1.0f, 1.0f);
+            level.playSound(null, pos, ChangedSounds.CRYSTAL_EXTEND.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
         }
     }
 

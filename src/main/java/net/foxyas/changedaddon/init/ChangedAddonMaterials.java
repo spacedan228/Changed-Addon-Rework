@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.init;
 
-import net.minecraft.world.level.material.Material;
+
 import net.minecraft.world.level.material.MaterialColor;
 import net.minecraft.world.level.material.PushReaction;
 

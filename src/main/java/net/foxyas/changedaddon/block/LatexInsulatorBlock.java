@@ -1,21 +1,26 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
+import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.ltxprogrammer.changed.block.AbstractLatexBlock;
-import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
-import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-
+import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,10 +29,10 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -36,13 +41,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
+
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.NonLatexCoverableBlock;
 
 @ParametersAreNonnullByDefault
 public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock {
 
     public LatexInsulatorBlock() {
-        super(BlockBehaviour.Properties.of(Material.CLAY).sound(SoundType.SLIME_BLOCK).strength(0.05f, 10f).speedFactor(0.5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
+        super(BlockBehaviour.Properties.copy(Blocks.CLAY).sound(SoundType.SLIME_BLOCK).strength(0.05f, 10f).speedFactor(0.5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -95,16 +101,16 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
     }
 
     @Override
-    public void tick(BlockState blockstate, ServerLevel level, BlockPos origin, Random random) {
+    public void tick(BlockState blockstate, ServerLevel level, BlockPos origin, RandomSource random) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         pos.set(origin);
 
-        BlockState bs;
-        for(Direction dir : Direction.values()){
+        for (Direction dir : Direction.values()) {
             pos.set(origin).move(dir);
-            bs = level.getBlockState(pos);
-            if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL)
-                level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
+            LatexCoverState latexCoverState = LatexCoverState.getAt(level, pos);
+            if (!latexCoverState.is(ChangedLatexTypes.NONE.get())) {
+                LatexCoverState.setAtAndUpdate(level, pos, ChangedLatexTypes.NONE.get().defaultCoverState());
+            }
         }
 
         level.scheduleTick(pos, this, 10);
@@ -132,8 +138,19 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
             if ((entity instanceof LivingEntity _livEnt ? _livEnt.getHealth() : -1) > 1) {
                 if (entity instanceof LivingEntity _entity && !_entity.level.isClientSide())
                     _entity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.LATEX_SOLVENT.get(), 300, 0, false, false));
-                if (entity instanceof LivingEntity _entity)
-                    _entity.hurt(new DamageSource("latex_solvent").bypassArmor(), 1);
+                if (entity instanceof LivingEntity _entity) {
+                    Holder<DamageType> pType = ChangedAddonDamageSources.LATEX_SOLVENT.source(_entity.level().registryAccess()).typeHolder();
+                    DamageSource pSource = new DamageSource(pType) {
+                        @Override
+                        public boolean is(@NotNull TagKey<DamageType> pDamageTypeKey) {
+                            if (pDamageTypeKey == DamageTypeTags.BYPASSES_ARMOR) {
+                                return true;
+                            }
+                            return super.is(pDamageTypeKey);
+                        }
+                    };
+                    _entity.hurt(pSource, 1);
+                }
             }
         }
         if (entity instanceof Player player) {
@@ -143,7 +160,17 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
                     if (!player.level.isClientSide())
                         player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.LATEX_SOLVENT.get(), 120, 0, false, false));
                     if (player.getHealth() > 1) {
-                        player.hurt(new DamageSource("latex_solvent").bypassArmor(), 1);
+                        Holder<DamageType> pType = ChangedAddonDamageSources.LATEX_SOLVENT.source(player.level().registryAccess()).typeHolder();
+                        DamageSource pSource = new DamageSource(pType) {
+                            @Override
+                            public boolean is(@NotNull TagKey<DamageType> pDamageTypeKey) {
+                                if (pDamageTypeKey == DamageTypeTags.BYPASSES_ARMOR) {
+                                    return true;
+                                }
+                                return super.is(pDamageTypeKey);
+                            }
+                        };
+                        player.hurt(pSource, 1);
                     }
                 } else {
                     if ((entity.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonVariables.PlayerVariables())).showWarns) {

@@ -2,13 +2,13 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.foxyas.changedaddon.fluid.LitixCamoniaFluid;
-import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -19,6 +19,8 @@ import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
+
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.NonLatexCoverableBlock;
 
 public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverableBlock, RenderLayerProvider {
 
@@ -74,7 +76,7 @@ public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverable
     private static final Direction[] DIRECTIONS = Direction.values();
 
     @Override
-    public void randomTick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull Random random) {
+    public void randomTick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource random) {
         BooleanProperty prop, propRelative;
         BlockPos posRelative, attachToPos;
         BlockState stateRelative, attachToState, old, toPlace;
@@ -128,6 +130,6 @@ public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverable
     }
 
     protected boolean cantReplace(BlockState state) {
-        return !state.getMaterial().isReplaceable();
+        return !state.canBeReplaced();
     }
 }

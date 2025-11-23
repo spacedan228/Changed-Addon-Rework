@@ -71,7 +71,7 @@ public class IridiumoreFeature extends OreFeature {
             Registry.register(Registry.RULE_TEST, ResourceLocation.parse("changed_addon:iridium_ore_match"), CUSTOM_MATCH);
         }
 
-        public boolean test(BlockState blockstate, @NotNull Random random) {
+        public boolean test(BlockState blockstate, @NotNull RandomSource random) {
             return Objects.equals(Blocks.DEEPSLATE, blockstate.getBlock());
         }
 

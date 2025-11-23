@@ -4,7 +4,8 @@ import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.ltxprogrammer.changed.block.DarkLatexBlock;
 import net.ltxprogrammer.changed.block.WolfCrystalBlock;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -13,8 +14,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import static net.ltxprogrammer.changed.block.AbstractLatexBlock.getLatexed;
 
 public class YellowWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.AbstractWolfCrystalSmall {
 
@@ -28,8 +27,12 @@ public class YellowWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.Abs
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState blockState, BlockGetter p_51043_, BlockPos p_51044_) {
-        return blockState.getBlock() == ChangedAddonBlocks.YELLOW_WOLF_CRYSTAL_BLOCK.get() || blockState.getBlock() instanceof WolfCrystalBlock || blockState.getBlock() instanceof DarkLatexBlock || getLatexed(blockState) == LatexType.DARK_LATEX;
+    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos blockPos) {
+        return blockState.getBlock() == ChangedAddonBlocks.YELLOW_WOLF_CRYSTAL_BLOCK.get()
+                || blockState.getBlock() instanceof WolfCrystalBlock
+                || blockState.getBlock() instanceof DarkLatexBlock
+                || LatexCoverState.getAt(level, blockPos).getType() == ChangedLatexTypes.DARK_LATEX.get();
+
     }
 
     public boolean canSurvive(BlockState blockState, LevelReader level, BlockPos blockPos) {
@@ -39,6 +42,6 @@ public class YellowWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.Abs
         return blockStateOn.getBlock() == ChangedAddonBlocks.YELLOW_WOLF_CRYSTAL_BLOCK.get()
                 || blockStateOn.getBlock() instanceof WolfCrystalBlock
                 || blockStateOn.getBlock() instanceof DarkLatexBlock
-                || getLatexed(blockStateOn) == LatexType.DARK_LATEX;
+                || LatexCoverState.getAt(level, blockPos).getType() == ChangedLatexTypes.DARK_LATEX.get();
     }
 }

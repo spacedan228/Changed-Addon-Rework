@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.level.material.Material;
+
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -35,7 +35,7 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
     public static final EnumProperty<SignalVariant> VARIANT = EnumProperty.create("variant", SignalVariant.class);
     public SignalBlockBlock() {
         super(BlockBehaviour.Properties
-                .of(Material.STONE)
+                .copy(Blocks.STONE)
                 .sound(SoundType.STONE)
                 .strength(1.5f, 20f)
                 .lightLevel(s -> 8)

@@ -348,7 +348,7 @@ public class AbstractLuminarCrystal {
 
         @Nullable
         public BlockState getStateForPlacement(BlockPlaceContext p_152019_) {
-            LevelAccessor levelaccessor = p_152019_.level();
+            LevelAccessor levelaccessor = p_152019_.getLevel();
             BlockPos blockpos = p_152019_.getClickedPos();
             return this.defaultBlockState().setValue(WATERLOGGED, levelaccessor.getFluidState(blockpos).getType() == Fluids.WATER).setValue(FACING, p_152019_.getClickedFace());
         }

@@ -6,6 +6,7 @@ import net.ltxprogrammer.changed.block.DarkLatexBlock;
 import net.ltxprogrammer.changed.block.WolfCrystalBlock;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
@@ -27,8 +28,8 @@ public class BlueWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.Abstr
     }
 
     @Override
-    protected boolean mayPlaceOn(BlockState blockState, BlockGetter p_51043_, BlockPos p_51044_) {
-        return blockState.getBlock() == ChangedAddonBlocks.BLUE_WOLF_CRYSTAL_BLOCK.get() || blockState.getBlock() instanceof WolfCrystalBlock || blockState.getBlock() instanceof DarkLatexBlock || getLatexed(blockState) == LatexType.DARK_LATEX;
+    protected boolean mayPlaceOn(BlockState blockState, BlockGetter level, BlockPos blockPos) {
+        return blockState.getBlock() == ChangedAddonBlocks.BLUE_WOLF_CRYSTAL_BLOCK.get() || blockState.getBlock() instanceof WolfCrystalBlock || blockState.getBlock() instanceof DarkLatexBlock || LatexCoverState.getAt(level, blockPos).getType() == ChangedLatexTypes.DARK_LATEX.get();
     }
 
     public boolean canSurvive(BlockState blockState, LevelReader level, BlockPos blockPos) {
@@ -38,6 +39,6 @@ public class BlueWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.Abstr
         return blockStateOn.getBlock() == ChangedAddonBlocks.BLUE_WOLF_CRYSTAL_BLOCK.get()
                 || blockStateOn.getBlock() instanceof WolfCrystalBlock
                 || blockStateOn.getBlock() instanceof DarkLatexBlock
-                || LatexCoverState.getAt(level, blockPos.below()).getType() instanceof SpreadingLatexType.DarkLatex ;
+                || LatexCoverState.getAt(level, blockPos.below()).getType() instanceof SpreadingLatexType.DarkLatex;
     }
 }

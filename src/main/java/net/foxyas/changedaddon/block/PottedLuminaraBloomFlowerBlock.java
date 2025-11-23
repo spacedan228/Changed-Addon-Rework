@@ -9,6 +9,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -48,20 +49,20 @@ public class PottedLuminaraBloomFlowerBlock extends FlowerPotBlock {
 
     @SuppressWarnings("deprecation")
     @Override
-    public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull Random pRandom) {
+    public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull RandomSource pRandom) {
         super.tick(pState, pLevel, pPos, pRandom);
         LuminaraBloomFlowerBlock.tryToPacifyNearbyEntities(pLevel, pPos, 64);
         pLevel.scheduleTick(pPos, this, 10);
     }
 
     @Override
-    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Random random) {
+    public void animateTick(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, RandomSource random) {
         if (random.nextFloat() >= 0.25) return;
 
         Vec3 offset = state.getOffset(level, pos);
-        float x = (float) offset.x + pos.getX() + 0.5f + random.nextFloat(-0.3f, 0.3f);
+        float x = (float) offset.x + pos.getX() + 0.5f + (float) (random.nextGaussian() * 0.3f);
         float y = (float) offset.y + pos.getY() + 0.5625f;
-        float z = (float) offset.z + pos.getZ() + 0.5f + random.nextFloat(-0.3f, 0.3f);
+        float z = (float) offset.z + pos.getZ() + 0.5f + (float) (random.nextGaussian() * 0.3f);
 
         level.addParticle(ParticleTypes.DRIPPING_OBSIDIAN_TEAR, x, y, z, 0, 0.01D, 0);
         if (level instanceof ClientLevel clientLevel) {

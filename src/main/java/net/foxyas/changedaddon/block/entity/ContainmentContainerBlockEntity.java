@@ -46,7 +46,7 @@ public class ContainmentContainerBlockEntity extends BlockEntity {
             return false;
         }
         return !variant.is(ChangedTransfurVariants.GAS_WOLF.get())
-                || variant.getRegistryName().toString().contains("gas");
+                || variant.getFormId().toString().contains("gas");
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ContainmentContainerBlockEntity extends BlockEntity {
             } catch (Exception e) {
                 form = ResourceLocation.parse("");
             }
-            if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getRegistryName).anyMatch(form::equals)) {
+            if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getFormId).anyMatch(form::equals)) {
                 this.transfurVariant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
             }
         }
@@ -69,8 +69,8 @@ public class ContainmentContainerBlockEntity extends BlockEntity {
     @Override
     public void saveAdditional(@NotNull CompoundTag compound) {
         super.saveAdditional(compound);
-        if (this.transfurVariant != null && transfurVariant.getRegistryName() != null) {
-            compound.putString(TRANSFUR_VARIANT, transfurVariant.getRegistryName().toString());
+        if (this.transfurVariant != null && transfurVariant.getFormId() != null) {
+            compound.putString(TRANSFUR_VARIANT, transfurVariant.getFormId().toString());
         }
     }
 

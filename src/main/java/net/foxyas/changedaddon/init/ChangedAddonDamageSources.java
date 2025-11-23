@@ -1,24 +1,19 @@
 package net.foxyas.changedaddon.init;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
+import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 
 public class ChangedAddonDamageSources {
 
-    public static final DamageSource LATEX_SOLVENT = new DamageSource("latex_solvent");
+    public static final DamageHolder LATEX_SOLVENT = holder("latex_solvent");
 
-    public static EntityDamageSource mobLatesSolventAttack(LivingEntity mob) {
-        return new EntityDamageSource("latex_solvent", mob);
-    }
-
-    /*
-     * For The Incoming Port this will be helpful
-     * Todo in 1.20.1: DamageTypeProvider DataProvider
-     public record DamageHolder(ResourceKey<DamageType> key) {
+    public record DamageHolder(ResourceKey<DamageType> key) {
         public DamageSource source(RegistryAccess access) {
             final Holder<DamageType> type = access.lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(key);
             return new DamageSource(type);
@@ -31,9 +26,7 @@ public class ChangedAddonDamageSources {
     }
 
     private static DamageHolder holder(String name) {
-        return new DamageHolder(ResourceKey.create(Registries.DAMAGE_TYPE, ChangedAdditionsMod.modResource(name)));
+        return new DamageHolder(ResourceKey.create(Registries.DAMAGE_TYPE, ChangedAddonMod.resourceLoc(name)));
     }
 
-    public static final DamageHolder LATEX_SOLVENT = holder("latex_solvent");
-    */
 }

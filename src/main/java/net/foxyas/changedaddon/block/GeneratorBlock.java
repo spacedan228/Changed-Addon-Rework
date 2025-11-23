@@ -10,6 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -76,7 +77,7 @@ public class GeneratorBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, Random random) {
+    public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, RandomSource random) {
         super.tick(blockstate, world, pos, random);
         int x = pos.getX();
         int y = pos.getY();
