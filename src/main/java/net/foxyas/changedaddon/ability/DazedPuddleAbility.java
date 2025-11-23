@@ -47,7 +47,7 @@ public class DazedPuddleAbility extends SimpleAbility {
             return;
         }
         float TransfurDmgAmount = (float) TransfurDmgAttribute.getValue();
-        entity.level().getEntitiesOfClass(LivingEntity.class, entity.getChangedEntity().getBoundingBox().inflate(0.25, 0, 0.25)).forEach(caught -> {
+        entity.getLevel().getEntitiesOfClass(LivingEntity.class, entity.getChangedEntity().getBoundingBox().inflate(0.25, 0, 0.25)).forEach(caught -> {
             if (caught == entity.getEntity())
                 return;
             if (caught.getType().is(ChangedTags.EntityTypes.HUMANOIDS)) {

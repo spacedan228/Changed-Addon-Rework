@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.network;
 
+import net.minecraft.core.Holder;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceKey;
@@ -10,7 +11,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
+import net.minecraftforge.event.PlayLevelSoundEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -20,25 +21,30 @@ import java.util.function.Predicate;
 public class PacketUtil {
 
     public static void playSound(ServerLevel level, Predicate<ServerPlayer> send, double x, double y, double z, SoundEvent sound, SoundSource soundSource, float volume, float pitch) {
-        PlaySoundAtEntityEvent event = ForgeEventFactory.onPlaySoundAtEntity(null, sound, soundSource, volume, pitch);
+        Holder<SoundEvent> direct = Holder.direct(sound);
+        PlayLevelSoundEvent.AtEntity event = ForgeEventFactory.onPlaySoundAtEntity(null, direct, soundSource, volume, pitch);
         if (event.isCanceled() || event.getSound() == null) return;
 
-        sound = event.getSound();
-        soundSource = event.getCategory();
-        volume = event.getVolume();
+        sound = event.getSound().get();
+        soundSource = event.getSource();
+        volume = event.getNewVolume();
 
-        broadcast(level, send.and(distance(x, y, z, volume > 1 ? volume * 16 : 16)), level.dimension(), new ClientboundSoundPacket(sound, soundSource, x, y, z, volume, pitch));
+        long pSeed = level.getRandom().nextLong();
+        broadcast(level, send.and(distance(x, y, z, volume > 1 ? volume * 16 : 16)), level.dimension(), new ClientboundSoundPacket(direct, soundSource, x, y, z, volume, pitch, pSeed));
     }
 
     public static void playSound(ServerLevel level, Predicate<ServerPlayer> send, Vec3 position, SoundEvent sound, SoundSource soundSource, float volume, float pitch) {
-        PlaySoundAtEntityEvent event = ForgeEventFactory.onPlaySoundAtEntity(null, sound, soundSource, volume, pitch);
+        Holder<SoundEvent> direct = Holder.direct(sound);
+        PlayLevelSoundEvent.AtEntity event = ForgeEventFactory.onPlaySoundAtEntity(null, direct, soundSource, volume, pitch);
         if (event.isCanceled() || event.getSound() == null) return;
 
-        sound = event.getSound();
-        soundSource = event.getCategory();
-        volume = event.getVolume();
+        sound = event.getSound().get();
+        soundSource = event.getSource();
+        volume = event.getNewVolume();
         double x = position.x, y = position.y, z = position.z;
-        broadcast(level, send.and(distance(x, y, z, volume > 1 ? volume * 16 : 16)), level.dimension(), new ClientboundSoundPacket(sound, soundSource, x, y, z, volume, pitch));
+
+        long pSeed = level.getRandom().nextLong();
+        broadcast(level, send.and(distance(x, y, z, volume > 1 ? volume * 16 : 16)), level.dimension(), new ClientboundSoundPacket(direct, soundSource, x, y, z, volume, pitch, pSeed));
     }
 
     public static Predicate<ServerPlayer> distance(double x, double y, double z, double distance) {

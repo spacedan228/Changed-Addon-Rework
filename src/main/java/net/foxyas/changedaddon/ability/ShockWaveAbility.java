@@ -103,7 +103,7 @@ public class ShockWaveAbility extends SimpleAbility {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         super.startUsing(entity);
-        execute(entity.level(), entity.getEntity());
+        execute(entity.getLevel(), entity.getEntity());
     }
 
     @Override

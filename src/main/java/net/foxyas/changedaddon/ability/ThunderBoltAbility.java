@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
 public class ThunderBoltAbility extends SimpleAbility {
@@ -39,16 +40,13 @@ public class ThunderBoltAbility extends SimpleAbility {
 
     public static void SummonLightBolt(Entity entity, LevelAccessor world, float amount) {
         Player player = (Player) entity;
-        double x = 0;
-        double y = 0;
-        double z = 0;
         double range = Math.max(amount, 1.5);
-        x = entity.level.clip(new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(range)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getBlockPos().getX();
-        y = entity.level.clip(new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(range)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getBlockPos().getY();
-        z = entity.level.clip(new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(range)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getBlockPos().getZ();
+        BlockHitResult clip = entity.level.clip(new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(range)), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity));
+        Vec3 location = clip.getLocation();
         if (world instanceof ServerLevel _level) {
             LightningBolt entityToSpawn = EntityType.LIGHTNING_BOLT.create(_level);
-            entityToSpawn.moveTo(Vec3.atBottomCenterOf(new BlockPos(x, y, z)));
+            assert entityToSpawn != null;
+            entityToSpawn.moveTo(location);
             entityToSpawn.setVisualOnly(false);
             _level.addFreshEntity(entityToSpawn);
             player.causeFoodExhaustion((float) 0.5);
@@ -113,6 +111,6 @@ public class ThunderBoltAbility extends SimpleAbility {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         super.startUsing(entity);
-        SummonLightBolt(entity.getEntity(), entity.level(), ReachAmount(entity));
+        SummonLightBolt(entity.getEntity(), entity.getLevel(), ReachAmount(entity));
     }
 }

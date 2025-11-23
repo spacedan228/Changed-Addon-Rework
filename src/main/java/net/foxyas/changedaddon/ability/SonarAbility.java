@@ -58,7 +58,7 @@ public class SonarAbility extends SimpleAbility {
 
             if (mode == RenderMode.ECHO_LOCATION || transfurVariant.is(ChangedAddonTransfurVariants.VOID_FOX.get())) {
                 // Play echo-location sound at player's position
-                PacketUtil.playSound(serverPlayer.level(),
+                PacketUtil.playSound(serverPlayer.serverLevel(),
                         (sPlayer) -> sPlayer.is(serverPlayer),
                         serverPlayer.position(),
                         SoundEvents.AMETHYST_BLOCK_CHIME,

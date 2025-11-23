@@ -55,7 +55,7 @@ public class LuminaraFireballAbility extends SimpleAbility {
     public void startUsing(IAbstractChangedEntity entity) {
         if (!(entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity holder)) return;
 
-        Level level = entity.level();
+        Level level = entity.getLevel();
         AbstractHurtingProjectile fireball;
 
         Vec3 view = holder.getLookAngle();

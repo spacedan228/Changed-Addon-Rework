@@ -163,7 +163,7 @@ public class ThunderPathAbility extends AbstractAbility<ThunderPathAbility.Insta
 
         @Override
         public void tick() {
-            if (!(owner.getEntity() instanceof Player player) || !(owner.level() instanceof ServerLevel serverLevel))
+            if (!(owner.getEntity() instanceof Player player) || !(owner.getLevel() instanceof ServerLevel serverLevel))
                 return;
 
             AbstractAbilityInstance abilityInstance = this;
@@ -179,7 +179,7 @@ public class ThunderPathAbility extends AbstractAbility<ThunderPathAbility.Insta
 
                 LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(serverLevel);
                 if (bolt != null) {
-                    bolt.moveTo(Vec3.atBottomCenterOf(new BlockPos(currentPos)));
+                    bolt.moveTo(currentPos);
                     bolt.setVisualOnly(false);
                     serverLevel.addFreshEntity(bolt);
                 }

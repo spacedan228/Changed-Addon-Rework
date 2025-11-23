@@ -106,7 +106,7 @@ public class ClawsAbility extends SimpleAbility {
 
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
-        if (!entity.level().isClientSide()) {
+        if (!entity.getLevel().isClientSide()) {
             TurnOnClaws();
             this.setDirty(entity);
         }

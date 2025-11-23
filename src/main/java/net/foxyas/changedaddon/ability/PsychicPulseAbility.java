@@ -5,8 +5,10 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.minecraft.core.Registry;
 
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
@@ -14,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Comparator;
 import java.util.List;
@@ -37,7 +40,7 @@ public class PsychicPulseAbility extends SimpleAbility {
                         .toList();
                 for (Entity entityiterator : _entfound) {
                     if (entityiterator != entity) {
-                        if (entityiterator instanceof FallingBlockEntity || entityiterator.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ResourceLocation.parse("minecraft:impact_projectiles")))) {
+                        if (entityiterator instanceof FallingBlockEntity || entityiterator.getType().is(EntityTypeTags.IMPACT_PROJECTILES)) {
                             if (PlayerUtil.isProjectileMovingTowardsPlayer(entity, entityiterator)) {
                                 //if(!world.isClientSide()){}
                                 Vec3 NegativeMotion = new Vec3((-(entityiterator.getDeltaMovement().x())), (-(entityiterator.getDeltaMovement().y())), (-(entityiterator.getDeltaMovement().z())));
@@ -94,6 +97,6 @@ public class PsychicPulseAbility extends SimpleAbility {
     @Override
     public void tick(IAbstractChangedEntity entity) {
         super.tick(entity);
-        execute(entity.level(), entity.getEntity());
+        execute(entity.getLevel(), entity.getEntity());
     }
 }

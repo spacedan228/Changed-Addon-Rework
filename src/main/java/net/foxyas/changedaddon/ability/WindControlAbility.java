@@ -70,7 +70,7 @@ public class WindControlAbility extends SimpleAbility {
 
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
-        if (!entity.level().isClientSide()) {
+        if (!entity.getLevel().isClientSide()) {
             runAbility(entity.getEntity());
             this.setDirty(entity);
         }

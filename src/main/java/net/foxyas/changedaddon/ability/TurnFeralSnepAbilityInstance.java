@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.Random;
@@ -77,8 +78,8 @@ public class TurnFeralSnepAbilityInstance extends AbstractAbilityInstance {
     @Override
     public void saveData(CompoundTag tag) {
         super.saveData(tag);
-        if (this.OldVariant != null && OldVariant.getRegistryName() != null) {
-            tag.putString(OLD_TRANSFUR_VARIANT, OldVariant.getRegistryName().toString());
+        if (this.OldVariant != null && OldVariant.getFormId() != null) {
+            tag.putString(OLD_TRANSFUR_VARIANT, OldVariant.getFormId().toString());
         }
         /*if (this.NewVariant != null && NewVariant.getRegistryName() != null){
             tag.putString(NEW_TRANSFUR_VARIANT,NewVariant.getRegistryName().toString());
@@ -96,7 +97,7 @@ public class TurnFeralSnepAbilityInstance extends AbstractAbilityInstance {
             } catch (Exception e) {
                 form = ResourceLocation.parse("");
             }
-            if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getRegistryName).anyMatch(form::equals)) {
+            if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getFormId).anyMatch(form::equals)) {
                 this.OldVariant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
             }
         }
@@ -148,7 +149,7 @@ public class TurnFeralSnepAbilityInstance extends AbstractAbilityInstance {
 
     private TransfurVariant<?> determineNextVariant(TransfurVariant<?> currentVariant) {
         if (currentVariant == ChangedAddonTransfurVariants.LATEX_SNEP_FERAL_FORM.get() || currentVariant == ChangedAddonTransfurVariants.LATEX_SNEP.get()) {
-            return this.OldVariant != null ? this.OldVariant : ChangedAddonTransfurVariants.Gendered.ORGANIC_SNOW_LEOPARD.getRandomVariant(new Random());
+            return this.OldVariant != null ? this.OldVariant : ChangedAddonTransfurVariants.Gendered.ORGANIC_SNOW_LEOPARD.getRandomVariant(RandomSource.create());
         } else {
             return ChangedAddonTransfurVariants.LATEX_SNEP_FERAL_FORM.get();
         }

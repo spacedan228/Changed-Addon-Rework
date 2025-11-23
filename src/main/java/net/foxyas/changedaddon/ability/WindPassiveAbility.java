@@ -78,7 +78,7 @@ public class WindPassiveAbility extends SimpleAbility {
 
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
-        if (!entity.level().isClientSide()) {
+        if (!entity.getLevel().isClientSide()) {
             TurnOnPassive(entity);
             this.setDirty(entity);
         }

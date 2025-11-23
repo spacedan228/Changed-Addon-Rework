@@ -5,6 +5,7 @@ import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 
 
 public class ToggleClimbAbilityInstance extends AbstractAbilityInstance {
@@ -31,7 +32,7 @@ public class ToggleClimbAbilityInstance extends AbstractAbilityInstance {
     @Override
     public void startUsing() {
         this.isActivated = !this.isActivated;
-        if (!entity.level().isClientSide()) {
+        if (!entity.getLevel().isClientSide()) {
             entity.displayClientMessage(Component.literal("Climb = " + this.isActivated), true);
         }
     }

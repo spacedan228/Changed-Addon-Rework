@@ -6,11 +6,12 @@ import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.minecraft.core.particles.ParticleTypes;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -18,8 +19,8 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-
 import java.awt.*;
+
 import java.util.Random;
 
 public class TeleportAbility extends SimpleAbility {
@@ -91,7 +92,7 @@ public class TeleportAbility extends SimpleAbility {
         Color startColor = new Color(0xffeeee);
         Color endColor = new Color(0xFFCECE);
         ParticlesUtil.sendColorTransitionParticles(player.level(), player, startColor, endColor, 1, 0.25f, 0.25f, 0.25f, 10, 0.25f);
-        Random random = entity.level().getRandom();
+        RandomSource random = entity.getLevel().getRandom();
         float pitch = random.nextFloat() + 1;
         float volume = 0.5f;
         player.level().playSound(null, player, SoundEvents.FOX_TELEPORT, SoundSource.MASTER, volume, pitch);

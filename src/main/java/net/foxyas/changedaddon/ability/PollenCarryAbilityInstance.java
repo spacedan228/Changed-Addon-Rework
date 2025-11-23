@@ -8,7 +8,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -42,7 +42,7 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
 
     public void startUsing() {
         LivingEntity livingEntity = entity.getEntity();
-        HitResult entityBlockHitLookingAt = PlayerUtil.getEntityBlockHitLookingAt(livingEntity, livingEntity instanceof Player player ? player.getReachDistance() : 4, 1, false);
+        HitResult entityBlockHitLookingAt = PlayerUtil.getEntityBlockHitLookingAt(livingEntity, livingEntity instanceof Player player ? player.getEntityReach() : 4, 1, false);
         if (entityBlockHitLookingAt.getType() != HitResult.Type.MISS && entityBlockHitLookingAt instanceof BlockHitResult blockHitResult) {
             Level level = livingEntity.level();
             BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());
@@ -95,7 +95,7 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
 
     private boolean tryGrowCrop(ServerLevel level, BlockPos pos, BlockState state) {
         if (state.getBlock() instanceof CropBlock crop && !crop.isMaxAge(state)) {
-            IntegerProperty age = crop.getAgeProperty();
+            IntegerProperty age = CropBlock.AGE;
             level.setBlockAndUpdate(pos, state.setValue(age, state.getValue(age) + 1));
             return true;
         }

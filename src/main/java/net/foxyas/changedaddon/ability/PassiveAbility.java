@@ -18,7 +18,7 @@ public class PassiveAbility extends AbstractAbility<PassiveAbilityInstance> {
     }
 
     public static void ApplyMobEffect(IAbstractChangedEntity entity, MobEffectInstance mobEffectInstance) {
-        if (entity.level().isClientSide()) return;
+        if (entity.getLevel().isClientSide()) return;
 
         LivingEntity livingEntity = entity.getEntity();
         MobEffect mobEffect = mobEffectInstance.getEffect();
