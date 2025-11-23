@@ -8,6 +8,7 @@ import net.foxyas.changedaddon.menu.CustomMerchantMenu;
 import net.foxyas.changedaddon.menu.CustomMerchantOffer;
 import net.foxyas.changedaddon.menu.CustomMerchantOffers;
 import net.foxyas.changedaddon.network.packet.ServerboundCustomSelectTradePacket;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -20,6 +21,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.function.Supplier;
 
 public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchantMenu> {
 
@@ -58,14 +61,14 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
         }
     }
 
-    protected void renderLabels(@NotNull PoseStack stack, int x, int y) {
+    protected void renderLabels(@NotNull GuiGraphics guiGraphics, int x, int y) {
         font.draw(stack, title, (float)(49 + imageWidth / 2 - font.width(title) / 2), 6.0F, 4210752);
         font.draw(stack, playerInventoryTitle, (float)inventoryLabelX, (float)inventoryLabelY, 4210752);
         int l = font.width(TRADES_LABEL);
         font.draw(stack, TRADES_LABEL, (float)(5 - l / 2 + 48), 6.0F, 4210752);
     }
 
-    protected void renderBg(@NotNull PoseStack stack, float partialTick, int x, int y) {
+    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int x, int y) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, VILLAGER_LOCATION);
@@ -86,7 +89,7 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
         }
     }
 
-    private void renderScroller(PoseStack stack, int x, int y, CustomMerchantOffers offers) {
+    private void renderScroller(GuiGraphics guiGraphics, int x, int y, CustomMerchantOffers offers) {
         int i = offers.size() + 1 - 7;
         if (i > 1) {
             int j = 139 - (27 + (i - 1) * 139 / i);
@@ -103,12 +106,13 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
 
     }
 
-    public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTick) {
-        renderBackground(stack);
-        super.render(stack, mouseX, mouseY, partialTick);
+    @Override
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderBackground(guiGraphics);
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
         CustomMerchantOffers offers = menu.getOffers();
         if(offers.isEmpty()){
-            renderTooltip(stack, mouseX, mouseY);
+            renderTooltip(guiGraphics, mouseX, mouseY);
             return;
         }
 
@@ -118,7 +122,7 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
         int l = i + 5 + 5;
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, VILLAGER_LOCATION);
-        renderScroller(stack, i, j, offers);
+        renderScroller(guiGraphics, i, j, offers);
         int i1 = 0;
 
         Ingredient ingredient;
@@ -186,7 +190,7 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
         return stacks[time / MS_PER_ITEM];
     }
 
-    private void renderButtonArrows(PoseStack stack, CustomMerchantOffer offer, int x, int y) {
+    private void renderButtonArrows(GuiGraphics guiGraphics, CustomMerchantOffer offer, int x, int y) {
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, VILLAGER_LOCATION);
@@ -241,7 +245,7 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
         final int index;
 
         public TradeOfferButton(int x, int y, int index, OnPress onPress) {
-            super(x, y, 89, 20, TextComponent.EMPTY, onPress);
+            super(x, y, 89, 20, Component.empty(), onPress, Supplier::get);
             this.index = index;
             visible = false;
         }
@@ -250,7 +254,7 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
             return index;
         }
 
-        public void renderToolTip(@NotNull PoseStack stack, int mouseX, int mouseY) {
+        public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
             if (isHovered && CustomMerchantScreen.this.menu.getOffers().size() > index + CustomMerchantScreen.this.scrollOff) {
                 CustomMerchantOffer offer = CustomMerchantScreen.this.menu.getOffers().get(index + CustomMerchantScreen.this.scrollOff);
 

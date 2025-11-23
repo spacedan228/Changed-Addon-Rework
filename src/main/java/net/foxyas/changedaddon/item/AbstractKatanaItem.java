@@ -27,8 +27,8 @@ public abstract class AbstractKatanaItem extends SwordItem implements Specialize
             return;
         }
         LivingEntity enemy = (LivingEntity) entity;
-        ChangedSounds.broadcastSound(enemy, ChangedSounds.PARALYZE1, 1.0F, 1.0F);
-        enemy.addEffect(new MobEffectInstance(ChangedEffects.SHOCK, 6, 0, false, false, true));
+        ChangedSounds.broadcastSound(enemy, ChangedSounds.TSC_WEAPON_SHOCK, 1.0F, 1.0F);
+        enemy.addEffect(new MobEffectInstance(ChangedEffects.SHOCK.get(), 6, 0, false, false, true));
     }
 
     @Override
@@ -58,7 +58,7 @@ public abstract class AbstractKatanaItem extends SwordItem implements Specialize
         double d1 = (double) Mth.cos(source.getYRot() * 0.017453292F) * attackRange;
         Level var7 = source.level;
         if (var7 instanceof ServerLevel serverLevel) {
-            serverLevel.sendParticles(ChangedParticles.TSC_SWEEP_ATTACK, source.getX() + d0, source.getY(0.5), source.getZ() + d1, 0, d0, 0.0, d1, 0.0);
+            serverLevel.sendParticles(ChangedParticles.TSC_SWEEP_ATTACK.get(), source.getX() + d0, source.getY(0.5), source.getZ() + d1, 0, d0, 0.0, d1, 0.0);
         }
 
     }

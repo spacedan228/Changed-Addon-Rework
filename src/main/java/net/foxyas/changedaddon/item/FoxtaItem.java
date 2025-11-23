@@ -35,7 +35,7 @@ public class FoxtaItem extends BlockItem implements SpecializedItemRendering {
 
     public FoxtaItem() {
         super(ChangedAddonBlocks.FOXTA_CAN.get(), new Item.Properties()
-                .tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
                 .stacksTo(64)
                 .rarity(Rarity.RARE)
                 .food(new FoodProperties.Builder()
@@ -65,16 +65,16 @@ public class FoxtaItem extends BlockItem implements SpecializedItemRendering {
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack itemstack, @NotNull Level world, @NotNull LivingEntity entity) {
         ItemStack retval = super.finishUsingItem(itemstack, world, entity);
-        if (entity.getLevel().random.nextFloat() <= 0.001f) {
+        if (entity.level().random.nextFloat() <= 0.001f) {
             ProcessTransfur.progressTransfur(entity, 15, ChangedAddonTransfurVariants.FOXTA_FOXY.get(), TransfurContext.hazard(TransfurCause.FACE_HAZARD));
         }
         return retval;
     }
 
     @Override
-    public ModelResourceLocation getModelLocation(ItemStack itemStack, ItemTransforms.TransformType transformType) {
-        return transformType == ItemTransforms.TransformType.GUI || transformType == ItemTransforms.TransformType.FIXED ? GUIMODEL
-                : transformType == ItemTransforms.TransformType.GROUND ? GROUNDMODEL : HANDMODEL;
+    public ModelResourceLocation getModelLocation(ItemStack itemStack, ItemDisplayContext type) {
+        return type == ItemDisplayContext.GUI || type == ItemDisplayContext.FIXED ? GUIMODEL
+                : type == ItemDisplayContext.GROUND ? GROUNDMODEL : HANDMODEL;
     }
 
     @Override

@@ -10,9 +10,10 @@ import net.foxyas.changedaddon.util.RenderUtil;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -86,16 +87,16 @@ public class KeyPressMinigameScreen extends Screen {
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        renderBackground(poseStack, partialTick);
+    public void render(@NotNull GuiGraphics pGuiGraphics, int mouseX, int mouseY, float partialTick) {
+        renderBackground(pGuiGraphics.pose(), partialTick);
 
         int halfWidth = width / 2;
         int halfHeight = height / 2;
 
-        super.render(poseStack, mouseX, mouseY, partialTick);
+        super.render(pGuiGraphics, mouseX, mouseY, partialTick);
 
-        RenderUtil.drawCentered(font, poseStack, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", getTimeRemaining(player)), halfWidth, halfHeight - 50, -12829636);
-        RenderUtil.drawCentered(font, poseStack, getProgressText(player), halfWidth, halfHeight + 7, -12829636);
+        RenderUtil.drawCentered(font, pGuiGraphics, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", getTimeRemaining(player)), halfWidth, halfHeight - 50, -12829636);
+        RenderUtil.drawCentered(font, pGuiGraphics, getProgressText(player), halfWidth, halfHeight + 7, -12829636);
     }
 
     public void renderBackground(@NotNull PoseStack poseStack, float partialTick) {

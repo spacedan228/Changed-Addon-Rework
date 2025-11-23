@@ -1,16 +1,18 @@
 package net.foxyas.changedaddon.entity.goals.exp9;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -27,12 +29,12 @@ import java.util.Random;
 public class LightningComboAttackGoal extends Goal {
 
     protected final PathfinderMob holder;
-    protected final Random random;
+    protected final RandomSource random;
     protected final IntProvider cooldownProvider;
     protected final IntProvider attackCountProvider;
     protected final IntProvider castDurationProvider;
     protected final FloatProvider damageProvider;
-    protected final DamageSource source;
+    protected DamageSource source;
 
     protected LivingEntity target;
     protected int cooldown;
@@ -50,14 +52,16 @@ public class LightningComboAttackGoal extends Goal {
         castDurationProvider = castDuration;
         damageProvider = damage;
 
-        source = new EntityDamageSource("lightningBolt", holder) {
-            @Override
-            public @Nullable Vec3 getSourcePosition() {
-                return attackPos;
-            }
-        };
+
+        adjustDamageSource(holder);
 
         setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
+    }
+
+    private DamageSource adjustDamageSource(PathfinderMob holder) {
+        Holder<DamageType> damageTypeHolder = holder.level().damageSources().lightningBolt().typeHolder();
+        source = new DamageSource(damageTypeHolder, holder, holder, attackPos);
+        return source;
     }
 
     @Override
@@ -100,7 +104,7 @@ public class LightningComboAttackGoal extends Goal {
     protected void pickAttackPos() {
         attackPos = target.position();
         Level level = holder.level;
-        BlockPos pos = new BlockPos(attackPos);
+        BlockPos pos = new BlockPos((int) attackPos.x, (int) attackPos.y, (int) attackPos.z);
         if (level.getBlockState(pos).is(Blocks.WATER)) {
             do pos = pos.above();
             while (level.getBlockState(pos).is(Blocks.WATER));
@@ -181,9 +185,9 @@ public class LightningComboAttackGoal extends Goal {
             if (dist > radiusSqr) continue;
 
             dist = Mth.sqrt(dist);
-            blocked = livingEntity.isDamageSourceBlocked(source);
+            blocked = livingEntity.isDamageSourceBlocked(adjustDamageSource(holder));
 
-            livingEntity.hurt(source, damageProvider.sample(random) * damageMul);//hurt anyway to damage shield
+            livingEntity.hurt(adjustDamageSource(holder), damageProvider.sample(random) * damageMul);//hurt anyway to damage shield
 
             direction = livingEntity.position().subtract(attackPos).normalize();
             knockback = radius / dist * knockbackMul;

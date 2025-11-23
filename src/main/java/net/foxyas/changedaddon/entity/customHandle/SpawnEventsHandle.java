@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.FenceGateBlock;
 import net.minecraft.world.level.block.SlabBlock;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -20,8 +20,8 @@ import net.minecraftforge.fml.common.Mod;
 public class SpawnEventsHandle {
 
     @SubscribeEvent
-    public static void whenSpawn(EntityJoinWorldEvent event) {
-        Level level = event.getWorld();
+    public static void whenSpawn(EntityJoinLevelEvent event) {
+        Level level = event.getLevel();
         Entity entity = event.getEntity();
 
         if ((!(entity instanceof AbstractLuminarcticLeopard leo) || !leo.isBoss())
@@ -38,8 +38,8 @@ public class SpawnEventsHandle {
         float radiusY = 3;
         boolean itBreak = false;
         for (BlockPos pos : BlockPos.betweenClosed(
-                center.offset(-radius, -radiusY, -radius),
-                center.offset(radius, radiusY, radius))) {
+                center.offset((int) -radius, (int) -radiusY, (int) -radius),
+                center.offset((int) radius, (int) radiusY, (int) radius))) {
 
             // Cálculo da distância esférica
             float dx = (pos.getX() - center.getX()) / radius;

@@ -37,7 +37,7 @@ public class SnepsiItem extends BlockItem implements SpecializedItemRendering {
 
     public SnepsiItem() {
         super(ChangedAddonBlocks.SNEPSI_CAN.get(), new Item.Properties()
-                .tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
                 .stacksTo(64)
                 .rarity(Rarity.RARE)
                 .food(new FoodProperties.Builder()
@@ -79,9 +79,9 @@ public class SnepsiItem extends BlockItem implements SpecializedItemRendering {
     }
 
     @Override
-    public ModelResourceLocation getModelLocation(ItemStack itemStack, ItemTransforms.TransformType transformType) {
-        return transformType == ItemTransforms.TransformType.GUI || transformType == ItemTransforms.TransformType.FIXED ? GUIMODEL
-                : transformType == ItemTransforms.TransformType.GROUND ? GROUNDMODEL : HANDMODEL;
+    public ModelResourceLocation getModelLocation(ItemStack itemStack, ItemDisplayContext transformType) {
+        return transformType == ItemDisplayContext.GUI || transformType == ItemDisplayContext.FIXED ? GUIMODEL
+                : transformType == ItemDisplayContext.GROUND ? GROUNDMODEL : HANDMODEL;
     }
 
     @Override

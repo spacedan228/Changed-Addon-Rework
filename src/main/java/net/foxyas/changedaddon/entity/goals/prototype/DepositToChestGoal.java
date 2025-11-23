@@ -14,8 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.ChestBlockEntity;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -180,7 +180,7 @@ public class DepositToChestGoal extends Goal {
         boolean anyInserted = false;
         ItemStack stack, remainder;
         IItemHandler handsInv = holder.getHandsAndInv();
-        IItemHandler handler = chest.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElseThrow();
+        IItemHandler handler = chest.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElseThrow();
         for (int i = 0; i < handsInv.getSlots(); i++) {
             stack = handsInv.getStackInSlot(i);
             if (stack.isEmpty() || !holder.getDepositType().test(stack)) continue;

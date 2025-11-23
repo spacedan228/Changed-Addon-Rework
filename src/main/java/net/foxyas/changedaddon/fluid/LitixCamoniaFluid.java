@@ -8,16 +8,15 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class LitixCamoniaFluid extends ForgeFlowingFluid {
 
-    public static final ForgeFlowingFluid.Properties PROPERTIES = new ForgeFlowingFluid.Properties(ChangedAddonFluids.LITIX_CAMONIA_FLUID,
-            ChangedAddonFluids.FLOWING_LITIX_CAMONIA_FLUID,
-            FluidAttributes.builder(ChangedAddonMod.resourceLoc("block/ammoniafluid"), ChangedAddonMod.resourceLoc("block/ammoniafluid"))
-                    .sound(SoundEvents.BUCKET_EMPTY))
+    public static final ForgeFlowingFluid.Properties PROPERTIES = new ForgeFlowingFluid.Properties(
+            () -> ChangedAddonFluids.LITIX_CAMONIA_FLUID.get().getFluidType(),
+            ChangedAddonFluids.LITIX_CAMONIA_FLUID,
+            ChangedAddonFluids.FLOWING_LITIX_CAMONIA_FLUID)
             .explosionResistance(100f)
             .slopeFindDistance(2)
             .bucket(ChangedAddonItems.LITIX_CAMONIA_FLUID_BUCKET)

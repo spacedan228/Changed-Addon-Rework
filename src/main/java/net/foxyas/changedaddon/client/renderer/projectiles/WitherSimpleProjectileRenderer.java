@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.client.renderer.projectiles;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.projectile.SimpleProjectileModel;
 import net.minecraft.client.model.EntityModel;
@@ -40,9 +40,9 @@ public class WitherSimpleProjectileRenderer<T extends Projectile, M extends Enti
         float f2 = (float) entity.tickCount + partialTicks;
         poseStack.pushPose();
         poseStack.translate(0.0D, 0.15F, 0.0D);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.sin(f2 * 0.1F) * 180.0F));
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(Mth.cos(f2 * 0.1F) * 180.0F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.sin(f2 * 0.15F) * 360.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.sin(f2 * 0.1F) * 180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.cos(f2 * 0.1F) * 180.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.sin(f2 * 0.15F) * 360.0F));
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.eyes(TEXTURE));
 
         // Renderiza o modelo corretamente

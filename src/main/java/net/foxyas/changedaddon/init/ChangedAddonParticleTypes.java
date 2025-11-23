@@ -12,7 +12,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.Entity;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
@@ -50,17 +50,17 @@ public class ChangedAddonParticleTypes {
     }
 
     @SubscribeEvent
-    public static void registerParticles(ParticleFactoryRegisterEvent event) {
+    public static void registerParticles(RegisterParticleProvidersEvent event) {
         var engine = Minecraft.getInstance().particleEngine;
 
         for (RegistryObject<ParticleType<?>> particleTypeRegistryObject : REGISTRY.getEntries()) {
             if (particleTypeRegistryObject.get() instanceof ParticleProviderHolder particleProviderHolder) {
-                engine.register(particleTypeRegistryObject.get(), particleProviderHolder::getProvider);
+                event.registerSpriteSet(particleTypeRegistryObject.get(), particleProviderHolder::getProvider);
             }
         }
 
-        engine.register(THUNDER_SPARK.get(), ThunderSparkParticle.Provider::new);
-        engine.register(LASER_POINT.get(), LaserPointParticle.Provider::new);
-        engine.register(ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(), SolventParticleParticle::provider);
+        event.registerSpriteSet(THUNDER_SPARK.get(), ThunderSparkParticle.Provider::new);
+        event.registerSpriteSet(LASER_POINT.get(), LaserPointParticle.Provider::new);
+        event.registerSpriteSet(ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(), SolventParticleParticle::provider);
     }
 }

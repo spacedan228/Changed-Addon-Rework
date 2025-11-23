@@ -1,24 +1,27 @@
 package net.foxyas.changedaddon.util;
 
-import com.mojang.math.Vector3f;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
-import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.util.Color3;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.util.List;
@@ -87,7 +90,7 @@ public class ChangedAddonLaethinminatorUtil {
         for (int i = 1; i <= maxRange; i++) {
             // Calcula a posição do bloco na trajetória do laser
             Vec3 targetVec = eyePosition.add(getRelativePosition(player, 0, 0, i, true));
-            BlockPos targetPos = new BlockPos(targetVec);
+            BlockPos targetPos = new BlockPos((int) targetVec.x, (int) targetVec.y, (int) targetVec.z);
 
             double deltaX = hand == InteractionHand.MAIN_HAND ? 0.25 : -0.25;
             if (player.getMainArm() == HumanoidArm.LEFT) deltaX = -deltaX;
@@ -114,9 +117,19 @@ public class ChangedAddonLaethinminatorUtil {
         for (ChangedEntity en : entityList) {
             boolean isAllied = player.isAlliedTo(en);
             if (player.canAttack(en)
-                    && player.canHit(en, player.getEyePosition().distanceTo(targetPos))
+                    && player.canReach(en, player.getEyePosition().distanceTo(targetPos))
                     && !isAllied) {
-                en.hurt(ChangedAddonDamageSources.mobLatesSolventAttack(player).setProjectile(), 6f);
+
+                DamageSource solvent = new DamageSource(ChangedAddonDamageSources.LATEX_SOLVENT.source(player.level().registryAccess()).typeHolder(), player) {
+                    @Override
+                    public boolean is(TagKey<DamageType> pDamageTypeKey) {
+                        if (pDamageTypeKey == DamageTypeTags.IS_PROJECTILE) {
+                            return true;
+                        }
+                        return super.is(pDamageTypeKey);
+                    }
+                };
+                en.hurt(solvent, 6f);
             }
         }
     }
@@ -150,13 +163,11 @@ public class ChangedAddonLaethinminatorUtil {
         // Exemplo de lógica personalizada para afetar blocos
         if (!world.getBlockState(pos).isAir()) {
             // Substituir bloco por vidro como exemplo
-            BlockState stage = world.getBlockState(pos);
-            if (!stage.hasProperty(AbstractLatexBlock.COVERED)) {
-                return;
-            }
-            if (stage.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL) {
-                BlockState NewStage = world.getBlockState(pos).setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL);
-                world.setBlock(pos, NewStage, 3);
+            LatexCoverState latexCoverState = LatexCoverState.getAt(world, pos);
+
+            if (!latexCoverState.is(ChangedLatexTypes.NONE.get())) {
+                LatexCoverState.setAtAndUpdate(world, pos, ChangedLatexTypes.NONE.get().defaultCoverState());
+
                 Color StartColor = new Color(255, 255, 255, 255);
                 Color EndColor = new Color(93, 93, 93, 255);
                 ParticleOptions particleOptions = getParticleOptions(StartColor, EndColor);

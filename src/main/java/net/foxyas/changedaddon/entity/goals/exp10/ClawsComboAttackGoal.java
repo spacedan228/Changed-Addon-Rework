@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.entity.goals.exp10;
 
-import com.mojang.math.Vector3f;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -8,11 +7,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.EnumSet;
 import java.util.Random;
@@ -29,7 +30,7 @@ public class ClawsComboAttackGoal extends Goal {
 
     private static final DustParticleOptions PARTICLE = new DustParticleOptions(new Vector3f(1, 1, 1), 1);
     protected final PathfinderMob holder;
-    protected final Random random;
+    protected final RandomSource random;
     protected final IntProvider cooldownProvider;
     protected final IntProvider attackCountProvider;
     protected final IntProvider castDurationProvider;
@@ -50,12 +51,7 @@ public class ClawsComboAttackGoal extends Goal {
         castDurationProvider = castDuration;
         damageProvider = damage;
 
-        source = new EntityDamageSource("mob", holder) {
-            @Override
-            public @Nullable Vec3 getSourcePosition() {
-                return attackPos;
-            }
-        };
+        source = new DamageSource(holder.level().damageSources().mobAttack(holder).typeHolder(), holder, holder, attackPos);
 
         setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
     }

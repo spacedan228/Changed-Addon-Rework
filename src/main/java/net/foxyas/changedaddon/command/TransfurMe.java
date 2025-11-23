@@ -18,10 +18,9 @@ import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -67,7 +66,7 @@ public class TransfurMe {
             form = Util.<TransfurVariant<?>>getRandom(TransfurVariant.getPublicTransfurVariants().collect(Collectors.toList()), player.getRandom()).getFormId();
         }
 
-        Stream<ResourceLocation> stream = TransfurVariant.getPublicTransfurVariants().map(ForgeRegistryEntry::getRegistryName);
+        Stream<ResourceLocation> stream = TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getFormId);
         if (stream.anyMatch(form::equals)) {
             doTransfur(player, source, form, transfurCause);
         } else {
@@ -79,7 +78,9 @@ public class TransfurMe {
             doTransfur(player, source, key, transfurCause);
         }
 
-        source.sendSuccess(Component.translatable("command.changed.success.transfurred.one", player.getScoreboardName(), form.toString()), false);
+        final ResourceLocation shutUpCompilerForm = form;
+
+        source.sendSuccess(() -> Component.translatable("command.changed.success.transfurred.one", player.getScoreboardName(), shutUpCompilerForm.toString()), false);
 
         return Command.SINGLE_SUCCESS;
     }

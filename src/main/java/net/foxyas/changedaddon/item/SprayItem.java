@@ -4,11 +4,11 @@ import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -33,7 +33,9 @@ public class SprayItem extends Item {
     protected final LatexType latexType;
 
     public SprayItem(LatexType latexType) {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).durability(64).rarity(Rarity.COMMON));
+        super(new Item.Properties()
+                //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).durability(64).rarity(Rarity.COMMON)
+                );
         this.latexType = latexType;
     }
 
@@ -56,17 +58,17 @@ public class SprayItem extends Item {
         Level level = player.level;
         pos.set(origin);
         BlockState bs = level.getBlockState(pos);
-        if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != latexType)
-            level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, latexType));
+        if (LatexCoverState.getAt(level, pos).getType() != latexType)
+            LatexCoverState.setAtAndUpdate(level,pos, latexType.defaultCoverState());
 
         for(Direction dir : Direction.values()){
             pos.set(origin).move(dir);
             bs = level.getBlockState(pos);
-            if (bs.hasProperty(AbstractLatexBlock.COVERED) && bs.getValue(AbstractLatexBlock.COVERED) != latexType)
-                level.setBlockAndUpdate(pos, bs.setValue(AbstractLatexBlock.COVERED, latexType));
+            if (LatexCoverState.getAt(level, pos).getType() != latexType)
+                LatexCoverState.setAtAndUpdate(level,pos, latexType.defaultCoverState());
         }
 
-        if(!player.isCreative() && EnchantmentHelper.getItemEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) == 0){
+        if(!player.isCreative() && EnchantmentHelper.getTagEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) == 0){
             if (stack.hurt(1, player.getRandom(), player instanceof ServerPlayer sPlayer ? sPlayer : null)) {
                 stack.shrink(1);
                 stack.setDamageValue(0);
@@ -88,7 +90,7 @@ public class SprayItem extends Item {
 
         @SubscribeEvent
         public static void onBreak(PlayerDestroyItemEvent event){
-            Player player = event.getPlayer();
+            Player player = event.getEntity();
             if (player == null) return;
 
             ItemStack itemstack = event.getOriginal();

@@ -2,15 +2,15 @@ package net.foxyas.changedaddon.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix4f;
 
 import java.awt.*;
 import java.util.List;
@@ -18,49 +18,6 @@ import java.util.List;
 public class RenderUtil {
 
     private static final int FULL_LIGHT = LightTexture.FULL_BRIGHT; // Lightmap value for full brightness
-
-    public static void drawCentered(Font font, PoseStack stack, Component comp, float x, float y, int color) {
-        int width = font.width(comp);
-        font.draw(stack, comp, x - width / 2f, y - 4, color);
-    }
-
-    public static void drawCentered(Font font, PoseStack stack, String str, float x, float y, int color) {
-        int width = font.width(str);
-        font.draw(stack, str, x - width / 2f, y - 4, color);
-    }
-
-    public static void fill(PoseStack stack, float minX, float minY, float maxX, float maxY, int color) {
-        fill(stack.last().pose(), minX, minY, maxX, maxY, color);
-    }
-
-    public static void fill(Matrix4f pMatrix, float minX, float minY, float maxX, float maxY, int color) {
-        if (minX < maxX) {
-            float i = minX;
-            minX = maxX;
-            maxX = i;
-        }
-
-        if (minY < maxY) {
-            float j = minY;
-            minY = maxY;
-            maxY = j;
-        }
-
-        BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-        RenderSystem.enableBlend();
-        RenderSystem.disableTexture();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
-        bufferbuilder.vertex(pMatrix, minX, maxY, 0.0F).color(color).endVertex();
-        bufferbuilder.vertex(pMatrix, maxX, maxY, 0.0F).color(color).endVertex();
-        bufferbuilder.vertex(pMatrix, maxX, minY, 0.0F).color(color).endVertex();
-        bufferbuilder.vertex(pMatrix, minX, minY, 0.0F).color(color).endVertex();
-        bufferbuilder.end();
-        BufferUploader.end(bufferbuilder);
-        RenderSystem.enableTexture();
-        RenderSystem.disableBlend();
-    }
 
     /**
      * Renders a single vertex with full light and no overlay.

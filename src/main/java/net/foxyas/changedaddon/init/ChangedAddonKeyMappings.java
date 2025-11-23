@@ -13,8 +13,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -68,11 +68,11 @@ public class ChangedAddonKeyMappings {
     public static final KeyMapping USE_SECOND_ABILITY = new KeyMapping("key.changed_addon.use_second_ability", GLFW.GLFW_KEY_X, "key.categories.movement");
 
     @SubscribeEvent
-    public static void registerKeyBindings(FMLClientSetupEvent event) {
-        ClientRegistry.registerKeyBinding(OPEN_EXTRA_DETAILS);
-        ClientRegistry.registerKeyBinding(TURN_OFF_TRANSFUR);
-        ClientRegistry.registerKeyBinding(PAT_KEY);
-        ClientRegistry.registerKeyBinding(USE_SECOND_ABILITY);
+    public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
+        event.register(OPEN_EXTRA_DETAILS);
+        event.register(TURN_OFF_TRANSFUR);
+        event.register(PAT_KEY);
+        event.register(USE_SECOND_ABILITY);
     }
 
     @Mod.EventBusSubscriber({Dist.CLIENT})
@@ -88,7 +88,7 @@ public class ChangedAddonKeyMappings {
         }
 
         @SubscribeEvent
-        public static void onKeyInput(InputEvent.KeyInputEvent event) {
+        public static void onKeyInput(InputEvent.Key event) {
             LocalPlayer local = Minecraft.getInstance().player;
             if(local == null || Minecraft.getInstance().screen != null) return;
 

@@ -7,10 +7,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CompoundIngredient;
 import org.jetbrains.annotations.NotNull;
@@ -54,19 +51,13 @@ public class ElectricKatanaItem extends AbstractKatanaItem {
             public @NotNull Ingredient getRepairIngredient() {
                 return CompoundIngredient.of(Ingredient.of(new ItemStack(ChangedAddonItems.ELECTRIC_KATANA.get())), Ingredient.of(ItemTags.create(ResourceLocation.parse("changed_addon:tsc_katana_repair"))));
             }
-        }, 3, -2.3f, new Item.Properties().tab(CreativeModeTab.TAB_COMBAT));
+        }, 3, -2.3f, new Item.Properties()
+                //.tab(CreativeModeTab.TAB_COMBAT)
+        );
     }
 
-    @Nullable
-    @Override
-    public ModelResourceLocation getEmissiveModelLocation(ItemStack itemStack, ItemTransforms.TransformType transformType) {
-        return transformType == ItemTransforms.TransformType.GUI || transformType == ItemTransforms.TransformType.FIXED ? null
-                : transformType == ItemTransforms.TransformType.GROUND ? null : EMISSIVE_MODEL;
-    }
-
-    @Override
-    public ModelResourceLocation getModelLocation(ItemStack itemStack, ItemTransforms.TransformType transformType) {
-        return SpecializedItemRendering.isGUI(transformType) ? GUI_MODEL : HANDLE_MODEL;
+    public ResourceLocation getModelLocation(ItemStack itemStack, ItemDisplayContext type) {
+        return SpecializedItemRendering.isGUI(type) ? GUI_MODEL : HANDLE_MODEL;
     }
 
     @Override

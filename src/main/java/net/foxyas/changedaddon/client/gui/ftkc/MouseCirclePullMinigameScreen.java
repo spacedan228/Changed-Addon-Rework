@@ -1,10 +1,10 @@
 package net.foxyas.changedaddon.client.gui.ftkc;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.packet.ServerboundProgressFTKCPacket;
 import net.foxyas.changedaddon.util.RenderUtil;
-
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,15 +24,15 @@ public class MouseCirclePullMinigameScreen extends CircleMinigameScreen {
     }
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-        super.render(poseStack, mouseX, mouseY, partialTick);
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        drawProgressBar(poseStack, halfWidth, halfHeight + 25, partialTick);
+        drawProgressBar(guiGraphics, halfWidth, halfHeight + 25, partialTick);
 
-        RenderUtil.drawCentered(font, poseStack, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", KeyPressMinigameScreen.getTimeRemaining(player)), halfWidth, halfHeight - 40, -1);
-        RenderUtil.drawCentered(font, poseStack, KeyPressMinigameScreen.getProgressText(player), halfWidth, halfHeight - 20, -1);
+        drawCentered(font, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", KeyPressMinigameScreen.getTimeRemaining(player)), halfWidth, halfHeight - 40, -1);
+        drawCentered(font, KeyPressMinigameScreen.getProgressText(player), halfWidth, halfHeight - 20, -1);
 
-        drawCircles(poseStack);
+        drawCircles(guiGraphics);
     }
 
     protected void increaseStruggle() {

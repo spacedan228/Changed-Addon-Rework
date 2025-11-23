@@ -13,6 +13,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -61,40 +62,39 @@ public abstract class CircleMinigameScreen extends Screen {
         GLFW.glfwSetInputMode(minecraft.getWindow().getWindow(), GLFW.GLFW_CURSOR, InputConstants.CURSOR_DISABLED);
     }
 
-    protected void drawProgressBar(PoseStack stack, float x, float y, float partialTick) {
+    protected void drawProgressBar(GuiGraphics guiGraphics, float x, float y, float partialTick) {
         final int barWidth = 100;
         final int barHeight = 10;
 
         float filledHalfWidth = (int) (Mth.lerp(partialTick, struggleProgressO, struggleProgress) * barWidth / 2);
-        RenderUtil.fill(stack, x - filledHalfWidth, y - barHeight / 2f, x + filledHalfWidth, y + barHeight / 2f, Color.WHITE.getRGB());
+
+        guiGraphics.fill((int) ((int) x - filledHalfWidth), (int) (y - barHeight / 2f), (int) (x + filledHalfWidth), (int) (y + barHeight / 2f), Color.WHITE.getRGB());
     }
 
-    protected void drawCircles(PoseStack stack) {
-        RenderSystem.setShaderTexture(0, CIRCLE_SLOT);
-
+    protected void drawCircles(@NotNull GuiGraphics stack) {
         TransfurVariantInstance<?> var = ProcessTransfur.getPlayerTransfurVariant(player);
-        if(var != null) {
+        if (var != null) {
             Color3 color = var.getTransfurColor();
             RenderSystem.setShaderColor(1 - color.red(), 1 - color.green(), 1 - color.blue(), 1);
         } else RenderSystem.setShaderColor(0, 0, 0, 0);
 
-        blit(stack, (int) circle.x - 9, (int) circle.y - 9, 0, 0, 19, 19, 19, 19);
+        stack.blit(CIRCLE_SLOT, (int) circle.x - 9, (int) circle.y - 9, 0, 0, 19, 19, 19, 19);
         RenderSystem.setShaderColor(1, 1, 1, 1);
 
         RenderSystem.setShaderTexture(0, CIRCLE_CURSOR);
-        blit(stack, (int) cursor.x - 9, (int) cursor.y - 9, 0, 0, 19, 19, 19, 19);
+        stack.blit(CIRCLE_CURSOR, (int) cursor.x - 9, (int) cursor.y - 9, 0, 0, 19, 19, 19, 19);
     }
 
     @Override
-    public void render(@NotNull PoseStack pPoseStack, int pMouseX, int pMouseY, float pPartialTick) {
-        renderBackground(pPoseStack, pPartialTick);
-        super.render(pPoseStack, pMouseX, pMouseY, pPartialTick);
+    public void render(@NotNull GuiGraphics guiGraphics, int pMouseX, int pMouseY, float pPartialTick) {
+        renderBackground(guiGraphics, pPartialTick);
+        super.render(guiGraphics, pMouseX, pMouseY, pPartialTick);
     }
 
-    public void renderBackground(@NotNull PoseStack stack, float partialTick) {
+    public void renderBackground(@NotNull GuiGraphics guiGraphics, float partialTick) {
         TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
         if (tf == null) {
-            RenderUtil.fill(stack.last().pose(), 0, 0, width, height, -8355712);
+            guiGraphics.fill(0, 0, width, height, -8355712);
             return;
         }
 
@@ -103,7 +103,7 @@ public abstract class CircleMinigameScreen extends Screen {
 
         int alpha = (int) (128 + 128 * (loseProgress - fightProgress));
 
-        RenderUtil.fill(stack.last().pose(), 0, 0, width, height, alpha << 24 | tf.getTransfurColor().toInt());
+        guiGraphics.fill(0, 0, width, height, alpha << 24 | tf.getTransfurColor().toInt());
     }
 
     @Override

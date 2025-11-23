@@ -3,9 +3,7 @@ package net.foxyas.changedaddon.item.tooltip;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.InformantBlockEntityRenderer;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.entity.BasicPlayerInfo;
@@ -13,6 +11,7 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -22,6 +21,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 
 public class ClientTransfurTotemTooltipComponent implements ClientTooltipComponent {
     private final TransfurVariant<?> variant;
@@ -74,8 +75,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
     }
 
     @Override
-    public void renderImage(@NotNull Font font, int posX, int posY, @NotNull PoseStack poseStack,
-                            @NotNull ItemRenderer itemRenderer, int blitOffset) {
+    public void renderImage(@NotNull Font font, int posX, int posY, @NotNull GuiGraphics guiGraphics) {
         if (entity == null)
             return;
         this.prepareEntityForRender();
@@ -95,7 +95,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
                 ? Minecraft.getInstance().player.tickCount % 360
                 : 0);
 
-        renderEntityInInventory(offsetX, offsetY, scale, spin, 0, poseStack, entity);
+        renderEntityInInventory(offsetX, offsetY, scale, spin, 0, guiGraphics.pose(), entity);
     }
 
     @Override
@@ -115,9 +115,9 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         poseStack.translate(0.0D, 0.0D, 2500.0D); // força ainda mais na frente
         poseStack.scale((float) scale, (float) scale, (float) scale);
 
-        Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F);
-        Quaternion quaternion1 = Vector3f.XP.rotationDegrees(mouseY);
-        Quaternion quaternion2 = Vector3f.YP.rotationDegrees(mouseX);
+        Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
+        Quaternionf quaternion1 = Axis.XP.rotationDegrees(mouseY);
+        Quaternionf quaternion2 = Axis.YP.rotationDegrees(mouseX);
         quaternion.mul(quaternion1);
         quaternion.mul(quaternion2);
         poseStack.mulPose(quaternion);
@@ -130,8 +130,8 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
 
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
-        quaternion.conj();
-        quaternion.mul(Vector3f.ZP.rotationDegrees(180.0F));
+        quaternion.conjugate();
+        quaternion.mul(Axis.ZP.rotationDegrees(180.0F));
 
         dispatcher.overrideCameraOrientation(quaternion);
         dispatcher.setRenderShadow(false);

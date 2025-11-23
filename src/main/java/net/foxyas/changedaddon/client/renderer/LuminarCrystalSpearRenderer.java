@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.foxyas.changedaddon.client.model.ModelLuminarCrystalSpearModel;
 import net.foxyas.changedaddon.entity.projectile.LuminarCrystalSpearEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,8 +28,8 @@ public class LuminarCrystalSpearRenderer extends EntityRenderer<LuminarCrystalSp
         poseStack.pushPose();
 
         // Rotaciona igual ao tridente
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) + 90.0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()) + 90.0F));
 
         // Obtém o buffer de renderização correto, incluindo efeito de brilho para encantamentos
         VertexConsumer vertexConsumer = ItemRenderer.getFoilBufferDirect(buffer, this.model.renderType(this.getTextureLocation(entity)), false, entity.isFoil());

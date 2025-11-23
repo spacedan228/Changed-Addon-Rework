@@ -16,8 +16,8 @@ import net.minecraftforge.fml.common.Mod;
 public class DazedBurnUnderTheSun {
 
     @SubscribeEvent
-    public static void onEntityTick(LivingEvent.LivingUpdateEvent event) {
-        LivingEntity entity = event.getEntityLiving();
+    public static void onEntityTick(LivingEvent.LivingTickEvent event) {
+        LivingEntity entity = event.getEntity();
         Level level = entity.level;
 
         if(!level.getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.DO_DAZED_LATEX_BURN)

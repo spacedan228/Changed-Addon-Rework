@@ -7,6 +7,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundGameEventPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -18,7 +19,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -35,10 +35,12 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class ParriableProjectile extends Projectile {
 
@@ -216,7 +218,7 @@ public abstract class ParriableProjectile extends Projectile {
 
     protected DamageSource damageSource() {
         Entity owner = getOwner();
-        return new IndirectEntityDamageSource("arrow", this, owner != null ? owner : this).setProjectile();
+        return this.level().damageSources().mobProjectile(this, owner instanceof LivingEntity livingEntity ? livingEntity : null);
     }
 
     /**
@@ -367,7 +369,7 @@ public abstract class ParriableProjectile extends Projectile {
         pCompound.putDouble("damage", baseDamage);
         pCompound.putBoolean("crit", isCritArrow());
         pCompound.putByte("PierceLevel", getPierceLevel());
-        pCompound.putString("SoundEvent", Registry.SOUND_EVENT.getKey(soundEvent).toString());
+        pCompound.putString("SoundEvent", ForgeRegistries.SOUND_EVENTS.getKey(soundEvent).toString());
         pCompound.putBoolean("ShotFromCrossbow", shotFromCrossbow());
     }
 
@@ -384,7 +386,7 @@ public abstract class ParriableProjectile extends Projectile {
         setCritArrow(pCompound.getBoolean("crit"));
         setPierceLevel(pCompound.getByte("PierceLevel"));
         if (pCompound.contains("SoundEvent", 8)) {
-            soundEvent = Registry.SOUND_EVENT.getOptional(ResourceLocation.parse(pCompound.getString("SoundEvent"))).orElse(getDefaultHitGroundSoundEvent());
+            soundEvent = Optional.ofNullable(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse(pCompound.getString("SoundEvent")))).orElse(getDefaultHitGroundSoundEvent());
         }
 
         setShotFromCrossbow(pCompound.getBoolean("ShotFromCrossbow"));

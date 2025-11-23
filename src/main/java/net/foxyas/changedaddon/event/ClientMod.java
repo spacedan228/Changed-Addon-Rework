@@ -8,7 +8,7 @@ import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -33,7 +33,7 @@ public class ClientMod {
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent
-    public static void registerToolTips(FMLConstructModEvent event) {
-        MinecraftForgeClient.registerTooltipComponentFactory(TransfurTotemTooltipComponent.class, ClientTransfurTotemTooltipComponent::new);
+    public static void registerToolTips(RegisterClientTooltipComponentFactoriesEvent event) {
+        event.register(TransfurTotemTooltipComponent.class, ClientTransfurTotemTooltipComponent::new);
     }
 }
