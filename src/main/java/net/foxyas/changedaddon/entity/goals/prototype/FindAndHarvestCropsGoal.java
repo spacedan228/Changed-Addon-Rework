@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.entity.goals.prototype;
 import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.util.DelayedTask;
-import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.minecraft.core.BlockPos;
@@ -31,6 +30,7 @@ public class FindAndHarvestCropsGoal extends Goal {
     private boolean lock;
     private BlockPos targetCropPos;
     private int harvestCooldown;
+    private int noPathTimeout;
 
     public FindAndHarvestCropsGoal(PrototypeEntity entity) {
         this.entity = entity;
@@ -50,7 +50,7 @@ public class FindAndHarvestCropsGoal extends Goal {
     public boolean canContinueToUse() {
         if(targetCropPos == null){
             lock = true;
-            new DelayedTask(100, ()-> lock = false);
+            new DelayedTask(200, ()-> lock = false);
             return false;
         }
 
@@ -74,21 +74,16 @@ public class FindAndHarvestCropsGoal extends Goal {
 
     @Override
     public void start() {
-        targetCropPos = findNearbyCrop(entity.getLevel(), entity.blockPosition());
+        Level level = entity.getLevel();
+        targetCropPos = findNearbyCrop(level, entity.blockPosition());
         if (targetCropPos == null) return;
+        navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
 
-        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
-        if (entity.getLevel().isClientSide) {
-            entity.getLevel().addParticle(
-                    ChangedParticles.emote(entity, Emote.IDEA),
-                    entity.getX(),
-                    entity.getY() + (double) entity.getDimensions(entity.getPose()).height + 0.65,
-                    entity.getZ(),
-                    0.0f,
-                    0.0f,
-                    0.0f
-            );
-        }
+        level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+
+        ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
+                entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
+                1, 0, 0, 0, 0);
     }
 
     @Override
@@ -97,9 +92,9 @@ public class FindAndHarvestCropsGoal extends Goal {
         if(targetCropPos == null || isBlockInvalid(level.getBlockState(targetCropPos))){// Try to find crop
             targetCropPos = findNearbyCrop(level, entity.blockPosition());
             if(targetCropPos == null) return;//cancel goal - no crops
+            navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
         }
 
-        navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
         entity.getLookControl().setLookAt(
                 targetCropPos.getX(), targetCropPos.getY(), targetCropPos.getZ(),
                 30.0F, // yaw change speed (degrees per tick)
@@ -114,8 +109,19 @@ public class FindAndHarvestCropsGoal extends Goal {
         if (entity.blockPosition().closerThan(targetCropPos, 2.5)) {
             harvestCrop((ServerLevel) level);
             targetCropPos = findNearbyCrop(level, entity.blockPosition()); // Look for new crop
+            if(targetCropPos != null) navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
             harvestCooldown = 5;
         }
+
+        if (navigation.isStuck() || (navigation.getPath() != null && !navigation.getPath().canReach())) {
+            noPathTimeout--;
+            if (noPathTimeout <= 0) {//No path, try again later
+                targetCropPos = null;
+            }
+            return;
+        }
+
+        noPathTimeout = 100;
     }
 
     @Override
@@ -123,6 +129,7 @@ public class FindAndHarvestCropsGoal extends Goal {
         entity.getNavigation().stop();
         targetCropPos = null;
         harvestCooldown = 0;
+        noPathTimeout = 100;
     }
 
     private boolean isBlockInvalid(BlockState state){
@@ -131,14 +138,10 @@ public class FindAndHarvestCropsGoal extends Goal {
 
     private BlockPos findNearbyCrop(Level level, BlockPos center) {
         BlockPos closestCrop = null;
-        double closestDist = Double.MAX_VALUE;
-        double dist;
-
-        for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(center, searchRange, searchRange).toList()) {
-            if (isBlockInvalid(level.getBlockState(pos))) continue;
-
-            dist = pos.distSqr(center);
-            if (dist >= closestDist) continue;
+        float closestDist = searchRange * searchRange + .01f, dist;
+        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-searchRange, -searchRange, -searchRange), center.offset(searchRange, searchRange, searchRange))) {
+            dist = (float) pos.distSqr(center);
+            if (dist >= closestDist || isBlockInvalid(level.getBlockState(pos))) continue;
 
             closestDist = dist;
             closestCrop = pos.immutable();

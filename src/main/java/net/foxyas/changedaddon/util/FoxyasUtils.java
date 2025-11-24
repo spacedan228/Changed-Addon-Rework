@@ -61,13 +61,13 @@ public class FoxyasUtils {
 
     public static Stream<BlockPos> betweenClosedStreamSphere(BlockPos center, int horizontalRadiusSphere, int verticalRadiusSphere) {
         List<BlockPos> blockPosList = new ArrayList<>();
-        for (int i = -verticalRadiusSphere; i <= verticalRadiusSphere; i++) {
+        for (int y = -verticalRadiusSphere; y <= verticalRadiusSphere; y++) {
             for (int xi = -horizontalRadiusSphere; xi <= horizontalRadiusSphere; xi++) {
                 for (int zi = -horizontalRadiusSphere; zi <= horizontalRadiusSphere; zi++) {
-                    double distanceSq = (xi * xi) / (double) (horizontalRadiusSphere * horizontalRadiusSphere) + (i * i) / (double) (verticalRadiusSphere * verticalRadiusSphere)
+                    double distanceSq = (xi * xi) / (double) (horizontalRadiusSphere * horizontalRadiusSphere) + (y * y) / (double) (verticalRadiusSphere * verticalRadiusSphere)
                             + (zi * zi) / (double) (horizontalRadiusSphere * horizontalRadiusSphere);
                     if (distanceSq <= 1.0) {
-                        BlockPos pos = center.offset(xi, i, zi);
+                        BlockPos pos = center.offset(xi, y, zi);
                         blockPosList.add(pos);
                     }
                 }

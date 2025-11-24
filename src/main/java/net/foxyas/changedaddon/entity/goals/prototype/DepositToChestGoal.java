@@ -53,6 +53,7 @@ public class DepositToChestGoal extends Goal {
     @Override
     public void start() {
         chestPos = tryFindNearbyChest(holder.level);
+        if(chestPos != null) holder.getNavigation().moveTo(chestPos.getX() + 0.5, chestPos.getY(), chestPos.getZ() + 0.5, 0.25f);
     }
 
     @Override
@@ -63,6 +64,7 @@ public class DepositToChestGoal extends Goal {
     @Override
     public void tick() {
         Level level = holder.level;
+        PathNavigation navigation = holder.getNavigation();
         if(chestPos == null || !(level.getBlockEntity(chestPos) instanceof ChestBlockEntity)) {
             chestPos = tryFindNearbyChest(level);
             if(chestPos == null) {
@@ -70,23 +72,20 @@ public class DepositToChestGoal extends Goal {
                 new DelayedTask(200, ()-> lock = false);
                 return;
             }
+            navigation.moveTo(chestPos.getX(), chestPos.getY(), chestPos.getZ(), .25);
         }
 
-        PathNavigation navigation = holder.getNavigation();
         if(!(level.getBlockEntity(chestPos) instanceof ChestBlockEntity)){
-            navigation.stop();
             chestPos = null;
             return;
         }
 
-        if(holder.blockPosition().closerThan(chestPos, 2.0)){
-            navigation.stop();
+        if(holder.blockPosition().closerThan(chestPos, 2.5)){
             depositToChest((ServerLevel) level);
             chestPos = null;
             return;
         }
 
-        navigation.moveTo(chestPos.getX(), chestPos.getY(), chestPos.getZ(), .25);
         holder.getLookControl().setLookAt(
                 chestPos.getX(), chestPos.getY(), chestPos.getZ(),
                 30.0F, // yaw change speed (degrees per tick)
