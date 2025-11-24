@@ -427,7 +427,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
 
         // Dano sem atacante direto ou indireto
         if (attacker == null && this.isBoss()) {
-            if (source == ChangedAddonDamageSources.LATEX_SOLVENT) {
+            if (source.is(ChangedAddonDamageSources.LATEX_SOLVENT.key())) {
                 return super.hurt(source, amount * 1.25f);
             } else if (source.getMsgId().contains("latex_solvent")) {
                 return super.hurt(source, amount * 1.25f);

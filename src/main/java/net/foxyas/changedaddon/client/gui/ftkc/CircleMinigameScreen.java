@@ -139,7 +139,7 @@ public abstract class CircleMinigameScreen extends Screen {
     }
 
     protected void randomizeCursorPos(float offsetX, float offsetY) {
-        Random rand = player.getRandom();
+        Random rand = new Random();
         float x = Mth.clamp(halfWidth + rand.nextFloat(-offsetX, offsetX), 5, width - 5);
         float y = Mth.clamp(halfHeight + rand.nextFloat(-offsetY, offsetY), 5, height - 5);
         mouseLast.set(x, y);

@@ -185,7 +185,7 @@ public class ThunderDiveGoal extends Goal {
     }
 
     private void affectNearbyEntities(Vec3 lateral) {
-        for (LivingEntity livingEntity : mob.getLevel().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(4))) {
+        for (LivingEntity livingEntity : mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(4))) {
             if (livingEntity.isFallFlying()) {
                 livingEntity.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                 ChangedSounds.broadcastSound(livingEntity, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
@@ -213,7 +213,7 @@ public class ThunderDiveGoal extends Goal {
         mob.removeEffect(MobEffects.SLOW_FALLING);
         phase = null;
 
-        if (!(mob.getLevel() instanceof ServerLevel serverLevel)) return;
+        if (!(mob.level() instanceof ServerLevel serverLevel)) return;
 
         BlockPos center = mob.blockPosition();
 
@@ -233,7 +233,7 @@ public class ThunderDiveGoal extends Goal {
     /* ---------- Utils ---------- */
 
     public void applyKnockBack(BlockPos pos) {
-        var list = mob.getLevel()
+        var list = mob.level()
                 .getEntitiesOfClass(
                         LivingEntity.class,
                         new AABB(pos).inflate(16), (target) -> !target.is(mob));

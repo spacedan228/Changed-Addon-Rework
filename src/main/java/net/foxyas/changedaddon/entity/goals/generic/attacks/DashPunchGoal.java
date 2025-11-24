@@ -47,7 +47,7 @@ public class DashPunchGoal extends Goal {
 
         mob.getNavigation().stop();
         mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
-        mob.getLevel().playSound(null, mob.blockPosition(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, SoundSource.HOSTILE, 1.0F, 1.0F);
+        mob.level().playSound(null, mob.blockPosition(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, SoundSource.HOSTILE, 1.0F, 1.0F);
         if (mob.level instanceof ServerLevel server) {
             server.sendParticles(
                     ParticleTypes.EXPLOSION_EMITTER,
@@ -55,7 +55,7 @@ public class DashPunchGoal extends Goal {
                     1, 0, 0, 0, 0
             );
         }
-        for (LivingEntity living : mob.getLevel().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(8), (livingEntity -> !livingEntity.isSpectator() && !livingEntity.is(mob)))) {
+        for (LivingEntity living : mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(8), (livingEntity -> !livingEntity.isSpectator() && !livingEntity.is(mob)))) {
             Vec3 knock = living.position().subtract(mob.position()).normalize().scale(1.2);
             living.push(knock.x, knock.y * 1.25f, knock.z);
         }
@@ -105,7 +105,7 @@ public class DashPunchGoal extends Goal {
 
         mob.getNavigation().stop();
         mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
-        mob.getLevel().playSound(null, mob.blockPosition(), SoundEvents.GOAT_LONG_JUMP, SoundSource.HOSTILE, 1.0F, 0.9F);
+        mob.level().playSound(null, mob.blockPosition(), SoundEvents.GOAT_LONG_JUMP, SoundSource.HOSTILE, 1.0F, 0.9F);
     }
 
     private void handleDashing() {
@@ -128,7 +128,7 @@ public class DashPunchGoal extends Goal {
     }
 
     private void applyImpact() {
-        Level level = mob.getLevel();
+        Level level = mob.level();
 
         // Reverse knockback on self
         Vec3 reverse = mob.position().subtract(target.position()).normalize().scale(2);

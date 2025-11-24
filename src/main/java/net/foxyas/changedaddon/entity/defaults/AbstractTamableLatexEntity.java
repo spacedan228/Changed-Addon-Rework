@@ -183,7 +183,7 @@ public abstract class AbstractTamableLatexEntity extends ChangedEntity implement
             if (this.isTame() && this.isTameItem(itemstack) && this.getHealth() < this.getMaxHealth()) {
                 itemstack.shrink(1);
                 this.heal(2.0F);
-                this.gameEvent(GameEvent.ENTITY_INTERACT, this.eyeBlockPosition());
+                this.level().gameEvent(this, GameEvent.ENTITY_INTERACT, this.getEyePosition());
                 this.level.broadcastEntityEvent(this, (byte) 7);
                 return InteractionResult.SUCCESS;
             } else {

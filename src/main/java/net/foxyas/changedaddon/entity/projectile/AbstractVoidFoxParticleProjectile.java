@@ -395,7 +395,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
                     this.setOwner(oTarget);
                     this.setTarget(oOwner);
                     this.setBaseDamage(5d);
-                    if (!oTarget.level.isClientSide() && oTarget.getLevel() instanceof ServerLevel serverLevel) {
+                    if (!oTarget.level.isClientSide() && oTarget.level() instanceof ServerLevel serverLevel) {
                         serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 1.0F, 1.0F);
                         serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.ANVIL_LAND, SoundSource.MASTER, 0.5F, 1.2F);
                         for (EquipmentSlot itemBySlot : EquipmentSlot.values()) {
@@ -422,7 +422,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
                     this.setOwner(oTarget);
                     this.setTarget(oOwner);
                     this.setBaseDamage(5d);
-                    if (!oTarget.getLevel().isClientSide() && oTarget.getLevel() instanceof ServerLevel serverLevel) {
+                    if (!oTarget.level().isClientSide() && oTarget.level() instanceof ServerLevel serverLevel) {
                         serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 1.0F, 1.0F);
                         serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.ANVIL_LAND, SoundSource.MASTER, 0.5F, 1.2F);
                         for (EquipmentSlot itemBySlot : EquipmentSlot.values()) {

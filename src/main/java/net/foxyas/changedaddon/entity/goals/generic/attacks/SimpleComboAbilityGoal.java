@@ -165,7 +165,7 @@ public class SimpleComboAbilityGoal extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
             this.shouldEnd = true;
         }
         spawnImpactEffect(target.position(), 0);
@@ -190,7 +190,7 @@ public class SimpleComboAbilityGoal extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage / 2);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
             this.shouldEnd = true;
         }
         spawnImpactEffect(target.position(), 0);
@@ -209,7 +209,7 @@ public class SimpleComboAbilityGoal extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage / 2);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
             this.shouldEnd = true;
         }
         applySlowFalling(target);
@@ -227,7 +227,7 @@ public class SimpleComboAbilityGoal extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
             this.shouldEnd = true;
         }
         applySlowFalling(target);
@@ -245,7 +245,7 @@ public class SimpleComboAbilityGoal extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
         }
         spawnImpactEffect(target.position(), 2);
         spawnImpactParticleEffect(target.position(), 2);

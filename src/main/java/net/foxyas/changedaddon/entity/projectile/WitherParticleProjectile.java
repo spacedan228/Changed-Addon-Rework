@@ -96,7 +96,7 @@ public class WitherParticleProjectile extends AbstractGenericParticleProjectile 
                 List<LivingEntity> entities = serverLevel.getEntitiesOfClass(LivingEntity.class, aabb, e -> !e.is(this));
 
                 for (LivingEntity target : entities) {
-                    target.hurt(DamageSource.MAGIC, 8.0f);
+                    target.hurt(target.level().damageSources().magic(), 8.0f);
                     target.addEffect(new MobEffectInstance(MobEffects.WITHER, 100, 2)); // 5s de wither II
                 }
             }

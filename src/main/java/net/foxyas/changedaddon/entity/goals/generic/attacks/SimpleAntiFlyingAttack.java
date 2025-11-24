@@ -83,7 +83,7 @@ public class SimpleAntiFlyingAttack extends Goal {
     public void start() {
         /*
         *
-        attacker.getLevel().playSound(null, attacker, ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.HOSTILE, 2, 1);
+        attacker.level().playSound(null, attacker, ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.HOSTILE, 2, 1);
         if (attacker.getEyePosition().distanceTo(target.getEyePosition()) <= 2f) {
             teleportAndKnockbackInAir(1);
         }
@@ -126,7 +126,7 @@ public class SimpleAntiFlyingAttack extends Goal {
         } else {
             attacker.getNavigation().stop();
             attacker.getLookControl().setLookAt(target, 30.0F, 30.0F);
-            if (attacker.getLevel() instanceof ServerLevel serverLevel) {
+            if (attacker.level() instanceof ServerLevel serverLevel) {
                 BlockState ground = attacker.getFeetBlockState();
                 BlockParticleOption dust = new BlockParticleOption(ParticleTypes.BLOCK, ground);
 
@@ -182,7 +182,7 @@ public class SimpleAntiFlyingAttack extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage / 2);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
         }
         applySlowFalling(target);
         spawnImpactSoundEffect();
@@ -204,7 +204,7 @@ public class SimpleAntiFlyingAttack extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
         }
         spawnImpactSoundEffect();
         spawnImpactParticleEffect(target.position());

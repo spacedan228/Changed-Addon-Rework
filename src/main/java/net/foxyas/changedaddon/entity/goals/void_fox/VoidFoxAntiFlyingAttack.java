@@ -89,7 +89,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
     @Override
     public void start() {
         shootProjectile(target);
-        attacker.getLevel().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
+        attacker.level().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
         if (attacker.getEyePosition().distanceTo(target.getEyePosition()) <= 2f) {
             teleportAndKnockbackInAir(1);
         }
@@ -118,7 +118,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
                     && !player.onGround() && player.getAbilities().flying) {
                 if (attacker.distanceTo(target) >= 2) {
                     shootProjectile(target);
-                    attacker.getLevel().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
+                    attacker.level().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
                 } else if (attacker.distanceTo(target) <= 2 && attacker.onGround()) {
                     slam();
                 }
@@ -128,7 +128,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
                     slam();
                 } else {
                     shootProjectile(target);
-                    attacker.getLevel().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
+                    attacker.level().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
                 }
             }
             if (!target.onGround()) {
@@ -136,13 +136,13 @@ public class VoidFoxAntiFlyingAttack extends Goal {
                     slam();
                 } else {
                     shootProjectile(target);
-                    attacker.getLevel().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
+                    attacker.level().playSound(null, attacker, SoundEvents.ENCHANTMENT_TABLE_USE, SoundSource.HOSTILE, 2, 1);
                 }
             }
         } else {
             attacker.getNavigation().stop();
             attacker.getLookControl().setLookAt(target, 30.0F, 30.0F);
-            if (attacker.getLevel() instanceof ServerLevel serverLevel) {
+            if (attacker.level() instanceof ServerLevel serverLevel) {
                 serverLevel.sendParticles(ParticleTypes.ENCHANT, attacker.getX(), attacker.getEyeY(), attacker.getZ(), 4, 0.25, 0.5, 0.25, 0.5);
                 serverLevel.sendParticles(ParticleTypes.END_ROD, attacker.getX(), attacker.getEyeY(), attacker.getZ(), 4, 0.25, 0.5, 0.25, 0.05f);
             }
@@ -193,7 +193,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage / 2);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
         }
         applySlowFalling(target);
         spawnImpactEffect(target.position(), 0);
@@ -215,7 +215,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
         if (!target.isBlocking()) {
             target.hurt(DamageSource.mobAttack(attacker), damage);
         } else {
-            target.getLevel().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
+            target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
         }
         spawnImpactEffect(target.position(), 2);
         spawnImpactParticleEffect(target.position(), 2);
@@ -313,7 +313,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
     }
 
     private @NotNull VoidFoxParticleProjectile getParticleProjectile(LivingEntity target, Vec3 spawnPos) {
-        VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, attacker, attacker.getLevel(), target) {
+        VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, attacker, attacker.level(), target) {
             @Override
             protected void onHitEntity(@NotNull EntityHitResult result) {
                 super.onHitEntity(result);
@@ -343,7 +343,7 @@ public class VoidFoxAntiFlyingAttack extends Goal {
 
             // Spawn do projétil
             if (!level.isClientSide()) {
-                VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, attacker, attacker.getLevel(), null) {
+                VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(projectileType, attacker, attacker.level(), null) {
                     @Override
                     protected void onHitEntity(@NotNull EntityHitResult result) {
                         super.onHitEntity(result);

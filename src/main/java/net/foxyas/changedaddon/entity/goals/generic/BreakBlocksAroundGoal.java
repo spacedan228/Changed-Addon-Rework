@@ -24,7 +24,7 @@ public class BreakBlocksAroundGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (!mob.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (!mob.level().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             return false;
         }
 

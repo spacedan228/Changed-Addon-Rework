@@ -1,7 +1,9 @@
 package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -42,11 +44,11 @@ public abstract class ItemEntityMixin extends Entity {
     @Override
     public boolean isInvulnerableTo(@NotNull DamageSource pSource) {
         if (this.getItem().is(ChangedAddonItems.TRANSFUR_TOTEM.get())) {
-            if (pSource == DamageSource.CACTUS) {
+            if (pSource.is(DamageTypes.CACTUS)) {
                 return true;
-            } else if (pSource == DamageSource.LIGHTNING_BOLT) {
+            } else if (pSource.is(DamageTypes.LIGHTNING_BOLT)) {
                 return true;
-            } else if (pSource.isExplosion()) {
+            } else if (pSource.is(DamageTypeTags.IS_EXPLOSION)) {
                 return true;
             }
         }

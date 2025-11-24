@@ -54,7 +54,7 @@ public interface CrawlFeature {
             setCrawlingPoseIfNeeded(livingEntity, target);
             crawlToTarget(livingEntity, target);
         } else {
-            BlockPos above = new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ()).above();
+            BlockPos above = new BlockPos((int) livingEntity.getX(), (int) livingEntity.getEyeY(), (int) livingEntity.getZ()).above();
             BlockState blockState = livingEntity.level.getBlockState(above);
             if (livingEntity.getPose() == Pose.SWIMMING && !livingEntity.isInWater() && (blockState.isAir() || !blockState.isSuffocating(livingEntity.level, above) || !blockState.isSolidRender(livingEntity.level, above))) {
                 livingEntity.setPose(Pose.STANDING);
@@ -68,11 +68,11 @@ public interface CrawlFeature {
 
     default void setCrawlingPoseIfNeeded(LivingEntity livingEntity, LivingEntity target) {
         if (target.getPose() == Pose.SWIMMING && livingEntity.getPose() != Pose.SWIMMING) {
-            if (target.getY() < livingEntity.getEyeY() && !target.level.getBlockState(new BlockPos(target.getX(), target.getEyeY(), target.getZ()).above()).isAir()) {
+            if (target.getY() < livingEntity.getEyeY() && !target.level.getBlockState(new BlockPos((int) target.getX(), (int) target.getEyeY(), (int) target.getZ()).above()).isAir()) {
                 livingEntity.setPose(Pose.SWIMMING);
             }
         } else {
-            if (!livingEntity.isSwimming() && livingEntity.level.getBlockState(new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ()).above()).isAir()) {
+            if (!livingEntity.isSwimming() && livingEntity.level.getBlockState(new BlockPos((int) livingEntity.getX(), (int) livingEntity.getEyeY(), (int) livingEntity.getZ()).above()).isAir()) {
                 livingEntity.setPose(Pose.STANDING);
             }
         }
@@ -103,7 +103,7 @@ public interface CrawlFeature {
                 livingEntity.setSwimming(false);
             }
         } else {
-            BlockPos above = new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ()).above();
+            BlockPos above = new BlockPos((int) livingEntity.getX(), (int) livingEntity.getEyeY(), (int) livingEntity.getZ()).above();
             BlockState blockState = livingEntity.level.getBlockState(above);
             if (livingEntity.getPose() == Pose.SWIMMING && !livingEntity.isInWater() && (blockState.isAir() || !blockState.isSuffocating(livingEntity.level, above) || !blockState.isSolidRender(livingEntity.level, above))) {
                 livingEntity.setPose(Pose.STANDING);

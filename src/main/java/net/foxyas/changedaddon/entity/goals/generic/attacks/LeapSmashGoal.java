@@ -66,9 +66,9 @@ public class LeapSmashGoal extends Goal {
         mob.setDeltaMovement(dir.x * horizontalBoost, verticalBoost, dir.z * horizontalBoost);
         mob.getNavigation().stop();
         mob.getLookControl().setLookAt(target, 30.0F, 30.0F);
-        mob.getLevel().playSound(null, mob.blockPosition(), SoundEvents.GOAT_LONG_JUMP, SoundSource.HOSTILE, 1.0F, 0.9F);
+        mob.level().playSound(null, mob.blockPosition(), SoundEvents.GOAT_LONG_JUMP, SoundSource.HOSTILE, 1.0F, 0.9F);
 
-        mob.getLevel().broadcastEntityEvent(mob, (byte) 4); // Play jump animation
+        mob.level().broadcastEntityEvent(mob, (byte) 4); // Play jump animation
         mob.getJumpControl().jump();
     }
 
@@ -109,7 +109,7 @@ public class LeapSmashGoal extends Goal {
                 BlockState blockState = mob.level.getBlockState(pos);
                 mob.level.levelEvent(2001, pos, Block.getId(blockState));
                 // Server-side Break Effect
-                if (mob.getLevel() instanceof ServerLevel serverLevel) {
+                if (mob.level() instanceof ServerLevel serverLevel) {
                     int breakerId = mob.getId();
                     int stage = 5;
                     serverLevel.destroyBlockProgress(breakerId, pos, stage);
@@ -118,13 +118,13 @@ public class LeapSmashGoal extends Goal {
             }
         }
 
-        if (mob.getLevel() instanceof ServerLevel serverLevel) {
+        if (mob.level() instanceof ServerLevel serverLevel) {
             serverLevel.sendParticles(ParticleTypes.EXPLOSION_EMITTER, center.getX(), center.getY(), center.getZ(), 1, 0, 0, 0, 1);
         }
 
 
         AABB smashArea = mob.getBoundingBox().inflate(4.0D);
-        List<LivingEntity> hitEntities = mob.getLevel().getEntitiesOfClass(LivingEntity.class, smashArea, e -> e != mob && e.isAlive());
+        List<LivingEntity> hitEntities = mob.level().getEntitiesOfClass(LivingEntity.class, smashArea, e -> e != mob && e.isAlive());
 
         for (LivingEntity entity : hitEntities) {
             if (entity.hurt(DamageSource.mobAttack(mob), 4.0F)) {
@@ -134,7 +134,7 @@ public class LeapSmashGoal extends Goal {
             }
         }
 
-        mob.getLevel().playSound(null, mob.blockPosition(), SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.HOSTILE, 1.5F, 0.8F);
+        mob.level().playSound(null, mob.blockPosition(), SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.HOSTILE, 1.5F, 0.8F);
     }
 
     @Override

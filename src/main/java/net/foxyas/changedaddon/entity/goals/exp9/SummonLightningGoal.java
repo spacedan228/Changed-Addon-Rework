@@ -154,7 +154,7 @@ public class SummonLightningGoal extends Goal {
     }
 
     public void applyKnockBack(AABB hitbox) {
-        var list = holder.getLevel()
+        var list = holder.level()
                 .getNearbyEntities(
                         LivingEntity.class,
                         TargetingConditions.forCombat().selector(target -> !target.is(holder)),

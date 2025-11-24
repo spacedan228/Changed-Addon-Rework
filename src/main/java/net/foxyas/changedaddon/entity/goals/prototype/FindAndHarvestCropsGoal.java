@@ -74,12 +74,12 @@ public class FindAndHarvestCropsGoal extends Goal {
 
     @Override
     public void start() {
-        targetCropPos = findNearbyCrop(entity.getLevel(), entity.blockPosition());
+        targetCropPos = findNearbyCrop(entity.level(), entity.blockPosition());
         if (targetCropPos == null) return;
 
-        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
-        if (entity.getLevel().isClientSide) {
-            entity.getLevel().addParticle(
+        entity.level().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+        if (entity.level().isClientSide) {
+            entity.level().addParticle(
                     ChangedParticles.emote(entity, Emote.IDEA),
                     entity.getX(),
                     entity.getY() + (double) entity.getDimensions(entity.getPose()).height + 0.65,
@@ -93,7 +93,7 @@ public class FindAndHarvestCropsGoal extends Goal {
 
     @Override
     public void tick() {
-        Level level = entity.getLevel();
+        Level level = entity.level();
         if (targetCropPos == null || isBlockInvalid(level.getBlockState(targetCropPos))) {// Try to find crop
             targetCropPos = findNearbyCrop(level, entity.blockPosition());
             if (targetCropPos == null) return;//cancel goal - no crops

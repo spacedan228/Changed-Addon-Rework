@@ -16,6 +16,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -154,9 +155,9 @@ public class LatexSnepEntity extends AbstractCanTameSnepChangedEntity implements
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (source == DamageSource.FALL)
+        if (source.is(DamageTypeTags.IS_FALL))
             return false;
-        if (source == DamageSource.FREEZE)
+        if (source.is(DamageTypeTags.IS_FREEZING))
             return false;
         return super.hurt(source, amount);
     }

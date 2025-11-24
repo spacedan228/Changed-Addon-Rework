@@ -72,13 +72,13 @@ public class ApplyBonemealGoal extends Goal {
 
     @Override
     public void start() {// Find a growable crop nearby
-        targetPos = findGrowableCrop(entity.getLevel(), entity.blockPosition(), searchRange);
+        targetPos = findGrowableCrop(entity.level(), entity.blockPosition(), searchRange);
         if (targetPos == null) return;
 
-        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+        entity.level().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
 
-        if (entity.getLevel().isClientSide) {
-            entity.getLevel().addParticle(
+        if (entity.level().isClientSide) {
+            entity.level().addParticle(
                     ChangedParticles.emote(entity, Emote.IDEA),
                     entity.getX(),
                     entity.getY() + (double) entity.getDimensions(entity.getPose()).height + 0.65,
@@ -165,7 +165,7 @@ public class ApplyBonemealGoal extends Goal {
     }
 
     private void applyBoneMeal(BlockPos pos) {
-        Level level = entity.getLevel();
+        Level level = entity.level();
         if (!(level instanceof ServerLevel serverLevel)) return;
 
         ItemStack boneMeal = findBoneMeal(true);

@@ -33,6 +33,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -124,7 +125,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
                 z = player.getZ() + Mth.sin(anglePhi) * Mth.sin(angleTheta) * radius;
                 pos = new Vec3(x, y, z);
                 ParticlesUtil.sendParticlesWithMotion(
-                        player.getLevel(),
+                        player.level(),
                         ParticleTypes.REVERSE_PORTAL,
                         pos,
                         Vec3.ZERO,
@@ -204,14 +205,14 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     @Override
     public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
-        if (patter.getLevel().isClientSide()) return;
+        if (patter.level().isClientSide()) return;
 
         patTarget.addEffect(getPatEffect(patter), patter);
     }
 
     @Override
     public void WhenPattedReaction(Player patter, InteractionHand hand) {
-        if (patter.getLevel().isClientSide()) return;
+        if (patter.level().isClientSide()) return;
 
         patter.addEffect(getPatEffect(this), this);
     }
@@ -462,7 +463,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
                     || !(instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast)) return;
 
             // Only cancel OUT_OF_WORLD damage
-            if (event.getSource() != DamageSource.OUT_OF_WORLD) return;
+            if (!event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD)) return;
 
             triggerVoidTransformation(player, luminaraFlowerBeast);
 

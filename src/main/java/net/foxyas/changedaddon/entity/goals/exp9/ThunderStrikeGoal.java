@@ -80,19 +80,19 @@ public class ThunderStrikeGoal extends Goal {
             pathfinderMob.getNavigation().stop();
 
             if (tickCounter % 10 == 0) { // a cada 1/2s lança um raio
-                LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(pathfinderMob.getLevel());
+                LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(pathfinderMob.level());
                 if (lightning != null) {
                     lightning.moveTo(target.position());
                     if (pathfinderMob instanceof ChangedEntity changedEntity) {
                         lightning.setCause((ServerPlayer) changedEntity.getUnderlyingPlayer());
                     }
                     lightning.setDamage(10);
-                    ParticlesUtil.sendParticles(pathfinderMob.getLevel(), ChangedAddonParticleTypes.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
+                    ParticlesUtil.sendParticles(pathfinderMob.level(), ChangedAddonParticleTypes.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
                     if (!lightning.isRemoved()) {
                         pathfinderMob.getLookControl().setLookAt(lightning, 30.0F, 30.0F);
                     }
                     DelayedTask.schedule(10, () -> {
-                        pathfinderMob.getLevel().addFreshEntity(lightning);
+                        pathfinderMob.level().addFreshEntity(lightning);
                         applyKnockBack(lightning);
                         pathfinderMob.swing(pathfinderMob.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
                         // recoil de knockback para trás
@@ -108,7 +108,7 @@ public class ThunderStrikeGoal extends Goal {
     }
 
     public void applyKnockBack(Entity lightning) {
-        var list = lightning.getLevel()
+        var list = lightning.level()
                 .getNearbyEntities(
                         LivingEntity.class,
                         TargetingConditions.DEFAULT
@@ -125,13 +125,13 @@ public class ThunderStrikeGoal extends Goal {
     public void stop() {
         if (groundPos != null) {
             pathfinderMob.teleportTo(groundPos.getX() + 0.5, groundPos.getY(), groundPos.getZ() + 0.5);
-            LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(pathfinderMob.getLevel());
+            LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(pathfinderMob.level());
             if (lightning != null) {
                 lightning.moveTo(groundPos.getX() + 0.5, groundPos.getY(), groundPos.getZ() + 0.5);
                 if (pathfinderMob instanceof ChangedEntity changedEntity) {
                     lightning.setCause((ServerPlayer) changedEntity.getUnderlyingPlayer());
                 }
-                pathfinderMob.getLevel().addFreshEntity(lightning);
+                pathfinderMob.level().addFreshEntity(lightning);
             }
         }
 

@@ -180,7 +180,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         return false;
     }
 
-
     @Override
     public TransfurMode getTransfurMode() {
         return TransfurMode.NONE;

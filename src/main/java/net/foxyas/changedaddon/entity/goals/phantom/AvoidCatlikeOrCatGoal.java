@@ -54,10 +54,10 @@ public class AvoidCatlikeOrCatGoal extends Goal {
     }
 
     public void hiss(@NotNull LivingEntity cat) {
-        if (cat.getLevel() instanceof ServerLevel serverLevel) {
+        if (cat.level() instanceof ServerLevel serverLevel) {
             serverLevel.playSound(null, cat.getX(), cat.getEyeY(), cat.getZ(), SoundEvents.CAT_HISS, SoundSource.AMBIENT, 1.0F, 1f);
         } else {
-            cat.getLevel().playLocalSound(cat.getX(), cat.getEyeY(), cat.getZ(), SoundEvents.CAT_HISS, SoundSource.AMBIENT, 1.0F, 1.0f, false);
+            cat.level().playLocalSound(cat.getX(), cat.getEyeY(), cat.getZ(), SoundEvents.CAT_HISS, SoundSource.AMBIENT, 1.0F, 1.0f, false);
         }
     }
 

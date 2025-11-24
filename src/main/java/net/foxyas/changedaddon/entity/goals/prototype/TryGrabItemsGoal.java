@@ -25,7 +25,7 @@ public class TryGrabItemsGoal extends Goal {
     @Override
     public boolean canUse() {
         // Only run if there is at least one item nearby to pick up
-        List<ItemEntity> nearbyItems = prototype.getLevel().getEntitiesOfClass(ItemEntity.class,
+        List<ItemEntity> nearbyItems = prototype.level().getEntitiesOfClass(ItemEntity.class,
                 prototype.getBoundingBox().inflate(16.0),
                 item -> {
                     ItemStack stack = item.getItem();
@@ -71,7 +71,7 @@ public class TryGrabItemsGoal extends Goal {
                 .orElse(null);
 
         if (closestItem != null) {
-            prototype.getLevel().playSound(null, prototype.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+            prototype.level().playSound(null, prototype.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
             prototype.getNavigation().moveTo(closestItem, 0.25f);
             // Make entity look at a target position
             prototype.getLookControl().setLookAt(

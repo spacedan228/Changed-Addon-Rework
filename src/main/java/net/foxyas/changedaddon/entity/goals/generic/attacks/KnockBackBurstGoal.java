@@ -64,7 +64,7 @@ public class KnockBackBurstGoal extends Goal {
         recentDamage = 0;
         recentHits = 0;
 
-        Level level = mob.getLevel();
+        Level level = mob.level();
         AABB area = mob.getBoundingBox().inflate(4.0); // raio da explosão de knockback
         List<LivingEntity> players = level.getEntitiesOfClass(LivingEntity.class, area, (livingEntity -> livingEntity != mob));
 
@@ -75,7 +75,7 @@ public class KnockBackBurstGoal extends Goal {
                 double dist = Math.max(0.1, Math.sqrt(dx * dx + dz * dz));
                 livingEntity.push((dx / dist) * knockbackForce, 0.5, (dz / dist) * knockbackForce);
                 livingEntity.hurtMarked = true; // força sincronização de movimento no cliente
-                livingEntity.getLevel().playSound(null, mob, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1, 1);
+                livingEntity.level().playSound(null, mob, SoundEvents.GENERIC_EXPLODE, SoundSource.HOSTILE, 1, 1);
                 if (livingEntity instanceof Player player) {
                     player.displayClientMessage(Component.literal("That's ENOUGH").withStyle((style) -> {
                         Style newStyle = style;

@@ -63,13 +63,13 @@ public class PlantSeedsGoal extends Goal {
 
     @Override
     public void start() {// Look for farmland with air above to plant
-        targetPos = findPlantableFarmland(entity.getLevel(), entity.blockPosition(), searchRange);
+        targetPos = findPlantableFarmland(entity.level(), entity.blockPosition(), searchRange);
         if (targetPos == null) return;
 
-        entity.getLevel().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+        entity.level().playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
 
-        if (entity.getLevel().isClientSide) {
-            entity.getLevel().addParticle(
+        if (entity.level().isClientSide) {
+            entity.level().addParticle(
                     ChangedParticles.emote(entity, Emote.IDEA),
                     entity.getX(),
                     entity.getY() + (double) entity.getDimensions(entity.getPose()).height + 0.65,
@@ -161,7 +161,7 @@ public class PlantSeedsGoal extends Goal {
     }
 
     private void plantSeedAt() {
-        Level level = entity.getLevel();
+        Level level = entity.level();
 
         ItemStack seeds = findSeeds(true);
         if (seeds.isEmpty()) return;

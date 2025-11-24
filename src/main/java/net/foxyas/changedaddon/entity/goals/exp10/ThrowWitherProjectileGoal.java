@@ -66,7 +66,7 @@ public class ThrowWitherProjectileGoal extends Goal {
         tick++;
         LivingEntity target = holder.getTarget();
         if (target == null) return;
-        Level mobLevel = holder.getLevel();
+        Level mobLevel = holder.level();
         if (usedTimes >= maxUseTimes) return;
         if (mobLevel instanceof ServerLevel level) {
             WitherParticleProjectile witherParticleProjectile = getWitherParticleProjectile(level, target);

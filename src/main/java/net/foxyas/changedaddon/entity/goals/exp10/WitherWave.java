@@ -50,7 +50,7 @@ public class WitherWave extends Goal {
                 double z = mob.getZ() + Math.sin(anglePhi) * Math.sin(angleTheta) * radius;
                 Vec3 pos = new Vec3(x, y, z);
                 ParticlesUtil.sendParticlesWithMotion(
-                        mob.getLevel(),
+                        mob.level(),
                         ParticleTypes.DAMAGE_INDICATOR,
                         pos,
                         Vec3.ZERO,
@@ -64,7 +64,7 @@ public class WitherWave extends Goal {
 
     @Override
     public void tick() {
-        if (mob.getLevel() instanceof ServerLevel serverLevel) {
+        if (mob.level() instanceof ServerLevel serverLevel) {
             // pegar todas as entidades vivas em volta
             List<LivingEntity> nearby = serverLevel.getEntitiesOfClass(
                     LivingEntity.class,

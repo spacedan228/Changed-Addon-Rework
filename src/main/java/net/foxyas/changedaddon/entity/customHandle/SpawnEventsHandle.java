@@ -21,7 +21,7 @@ public class SpawnEventsHandle {
 
     @SubscribeEvent
     public static void whenSpawn(EntityJoinLevelEvent event) {
-        Level level = event.getLevel();
+        Level level = event.level();
         Entity entity = event.getEntity();
 
         if ((!(entity instanceof AbstractLuminarcticLeopard leo) || !leo.isBoss())

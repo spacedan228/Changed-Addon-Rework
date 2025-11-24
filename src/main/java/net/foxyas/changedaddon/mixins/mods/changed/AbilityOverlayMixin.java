@@ -9,6 +9,7 @@ import net.ltxprogrammer.changed.client.gui.AbilityOverlay;
 import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.util.Transition;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,7 +24,7 @@ import static net.ltxprogrammer.changed.client.gui.AbilityOverlay.renderForegrou
 public class AbilityOverlayMixin {
 
     @Inject(method = "lambda$renderSelectedAbility$0", at = @At("HEAD"))
-    private static void renderSelectedAbility(float partialTick, int screenHeight, PoseStack stack, Player player, TransfurVariantInstance<?> variant, CallbackInfo ci) {
+    private static void renderSelectedAbility(float partialTick, int screenHeight, GuiGraphics graphics, Player player, TransfurVariantInstance variant, CallbackInfo ci) {
         if (variant instanceof TransfurVariantInstanceExtensor extensor) {
             if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
 
@@ -34,8 +35,8 @@ public class AbilityOverlayMixin {
                         int offset = (int) (Transition.easeInOutSine(Mth.clamp(Mth.map((float) extensor.getTicksSinceSecondAbilityActivity() + partialTick, 100.0F, 130.0F, 0.0F, 1.0F), 0.0F, 1.0F)) * 40.0F);
                         if (offset < 39) {
                             AbstractRadialScreen.ColorScheme color = AbstractRadialScreen.getColors(variant).setForegroundToBright();
-                            renderBackground((10 + 32) - offset, screenHeight - 42 + offset, stack, color, player, variant, ability);
-                            renderForeground((15 + 32) - offset, screenHeight - 47 + offset, stack, color, player, variant, ability);
+                            renderBackground((10 + 32) - offset, screenHeight - 42 + offset, graphics, color, player, variant, ability);
+                            renderForeground((15 + 32) - offset, screenHeight - 47 + offset, graphics, color, player, variant, ability);
                         }
                     }
                 }

@@ -19,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -227,7 +228,7 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
                     if (this.level instanceof ServerLevel _level) {
                         _level.sendParticles(ParticleTypes.HEART, (this.getX()), (this.getY() + 1), (this.getZ()), 7, 0.3, 0.3, 0.3, 1); //Spawn Heal Particles
                     }
-                    this.gameEvent(GameEvent.ENTITY_INTERACT, this.eyeBlockPosition());
+                    this.level().gameEvent(this, GameEvent.ENTITY_INTERACT, this.getEyePosition());
                     return InteractionResult.SUCCESS;
                 } else {
                     InteractionResult interactionresult = super.mobInteract(player, hand);
@@ -384,8 +385,8 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
         super.die(source);
 
         if (this.dead)
-            if (!this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && this.getOwner() instanceof ServerPlayer) {
-                this.getOwner().sendMessage(deathMessage, Util.NIL_UUID);
+            if (!this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && this.getOwner() instanceof ServerPlayer serverPlayer) {
+                serverPlayer.displayClientMessage(deathMessage, false);
             }
     }
 

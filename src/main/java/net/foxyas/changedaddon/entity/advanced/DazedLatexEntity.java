@@ -98,7 +98,7 @@ public class DazedLatexEntity extends ChangedEntity {
         } else if (p_33009_.getBrightness(LightLayer.BLOCK, p_33010_) > 5) {
             return false;
         } else {
-            int i = p_33009_.getLevel().isThundering() ? p_33009_.getMaxLocalRawBrightness(p_33010_, 10) : p_33009_.getMaxLocalRawBrightness(p_33010_);
+            int i = p_33009_.level().isThundering() ? p_33009_.getMaxLocalRawBrightness(p_33010_, 10) : p_33009_.getMaxLocalRawBrightness(p_33010_);
             return i <= p_33011_.nextInt(8);
         }
     }
