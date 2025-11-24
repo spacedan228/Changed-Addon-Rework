@@ -31,6 +31,7 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Mod.EventBusSubscriber
 public class CreatureDietsHandleProcedure {
@@ -39,7 +40,7 @@ public class CreatureDietsHandleProcedure {
     public static void onUseItemFinish(LivingEntityUseItemEvent.Finish event) {
         if (event == null) return;
 
-        LivingEntity livingEntity = event.getEntityLiving();
+        LivingEntity livingEntity = event.getEntity();
         ItemStack item = event.getItem();
         if (!item.isEdible()) return;
 
@@ -50,7 +51,7 @@ public class CreatureDietsHandleProcedure {
         TransfurVariantInstance<?> latexInstance = ProcessTransfur.getPlayerTransfurVariant(player);
         if (latexInstance == null) return;
 
-        Level world = player.getLevel();
+        Level world = player.level();
 
         if (world.isClientSide) {
             return;
@@ -83,7 +84,7 @@ public class CreatureDietsHandleProcedure {
     private static void applyDebuffs(Player player) {
         player.addEffect(new MobEffectInstance(MobEffects.HUNGER, 60, 3, false, true, true));
         player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 160, 0, false, true, true,
-                new MobEffectInstance(MobEffects.WEAKNESS, 5 * 20, 2)));
+                new MobEffectInstance(MobEffects.WEAKNESS, 5 * 20, 2), MobEffects.CONFUSION.createFactorData()));
     }
 
     private static void applyFoodEffects(TransfurVariant<?> variant, Player player, ItemStack item, boolean isGoodFood) {

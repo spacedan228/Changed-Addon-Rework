@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.qte;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.ClientboundOpenFTKCScreenPacket;
@@ -10,9 +11,13 @@ import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.gui.screens.Screen;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -24,7 +29,6 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber
@@ -116,7 +120,14 @@ public class FightToKeepConsciousness {
         SummonEntityProcedure.execute(player.level, player);
         PlayerUtil.UnTransfurPlayer(player);
 
-        player.hurt(new DamageSource("conscience_lose").bypassArmor(), Float.MAX_VALUE);
+        DamageSource source = ChangedAddonDamageSources.CONSCIENCE_LOSE.source(player.level().registryAccess());
+        player.hurt(new DamageSource(source.typeHolder()) {
+            @Override
+            public boolean is(TagKey<DamageType> pDamageTypeKey) {
+                if (pDamageTypeKey == DamageTypeTags.BYPASSES_ARMOR) return true;
+                return super.is(pDamageTypeKey);
+            }
+        }, Float.MAX_VALUE);
         updatePlayerVariables(vars, null, 0, player);
     }
 
@@ -133,7 +144,7 @@ public class FightToKeepConsciousness {
             this.progressAmount = progressAmount;
         }
 
-        public static MinigameType getRandom(Random random) {
+        public static MinigameType getRandom(RandomSource random) {
             return values()[random.nextInt(values().length)];
         }
     }

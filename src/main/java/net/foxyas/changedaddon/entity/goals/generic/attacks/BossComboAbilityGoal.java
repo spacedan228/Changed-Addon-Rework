@@ -129,7 +129,7 @@ public class BossComboAbilityGoal extends Goal {
             }
             attacker.swing(InteractionHand.MAIN_HAND);
             removeIframesFromTarget();
-            target.hurt(DamageSource.mobAttack(attacker), damage);
+            target.hurt(this.attacker.level().damageSources().mobAttack(attacker), damage);
             spawnImpactEffect(target.position(), 0);
             spawnImpactParticleEffect(target.position(), 0);
         }
@@ -137,7 +137,6 @@ public class BossComboAbilityGoal extends Goal {
         public void removeIframesFromTarget() {
             target.invulnerableTime = 0;
             target.hurtDuration = 1;
-            target.hurtDir = 1;
             target.hurtTime = 1;
         }
 
@@ -151,7 +150,7 @@ public class BossComboAbilityGoal extends Goal {
             }
             attacker.swing(InteractionHand.MAIN_HAND);
             removeIframesFromTarget();
-            target.hurt(DamageSource.mobAttack(attacker), damage / 2);
+            target.hurt(this.attacker.level().damageSources().mobAttack(attacker), damage / 2);
             spawnImpactEffect(target.position(), 0);
             spawnImpactParticleEffect(target.position(), 0);
         }
@@ -166,7 +165,7 @@ public class BossComboAbilityGoal extends Goal {
             }
             attacker.swing(InteractionHand.MAIN_HAND);
             removeIframesFromTarget();
-            target.hurt(DamageSource.mobAttack(attacker), damage / 2);
+            target.hurt(this.attacker.level().damageSources().mobAttack(attacker), damage / 2);
             applySlowFalling(target);
             spawnImpactEffect(target.position(), 0);
             spawnImpactParticleEffect(target.position(), 0);
@@ -181,7 +180,7 @@ public class BossComboAbilityGoal extends Goal {
             }
             attacker.swing(InteractionHand.MAIN_HAND);
             removeIframesFromTarget();
-            target.hurt(DamageSource.mobAttack(attacker), damage);
+            target.hurt(this.attacker.level().damageSources().mobAttack(attacker), damage);
             applySlowFalling(target);
             spawnImpactEffect(target.position(), 1);
             spawnImpactParticleEffect(target.position(), 1);
@@ -196,7 +195,7 @@ public class BossComboAbilityGoal extends Goal {
             }
             attacker.swing(InteractionHand.MAIN_HAND);
             removeIframesFromTarget();
-            target.hurt(DamageSource.mobAttack(attacker), damage);
+            target.hurt(this.attacker.level().damageSources().mobAttack(attacker), damage);
             spawnImpactEffect(target.position(), 2);
             spawnImpactParticleEffect(target.position(), 2);
             removeSlowFalling();

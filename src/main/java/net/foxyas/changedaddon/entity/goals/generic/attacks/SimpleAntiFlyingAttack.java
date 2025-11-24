@@ -168,7 +168,6 @@ public class SimpleAntiFlyingAttack extends Goal {
     private void removeIframesFromTarget() {
         target.invulnerableTime = 0;
         target.hurtDuration = 1;
-        target.hurtDir = 1;
         target.hurtTime = 1;
     }
 
@@ -180,7 +179,7 @@ public class SimpleAntiFlyingAttack extends Goal {
         attacker.swing(InteractionHand.MAIN_HAND);
         removeIframesFromTarget();
         if (!target.isBlocking()) {
-            target.hurt(DamageSource.mobAttack(attacker), damage / 2);
+            target.hurt(this.attacker.level().damageSources().mobAttack(attacker), damage / 2);
         } else {
             target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
         }
@@ -202,7 +201,7 @@ public class SimpleAntiFlyingAttack extends Goal {
         attacker.swing(InteractionHand.MAIN_HAND);
         removeIframesFromTarget();
         if (!target.isBlocking()) {
-            target.hurt(DamageSource.mobAttack(attacker), damage);
+            target.hurt(this.attacker.level().damageSources().mobAttack(attacker), damage);
         } else {
             target.level().playSound(null, target, SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1, 1);
         }

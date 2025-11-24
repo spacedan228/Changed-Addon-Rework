@@ -130,7 +130,7 @@ public class CustomMerchantOffer {
             itemstack.setDamageValue(itemstack.getDamageValue());
         }
 
-        return ItemStack.isSame(itemstack, cost) && (!cost.hasTag() || itemstack.hasTag() && NbtUtils.compareNbt(cost.getTag(), itemstack.getTag(), false));
+        return ItemStack.isSameItem(itemstack, cost) && (!cost.hasTag() || itemstack.hasTag() && NbtUtils.compareNbt(cost.getTag(), itemstack.getTag(), false));
     }
 
     public boolean take(ItemStack playerOfferA, ItemStack playerOfferB) {

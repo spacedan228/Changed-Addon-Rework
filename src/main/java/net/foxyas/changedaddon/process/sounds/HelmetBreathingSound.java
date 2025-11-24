@@ -11,7 +11,7 @@ public class HelmetBreathingSound extends AbstractTickableSoundInstance {
     private final Player player;
 
     public HelmetBreathingSound(SoundEvent sound, Player player) {
-        super(sound, SoundSource.PLAYERS);
+        super(sound, SoundSource.PLAYERS, player.getRandom());
         this.player = player;
         this.looping = true;
         this.delay = 20;

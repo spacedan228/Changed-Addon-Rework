@@ -6,6 +6,7 @@ import net.foxyas.changedaddon.util.RenderUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
@@ -13,7 +14,7 @@ import java.util.Random;
 public class MouseCirclePullMinigameScreen extends CircleMinigameScreen {
 
     public MouseCirclePullMinigameScreen() {
-        super(TextComponent.EMPTY);
+        super(Component.literal(""));
     }
 
     @Override
@@ -29,8 +30,8 @@ public class MouseCirclePullMinigameScreen extends CircleMinigameScreen {
 
         drawProgressBar(guiGraphics, halfWidth, halfHeight + 25, partialTick);
 
-        drawCentered(font, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", KeyPressMinigameScreen.getTimeRemaining(player)), halfWidth, halfHeight - 40, -1);
-        drawCentered(font, KeyPressMinigameScreen.getProgressText(player), halfWidth, halfHeight - 20, -1);
+        guiGraphics.drawCenteredString(font, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", KeyPressMinigameScreen.getTimeRemaining(player)), (int) halfWidth, (int) (halfHeight - 40), -1);
+        guiGraphics.drawCenteredString(font, KeyPressMinigameScreen.getProgressText(player), (int) halfWidth, (int) (halfHeight - 20), -1);
 
         drawCircles(guiGraphics);
     }
@@ -49,7 +50,7 @@ public class MouseCirclePullMinigameScreen extends CircleMinigameScreen {
     }
 
     protected void randomizeCirclePos(float offsetX, float offsetY) {
-        Random rand = player.getRandom();
+        Random rand = new Random();
         float x = Mth.clamp(halfWidth + rand.nextFloat(-offsetX, offsetX), 5, width - 5);
         float y = Mth.clamp(halfHeight + rand.nextFloat(-offsetY, offsetY), 5, height - 5);
         circle.set(x, y);

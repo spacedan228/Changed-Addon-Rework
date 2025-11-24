@@ -12,6 +12,7 @@ import net.minecraft.world.entity.Entity;
 public class ChangedAddonDamageSources {
 
     public static final DamageHolder LATEX_SOLVENT = holder("latex_solvent");
+    public static final DamageHolder CONSCIENCE_LOSE = holder("conscience_lose");
 
     public record DamageHolder(ResourceKey<DamageType> key) {
         public DamageSource source(RegistryAccess access) {

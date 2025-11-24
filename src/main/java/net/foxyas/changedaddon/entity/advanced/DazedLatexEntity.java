@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
+import net.foxyas.changedaddon.world.features.DynamicBiomeModifier;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -79,17 +80,19 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     @SubscribeEvent
+    public static void addLivingEntityToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
+        if (SPAWN_BIOMES.contains(event.getName()))
+            event.getBuilder().getMobSpawnSettings().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 20, 1, 4));
+    }
+
+    @SubscribeEvent
     public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {
         event.register(ChangedAddonEntities.DAZED_LATEX.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DazedLatexEntity::canSpawnNear, SpawnPlacementRegisterEvent.Operation.OR);
 
         //Fixme add the biome modifier in the data folder
-        if (SPAWN_BIOMES.contains(event.getName())) {
-            event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 125, 1, 4));
-        }
-    }
-
-    public static void init() {
-        SpawnPlacements.register(ChangedAddonEntities.DAZED_LATEX.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DazedLatexEntity::canSpawnNear);
+//        if (SPAWN_BIOMES.contains(event.getName())) {
+//            event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 125, 1, 4));
+//        }
     }
 
     public static boolean isDarkEnoughToSpawn(ServerLevelAccessor p_33009_, BlockPos p_33010_, Random p_33011_) {
@@ -98,7 +101,7 @@ public class DazedLatexEntity extends ChangedEntity {
         } else if (p_33009_.getBrightness(LightLayer.BLOCK, p_33010_) > 5) {
             return false;
         } else {
-            int i = p_33009_.level().isThundering() ? p_33009_.getMaxLocalRawBrightness(p_33010_, 10) : p_33009_.getMaxLocalRawBrightness(p_33010_);
+            int i = p_33009_.getLevel().isThundering() ? p_33009_.getMaxLocalRawBrightness(p_33010_, 10) : p_33009_.getMaxLocalRawBrightness(p_33010_);
             return i <= p_33011_.nextInt(8);
         }
     }

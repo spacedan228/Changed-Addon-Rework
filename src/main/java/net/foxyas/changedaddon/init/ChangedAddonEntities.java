@@ -693,14 +693,14 @@ public class ChangedAddonEntities {
     @SubscribeEvent
     public static void init(@NotNull FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            LatexSnowFoxMaleEntity.init();
-            LatexSnowFoxFemaleEntity.init();
-            DazedLatexEntity.init();
-            MirrorWhiteTigerEntity.init();
-            Exp1MaleEntity.init();
-            Exp1FemaleEntity.init();
-            LatexCheetahFemale.init();
-            LatexCheetahMale.init();
+            //LatexSnowFoxMaleEntity.init();
+            //LatexSnowFoxFemaleEntity.init();
+            //DazedLatexEntity.init();
+            //MirrorWhiteTigerEntity.init();
+            //Exp1MaleEntity.init();
+            //Exp1FemaleEntity.init();
+            //LatexCheetahFemale.init();
+            //LatexCheetahMale.init();
         });
     }
 

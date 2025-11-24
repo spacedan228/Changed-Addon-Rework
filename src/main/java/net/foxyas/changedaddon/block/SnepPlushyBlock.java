@@ -21,6 +21,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -45,7 +46,7 @@ public class SnepPlushyBlock extends AbstractPlushyBlock {
     public static final EnumProperty<CansEnum> CANS = EnumProperty.create("cans", CansEnum.class);
 
     public SnepPlushyBlock() {
-        super(BlockBehaviour.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(0.5f, 5f)
+        super(BlockBehaviour.Properties.copy(Blocks.WHITE_WOOL).sound(SoundType.WOOL).strength(0.5f, 5f)
                 .noOcclusion()
                 .isRedstoneConductor((bs, br, bp) -> false));
         this.registerDefaultState(this.stateDefinition.any()

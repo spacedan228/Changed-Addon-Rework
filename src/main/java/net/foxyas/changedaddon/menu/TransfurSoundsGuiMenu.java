@@ -5,6 +5,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,6 +22,11 @@ public class TransfurSoundsGuiMenu extends AbstractContainerMenu {
         super(ChangedAddonMenus.TRANSFUR_SOUNDS_GUI.get(), id);
         this.player = inv.player;
         this.level = inv.player.level;
+    }
+
+    @Override
+    public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
+        return ItemStack.EMPTY;
     }
 
     @Override

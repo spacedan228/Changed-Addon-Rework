@@ -33,6 +33,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -46,6 +47,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.DifficultyInstance;
@@ -67,10 +69,12 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable {
     public static final int MAX_1_COOLDOWN = 120;
@@ -103,7 +107,6 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     public static int getMaxCooldown() {
         return MAX_COOLDOWN;
     }
-
 
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -696,8 +699,8 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         }
 
         if (source.getDirectEntity() != null &&
-                source.getDirectEntity().getType().getRegistryName() != null) {
-            String id = source.getDirectEntity().getType().getRegistryName().toString();
+                ForgeRegistries.ENTITY_TYPES.getKey(source.getDirectEntity().getType()) != null) {
+            String id = ForgeRegistries.ENTITY_TYPES.getKey(source.getDirectEntity().getType()).toString();
             if (id.contains("bullet") || id.contains("gun")) {
                 this.RegisterDamage(amount);
                 this.setDodging(source.getEntity());
@@ -719,7 +722,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             this.subDodgeHealth(damageAmount);
 
             // Counter-attack trigger: solvent projectile
-            if (damageSource.isProjectile() && damageSource.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.getMsgId())) {
+            if (damageSource.is(DamageTypeTags.IS_PROJECTILE) && damageSource.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.source(this.level().registryAccess()).getMsgId())) {
                 Entity attacker = damageSource.getDirectEntity();
 
                 if (attacker != null) {
@@ -787,7 +790,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             }
 
             // Register dodge damage in combat tracker
-            this.getCombatTracker().recordDamage(damageSource, this.getDodgeHealth(), damageAmount);
+            this.getCombatTracker().recordDamage(damageSource, damageAmount);
             return true;
         }
         return false;
@@ -956,7 +959,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         }));
 
         if (this.isMoreOp()) {
-            float value = this.getRandom().nextFloat(0.25f, 1.25f);
+            float value = new Random().nextFloat(0.25f, 1.25f);
             if (!((value + getHealth()) / this.getMaxHealth() > 0.5f)) {
                 if ((this.hurtTime <= 0) && this.tickCount % 10 == 0) {
                     this.heal(value);
@@ -1100,7 +1103,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     public static class WhenAttackAEntity {
         @SubscribeEvent
         public static void WhenAttack(LivingAttackEvent event) {
-            LivingEntity target = event.getEntityLiving();
+            LivingEntity target = event.getEntity();
             Entity source = event.getSource().getEntity();
             float amount = event.getAmount();
 

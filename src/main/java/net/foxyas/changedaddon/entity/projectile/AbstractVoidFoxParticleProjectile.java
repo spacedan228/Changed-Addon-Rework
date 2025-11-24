@@ -201,7 +201,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
 
         // Se só tiver posição fixa
         if (this.getTarget() == null && targetPos != null) {
-            if (this.onGround) {
+            if (this.onGround()) {
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
                 return;
@@ -241,7 +241,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
                 this.discard();
                 return;
             }
-            if (this.onGround) {
+            if (this.onGround()) {
                 ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
                 this.discard();
                 return;
@@ -345,7 +345,6 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
         if (result.getEntity() instanceof VoidFoxEntity voidFox) {
             voidFox.invulnerableTime = 0;
             voidFox.hurtDuration = 1;
-            voidFox.hurtDir = 1;
             voidFox.hurtTime = 1;
             super.onHitEntity(result);
             return;
@@ -355,7 +354,6 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
             if (result.getEntity() instanceof LivingEntity livingEntity) {
                 livingEntity.invulnerableTime = 0;
                 livingEntity.hurtDuration = 1;
-                livingEntity.hurtDir = 1;
                 livingEntity.hurtTime = 1;
                 livingEntity.hurtMarked = false;
             }

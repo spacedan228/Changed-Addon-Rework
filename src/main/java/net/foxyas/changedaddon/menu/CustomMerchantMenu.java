@@ -137,7 +137,7 @@ public class CustomMerchantMenu extends AbstractContainerMenu {
         if(merchant.isClientSide()) return;
 
         Entity entity = (Entity) merchant;
-        entity.getLevel().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), merchant.getNotifyTradeSound(), SoundSource.NEUTRAL, 1.0F, 1.0F, false);
+        entity.level().playLocalSound(entity.getX(), entity.getY(), entity.getZ(), merchant.getNotifyTradeSound(), SoundSource.NEUTRAL, 1.0F, 1.0F, false);
     }
 
     /**

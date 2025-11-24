@@ -14,7 +14,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.particles.ParticleTypes;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -49,7 +49,7 @@ public class PatFeatureHandle {
         InteractionHand emptyHand = getEmptyHand(player);
         if(emptyHand == null) return;
 
-        EntityHitResult targetEntityResult = PlayerUtil.getEntityHitLookingAt(player, (float) player.getReachDistance(), true, e -> {
+        EntityHitResult targetEntityResult = PlayerUtil.getEntityHitLookingAt(player, (float) player.getEntityReach(), true, e -> {
             if (e.isSpectator()) return false;
             if (!(e instanceof LivingEntity le)) return false;
             if (GrabEntityAbility.getGrabber(le) == null) return true;
