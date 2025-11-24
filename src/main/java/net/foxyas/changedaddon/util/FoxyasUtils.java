@@ -2,10 +2,10 @@ package net.foxyas.changedaddon.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Matrix4f;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -25,6 +25,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import org.joml.Matrix4f;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -147,8 +148,6 @@ public class FoxyasUtils {
     }
 
 
-
-
     /**
      * Checks if one entity (eyeEntity) can see another (targetToSee), using raycasting and FOV.
      *
@@ -186,9 +185,9 @@ public class FoxyasUtils {
     /**
      * Checks if one entity (eyeEntity) can see another (targetToSee), using raycasting and FOV.
      *
-     * @param eyeEntity   The entity doing the looking.
-     * @param to  The target pos to be looked at.
-     * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
+     * @param eyeEntity  The entity doing the looking.
+     * @param to         The target pos to be looked at.
+     * @param fovDegrees Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
      * @return true if visible and within FOV, false otherwise.
      */
     public static boolean canEntitySeePos(LivingEntity eyeEntity, Vec3 to, double fovDegrees) {
@@ -218,9 +217,9 @@ public class FoxyasUtils {
     /**
      * Checks if one entity (eyeEntity) can see another (targetToSee), using raycasting and FOV.
      *
-     * @param eyeEntity   The entity doing the looking.
-     * @param to  The target pos to be looked at.
-     * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
+     * @param eyeEntity  The entity doing the looking.
+     * @param to         The target pos to be looked at.
+     * @param fovDegrees Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
      * @return true if visible and within FOV, false otherwise.
      */
     public static boolean canEntitySeePosIgnoreGlass(LivingEntity eyeEntity, Vec3 to, double fovDegrees) {
@@ -328,8 +327,8 @@ public class FoxyasUtils {
     /**
      * Verifica se eyeEntity consegue ver targetToSee com base na linha de visão.
      *
-     * @param eyeEntity   A entidade que está observando.
-     * @param to Target position
+     * @param eyeEntity A entidade que está observando.
+     * @param to        Target position
      * @return true se for visível, false se houver obstrução.
      */
     public static boolean canEntitySeePosIgnoreGlass(LivingEntity eyeEntity, Vec3 to) {
@@ -358,8 +357,7 @@ public class FoxyasUtils {
         Matrix4f matrix = poseStack.last().pose();
         float backgroundOpacity = mc.options.getBackgroundOpacity(0.25F);
         int backgroundColor = (int) (backgroundOpacity * 255.0F) << 24;
-
-        font.drawInBatch(text, -font.width(text) / 2f, 0, 0xFFFFFF, false, matrix, bufferSource, false, backgroundColor, 15728880);
+        font.drawInBatch(text, -font.width(text) / 2f, 0, 0xFFFFFF, false, matrix, bufferSource, Font.DisplayMode.NORMAL, backgroundColor, 15728880);
 
         poseStack.popPose();
     }
@@ -379,7 +377,7 @@ public class FoxyasUtils {
                 return true;
             }
 
-            if (AbstractLatexBlock.isLatexed(state) && AbstractLatexBlock.getLatexed(state) == latexType) {
+            if (LatexCoverState.getAt(level, current).getType() == latexType) {
                 for (Direction dir : Direction.values()) {
                     BlockPos neighbor = current.relative(dir);
                     if (!visited.contains(neighbor)) {
@@ -415,7 +413,7 @@ public class FoxyasUtils {
                 return true;
             }
 
-            if (AbstractLatexBlock.isLatexed(state) && AbstractLatexBlock.getLatexed(state) == latexType) {
+            if (LatexCoverState.getAt(level, current).getType() == latexType) {
                 for (Direction dir : Direction.values()) {
                     BlockPos neighbor = current.relative(dir);
                     toVisit.add(Pair.of(neighbor, depth + 1));
@@ -474,7 +472,7 @@ public class FoxyasUtils {
             if (depth > maxDepth) continue;
 
             BlockState state = level.getBlockState(pos);
-            if (!AbstractLatexBlock.isLatexed(state)) continue;
+            if (!LatexCoverState.getAt(level, pos).isAir()) continue;
 
             // Simula "crescimento"
             state.randomTick(level, pos, level.getRandom());

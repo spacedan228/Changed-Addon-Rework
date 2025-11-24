@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.util;
 
-import com.mojang.math.Vector3f;
 import net.ltxprogrammer.changed.effect.particle.ColoredParticleOption;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.util.Color3;
@@ -10,6 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustColorTransitionOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -18,6 +18,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.util.Random;
@@ -47,7 +48,7 @@ public class ParticlesUtil {
             }
 
             pLevel.addParticle(particleOptions, (double) pPos.getX() + (double) 0.5F, (double) pPos.getY() + (double) 0.5F, (double) pPos.getZ() + (double) 0.5F, 0.0F, 0.0F, 0.0F);
-            Random random = pLevel.getRandom();
+            RandomSource random = pLevel.getRandom();
 
             for (int i = 0; i < pData; ++i) {
                 double d2 = random.nextGaussian() * 0.02;
@@ -57,7 +58,7 @@ public class ParticlesUtil {
                 double d6 = (double) pPos.getX() + d5 + random.nextDouble() * d0 * (double) 2.0F;
                 double d7 = (double) pPos.getY() + random.nextDouble() * d1;
                 double d8 = (double) pPos.getZ() + d5 + random.nextDouble() * d0 * (double) 2.0F;
-                if (!pLevel.getBlockState((new BlockPos(d6, d7, d8)).below()).isAir()) {
+                if (!pLevel.getBlockState((new BlockPos((int) d6, (int) d7, (int) d8)).below()).isAir()) {
                     pLevel.addParticle(particleOptions, d6, d7, d8, d2, d3, d4);
                 }
             }
@@ -67,7 +68,7 @@ public class ParticlesUtil {
 
     public static void spawnParticlesAroundBlockRedStoneOreStyle(Level pLevel, BlockPos pPos, ParticleOptions particleOptions) {
         double d0 = 0.5625F;
-        Random random = pLevel.random;
+        RandomSource random = pLevel.getRandom();
 
         for (Direction direction : Direction.values()) {
             BlockPos blockpos = pPos.relative(direction);
@@ -166,7 +167,7 @@ public class ParticlesUtil {
     public static void sendParticlesWithMotion(Level level, ParticleOptions particleOptions, Vec3 position, Vec3 offset, Vec3 motion, int count, float speed) {
         // Enviar as partículas
         double XV = motion.x(), YV = motion.y(), ZV = motion.z();
-        Random random = level.getRandom();
+        RandomSource random = level.getRandom();
 
         if (level instanceof ServerLevel serverLevel) {
             for (int i = 0; i < count; ++i) {
@@ -190,9 +191,9 @@ public class ParticlesUtil {
     public static void sendParticlesWithMotion(LivingEntity livingEntity, ParticleOptions particleOptions, Vec3 position, Vec3 offset, Vec3 motion, int count, float speed) {
         // Enviar as partículas
         double XV = motion.x(), YV = motion.y(), ZV = motion.z();
-        Random random = livingEntity.getRandom();
+        RandomSource random = livingEntity.getRandom();
 
-        if (livingEntity.getLevel() instanceof ServerLevel serverLevel) {
+        if (livingEntity.level() instanceof ServerLevel serverLevel) {
             for (int i = 0; i < count; ++i) {
                 double x = random.nextGaussian() * offset.x;
                 double y = random.nextGaussian() * offset.y;
@@ -213,9 +214,9 @@ public class ParticlesUtil {
 
     public static void sendParticlesWithMotionAndOffset(LivingEntity livingEntity, ParticleOptions particleOptions, Vec3 position, Vec3 positionOffset, Vec3 motion, Vec3 motionOffset, int count, float speed) {
         double XV = motion.x(), YV = motion.y(), ZV = motion.z();
-        Random random = livingEntity.getRandom();
+        RandomSource random = livingEntity.getRandom();
 
-        if (livingEntity.getLevel() instanceof ServerLevel serverLevel) {
+        if (livingEntity.level() instanceof ServerLevel serverLevel) {
             for (int i = 0; i < count; ++i) {
                 double x = random.nextGaussian() * positionOffset.x;
                 double y = random.nextGaussian() * positionOffset.y;
@@ -240,7 +241,7 @@ public class ParticlesUtil {
 
     public static void sendParticlesWithMotionAndOffset(Level level, ParticleOptions particleOptions, Vec3 position, Vec3 positionOffset, Vec3 motion, Vec3 motionOffset, int count, float speed) {
         double XV = motion.x(), YV = motion.y(), ZV = motion.z();
-        Random random = level.getRandom();
+        RandomSource random = level.getRandom();
 
         if (level instanceof ServerLevel serverLevel) {
             for (int i = 0; i < count; ++i) {
@@ -268,9 +269,9 @@ public class ParticlesUtil {
     public static void sendParticlesWithMotionAndOffset(LivingEntity livingEntity, ParticleOptions particleOptions, Vec3 positionOffset, Vec3 motion, Vec3 motionOffset, int count, float speed) {
         double XV = motion.x(), YV = motion.y(), ZV = motion.z();
         Vec3 position = livingEntity.position();
-        Random random = livingEntity.getRandom();
+        RandomSource random = livingEntity.getRandom();
 
-        if (livingEntity.getLevel() instanceof ServerLevel serverLevel) {
+        if (livingEntity.level() instanceof ServerLevel serverLevel) {
             for (int i = 0; i < count; ++i) {
                 double x = random.nextGaussian() * positionOffset.x;
                 double y = random.nextGaussian() * positionOffset.y;
@@ -296,10 +297,10 @@ public class ParticlesUtil {
     public static void sendParticlesWithMotion(LivingEntity livingEntity, ParticleOptions particleOptions, Vec3 offset, Vec3 motion, int count, float speed) {
         // Enviar as partículas
         double XV = motion.x(), YV = motion.y(), ZV = motion.z();
-        Random random = livingEntity.getRandom();
+        RandomSource random = livingEntity.getRandom();
         Vec3 position = livingEntity.position();
 
-        if (livingEntity.getLevel() instanceof ServerLevel serverLevel) {
+        if (livingEntity.level() instanceof ServerLevel serverLevel) {
             for (int i = 0; i < count; ++i) {
                 double x = random.nextGaussian() * offset.x;
                 double y = random.nextGaussian() * offset.y;

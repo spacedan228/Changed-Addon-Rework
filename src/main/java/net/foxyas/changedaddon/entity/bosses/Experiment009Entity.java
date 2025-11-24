@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedDamageSources;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
@@ -17,12 +18,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -118,7 +121,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
 
     @Override
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ResourceLocation.parse("changed:humanoids")));
+        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(ChangedTags.EntityTypes.HUMANOIDS);
     }
 
     @Override
@@ -237,13 +240,13 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
     public boolean hurt(DamageSource source, float amount) {
         if (source.getDirectEntity() instanceof ThrownPotion || source.getDirectEntity() instanceof AreaEffectCloud)
             return false;
-        if (source == DamageSource.FALL)
+        if (source.is(DamageTypes.FALL))
             return false;
-        if (source == DamageSource.CACTUS)
+        if (source.is(DamageTypes.CACTUS))
             return false;
-        if (source == DamageSource.DROWN)
+        if (source.is(DamageTypes.DROWN))
             return false;
-        if (source == DamageSource.LIGHTNING_BOLT)
+        if (source.is(DamageTypes.LIGHTNING_BOLT))
             return false;
         if (source.getMsgId().equals("trident")) {
             if (this.level().random.nextFloat() <= 0.25f) {
@@ -253,15 +256,15 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
             }
             return super.hurt(source, amount * 0.5f);
         }
-        if (source == DamageSource.ANVIL)
+        if (source.is(DamageTypes.FALLING_ANVIL))
             return false;
-        if (source == DamageSource.DRAGON_BREATH)
+        if (source.is(DamageTypes.DRAGON_BREATH))
             return false;
-        if (source == DamageSource.WITHER)
+        if (source.is(DamageTypes.WITHER))
             return false;
         if (source.getMsgId().equals("witherSkull"))
             return false;
-        if (source.isProjectile()) {
+        if (source.is(DamageTypeTags.IS_PROJECTILE)) {
             if (this.level().random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
                     player.displayClientMessage(Component.literal("§l§o§4Coward! Is distance all you can rely on? How PATHETIC!!!"), true);
@@ -274,7 +277,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
 
     @Override
     public boolean isDamageSourceBlocked(@NotNull DamageSource pDamageSource) {
-        if (pDamageSource == ChangedDamageSources.ELECTROCUTION) {
+        if (pDamageSource.is(ChangedDamageSources.ELECTROCUTION.key())) {
             return true;
         }
         return super.isDamageSourceBlocked(pDamageSource);

@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.datagen.lang;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.*;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.world.entity.EntityType;
 
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.*;
@@ -58,8 +58,8 @@ import static net.foxyas.changedaddon.init.ChangedAddonSoundEvents.*;
 
 public class ENLanguageProvider extends LanguageProvider {
 
-    public ENLanguageProvider(DataGenerator gen) {
-        super(gen, ChangedAddonMod.MODID, "en_us");
+    public ENLanguageProvider(PackOutput packOutput) {
+        super(packOutput, ChangedAddonMod.MODID, "en_us");
     }
 
     @Override

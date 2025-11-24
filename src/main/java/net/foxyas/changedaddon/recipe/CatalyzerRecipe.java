@@ -150,7 +150,7 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
             for (Ingredient ing : recipe.getIngredients()) {
                 ing.toNetwork(buf);
             }
-            buf.writeItemStack(recipe.getResultItem(), false);
+            buf.writeItemStack(recipe.output, false);
             buf.writeFloat(recipe.getProgressSpeed());
             buf.writeFloat(recipe.getNitrogenUsage());
         }

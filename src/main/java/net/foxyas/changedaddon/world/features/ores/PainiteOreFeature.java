@@ -5,10 +5,12 @@ import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
@@ -37,7 +39,7 @@ public class PainiteOreFeature extends OreFeature {
 
     public static final Set<ResourceLocation> GENERATE_BIOMES = null;
     public static PainiteOreFeature FEATURE = null;
-    public static Holder<ConfiguredFeature<OreConfiguration, ?>> CONFIGURED_FEATURE = null;
+    public static Holder<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE = null;
     public static Holder<PlacedFeature> PLACED_FEATURE = null;
     private final Set<ResourceKey<Level>> generate_dimensions = Set.of(Level.OVERWORLD);
 
@@ -47,9 +49,16 @@ public class PainiteOreFeature extends OreFeature {
 
     public static Feature<?> feature() {
         FEATURE = new PainiteOreFeature();
-        CONFIGURED_FEATURE = FeatureUtils.register("changed_addon:painite_ore", FEATURE, new OreConfiguration(PainiteOreFeatureRuleTest.INSTANCE, ChangedAddonBlocks.DEEPSLATE_PAINITE_ORE.get().defaultBlockState(), 8));
-        PLACED_FEATURE = PlacementUtils.register("changed_addon:painite_ore", CONFIGURED_FEATURE,
-                List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(-45)), BiomeFilter.biome()));
+
+        // Usando os alvos vanilla (stone + deepslate)
+        List<OreConfiguration.TargetBlockState> targets = List.of(OreConfiguration.target(PainiteOreFeatureRuleTest.INSTANCE, ChangedAddonBlocks.DEEPSLATE_PAINITE_ORE.get().defaultBlockState()));
+        CONFIGURED_FEATURE = Holder.direct(new ConfiguredFeature<>(Feature.ORE,
+                new OreConfiguration(targets, 6) // vein size
+        ));
+        PLACED_FEATURE = Holder.direct(new PlacedFeature(CONFIGURED_FEATURE, List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(-45)), BiomeFilter.biome())));
+
+        //CONFIGURED_FEATURE = FeatureUtils.register("changed_addon:painite_ore", FEATURE, new OreConfiguration(PainiteOreFeatureRuleTest.INSTANCE, ChangedAddonBlocks.DEEPSLATE_PAINITE_ORE.get().defaultBlockState(), 8));
+        //PLACED_FEATURE = PlacementUtils.register("changed_addon:painite_ore", CONFIGURED_FEATURE, List.of(CountPlacement.of(2), InSquarePlacement.spread(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(-45)), BiomeFilter.biome()));
         return FEATURE;
     }
 
@@ -85,10 +94,10 @@ public class PainiteOreFeature extends OreFeature {
 
         @SubscribeEvent
         public static void init(FMLCommonSetupEvent event) {
-            Registry.register(Registry.RULE_TEST, ResourceLocation.parse("changed_addon:painite_ore_match"), CUSTOM_MATCH);
+            Registry.register(BuiltInRegistries.RULE_TEST, ResourceLocation.parse("changed_addon:painite_ore_match"), CUSTOM_MATCH);
         }
 
-        public boolean test(BlockState blockstate, @NotNull Random random) {
+        public boolean test(BlockState blockstate, @NotNull RandomSource random) {
             return Objects.equals(Blocks.DEEPSLATE, blockstate.getBlock());
         }
 

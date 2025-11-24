@@ -42,7 +42,7 @@ public class DodgeAbilityHandle {
         }*/
 
         Entity pTarget = entityHitResult.getEntity();
-        if (!pTarget.getLevel().isClientSide()) {
+        if (!pTarget.level().isClientSide()) {
             Entity owner = self.getOwner();
             Entity attacker;
             attacker = Objects.requireNonNullElse(owner, self);
@@ -53,11 +53,11 @@ public class DodgeAbilityHandle {
                     DodgeAbilityInstance dodgeAbilityInstance = changedEntity.getAbilityInstance(dodgeAbility);
                     if (dodgeAbilityInstance == null) continue;
                     if (dodgeAbilityInstance.projectilesImmuneTicks > 0) {
-                        event.setCanceled(true);
+                        event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                     }
 
                     if (dodgeAbilityInstance.canUse() && dodgeAbilityInstance.canKeepUsing() && dodgeAbilityInstance.isDodgeActive()) {
-                        event.setCanceled(true);
+                        event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                         dodgeAbilityInstance.executeDodgeEffects(changedEntity, attacker);
                         dodgeAbilityInstance.executeDodgeHandle(changedEntity, attacker);
                         break;
@@ -94,11 +94,11 @@ public class DodgeAbilityHandle {
                             AbstractAbilityInstance value = dodgeAbilities.getValue();
                             if (key instanceof DodgeAbility && value instanceof DodgeAbilityInstance dodgeInstance) {
                                 if (dodgeInstance.projectilesImmuneTicks > 0) {
-                                    event.setCanceled(true);
+                                    event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                                 }
 
                                 if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
-                                    event.setCanceled(true);
+                                    event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
                                     dodgeInstance.executeDodgeEffects(player, attacker);
                                     dodgeInstance.executeDodgeHandle(player, attacker);
                                     break;
@@ -136,7 +136,7 @@ public class DodgeAbilityHandle {
 
     @SubscribeEvent
     public static void onEntityAttacked(LivingAttackEvent event) {
-        LivingEntity target = event.getEntityLiving();
+        LivingEntity target = event.getEntity();
         Entity attacker = event.getSource().getEntity();
 
         if (!(target instanceof Player player) || attacker == null)

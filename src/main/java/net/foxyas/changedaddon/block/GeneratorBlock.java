@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.block;
 import io.netty.buffer.Unpooled;
 import net.foxyas.changedaddon.block.entity.GeneratorBlockEntity;
 import net.foxyas.changedaddon.menu.GeneratorGuiMenu;
-import net.foxyas.changedaddon.procedure.GeneratorUpdateTickProcedure;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
@@ -36,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class GeneratorBlock extends Block implements EntityBlock {
@@ -79,10 +77,6 @@ public class GeneratorBlock extends Block implements EntityBlock {
     @Override
     public void tick(BlockState blockstate, ServerLevel world, BlockPos pos, RandomSource random) {
         super.tick(blockstate, world, pos, random);
-        int x = pos.getX();
-        int y = pos.getY();
-        int z = pos.getZ();
-        GeneratorUpdateTickProcedure.execute(world, x, y, z);
         world.scheduleTick(pos, this, 1);
     }
 

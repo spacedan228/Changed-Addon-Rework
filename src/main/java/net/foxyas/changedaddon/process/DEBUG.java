@@ -8,7 +8,7 @@ import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.StructureUtil;
 import net.minecraft.core.particles.ParticleTypes;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -39,7 +39,7 @@ public class DEBUG {
         if (!DEBUG) {
             return;
         }
-        if (event.getMessage().startsWith("testMotion")) {
+        if (event.getMessage().toString().startsWith("testMotion")) {
             if (MOTIONTEST == 0) {
                 MOTIONTEST = 1;
             } else if (MOTIONTEST == 1) {
@@ -48,17 +48,17 @@ public class DEBUG {
                 MOTIONTEST = 0;
             }
         }
-        if (event.getMessage().startsWith("test2Motion")) {
+        if (event.getMessage().toString().startsWith("test2Motion")) {
             if (event.getPlayer() instanceof SyncTrackMotion syncTrackMotion) {
                 event.getPlayer().displayClientMessage(Component.literal("The Motion is " + syncTrackMotion.getLastKnownMotion()), false);
                 event.getPlayer().displayClientMessage(Component.literal("The player is Moving?: " + syncTrackMotion.isMoving()), false);
             }
         }
 
-        if (event.getMessage().startsWith("testDeltas")) {
+        if (event.getMessage().toString().startsWith("testDeltas")) {
             PARTICLETEST = !PARTICLETEST;
-        } else if (event.getMessage().startsWith("setDeltaPos")) {
-            String a = event.getMessage().replace("setDeltaPos", "");
+        } else if (event.getMessage().toString().startsWith("setDeltaPos")) {
+            String a = event.getMessage().toString().replace("setDeltaPos", "");
             if (a.startsWith("x")) {
                 DeltaX = (float) convert(a.replace("x", ""));
             } else if (a.startsWith("y")) {
@@ -67,8 +67,8 @@ public class DEBUG {
                 DeltaZ = (float) convert(a.replace("z", ""));
             }
         }
-        if (event.getMessage().startsWith("setHeadPos")) {
-            String a = event.getMessage().replace("setHeadPos", "");
+        if (event.getMessage().toString().startsWith("setHeadPos")) {
+            String a = event.getMessage().toString().replace("setHeadPos", "");
             if (a.startsWith("T")) {
                 HeadPosT = (float) convert(a.replace("T", ""));
             } else if (a.startsWith("V")) {
@@ -91,17 +91,17 @@ public class DEBUG {
                 HeadPosZ = (float) convert(a.replace("z", ""));
             }
         }
-        if (event.getMessage().startsWith("setColor:")) {
-            COLORSTRING = event.getMessage().replace("setColor:", "");
+        if (event.getMessage().toString().startsWith("setColor:")) {
+            COLORSTRING = event.getMessage().toString().replace("setColor:", "");
         }
-        if (event.getMessage().startsWith("Show info")) {
+        if (event.getMessage().toString().startsWith("Show info")) {
             event.getPlayer().displayClientMessage(Component.literal("X = " + HeadPosX + "\n" + "Y = " + HeadPosY + "\n" + "Z = " + HeadPosZ + "\n" + "T = " + HeadPosT + "\n" + "V = " + HeadPosV + "\n" + "B = " + HeadPosB + "\n" + "K = " + HeadPosK + "\n" + "L = " + HeadPosL + "\n" + "J = " + HeadPosJ), false);
         }
-        if (event.getMessage().startsWith("Show1")) {
+        if (event.getMessage().toString().startsWith("Show1")) {
             event.getPlayer().displayClientMessage(Component.literal("X = " + DeltaX + "\n" + "Y = " + DeltaY + "\n" + "Z = " + DeltaZ), false);
         }
-        if (event.getMessage().startsWith("Show Info")) {
-            new DelayedTask(40, () -> event.getPlayer().displayClientMessage(Component.literal("X = " + StructureUtil.isStructureNearby(event.getPlayer().getLevel(), event.getPlayer().getOnPos(), "changed_addon:dazed_latex_meteor", 3)), false));
+        if (event.getMessage().toString().startsWith("Show Info")) {
+            new DelayedTask(40, () -> event.getPlayer().displayClientMessage(Component.literal("X = " + StructureUtil.isStructureNearby(event.getPlayer().serverLevel(), event.getPlayer().getOnPos(), "changed_addon:dazed_latex_meteor", 3)), false));
         }
 
     }
@@ -232,19 +232,19 @@ public class DEBUG {
             return;
         }
         if (PARTICLETEST && event.player.isShiftKeyDown()) {
-            ParticlesUtil.sendParticles(event.player.getLevel(), ParticleTypes.GLOW, event.player.getEyePosition().add(FoxyasUtils.getRelativePosition(event.player, DeltaX, DeltaY, DeltaZ, true)), 0f, 0f, 0f, 4, 0);
+            ParticlesUtil.sendParticles(event.player.level(), ParticleTypes.GLOW, event.player.getEyePosition().add(FoxyasUtils.getRelativePosition(event.player, DeltaX, DeltaY, DeltaZ, true)), 0f, 0f, 0f, 4, 0);
         }
 
         if (MOTIONTEST != 0) {
             Player player = event.player;
             if (MOTIONTEST == 1) {
-                if (player.getLevel().isClientSide()) {
+                if (player.level().isClientSide()) {
                     Vec3 motion = player.getDeltaMovement();
                     double speed = motion.length();
                     ChangedAddonMod.LOGGER.info("Client Player Speed is:{}", speed);
                 }
             } else if (MOTIONTEST == 2) {
-                if (!player.getLevel().isClientSide() && player instanceof ServerPlayer serverPlayer) {
+                if (!player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
                     /*Vec3 oldPos = new Vec3(player.xOld, player.yOld, player.zOld);
                     Vec3 playerPosition = player.position();
                     Vec3 posRelative = playerPosition.subtract(oldPos);

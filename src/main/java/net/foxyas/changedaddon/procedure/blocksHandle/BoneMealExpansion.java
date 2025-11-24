@@ -3,8 +3,10 @@ package net.foxyas.changedaddon.procedure.blocksHandle;
 import com.ibm.icu.impl.Pair;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.init.ChangedItems;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -44,10 +46,12 @@ public class BoneMealExpansion {
             if (depth > maxDepth) continue;
 
             BlockState state = level.getBlockState(pos);
-            if (!AbstractLatexBlock.isLatexed(state)) continue;
+            LatexType type = LatexCoverState.getAt(level, pos).getType();
+            if (type == ChangedLatexTypes.NONE.get()) continue;
 
             // Simula "crescimento"
-            state.randomTick(level, pos, level.getRandom());
+            //state.randomTick(level, pos, level.getRandom());
+            AbstractLatexBlock.tryCover(level, pos, type);
             level.levelEvent(1505, pos, 1); // Partículas
 
             // Adiciona vizinhos se ainda dentro do limite
@@ -68,14 +72,15 @@ public class BoneMealExpansion {
 
         @SubscribeEvent
         public static void onRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-            Player player = event.getPlayer();
-            Level level = event.getWorld();
+            Player player = event.getEntity();
+            Level level = event.getLevel();
             BlockPos pos = event.getPos();
             ItemStack stack = event.getItemStack();
             BlockState state = level.getBlockState(pos);
 
             if (!level.isClientSide && stack.is(Items.BONE_MEAL)) {
-                if (AbstractLatexBlock.isLatexed(state)) {
+                assert event.getFace() != null;
+                if (!AbstractLatexBlock.getSurfaceType(level, pos, event.getFace()).isAir()) {
                     if (!player.isShiftKeyDown()) {
                         return;
                     }
@@ -113,7 +118,7 @@ public class BoneMealExpansion {
                 if (!serverLevel.isClientSide && !targetState.isAir()) {
 
                     // Custom latex spreading
-                    if (AbstractLatexBlock.isLatexed(targetState)) //noinspection CommentedOutCode
+                    if (!AbstractLatexBlock.getSurfaceType(serverLevel, targetPos, facing).isAir()) //noinspection CommentedOutCode
                     {
                         spreadFromSource(serverLevel, targetPos, serverLevel.getRandom().nextInt(16) + 1);
 
@@ -165,11 +170,13 @@ public class BoneMealExpansion {
                 if (!serverLevel.isClientSide && !targetState.isAir()) {
 
                     // Custom latex spreading
-                    if (targetState.hasProperty(AbstractLatexBlock.COVERED)) {
-                        BlockState newState = targetState.setValue(AbstractLatexBlock.COVERED, LatexType.DARK_LATEX);
-                        serverLevel.setBlockAndUpdate(targetPos, newState);
+                    if (LatexCoverState.getAt(serverLevel, targetPos).isAir()) {
+//                        BlockState newState = targetState.setValue(AbstractLatexBlock.COVERED, LatexType.DARK_LATEX);
+//                        serverLevel.setBlockAndUpdate(targetPos, newState);
+                        LatexCoverState.setAtAndUpdate(serverLevel, targetPos, ChangedLatexTypes.DARK_LATEX.get().defaultCoverState());
                         serverLevel.levelEvent(1505, targetPos, 1); // Bone meal particles
-                        newState.randomTick(serverLevel, targetPos, serverLevel.getRandom());
+                        spreadFromSource(serverLevel, targetPos, serverLevel.getRandom().nextInt(16) + 1);
+                        //newState.randomTick(serverLevel, targetPos, serverLevel.getRandom());
                         success = true;
                     }
 
@@ -192,11 +199,13 @@ public class BoneMealExpansion {
                 if (!serverLevel.isClientSide && !targetState.isAir()) {
 
                     // Custom latex spreading
-                    if (targetState.hasProperty(AbstractLatexBlock.COVERED)) {
-                        BlockState newState = targetState.setValue(AbstractLatexBlock.COVERED, LatexType.WHITE_LATEX);
-                        serverLevel.setBlockAndUpdate(targetPos, newState);
+                    if (LatexCoverState.getAt(serverLevel, targetPos).isAir()) {
+//                        BlockState newState = targetState.setValue(AbstractLatexBlock.COVERED, LatexType.DARK_LATEX);
+//                        serverLevel.setBlockAndUpdate(targetPos, newState);
+                        LatexCoverState.setAtAndUpdate(serverLevel, targetPos, ChangedLatexTypes.WHITE_LATEX.get().defaultCoverState());
                         serverLevel.levelEvent(1505, targetPos, 1); // Bone meal particles
-                        newState.randomTick(serverLevel, targetPos, serverLevel.getRandom());
+                        spreadFromSource(serverLevel, targetPos, serverLevel.getRandom().nextInt(16) + 1);
+                        //newState.randomTick(serverLevel, targetPos, serverLevel.getRandom());
                         success = true;
                     }
 
@@ -217,15 +226,15 @@ public class BoneMealExpansion {
                 boolean success = false;
 
                 if (!serverLevel.isClientSide && !targetState.isAir()) {
-
                     // Custom latex spreading
-                    if (AbstractLatexBlock.isLatexed(targetState)) {
-                        if (targetState.hasProperty(AbstractLatexBlock.COVERED)) {
-                            BlockState newState = targetState.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL);
-                            serverLevel.setBlockAndUpdate(targetPos, newState);
-                            serverLevel.levelEvent(1505, targetPos, 1); // Bone meal particles
-                            success = true;
-                        }
+                    if (!LatexCoverState.getAt(serverLevel, targetPos).isAir()) {
+//                        BlockState newState = targetState.setValue(AbstractLatexBlock.COVERED, LatexType.DARK_LATEX);
+//                        serverLevel.setBlockAndUpdate(targetPos, newState);
+                        LatexCoverState.setAtAndUpdate(serverLevel, targetPos, ChangedLatexTypes.NONE.get().defaultCoverState());
+                        serverLevel.levelEvent(1505, targetPos, 1); // Bone meal particles
+                        //spreadFromSource(serverLevel, targetPos, serverLevel.getRandom().nextInt(16) + 1);
+                        //newState.randomTick(serverLevel, targetPos, serverLevel.getRandom());
+                        success = true;
                     }
 
                     // Consume 1 bonemeal if applied

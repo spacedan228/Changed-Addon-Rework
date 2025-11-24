@@ -3,18 +3,20 @@ package net.foxyas.changedaddon.procedure;
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -26,18 +28,16 @@ public class Experiment10FogColorProcessProcedure {
     private static final float[] COLOR_MIX = {126 / 255.0f, 0f, 217 / 255.0f};
 
     @SubscribeEvent
-    public static void computeFogColor(EntityViewRenderEvent.FogColors event) {
+    public static void computeFogColor(ViewportEvent.ComputeFogColor event) {
         try {
             ClientLevel clientLevel = Minecraft.getInstance().level;
             Entity entity = event.getCamera().getEntity();
-            if (entity != null) {
-                applyFogColor(clientLevel, entity.position(), entity, event);
-            }
+            applyFogColor(clientLevel, entity.position(), entity, event);
         } catch (Exception ignored) {
         }
     }
 
-    private static void applyFogColor(LevelAccessor world, Vec3 pos, Entity entity, EntityViewRenderEvent.FogColors viewport) {
+    private static void applyFogColor(LevelAccessor world, Vec3 pos, Entity entity, ViewportEvent.ComputeFogColor viewport) {
         if (!(entity instanceof LivingEntity living)) return;
         if (isInCreativeOrSpectator(entity)) return;
 
@@ -54,13 +54,11 @@ public class Experiment10FogColorProcessProcedure {
         }
 
         // Fog by nearby boss entities
-        if (!entity.getPersistentData().getBoolean("NoAI")) {
-            if (isEntityNearby(world, pos, Experiment10BossEntity.class, 50)) {
-                setFogColor(viewport, COLOR_10);
-            }
-            if (isEntityNearby(world, pos, Experiment009BossEntity.class, 50)) {
-                setFogColor(viewport, COLOR_009);
-            }
+        if (isEntityNearby(world, pos, Experiment10BossEntity.class, 50)) {
+            setFogColor(viewport, COLOR_10);
+        }
+        if (isEntityNearby(world, pos, Experiment009BossEntity.class, 50)) {
+            setFogColor(viewport, COLOR_009);
         }
     }
 
@@ -70,10 +68,10 @@ public class Experiment10FogColorProcessProcedure {
 
     private static boolean isEntityNearby(LevelAccessor world, Vec3 pos, Class<? extends Entity> clazz, double range) {
         AABB box = AABB.ofSize(pos, range, range, range);
-        return world.getEntitiesOfClass(clazz, box, e -> true).stream().findAny().isPresent();
+        return world.getEntitiesOfClass(clazz, box, e -> e instanceof Mob changedEntity && !changedEntity.isNoAi()).stream().findAny().isPresent();
     }
 
-    private static void setFogColor(EntityViewRenderEvent.FogColors fog, float[] rgb) {
+    private static void setFogColor(ViewportEvent.ComputeFogColor fog, float[] rgb) {
         fog.setRed(rgb[0]);
         fog.setGreen(rgb[1]);
         fog.setBlue(rgb[2]);

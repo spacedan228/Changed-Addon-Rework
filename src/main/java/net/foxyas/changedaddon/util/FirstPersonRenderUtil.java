@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.foxyas.changedaddon.mixins.client.renderer.ItemInHandRendererAccessor;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
@@ -47,17 +47,17 @@ public class FirstPersonRenderUtil {
         stack.translate(f * (offsetX + 0.64F), offsetY - 0.6F + equipProgress * -0.6F, offsetZ - 0.72F);
 
         // Apply swing rotations
-        stack.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
+        stack.mulPose(Axis.YP.rotationDegrees(f * 45.0F));
         float swingSin = Mth.sin(swingProgress * swingProgress * (float) Math.PI);
         float swingSqrtSin = Mth.sin(swingSqrt * (float) Math.PI);
-        stack.mulPose(Vector3f.YP.rotationDegrees(f * swingSqrtSin * 70.0F));
-        stack.mulPose(Vector3f.ZP.rotationDegrees(f * swingSin * -20.0F));
+        stack.mulPose(Axis.YP.rotationDegrees(f * swingSqrtSin * 70.0F));
+        stack.mulPose(Axis.ZP.rotationDegrees(f * swingSin * -20.0F));
 
         // Additional arm orientation
         stack.translate(f * -1.0F, 3.6F, 3.5D);
-        stack.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
-        stack.mulPose(Vector3f.XP.rotationDegrees(200.0F));
-        stack.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
+        stack.mulPose(Axis.ZP.rotationDegrees(f * 120.0F));
+        stack.mulPose(Axis.XP.rotationDegrees(200.0F));
+        stack.mulPose(Axis.YP.rotationDegrees(f * -135.0F));
         stack.translate(f * 5.6F, 0.0D, 0.0D);
 
         // Render using player renderer
@@ -87,17 +87,17 @@ public class FirstPersonRenderUtil {
         stack.translate(f * (offsetX + 0.64F), offsetY - 0.6F + equipProgress * -0.6F, offsetZ - 0.72F);
 
         // Swing rotations
-        stack.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
+        stack.mulPose(Axis.YP.rotationDegrees(f * 45.0F));
         float swingSin = Mth.sin(swingProgress * swingProgress * (float) Math.PI);
         float swingSqrtSin = Mth.sin(swingSqrt * (float) Math.PI);
-        stack.mulPose(Vector3f.YP.rotationDegrees(f * swingSqrtSin * 70.0F));
-        stack.mulPose(Vector3f.ZP.rotationDegrees(f * swingSin * -20.0F));
+        stack.mulPose(Axis.YP.rotationDegrees(f * swingSqrtSin * 70.0F));
+        stack.mulPose(Axis.ZP.rotationDegrees(f * swingSin * -20.0F));
 
         // Arm orientation relative to player
         stack.translate(f * -1.0F, 3.6F, 3.5D);
-        stack.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
-        stack.mulPose(Vector3f.XP.rotationDegrees(200.0F));
-        stack.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
+        stack.mulPose(Axis.ZP.rotationDegrees(f * 120.0F));
+        stack.mulPose(Axis.XP.rotationDegrees(200.0F));
+        stack.mulPose(Axis.YP.rotationDegrees(f * -135.0F));
         stack.translate(f * 5.6F, 0.0D, 0.0D);
 
         // Render the arm using the player renderer
@@ -131,7 +131,7 @@ public class FirstPersonRenderUtil {
                         boolean rightHand = player.getMainArm() == HumanoidArm.RIGHT;
 
                         float playerSwimAmount = player.getSwimAmount(partialTicks);
-                        ItemInHandRenderer itemInHandRenderer = Minecraft.getInstance().getItemInHandRenderer();
+                        ItemInHandRenderer itemInHandRenderer = Minecraft.getInstance().gameRenderer.itemInHandRenderer;
                         float equipProgress = 1.0F - Mth.lerp(partialTicks, ((ItemInHandRendererAccessor) itemInHandRenderer).getoMainHandHeight(), ((ItemInHandRendererAccessor) itemInHandRenderer).getMainHandHeight());
 
                         float f = rightHand ? -1.0F : 1.0F;
@@ -141,15 +141,15 @@ public class FirstPersonRenderUtil {
                         float f4 = -0.4F * Mth.sin(playerSwimAmount * (float) Math.PI);
 
                         stack.translate(f * (f2 + 0.64000005F), f3 + -0.6F + equipProgress * -0.6F, f4 + -0.71999997F);// 0 here is an inaccessible variable from ItemInHandRenderer
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
+                        stack.mulPose(Axis.YP.rotationDegrees(f * 45.0F));
                         float f5 = Mth.sin(playerSwimAmount * playerSwimAmount * (float) Math.PI);
                         float f6 = Mth.sin(f1 * (float) Math.PI);
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
-                        stack.mulPose(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
+                        stack.mulPose(Axis.YP.rotationDegrees(f * f6 * 70.0F));
+                        stack.mulPose(Axis.ZP.rotationDegrees(f * f5 * -20.0F));
                         stack.translate(f * -1.0F, 3.6F, 3.5D);
-                        stack.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
-                        stack.mulPose(Vector3f.XP.rotationDegrees(200.0F));
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
+                        stack.mulPose(Axis.ZP.rotationDegrees(f * 120.0F));
+                        stack.mulPose(Axis.XP.rotationDegrees(200.0F));
+                        stack.mulPose(Axis.YP.rotationDegrees(f * -135.0F));
                         stack.translate(f * 5.6F, 0.0D, 0.0D);
                         //applyBobbing(stack, partialTicks);
                         if (rightHand) {
@@ -187,15 +187,15 @@ public class FirstPersonRenderUtil {
                     float f4 = -0.4F * Mth.sin(pSwingProgress * (float) Math.PI);
 
                     stack.translate(f * (f2 + 0.64000005F), f3 + -0.6F + equipProgress * -0.6F, f4 + -0.71999997F);
-                    stack.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
+                    stack.mulPose(Axis.YP.rotationDegrees(f * 45.0F));
                     float f5 = Mth.sin(pSwingProgress * pSwingProgress * (float) Math.PI);
                     float f6 = Mth.sin(f1 * (float) Math.PI);
-                    stack.mulPose(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
-                    stack.mulPose(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
+                    stack.mulPose(Axis.YP.rotationDegrees(f * f6 * 70.0F));
+                    stack.mulPose(Axis.ZP.rotationDegrees(f * f5 * -20.0F));
                     stack.translate(f * -1.0F, 3.6F, 3.5D);
-                    stack.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
-                    stack.mulPose(Vector3f.XP.rotationDegrees(200.0F));
-                    stack.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
+                    stack.mulPose(Axis.ZP.rotationDegrees(f * 120.0F));
+                    stack.mulPose(Axis.XP.rotationDegrees(200.0F));
+                    stack.mulPose(Axis.YP.rotationDegrees(f * -135.0F));
                     stack.translate(f * 5.6F, 0.0D, 0.0D);
                     if (rightHand) {
                         if (player.getItemInHand(InteractionHand.OFF_HAND).isEmpty()) {

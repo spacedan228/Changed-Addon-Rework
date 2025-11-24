@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.world.features.DynamicBiomeModifier;
 import net.foxyas.changedaddon.world.features.ores.IridiumoreFeature;
 import net.foxyas.changedaddon.world.features.ores.PainiteOreFeature;
 import net.minecraft.core.Holder;
@@ -36,13 +37,13 @@ public class ChangedAddonFeatures {
     }
 
     // TODO datapack biome modifier
-//    @SubscribeEvent
-//    public static void addFeaturesToBiomes(BiomeLoadingEvent event) {
-//        for (FeatureRegistration registration : FEATURE_REGISTRATIONS) {
-//            if (registration.biomes() == null || registration.biomes().contains(event.getName()))
-//                event.getGeneration().getFeatures(registration.stage()).add(registration.placedFeature().get());
-//        }
-//    }
+    @SubscribeEvent
+    public static void addFeaturesToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
+        for (FeatureRegistration registration : FEATURE_REGISTRATIONS) {
+            if (registration.biomes() == null || registration.biomes().contains(event.getName()))
+                event.getBuilder().getGenerationSettings().getFeatures(registration.stage()).add(registration.placedFeature().get());
+        }
+    }
 
     private record FeatureRegistration(GenerationStep.Decoration stage, Set<ResourceLocation> biomes,
                                        Supplier<Holder<PlacedFeature>> placedFeature) {

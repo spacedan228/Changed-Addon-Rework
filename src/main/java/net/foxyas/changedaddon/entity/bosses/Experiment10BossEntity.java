@@ -20,6 +20,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
@@ -38,6 +39,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
@@ -122,7 +124,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             Player playerInControl = this.getUnderlyingPlayer();
             TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(playerInControl);
             if (transfurVariantInstance != null) {
-                if (playerInControl.getLevel().getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.NEED_PERMISSION_FOR_BOSS_TRANSFUR)) {
+                if (playerInControl.level().getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.NEED_PERMISSION_FOR_BOSS_TRANSFUR)) {
                     if (!getPlayerVars(playerInControl).Exp10TransfurAllowed) {
                         ProcessTransfur.setPlayerTransfurVariant(playerInControl, ChangedAddonTransfurVariants.EXPERIMENT_10.get(), TransfurContext.hazard(TransfurCause.GRAB_ABSORB), 1, false);
                     }
@@ -170,7 +172,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ResourceLocation.parse("changed:humanoids")));
+        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(ChangedTags.EntityTypes.HUMANOIDS);
     }
 
     @Override
@@ -276,7 +278,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             }
         }
 
-        if (source.isProjectile()) {
+        if (source.is(DamageTypeTags.IS_PROJECTILE)) {
             maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
         }
@@ -407,11 +409,11 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
 
     public void setCrawlingPoseIfNeeded(LivingEntity target) {
         if (target.getPose() == Pose.SWIMMING && !(this.getPose() == Pose.SWIMMING)) {
-            if (target.getY() < getEyeY() && !(target.level.getBlockState(new BlockPos(target.getX(), target.getEyeY(), target.getZ()).above()).isAir())) {
+            if (target.getY() < getEyeY() && !(target.level.getBlockState(new BlockPos((int) target.getX(), (int) target.getEyeY(), (int) target.getZ()).above()).isAir())) {
                 this.setPose(Pose.SWIMMING);
             }
         } else {
-            if (!this.isSwimming() && this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir()) {
+            if (!this.isSwimming() && this.level.getBlockState(new BlockPos((int) this.getX(), (int) this.getEyeY(), (int) this.getZ()).above()).isAir()) {
                 this.setPose(Pose.STANDING);
             }
         }
@@ -432,7 +434,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
 
     public void updateSwimmingMovement() {
         if (!this.isInWater()) {
-            if (this.getPose() == Pose.SWIMMING && level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir()) {
+            if (this.getPose() == Pose.SWIMMING && level.getBlockState(new BlockPos((int) this.getX(), (int) this.getEyeY(), (int) this.getZ()).above()).isAir()) {
                 this.setPose(Pose.STANDING);
                 this.setSwimming(false);
             }
@@ -543,7 +545,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
 
     @Override
     public void WhenPattedReaction(Player player, InteractionHand hand) {
-        if (!(player.getLevel() instanceof ServerLevel)) return;
+        if (!(player.level() instanceof ServerLevel)) return;
         if (player instanceof ServerPlayer serverPlayer) {
             ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, this, "pats_on_the_beast");
         }

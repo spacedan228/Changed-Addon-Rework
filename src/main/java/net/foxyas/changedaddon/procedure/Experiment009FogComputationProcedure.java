@@ -10,7 +10,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 public class Experiment009FogComputationProcedure {
 
     @SubscribeEvent
-    public static void onRenderFog(EntityViewRenderEvent.RenderFogEvent event) {
+    public static void onRenderFog(ViewportEvent.RenderFog event) {
         if(event.getMode() != FogRenderer.FogMode.FOG_TERRAIN) return;
 
         try {
@@ -34,8 +34,8 @@ public class Experiment009FogComputationProcedure {
         }
     }
 
-    private static void applyFogEffect(LivingEntity entity, EntityViewRenderEvent viewport) {
-        if (entity == null || !(viewport instanceof EntityViewRenderEvent.RenderFogEvent fogEvent)) return;
+    private static void applyFogEffect(LivingEntity entity, ViewportEvent viewport) {
+        if (entity == null || !(viewport instanceof ViewportEvent.RenderFog fogEvent)) return;
         if (entity.isSpectator() || entity instanceof Player player && player.isCreative()) return;
 
         if (isHoldingItem(entity, ChangedAddonItems.EXPERIMENT_009_DNA.get()) ||

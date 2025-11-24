@@ -2,7 +2,8 @@ package net.foxyas.changedaddon.mixins;
 
 import net.foxyas.changedaddon.block.DarkLatexPuddleBlock;
 import net.foxyas.changedaddon.block.entity.DarkLatexPuddleBlockEntity;
-import net.ltxprogrammer.changed.entity.LatexType;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -28,15 +29,15 @@ public abstract class MinecraftMixin {
             return;
         if (this.cameraEntity == null)
             return;
-        if (LatexType.getEntityLatexType(this.cameraEntity) != LatexType.DARK_LATEX)
+        if (LatexType.getEntityLatexType(this.cameraEntity) != ChangedLatexTypes.DARK_LATEX.get())
             return;
-        if (LatexType.getEntityLatexType(livingEntity) != null && LatexType.getEntityLatexType(livingEntity) == LatexType.DARK_LATEX)
+        if (LatexType.getEntityLatexType(livingEntity) != null && LatexType.getEntityLatexType(livingEntity) == ChangedLatexTypes.DARK_LATEX.get())
             return;
         BlockState feetBlockState = livingEntity.getFeetBlockState();
         if (feetBlockState.isAir())
             return;
         if (feetBlockState.getBlock() instanceof DarkLatexPuddleBlock) {
-            BlockEntity blockEntity = livingEntity.getLevel().getBlockEntity(livingEntity.blockPosition());
+            BlockEntity blockEntity = livingEntity.level().getBlockEntity(livingEntity.blockPosition());
             if (blockEntity instanceof DarkLatexPuddleBlockEntity darkLatexPuddleBlockEntity) {
                 callback.setReturnValue(darkLatexPuddleBlockEntity.cooldown <= 0 && livingEntity.distanceTo(this.cameraEntity) <= 15);
             }

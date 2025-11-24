@@ -62,6 +62,8 @@ public class ChangedAddonMod {
         ChangedAddonVillagerProfessions.PROFESSIONS.register(bus);
         ChangedAddonFluids.REGISTRY.register(bus);
 
+        ChangedAddonBiomeModifiers.BIOME_MODIFIERS.register(bus);
+
         dataFixer = new ChangedAddonDataFixer();
     }
 

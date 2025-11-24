@@ -101,18 +101,36 @@ public class LunarRoseItem extends ArmorItem {
     }
 
     @Override
-    public void onArmorTick(ItemStack itemstack, Level level, Player player) {
+    public void onInventoryTick(ItemStack stack, Level level, Player player, int slotIndex, int selectedIndex) {
+
+        // For compatibility reasons we have to use non-local index values, I think this is a vanilla bug but lets maintain compatibility
+        var inv = player.getInventory();
+        int vanillaIndex = slotIndex;
+        if (slotIndex >= inv.items.size()) {
+            vanillaIndex -= inv.items.size();
+            if (!(vanillaIndex >= inv.armor.size())) {
+                onArmorTicks(stack, level, player);
+            }
+        }
+
+
+        super.onInventoryTick(stack, level, player, slotIndex, selectedIndex);
+    }
+
+    public void onArmorTicks(ItemStack itemstack, Level level, Player player) {
         if (player == null || level.isClientSide) return;
 
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        if(instance != null && !instance.is(ChangedAddonTransfurVariants.PURO_KIND_MALE)
-                && !instance.is(ChangedAddonTransfurVariants.PURO_KIND_FEMALE)) return;//!instance.getFormId().toString().equals("changed_addon:form_light_latex_wolf");
+        if (instance != null && !instance.is(ChangedAddonTransfurVariants.PURO_KIND_MALE)
+                && !instance.is(ChangedAddonTransfurVariants.PURO_KIND_FEMALE))
+            return;//!instance.getFormId().toString().equals("changed_addon:form_light_latex_wolf");
 
         if (!player.hasEffect(MobEffects.REGENERATION)) {
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 60, 1, false, false));
         }
 
-        if((player.hasEffect(MobEffects.REGENERATION) ? player.getEffect(MobEffects.REGENERATION).getAmplifier() : 0) >= 3) return;
+        if ((player.hasEffect(MobEffects.REGENERATION) ? player.getEffect(MobEffects.REGENERATION).getAmplifier() : 0) >= 3)
+            return;
 
         final Vec3 center = player.position();
         List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, new AABB(center, center).inflate(1 / 2d), e -> e != player && !e.hasEffect(MobEffects.REGENERATION));
