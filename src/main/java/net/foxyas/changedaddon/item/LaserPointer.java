@@ -156,8 +156,9 @@ public class LaserPointer extends Item implements SpecializedAnimations {
     }
 
     @Override
-    public void onUsingTick(ItemStack stack, LivingEntity player, int count) {
-        super.onUsingTick(stack, player, count);
+    public void onUseTick(Level pLevel, LivingEntity player, ItemStack pStack, int count) {
+        super.onUseTick(pLevel, player, pStack, count);
+
 
         Level level = player.level;
         if(player.level.isClientSide || count % 20 != 0) return;
