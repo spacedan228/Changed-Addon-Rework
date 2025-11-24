@@ -142,7 +142,7 @@ public class DashAttack extends Goal {
                     Vec3 knockback = difference.normalize().scale(distance * KNOCKBACK_MULTIPLIER);
                     dasher.swing(InteractionHand.MAIN_HAND);
                     if (!entity.isBlocking()) {
-                        entity.hurt(DamageSource.mobAttack(dasher), 6.0F);
+                        entity.hurt(entity.level().damageSources().mobAttack(dasher), 6.0F);
                         dasher.level().playSound(null, entity, SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 1, 1);
                     } else {
                         dasher.level().playSound(null, entity, SoundEvents.SHIELD_BLOCK, SoundSource.HOSTILE, 1, 1);

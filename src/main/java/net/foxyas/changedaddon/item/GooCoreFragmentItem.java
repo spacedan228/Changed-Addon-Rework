@@ -6,6 +6,7 @@ import net.minecraft.world.item.Rarity;
 
 public class GooCoreFragmentItem extends Item {
     public GooCoreFragmentItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).fireResistant().rarity(Rarity.COMMON));
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .stacksTo(64).fireResistant().rarity(Rarity.COMMON));
     }
 }

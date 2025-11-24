@@ -47,7 +47,7 @@ public class LuminaraBloomPetalsItem extends Item {
         }
 
         // Perform a ray trace to detect what the player is looking at
-        HitResult hit = PlayerUtil.getEntityHitLookingAt(player, (float) player.getReachDistance(), false);
+        HitResult hit = PlayerUtil.getEntityHitLookingAt(player, (float) player.getEntityReach(), false);
 
         if (hit != null && hit.getType() == HitResult.Type.ENTITY && hit instanceof EntityHitResult entityHitResult) {
             // If the hit is an entity, try to interact specifically with it
@@ -101,7 +101,7 @@ public class LuminaraBloomPetalsItem extends Item {
             target.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 60 * 20));
 
             // Play eating sound for feedback
-            target.getLevel().playSound(null, target.blockPosition(),
+            target.level().playSound(null, target.blockPosition(),
                     SoundEvents.GENERIC_EAT, target.getSoundSource(), 1.0F, 1.0F);
 
             // Consume one item if player is not in creative mode

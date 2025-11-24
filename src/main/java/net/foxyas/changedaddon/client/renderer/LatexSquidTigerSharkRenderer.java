@@ -14,7 +14,7 @@ public class LatexSquidTigerSharkRenderer extends AdvancedHumanoidRenderer<Latex
     public LatexSquidTigerSharkRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexSquidTigerSharkModel(context.bakeLayer(LatexSquidTigerSharkModel.LAYER_LOCATION)),
                 ArmorLatexSquidTigerSharkModel.MODEL_SET, 0.65f);
-        this.addLayer(new DoubleItemInHandLayer<>(this));
+        this.addLayer(new DoubleItemInHandLayer<>(this, context.getItemInHandRenderer()));
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet()));

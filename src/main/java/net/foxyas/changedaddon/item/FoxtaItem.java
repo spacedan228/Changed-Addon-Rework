@@ -35,7 +35,8 @@ public class FoxtaItem extends BlockItem implements SpecializedItemRendering {
 
     public FoxtaItem() {
         super(ChangedAddonBlocks.FOXTA_CAN.get(), new Item.Properties()
-                //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                ////.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+
                 .stacksTo(64)
                 .rarity(Rarity.RARE)
                 .food(new FoodProperties.Builder()

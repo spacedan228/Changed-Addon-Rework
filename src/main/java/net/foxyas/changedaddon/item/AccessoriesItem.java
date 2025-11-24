@@ -78,7 +78,8 @@ public abstract class AccessoriesItem extends ArmorItem {
     public static class Chestplate extends AccessoriesItem {
 
         public Chestplate() {
-            super(Type.CHESTPLATE, new Item.Properties()); //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).fireResistant());
+            super(Type.CHESTPLATE, new Item.Properties() //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+            .fireResistant());
         }
 
         public void initializeClient(Consumer<IClientItemExtensions> consumer) {

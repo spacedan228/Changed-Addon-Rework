@@ -5,6 +5,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.damagesource.DamageSource;
@@ -96,9 +97,9 @@ public class StaticDischargeGoal extends Goal {
         if (delta >= 0.9f && !triggered) {
             AABB aabb = AABB.ofSize(holder.position(), aoe * 2, aoe * 2, aoe * 2);
             ServerLevel level = (ServerLevel) holder.level;
-            Random random = holder.getRandom();
+            RandomSource random = holder.getRandom();
             level.getEntities(holder, aabb, entity -> entity.distanceToSqr(holder) <= aoeSqr).forEach(entity -> {
-                        entity.hurt(DamageSource.LIGHTNING_BOLT, damageProvider.sample(random));
+                        entity.hurt(target.level().damageSources().lightningBolt(), damageProvider.sample(random));
                         Vec3 direction = entity.position().subtract(holder.position());
 
                         direction = direction.normalize();

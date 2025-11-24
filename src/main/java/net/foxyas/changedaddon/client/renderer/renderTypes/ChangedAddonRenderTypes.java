@@ -34,7 +34,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceManager(), ChangedAddonMod.resourceLoc("translucent_outline"), DefaultVertexFormat.POSITION_COLOR_TEX), shader -> TRANSLUCENT_OUTLINE_SHADER = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(), ChangedAddonMod.resourceLoc("translucent_outline"), DefaultVertexFormat.POSITION_COLOR_TEX), shader -> TRANSLUCENT_OUTLINE_SHADER = shader);
     }
 
     private static final Function<ResourceLocation, RenderType> GLOW_WITH_NO_TRANSLUCED = Util.memoize((p_173255_) -> {

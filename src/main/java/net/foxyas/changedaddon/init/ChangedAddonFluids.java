@@ -23,6 +23,7 @@ public class ChangedAddonFluids {
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientSideHandler {
 
+        @SuppressWarnings("removal")
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
             ItemBlockRenderTypes.setRenderLayer(LITIX_CAMONIA_FLUID.get(), renderType -> renderType == RenderType.translucent());

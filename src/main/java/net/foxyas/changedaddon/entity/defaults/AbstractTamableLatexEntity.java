@@ -286,7 +286,7 @@ public abstract class AbstractTamableLatexEntity extends ChangedEntity implement
         Component deathMessage = this.getCombatTracker().getDeathMessage();
         super.die(source);
         if (this.dead && !this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && this.getOwner() instanceof ServerPlayer) {
-            this.getOwner().sendMessage(deathMessage, Util.NIL_UUID);
+            ((ServerPlayer) this.getOwner()).displayClientMessage(deathMessage, false);
         }
 
     }

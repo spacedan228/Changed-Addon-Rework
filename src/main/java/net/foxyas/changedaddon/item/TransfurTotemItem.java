@@ -61,7 +61,8 @@ public class TransfurTotemItem extends Item {
     public static final AttributeModifier TOTEM_BUFF_ARMOR = new AttributeModifier(UUID.fromString("17c5b5cf-bdae-4191-84d1-433db7cba753"), "transfur_stats", 6, AttributeModifier.Operation.ADDITION);
 
     public TransfurTotemItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(1).fireResistant().rarity(Rarity.RARE));
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .stacksTo(1).fireResistant().rarity(Rarity.RARE));
     }
 
     @Override
@@ -163,12 +164,12 @@ public class TransfurTotemItem extends Item {
     }
 
     @Override
-    public boolean hasCraftingRemainingItem() {
+    public boolean hasCraftingRemainingItem(ItemStack itemStack) {
         return true;
     }
 
     @Override
-    public ItemStack getContainerItem(ItemStack itemstack) {
+    public ItemStack getCraftingRemainingItem(ItemStack itemstack) {
         return new ItemStack(this);
     }
 
@@ -400,8 +401,8 @@ public class TransfurTotemItem extends Item {
                 Component text = Component.translatable("changed_addon.latex_totem.tittle.text_1");
                 Component text2 = Component.translatable("changed_addon.latex_totem.tittle.text_2");
                 serverPlayer.displayClientMessage(text, true);
-                serverPlayer.sendMessage(text, ChatType.CHAT, serverPlayer.getUUID());
-                serverPlayer.sendMessage(text2, ChatType.CHAT, serverPlayer.getUUID());
+                serverPlayer.displayClientMessage(text, false);
+                serverPlayer.displayClientMessage(text2, false);
             }
         }
     }

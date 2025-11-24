@@ -42,14 +42,13 @@ public class LunarRoseItem extends ArmorItem {
 
     public LunarRoseItem() {
         super(new ArmorMaterial() {
-
             @Override
-            public int getDurabilityForSlot(@NotNull EquipmentSlot slot) {
+            public int getDurabilityForType(Type pType) {
                 return 1100;
             }
 
             @Override
-            public int getDefenseForSlot(@NotNull EquipmentSlot slot) {
+            public int getDefenseForType(Type pType) {
                 return 0;
             }
 
@@ -82,7 +81,8 @@ public class LunarRoseItem extends ArmorItem {
             public float getKnockbackResistance() {
                 return 0f;
             }
-        }, EquipmentSlot.HEAD, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).fireResistant().durability(-1));
+        }, Type.HELMET, new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .fireResistant().durability(-1));
     }
 
     @Override

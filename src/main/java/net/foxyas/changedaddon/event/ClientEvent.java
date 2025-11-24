@@ -39,7 +39,7 @@ public class ClientEvent {
 
     @SubscribeEvent
     public static void onItemTooltip(ItemTooltipEvent event) {
-        showExtraTransfurInfo(event.getPlayer(), event.getItemStack(), event.getToolTip());
+        showExtraTransfurInfo(event.getEntity(), event.getItemStack(), event.getToolTip());
     }
 
     public static void showExtraTransfurInfo(@Nullable Player entity, ItemStack itemstack, List<Component> tooltip) {
@@ -116,7 +116,7 @@ public class ClientEvent {
                                 : Component.literal("§cFalse§r")));
             }
 
-            if (ChangedAddonTransfurVariants.isVariantOC(loc, entity.getLevel())) {
+            if (ChangedAddonTransfurVariants.isVariantOC(loc, entity.level())) {
                 Component ocVariantComponent = ChangedAddonTransfurVariants.getOcVariantComponent(tf);
                 MutableComponent append = Component.literal("§8OC Transfur");
                 if (ocVariantComponent != null) append.append("\n").append(ocVariantComponent);

@@ -8,9 +8,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -81,7 +81,7 @@ public class InductionCoilGoal extends Goal {
             items = Iterables.concat(target.getHandSlots(), target.getArmorSlots(), Iterables.limit(player.getInventory().items, 9));
         } else items = Iterables.concat(target.getHandSlots(), target.getArmorSlots());
 
-        holder.level.playSound(null, holder, SoundEvents.TRIDENT_THUNDER, SoundSource.MASTER, 10000, 0.8f + holder.getRandom().nextFloat(0.2f));
+        holder.level.playSound(null, holder, SoundEvents.TRIDENT_THUNDER, SoundSource.MASTER, 10000, 0.8f + new Random().nextFloat(0.2f));
     }
 
     @Override
@@ -94,7 +94,7 @@ public class InductionCoilGoal extends Goal {
 
         if (holder.tickCount % 20 != 0) return;
 
-        Random random = holder.getRandom();
+        RandomSource random = holder.getRandom();
         int metal = 0, slots = 0;
         for (ItemStack stack : items) {
             slots++;
@@ -109,7 +109,7 @@ public class InductionCoilGoal extends Goal {
         }
 
         float metalPercentage = Math.max((float) metal / slots, 0.1f);
-        target.hurt(DamageSource.IN_FIRE, damageProvider.sample(random) * metalPercentage);
+        target.hurt(target.level().damageSources().inFire(), damageProvider.sample(random) * metalPercentage);
         target.setSecondsOnFire(5);
     }
 
@@ -131,7 +131,7 @@ public class InductionCoilGoal extends Goal {
         }
     }
 
-    protected void hurtAndBreak(ItemStack stack, int damage, Random random) {
+    protected void hurtAndBreak(ItemStack stack, int damage, RandomSource random) {
         if (!stack.isDamageableItem() || !stack.hurt(damage, random, null)) return;
 
         stack.shrink(1);

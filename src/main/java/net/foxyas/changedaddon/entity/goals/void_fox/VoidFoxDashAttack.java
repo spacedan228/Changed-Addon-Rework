@@ -131,7 +131,7 @@ public class VoidFoxDashAttack extends Goal {
                 if (distance > 0.1) {
                     Vec3 knockback = difference.normalize().scale(distance * KNOCKBACK_MULTIPLIER);
                     dasher.swing(InteractionHand.MAIN_HAND);
-                    if (entity.hurt(DamageSource.mobAttack(dasher), 6.0F)) {
+                    if (entity.hurt(entity.level().damageSources().mobAttack(dasher), 6.0F)) {
                         dasher.level().playSound(null, entity, SoundEvents.PLAYER_ATTACK_STRONG, SoundSource.HOSTILE, 1, 1);
                         dasher.level().playSound(null, entity, SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 1, 1);
                     } else {

@@ -205,10 +205,10 @@ public class LuminarCrystalSpearEntity extends AbstractArrow implements ItemSupp
             if (hitState.is(ChangedAddonBlocks.LUMINAR_CRYSTAL_BLOCK.get()) || hitState.isAir()) {
                 return;
             }
-            Explosion explosion = new Explosion(serverLevel, this, this.position().x(), this.position().y(), this.position().z(), 3f);
+            Explosion explosion = new Explosion(serverLevel, this, this.position().x(), this.position().y(), this.position().z(), 3f, false, Explosion.BlockInteraction.DESTROY);
             //AABB BoundBox = new AABB(result.getBlockPos());
             //BoundBox.inflate(1 + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS, this.SpearItem));
-            int radius = 1 + Math.max(0, (EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SHARPNESS, this.SpearItem) / 3));
+            int radius = 1 + Math.max(0, (EnchantmentHelper.getTagEnchantmentLevel(Enchantments.SHARPNESS, this.SpearItem) / 3));
             for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(result.getBlockPos(), radius, radius, 1.25f).toList()) {
                 BlockState state = serverLevel.getBlockState(pos);
                 if (state.is(ChangedAddonBlocks.LUMINAR_CRYSTAL_BLOCK.get()) || state.isAir()) {
@@ -233,7 +233,7 @@ public class LuminarCrystalSpearEntity extends AbstractArrow implements ItemSupp
         }
 
         Entity entity1 = this.getOwner();
-        DamageSource damagesource = DamageSource.trident(this, entity1 == null ? this : entity1);
+        DamageSource damagesource = this.level().damageSources().trident(this, entity1 == null ? this : entity1);
         this.dealtDamage = true;
         SoundEvent soundevent = SoundEvents.TRIDENT_HIT;
         if (entity.hurt(damagesource, f)) {

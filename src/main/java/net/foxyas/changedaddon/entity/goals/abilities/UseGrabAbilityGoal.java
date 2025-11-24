@@ -77,7 +77,7 @@ public class UseGrabAbilityGoal extends Goal {
             }
         }
 
-        if (!grabAbility.attackDown && changedEntity.level().random.nextFloat() < 0.35f) {
+        if (!grabAbility.attackDown && changedEntity.getLevel().random.nextFloat() < 0.35f) {
             grabAbility.attackDown = true;
         }
     }

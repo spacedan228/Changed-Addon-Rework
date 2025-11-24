@@ -68,7 +68,7 @@ public class ThunderDiveGoal extends Goal {
                 // Começa do teto e desce até achar espaço
                 int maxY = level.getHeight() - 1;
                 for (int y = maxY; y > 0; y--) {
-                    BlockPos checkPos = new BlockPos(x, y, z);
+                    BlockPos checkPos = new BlockPos((int) x, y, (int) z);
                     // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
                     if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(checkPos.above())) {
                         topY = y;
@@ -119,7 +119,7 @@ public class ThunderDiveGoal extends Goal {
         LivingEntity t = mob.getTarget();
         Vec3 dir = (t != null ? mob.position().vectorTo(t.position()).normalize() : Vec3.ZERO);
         mob.setDeltaMovement(mob.getDeltaMovement().add(dir.x * 0.2, ascendBoost, dir.z * 0.2));
-        ChangedSounds.broadcastSound(mob, ChangedSounds.CARDBOARD_BOX_OPEN.get(), 1, 1);
+        ChangedSounds.broadcastSound(mob, ChangedSounds.CARDBOARD_BOX_OPEN, 1, 1);
 
         // pairar levemente enquanto sobe
         mob.setNoGravity(true);
@@ -188,18 +188,18 @@ public class ThunderDiveGoal extends Goal {
         for (LivingEntity livingEntity : mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(4))) {
             if (livingEntity.isFallFlying()) {
                 livingEntity.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
-                ChangedSounds.broadcastSound(livingEntity, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
+                ChangedSounds.broadcastSound(livingEntity, SoundEvents.PLAYER_ATTACK_CRIT.getLocation(), 1, 1);
             } else if (livingEntity instanceof Player player) {
                 if (player.getAbilities().flying) {
                     if (player instanceof ServerPlayer serverPlayer) {
                         serverPlayer.getAbilities().flying = false;
                         serverPlayer.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                         serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer.getId(), serverPlayer.getDeltaMovement()));
-                        ChangedSounds.broadcastSound(serverPlayer, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
+                        ChangedSounds.broadcastSound(serverPlayer, SoundEvents.PLAYER_ATTACK_CRIT.getLocation(), 1, 1);
                     } else {
                         player.getAbilities().flying = false;
                         player.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
-                        ChangedSounds.broadcastSound(player, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
+                        ChangedSounds.broadcastSound(player, SoundEvents.PLAYER_ATTACK_CRIT.getLocation(), 1, 1);
                     }
                 }
             }

@@ -73,9 +73,9 @@ public class FishingEvent {
 
     @SubscribeEvent
     public static void onPlayerFishItem(ItemFishedEvent event) {
-        if (event != null && event.getPlayer() != null) {
-            Player player = event.getPlayer();
-            LevelAccessor world = player.getLevel();
+        if (event != null && event.getEntity() != null) {
+            Player player = event.getEntity();
+            LevelAccessor world = player.level();
             FishingHook hookEntity = event.getHookEntity();
 
             // Obtem o item em uso do jogador

@@ -15,7 +15,8 @@ import org.jetbrains.annotations.NotNull;
 public class DiffusionSyringeItem extends AbstractSyringeItem {
 
     public DiffusionSyringeItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(16)
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .stacksTo(16)
                 .rarity(Rarity.EPIC)
         );
     }

@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
@@ -10,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonSoundEvents {
 
-    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registry.SOUND_EVENT_REGISTRY, ChangedAddonMod.MODID);
+    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, ChangedAddonMod.MODID);
 
     public static final RegistryObject<SoundEvent> ARMOR_EQUIP = registerSimple("armor_equip");
     public static final RegistryObject<SoundEvent> GECKO_BEEP = registerSimple("gecko_sound");
@@ -28,6 +29,6 @@ public class ChangedAddonSoundEvents {
     public static final RegistryObject<SoundEvent> PROTOTYPE_IDEA = registerSimple("entity.prototype.idea_sfx");
 
     private static RegistryObject<SoundEvent> registerSimple(String path) {
-        return SOUNDS.register(path, () -> new SoundEvent(ChangedAddonMod.resourceLoc(path)));
+        return SOUNDS.register(path, () -> SoundEvent.createVariableRangeEvent(ChangedAddonMod.resourceLoc(path)));
     }
 }

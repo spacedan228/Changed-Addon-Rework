@@ -29,9 +29,9 @@ public class PruneOrangeLeavesEvent {
 
     @SubscribeEvent
     public static void rightClickOrangeLeaves(PlayerInteractEvent.RightClickBlock rightClickBlockEvent) {
-        Player player = rightClickBlockEvent.getPlayer();
+        Player player = rightClickBlockEvent.getEntity();
         ItemStack usedItem = rightClickBlockEvent.getItemStack();
-        Level world = rightClickBlockEvent.getWorld();
+        Level world = rightClickBlockEvent.getLevel();
         BlockHitResult blockHitResult = rightClickBlockEvent.getHitVec();
         BlockPos position = blockHitResult.getBlockPos();
         BlockState state = world.getBlockState(position);

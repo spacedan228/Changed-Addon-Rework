@@ -1,10 +1,12 @@
 package net.foxyas.changedaddon.entity.goals.exp9;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.entity.EntityType;
@@ -113,11 +115,10 @@ public class SummonLightningGoal extends Goal {
             return;
         }
 
-        Random random = holder.getRandom();
+        RandomSource random = holder.getRandom();
         if (strikePos == null) {
             strikePos = target.position();
-
-            BlockPos pos = new BlockPos(strikePos);
+            BlockPos pos = new BlockPos(new Vec3i((int) strikePos.x, (int) strikePos.y, (int) strikePos.z));
             if (level.getBlockState(pos).is(Blocks.WATER)) {
                 do pos = pos.above();
                 while (level.getBlockState(pos).is(Blocks.WATER));

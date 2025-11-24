@@ -28,7 +28,8 @@ import javax.annotation.Nullable;
 
 public class LaethinminatorItem extends Item implements SpecializedAnimations {
     public LaethinminatorItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).durability(320).rarity(Rarity.UNCOMMON));
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .durability(320).rarity(Rarity.UNCOMMON));
     }
 
     public int getUseDuration(@NotNull ItemStack stack) {

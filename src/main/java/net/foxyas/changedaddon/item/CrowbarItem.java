@@ -43,22 +43,23 @@ public class CrowbarItem extends PickaxeItem {
             public @NotNull Ingredient getRepairIngredient() {
                 return Ingredient.of();
             }
-        }, 1, -2.6f, new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
+        }, 1, -2.6f, new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                );
     }
 
     @Override
-    public boolean hasContainerItem(ItemStack stack) {
-        return true;
-    }
-
-    @Override
-    public ItemStack getContainerItem(ItemStack itemstack) {
+    public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
         ItemStack retval = new ItemStack(this);
-        retval.setDamageValue(itemstack.getDamageValue() + 1);
+        retval.setDamageValue(itemStack.getDamageValue() + 1);
         if (retval.getDamageValue() >= retval.getMaxDamage()) {
             return ItemStack.EMPTY;
         }
         return retval;
+    }
+
+    @Override
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return true;
     }
 
     @Override

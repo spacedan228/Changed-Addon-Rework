@@ -15,7 +15,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class ImpureAmmoniaItem extends Item {
     public ImpureAmmoniaItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).rarity(Rarity.COMMON));
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .stacksTo(64).rarity(Rarity.COMMON));
     }
 
     private static final ResourceLocation advLocation = ChangedAddonMod.resourceLoc("impure_ammonia_craft");

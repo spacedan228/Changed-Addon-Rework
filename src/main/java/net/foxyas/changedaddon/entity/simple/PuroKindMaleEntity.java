@@ -3,7 +3,9 @@ package net.foxyas.changedaddon.entity.simple;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
+import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -41,7 +43,10 @@ public class PuroKindMaleEntity extends AbstractDarkLatexWolf {
         setNoAi(false);
     }
 
-
+    @Override
+    public LatexType getLatexType() {
+        return ChangedLatexTypes.DARK_LATEX.get();
+    }
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();

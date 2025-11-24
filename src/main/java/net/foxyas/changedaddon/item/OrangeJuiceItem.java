@@ -11,7 +11,8 @@ import org.jetbrains.annotations.NotNull;
 public class OrangeJuiceItem extends Item {
 
     public OrangeJuiceItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).rarity(Rarity.COMMON)
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .stacksTo(64).rarity(Rarity.COMMON)
                 .food(new FoodProperties.Builder().nutrition(8).saturationMod(1.125f).alwaysEat().build()));
     }
 

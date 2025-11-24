@@ -47,7 +47,8 @@ public class LaserPointer extends Item implements SpecializedAnimations {
     };
 
     public LaserPointer() {
-        super(new Properties().stacksTo(1).tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB));
+        super(new Properties().stacksTo(1)//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                );
     }
 
     public static int getColor(ItemStack stack) {
@@ -97,10 +98,8 @@ public class LaserPointer extends Item implements SpecializedAnimations {
         return UseAnim.NONE;
     }
 
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab tab, @NotNull NonNullList<ItemStack> items) {
-        if(!allowdedIn(tab)) return;
 
+    public void fillItemCategory(@NotNull CreativeModeTab tab, @NotNull NonNullList<ItemStack> items) {
         for (DefaultColors color : DefaultColors.values()) {
             ItemStack stack = new ItemStack(this);
             stack.getOrCreateTag().putInt("Color", color.getRGB());

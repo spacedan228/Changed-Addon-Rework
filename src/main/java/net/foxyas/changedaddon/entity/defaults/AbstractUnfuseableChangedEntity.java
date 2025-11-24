@@ -335,7 +335,7 @@ public abstract class AbstractUnfuseableChangedEntity extends ChangedEntity impl
 
         if (this.dead)
             if (!this.level.isClientSide && this.level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && this.getOwner() instanceof ServerPlayer) {
-                this.getOwner().sendMessage(deathMessage, Util.NIL_UUID);
+                ((ServerPlayer) this.getOwner()).displayClientMessage(deathMessage, false);
             }
     }
 

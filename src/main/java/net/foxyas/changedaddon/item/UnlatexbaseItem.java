@@ -14,7 +14,8 @@ import java.util.List;
 
 public class UnlatexbaseItem extends Item {
     public UnlatexbaseItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).rarity(Rarity.COMMON));
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .stacksTo(64).rarity(Rarity.COMMON));
     }
 
     @Override

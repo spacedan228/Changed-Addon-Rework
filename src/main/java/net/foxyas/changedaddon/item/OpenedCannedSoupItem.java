@@ -28,7 +28,8 @@ import org.jetbrains.annotations.NotNull;
 public class OpenedCannedSoupItem extends AbstractCanItem {
 
     public OpenedCannedSoupItem() {
-        super(new Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+        super(new Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+
                 .food(new FoodProperties.Builder().nutrition(6).saturationMod(0.6F).alwaysEat().build()));
     }
 

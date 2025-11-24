@@ -35,7 +35,8 @@ public class SignalCatcherItem extends Item {
     private static final int MAX_FOUND_BLOCKS = 10;
 
     public SignalCatcherItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).rarity(Rarity.COMMON));
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .stacksTo(64).rarity(Rarity.COMMON));
     }
 
     @Override

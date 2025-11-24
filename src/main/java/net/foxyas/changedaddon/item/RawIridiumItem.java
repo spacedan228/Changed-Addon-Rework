@@ -6,6 +6,7 @@ import net.minecraft.world.item.Rarity;
 
 public class RawIridiumItem extends Item {
     public RawIridiumItem() {
-        super(new Item.Properties().tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).stacksTo(64).fireResistant().rarity(Rarity.UNCOMMON));
+        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+                .stacksTo(64).fireResistant().rarity(Rarity.UNCOMMON));
     }
 }

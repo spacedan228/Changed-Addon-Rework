@@ -44,7 +44,7 @@ public class OffSetSpawnProcessor extends StructureProcessor {
             @NotNull StructurePlaceSettings settings
             , @Nullable StructureTemplate template) {
         // Aplica o offset aos blocos da estrutura
-        BlockPos newPos = current.pos.offset(offsetX, offsetY, offsetZ);
-        return new StructureTemplate.StructureBlockInfo(newPos, current.state, current.nbt);
+        BlockPos newPos = current.pos().offset(offsetX, offsetY, offsetZ);
+        return new StructureTemplate.StructureBlockInfo(newPos, current.state(), current.nbt());
     }
 }
