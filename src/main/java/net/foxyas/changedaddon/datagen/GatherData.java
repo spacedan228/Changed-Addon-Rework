@@ -34,6 +34,11 @@ public class GatherData {
         generator.addProvider(true, new TFTagsProvider(packOutput, lookupProvider, helper));
         generator.addProvider(true, new AccessoryEntityProvider(generator));
 
+        CompletableFuture<HolderLookup.Provider> lookup0 =
+                generator.addProvider(event.includeServer(), new DatapackEntriesProvider(packOutput, lookupProvider)).getRegistryProvider();
+        generator.addProvider(event.includeServer(), new BiomeTagProvider(packOutput, lookup0, helper));
+        generator.addProvider(event.includeServer(), new DamageTypeTagProvider(packOutput, lookup0, helper));
+
         generator.addProvider(true, new RecipeProvider(packOutput));
 
         generator.addProvider(true, new LootTableProvider(packOutput));

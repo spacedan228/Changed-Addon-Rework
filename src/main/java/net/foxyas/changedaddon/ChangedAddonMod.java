@@ -4,7 +4,9 @@ import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.world.datafixer.ChangedAddonDataFixer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
@@ -19,6 +21,7 @@ import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
@@ -85,6 +88,10 @@ public class ChangedAddonMod {
 
     public static ModelLayerLocation layerLocation(String path, String layer) {
         return new ModelLayerLocation(resourceLoc(path), layer);
+    }
+
+    public static <T> @NotNull ResourceKey<T> resourceKey(ResourceKey<? extends Registry<T>> registry, String str){
+        return ResourceKey.create(registry, ResourceLocation.fromNamespaceAndPath(net.foxyas.changedaddon.ChangedAddonMod.MODID, str));
     }
 
     public static <T extends Event> boolean postEvent(T event) {
