@@ -1,23 +1,25 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "I": {
+      "tag": "forge:ingots/iridium"
+    },
+    "N": {
+      "item": "minecraft:netherite_scrap"
+    }
+  },
   "pattern": [
     "NIN",
     "ICI",
     "NIN"
   ],
-  "key": {
-    "N": {
-      "item": "minecraft:netherite_scrap"
-    },
-    "I": {
-      "tag": "forge:ingots/iridium"
-    },
-    "C": {
-      "tag": "forge:ingots/copper"
-    }
-  },
   "result": {
-    "item": "changed_addon:reinforced_cross_block",
-    "count": 32
-  }
+    "count": 32,
+    "item": "changed_addon:reinforced_cross_block"
+  },
+  "show_notification": true
 }

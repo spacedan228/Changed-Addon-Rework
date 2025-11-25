@@ -160,7 +160,7 @@ public class ChangedAddonRecipeBuilder implements RecipeBuilder {
     public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, @NotNull ResourceLocation pRecipeId) {
         this.ensureValid(pRecipeId);
         this.advancement.parent(ResourceLocation.parse("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(pRecipeId)).rewards(AdvancementRewards.Builder.recipe(pRecipeId)).requirements(RequirementsStrategy.OR);
-        pFinishedRecipeConsumer.accept(new ChangedAddonRecipeBuilder.Result(this.type, pRecipeId, this.result, this.group == null ? "" : this.group, this.ingredients, this.progressSpeed, this.nitrogenUsage, this.advancement, ResourceLocation.fromNamespaceAndPath(pRecipeId.getNamespace(), "recipes/" + RecipeCategory.MISC + "/" + pRecipeId.getPath())));
+        pFinishedRecipeConsumer.accept(new ChangedAddonRecipeBuilder.Result(this.type, pRecipeId, this.result, this.group == null ? "" : this.group, this.ingredients, this.progressSpeed, this.nitrogenUsage, this.advancement, ResourceLocation.fromNamespaceAndPath(pRecipeId.getNamespace(), "recipes/" + RecipeCategory.MISC.getFolderName() + "/" + pRecipeId.getPath())));
     }
 
     /**

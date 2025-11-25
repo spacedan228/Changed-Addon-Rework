@@ -2,14 +2,7 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "changed_addon:wolf_crystal_pillar"
-        }
-      ],
       "conditions": [
         {
           "condition": "minecraft:match_tool",
@@ -24,7 +17,15 @@
             ]
           }
         }
-      ]
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "changed_addon:wolf_crystal_pillar"
+        }
+      ],
+      "rolls": 1.0
     }
-  ]
+  ],
+  "random_sequence": "changed_addon:blocks/wolf_crystal_pillar"
 }

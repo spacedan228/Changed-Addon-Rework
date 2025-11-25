@@ -1,0 +1,14 @@
+{
+  "placement": {
+    "type": "minecraft:random_spread",
+    "salt": 481422317,
+    "separation": 35,
+    "spacing": 41
+  },
+  "structures": [
+    {
+      "structure": "changed_addon:dazed_meteor",
+      "weight": 1
+    }
+  ]
+}

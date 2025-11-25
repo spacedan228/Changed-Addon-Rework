@@ -1,8 +1,6 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "IW"
-  ],
+  "category": "building",
   "key": {
     "I": {
       "tag": "forge:ingots/iridium"
@@ -11,7 +9,11 @@
       "item": "changed:wall_blue_tiled"
     }
   },
+  "pattern": [
+    "IW"
+  ],
   "result": {
     "item": "changed_addon:reinforced_wall_silver_tiled"
-  }
+  },
+  "show_notification": true
 }

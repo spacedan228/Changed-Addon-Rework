@@ -1,28 +1,30 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "CIC",
-    "ITI",
-    "BRB"
-  ],
+  "category": "misc",
   "key": {
+    "B": {
+      "item": "minecraft:blackstone"
+    },
     "C": {
       "tag": "forge:ingots/copper"
     },
     "I": {
       "tag": "forge:ingots/iridium"
     },
-    "T": {
-      "item": "changed_addon:catalyzer"
-    },
     "R": {
       "tag": "forge:dusts/redstone"
     },
-    "B": {
-      "item": "minecraft:blackstone"
+    "T": {
+      "item": "changed_addon:catalyzer"
     }
   },
+  "pattern": [
+    "CIC",
+    "ITI",
+    "BRB"
+  ],
   "result": {
     "item": "changed_addon:advanced_catalyzer"
-  }
+  },
+  "show_notification": true
 }

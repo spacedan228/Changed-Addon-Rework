@@ -1,25 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "SHS",
-    "ITI",
-    " S "
-  ],
+  "category": "equipment",
   "key": {
-    "S": {
-      "item": "changed_addon:luminar_crystal_shard"
-    },
     "H": {
       "item": "changed_addon:luminar_crystal_shard_hearted"
     },
     "I": {
       "tag": "forge:ingots/iridium"
     },
+    "S": {
+      "item": "changed_addon:luminar_crystal_shard"
+    },
     "T": {
       "item": "minecraft:stick"
     }
   },
+  "pattern": [
+    "SHS",
+    "ITI",
+    " S "
+  ],
   "result": {
     "item": "changed_addon:luminar_crystal_spear"
-  }
+  },
+  "show_notification": true
 }

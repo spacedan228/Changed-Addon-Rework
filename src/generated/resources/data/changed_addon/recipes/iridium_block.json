@@ -1,16 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "III",
-    "III",
-    "III"
-  ],
+  "category": "building",
   "key": {
     "I": {
       "tag": "forge:ingots/iridium"
     }
   },
+  "pattern": [
+    "III",
+    "III",
+    "III"
+  ],
   "result": {
     "item": "changed_addon:iridium_block"
-  }
+  },
+  "show_notification": true
 }

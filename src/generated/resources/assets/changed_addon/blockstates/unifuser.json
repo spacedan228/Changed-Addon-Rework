@@ -1,5 +1,9 @@
 {
   "variants": {
+    "facing=east": {
+      "model": "changed_addon:block/unifuser",
+      "y": 90
+    },
     "facing=north": {
       "model": "changed_addon:block/unifuser"
     },
@@ -10,10 +14,6 @@
     "facing=west": {
       "model": "changed_addon:block/unifuser",
       "y": 270
-    },
-    "facing=east": {
-      "model": "changed_addon:block/unifuser",
-      "y": 90
     }
   }
 }

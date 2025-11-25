@@ -1,5 +1,4 @@
 {
-  "replace": false,
   "values": [
     "changed_addon:particle_projectile",
     "changed_addon:wither_particle_projectile"

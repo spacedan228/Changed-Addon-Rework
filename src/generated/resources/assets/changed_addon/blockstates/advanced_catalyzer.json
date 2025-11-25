@@ -1,5 +1,9 @@
 {
   "variants": {
+    "facing=east": {
+      "model": "changed_addon:block/advanced_catalyzer",
+      "y": 90
+    },
     "facing=north": {
       "model": "changed_addon:block/advanced_catalyzer"
     },
@@ -10,10 +14,6 @@
     "facing=west": {
       "model": "changed_addon:block/advanced_catalyzer",
       "y": 270
-    },
-    "facing=east": {
-      "model": "changed_addon:block/advanced_catalyzer",
-      "y": 90
     }
   }
 }

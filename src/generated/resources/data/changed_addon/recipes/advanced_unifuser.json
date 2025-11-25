@@ -1,28 +1,30 @@
 {
   "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:blackstone"
+    },
+    "C": {
+      "tag": "forge:ingots/copper"
+    },
+    "I": {
+      "tag": "forge:ingots/iridium"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "U": {
+      "item": "changed_addon:unifuser"
+    }
+  },
   "pattern": [
     "CRC",
     "IUI",
     "CBC"
   ],
-  "key": {
-    "C": {
-      "tag": "forge:ingots/copper"
-    },
-    "R": {
-      "tag": "forge:dusts/redstone"
-    },
-    "I": {
-      "tag": "forge:ingots/iridium"
-    },
-    "U": {
-      "item": "changed_addon:unifuser"
-    },
-    "B": {
-      "item": "minecraft:blackstone"
-    }
-  },
   "result": {
     "item": "changed_addon:advanced_unifuser"
-  }
+  },
+  "show_notification": true
 }
