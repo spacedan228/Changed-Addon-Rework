@@ -10,6 +10,8 @@ import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.network.NetworkEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -23,7 +25,7 @@ public class GrabEntityPacketMixin {
     @Shadow @Final public GrabEntityPacket.GrabType type;
 
     @ModifyExpressionValue(
-            method = "handle",
+            method = "lambda$handle$4",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;isPlayerNotLatex(Lnet/minecraft/world/entity/player/Player;)Z"
@@ -34,10 +36,10 @@ public class GrabEntityPacketMixin {
     }
 
     @Inject(
-            method = "lambda$handle$0",
+            method = "lambda$handle$2",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/ltxprogrammer/changed/init/ChangedSounds;broadcastSound(Lnet/minecraft/world/entity/Entity;Lnet/minecraft/sounds/SoundEvent;FF)V", shift = At.Shift.BY
+                    target = "Lnet/ltxprogrammer/changed/init/ChangedSounds;broadcastSound(Lnet/minecraft/world/entity/Entity;Lnet/minecraftforge/registries/RegistryObject;FF)V", shift = At.Shift.BY
             ), cancellable = true
     )
     private void changedAddon$playSound(ServerPlayer sender, LivingEntity livingTarget, TransfurVariantInstance<?> variant, CallbackInfo ci) {
@@ -45,7 +47,7 @@ public class GrabEntityPacketMixin {
             GrabEntityAbilityInstance ability = variant.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
             if (ability instanceof GrabEntityAbilityExtensor abilityExtensor && abilityExtensor.isSafeMode()) {
                 ci.cancel();
-                ChangedSounds.broadcastSound(sender, ChangedAddonSoundEvents.PLUSHY_SOUND.get(), 1.0F, 1.0F);
+                ChangedSounds.broadcastSound(sender, ChangedAddonSoundEvents.PLUSHY_SOUND, 1.0F, 1.0F);
             }
         }
     }

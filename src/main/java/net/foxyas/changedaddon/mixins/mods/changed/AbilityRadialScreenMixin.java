@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.mixins.mods.changed;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.client.gui.AbilityRadialScreen;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.world.inventory.AbilityRadialMenu;
 import net.minecraft.network.chat.Component;
 
@@ -61,7 +62,7 @@ public abstract class AbilityRadialScreenMixin {
                     AbstractAbilityInstance abilityInstance = menu.variant.getAbilityInstance(getSelf().abilities.get(section));
 
                     if (abilityInstance != null) {
-                        ResourceLocation registryName = abilityInstance.getAbility().getRegistryName();
+                        ResourceLocation registryName = ChangedRegistry.ABILITY.getKey(abilityInstance.getAbility());
                         if (registryName == null) {
                             list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
                             break;

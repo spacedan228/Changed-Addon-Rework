@@ -157,9 +157,9 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
                     float f3 = nearbyEntities.isEmpty() ? f : f / nearbyEntities.size();
                     // 🔥 Knockback em todos os alvos próximos (exceto o atacante)
                     for (LivingEntity livingEntity : nearbyEntities) {
-                        if (livingEntity != entity && livingEntity != player && (!(livingEntity instanceof ArmorStand) || !((ArmorStand) livingEntity).isMarker()) && player.canHit(livingEntity, 0)) {
+                        if (livingEntity != entity && livingEntity != player && (!(livingEntity instanceof ArmorStand) || !((ArmorStand) livingEntity).isMarker()) && player.canReach(livingEntity, 0)) {
                             livingEntity.knockback(0.4, Mth.sin(player.getYRot() * ((float) Math.PI / 180F)), -Mth.cos(player.getYRot() * ((float) Math.PI / 180F)));
-                            livingEntity.hurt(DamageSource.playerAttack(player), f3);
+                            livingEntity.hurt(level().damageSources().playerAttack(player), f3);
                             //System.out.println("Dano causado em " + livingEntity.getName().getString());
                         }
                     }

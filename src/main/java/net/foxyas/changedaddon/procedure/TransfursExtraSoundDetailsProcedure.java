@@ -22,7 +22,7 @@ public class TransfursExtraSoundDetailsProcedure {
     @SubscribeEvent
     public static void onChat(ServerChatEvent event) {
         ServerPlayer player = event.getPlayer();
-        String text = event.getMessage();
+        String text = event.getMessage().getString();
         if (text == null || !ProcessTransfur.isPlayerTransfurred(player)) return;
 
         ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.nonNullOf(player);
@@ -32,7 +32,7 @@ public class TransfursExtraSoundDetailsProcedure {
         TransfurVariant<?> var = ProcessTransfur.getPlayerTransfurVariant(player).getParent();
         if(var.is(ChangedTransfurVariants.LATEX_TIGER_SHARK)){
             if(text.contains("roar")) {
-                level.playSound(null, player, ChangedSounds.MONSTER2, SoundSource.HOSTILE, 5, 1);
+                level.playSound(null, player, ChangedSounds.TIGER_SHARK_ROAR.get(), SoundSource.HOSTILE, 5, 1);
                 setCooldown(vars, player);
                 return;
             }
@@ -40,7 +40,7 @@ public class TransfursExtraSoundDetailsProcedure {
 
         if(var.is(ChangedAddonTransfurVariants.EXPERIMENT_009) || var.is(ChangedAddonTransfurVariants.EXPERIMENT_009_BOSS)){
             if(text.contains("roar")) {
-                level.playSound(null, player, ChangedSounds.MONSTER2, SoundSource.HOSTILE, 35, 1);
+                level.playSound(null, player, ChangedSounds.TIGER_SHARK_ROAR.get(), SoundSource.HOSTILE, 35, 1);
                 setCooldown(vars, player);
                 return;
             }

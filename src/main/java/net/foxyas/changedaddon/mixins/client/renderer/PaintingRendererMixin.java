@@ -33,7 +33,7 @@ public abstract class PaintingRendererMixin extends EntityRenderer<Painting> {
             at = @At(value = "HEAD"))
     private void customRender(Painting pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci){
         painting = pEntity;
-        shouldGlow = ChangedAddonPaintingTypes.glowPaintings().contains(pEntity.motive);
+        shouldGlow = ChangedAddonPaintingTypes.glowPaintings().contains(pEntity.getVariant().get());
     }
 
     @ModifyArg(method = "render(Lnet/minecraft/world/entity/decoration/Painting;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",

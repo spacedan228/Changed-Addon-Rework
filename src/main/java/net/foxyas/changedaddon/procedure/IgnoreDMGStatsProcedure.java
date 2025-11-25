@@ -23,14 +23,14 @@ public class IgnoreDMGStatsProcedure {
         DamageSource damagesource = event.getSource();
         String id = instance.getFormId().toString();
         if (id.startsWith("changed_addon:form_experiment009")) {
-            if (damagesource.getMsgId().equals(DamageSource.LIGHTNING_BOLT.getMsgId())) {
+            if (damagesource.getMsgId().equals(entity.level.damageSources().lightningBolt().getMsgId())) {
                 event.setCanceled(true);
             }
             return;
         }
 
         if (id.startsWith("changed_addon:form_experiment_10")) {
-            if (damagesource.getMsgId().equals(DamageSource.WITHER.getMsgId())) {
+            if (damagesource.getMsgId().equals(entity.level.damageSources().wither().getMsgId())) {
                 event.setCanceled(true);
             }
         }

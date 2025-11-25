@@ -8,6 +8,7 @@ import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.sounds.MusicManager;
 import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -52,9 +53,9 @@ public class MusicPlayerProcedure {
         SoundEvent LumiMusic = ForgeRegistries.SOUND_EVENTS.getValue(ChangedAddonMod.resourceLoc("music.boss.luminarctic_leopard"));
 
         // Instâncias de música
-        Music exp10ThemeMusicInstance = new Music(Objects.requireNonNull(exp10Music), 0, 0, true);
-        Music exp009Phase2ThemeMusicInstance = new Music(Objects.requireNonNull(exp009Music), 0, 0, true);
-        Music LumiThemeMusicInstance = new Music(Objects.requireNonNull(LumiMusic), 0, 0, true);
+        Music exp10ThemeMusicInstance = new Music(Holder.direct(Objects.requireNonNull(exp10Music)), 0, 0, true);
+        Music exp009Phase2ThemeMusicInstance = new Music(Holder.direct(Objects.requireNonNull(exp009Music)), 0, 0, true);
+        Music LumiThemeMusicInstance = new Music(Holder.direct(Objects.requireNonNull(LumiMusic)), 0, 0, true);
 
         // Verificações de proximidade
         boolean exp10Close = !exp10Entities.isEmpty();

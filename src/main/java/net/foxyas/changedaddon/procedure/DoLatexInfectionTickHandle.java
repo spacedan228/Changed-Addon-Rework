@@ -126,7 +126,7 @@ public class DoLatexInfectionTickHandle {
         LivingEntity entity = event.target;
         if (!(entity instanceof Player player)) return;
 
-        if (!player.getLevel().getGameRules().getBoolean(ChangedAddonGameRules.DO_LATEX_INFECTION)) {
+        if (!player.level().getGameRules().getBoolean(ChangedAddonGameRules.DO_LATEX_INFECTION)) {
             return;
         }
 
@@ -145,7 +145,7 @@ public class DoLatexInfectionTickHandle {
         if (player == null) return;
         if (ProcessTransfur.isPlayerTransfurred(player)) return;
 
-        if (!player.getLevel().getGameRules().getBoolean(ChangedAddonGameRules.DO_LATEX_INFECTION)) {
+        if (!player.level().getGameRules().getBoolean(ChangedAddonGameRules.DO_LATEX_INFECTION)) {
             clearTempData(player);
             return;
         }
@@ -156,8 +156,8 @@ public class DoLatexInfectionTickHandle {
         int tickCounter = (int) playerVariables.LatexInfectionCooldown;
         float progress = ProcessTransfur.getPlayerTransfurProgress(player);
         float maxTolerance = (float) ProcessTransfur.getEntityTransfurTolerance(player);
-        float mathNumber = getValueToApply(player.getLevel(), player);
-        int tickDelay = getTickDelayForDifficulty(player.getLevel());
+        float mathNumber = getValueToApply(player.level(), player);
+        int tickDelay = getTickDelayForDifficulty(player.level());
 
         // Handle ALWAYS_INFECT option
         if (ChangedAddonServerConfiguration.ALWAYS_INFECT.get()) {
@@ -192,7 +192,7 @@ public class DoLatexInfectionTickHandle {
                     // Chegou ao máximo -> aplica transfur
                     TransfurVariant<?> variant = getLastVariant(player);
                     if (variant != null) {
-                        ProcessTransfur.transfur(player, player.getLevel(), variant, true, TransfurContext.hazard(TransfurCause.GRAB_ABSORB));
+                        ProcessTransfur.transfur(player, player.level(), variant, true, TransfurContext.hazard(TransfurCause.GRAB_ABSORB));
                         clearTempData(player);
                     }
                 }

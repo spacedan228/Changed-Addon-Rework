@@ -20,7 +20,7 @@ public class PlayerLavaSwimHandler {
         if (event.phase != TickEvent.Phase.END) return;
 
         Player player = event.player;
-        if (player.getLevel().isClientSide || !(player instanceof ServerPlayer serverPlayer)) return;
+        if (player.level().isClientSide || !(player instanceof ServerPlayer serverPlayer)) return;
 
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
         if(instance == null || !ChangedAddonTransfurVariants.isAquatic(instance)) return;

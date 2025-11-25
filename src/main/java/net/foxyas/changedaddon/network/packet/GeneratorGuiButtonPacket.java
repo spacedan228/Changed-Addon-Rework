@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.network.packet;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -44,13 +44,13 @@ public record GeneratorGuiButtonPacket(int buttonId, BlockPos pos) {
             if (blockEntity == null) return;
 
             BlockState state = level.getBlockState(pos);
-            boolean enabled = blockEntity.getTileData().getBoolean("turn_on");
+            boolean enabled = blockEntity.getPersistentData().getBoolean("turn_on");
 
             if (enabled) {
-                blockEntity.getTileData().putBoolean("turn_on", false);
+                blockEntity.getPersistentData().putBoolean("turn_on", false);
                 player.displayClientMessage(Component.literal("generator disabled"), true);
             } else {
-                blockEntity.getTileData().putBoolean("turn_on", true);
+                blockEntity.getPersistentData().putBoolean("turn_on", true);
                 player.displayClientMessage(Component.literal("generator enabled"), true);
             }
 

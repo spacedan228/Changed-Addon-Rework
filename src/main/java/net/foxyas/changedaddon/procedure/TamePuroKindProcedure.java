@@ -20,10 +20,10 @@ public class TamePuroKindProcedure {
 
     @SubscribeEvent
     public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-        if (event.getHand() != event.getPlayer().getUsedItemHand()) return;
+        if (event.getHand() != event.getEntity().getUsedItemHand()) return;
 
         Entity entity = event.getTarget();
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
 
         if (!(entity instanceof AbstractDarkLatexWolf wolf) || player == null) return;
 

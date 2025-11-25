@@ -20,7 +20,8 @@ public class HurtByExp10Event {
     @SubscribeEvent
     public static void onEntityAttacked(LivingHurtEvent event) {
         Entity attacker = event.getSource().getDirectEntity();
-        if (!(event.getEntity() instanceof LivingEntity target) || target.level.isClientSide || attacker == null) return;
+        LivingEntity target = event.getEntity();
+        if (!target.level.isClientSide || attacker == null) return;
 
         int amplifier = -1;
 

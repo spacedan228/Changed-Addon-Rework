@@ -28,12 +28,12 @@ public class ServerPacketHandler {
             vars.consciousnessFightProgress += vars.FTKCminigameType.progressAmount;
 
             if (vars.consciousnessFightProgress >= FightToKeepConsciousness.STRUGGLE_NEED) {
-                player.level.playSound(null, player, ChangedSounds.BLOW1, SoundSource.PLAYERS, 1, 1);
+                player.level.playSound(null, player, ChangedSounds.TRANSFUR_BY_LATEX.get(), SoundSource.PLAYERS, 1, 1);
                 FightToKeepConsciousness.successFTKC(vars, player);
                 return;
             }
 
-            player.level.playSound(null, player, ChangedSounds.BLOW1, SoundSource.PLAYERS, 1, 1);
+            player.level.playSound(null, player, ChangedSounds.TRANSFUR_BY_LATEX.get(), SoundSource.PLAYERS, 1, 1);
             vars.syncPlayerVariables(player);
         });
         context.setPacketHandled(true);

@@ -29,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.*;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -71,7 +72,7 @@ public class PlayerUtil {
             variant.unhookAll(player);
             ProcessTransfur.removePlayerTransfurVariant(player);
             ProcessTransfur.setPlayerTransfurProgress(player, 0.0f);
-            if (shouldApplyEffects && !player.getLevel().isClientSide()) {
+            if (shouldApplyEffects && !player.level().isClientSide()) {
                 player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
                 player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
             }
@@ -83,10 +84,10 @@ public class PlayerUtil {
             variant.unhookAll(player);
             ProcessTransfur.removePlayerTransfurVariant(player);
             ProcessTransfur.setPlayerTransfurProgress(player, 0.0f);
-            if (shouldApplyEffects && !player.getLevel().isClientSide()) {
+            if (shouldApplyEffects && !player.level().isClientSide()) {
                 player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
                 player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
-                if (player.getLevel() instanceof ServerLevel serverLevel) {
+                if (player.level() instanceof ServerLevel serverLevel) {
                     serverLevel.playSound(null, player.getX(), player.getEyeY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR.get(), SoundSource.PLAYERS, 1, 1);
                 }
             }
@@ -101,11 +102,11 @@ public class PlayerUtil {
 
     public static boolean isWolfTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
-        if(variant.is(ChangedAddonTags.TransfurTypes.WOLF_LIKE)) return true;
+        if (variant.is(ChangedAddonTags.TransfurTypes.WOLF_LIKE)) return true;
 
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
-        return Objects.requireNonNull(entity.getType().getRegistryName()).toString().contains("dog") ||
-                entity.getType().getRegistryName().toString().contains("wolf") ||
+        return Objects.requireNonNull(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType())).toString().contains("dog") ||
+                ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString().contains("wolf") ||
                 entity instanceof AbstractLatexWolf;
     }
 
@@ -242,7 +243,7 @@ public class PlayerUtil {
 
 
     public static boolean isLineOfSightClear(Player player, Entity entity) {
-        var level = player.getLevel();
+        var level = player.level();
         var playerEyePos = player.getEyePosition(1.0F); // Posição dos olhos do jogador
         var entityEyePos = entity.getBoundingBox().getCenter(); // Centro da entidade
 
@@ -271,7 +272,7 @@ public class PlayerUtil {
 
             if (distance > blockReach * blockReach) {
                 Vec3 pos = hitResult.getLocation();
-                hitResult = BlockHitResult.miss(pos, Direction.getNearest(eyePos.x, eyePos.y, eyePos.z), new BlockPos(pos));
+                hitResult = BlockHitResult.miss(pos, Direction.getNearest(eyePos.x, eyePos.y, eyePos.z), new BlockPos((int) pos.x, (int) pos.y, (int) pos.z));
             }
         }
 
@@ -286,7 +287,7 @@ public class PlayerUtil {
             double distanceToTarget = eyePos.distanceToSqr(targetPos);
 
             if (distanceToTarget > distance || distanceToTarget > entityReach * entityReach) {
-                hitResult = BlockHitResult.miss(targetPos, Direction.getNearest(viewVec.x, viewVec.y, viewVec.z), new BlockPos(targetPos));
+                hitResult = BlockHitResult.miss(targetPos, Direction.getNearest(viewVec.x, viewVec.y, viewVec.z), new BlockPos((int) targetPos.x, (int) targetPos.y, (int) targetPos.z));
             } else if (distanceToTarget < distance) {
                 hitResult = entityHitResult;
             }
@@ -315,7 +316,7 @@ public class PlayerUtil {
         for (int i = 0; i <= maxRange; i++) {
             // Calcula a posição do bloco na trajetória do laser
             Vec3 targetVec = eyePosition.add(lookDirection.scale(i));
-            BlockPos targetPos = new BlockPos(targetVec);
+            BlockPos targetPos = new BlockPos((int) targetVec.x, (int) targetVec.y, (int) targetVec.z);
 
             // Verifica se o bloco é ar; se for, ignora essa fileira
             if (world.getBlockState(targetPos).isAir()) {

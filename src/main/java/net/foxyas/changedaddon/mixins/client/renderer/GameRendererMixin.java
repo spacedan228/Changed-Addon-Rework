@@ -97,8 +97,8 @@ public abstract class GameRendererMixin {
     private boolean changed_Addon_Rework$ShouldWork(Player player) {
         TransfurVariantInstance<?> variantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
         if (variantInstance != null) {
-            this.changed_Addon_Rework$transfurVariantVision = TransfurVariantVisions.getTransfurVariantVision(player.getLevel(), variantInstance.getFormId());
-            return TransfurVariantVisions.getTransfurVariantVision(player.getLevel(), variantInstance.getFormId()) != null;
+            this.changed_Addon_Rework$transfurVariantVision = TransfurVariantVisions.getTransfurVariantVision(player.level(), variantInstance.getFormId());
+            return TransfurVariantVisions.getTransfurVariantVision(player.level(), variantInstance.getFormId()) != null;
         }
 
 

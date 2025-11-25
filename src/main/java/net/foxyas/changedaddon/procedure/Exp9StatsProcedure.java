@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.procedure;
 
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,7 +28,7 @@ public class Exp9StatsProcedure {
         if (!hasKetExperiment009Form(entity)) return;
 
         boolean reduceDamage =
-                source.isBypassInvul() ||
+                source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) ||
                         source.is(DamageTypeTags.IS_FIRE) ||
                         (source.is(DamageTypeTags.IS_FIRE) && entity.isOnFire());
 

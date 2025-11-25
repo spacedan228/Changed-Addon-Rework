@@ -19,7 +19,7 @@ import java.util.Iterator;
 public class GiveBlockCraftAdvancementProcedure {
     @SubscribeEvent
     public static void onItemCrafted(PlayerEvent.ItemCraftedEvent event) {
-        execute(event, event.getPlayer(), event.getCrafting());
+        execute(event, event.getEntity(), event.getCrafting());
     }
 
     public static void execute(Entity entity, ItemStack itemstack) {

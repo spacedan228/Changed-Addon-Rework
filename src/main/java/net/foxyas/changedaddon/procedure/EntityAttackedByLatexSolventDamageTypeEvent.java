@@ -22,7 +22,8 @@ public class EntityAttackedByLatexSolventDamageTypeEvent {
         Entity target = event.getEntity();
         DamageSource source = event.getSource();
 
-        if (source != ChangedAddonDamageSources.LATEX_SOLVENT && !source.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.getMsgId())) return;
+        if (source.is(ChangedAddonDamageSources.LATEX_SOLVENT.key()) && !source.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.source(target.level()).getMsgId()))
+            return;
 
         Level level = target.level;
         if (target instanceof Player player) {

@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.procedure;
 
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;

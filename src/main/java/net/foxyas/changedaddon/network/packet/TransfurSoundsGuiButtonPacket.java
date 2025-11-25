@@ -74,9 +74,9 @@ public record TransfurSoundsGuiButtonPacket(int buttonId) {
                 if (tf == null) break;
 
                 if (tf.getFormId().toString().contains("changed_addon:form_experiment009")) {
-                    player.level().playSound(null, player.position().x, player.position().y, player.position().z, ChangedSounds.MONSTER2, SoundSource.HOSTILE, 35, 0);
+                    player.level().playSound(null, player.position().x, player.position().y, player.position().z, ChangedSounds.TIGER_SHARK_ROAR.get(), SoundSource.HOSTILE, 35, 0);
                 } else {
-                    player.level().playSound(null, player.position().x, player.position().y, player.position().z, ChangedSounds.MONSTER2, SoundSource.HOSTILE, 5, 1);
+                    player.level().playSound(null, player.position().x, player.position().y, player.position().z, ChangedSounds.TIGER_SHARK_ROAR.get(), SoundSource.HOSTILE, 5, 1);
                 }
 
                 vars.actCooldown = true;

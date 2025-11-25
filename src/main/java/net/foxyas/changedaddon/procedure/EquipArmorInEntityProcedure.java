@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.Mod;
 public class EquipArmorInEntityProcedure {
     @SubscribeEvent
     public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-        if (event.getPlayer().isShiftKeyDown() && event.getTarget() instanceof ChangedEntity changedEntity) {
+        if (event.getEntity().isShiftKeyDown() && event.getTarget() instanceof ChangedEntity changedEntity) {
             ItemStack itemStack = event.getItemStack();
             if (changedEntity instanceof DarkLatexWolfPup
                     || changedEntity instanceof LatexSnepEntity
@@ -34,23 +34,23 @@ public class EquipArmorInEntityProcedure {
             }
 
             if (changedEntity instanceof TamableLatexEntity tamableLatexEntity) {
-                if (tamableLatexEntity.getOwner() != event.getPlayer()) {
+                if (tamableLatexEntity.getOwner() != event.getEntity()) {
                     return;
                 }
-                if (!event.getPlayer().isShiftKeyDown()) {
+                if (!event.getEntity().isShiftKeyDown()) {
                     return;
                 }
                 event.setCancellationResult(InteractionResult.PASS);
                 // Check if the item is an armor piece
                 if (itemStack.getItem() instanceof ArmorItem armorItem) {
                     // Proceed only on the server side
-                    if (!event.getWorld().isClientSide()) {
-                        equipOrSwapArmor(event, changedEntity, itemStack, armorItem, event.getPlayer(), event.getHand());
+                    if (!event.getLevel().isClientSide()) {
+                        equipOrSwapArmor(event, changedEntity, itemStack, armorItem, event.getEntity(), event.getHand());
                     }
                 } else if (itemStack.isEmpty() && event.getHand() == InteractionHand.MAIN_HAND) {
                     // Proceed only on the server side
-                    if (!event.getWorld().isClientSide()) {
-                        checkClickLocationAndUnequipArmor(event, changedEntity, event.getPlayer(), event.getHand(), getLocationFromHit(event.getPlayer()));
+                    if (!event.getLevel().isClientSide()) {
+                        checkClickLocationAndUnequipArmor(event, changedEntity, event.getEntity(), event.getHand(), getLocationFromHit(event.getEntity()));
                     }
                 }
             }
@@ -60,7 +60,7 @@ public class EquipArmorInEntityProcedure {
     public static void equipOrSwapArmor(PlayerInteractEvent.EntityInteract event, ChangedEntity entity, ItemStack itemStack, ArmorItem armorItem, Player player, InteractionHand hand) {
         // Check if the entity is tamable and has an owner
         if (entity instanceof TamableLatexEntity ChangedEntity && ChangedEntity.getOwner() != null && ChangedEntity.getOwner() == player) {
-            EquipmentSlot armorSlot = armorItem.getSlot(); // Determine the correct armor slot
+            EquipmentSlot armorSlot = armorItem.getEquipmentSlot(); // Determine the correct armor slot
             ItemStack currentArmor = entity.getItemBySlot(armorSlot); // Get the current armor in the slot
             // If the slot is already occupied and the item in the player's hand is a different armor piece
             if (!currentArmor.isEmpty() && !currentArmor.getItem().equals(armorItem)) {
