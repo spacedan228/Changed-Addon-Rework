@@ -19,7 +19,7 @@ import java.util.List;
 //copy from a_changed
 public class MeteorPools {
 
-    public static final ResourceKey<StructureTemplatePool> START = key("lab/entrance");
+    public static final ResourceKey<StructureTemplatePool> START = key("meteor");
 
     public static void bootstrap(@NotNull BootstapContext<StructureTemplatePool> context){
         HolderGetter<StructureTemplatePool> poolGetter = context.lookup(Registries.TEMPLATE_POOL);

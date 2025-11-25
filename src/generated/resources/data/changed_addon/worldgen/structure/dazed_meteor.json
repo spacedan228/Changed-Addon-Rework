@@ -16,7 +16,7 @@
   "start_height": {
     "absolute": 0
   },
-  "start_pool": "changed_addon:lab/entrance",
+  "start_pool": "changed_addon:meteor",
   "step": "top_layer_modification",
   "terrain_adaptation": "beard_thin",
   "use_expansion_hack": false
