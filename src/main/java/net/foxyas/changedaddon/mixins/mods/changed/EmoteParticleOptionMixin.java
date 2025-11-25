@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.mixins.mods.changed;
 import net.ltxprogrammer.changed.effect.particle.EmoteParticleOption;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;

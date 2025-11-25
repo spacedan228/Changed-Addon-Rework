@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.food.FoodProperties;

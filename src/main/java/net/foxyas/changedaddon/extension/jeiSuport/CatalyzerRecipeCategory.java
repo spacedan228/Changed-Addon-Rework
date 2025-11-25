@@ -65,15 +65,9 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
      * you are supposed to get the info from getRecipeType() method now
      */
 
-    @SuppressWarnings("removal")
     @Deprecated
     public @NotNull Class<? extends CatalyzerRecipe> getRecipeClass() {
         return CatalyzerRecipe.class;
-    }
-
-    @SuppressWarnings("removal")
-    public @NotNull ResourceLocation getUid() {
-        return UID;
     }
 
     /// --- End of the for removal classes ---

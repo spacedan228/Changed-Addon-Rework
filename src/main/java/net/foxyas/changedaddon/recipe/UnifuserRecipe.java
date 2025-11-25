@@ -74,6 +74,10 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
         return true;
     }
 
+    public @NotNull ItemStack getResultItem() {
+        return output.copy();
+    }
+
     @Override
     public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess) {
         return output.copy();
@@ -140,9 +144,7 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
         @Override
         public @Nullable UnifuserRecipe fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf) {
             NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readInt(), Ingredient.EMPTY);
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromNetwork(buf));
-            }
+            inputs.replaceAll(ignored -> Ingredient.fromNetwork(buf));
             ItemStack output = buf.readItem();
             float ProgressSpeed = buf.readFloat();
             return new UnifuserRecipe(id, output, inputs, ProgressSpeed);

@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.procedure;
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.server.level.ServerPlayer;

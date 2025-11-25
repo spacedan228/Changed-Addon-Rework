@@ -88,9 +88,8 @@ public class InformantBlockEntityRenderer implements BlockEntityRenderer<Informa
         if (renderer instanceof LivingEntityRendererAccessor livingEntityRendererAccessor) {
             List<RenderLayer<LivingEntity, EntityModel<LivingEntity>>> layers = livingEntityRendererAccessor.getLayers();
             if (layers != null && !layers.isEmpty()) {
-                layers.forEach((renderlayer) -> {
-                    renderlayer.render(poseStack, bufferSource, LightTexture.FULL_BRIGHT, entity, 0, 0, partialTick, ageInTicks, 0, 0);
-                });
+                layers.forEach((renderlayer) ->
+                        renderlayer.render(poseStack, bufferSource, LightTexture.FULL_BRIGHT, entity, 0, 0, partialTick, ageInTicks, 0, 0));
             }
         }
 

@@ -1,11 +1,9 @@
 package net.foxyas.changedaddon.mixins.mods.changed;
 
-import com.google.common.collect.ImmutableList;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.client.gui.AbilityRadialScreen;
 import net.ltxprogrammer.changed.world.inventory.AbilityRadialMenu;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 import net.minecraft.resources.ResourceLocation;
@@ -13,7 +11,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;

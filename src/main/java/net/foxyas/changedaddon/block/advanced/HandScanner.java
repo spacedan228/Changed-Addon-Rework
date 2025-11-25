@@ -37,9 +37,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.Random;
-
 @SuppressWarnings("deprecation")
 public class HandScanner extends Block {
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;

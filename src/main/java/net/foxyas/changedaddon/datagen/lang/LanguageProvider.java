@@ -105,7 +105,6 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
 
     protected void addSoundO(RegistryObject<SoundEvent> sound, String value) {
         add("subtitles." + sound.getId().getPath(), value);
-        ;
     }
 
     protected void addTooltip(String key, String value) {

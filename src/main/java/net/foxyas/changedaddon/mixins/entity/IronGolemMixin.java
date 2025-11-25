@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(IronGolem.class)
 public class IronGolemMixin {
 
-    @Inject(method = "registerGoals", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "registerGoals", at = @At("TAIL"))
     private void injectGoals(CallbackInfo ci) {
         IronGolem self = (IronGolem) (Object) this;
         self.targetSelector.getAvailableGoals().removeIf(wrappedGoal -> wrappedGoal.getPriority() == 2 && wrappedGoal.getGoal() instanceof NearestAttackableTargetGoal<?> attackableTargetGoal);

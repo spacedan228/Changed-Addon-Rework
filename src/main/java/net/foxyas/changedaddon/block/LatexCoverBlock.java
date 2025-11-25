@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Random;
-
 import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.NonLatexCoverableBlock;
 
 public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverableBlock, RenderLayerProvider {

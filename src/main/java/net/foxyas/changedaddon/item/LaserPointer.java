@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.entity.goals.simple.FollowAndLookAtLaser;
 import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -10,11 +9,9 @@ import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.item.SpecializedAnimations;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
-
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -99,11 +96,11 @@ public class LaserPointer extends Item implements SpecializedAnimations {
     }
 
 
-    public void fillItemCategory(@NotNull CreativeModeTab tab, @NotNull NonNullList<ItemStack> items) {
+    public void fillItemCategory(@NotNull CreativeModeTab.Output tab) {
         for (DefaultColors color : DefaultColors.values()) {
             ItemStack stack = new ItemStack(this);
             stack.getOrCreateTag().putInt("Color", color.getRGB());
-            items.add(stack);
+            tab.accept(stack);
         }
     }
 

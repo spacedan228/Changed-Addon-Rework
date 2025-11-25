@@ -5,6 +5,9 @@ import net.ltxprogrammer.changed.world.features.structures.facility.FacilityCorr
 import net.ltxprogrammer.changed.world.features.structures.facility.FacilityPieceCollectionBuilder;
 import net.ltxprogrammer.changed.world.features.structures.facility.FacilityRoomPiece;
 import net.ltxprogrammer.changed.world.features.structures.facility.GatherFacilityPiecesEvent;
+import net.ltxprogrammer.changed.world.features.structures.facility.types.CorridorType;
+import net.ltxprogrammer.changed.world.features.structures.facility.types.PieceType;
+import net.ltxprogrammer.changed.world.features.structures.facility.types.RoomType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -14,10 +17,9 @@ public class ChangedAddonFacilityPieces {
 
     @SubscribeEvent
     public static void RegisterAddonFacilityPieces(GatherFacilityPiecesEvent event) {
-        switch (event.getPieceType()) {
-            case ROOM -> registerAddonRooms(event.getBuilder());
-            case CORRIDOR -> registerAddonCorridors(event.getBuilder());
-        }
+        PieceType<?> type = event.getPieceType();
+        if(type instanceof RoomType) registerAddonRooms(event.getBuilder());
+        if(type instanceof CorridorType) registerAddonCorridors(event.getBuilder());
     }
 
     public static void registerAddonCorridors(FacilityPieceCollectionBuilder builder) {

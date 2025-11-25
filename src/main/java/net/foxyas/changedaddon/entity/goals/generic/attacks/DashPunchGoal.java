@@ -4,7 +4,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -140,7 +139,7 @@ public class DashPunchGoal extends Goal {
         Vec3 knock = target.position().subtract(mob.position()).normalize().scale(2);
         target.push(knock.x, knock.y * 1.25f, knock.z);
         // Damage
-        target.hurt(DamageSource.mobAttack(mob), 6.0F);
+        target.hurt(mob.damageSources().mobAttack(mob), 6.0F);
 
         // Particles
         if (level instanceof ServerLevel server) {

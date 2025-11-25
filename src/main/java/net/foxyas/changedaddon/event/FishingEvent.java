@@ -51,8 +51,7 @@ public class FishingEvent {
                 new LatexShark(ChangedEntities.LATEX_SHARK.get(), _level),
                 new LatexMermaidShark(ChangedEntities.LATEX_MERMAID_SHARK.get(), _level),
                 new LatexCrocodile(ChangedEntities.LATEX_CROCODILE.get(), _level),
-                new LatexOrca(ChangedEntities.LATEX_ORCA.get(), _level),
-                new Shark(ChangedEntities.SHARK.get(), _level)
+                new LatexOrca(ChangedEntities.LATEX_ORCA.get(), _level)
         );
     }
 

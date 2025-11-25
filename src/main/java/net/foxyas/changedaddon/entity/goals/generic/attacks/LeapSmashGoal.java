@@ -5,7 +5,6 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -127,7 +126,7 @@ public class LeapSmashGoal extends Goal {
         List<LivingEntity> hitEntities = mob.level().getEntitiesOfClass(LivingEntity.class, smashArea, e -> e != mob && e.isAlive());
 
         for (LivingEntity entity : hitEntities) {
-            if (entity.hurt(DamageSource.mobAttack(mob), 4.0F)) {
+            if (entity.hurt(mob.damageSources().mobAttack(mob), 4.0F)) {
                 entity.addEffect(new MobEffectInstance(MobEffects.POISON, 100, 0)); // Podridão?
                 Vec3 knockback = entity.position().subtract(mob.position()).normalize().scale(1.2);
                 entity.push(knockback.x, 0.5, knockback.z);

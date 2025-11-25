@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.minecraft.core.BlockPos;

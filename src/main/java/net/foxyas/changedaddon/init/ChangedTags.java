@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.ltxprogrammer.changed.Changed;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -14,7 +14,7 @@ public class ChangedTags extends net.ltxprogrammer.changed.init.ChangedTags {
         public static final TagKey<Item> LEGS = create("legs");
 
         private static TagKey<Item> create(String name) {
-            return TagKey.create(Registry.ITEM_REGISTRY, Changed.modResource(name));
+            return TagKey.create(BuiltInRegistries.ITEM.key(), Changed.modResource(name));
         }
     }
 

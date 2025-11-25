@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;

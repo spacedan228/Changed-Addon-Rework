@@ -120,7 +120,7 @@ public class FightToKeepConsciousness {
         SummonEntityProcedure.execute(player.level, player);
         PlayerUtil.UnTransfurPlayer(player);
 
-        DamageSource source = ChangedAddonDamageSources.CONSCIENCE_LOSE.source(player.level().registryAccess());
+        DamageSource source = ChangedAddonDamageSources.CONSCIENCE_LOSE.source(player.level());
         player.hurt(new DamageSource(source.typeHolder()) {
             @Override
             public boolean is(TagKey<DamageType> pDamageTypeKey) {

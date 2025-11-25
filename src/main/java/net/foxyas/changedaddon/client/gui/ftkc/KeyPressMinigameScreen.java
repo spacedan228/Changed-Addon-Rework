@@ -1,12 +1,10 @@
 package net.foxyas.changedaddon.client.gui.ftkc;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.ServerboundProgressFTKCPacket;
 import net.foxyas.changedaddon.qte.FightToKeepConsciousness;
-import net.foxyas.changedaddon.util.RenderUtil;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
@@ -14,13 +12,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Supplier;
 
 import static net.foxyas.changedaddon.qte.FightToKeepConsciousness.STRUGGLE_NEED;
 import static net.foxyas.changedaddon.qte.FightToKeepConsciousness.STRUGGLE_TIME;

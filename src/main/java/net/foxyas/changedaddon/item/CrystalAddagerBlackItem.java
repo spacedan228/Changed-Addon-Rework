@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;

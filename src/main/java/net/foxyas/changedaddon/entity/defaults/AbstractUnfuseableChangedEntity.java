@@ -9,7 +9,6 @@ import net.ltxprogrammer.changed.entity.ai.LatexOwnerHurtByTargetGoal;
 import net.ltxprogrammer.changed.entity.ai.LatexOwnerHurtTargetGoal;
 import net.ltxprogrammer.changed.init.ChangedCriteriaTriggers;
 import net.ltxprogrammer.changed.init.ChangedItems;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;

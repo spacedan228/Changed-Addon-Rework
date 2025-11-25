@@ -43,8 +43,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.Random;
 import java.util.function.Function;
 
 @SuppressWarnings("deprecation")

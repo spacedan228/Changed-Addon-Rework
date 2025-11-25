@@ -39,8 +39,7 @@ public class BlueLizard extends AbstractBasicChangedEntity implements ExtraCondi
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
-        return builder;
+        return ChangedEntity.createLatexAttributes();
     }
 
     @Override

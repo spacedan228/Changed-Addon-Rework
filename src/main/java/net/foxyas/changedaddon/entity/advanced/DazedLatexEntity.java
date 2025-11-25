@@ -61,7 +61,7 @@ public class DazedLatexEntity extends ChangedEntity {
     private static final EntityDataAccessor<Boolean> DATA_PUDDLE_MORPHED = SynchedEntityData.defineId(DazedLatexEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_REPLICATION_TIMES = SynchedEntityData.defineId(DazedLatexEntity.class, EntityDataSerializers.INT);
     private static final Set<ResourceLocation> SPAWN_BIOMES = Set.of(ResourceLocation.parse("plains"));
-    public static UseItemMode PuddleForm = UseItemMode.create("PuddleForm", false, false, false, true, false);
+    public static final UseItemMode PuddleForm = UseItemMode.create("PuddleForm", false, false, false, true, false);
 
     public boolean willTransfurTarget = false;
 

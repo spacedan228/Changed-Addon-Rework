@@ -6,9 +6,9 @@ import net.ltxprogrammer.changed.entity.animation.AnimationParameters;
 import net.minecraft.world.entity.LivingEntity;
 
 public class PatReactionAnimationParameters implements AnimationParameters {
-    public static PatReactionAnimationParameters INSTANCE = new PatReactionAnimationParameters();
+    public static final PatReactionAnimationParameters INSTANCE = new PatReactionAnimationParameters();
 
-    public static Codec<PatReactionAnimationParameters> CODEC = Codec.unit(() -> INSTANCE);
+    public static final Codec<PatReactionAnimationParameters> CODEC = Codec.unit(() -> INSTANCE);
 
     private PatReactionAnimationParameters() {
     }

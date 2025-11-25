@@ -3,17 +3,14 @@ package net.foxyas.changedaddon.mixins.world;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.ltxprogrammer.changed.util.UniversalDist;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.datafix.DataFixTypes;
 import net.minecraft.world.level.storage.LevelStorageSource;
-import net.minecraft.world.level.storage.PrimaryLevelData;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.File;
 import java.nio.file.Path;
 
 @Mixin(LevelStorageSource.class)

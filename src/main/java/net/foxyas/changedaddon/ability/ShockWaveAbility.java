@@ -41,7 +41,7 @@ public class ShockWaveAbility extends SimpleAbility {
             Zone = 24;
         }
         List<Entity> _entfound = world.getEntitiesOfClass(Entity.class, new AABB(_center, _center).inflate(Zone, Zone, Zone), e -> true).stream().sorted(Comparator.comparingDouble(_entcnd -> _entcnd.distanceToSqr(_center)))
-                .collect(Collectors.toList());
+                .toList();
         for (Entity entityiterator : _entfound) {
             if (player != entityiterator && entityiterator instanceof LivingEntity _entity) {
                 if (_entity instanceof Player player1) {

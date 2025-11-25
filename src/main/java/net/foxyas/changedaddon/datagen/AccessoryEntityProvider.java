@@ -118,7 +118,8 @@ public class AccessoryEntityProvider implements DataProvider {
             return this;
         }
 
-        public Appender entityTypesTags(TagKey<EntityType<?>>... entityTypeTagKey) {
+        @SafeVarargs
+        public final Appender entityTypesTags(TagKey<EntityType<?>>... entityTypeTagKey) {
             Collections.addAll(this.entityTypesTags, entityTypeTagKey);
             return this;
         }

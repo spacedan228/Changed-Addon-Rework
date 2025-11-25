@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
 
+import net.foxyas.changedaddon.mixins.entity.CombatTrackerAccessor;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.CombatEntry;
@@ -17,6 +19,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class ComboBurstGoal extends Goal {
+
     private final Mob mob;
     private final double mobDamageThreshold;
     private final double targetDamageThreshold;
@@ -45,20 +48,22 @@ public class ComboBurstGoal extends Goal {
         if (ticks < checkInterval) return false;
         ticks = 0; // reset do timer
 
-        CombatEntry mobEntry = mob.getCombatTracker().getLastEntry();
+        List<CombatEntry> entries = ((CombatTrackerAccessor)mob.getCombatTracker()).getEntries();
+        CombatEntry mobEntry = !entries.isEmpty() ? entries.get(entries.size() - 1) : null;
         if (mobEntry == null) return false;
 
         LivingEntity target = mob.getTarget();
         if (target == null || !target.isAlive()) return false;
 
-        CombatEntry targetEntry = target.getCombatTracker().getLastEntry();
+        entries = ((CombatTrackerAccessor)target.getCombatTracker()).getEntries();
+        CombatEntry targetEntry = !entries.isEmpty() ? entries.get(entries.size() - 1) : null;
         if (targetEntry == null) return false;
 
-        float mobRecentDamage = mobEntry.getDamage();
-        float targetRecentDamage = targetEntry.getDamage();
+        float mobRecentDamage = mobEntry.damage();
+        float targetRecentDamage = targetEntry.damage();
 
-        Entity lastMobAttacker = mobEntry.getAttacker();
-        Entity lastTargetAttacker = targetEntry.getAttacker();
+        Entity lastMobAttacker = mobEntry.source().getEntity();
+        Entity lastTargetAttacker = targetEntry.source().getEntity();
 
         // Caso 1 → Mob foi danificado por OUTRO que não é o target
         if (lastMobAttacker != null && lastMobAttacker != target) {
@@ -105,12 +110,10 @@ public class ComboBurstGoal extends Goal {
 
             if (livingEntity instanceof Player player) {
                 player.displayClientMessage(
-                        Component.literal("That's ENOUGH").withStyle(style -> {
-                            return style
-                                    .withBold(true)
-                                    .withItalic(true)
-                                    .withColor(new Color(0, 0, 0).getRGB());
-                        }),
+                        Component.literal("That's ENOUGH").withStyle(style -> style
+                                .withBold(true)
+                                .withItalic(true)
+                                .withColor(new Color(0, 0, 0).getRGB())),
                         true
                 );
             }

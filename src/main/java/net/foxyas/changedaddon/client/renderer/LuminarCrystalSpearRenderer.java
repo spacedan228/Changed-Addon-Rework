@@ -20,7 +20,7 @@ public class LuminarCrystalSpearRenderer extends EntityRenderer<LuminarCrystalSp
 
     public LuminarCrystalSpearRenderer(EntityRendererProvider.Context context) {
         super(context);
-        model = new ModelLuminarCrystalSpearModel<LuminarCrystalSpearEntity>(context.bakeLayer(ModelLuminarCrystalSpearModel.LAYER_LOCATION));
+        model = new ModelLuminarCrystalSpearModel<>(context.bakeLayer(ModelLuminarCrystalSpearModel.LAYER_LOCATION));
     }
 
     @Override

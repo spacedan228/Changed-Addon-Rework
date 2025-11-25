@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PatIconItem extends Item {
     public PatIconItem() {
-        super(new Item.Properties().tab(null).stacksTo(64).rarity(Rarity.EPIC));
+        super(new Item.Properties().stacksTo(64).rarity(Rarity.EPIC));
     }
 
     @Override

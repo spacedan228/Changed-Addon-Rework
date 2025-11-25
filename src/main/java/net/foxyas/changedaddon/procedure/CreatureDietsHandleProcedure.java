@@ -31,7 +31,6 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Mod.EventBusSubscriber
 public class CreatureDietsHandleProcedure {

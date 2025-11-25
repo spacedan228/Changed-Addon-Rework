@@ -38,7 +38,7 @@ public abstract class AbstractSyringeItem extends Item implements SpecializedAni
     }
 
     public void applyEffectsAfterUse(@NotNull ItemStack pStack, Level level, LivingEntity entity) {
-        ChangedSounds.broadcastSound(entity, ChangedSounds.SWORD1, 1.0F, 1.0F);
+        ChangedSounds.broadcastSound(entity, ChangedSounds.SYRINGE_PRICK, 1.0F, 1.0F);
     }
 
     @Nullable

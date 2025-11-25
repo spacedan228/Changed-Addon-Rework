@@ -6,9 +6,9 @@ import net.ltxprogrammer.changed.entity.animation.AnimationParameters;
 import net.minecraft.world.entity.LivingEntity;
 
 public class DodgeAnimationParameters implements AnimationParameters {
-    public static DodgeAnimationParameters INSTANCE = new DodgeAnimationParameters();
+    public static final DodgeAnimationParameters INSTANCE = new DodgeAnimationParameters();
 
-    public static Codec<DodgeAnimationParameters> CODEC = Codec.unit(() -> INSTANCE);
+    public static final Codec<DodgeAnimationParameters> CODEC = Codec.unit(() -> INSTANCE);
 
     private DodgeAnimationParameters() {
     }

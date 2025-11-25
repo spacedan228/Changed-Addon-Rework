@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -10,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -25,6 +25,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,7 +162,7 @@ public class SignalCatcherItem extends Item {
 
             // Cria o texto básico da posição
             String positionText = String.format("Block %d: [%d, %d, %d]", i + 1, pos.getX(), pos.getY(), pos.getZ());
-            TextComponent message = Component.literal(positionText);
+            MutableComponent message = Component.literal(positionText);
 
             if (isCreative) {
                 // Adiciona eventos ao texto apenas para jogadores criativos
@@ -169,7 +170,7 @@ public class SignalCatcherItem extends Item {
                         .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/tp %d %d %d", pos.getX(), pos.getY(), pos.getZ())))
                         .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to copy the teleport command")));
 
-                message.setStyle(style);
+                message.withStyle(style);
             }
 
             // Envia cada linha individualmente

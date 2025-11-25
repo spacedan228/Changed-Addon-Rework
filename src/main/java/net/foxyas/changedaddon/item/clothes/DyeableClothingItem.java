@@ -1,9 +1,6 @@
 package net.foxyas.changedaddon.item.clothes;
 
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.ltxprogrammer.changed.init.ChangedTabs;
 import net.ltxprogrammer.changed.item.ClothingItem;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.CreativeModeTab;
@@ -14,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.awt.*;
 
 public abstract class DyeableClothingItem extends ClothingItem implements DyeableLeatherItem {
+
     public DyeableClothingItem() {
         super();
         CauldronInteraction.WATER.put(this, CauldronInteraction.DYED_ITEM);
@@ -50,14 +48,12 @@ public abstract class DyeableClothingItem extends ClothingItem implements Dyeabl
         }
     }
 
-    @Override
-    public void fillItemCategory(@NotNull CreativeModeTab tab, @NotNull NonNullList<ItemStack> items) {
-        if (this.allowdedIn(tab)) {
-            for (DefaultColors color : DefaultColors.values()) {
-                ItemStack stack = new ItemStack(this);
-                this.setColor(stack, color.getColorToInt());
-                items.add(stack);
-            }
+
+    public void fillItemCategory(@NotNull CreativeModeTab.Output tab) {
+        for (DefaultColors color : DefaultColors.values()) {
+            ItemStack stack = new ItemStack(this);
+            this.setColor(stack, color.getColorToInt());
+            tab.accept(stack);
         }
     }
 
@@ -65,15 +61,5 @@ public abstract class DyeableClothingItem extends ClothingItem implements Dyeabl
     public int getColor(ItemStack pStack) {
         CompoundTag tag = pStack.getTagElement("display");
         return tag != null && tag.contains("color", 99) ? tag.getInt("color") : 0xffffff;
-    }
-
-    @Override
-    protected boolean allowdedIn(@NotNull CreativeModeTab tab) {
-        if (tab == ChangedTabs.TAB_CHANGED_ITEMS) {
-            return false;
-        } else if (tab == ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB) {
-            return true;
-        }
-        return super.allowdedIn(tab);
     }
 }

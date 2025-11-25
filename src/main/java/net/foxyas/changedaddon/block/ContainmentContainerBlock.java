@@ -48,7 +48,6 @@ import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
-import java.util.Random;
 
 public class ContainmentContainerBlock extends Block implements SimpleWaterloggedBlock, EntityBlock, NonLatexCoverableBlock, CustomFallable {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;

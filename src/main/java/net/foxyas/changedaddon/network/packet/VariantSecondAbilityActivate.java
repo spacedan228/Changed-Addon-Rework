@@ -4,7 +4,6 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
-import net.ltxprogrammer.changed.network.packet.ChangedPacket;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.UniversalDist;
 import net.ltxprogrammer.changed.world.inventory.AbilityRadialMenu;
@@ -14,11 +13,12 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistry;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public class VariantSecondAbilityActivate implements ChangedPacket {
+public class VariantSecondAbilityActivate {
     final UUID uuid;
     final boolean keyState;
     final AbstractAbility<?> ability;
@@ -42,13 +42,13 @@ public class VariantSecondAbilityActivate implements ChangedPacket {
     public VariantSecondAbilityActivate(FriendlyByteBuf buffer) {
         this.uuid = buffer.readUUID();
         this.keyState = buffer.readBoolean();
-        this.ability = ChangedRegistry.ABILITY.get().getValue(buffer.readInt());
+        this.ability = ((ForgeRegistry<AbstractAbility<?>>)ChangedRegistry.ABILITY.get()).getValue(buffer.readInt());
     }
 
     public void write(FriendlyByteBuf buffer) {
         buffer.writeUUID(this.uuid);
         buffer.writeBoolean(this.keyState);
-        buffer.writeInt(ChangedRegistry.ABILITY.get().getID(this.ability));
+        buffer.writeInt(((ForgeRegistry<AbstractAbility<?>>)ChangedRegistry.ABILITY.get()).getID(this.ability));
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {

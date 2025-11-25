@@ -26,7 +26,7 @@ import java.util.List;
 public abstract class GameRendererMixin {
     @Shadow
     @Final
-    private Minecraft minecraft;
+    Minecraft minecraft;
     @Unique
     private TransfurVariantVision changed_Addon_Rework$transfurVariantVision;
     @Unique

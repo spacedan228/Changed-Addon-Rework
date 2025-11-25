@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;

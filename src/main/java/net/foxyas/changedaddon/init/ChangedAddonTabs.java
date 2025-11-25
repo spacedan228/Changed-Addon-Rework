@@ -14,7 +14,6 @@ public class ChangedAddonTabs {
 
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), ChangedAddonMod.MODID);
 
-
     public static final RegistryObject<CreativeModeTab> CHANGED_ADDON_OPTIONAL_COMBAT_TAB = TABS.register("optional_combat_tab", () -> CreativeModeTab.builder()
             .icon(()-> ChangedAddonItems.ELECTRIC_KATANA.get().getDefaultInstance())
             .displayItems((params, items) -> {
@@ -29,7 +28,6 @@ public class ChangedAddonTabs {
                 items.accept(PAINITE_ARMOR_BOOTS.get());
 
                 items.accept(THE_DECIMATOR.get());
-                //TODO add items
             }).build());
 
     public static final RegistryObject<CreativeModeTab> CHANGED_ADDON_MAIN_TAB = TABS.register("main_tab", () -> CreativeModeTab.builder()
@@ -41,5 +39,9 @@ public class ChangedAddonTabs {
                         items.accept(itemRegistryObject.get());
                     }
                 }
+
+                DYEABLE_TSHIRT.get().fillItemCategory(items);
+                DYEABLE_SHORTS.get().fillItemCategory(items);
+                LASER_POINTER.get().fillItemCategory(items);
             }).build());//CHANGED_BOOK can be replaced with .withTabsImage(ResourceLocation tabsImage)
 }

@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.procedure.AddTransfurProgressProcedure;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;

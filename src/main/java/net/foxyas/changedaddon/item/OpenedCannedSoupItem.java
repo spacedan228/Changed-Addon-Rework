@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.init.ChangedBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
@@ -92,7 +91,7 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
                     if (!player.addItem(opened)) {
                         player.drop(opened, true);
                     }
-                    player.getLevel().playSound(null, player, SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.PLAYERS, 1, 2);
+                    player.level().playSound(null, player, SoundEvents.IRON_TRAPDOOR_OPEN, SoundSource.PLAYERS, 1, 2);
                 }
             }
         }
@@ -100,11 +99,11 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
 
     @SubscribeEvent
     public static void onRightClickItem(PlayerInteractEvent.RightClickBlock event) {
-        Player player = event.getPlayer();
+        Player player = event.getEntity();
         ItemStack stack = event.getItemStack();
-        Level world = event.getWorld();
+        Level level = player.level();
         BlockPos blockPos = event.getHitVec().getBlockPos();
-        BlockState state = event.getWorld().getBlockState(blockPos);
+        BlockState state = level.getBlockState(blockPos);
 
         if (stack.is(ChangedBlocks.CANNED_SOUP.get().asItem())) {
             if (player.isShiftKeyDown()) {
@@ -118,9 +117,9 @@ public class OpenedCannedSoupItem extends AbstractCanItem {
                             return;
                         }
                         event.setCanceled(true);
-                        world.setBlock(blockPos , Blocks.AIR.defaultBlockState(), 3);
-                        world.levelEvent(player, 2001, blockPos, Block.getId(state));
-                        Block.popResource(world, blockPos, new ItemStack(ChangedAddonItems.EMPTY_CAN.get()));
+                        level.setBlock(blockPos , Blocks.AIR.defaultBlockState(), 3);
+                        level.levelEvent(player, 2001, blockPos, Block.getId(state));
+                        Block.popResource(level, blockPos, new ItemStack(ChangedAddonItems.EMPTY_CAN.get()));
                         player.getFoodData().eat(4, 1);
                         player.swing(event.getHand());
                     }

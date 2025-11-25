@@ -37,7 +37,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements EntityBlock, NonLatexCoverableBlock {

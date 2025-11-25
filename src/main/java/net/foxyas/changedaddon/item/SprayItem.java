@@ -2,8 +2,6 @@ package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
-import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.core.BlockPos;

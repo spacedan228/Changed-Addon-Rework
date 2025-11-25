@@ -6,9 +6,10 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,7 +21,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 public class ProcessPatFeature {
 
@@ -28,13 +28,13 @@ public class ProcessPatFeature {
         if (!(target instanceof ChangedEntity changedEntity) || changedEntity.getTarget() == player) return;
 
         if (PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
-            player.getLevel().addParticle(ChangedParticles.emote(changedEntity, Emote.CONFUSED),
+            player.level().addParticle(ChangedParticles.emote(changedEntity, Emote.CONFUSED),
                     target.getX(), target.getY() + (double) target.getDimensions(target.getPose()).height + 0.65, target.getZ(),
                     0.0f, 0.0f, 0.0f);
             return;
         }
 
-        player.getLevel().addParticle(ChangedParticles.emote(changedEntity, Emote.HEART),
+        player.level().addParticle(ChangedParticles.emote(changedEntity, Emote.HEART),
                 target.getX(), target.getY() + (double) target.getDimensions(target.getPose()).height + 0.65, target.getZ(),
                 0.0f, 0.0f, 0.0f);
     }
@@ -73,10 +73,10 @@ public class ProcessPatFeature {
             Player player = event.player;
             LivingEntity target = event.target;
 
-            if (player.getLevel() instanceof ServerLevel serverLevel) {
+            if (player.level() instanceof ServerLevel) {
                 if (target instanceof ChangedEntity changedEntity && !ProcessTransfur.isPlayerTransfurred(player)) {
                     if (!PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
-                        Random random = changedEntity.getRandom();
+                        RandomSource random = changedEntity.getRandom();
                         if (random.nextFloat() <= 0.0001f) {
                             changedEntity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600, 0, true, false, true), player);
                             if (player instanceof ServerPlayer serverPlayer) {

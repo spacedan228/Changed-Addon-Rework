@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.client.gui.ftkc;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.packet.ServerboundProgressFTKCPacket;
-import net.foxyas.changedaddon.util.RenderUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;

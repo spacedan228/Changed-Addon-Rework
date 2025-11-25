@@ -28,7 +28,7 @@ public abstract class AdvancedHumanoidRendererMixin {
     public abstract AdvancedHumanoidModel<ChangedEntity> getModel(ChangedEntity entity);
 
     @Inject(method = "render(Lnet/ltxprogrammer/changed/entity/ChangedEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
-            at = @At("TAIL"), cancellable = true)
+            at = @At("TAIL"))
     private void TurnOffPlantoids(ChangedEntity entity, float yRot, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, CallbackInfo ci) {
         var torso = this.getModel(entity).getTorso();
         try {

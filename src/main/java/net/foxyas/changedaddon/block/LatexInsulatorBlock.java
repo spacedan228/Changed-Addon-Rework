@@ -139,7 +139,7 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
                 if (entity instanceof LivingEntity _entity && !_entity.level.isClientSide())
                     _entity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.LATEX_SOLVENT.get(), 300, 0, false, false));
                 if (entity instanceof LivingEntity _entity) {
-                    Holder<DamageType> pType = ChangedAddonDamageSources.LATEX_SOLVENT.source(_entity.level().registryAccess()).typeHolder();
+                    Holder<DamageType> pType = ChangedAddonDamageSources.LATEX_SOLVENT.source(_entity.level()).typeHolder();
                     DamageSource pSource = new DamageSource(pType) {
                         @Override
                         public boolean is(@NotNull TagKey<DamageType> pDamageTypeKey) {
@@ -160,7 +160,7 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
                     if (!player.level.isClientSide())
                         player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.LATEX_SOLVENT.get(), 120, 0, false, false));
                     if (player.getHealth() > 1) {
-                        Holder<DamageType> pType = ChangedAddonDamageSources.LATEX_SOLVENT.source(player.level().registryAccess()).typeHolder();
+                        Holder<DamageType> pType = ChangedAddonDamageSources.LATEX_SOLVENT.source(player.level()).typeHolder();
                         DamageSource pSource = new DamageSource(pType) {
                             @Override
                             public boolean is(@NotNull TagKey<DamageType> pDamageTypeKey) {

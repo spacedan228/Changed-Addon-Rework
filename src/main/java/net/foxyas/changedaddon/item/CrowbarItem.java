@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.ltxprogrammer.changed.block.AbstractLabDoor;
 import net.ltxprogrammer.changed.block.AbstractLargeLabDoor;
 import net.minecraft.core.BlockPos;

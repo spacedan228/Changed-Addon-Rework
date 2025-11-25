@@ -2,19 +2,19 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.menu.*;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.common.extensions.IForgeMenuType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ChangedAddonMenus {
 
-    public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(ForgeRegistries.CONTAINERS, ChangedAddonMod.MODID);
+    public static final DeferredRegister<MenuType<?>> REGISTRY = DeferredRegister.create(BuiltInRegistries.MENU.key(), ChangedAddonMod.MODID);
 
     public static final RegistryObject<MenuType<FoxyasInventoryMenu>> FOXYAS_INVENTORY_MENU = register("foxyas_inventory_menu", FoxyasInventoryMenu::new);
     public static final RegistryObject<MenuType<GeneratorGuiMenu>> GENERATORGUI = register("generator_gui", GeneratorGuiMenu::new);

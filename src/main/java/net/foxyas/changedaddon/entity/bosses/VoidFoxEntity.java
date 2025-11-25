@@ -722,7 +722,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
             this.subDodgeHealth(damageAmount);
 
             // Counter-attack trigger: solvent projectile
-            if (damageSource.is(DamageTypeTags.IS_PROJECTILE) && damageSource.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.source(this.level().registryAccess()).getMsgId())) {
+            if (damageSource.is(DamageTypeTags.IS_PROJECTILE) && damageSource.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.source(this.level()).getMsgId())) {
                 Entity attacker = damageSource.getDirectEntity();
 
                 if (attacker != null) {

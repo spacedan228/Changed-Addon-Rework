@@ -40,21 +40,6 @@ public class KeycardColorRecipeCategory implements IRecipeCategory<KeycardColorR
         return ChangedAddonJeiPlugin.KEYCARD_COLOR_RECIPE_TYPE;
     }
 
-    /**
-     * getUid and getRecipeClass are marked to removal
-     * you are supposed to get the info from getRecipeType() method now
-     */
-
-    @SuppressWarnings("removal")
-    public @NotNull ResourceLocation getUid() {
-        return ID;
-    }
-
-    @SuppressWarnings("removal")
-    public @NotNull Class<? extends KeycardColorRecipe> getRecipeClass() {
-        return KeycardColorRecipe.class;
-    }
-
     /// --- End of the for removal classes ---
 
     @Override

@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
-import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;

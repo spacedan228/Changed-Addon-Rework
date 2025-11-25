@@ -31,7 +31,7 @@ public class AbilityControllerMixin implements AbilityControllerExtension {
         return AbilityControllerExtension.super.shouldApplyCooldown();
     }
 
-    @Inject(method = "applyCoolDown", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "applyCoolDown", at = @At("TAIL"))
     public void injectApplyCooldown(CallbackInfo ci) {
         if (!this.shouldApplyCooldown()) {
             resetCooldown();

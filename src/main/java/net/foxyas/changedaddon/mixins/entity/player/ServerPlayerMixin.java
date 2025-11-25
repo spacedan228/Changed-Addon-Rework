@@ -45,7 +45,7 @@ public class ServerPlayerMixin implements SyncTrackMotion, LivingEntityDataExten
         return (ServerPlayer) (Object) this;
     }
 
-    @Inject(method = "tick", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "tick", at = @At("TAIL"))
     private void cleanKnownMotion(CallbackInfo ci) {
         if (getSelf().tickCount % 40 == 0) {
             if (getLastKnownMotion() != null) {

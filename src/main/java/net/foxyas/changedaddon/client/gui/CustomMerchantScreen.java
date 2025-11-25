@@ -163,7 +163,7 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
         CustomMerchantOffer merchantoffer1 = offers.get(k1);
 
         if (merchantoffer1.isOutOfStock() && isHovering(186, 35, 22, 21, mouseX, mouseY) && menu.canRestock()) {
-            pGuiGraphics.renderTooltip(this.font, DEPRECATED_TOOLTIP, mouseX, mouseY);;
+            pGuiGraphics.renderTooltip(this.font, DEPRECATED_TOOLTIP, mouseX, mouseY);
         }
 
         for (TradeOfferButton button : tradeOfferButtons) {

@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.sounds.SoundEvents;

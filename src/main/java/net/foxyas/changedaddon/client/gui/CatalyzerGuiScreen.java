@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.client.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.block.entity.CatalyzerBlockEntity;
 import net.foxyas.changedaddon.menu.CatalyzerGuiMenu;
 import net.minecraft.client.gui.GuiGraphics;

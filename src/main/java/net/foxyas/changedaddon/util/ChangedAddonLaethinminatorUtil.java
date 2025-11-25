@@ -120,7 +120,7 @@ public class ChangedAddonLaethinminatorUtil {
                     && player.canReach(en, player.getEyePosition().distanceTo(targetPos))
                     && !isAllied) {
 
-                DamageSource solvent = new DamageSource(ChangedAddonDamageSources.LATEX_SOLVENT.source(player.level().registryAccess()).typeHolder(), player) {
+                DamageSource solvent = new DamageSource(ChangedAddonDamageSources.LATEX_SOLVENT.source(player.level()).typeHolder(), player) {
                     @Override
                     public boolean is(TagKey<DamageType> pDamageTypeKey) {
                         if (pDamageTypeKey == DamageTypeTags.IS_PROJECTILE) {

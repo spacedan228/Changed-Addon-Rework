@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class Protogen0senia0Model extends AdvancedHumanoidModel<Protogen0senia0Entity> implements AdvancedHumanoidModelInterface<Protogen0senia0Entity, Protogen0senia0Model> {
-    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("0senia0_model", "main");;
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("0senia0_model", "main");
 
     private final ModelPart Head;
     private final ModelPart RightEar;

@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.init;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -19,7 +19,7 @@ public final class ChangedAddonTags {
         public static final TagKey<Block> PASSABLE_BLOCKS = key("passable_blocks");
 
         private static TagKey<Block> key(String path) {
-            return TagKey.create(Registry.BLOCK_REGISTRY, ChangedAddonMod.resourceLoc(path));
+            return TagKey.create(BuiltInRegistries.BLOCK.key(), ChangedAddonMod.resourceLoc(path));
         }
     }
 
@@ -47,7 +47,7 @@ public final class ChangedAddonTags {
         public static final TagKey<Item> WOLF_DIET = key("wolf_diet_list");
 
         private static TagKey<Item> key(String path) {
-            return TagKey.create(Registry.ITEM_REGISTRY, ChangedAddonMod.resourceLoc(path));
+            return TagKey.create(BuiltInRegistries.ITEM.key(), ChangedAddonMod.resourceLoc(path));
         }
     }
 
@@ -63,7 +63,7 @@ public final class ChangedAddonTags {
         public static final TagKey<EntityType<?>> HAS_CLAWS = key("has_claws");
 
         private static TagKey<EntityType<?>> key(String path) {
-            return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ChangedAddonMod.resourceLoc(path));
+            return TagKey.create(BuiltInRegistries.ENTITY_TYPE.key(), ChangedAddonMod.resourceLoc(path));
         }
     }
 

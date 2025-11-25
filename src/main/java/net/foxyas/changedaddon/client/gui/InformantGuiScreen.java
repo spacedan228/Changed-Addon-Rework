@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.entity.InformantBlockEntity;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.InformantBlockEntityRenderer;
@@ -47,7 +46,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
                     v -> v.getEntityType().getDescription().getString()
             ));
     private final List<String> filteredSuggestions = new ArrayList<>();
-    public EditBox form;
+    public final EditBox form;
     private int suggestionIndex = -1;
 
     public InformantGuiScreen(InformantGuiMenu container, Inventory inventory, Component title) {

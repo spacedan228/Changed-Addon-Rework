@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 

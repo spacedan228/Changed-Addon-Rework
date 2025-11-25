@@ -64,7 +64,7 @@ public class CommonEvent {
     @SubscribeEvent
     public static void persistAttributes(PlayerEvent.Clone event) {
         Player oldP = event.getOriginal();
-        Player newP = (Player) event.getEntity();
+        Player newP = event.getEntity();
         newP.getAttribute(ChangedAddonAttributes.LATEX_RESISTANCE.get()).setBaseValue(oldP.getAttribute(ChangedAddonAttributes.LATEX_RESISTANCE.get()).getBaseValue());
         newP.getAttribute(ChangedAddonAttributes.LATEX_INFECTION.get()).setBaseValue(oldP.getAttribute(ChangedAddonAttributes.LATEX_INFECTION.get()).getBaseValue());
     }

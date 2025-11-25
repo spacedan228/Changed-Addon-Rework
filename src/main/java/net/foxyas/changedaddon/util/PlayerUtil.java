@@ -421,7 +421,7 @@ public class PlayerUtil {
                         .orElse(null);
 
             } catch (Exception e) {
-                ChangedAddonMod.LOGGER.error("Error getting entity by name: " + e.getMessage());
+                ChangedAddonMod.LOGGER.error("Error getting entity by name: {}", e.getMessage());
                 return null;
             }
         }

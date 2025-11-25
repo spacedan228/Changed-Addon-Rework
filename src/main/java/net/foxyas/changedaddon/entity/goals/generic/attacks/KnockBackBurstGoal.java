@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -15,6 +16,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 public class KnockBackBurstGoal extends Goal {
+
     private final Mob mob;
     private final double damageThreshold;
     private final int checkInterval = 20; // ticks (1 segundo)

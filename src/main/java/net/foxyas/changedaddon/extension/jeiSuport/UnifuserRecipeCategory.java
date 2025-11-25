@@ -56,14 +56,8 @@ public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
      */
 
     @Deprecated
-    @SuppressWarnings("removal")
     public @NotNull Class<? extends UnifuserRecipe> getRecipeClass() {
         return UnifuserRecipe.class;
-    }
-
-    @SuppressWarnings("removal")
-    public @NotNull ResourceLocation getUid() {
-        return UID;
     }
 
     /// --- End of the for removal classes ---
@@ -78,7 +72,7 @@ public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
         // Exibir o campo progress como um texto ou barra de progresso
         float progressSpeed = recipe.getProgressSpeed();
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 64, 36).addItemStack(new ItemStack(ChangedAddonItems.UNIFUSER_BLOCK_ILLUSTRATIVE_ITEM.get())) // Substitua por um item adequado
-                .addTooltipCallback((recipeSlotView, tooltip) -> {
+                .addRichTooltipCallback((recipeSlotView, tooltip) -> {
                     // Adiciona uma nova linha ao tooltip com o progresso da receita
                     tooltip.add(Component.translatable("changed_addon.gui.recipe_progress", progressSpeed));
                 });

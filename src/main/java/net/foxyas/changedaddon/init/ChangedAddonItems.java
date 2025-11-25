@@ -253,10 +253,10 @@ public class ChangedAddonItems {
             () -> new DarkLatexCoatItem(ArmorItem.Type.CHESTPLATE, new Item.Properties())); //));
     public static final RegistryObject<Item> DARK_LATEX_HEAD_CAP = REGISTRY.register("dark_latex_coat_cap",
             () -> new DarkLatexCoatItem(ArmorItem.Type.HELMET, new Item.Properties())); //));
-    public static final RegistryObject<Item> LASER_POINTER = REGISTRY.register("laser_pointer", LaserPointer::new);
+    public static final RegistryObject<LaserPointer> LASER_POINTER = REGISTRY.register("laser_pointer", LaserPointer::new);
     //public static final RegistryObject<Item> DYEABLE_SPORTS_BRA = REGISTRY.register("dyeable_sports_bra", DyeableSportsBra::new);
-    public static final RegistryObject<Item> DYEABLE_TSHIRT = REGISTRY.register("dyeable_tshirt", TShirtClothing::new);
-    public static final RegistryObject<Item> DYEABLE_SHORTS = REGISTRY.register("dyeable_shorts", DyeableShorts::new);
+    public static final RegistryObject<TShirtClothing> DYEABLE_TSHIRT = REGISTRY.register("dyeable_tshirt", TShirtClothing::new);
+    public static final RegistryObject<DyeableShorts> DYEABLE_SHORTS = REGISTRY.register("dyeable_shorts", DyeableShorts::new);
     public static final RegistryObject<Item> HAZARD_BODY_SUIT = REGISTRY.register("hazard_body_suit", HazardBodySuit::new);
 
 

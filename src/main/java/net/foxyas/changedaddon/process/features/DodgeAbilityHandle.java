@@ -105,7 +105,7 @@ public class DodgeAbilityHandle {
                                 }
                             }
                         }
-                        return;
+                        //return;
                     }
 
 //                    DodgeAbilityInstance dodgeAbilityInstance = instance.getAbilityInstance(ChangedAddonAbilities.DODGE.get());

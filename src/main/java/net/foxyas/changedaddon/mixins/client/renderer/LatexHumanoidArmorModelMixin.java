@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 @Mixin(value = LatexHumanoidArmorModel.class)
 public class LatexHumanoidArmorModelMixin {
 
-    @Inject(method = "prepareMobModel(Lnet/ltxprogrammer/changed/entity/ChangedEntity;FFF)V", at = @At("RETURN"), cancellable = true, remap = false)
+    @Inject(method = "prepareMobModel(Lnet/ltxprogrammer/changed/entity/ChangedEntity;FFF)V", at = @At("RETURN"), remap = false)
     private void TurnOffPlantoids(@NotNull ChangedEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, CallbackInfo ci) {
         var self = (AdvancedHumanoidModel<?>) (Object) this;
         var torso = self.getTorso();

@@ -7,6 +7,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.FriendlyByteBuf;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -40,7 +41,7 @@ public record TurnOffTransfurPacket(int type, int pressedMs) {
 
             if (tf.getParent().transfurMode != TransfurMode.NONE) {
                 tf.transfurMode = mode == TransfurMode.NONE ? tf.getParent().transfurMode : TransfurMode.NONE;
-                if (player.getLevel().isClientSide()) {
+                if (player.level().isClientSide()) {
                     player.displayClientMessage(Component.translatable("key.changed_addon.turn_off_transfur.safe_mode", tf.transfurMode != TransfurMode.NONE), false);
                 }
             }
@@ -49,7 +50,7 @@ public record TurnOffTransfurPacket(int type, int pressedMs) {
                 if (grabEntityAbilityInstance instanceof GrabEntityAbilityExtensor abilityExtensor) {
                     boolean safeMode = !abilityExtensor.isSafeMode();
                     abilityExtensor.setSafeMode(safeMode);
-                    if (player.getLevel().isClientSide()) {
+                    if (player.level().isClientSide()) {
                         player.displayClientMessage(Component.translatable("key.changed_addon.turn_off_transfur.grab_safe_mode", safeMode), false);
                     }
                 }

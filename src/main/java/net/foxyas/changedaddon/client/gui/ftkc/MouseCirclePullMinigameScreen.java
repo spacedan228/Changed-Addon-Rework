@@ -2,11 +2,9 @@ package net.foxyas.changedaddon.client.gui.ftkc;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.packet.ServerboundProgressFTKCPacket;
-import net.foxyas.changedaddon.util.RenderUtil;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;

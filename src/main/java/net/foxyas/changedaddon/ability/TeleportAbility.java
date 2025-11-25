@@ -21,8 +21,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import java.awt.*;
 
-import java.util.Random;
-
 public class TeleportAbility extends SimpleAbility {
     public TeleportAbility() {
         super();

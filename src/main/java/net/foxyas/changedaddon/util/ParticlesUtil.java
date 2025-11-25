@@ -21,7 +21,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 import java.awt.*;
-import java.util.Random;
 
 public class ParticlesUtil {
 

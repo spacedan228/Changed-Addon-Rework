@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.variant;
 
-import com.google.common.base.Suppliers;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.*;
 import net.foxyas.changedaddon.entity.bosses.*;
@@ -9,7 +8,6 @@ import net.foxyas.changedaddon.entity.simple.*;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.beast.AquaticEntity;
 import net.ltxprogrammer.changed.entity.variant.GenderedPair;
@@ -785,7 +783,7 @@ public class ChangedAddonTransfurVariants {
         return false;
     }
 
-    public static List<Supplier<TransfurVariant<?>>> humanForms = List.of(ChangedTransfurVariants.LATEX_HUMAN::get);
+    public static final List<Supplier<TransfurVariant<?>>> humanForms = List.of(ChangedTransfurVariants.LATEX_HUMAN::get);
 
     public static List<TransfurVariant<?>> getHumanForms() {
         return new ArrayList<>(humanForms.stream().map(Supplier::get).toList());

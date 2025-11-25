@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonFluids;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.util.ChangedAddonLaethinminatorUtil;
 import net.ltxprogrammer.changed.item.SpecializedAnimations;
 import net.minecraft.core.BlockPos;
@@ -79,11 +78,9 @@ public class LaethinminatorItem extends Item implements SpecializedAnimations {
         if (level.isClientSide)
             return;
 
-        stack.hurtAndBreak(1, entity, (livingEntity) -> {
-            livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-        });
+        stack.hurtAndBreak(1, entity, (livingEntity) -> livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
 
-        ChangedAddonLaethinminatorUtil.shootDynamicLaser(player.getLevel(), player, 16, 5, 5);
+        ChangedAddonLaethinminatorUtil.shootDynamicLaser(player.level(), player, 16, 5, 5);
     }
 
     @Nullable

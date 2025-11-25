@@ -2,12 +2,11 @@ package net.foxyas.changedaddon.client.renderer.items;
 
 import net.foxyas.changedaddon.item.LaserPointer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.RegistryObject;
 
 public class LaserItemDynamicRender {
 
-    public static void DynamicLaserColor(RegistryObject<Item> item) {
+    public static void DynamicLaserColor(RegistryObject<LaserPointer> item) {
         Minecraft.getInstance().getItemColors().register(
                 (stack, tintIndex) -> {
                     if (tintIndex == 0) { // Só aplica a cor no layer certo

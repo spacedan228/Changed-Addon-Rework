@@ -135,9 +135,7 @@ public class CatalyzerRecipe implements Recipe<SimpleContainer> {
         @Override
         public @Nullable CatalyzerRecipe fromNetwork(@NotNull ResourceLocation id, FriendlyByteBuf buf) {
             NonNullList<Ingredient> inputs = NonNullList.withSize(buf.readInt(), Ingredient.EMPTY);
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromNetwork(buf));
-            }
+            inputs.replaceAll(ignored -> Ingredient.fromNetwork(buf));
             ItemStack output = buf.readItem();
             float ProgressSpeed = buf.readFloat();
             float NitrogenUsage = buf.readFloat();

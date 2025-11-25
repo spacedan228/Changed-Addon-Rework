@@ -55,7 +55,7 @@ public class ThunderStrikeGoal extends Goal {
         // Lança a entidade para cima
         Vec3 velocity = pathfinderMob.position().vectorTo(target.position()).normalize().scale(0.5f);
         pathfinderMob.setDeltaMovement(pathfinderMob.getDeltaMovement().add(velocity.x, jumpPower, velocity.z));
-        ChangedSounds.broadcastSound(pathfinderMob, ChangedSounds.CARDBOARD_BOX_OPEN.get(), 1, 1);
+        ChangedSounds.broadcastSound(pathfinderMob, ChangedSounds.CARDBOARD_BOX_OPEN, 1, 1);
 
 
         // Slow falling para manter no ar

@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.item;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
 import net.foxyas.changedaddon.procedure.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -21,7 +20,6 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.Component;
 
 import net.minecraft.resources.ResourceLocation;

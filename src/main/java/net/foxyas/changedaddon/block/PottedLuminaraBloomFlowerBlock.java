@@ -18,8 +18,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Random;
-
 public class PottedLuminaraBloomFlowerBlock extends FlowerPotBlock {
 
     public PottedLuminaraBloomFlowerBlock() {

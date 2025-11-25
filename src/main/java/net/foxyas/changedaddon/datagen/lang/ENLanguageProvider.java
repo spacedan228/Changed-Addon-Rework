@@ -49,7 +49,6 @@ import static net.foxyas.changedaddon.init.ChangedAddonEnchantments.CHANGED_LURE
 import static net.foxyas.changedaddon.init.ChangedAddonEnchantments.TRANSFUR_ASPECT;
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.LUMINAR_CRYSTAL_SPEAR;
-import static net.foxyas.changedaddon.init.ChangedAddonEntities.MIRROR_WHITE_TIGER;
 import static net.foxyas.changedaddon.init.ChangedAddonGameRules.*;
 import static net.foxyas.changedaddon.init.ChangedAddonItems.*;
 import static net.foxyas.changedaddon.init.ChangedAddonKeyMappings.*;

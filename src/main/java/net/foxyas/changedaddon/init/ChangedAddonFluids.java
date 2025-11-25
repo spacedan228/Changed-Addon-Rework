@@ -26,8 +26,7 @@ public class ChangedAddonFluids {
         @SuppressWarnings("removal")
         @SubscribeEvent
         public static void clientSetup(FMLClientSetupEvent event) {
-            ItemBlockRenderTypes.setRenderLayer(LITIX_CAMONIA_FLUID.get(), renderType -> renderType == RenderType.translucent());
-            ItemBlockRenderTypes.setRenderLayer(FLOWING_LITIX_CAMONIA_FLUID.get(), renderType -> renderType == RenderType.translucent());
+            ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.LITIX_CAMONIA_FLUID.get(), renderType -> renderType == RenderType.translucent());
         }
     }
 }

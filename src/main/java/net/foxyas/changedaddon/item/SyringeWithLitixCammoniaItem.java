@@ -1,8 +1,8 @@
 package net.foxyas.changedaddon.item;
 
+import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.procedure.SummonDripParticlesProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -12,11 +12,11 @@ import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -28,8 +28,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Random;
 
 public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
 
@@ -48,7 +46,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
             if (player.getRandom().nextFloat() >= 0.35) {
                 handleUntransfurSuccess(level, player);
             } else {
-                player.hurt(new DamageSource("untransfur_fail").bypassArmor(), 15);
+                player.hurt(ChangedAddonDamageSources.UNTRANSFUR_FAIL.source(level), 15);
                 sendMessage(player, "changedaddon.untransfur.fail");
             }
             return;
@@ -76,7 +74,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
         }
 
         // Lógica de dano e som
-        sourceEntity.level.playSound(null, sourceEntity, ChangedSounds.SWORD1, SoundSource.PLAYERS, 1, 1);
+        sourceEntity.level.playSound(null, sourceEntity, ChangedSounds.SYRINGE_PRICK.get(), SoundSource.PLAYERS, 1, 1);
 
         if (!(sourceEntity instanceof Player player1) || !player1.isCreative()) {
             if (itemStack.getDamageValue() == itemStack.getMaxDamage() - 1) {
@@ -167,7 +165,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
     }
 
     private static void damageItem(ItemStack itemStack) {
-        if (itemStack.hurt(1, new Random(), null)) {
+        if (itemStack.hurt(1, RandomSource.create(), null)) {
             itemStack.shrink(1);
             itemStack.setDamageValue(0);
         }

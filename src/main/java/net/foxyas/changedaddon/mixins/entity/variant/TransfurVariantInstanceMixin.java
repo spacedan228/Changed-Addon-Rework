@@ -222,7 +222,7 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
         }
     }
 
-    @Inject(method = "unhookAll", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "unhookAll", at = @At("TAIL"))
     private void injectUnHookALl(Player player, CallbackInfo ci) {
         if (this.getChangedEntity() instanceof VariantExtraStats stats) {
             if (this.appliedFlySpeed) {
@@ -233,14 +233,14 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
         }
     }
 
-    @Inject(method = "save", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "save", at = @At("RETURN"))
     private void InjectData(CallbackInfoReturnable<CompoundTag> cir) {
         if (this.getChangedEntity() instanceof VariantExtraStats stats) {
             stats.saveExtraData(cir.getReturnValue());
         }
     }
 
-    @Inject(method = "load", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "load", at = @At("RETURN"))
     private void readInjectedData(CompoundTag tag, CallbackInfo cir) {
         if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
             variantExtraStats.readExtraData(tag);

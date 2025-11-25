@@ -1,18 +1,14 @@
 package net.foxyas.changedaddon.init;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.gui.overlays.HazardSuitHelmetOverlay;
 import net.foxyas.changedaddon.client.gui.overlays.PatOverlay;
 import net.foxyas.changedaddon.client.gui.overlays.UntransfurOverlayOverlay;
 import net.ltxprogrammer.changed.client.ChangedOverlays;
-import net.minecraft.client.gui.screens.Overlay;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 

@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.potion;
 
+import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
@@ -11,13 +12,12 @@ import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -50,7 +50,7 @@ public class UntransfurMobEffect extends MobEffect {
 
         if (entity instanceof ChangedEntity livEnt) {
             if (entity.getType().is(ChangedTags.EntityTypes.LATEX)) {
-                entity.hurt(new DamageSource("latex_solvent"),
+                entity.hurt(ChangedAddonDamageSources.LATEX_SOLVENT.source(level),
                         (float) ((livEnt.hasEffect(ChangedAddonMobEffects.UNTRANSFUR.get()) ? livEnt.getEffect(ChangedAddonMobEffects.UNTRANSFUR.get()).getAmplifier() : 0) + 1));
             }
             return;
@@ -79,7 +79,7 @@ public class UntransfurMobEffect extends MobEffect {
         if (vars.resetTransfurAdvancements) new DelayedTask(10, () -> {
             MinecraftServer server = player.getServer();
             if (server != null)
-                server.getCommands().performCommand(player.createCommandSourceStack().withSuppressedOutput().withPermission(4), "advancement revoke @s from minecraft:changed/transfur");
+                server.getCommands().performPrefixedCommand(player.createCommandSourceStack().withSuppressedOutput().withPermission(4), "advancement revoke @s from minecraft:changed/transfur");
         });
 
         if (!(entity instanceof ServerPlayer sPlayer && sPlayer.level instanceof ServerLevel

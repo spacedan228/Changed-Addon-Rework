@@ -19,8 +19,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 
-import java.util.Random;
-
 public class TurnFeralSnepAbilityInstance extends AbstractAbilityInstance {
 
     /*public static Map<TransfurVariant<?>, Function<TransfurVariant<?>, TransfurVariant<?>>> VARIANT_CONVERSION () {

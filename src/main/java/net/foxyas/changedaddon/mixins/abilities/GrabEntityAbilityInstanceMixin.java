@@ -61,13 +61,13 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     @Unique
     private boolean alreadySnuggledTight = false;
 
-    @Inject(method = "saveData", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "saveData", at = @At("TAIL"))
     public void injectCustomData(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("safeMode", safeMode);
         tag.putBoolean("alreadySnuggledTight", alreadySnuggledTight);
     }
 
-    @Inject(method = "readData", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "readData", at = @At("TAIL"))
     public void readCustomData(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("safeMode")) safeMode = tag.getBoolean("safeMode");
         if (tag.contains("alreadySnuggledTight")) alreadySnuggledTight = tag.getBoolean("alreadySnuggledTight");
@@ -108,8 +108,7 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         }
         double attributeValue = attribute.getValue();
         float dmg = Mth.ceil((float) attributeValue * 1.33f);
-        boolean result = instance.tryAbsorbTarget(this.grabbedEntity, selfThis.entity, dmg, possibleMobFusions);
-        return result;
+        return instance.tryAbsorbTarget(this.grabbedEntity, selfThis.entity, dmg, possibleMobFusions);
     }
 
     @Inject(method = "tickIdle", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F", remap = true, shift = At.Shift.AFTER), cancellable = true)

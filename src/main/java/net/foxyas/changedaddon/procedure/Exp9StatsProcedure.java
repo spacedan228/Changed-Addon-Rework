@@ -15,10 +15,8 @@ public class Exp9StatsProcedure {
 
     @SubscribeEvent
     public static void onEntityAttacked(LivingHurtEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof LivingEntity) {
-            execute(event, event.getSource(), (LivingEntity) entity, event.getAmount());
-        }
+        LivingEntity entity = event.getEntity();
+        execute(event, event.getSource(), entity, event.getAmount());
     }
 
     public static void execute(DamageSource source, LivingEntity entity, double amount) {

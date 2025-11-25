@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public record InformantBlockGuiKeyPacket(String text, TransfurVariant<?> selectedTf, BlockPos pos) {
@@ -29,7 +30,7 @@ public record InformantBlockGuiKeyPacket(String text, TransfurVariant<?> selecte
 
     public void encode(FriendlyByteBuf buf) {
         buf.writeUtf(text);
-        buf.writeResourceLocation(selectedTf == null ? NULL_LOC : selectedTf.getRegistryName());
+        buf.writeResourceLocation(selectedTf == null ? NULL_LOC : Objects.requireNonNullElse(ChangedRegistry.TRANSFUR_VARIANT.get().getKey(selectedTf), NULL_LOC));
         buf.writeBlockPos(pos);
     }
 
@@ -39,7 +40,7 @@ public record InformantBlockGuiKeyPacket(String text, TransfurVariant<?> selecte
             Player player = context.getSender();
             if (player == null) return;
 
-            Level level = player.getLevel();
+            Level level = player.level();
             if (!level.isLoaded(pos)) return;
 
             BlockState state = level.getBlockState(pos);

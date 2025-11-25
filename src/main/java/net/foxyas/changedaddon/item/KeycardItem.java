@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.foxyas.changedaddon.item.api.ColorHolder;
 import net.ltxprogrammer.changed.block.Computer;
 import net.ltxprogrammer.changed.block.KeypadBlock;

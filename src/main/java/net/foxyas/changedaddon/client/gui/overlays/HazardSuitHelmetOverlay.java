@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.client.gui.overlays;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.foxyas.changedaddon.process.sounds.HelmetBreathingSound;
 import net.ltxprogrammer.changed.data.AccessorySlots;
@@ -20,9 +19,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 
 import java.util.Optional;
 

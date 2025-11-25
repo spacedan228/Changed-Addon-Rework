@@ -57,11 +57,6 @@ public class HaydenFennecFoxEntity extends AbstractBasicOrganicChangedEntity {
         return super.hurt(source, amount);
     }
 
-    @Override
-    public TransfurMode getTransfurMode() {
-        return TransfurMode.NONE;
-    }
-
     public Color3 getDripColor() {
         return this.random.nextBoolean() ? Color3.getColor("F6DC70") : Color3.getColor("F0E4B9");
     }
