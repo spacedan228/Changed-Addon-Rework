@@ -52,7 +52,7 @@ public class DepositToChestGoal extends Goal {
 
     @Override
     public void start() {
-        chestPos = tryFindNearbyChest(holder.level);
+        tryFindNearbyChest(holder.level);
         if(chestPos != null) holder.getNavigation().moveTo(chestPos.getX() + 0.5, chestPos.getY(), chestPos.getZ() + 0.5, 0.25f);
     }
 
@@ -66,7 +66,7 @@ public class DepositToChestGoal extends Goal {
         Level level = holder.level;
         PathNavigation navigation = holder.getNavigation();
         if(chestPos == null || !(level.getBlockEntity(chestPos) instanceof ChestBlockEntity)) {
-            chestPos = tryFindNearbyChest(level);
+            tryFindNearbyChest(level);
             if(chestPos == null) {
                 lock = true;
                 new DelayedTask(200, ()-> lock = false);
@@ -98,7 +98,7 @@ public class DepositToChestGoal extends Goal {
                 chestPos = null;
                 lock = true;
                 new DelayedTask(200, ()-> lock = false);
-            }
+            } else if (noPathTimeout % 25 == 0) navigation.recomputePath();
             return;
         }
 
@@ -112,7 +112,7 @@ public class DepositToChestGoal extends Goal {
         noPathTimeout = 100;
     }
 
-    private BlockPos tryFindNearbyChest(Level level) {
+    private void tryFindNearbyChest(Level level) {
         IItemHandler handsInv = holder.getHandsAndInv();
         PrototypeEntity.DepositType depositType = holder.getDepositType();
         List<ItemStack> carriedItems = new ArrayList<>();
@@ -168,7 +168,7 @@ public class DepositToChestGoal extends Goal {
             }
         }
 
-        return bestChest != null ? bestChest : closestChest;
+        chestPos = bestChest != null ? bestChest : closestChest;
     }
 
     private void depositToChest(ServerLevel level) {

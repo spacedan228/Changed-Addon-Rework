@@ -27,12 +27,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
 
 public class PruningOrangeLeavesGoal extends Goal {
 
+    private static final int searchRange = 10;
     private final PrototypeEntity holder;
 
     private boolean lock;
@@ -70,7 +70,7 @@ public class PruningOrangeLeavesGoal extends Goal {
 
     @Override
     public void start() {
-        targetLeave = findNearbyOrangeLeaves(holder.blockPosition(), 10, holder.getEyePosition());
+        findNearbyOrangeLeaves(holder.blockPosition(), holder.getEyePosition());
         if(targetLeave == null) return;
 
         holder.getNavigation().moveTo(targetLeave.getX(), targetLeave.getY(), targetLeave.getZ(), 0.25f);
@@ -81,7 +81,7 @@ public class PruningOrangeLeavesGoal extends Goal {
         Level level = holder.level;
         PathNavigation navigation = holder.getNavigation();
         if (targetLeave == null || isBlockInvalid(level.getBlockState(targetLeave))) {
-            targetLeave = findNearbyOrangeLeaves(holder.blockPosition(), 10, holder.getEyePosition());
+            findNearbyOrangeLeaves(holder.blockPosition(), holder.getEyePosition());
             if (targetLeave == null) return;
             navigation.moveTo(targetLeave.getX(), targetLeave.getY(), targetLeave.getZ(), 0.25f);
         }
@@ -97,7 +97,7 @@ public class PruningOrangeLeavesGoal extends Goal {
 
         if (targetLeave.distSqr(holder.blockPosition()) <= (3.5f * 3.5f)) {
             pruneOrangeLeaves();
-            targetLeave = findNearbyOrangeLeaves(holder.blockPosition(), 10, holder.getEyePosition());
+            findNearbyOrangeLeaves(holder.blockPosition(), holder.getEyePosition());
             if(targetLeave != null) navigation.moveTo(targetLeave.getX(), targetLeave.getY(), targetLeave.getZ(), 0.25f);
             pruneCooldown = 5;
         }
@@ -106,7 +106,7 @@ public class PruningOrangeLeavesGoal extends Goal {
             noPathTimeout--;
             if (noPathTimeout <= 0) {//No path, try again later
                 targetLeave = null;
-            }
+            } else if (noPathTimeout % 25 == 0) navigation.recomputePath();
             return;
         }
 
@@ -133,13 +133,13 @@ public class PruningOrangeLeavesGoal extends Goal {
         return !state.is(ChangedBlocks.ORANGE_TREE_LEAVES.get());
     }
 
-    @Nullable
-    private BlockPos findNearbyOrangeLeaves(BlockPos center, int range, Vec3 eyePos) {
+    private void findNearbyOrangeLeaves(BlockPos center, Vec3 eyePos) {
         BlockPos closest = null;
-        float bestDist = range * range + .01f, dist;
+        float bestDist = searchRange * searchRange + .01f, dist;
         Level level = holder.level;
         // Evite .toList() para não alocar tudo; itere o stream diretamente
-        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-range, -range, -range), center.offset(range, range, range))) {
+        for (BlockPos pos : BlockPos.betweenClosed(center.offset(-searchRange, -searchRange, -searchRange),
+                center.offset(searchRange, searchRange, searchRange))) {
             dist = (float) eyePos.distanceToSqr(Vec3.atCenterOf(pos));
             if (dist >= bestDist || isBlockInvalid(level.getBlockState(pos))) continue;
 
@@ -149,7 +149,7 @@ public class PruningOrangeLeavesGoal extends Goal {
                 closest = pos.immutable();
             }
         }
-        return closest;
+        targetLeave = closest;
     }
 
     private @NotNull ClipContext eyeContext(BlockPos pos) {

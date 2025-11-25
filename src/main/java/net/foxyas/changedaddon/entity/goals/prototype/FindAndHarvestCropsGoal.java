@@ -28,6 +28,7 @@ public class FindAndHarvestCropsGoal extends Goal {
     private final PathNavigation navigation;
 
     private boolean lock;
+    private boolean pendingEffects = true;
     private BlockPos targetCropPos;
     private int harvestCooldown;
     private int noPathTimeout;
@@ -75,22 +76,17 @@ public class FindAndHarvestCropsGoal extends Goal {
     @Override
     public void start() {
         Level level = entity.getLevel();
-        targetCropPos = findNearbyCrop(level, entity.blockPosition());
+        findNearbyCrop(level, entity.blockPosition());
         if (targetCropPos == null) return;
+
         navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
-
-        level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
-
-        ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
-                entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
-                1, 0, 0, 0, 0);
     }
 
     @Override
     public void tick() {
         Level level = entity.getLevel();
         if(targetCropPos == null || isBlockInvalid(level.getBlockState(targetCropPos))){// Try to find crop
-            targetCropPos = findNearbyCrop(level, entity.blockPosition());
+            findNearbyCrop(level, entity.blockPosition());
             if(targetCropPos == null) return;//cancel goal - no crops
             navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
         }
@@ -108,7 +104,7 @@ public class FindAndHarvestCropsGoal extends Goal {
 
         if (entity.blockPosition().closerThan(targetCropPos, 2.5)) {
             harvestCrop((ServerLevel) level);
-            targetCropPos = findNearbyCrop(level, entity.blockPosition()); // Look for new crop
+            findNearbyCrop(level, entity.blockPosition()); // Look for new crop
             if(targetCropPos != null) navigation.moveTo(targetCropPos.getX() + 0.5, targetCropPos.getY(), targetCropPos.getZ() + 0.5, 0.25f);
             harvestCooldown = 5;
         }
@@ -117,16 +113,27 @@ public class FindAndHarvestCropsGoal extends Goal {
             noPathTimeout--;
             if (noPathTimeout <= 0) {//No path, try again later
                 targetCropPos = null;
-            }
+            } else if (noPathTimeout % 25 == 0) navigation.recomputePath();
             return;
         }
 
         noPathTimeout = 100;
+
+        if (pendingEffects) {
+            pendingEffects = false;
+
+            level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+
+            ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
+                    entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
+                    1, 0, 0, 0, 0);
+        }
     }
 
     @Override
     public void stop() {
         entity.getNavigation().stop();
+        pendingEffects = true;
         targetCropPos = null;
         harvestCooldown = 0;
         noPathTimeout = 100;
@@ -136,7 +143,7 @@ public class FindAndHarvestCropsGoal extends Goal {
         return !(state.getBlock() instanceof CropBlock crop) || !crop.isMaxAge(state);
     }
 
-    private BlockPos findNearbyCrop(Level level, BlockPos center) {
+    private void findNearbyCrop(Level level, BlockPos center) {
         BlockPos closestCrop = null;
         float closestDist = searchRange * searchRange + .01f, dist;
         for (BlockPos pos : BlockPos.betweenClosed(center.offset(-searchRange, -searchRange, -searchRange), center.offset(searchRange, searchRange, searchRange))) {
@@ -146,7 +153,7 @@ public class FindAndHarvestCropsGoal extends Goal {
             closestDist = dist;
             closestCrop = pos.immutable();
         }
-        return closestCrop;
+        targetCropPos = closestCrop;
     }
 
     private void harvestCrop(ServerLevel level) {

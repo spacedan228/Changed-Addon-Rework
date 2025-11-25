@@ -27,6 +27,7 @@ public class ApplyBonemealGoal extends Goal {
     private final PathNavigation navigation;
 
     private boolean lock;
+    private boolean pendingEffects = true;
     private BlockPos targetPos;
     private int boneMealCooldown;
     private int noPathTimeout;
@@ -74,27 +75,21 @@ public class ApplyBonemealGoal extends Goal {
     @Override
     public void start() {// Find a growable crop nearby
         Level level = entity.getLevel();
-        targetPos = findGrowableCrop(level, entity.blockPosition(), searchRange);
+        findGrowableCrop(level, entity.blockPosition());
         if (targetPos == null) return;
 
         navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
-        level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
-
-        ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
-                entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
-                1, 0, 0, 0, 0);
     }
 
     @Override
     public void tick() {
         Level level = entity.level;
         if (targetPos == null || isBlockInvalid(level, level.getBlockState(targetPos), targetPos)) {
-            targetPos = findGrowableCrop(entity.level, entity.blockPosition(), searchRange);
+            findGrowableCrop(entity.level, entity.blockPosition());
             if (targetPos == null) return;
             navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
         }
 
-        navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
         entity.getLookControl().setLookAt(
                 targetPos.getX(), targetPos.getY(), targetPos.getZ(),
                 30.0F, // yaw change speed (degrees per tick)
@@ -109,7 +104,7 @@ public class ApplyBonemealGoal extends Goal {
         if (entity.blockPosition().closerThan(targetPos, 2.5)) {
             applyBoneMeal(targetPos);
             boneMealCooldown = 10;
-            targetPos = findGrowableCrop(entity.level, entity.blockPosition(), searchRange);
+            findGrowableCrop(entity.level, entity.blockPosition());
             if(targetPos != null) navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
         }
 
@@ -117,16 +112,27 @@ public class ApplyBonemealGoal extends Goal {
             noPathTimeout--;
             if (noPathTimeout <= 0) {//No path, try again later
                 targetPos = null;
-            }
+            } else if (noPathTimeout % 25 == 0) navigation.recomputePath();
             return;
         }
 
         noPathTimeout = 100;
+
+        if (pendingEffects) {
+            pendingEffects = false;
+
+            level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+
+            ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
+                    entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
+                    1, 0, 0, 0, 0);
+        }
     }
 
     @Override
     public void stop() {
         entity.getNavigation().stop();
+        pendingEffects = true;
         targetPos = null;
         boneMealCooldown = 0;
         noPathTimeout = 100;
@@ -151,19 +157,19 @@ public class ApplyBonemealGoal extends Goal {
         return ItemStack.EMPTY;
     }
 
-    private BlockPos findGrowableCrop(Level level, BlockPos center, int range) {
+    private void findGrowableCrop(Level level, BlockPos center) {
         BlockPos closestGrowableCrop = null;
-        float closestDist = range * range + .01f, dist;
+        float closestDist = searchRange * searchRange + .01f, dist;
         for (BlockPos pos : BlockPos.betweenClosed(
-                center.offset(-range, -1, -range),
-                center.offset(range, 1, range))) {
+                center.offset(-searchRange, -1, -searchRange),
+                center.offset(searchRange, 1, searchRange))) {
             dist = (float) pos.distSqr(center);
             if(dist >= closestDist || isBlockInvalid(level, level.getBlockState(pos), pos)) continue;
 
             closestDist = dist;
             closestGrowableCrop = pos.immutable();
         }
-        return closestGrowableCrop;
+        targetPos = closestGrowableCrop;
     }
 
     private void applyBoneMeal(BlockPos pos) {

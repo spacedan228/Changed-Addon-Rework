@@ -30,6 +30,7 @@ public class PlantSeedsGoal extends Goal {
     private final PathNavigation navigation;
 
     private boolean lock;
+    private boolean pendingEffects = true;
     private BlockPos targetPos;
     private int plantCooldown;
     private int noPathTimeout;
@@ -66,22 +67,17 @@ public class PlantSeedsGoal extends Goal {
     @Override
     public void start() {// Look for farmland with air above to plant
         Level level = entity.getLevel();
-        targetPos = findPlantableFarmland(level, entity.blockPosition());
+        findPlantableFarmland(level, entity.blockPosition());
         if (targetPos == null) return;
 
         navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
-        level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
-
-        ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
-                entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
-                1, 0, 0, 0, 0);
     }
 
     @Override
     public void tick() {
         Level level = entity.level;
         if (targetPos == null || isBlockInvalid(level, level.getBlockState(targetPos.below()), targetPos)) {
-            targetPos = findPlantableFarmland(level, entity.blockPosition());
+            findPlantableFarmland(level, entity.blockPosition());
             if (targetPos == null) return;
             navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
         }
@@ -99,7 +95,7 @@ public class PlantSeedsGoal extends Goal {
 
         if (entity.blockPosition().closerThan(targetPos, 3)) {
             plantSeedAt();
-            targetPos = findPlantableFarmland(level, entity.blockPosition()); // reset target after planting
+            findPlantableFarmland(level, entity.blockPosition()); // reset target after planting
             if(targetPos != null) navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
         }
 
@@ -107,16 +103,27 @@ public class PlantSeedsGoal extends Goal {
             noPathTimeout--;
             if (noPathTimeout <= 0) {//No path, try again later
                 targetPos = null;
-            }
+            } else if (noPathTimeout % 25 == 0) navigation.recomputePath();
             return;
         }
 
         noPathTimeout = 100;
+
+        if (pendingEffects) {
+            pendingEffects = false;
+
+            level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+
+            ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
+                    entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
+                    1, 0, 0, 0, 0);
+        }
     }
 
     @Override
     public void stop() {
         navigation.stop();
+        pendingEffects = true;
         targetPos = null;
         plantCooldown = 0;
         noPathTimeout = 100;
@@ -148,7 +155,7 @@ public class PlantSeedsGoal extends Goal {
         return block instanceof CropBlock;
     }
 
-    private BlockPos findPlantableFarmland(Level level, BlockPos center) {
+    private void findPlantableFarmland(Level level, BlockPos center) {
         BlockPos closestPos = null;
         float closestDist = searchRange * searchRange + .01f, dist;
         for (BlockPos pos : BlockPos.betweenClosed(
@@ -161,7 +168,7 @@ public class PlantSeedsGoal extends Goal {
             closestPos = pos.above();
         }
 
-        return closestPos;
+        targetPos = closestPos;
     }
 
     private void plantSeedAt() {
