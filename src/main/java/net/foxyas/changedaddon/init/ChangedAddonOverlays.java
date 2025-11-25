@@ -24,7 +24,7 @@ public class ChangedAddonOverlays {
     @SubscribeEvent
     public static void registerOverlays(RegisterGuiOverlaysEvent event) {
         event.registerBelowAll(HAZARD_HELMET.getPath(), HazardSuitHelmetOverlay::renderHelmetOverlay);
-        event.registerAbove(ChangedOverlays.DANGER_OVERLAY, UNTRANSFUR_PROGRESS.getPath(), UntransfurOverlayOverlay::renderUntransfurProgressOverlay);
+        event.registerAboveAll(UNTRANSFUR_PROGRESS.getPath(), UntransfurOverlayOverlay::renderUntransfurProgressOverlay);
         event.registerBelowAll(PAT_ICON.getPath(), PatOverlay::renderPatIconOverlay);
     }
 

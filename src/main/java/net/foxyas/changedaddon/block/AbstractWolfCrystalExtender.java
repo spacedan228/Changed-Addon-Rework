@@ -165,7 +165,7 @@ public class AbstractWolfCrystalExtender {
         public AbstractWolfCrystalSmall(Supplier<? extends Item> fragment) {
             super(ChangedTransfurVariants.CRYSTAL_WOLF, fragment,
 
-                    BlockBehaviour.Properties.copy(ChangedBlocks.WOLF_CRYSTAL_SMALL.get()) // Fixme : (ChangedMaterials.LATEX_CRYSTAL)
+                    BlockBehaviour.Properties.of() //copy(ChangedBlocks.WOLF_CRYSTAL_SMALL.get()) // Fixme : (ChangedMaterials.LATEX_CRYSTAL)
                             .sound(SoundType.AMETHYST_CLUSTER)
                             .noOcclusion()
                             .dynamicShape()

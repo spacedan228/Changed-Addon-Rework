@@ -90,7 +90,7 @@ public class ChangedAddonBlocks {
             .noOcclusion()
             .dynamicShape()
             .mapColor(MapColor.COLOR_BLACK)
-            .sound(SoundType.SLIME_BLOCK), ChangedLatexTypes.DARK_LATEX.get()) {
+            .sound(SoundType.SLIME_BLOCK), ChangedLatexTypes.DARK_LATEX::get) {
         @OnlyIn(Dist.CLIENT)
         @Override
         public void registerRenderLayer() {
@@ -102,7 +102,7 @@ public class ChangedAddonBlocks {
             .noOcclusion()
             .dynamicShape()
             .mapColor(MapColor.TERRACOTTA_WHITE)
-            .sound(SoundType.SLIME_BLOCK), ChangedLatexTypes.WHITE_LATEX.get()) {
+            .sound(SoundType.SLIME_BLOCK), ChangedLatexTypes.WHITE_LATEX::get) {
         @OnlyIn(Dist.CLIENT)
         @Override
         public void registerRenderLayer() {

@@ -25,12 +25,13 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class SprayItem extends Item {
 
-    protected final LatexType latexType;
+    protected final Supplier<LatexType> latexType;
 
-    public SprayItem(LatexType latexType) {
+    public SprayItem(Supplier<LatexType> latexType) {
         super(new Item.Properties()
                 //.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB).durability(64).rarity(Rarity.COMMON)
                 );
@@ -56,14 +57,14 @@ public class SprayItem extends Item {
         Level level = player.level;
         pos.set(origin);
         BlockState bs = level.getBlockState(pos);
-        if (LatexCoverState.getAt(level, pos).getType() != latexType)
-            LatexCoverState.setAtAndUpdate(level,pos, latexType.defaultCoverState());
+        if (LatexCoverState.getAt(level, pos).getType() != latexType.get())
+            LatexCoverState.setAtAndUpdate(level,pos, latexType.get().defaultCoverState());
 
         for(Direction dir : Direction.values()){
             pos.set(origin).move(dir);
             bs = level.getBlockState(pos);
-            if (LatexCoverState.getAt(level, pos).getType() != latexType)
-                LatexCoverState.setAtAndUpdate(level,pos, latexType.defaultCoverState());
+            if (LatexCoverState.getAt(level, pos).getType() != latexType.get())
+                LatexCoverState.setAtAndUpdate(level,pos, latexType.get().defaultCoverState());
         }
 
         if(!player.isCreative() && EnchantmentHelper.getTagEnchantmentLevel(Enchantments.INFINITY_ARROWS, stack) == 0){

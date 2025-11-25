@@ -18,13 +18,15 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Supplier;
+
 import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.NonLatexCoverableBlock;
 
 public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverableBlock, RenderLayerProvider {
 
-    private final LatexType latexType;
+    private final Supplier<LatexType> latexType;
 
-    public LatexCoverBlock(Properties pProperties, LatexType latexType) {
+    public LatexCoverBlock(Properties pProperties, Supplier<LatexType> latexType) {
         super(pProperties);
         this.latexType = latexType;
     }
@@ -35,7 +37,7 @@ public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverable
     }
 
     public LatexType getLatexType() {
-        return latexType;
+        return latexType.get();
     }
 
     @Override
