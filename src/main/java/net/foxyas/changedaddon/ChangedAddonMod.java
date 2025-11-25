@@ -12,6 +12,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.IModBusEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.NetworkRegistry;
@@ -35,7 +36,8 @@ public class ChangedAddonMod {
     public static ChangedAddonDataFixer dataFixer;
 
 
-    public ChangedAddonMod(IEventBus bus) {
+    public ChangedAddonMod(FMLJavaModLoadingContext context) {
+        IEventBus bus = context.getModEventBus();
         ChangedAddonBlocks.REGISTRY.register(bus);
         ChangedAddonPaintingTypes.PAINTING_TYPES.register(bus);
         ChangedAddonTabs.TABS.register(bus);
@@ -47,7 +49,6 @@ public class ChangedAddonMod {
 
         ChangedAddonEntities.REGISTRY.register(bus);
         ChangedAddonAbilities.REGISTRY.register(bus);
-        ChangedAddonTransfurVariants.REGISTRY.register(bus);
         ChangedAddonBlockEntities.REGISTRY.register(bus);
         ChangedAddonFeatures.REGISTRY.register(bus);
         ChangedAddonEnchantments.REGISTRY.register(bus);
@@ -65,7 +66,7 @@ public class ChangedAddonMod {
         ChangedAddonBiomeModifiers.BIOME_MODIFIERS.register(bus);
         ChangedAddonProcessors.PROCESSORS.register(bus);
 
-
+        ChangedAddonTransfurVariants.REGISTRY.register(bus);
         dataFixer = new ChangedAddonDataFixer();
     }
 
