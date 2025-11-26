@@ -4,7 +4,9 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -97,6 +99,15 @@ public final class ChangedAddonTags {
 
         private static TagKey<TransfurVariant<?>> key(String path) {
             return TagKey.create(ChangedRegistry.TRANSFUR_VARIANT.get().getRegistryKey(), ChangedAddonMod.resourceLoc(path));
+        }
+    }
+
+    public class DamageTypes {
+
+        public static final TagKey<DamageType> IS_LATEX_SOLVENT = key("is_latex_solvent");
+
+        private static TagKey<DamageType> key(String path) {
+            return TagKey.create(Registries.DAMAGE_TYPE, ChangedAddonMod.resourceLoc(path));
         }
     }
 }

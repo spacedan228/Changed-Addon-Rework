@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.DamageTypeTagsProvider;
@@ -17,5 +19,6 @@ public class DamageTypeTagProvider extends DamageTypeTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider lookup) {
+        tag(ChangedAddonTags.DamageTypes.IS_LATEX_SOLVENT).add(ChangedAddonDamageSources.LATEX_SOLVENT.key());
     }
 }

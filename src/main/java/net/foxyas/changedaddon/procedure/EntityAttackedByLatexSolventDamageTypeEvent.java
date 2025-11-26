@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.procedure;
 
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -22,7 +23,7 @@ public class EntityAttackedByLatexSolventDamageTypeEvent {
         Entity target = event.getEntity();
         DamageSource source = event.getSource();
 
-        if (source.is(ChangedAddonDamageSources.LATEX_SOLVENT.key()) && !source.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.source(target.level()).getMsgId()))
+        if (!source.is(ChangedAddonTags.DamageTypes.IS_LATEX_SOLVENT) || !source.is(ChangedAddonDamageSources.LATEX_SOLVENT.key()) || !source.getMsgId().contains(ChangedAddonDamageSources.LATEX_SOLVENT.source(target.level()).getMsgId()))
             return;
 
         Level level = target.level;
