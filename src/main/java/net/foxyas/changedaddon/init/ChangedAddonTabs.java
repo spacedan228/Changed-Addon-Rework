@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -16,6 +17,7 @@ public class ChangedAddonTabs {
 
     public static final RegistryObject<CreativeModeTab> CHANGED_ADDON_OPTIONAL_COMBAT_TAB = TABS.register("optional_combat_tab", () -> CreativeModeTab.builder()
             .icon(()-> ChangedAddonItems.ELECTRIC_KATANA.get().getDefaultInstance())
+            .title(Component.translatable("itemGroup.changed_addon_optional_combat_tab"))
             .displayItems((params, items) -> {
                 items.accept(PAINITE_SWORD.get());
                 items.accept(PAINITE_PICKAXE.get());
@@ -32,6 +34,7 @@ public class ChangedAddonTabs {
 
     public static final RegistryObject<CreativeModeTab> CHANGED_ADDON_MAIN_TAB = TABS.register("main_tab", () -> CreativeModeTab.builder()
             .icon(()-> ChangedAddonItems.CHANGED_BOOK.get().getDefaultInstance())
+            .title(Component.translatable("itemGroup.changed_addon_main_tab"))
             .displayItems((params, items) -> {
                 //TODO add items
                 for (RegistryObject<Item> itemRegistryObject : REGISTRY.getEntries()) {
