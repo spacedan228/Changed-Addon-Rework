@@ -29,11 +29,8 @@ import java.awt.*;
 
 import static net.foxyas.changedaddon.process.features.PatFeatureHandle.canPlayerPat;
 
-@OnlyIn(Dist.CLIENT) //@Mod.EventBusSubscriber({Dist.CLIENT})
+@OnlyIn(Dist.CLIENT)
 public class PatOverlay {
-
-    //Todo: Make this a InGameOverlay check ChangedAddonOverlays to examples
-
     public static final ResourceLocation TEXTURE = ResourceLocation.parse("changed_addon:textures/screens/paw_normal.png");
 
     private static boolean isEntityInPassiveStage(Entity lookedEntity) {

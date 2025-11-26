@@ -4,7 +4,6 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
-import net.foxyas.changedaddon.world.features.DynamicBiomeModifier;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -34,7 +33,6 @@ import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
@@ -79,20 +77,15 @@ public class DazedLatexEntity extends ChangedEntity {
         setPersistenceRequired();
     }
 
-    @SubscribeEvent
-    public static void addLivingEntityToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
-        if (SPAWN_BIOMES.contains(event.getName()))
-            event.getBuilder().getMobSpawnSettings().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 20, 1, 4));
-    }
+//    @SubscribeEvent
+//    public static void addLivingEntityToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
+//        if (SPAWN_BIOMES.contains(event.getName()))
+//            event.getBuilder().getMobSpawnSettings().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 20, 1, 4));
+//    }
 
     @SubscribeEvent
     public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {
         event.register(ChangedAddonEntities.DAZED_LATEX.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DazedLatexEntity::canSpawnNear, SpawnPlacementRegisterEvent.Operation.OR);
-
-        //Fixme add the biome modifier in the data folder
-//        if (SPAWN_BIOMES.contains(event.getName())) {
-//            event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 125, 1, 4));
-//        }
     }
 
     public static boolean isDarkEnoughToSpawn(ServerLevelAccessor p_33009_, BlockPos p_33010_, Random p_33011_) {

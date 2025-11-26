@@ -34,14 +34,6 @@ public class LatexCheetahFemale extends AbstractCheetahEntity {
                 (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)), SpawnPlacementRegisterEvent.Operation.OR);
     }
 
-    // TODO MAKE THE SPAWN HANDLE IN DATAPACK
-//    @SubscribeEvent
-//    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-//        if (SPAWN_BIOMES.contains(event.getName())) {
-//            event.getSpawns().getSpawner(ChangedMobCategories.CHANGED)
-//                    .add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_FEMALE.get(), 20, 1, 4));
-//        }
-//    }
 
     @Override
     protected @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand hand) {

@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.world.features.DynamicBiomeModifier;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
@@ -11,13 +10,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
@@ -50,12 +51,11 @@ public class LatexSnowFoxMaleEntity extends ChangedEntity implements GenderedEnt
         setNoAi(false);
     }
 
-// TODO make the datapack to config this spawn
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void addLivingEntityToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
         if (SPAWN_BIOMES.contains(event.getName()))
             event.getBuilder().getMobSpawnSettings().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_SNOW_FOX_MALE.get(), 20, 1, 4));
-    }
+    }*/
 
     @SubscribeEvent
     public static void init(SpawnPlacementRegisterEvent event) {

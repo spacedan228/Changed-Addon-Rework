@@ -1,10 +1,8 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.world.features.DynamicBiomeModifier;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.TransfurMode;
-import net.ltxprogrammer.changed.init.ChangedMobCategories;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.InteractionHand;
@@ -16,7 +14,6 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,15 +28,13 @@ public class LatexCheetahMale extends AbstractCheetahEntity {
         super(entityType, level);
     }
 
-    // Todo: add the spawn handle in the datapack
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void addLivingEntityToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
-        //Fixme add the biome modifier in the data folder
         if (SPAWN_BIOMES.contains(event.getName())) {
             event.getBuilder().getMobSpawnSettings().getSpawner(ChangedMobCategories.CHANGED)
                     .add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), 20, 1, 4));
         }
-    }
+    }*/
 
     @SubscribeEvent
     public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {

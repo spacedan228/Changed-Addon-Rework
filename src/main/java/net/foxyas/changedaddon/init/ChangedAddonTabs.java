@@ -36,7 +36,6 @@ public class ChangedAddonTabs {
             .icon(()-> ChangedAddonItems.CHANGED_BOOK.get().getDefaultInstance())
             .title(Component.translatable("itemGroup.changed_addon_main_tab"))
             .displayItems((params, items) -> {
-                //TODO add items
                 for (RegistryObject<Item> itemRegistryObject : REGISTRY.getEntries()) {
                     if (!CHANGED_ADDON_OPTIONAL_COMBAT_TAB.get().contains(new ItemStack(itemRegistryObject.get()))) {
                         items.accept(itemRegistryObject.get());
@@ -46,5 +45,5 @@ public class ChangedAddonTabs {
                 DYEABLE_TSHIRT.get().fillItemCategory(items);
                 DYEABLE_SHORTS.get().fillItemCategory(items);
                 LASER_POINTER.get().fillItemCategory(items);
-            }).build());//CHANGED_BOOK can be replaced with .withTabsImage(ResourceLocation tabsImage)
+            }).build());
 }

@@ -71,12 +71,10 @@ public class ClientEvent {
                 int index = Math.min(tooltip.size(), 3);
 
                 float extraHp = TransfurVariantUtils.GetExtraHp(tf, entity) / 2f;
-                tooltip.add(index, Component.translatable("text.changed_addon.additionalHealth")
-                        .append("")
-                        .append(extraHp == 0
-                                ? Component.literal("§7None§r")
-                                : Component.literal((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
-                        .append(Component.translatable("text.changed_addon.additionalHealth.Hearts")));
+                MutableComponent displayExtraHp = extraHp == 0
+                        ? Component.literal("§7None§r")
+                        : Component.literal((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r");
+                tooltip.add(index, Component.translatable("text.changed_addon.additionalHealth", displayExtraHp).append(Component.translatable("text.changed_addon.additionalHealth.Hearts")));
 
                 index++;
                 tooltip.add(index, Component.translatable("text.changed_addon.miningStrength", TransfurVariantUtils.getMiningStrength(tf)));
@@ -84,36 +82,32 @@ public class ClientEvent {
                 index++;
                 float landSpeed = TransfurVariantUtils.GetLandSpeed(tf, entity);
                 float landSpeedPct = landSpeed == 0 ? 0 : (landSpeed - 1) * 100;
-                tooltip.add(index, Component.translatable("text.changed_addon.land_speed")
-                        .append("")
-                        .append(landSpeedPct == 0
-                                ? Component.literal("§7None§r")
-                                : Component.literal((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%")));
+                MutableComponent displayLandSpeedPct = landSpeedPct == 0
+                        ? Component.literal("§7None§r")
+                        : Component.literal((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%");
+                tooltip.add(index, Component.translatable("text.changed_addon.land_speed", displayLandSpeedPct));
 
                 index++;
                 float swimSpeed = TransfurVariantUtils.GetSwimSpeed(tf, entity);
                 float swimSpeedPct = swimSpeed == 0 ? 0 : (swimSpeed - 1) * 100;
-                tooltip.add(index, Component.translatable("text.changed_addon.swim_speed")
-                        .append("")
-                        .append(swimSpeedPct == 0
-                                ? Component.literal("§7None§r")
-                                : Component.literal((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%")));
+                MutableComponent displaySwimSpeedPct = swimSpeedPct == 0
+                        ? Component.literal("§7None§r")
+                        : Component.literal((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%");
+                tooltip.add(index, Component.translatable("text.changed_addon.swim_speed", displaySwimSpeedPct));
 
                 index++;
                 float jumpStrength = TransfurVariantUtils.GetJumpStrength(tf);
                 float jumpStrengthPct = jumpStrength == 0 ? 0 : (jumpStrength - 1) * 100;
-                tooltip.add(index, Component.translatable("text.changed_addon.jumpStrength")
-                        .append("")
-                        .append(jumpStrengthPct == 0
-                                ? Component.literal("§7None§r")
-                                : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%")));
+                MutableComponent displayJumpStrengthPct = jumpStrengthPct == 0
+                        ? Component.literal("§7None§r")
+                        : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%");
+                tooltip.add(index, Component.translatable("text.changed_addon.jumpStrength", displayJumpStrengthPct));
 
                 index++;
-                tooltip.add(index, Component.translatable("text.changed_addon.canGlide/Fly")
-                        .append("")
-                        .append(TransfurVariantUtils.CanGlideAndFly(tf)
-                                ? Component.literal("§aTrue§r")
-                                : Component.literal("§cFalse§r")));
+                MutableComponent displayCanGlide = TransfurVariantUtils.CanGlideAndFly(tf)
+                        ? Component.literal("§aTrue§r")
+                        : Component.literal("§cFalse§r");
+                tooltip.add(index, Component.translatable("text.changed_addon.canGlide/Fly", displayCanGlide));
             }
 
             if (ChangedAddonTransfurVariants.isVariantOC(loc, entity.level())) {

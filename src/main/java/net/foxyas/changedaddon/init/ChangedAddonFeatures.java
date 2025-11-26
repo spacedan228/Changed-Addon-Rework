@@ -36,14 +36,13 @@ public class ChangedAddonFeatures {
         return REGISTRY.register(registryname, feature);
     }
 
-    // TODO datapack biome modifier
-    @SubscribeEvent
+    /*@SubscribeEvent
     public static void addFeaturesToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
         for (FeatureRegistration registration : FEATURE_REGISTRATIONS) {
             if (registration.biomes() == null || registration.biomes().contains(event.getName()))
                 event.getBuilder().getGenerationSettings().getFeatures(registration.stage()).add(registration.placedFeature().get());
         }
-    }
+    }*/
 
     private record FeatureRegistration(GenerationStep.Decoration stage, Set<ResourceLocation> biomes,
                                        Supplier<Holder<PlacedFeature>> placedFeature) {
