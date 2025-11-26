@@ -227,7 +227,6 @@ public class ChangedAddonTransfurVariants {
                     .gills()
                     .addAbility(ChangedAbilities.SUMMON_SHARKS));
 
-    public static final @NotNull Supplier<SoundEvent> GENERIC_TRANSFUR = Suppliers.memoize(ChangedSounds.TRANSFUR_BY_LATEX::get);
     public static final RegistryObject<TransfurVariant<LuminaraFlowerBeastEntity>> LUMINARA_FLOWER_BEAST = register("form_luminara_flower_beast",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.LUMINARA_FLOWER_BEAST)
                     .addAbility(ChangedAddonAbilities.LUMINARA_FIREBALL)
@@ -337,7 +336,7 @@ public class ChangedAddonTransfurVariants {
                     .scares(List.of(Creeper.class))
                     .reducedFall()
                     .stepSize(0.7F)
-                    .sound(GENERIC_TRANSFUR.get().getLocation()));
+                    .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<Protogen0senia0Entity>> PROTOGEN_0SENIA0 = register("form_protogen_0senia0",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.PROTOGEN_0SENIA0)
@@ -352,7 +351,7 @@ public class ChangedAddonTransfurVariants {
                     .scares(List.of(Creeper.class))
                     .reducedFall()
                     .stepSize(0.7F)
-                    .sound(GENERIC_TRANSFUR.get().getLocation()));
+                    .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<LatexKaylaSharkEntity>> LATEX_KAYLA_SHARK = register("form_latex_kayla_shark",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_KAYLA_SHARK)
@@ -455,19 +454,19 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAddonAbilities.APPLY_REGENERATION_PASSIVE)
                     .addAbility(ChangedAddonAbilities.DODGE)
                     .stepSize(0.7F)
-                    .sound(GENERIC_TRANSFUR.get().getLocation())
+                    .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation())
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
     public static final RegistryObject<TransfurVariant<MongooseEntity>> MONGOOSE = register("form_latex_mongoose",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.MONGOOSE)
                     .stepSize(0.7F)
-                    .sound(GENERIC_TRANSFUR.get().getLocation()));
+                    .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = register("form_pink_cyan_skunk",
             () ->  TransfurVariant.Builder.of(ChangedAddonEntities.PINK_CYAN_SKUNK)
                     .stepSize(0.7F)
-                    .sound(GENERIC_TRANSFUR.get().getLocation()));
+                    .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<LatexWindCatMaleEntity>> LATEX_WIND_CAT_MALE = register("form_latex_wind_cat/male",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_MALE)
@@ -509,7 +508,7 @@ public class ChangedAddonTransfurVariants {
                     .scares(List.of(Creeper.class))
                     .reducedFall()
                     .stepSize(0.7F)
-                    .sound(GENERIC_TRANSFUR.get().getLocation()));
+                    .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<BorealisFemaleEntity>> BOREALIS_FEMALE = register("form_borealis/female",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.BOREALIS_FEMALE)
@@ -525,7 +524,7 @@ public class ChangedAddonTransfurVariants {
                     .scares(List.of(Creeper.class))
                     .reducedFall()
                     .stepSize(0.7F)
-                    .sound(GENERIC_TRANSFUR.get().getLocation()));
+                    .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     // ======================================================== Experiments ======================================================== //
     public static final RegistryObject<TransfurVariant<Exp1MaleEntity>> EXP1_MALE = register("form_exp1/male",
