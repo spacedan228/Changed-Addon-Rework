@@ -115,26 +115,12 @@ public class BoneMealExpansion {
 
                 boolean success = false;
 
-                if (!serverLevel.isClientSide && !targetState.isAir()) {
+                LatexType surfaceType = AbstractLatexBlock.getSurfaceType(serverLevel, targetPos, facing);
+                if (!serverLevel.isClientSide && targetState.isAir()) {
 
                     // Custom latex spreading
-                    if (!AbstractLatexBlock.getSurfaceType(serverLevel, targetPos, facing).isAir()) //noinspection CommentedOutCode
-                    {
+                    if (!surfaceType.isAir()) {
                         spreadFromSource(serverLevel, targetPos, serverLevel.getRandom().nextInt(16) + 1);
-
-                        /*
-                        targetState.randomTick(serverLevel, targetPos, serverLevel.getRandom());
-                        for (BlockPos pos : BlockPos.betweenClosedStream(new AABB(targetPos).inflate(16)).toList()) {
-                            BlockState posState = serverLevel.getBlockState(pos);
-                            if (AbstractLatexBlock.isLatexed(posState)) {
-                                posState.randomTick(serverLevel, pos, serverLevel.getRandom());
-                                //serverLevel.levelEvent(1505, pos, 1); // Bone meal particles
-
-                            }
-                        }
-                        */
-
-                        //serverLevel.levelEvent(1505, targetPos, 1); // Bone meal particles
                         success = true;
                     }
 
@@ -167,7 +153,7 @@ public class BoneMealExpansion {
 
                 boolean success = false;
 
-                if (!serverLevel.isClientSide && !targetState.isAir()) {
+                if (!serverLevel.isClientSide && targetState.isAir()) {
 
                     // Custom latex spreading
                     if (LatexCoverState.getAt(serverLevel, targetPos).isAir()) {
@@ -196,7 +182,7 @@ public class BoneMealExpansion {
 
                 boolean success = false;
 
-                if (!serverLevel.isClientSide && !targetState.isAir()) {
+                if (!serverLevel.isClientSide && targetState.isAir()) {
 
                     // Custom latex spreading
                     if (LatexCoverState.getAt(serverLevel, targetPos).isAir()) {

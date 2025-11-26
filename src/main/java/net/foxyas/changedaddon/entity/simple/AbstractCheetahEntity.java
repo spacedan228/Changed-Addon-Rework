@@ -8,6 +8,7 @@ import net.ltxprogrammer.changed.entity.beast.AbstractSnowLeopard;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +52,16 @@ public abstract class AbstractCheetahEntity extends AbstractCanTameSnepChangedEn
             return false;
         }
         return super.targetSelectorTest(livingEntity);
+    }
+
+    public static Set<ResourceKey<Biome>> getSpawnBiomes() {
+        return Set.of(
+                Biomes.JUNGLE,
+                Biomes.SPARSE_JUNGLE,
+                Biomes.SAVANNA,
+                Biomes.SAVANNA_PLATEAU,
+                Biomes.WINDSWEPT_SAVANNA
+        );
     }
 
     @Override

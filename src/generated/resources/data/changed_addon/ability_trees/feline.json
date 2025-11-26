@@ -1,0 +1,47 @@
+{
+  "nodes": {
+    "changed:claws": {
+      "parent": "changed:root",
+      "acquiredEffects": [
+        {
+          "type": "changed:attribute_modifier",
+          "attribute": "forge:swim_speed",
+          "condition": {
+            "type": "changed:standing_on",
+            "blocks": [
+              "minecraft:grass_block"
+            ]
+          },
+          "factor": 1.0
+        },
+        {
+          "type": "changed:attribute_modifier",
+          "attribute": "minecraft:generic.attack_damage",
+          "condition": {
+            "type": "changed:true"
+          },
+          "factor": 0.5
+        }
+      ],
+      "descriptionId": "ability.changed.claws.desc",
+      "groupDiscount": 0,
+      "missingEffects": [],
+      "occludes": [],
+      "price": 5,
+      "titleId": "ability.changed.claws"
+    },
+    "changed:root": {
+      "parent": "changed:root",
+      "acquiredEffects": [],
+      "descriptionId": "ability.changed.root.desc",
+      "groupDiscount": 0,
+      "missingEffects": [],
+      "occludes": [],
+      "price": 0,
+      "titleId": "ability.changed.root"
+    }
+  },
+  "variants": [
+    "#changed:feline_light"
+  ]
+}

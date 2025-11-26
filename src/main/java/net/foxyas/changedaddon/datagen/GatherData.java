@@ -2,6 +2,8 @@ package net.foxyas.changedaddon.datagen;
 
 //import net.foxyas.changedaddon.datagen.lang.ENLanguageProvider;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.datagen.ability_trees.AbilityTreeProvider;
 import net.foxyas.changedaddon.datagen.lang.ENLanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -33,6 +35,7 @@ public class GatherData {
         generator.addProvider(true, new EntityTypeTagsProvider(packOutput, lookupProvider, helper));
         generator.addProvider(true, new TFTagsProvider(packOutput, lookupProvider, helper));
         generator.addProvider(true, new AccessoryEntityProvider(generator));
+        generator.addProvider(true, new AbilityTreeProvider(packOutput, ChangedAddonMod.MODID));
 
         CompletableFuture<HolderLookup.Provider> lookup0 =
                 generator.addProvider(event.includeServer(), new DatapackEntriesProvider(packOutput, lookupProvider)).getRegistryProvider();

@@ -236,7 +236,7 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
                     .glide()
                     .stepSize(0.7F)
-                    .sound(GENERIC_TRANSFUR.get().getLocation()));
+                    .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<LatexWhiteSnowLeopardMale>> LATEX_WHITE_SNOW_LEOPARD_MALE = register("form_latex_white_snow_leopard/male",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WHITE_SNOW_LEOPARD_MALE)

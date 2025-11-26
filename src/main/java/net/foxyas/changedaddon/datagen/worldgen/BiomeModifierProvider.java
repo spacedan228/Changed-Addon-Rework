@@ -1,12 +1,14 @@
 package net.foxyas.changedaddon.datagen.worldgen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
@@ -27,7 +29,6 @@ public class BiomeModifierProvider {
         context.register(ADD_SURFACE_LATEX_SPAWNS, new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
                 biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                 List.of(
-
                 ))
         );
     }
