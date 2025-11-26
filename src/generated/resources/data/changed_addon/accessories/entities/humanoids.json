@@ -1,0 +1,10 @@
+{
+  "entities": [
+    "#changed_addon:can_use_accessories"
+  ],
+  "slots": [
+    "changed:body",
+    "changed:full_body",
+    "changed:legs"
+  ]
+}

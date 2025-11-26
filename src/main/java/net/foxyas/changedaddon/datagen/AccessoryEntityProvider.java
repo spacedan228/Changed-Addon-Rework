@@ -56,6 +56,7 @@ public class AccessoryEntityProvider implements DataProvider {
     public @NotNull CompletableFuture<?> run(@NotNull CachedOutput cache) {
         registerEntityAccessories();
 
+        List<CompletableFuture<?>> list = new ArrayList<>();
         Path basePath = this.generator.getPackOutput().getOutputFolder();
         Appender appender;
         for (Map.Entry<String, Appender> entry : appenders.entrySet()) {
@@ -67,10 +68,10 @@ public class AccessoryEntityProvider implements DataProvider {
             }
 
             Path path = createPath(basePath, entry.getKey());
-            DataProvider.saveStable(cache,appender.toJson(), path);
+            list.add(DataProvider.saveStable(cache, appender.toJson(), path));
         }
 
-        return CompletableFuture.completedFuture(null);
+        return CompletableFuture.allOf(list.toArray(CompletableFuture[]::new));
     }
 
     public Appender add(@NotNull String fileName) {
