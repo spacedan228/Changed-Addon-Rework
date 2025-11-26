@@ -43,7 +43,7 @@ public abstract class LitixCamoniaFluid extends ForgeFlowingFluid {
                     .canDrown(true)
                     .canSwim(true)
                     .fallDistanceModifier(0)
-                    .descriptionId("fluid." + ChangedAddonMod.MODID + "." + ChangedAddonFluids.LITIX_CAMONIA_FLUID.getId())
+                    .descriptionId("fluid." + ChangedAddonMod.MODID + "." + ChangedAddonFluids.LITIX_CAMONIA_FLUID.getId().getPath())
             );
         }
 

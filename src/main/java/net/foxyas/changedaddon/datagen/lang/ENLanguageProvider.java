@@ -145,8 +145,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addBlockFromId(IRIDIUM_BLOCK);
         addBlock(IRIDIUM_ORE, "Deepslate Iridium Ore");
         addBlockFromId(LATEX_INSULATOR);
-        addBlockFromId(LITIX_CAMONIA_FLUID);
-        addFluidTypeFromId(LITIX_CAMONIA_FLUID_TYPE);
+        addBlockFromId(LITIX_CAMONIA_FLUID); //The Fluid "Block" use the Fluid Type Description ID
         addBlockFromId(LUMINARA_BLOOM);
         addBlock(POTTED_LUMINARA_BLOOM, "Flower Pot with Luminara Bloom");
         addBlockFromId(LUMINAR_CRYSTAL_BLOCK);

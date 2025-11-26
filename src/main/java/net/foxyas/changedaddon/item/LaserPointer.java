@@ -224,7 +224,15 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
     @Override
     public void registerCustomColors(RegisterColorHandlersEvent.Item event, RegistryObject<Item> item) {
         if (item.get() instanceof LaserPointer) {
-            event.register((stack, layer) -> getColor(stack), item.get());
+            event.register((stack, tintIndex) -> {
+                if (tintIndex == 0) { // Só aplica a cor no layer certo
+                    if (LaserPointer.getAWTColor(stack) == null) {
+                        return -1; // Cor padrão (branco)
+                    }
+                    return LaserPointer.getAWTColor(stack).getRGB();
+                }
+                return -1; // Cor padrão (branco)
+            });
         }
     }
 
