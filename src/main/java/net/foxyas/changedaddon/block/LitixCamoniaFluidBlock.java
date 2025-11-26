@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,7 +29,7 @@ public class LitixCamoniaFluidBlock extends LiquidBlock {
 
     public LitixCamoniaFluidBlock() {
         super(() -> (FlowingFluid) ChangedAddonFluids.LITIX_CAMONIA_FLUID.get(),
-                BlockBehaviour.Properties.of().mapColor(MapColor.SNOW).strength(100f) //Fixme: (Material.WATER, MaterialColor.SNOW)
+                BlockBehaviour.Properties.copy(Blocks.WATER).mapColor(MapColor.SNOW).strength(100f) //Fixme: (Material.WATER, MaterialColor.SNOW)
         );
     }
 

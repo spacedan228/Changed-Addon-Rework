@@ -24,6 +24,9 @@ public class ElectricKatanaItem extends AbstractKatanaItem {
     private static final ModelResourceLocation EMISSIVE_GUI_MODEL =
             new ModelResourceLocation(ChangedAddonMod.resourceLoc("electric_katana_red_glow"), "inventory");
 
+    private static final ModelResourceLocation IN_HAND_MODEL =
+            new ModelResourceLocation(ChangedAddonMod.resourceLoc("electric_katana_in_hand_model"), "inventory");
+
     public ElectricKatanaItem() {
         super(new Tier() {
             public int getUses() {
@@ -54,15 +57,17 @@ public class ElectricKatanaItem extends AbstractKatanaItem {
         );
     }
 
+    @Override
     public ResourceLocation getModelLocation(ItemStack itemStack, ItemDisplayContext type) {
-        return SpecializedItemRendering.isGUI(type) ? GUI_MODEL : HANDLE_MODEL;
+        return SpecializedItemRendering.isGUI(type) ? null : IN_HAND_MODEL;
     }
 
     @Override
     public void loadSpecialModels(Consumer<ResourceLocation> consumer) {
-        consumer.accept(HANDLE_MODEL);
-        consumer.accept(EMISSIVE_MODEL);
-        consumer.accept(GUI_MODEL);
-        consumer.accept(EMISSIVE_GUI_MODEL);
+        consumer.accept(IN_HAND_MODEL);
+        //consumer.accept(HANDLE_MODEL);
+        //consumer.accept(EMISSIVE_MODEL);
+        //consumer.accept(GUI_MODEL);
+        //consumer.accept(EMISSIVE_GUI_MODEL);
     }
 }

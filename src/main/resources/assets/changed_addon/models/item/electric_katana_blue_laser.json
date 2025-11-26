@@ -1,7 +1,0 @@
-{
-  "parent": "changed_addon:custom/lazer_electric_katana",
-  "textures": {
-    "0": "changed_addon:block/blue_katana_energy",
-    "particle": "changed_addon:item/blue_katana_energy"
-  }
-}

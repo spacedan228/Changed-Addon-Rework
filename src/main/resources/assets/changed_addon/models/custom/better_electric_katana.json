@@ -1,0 +1,114 @@
+{
+	"loader": "forge:composite",
+	"render_type": "minecraft:cutout",
+	"children": {
+		"glow": {
+			"parent": "changed_addon:custom/laser_electric_katana",
+			"render_type": "changed_addon:energy",
+			"textures": {
+				"laser": "changed_addon:block/blue_katana_energy",
+				"particle": "changed_addon:item/blue_katana_energy"
+			}
+		},
+		"base": {
+			"parent": "changed_addon:custom/handle_electric_katana",
+			"textures": {
+				"base": "changed_addon:block/base_energy_katana",
+				"particle": "changed_addon:item/blue_katana_energy"
+			}
+		}
+	},
+	"display": {
+		"thirdperson_righthand": {
+			"translation": [
+				0,
+				3,
+				0
+			]
+		},
+		"thirdperson_lefthand": {
+			"translation": [
+				0,
+				3,
+				0
+			]
+		},
+		"firstperson_righthand": {
+			"rotation": [
+				-32.25,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				3,
+				0
+			]
+		},
+		"firstperson_lefthand": {
+			"rotation": [
+				-32.25,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				3,
+				0
+			]
+		},
+		"ground": {
+			"rotation": [
+				90,
+				0,
+				0
+			],
+			"translation": [
+				0,
+				0,
+				-6.5
+			]
+		},
+		"gui": {
+			"rotation": [
+				-90,
+				-43.75,
+				-90
+			],
+			"translation": [
+				-3.25,
+				-3.25,
+				0
+			],
+			"scale": [
+				0.75,
+				0.63281,
+				0.75
+			]
+		},
+		"head": {
+			"rotation": [
+				0,
+				0,
+				90
+			],
+			"translation": [
+				-7.25,
+				-4.25,
+				-6.5
+			]
+		},
+		"fixed": {
+			"rotation": [
+				90,
+				45,
+				-90
+			],
+			"translation": [
+				-5,
+				-5,
+				-1
+			]
+		}
+	}
+}

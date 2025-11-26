@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "minecraft:mob_effect/regeneration"
+    "layer0": "changed_addon:abilities/passive_regeneration/passive_regeneration"
   }
 }
