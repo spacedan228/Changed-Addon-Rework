@@ -231,7 +231,7 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
 
             for (EquipmentSlot slot : armorSlots) {
                 ItemStack itemBySlot = this.grabbedEntity.getItemBySlot(slot);
-                int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.THORNS, itemBySlot);
+                int enchantmentLevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.THORNS, itemBySlot);
                 if (enchantmentLevel > 0) {
                     analogicPercent += (float) enchantmentLevel / Enchantments.THORNS.getMaxLevel();
                 }
