@@ -1,8 +1,11 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -25,5 +28,10 @@ public class ChangedAddonAttributes {
         event.add(EntityType.PLAYER, LATEX_RESISTANCE.get());
         event.add(EntityType.PLAYER, LATEX_INFECTION.get());
         event.add(EntityType.PLAYER, LATEX_SOLVENT_DAMAGE_MULTIPLIER.get());
+    }
+
+    public static double getEntityAttributeSafe(LivingEntity livingEntity, Attribute attribute) {
+        AttributeInstance attributeInstance = livingEntity.getAttribute(attribute);
+        return attributeInstance == null ? 0 : attributeInstance.getValue();
     }
 }
