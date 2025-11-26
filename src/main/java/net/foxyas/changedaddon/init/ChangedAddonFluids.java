@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
@@ -15,10 +16,12 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ChangedAddonFluids {
 
-    public static final DeferredRegister<Fluid> REGISTRY = DeferredRegister.create(ForgeRegistries.FLUIDS, ChangedAddonMod.MODID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, ChangedAddonMod.MODID);
+    public static final RegistryObject<FluidType> LITIX_CAMONIA_FLUID_TYPE = FLUID_TYPES.register("litix_camonia_fluid_type", LitixCamoniaFluid.FluidType::new);
 
-    public static final RegistryObject<Fluid> LITIX_CAMONIA_FLUID = REGISTRY.register("litix_camonia_fluid", LitixCamoniaFluid.Source::new);
-    public static final RegistryObject<Fluid> FLOWING_LITIX_CAMONIA_FLUID = REGISTRY.register("flowing_litix_camonia_fluid", LitixCamoniaFluid.Flowing::new);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, ChangedAddonMod.MODID);
+    public static final RegistryObject<Fluid> LITIX_CAMONIA_FLUID = FLUIDS.register("litix_camonia_fluid", LitixCamoniaFluid.Source::new);
+    public static final RegistryObject<Fluid> FLOWING_LITIX_CAMONIA_FLUID = FLUIDS.register("flowing_litix_camonia_fluid", LitixCamoniaFluid.Flowing::new);
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientSideHandler {

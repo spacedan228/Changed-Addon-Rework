@@ -65,7 +65,8 @@ public class ChangedAddonMod {
         ChangedAddonParticleTypes.REGISTRY.register(bus);
         ChangedAddonVillagerProfessions.POI_TYPES.register(bus);
         ChangedAddonVillagerProfessions.PROFESSIONS.register(bus);
-        ChangedAddonFluids.REGISTRY.register(bus);
+        ChangedAddonFluids.FLUID_TYPES.register(bus);
+        ChangedAddonFluids.FLUIDS.register(bus);
 
         ChangedAddonBiomeModifiers.BIOME_MODIFIERS.register(bus);
         ChangedAddonProcessors.PROCESSORS.register(bus);
