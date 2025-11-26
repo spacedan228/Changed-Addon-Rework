@@ -125,6 +125,9 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-forge-api:${jeiVersion}")
 
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}")
+    runtimeOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}")
+
     implementation fg.deobf("dev.tr7zw:notenoughanimations-forge-1.10.0-mc1.20.1:1.10.0")
     implementation fg.deobf("dev.tr7zw:firstperson-forge-2.4.9-mc1.20.1:2.4.9")
     runtimeOnly fg.deobf("dev.tr7zw:TRender-1.0.5-1.20.1-forge-SNAPSHOT:1.0.5")
