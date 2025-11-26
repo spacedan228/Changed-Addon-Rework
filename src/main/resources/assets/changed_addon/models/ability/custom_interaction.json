@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "changed_addon:screens/normal_paw"
+    "layer0": "changed_addon:abilities/custom_interactions/normal_paw"
   }
 }
