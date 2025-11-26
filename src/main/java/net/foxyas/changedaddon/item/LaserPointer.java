@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.entity.goals.simple.FollowAndLookAtLaser;
 import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
+import net.foxyas.changedaddon.item.api.ColorHolder;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -27,13 +28,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 
-public class LaserPointer extends Item implements SpecializedAnimations {
+public class LaserPointer extends Item implements SpecializedAnimations, ColorHolder {
 
     public static final float MAX_LASER_REACH = 32;
     public static final int FOLLOW_LASER_RADIUS = 16;
@@ -216,6 +219,13 @@ public class LaserPointer extends Item implements SpecializedAnimations {
     @Override
     public AnimationHandler getAnimationHandler() {
         return ANIMATION_CACHE.computeIfAbsent(this, LaserPointer.Animator::new);
+    }
+
+    @Override
+    public void registerCustomColors(RegisterColorHandlersEvent.Item event, RegistryObject<Item> item) {
+        if (item.get() instanceof LaserPointer) {
+            event.register((stack, layer) -> getColor(stack), item.get());
+        }
     }
 
 

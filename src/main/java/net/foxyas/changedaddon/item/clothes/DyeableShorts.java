@@ -27,7 +27,6 @@ public class DyeableShorts extends DyeableClothingItem implements DyeableLeather
 
     public DyeableShorts() {
         super();
-        CauldronInteraction.WATER.put(this, CauldronInteraction.DYED_ITEM);
     }
 
     @Override
@@ -53,16 +52,5 @@ public class DyeableShorts extends DyeableClothingItem implements DyeableLeather
             return "changed_addon:textures/models/armor/dyeable_shorts_layer_1_overlay.png"; // totalmente invisível
         }
         return "changed_addon:textures/models/armor/dyeable_shorts_layer_1.png";
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientInitializer {
-        @SubscribeEvent
-        public static void onItemColorsInit(RegisterColorHandlersEvent.Item event) {
-            event.register(
-                    (stack, layer) -> ((DyeableLeatherItem) stack.getItem()).getColor(stack),
-                    ChangedAddonItems.DYEABLE_SHORTS.get());
-        }
     }
 }

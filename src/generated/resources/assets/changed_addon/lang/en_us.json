@@ -382,6 +382,7 @@
   "entity.changed_addon.wither_particle_projectile": "Wither Particle",
   "entity.changed_addon.wolfy": "Wolfy",
   "entity.minecraft.villager.changed_addon.scientist": "Scientist",
+  "fluid.changed_addon.changed_addon:litix_camonia_fluid": "Litix Camonia Fluid Type",
   "fluid.changed_addon.litix_camonia_fluid": "Litix Camonia Fluid",
   "gamerule.changed_addon:bossesDifficultScale": "Changed Addon HardMode Bosses",
   "gamerule.changed_addon:bossesDifficultScale.description": "Add a difficulty multiplier to Mod Changed Addon bosses",

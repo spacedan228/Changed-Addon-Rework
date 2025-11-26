@@ -49,6 +49,7 @@ import static net.foxyas.changedaddon.init.ChangedAddonEnchantments.CHANGED_LURE
 import static net.foxyas.changedaddon.init.ChangedAddonEnchantments.TRANSFUR_ASPECT;
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.LUMINAR_CRYSTAL_SPEAR;
+import static net.foxyas.changedaddon.init.ChangedAddonFluids.LITIX_CAMONIA_FLUID_TYPE;
 import static net.foxyas.changedaddon.init.ChangedAddonGameRules.*;
 import static net.foxyas.changedaddon.init.ChangedAddonItems.*;
 import static net.foxyas.changedaddon.init.ChangedAddonKeyMappings.*;
@@ -145,6 +146,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addBlock(IRIDIUM_ORE, "Deepslate Iridium Ore");
         addBlockFromId(LATEX_INSULATOR);
         addBlockFromId(LITIX_CAMONIA_FLUID);
+        addFluidTypeFromId(LITIX_CAMONIA_FLUID_TYPE);
         addBlockFromId(LUMINARA_BLOOM);
         addBlock(POTTED_LUMINARA_BLOOM, "Flower Pot with Luminara Bloom");
         addBlockFromId(LUMINAR_CRYSTAL_BLOCK);

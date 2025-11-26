@@ -1,16 +1,20 @@
 package net.foxyas.changedaddon.item.clothes;
 
+import net.foxyas.changedaddon.item.api.ColorHolder;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.event.RegisterColorHandlersEvent;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public abstract class DyeableClothingItem extends ClothingItem implements DyeableLeatherItem {
+public abstract class DyeableClothingItem extends ClothingItem implements DyeableLeatherItem, ColorHolder {
 
     public DyeableClothingItem() {
         super();
@@ -61,5 +65,12 @@ public abstract class DyeableClothingItem extends ClothingItem implements Dyeabl
     public int getColor(ItemStack pStack) {
         CompoundTag tag = pStack.getTagElement("display");
         return tag != null && tag.contains("color", 99) ? tag.getInt("color") : 0xffffff;
+    }
+
+    @Override
+    public void registerCustomColors(RegisterColorHandlersEvent.Item event, RegistryObject<Item> item) {
+        if (item.get() instanceof DyeableClothingItem) {
+            event.register((stack, layer) -> getColor(stack), item.get());
+        }
     }
 }

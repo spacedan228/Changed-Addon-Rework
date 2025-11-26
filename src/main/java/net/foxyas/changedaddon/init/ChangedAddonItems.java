@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.renderer.items.LaserItemDynamicRender;
 import net.foxyas.changedaddon.item.*;
 import net.foxyas.changedaddon.item.api.ColorHolder;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
@@ -18,7 +17,10 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -286,7 +288,6 @@ public class ChangedAddonItems {
             });
             ItemProperties.register(LUMINAR_CRYSTAL_SPEAR.get(), ResourceLocation.parse("throwing"),
                     (stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
-            LaserItemDynamicRender.DynamicLaserColor(LASER_POINTER);
         });
     }
 

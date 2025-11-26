@@ -11,11 +11,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 //Helper methods from a_changed(mostly*)
@@ -42,6 +44,20 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
 
     protected void addBlockFromId(RegistryObject<? extends Block> block) {
         addBlock(block, Arrays.stream(block.getId().getPath().split("_"))
+                .map(word -> word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1))
+                .collect(Collectors.joining(" ")));
+    }
+
+    public void addFluidType(Supplier<? extends FluidType> key, String name) {
+        add(key.get(), name);
+    }
+
+    public void add(FluidType key, String name) {
+        add(key.getDescriptionId(), name);
+    }
+
+    protected void addFluidTypeFromId(RegistryObject<? extends FluidType> fluidType) {
+        addFluidType(fluidType, Arrays.stream(fluidType.getId().getPath().split("_"))
                 .map(word -> word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1))
                 .collect(Collectors.joining(" ")));
     }
@@ -160,7 +176,6 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
         if (description != null) add(key + ".desc", description);
         if (jeiDescription != null) add(key + ".jei_desc", jeiDescription);
     }
-
 
     protected String toLanguageKey(ResourceLocation loc, String type) {
         return type + "." + loc.getNamespace() + "." + loc.getPath();

@@ -43,14 +43,15 @@ public abstract class LitixCamoniaFluid extends ForgeFlowingFluid {
                     .canDrown(true)
                     .canSwim(true)
                     .fallDistanceModifier(0)
+                    .descriptionId("fluid." + ChangedAddonMod.MODID + "." + ChangedAddonFluids.LITIX_CAMONIA_FLUID.getId())
             );
         }
 
         @Override
         public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
             consumer.accept(new IClientFluidTypeExtensions() {
-                private static final ResourceLocation FLUID_STILL = ChangedAddonMod.resourceLoc("block/ammoniafluid");
-                private static final ResourceLocation FLUID_FLOWING = ChangedAddonMod.resourceLoc("block/ammoniafluid");
+                private static final ResourceLocation FLUID_STILL = ChangedAddonMod.resourceLoc("fluid/litix_camonia_fluid_still");
+                private static final ResourceLocation FLUID_FLOWING = ChangedAddonMod.resourceLoc("fluid/litix_camonia_fluid_flowing");
 
                 public ResourceLocation getStillTexture() {
                     return FLUID_STILL;
