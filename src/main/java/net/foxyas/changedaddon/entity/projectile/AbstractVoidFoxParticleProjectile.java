@@ -213,7 +213,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
             double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
             this.lookAt(EntityAnchorArgument.Anchor.EYES, targetPos);
 
-            if (distance > 0.1f) {
+            if (distance > 1f) {
                 double speed = 0.35;
 
                 // Direção normalizada desejada
@@ -223,6 +223,9 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
                     this.applyMotionSmooth(desiredMotion);
                 } else {
                     this.applyMotion(desiredMotion);
+                }
+                if (Math.sqrt(this.distanceToSqr(targetPos)) <= 1) {
+                    lifeSpamNearTarget++;
                 }
             } else {
                 lifeSpamNearTarget++;
@@ -261,7 +264,7 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
 
             double distance = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
-            if (distance > 0.1f) {
+            if (distance > 1f) {
                 double speed = 0.35;
 
                 // Direção normalizada desejada
@@ -271,6 +274,9 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
                     this.applyMotionSmooth(desiredMotion);
                 } else {
                     this.applyMotion(desiredMotion);
+                }
+                if (Math.sqrt(this.distanceToSqr(livingTarget)) <= 1) {
+                    lifeSpamNearTarget++;
                 }
             } else {
                 lifeSpamNearTarget++;
@@ -440,9 +446,8 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
             if (this.isInvulnerableTo(damageSource)) {
                 return false;
             }
-            this.setDeltaMovement(this.getDeltaMovement().scale(-amount * 0.1));
-            this.lifeSpamNearTarget = 0;
-            this.lifeSpamWithoutTarget = 0;
+            this.setDeltaMovement(this.getDeltaMovement().scale(-amount * 0.25));
+            this.lifeSpamNearTarget += 50;
             this.markHurt();
             if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
                 serverLevel.playSound(null, this.position().x, this.position().y, this.position().z, SoundEvents.SHIELD_BLOCK, SoundSource.MASTER, 1.0F, 1.0F);

@@ -395,7 +395,9 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             Pose safePose = currentPose;
 
             if (!this.canEnterPose(currentPose)) {
-                if (this.canEnterPose(Pose.CROUCHING)) {
+                if (this.canEnterPose(Pose.STANDING)) {
+                    safePose = Pose.STANDING;
+                } else if (this.canEnterPose(Pose.CROUCHING)) {
                     safePose = Pose.CROUCHING;
                 } else if (this.canEnterPose(Pose.SWIMMING)) {
                     safePose = Pose.SWIMMING;
