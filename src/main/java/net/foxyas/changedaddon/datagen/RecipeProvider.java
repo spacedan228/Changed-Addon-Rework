@@ -119,6 +119,20 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
                 .requires(DIAMOND).requires(TINTED_GLASS)
                 .unlockedBy(lunarRose, hasLunarRose)
                 .save(recipeConsumer, RecipeBuilder.getDefaultRecipeId(LUNAR_ROSE.get()) + "_secret");
+
+        ShapedRecipeBuilder.shaped(KEYCARD_ITEM.get())
+                .pattern("IQI")
+                .pattern("NPN")
+                .pattern("CRC")
+                .define('I', Items.IRON_INGOT)
+                .define('N', Items.IRON_NUGGET)
+                .define('Q', Items.QUARTZ)
+                .define('R', Items.REDSTONE)
+                .define('C', Tags.Items.INGOTS_COPPER)
+                .define('P', Items.PAPER)
+                .unlockedBy("has_redstone", has(Items.REDSTONE))
+                .save(recipeConsumer);
+
     }
 
     private ShapedRecipeBuilder reinforce(ItemLike result, ItemLike input, String criterionName, CriterionTriggerInstance criterion) {
