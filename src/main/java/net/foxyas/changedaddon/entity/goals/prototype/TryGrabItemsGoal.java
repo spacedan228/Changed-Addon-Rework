@@ -29,7 +29,7 @@ public class TryGrabItemsGoal extends Goal {
                 prototype.getBoundingBox().inflate(16.0),
                 item -> {
                     ItemStack stack = item.getItem();
-                    return prototype.canTakeItem(stack) && prototype.wantsToPickUp(stack);
+                    return  prototype.canTakeItem(stack) && prototype.wantsToPickUp(stack);
                 }
         );
         this.nearbyItems = nearbyItems;
@@ -58,7 +58,6 @@ public class TryGrabItemsGoal extends Goal {
 
     @Override
     public void start() {
-        super.start();
         if (nearbyItems.isEmpty()) {
             return;
         }
@@ -70,17 +69,17 @@ public class TryGrabItemsGoal extends Goal {
                 .min((i1, i2) -> Double.compare(i1.distanceToSqr(prototype), i2.distanceToSqr(prototype)))
                 .orElse(null);
 
-        if (closestItem != null) {
-            prototype.level().playSound(null, prototype.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
-            prototype.getNavigation().moveTo(closestItem, 0.25f);
-            // Make entity look at a target position
-            prototype.getLookControl().setLookAt(
-                    closestItem.position().x(), closestItem.position().y(), closestItem.position().z(),
-                    30.0F, // yaw change speed (degrees per tick)
-                    30.0F  // pitch change speed
-            );
-            ticksTrying++;
-        }
+        if (closestItem == null) return;
+
+        prototype.level().playSound(null, prototype.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+        prototype.getNavigation().moveTo(closestItem, 0.25f);
+        // Make entity look at a target position
+        prototype.getLookControl().setLookAt(
+                closestItem.position().x(), closestItem.position().y(), closestItem.position().z(),
+                30.0F, // yaw change speed (degrees per tick)
+                30.0F  // pitch change speed
+        );
+        ticksTrying++;
     }
 
     @Override
@@ -94,23 +93,21 @@ public class TryGrabItemsGoal extends Goal {
                 .min((i1, i2) -> Double.compare(i1.distanceToSqr(prototype), i2.distanceToSqr(prototype)))
                 .orElse(null);
 
-        if (closestItem != null) {
-            if (closestItem.distanceTo(prototype) >= 0.005f) {
-                prototype.getNavigation().moveTo(closestItem, 0.25f);
-                // Place the crop block at target position
-                this.prototype.getLookControl().setLookAt(
-                        closestItem.position().x(), closestItem.position().y(), closestItem.position().z(),
-                        30.0F, // yaw change speed (degrees per tick)
-                        30.0F  // pitch change speed
-                );
-                ticksTrying++;
-            }
+        if (closestItem == null) return;
+        if (closestItem.distanceTo(prototype) >= 0.005f) {
+            prototype.getNavigation().moveTo(closestItem, 0.25f);
+            // Place the crop block at target position
+            this.prototype.getLookControl().setLookAt(
+                    closestItem.position().x(), closestItem.position().y(), closestItem.position().z(),
+                    30.0F, // yaw change speed (degrees per tick)
+                    30.0F  // pitch change speed
+            );
+            ticksTrying++;
         }
     }
 
     @Override
     public void stop() {
-        super.stop();
         ticksTrying = 0;
     }
 }
