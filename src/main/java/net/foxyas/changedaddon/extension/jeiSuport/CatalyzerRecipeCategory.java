@@ -12,6 +12,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.recipe.CatalyzerRecipe;
+import net.foxyas.changedaddon.recipe.special.KeycardColorRecipe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -45,13 +46,24 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
     }
 
 
-    public @NotNull IDrawable getBackground() {
-        return this.background;
+//    @Override
+//    public @NotNull IDrawable getBackground() {
+//        return this.background;
+//    }
+
+    @Override
+    public int getHeight() {
+        return background.getHeight();
+    }
+
+    @Override
+    public int getWidth() {
+        return background.getWidth();
     }
 
     @Override
     public void draw(CatalyzerRecipe recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        IRecipeCategory.super.draw(recipe, recipeSlotsView, guiGraphics, mouseX, mouseY);
+        this.background.draw(guiGraphics);
     }
 
     @Override
