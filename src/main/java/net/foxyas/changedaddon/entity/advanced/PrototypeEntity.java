@@ -80,7 +80,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     }
 
     // Static methods
-
+    public static void init() {  //Maybe be usefully in future... idfk
+    }
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
