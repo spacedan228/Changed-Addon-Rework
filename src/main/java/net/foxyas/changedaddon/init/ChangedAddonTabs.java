@@ -31,7 +31,7 @@ public class ChangedAddonTabs {
                 DYEABLE_TSHIRT.get().fillItemCategory(items);
                 DYEABLE_SHORTS.get().fillItemCategory(items);
                 LASER_POINTER.get().fillItemCategory(items);
-            }).build());
+            }).withTabsAfter(ChangedTabs.TAB_CHANGED_MUSIC.getKey()).withTabsBefore(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB.getKey()).build());
 
 
     public static final RegistryObject<CreativeModeTab> CHANGED_ADDON_OPTIONAL_COMBAT_TAB = TABS.register("optional_combat_tab", () -> CreativeModeTab.builder()

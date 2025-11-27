@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.gui.*;
+import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
 import net.foxyas.changedaddon.item.tooltip.ClientTransfurTotemTooltipComponent;
 import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
@@ -42,6 +43,10 @@ public class ClientMod {
 
     @SubscribeEvent
     public static void onRegisterModelRenderTypes(RegisterNamedRenderTypesEvent event) {
+        // Use this as eyes but with fewer pipeline bugs
         event.register("energy", RenderType.cutout(), RenderType.energySwirl(InventoryMenu.BLOCK_ATLAS, 0, 0));
+
+        // To create a good outline effect is good that you use an "inflated" area from the original model
+        event.register("outline", RenderType.cutout(), ChangedAddonRenderTypes.outlineWithDepth(InventoryMenu.BLOCK_ATLAS));
     }
 }
