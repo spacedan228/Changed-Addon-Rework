@@ -232,7 +232,7 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
                     return LaserPointer.getAWTColor(stack).getRGB();
                 }
                 return -1; // Cor padrão (branco)
-            });
+            }, item.get());
         }
     }
 

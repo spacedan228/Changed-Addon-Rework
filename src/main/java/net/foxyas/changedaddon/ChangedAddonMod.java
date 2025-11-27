@@ -43,7 +43,7 @@ public class ChangedAddonMod {
         IEventBus bus = context.getModEventBus();
         ChangedAddonConfigs.register(context);
         ChangedAddonBlocks.REGISTRY.register(bus);
-        ChangedAddonPaintingTypes.PAINTING_TYPES.register(bus);
+        ChangedAddonPaintingVariants.PAINTING_TYPES.register(bus);
         ChangedAddonTabs.TABS.register(bus);
 
         ChangedAddonItemTiers.init();

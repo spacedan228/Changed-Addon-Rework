@@ -9,7 +9,6 @@ import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -32,15 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Set;
 
 public abstract class AbstractCheetahEntity extends AbstractCanTameSnepChangedEntity {
-
-    protected static final Set<ResourceLocation> SPAWN_BIOMES = Set.of(
-            Biomes.JUNGLE.location(),
-            Biomes.SPARSE_JUNGLE.location(),
-            Biomes.SAVANNA.location(),
-            Biomes.SAVANNA_PLATEAU.location(),
-            Biomes.WINDSWEPT_SAVANNA.location()/*,
-            Biomes.DARK_FOREST.location()*/
-    );
 
     public AbstractCheetahEntity(EntityType<? extends AbstractSnowLeopard> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);

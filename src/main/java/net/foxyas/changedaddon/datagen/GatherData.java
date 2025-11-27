@@ -33,6 +33,7 @@ public class GatherData {
 
         generator.addProvider(true, new EntityTypeTagsProvider(packOutput, lookupProvider, helper));
         generator.addProvider(true, new TFTagsProvider(packOutput, lookupProvider, helper));
+        generator.addProvider(true, new CAPaintingVariantTagsProvider(packOutput, lookupProvider, helper));
         generator.addProvider(true, new AccessoryEntityProvider(generator));
         generator.addProvider(true, new AbilityTreeProviderImpl(packOutput));
 

@@ -4,7 +4,7 @@
 	"children": {
 		"glow": {
 			"parent": "changed_addon:custom/laser_electric_katana",
-			"render_type": "changed_addon:energy",
+			"render_type": "changed:emissive",
 			"textures": {
 				"laser": "changed_addon:block/red_katana_energy",
 				"particle": "changed_addon:item/blue_katana_energy"

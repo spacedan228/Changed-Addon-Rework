@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.datagen.lang;
 
+import net.foxyas.changedaddon.init.ChangedAddonPaintingVariants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -7,6 +8,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.decoration.PaintingVariant;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.GameRules;
@@ -46,6 +48,12 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
         addBlock(block, Arrays.stream(block.getId().getPath().split("_"))
                 .map(word -> word.substring(0, 1).toUpperCase(Locale.ROOT) + word.substring(1))
                 .collect(Collectors.joining(" ")));
+    }
+
+    protected void addPaintingVariant(RegistryObject<? extends PaintingVariant> painting, String title, String author) {
+        assert painting.getKey() != null;
+        add(painting.getKey().location().toLanguageKey("painting", "title"), title);
+        add(painting.getKey().location().toLanguageKey("painting", "author"), author);
     }
 
     public void addFluidType(Supplier<? extends FluidType> key, String name) {

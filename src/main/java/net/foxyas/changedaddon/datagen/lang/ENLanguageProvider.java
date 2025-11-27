@@ -4,6 +4,10 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.*;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.decoration.PaintingVariant;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.Optional;
 
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.*;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.ADVANCED_CATALYZER;
@@ -49,7 +53,6 @@ import static net.foxyas.changedaddon.init.ChangedAddonEnchantments.CHANGED_LURE
 import static net.foxyas.changedaddon.init.ChangedAddonEnchantments.TRANSFUR_ASPECT;
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.*;
 import static net.foxyas.changedaddon.init.ChangedAddonEntities.LUMINAR_CRYSTAL_SPEAR;
-import static net.foxyas.changedaddon.init.ChangedAddonFluids.LITIX_CAMONIA_FLUID_TYPE;
 import static net.foxyas.changedaddon.init.ChangedAddonGameRules.*;
 import static net.foxyas.changedaddon.init.ChangedAddonItems.*;
 import static net.foxyas.changedaddon.init.ChangedAddonKeyMappings.*;
@@ -624,6 +627,11 @@ public class ENLanguageProvider extends LanguageProvider {
         addSoundO(WARN, "Warn Sound");
         addSoundO(GECKO_BEEP, "Gecko Beep");
         addSoundO(PROTOTYPE_IDEA, "Prototype Chime");
+
+        for (RegistryObject<PaintingVariant> paintingVariantRegistryObject : ChangedAddonPaintingVariants.PAINTING_TYPES.getEntries()) {
+            Optional<ChangedAddonPaintingVariants.PaintingVariantInfo> optionalPaintingVariantInfo = ChangedAddonPaintingVariants.getPaintingVariantInfo(paintingVariantRegistryObject);
+            optionalPaintingVariantInfo.ifPresent(paintingVariantInfo -> addPaintingVariant(paintingVariantRegistryObject, paintingVariantInfo.title(), paintingVariantInfo.author()));
+        }
 
         addText("additionalHealth", "Additional Health = %s");
         addText("additionalHealth.Hearts", " Hearts");

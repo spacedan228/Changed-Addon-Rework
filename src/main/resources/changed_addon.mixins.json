@@ -40,14 +40,15 @@
     "entity.variant.TransfurVariantInstanceMixin",
     "fluids.TransfurGasMixin",
     "items.ItemStackMixin",
+    "items.LatexSyringeMixin",
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",
     "mods.changed.EmoteParticleOptionMixin",
     "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin",
+    "world.DataFixTypesMixin",
     "world.LevelStorageAccessMixin",
     "world.LevelStorageSourceMixin",
-    "world.DataFixTypesMixin",
     "world.PrimaryLevelDataMixin"
   ],
   "injectors": {

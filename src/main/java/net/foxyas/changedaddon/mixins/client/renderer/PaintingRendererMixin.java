@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.mixins.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
-import net.foxyas.changedaddon.init.ChangedAddonPaintingTypes;
+import net.foxyas.changedaddon.init.ChangedAddonPaintingVariants;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -33,7 +33,7 @@ public abstract class PaintingRendererMixin extends EntityRenderer<Painting> {
             at = @At(value = "HEAD"))
     private void customRender(Painting pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, CallbackInfo ci){
         painting = pEntity;
-        shouldGlow = ChangedAddonPaintingTypes.glowPaintings().contains(pEntity.getVariant().get());
+        shouldGlow = ChangedAddonPaintingVariants.glowPaintings().contains(pEntity.getVariant().get());
     }
 
     @ModifyArg(method = "render(Lnet/minecraft/world/entity/decoration/Painting;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V",
