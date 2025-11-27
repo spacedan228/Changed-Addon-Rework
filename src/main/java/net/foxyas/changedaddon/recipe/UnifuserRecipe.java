@@ -14,6 +14,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.jetbrains.annotations.NotNull;
 
@@ -126,8 +127,19 @@ public class UnifuserRecipe implements Recipe<SimpleContainer> {
                 Ingredient ingredient;
 
                 if (ingredientElement.isJsonObject() && ingredientElement.getAsJsonObject().has("nbt")) {
-                    ItemStack stack = ShapedRecipe.itemStackFromJson(ingredientElement.getAsJsonObject());
-                    ingredient = StrictNBTIngredient.of(stack);
+                    JsonObject jsonObject = ingredientElement.getAsJsonObject();
+                    ItemStack stack = ShapedRecipe.itemStackFromJson(jsonObject);
+                    if (jsonObject.has("exactlyNbt")) {
+                        boolean exactlyNbt = jsonObject.get("exactlyNbt").getAsBoolean();
+                        if (exactlyNbt) {
+                            ingredient = StrictNBTIngredient.of(stack);
+                        } else {
+                            ingredient = PartialNBTIngredient.of(stack.getItem(), stack.getOrCreateTag());
+                        }
+                    } else {
+                        ingredient = StrictNBTIngredient.of(stack);
+                    }
+
                     ChangedAddonMod.LOGGER.info("[Changed Addon Recipes Types] Parsing nbt recipe with id {} of type {}", pRecipeId, Type.ID);
                 } else {
                     ingredient = Ingredient.fromJson(ingredientElement);

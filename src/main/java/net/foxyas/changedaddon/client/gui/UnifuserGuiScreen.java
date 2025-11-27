@@ -73,10 +73,10 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics pGuiGraphics, int mouseX, int mouseY) {
-        pGuiGraphics.drawString(font, getMachineState(level, pos), 9, 10, -12829636);
+        pGuiGraphics.drawString(font, getMachineState(level, pos), 9, 10, -12829636, false);
         if (menu.getUnifuser().isSlotFull(3))
-            pGuiGraphics.drawString(font, Component.translatable("gui.changed_addon.unifuser_gui.label_full"), 153, 78, -12829636);
-        pGuiGraphics.drawString(font, getRecipeState(level, pos), 89, 47, -12829636);
+            pGuiGraphics.drawString(font, Component.translatable("gui.changed_addon.unifuser_gui.label_full"), 153, 78, -12829636, false);
+        pGuiGraphics.drawString(font, getRecipeState(level, pos), 89, 47, -12829636, false);
     }
 
     public static String getMachineState(Level level, BlockPos pos) {

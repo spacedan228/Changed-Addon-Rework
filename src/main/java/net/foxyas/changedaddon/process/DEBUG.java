@@ -7,16 +7,21 @@ import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.StructureUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
+import org.lwjgl.glfw.GLFW;
 
 
 @Mod.EventBusSubscriber
@@ -39,7 +44,7 @@ public class DEBUG {
         if (!DEBUG) {
             return;
         }
-        if (event.getMessage().toString().startsWith("testMotion")) {
+        if (event.getMessage().getString().startsWith("testMotion")) {
             if (MOTIONTEST == 0) {
                 MOTIONTEST = 1;
             } else if (MOTIONTEST == 1) {
@@ -48,17 +53,17 @@ public class DEBUG {
                 MOTIONTEST = 0;
             }
         }
-        if (event.getMessage().toString().startsWith("test2Motion")) {
+        if (event.getMessage().getString().startsWith("test2Motion")) {
             if (event.getPlayer() instanceof SyncTrackMotion syncTrackMotion) {
                 event.getPlayer().displayClientMessage(Component.literal("The Motion is " + syncTrackMotion.getLastKnownMotion()), false);
                 event.getPlayer().displayClientMessage(Component.literal("The player is Moving?: " + syncTrackMotion.isMoving()), false);
             }
         }
 
-        if (event.getMessage().toString().startsWith("testDeltas")) {
+        if (event.getMessage().getString().startsWith("testDeltas")) {
             PARTICLETEST = !PARTICLETEST;
-        } else if (event.getMessage().toString().startsWith("setDeltaPos")) {
-            String a = event.getMessage().toString().replace("setDeltaPos", "");
+        } else if (event.getMessage().getString().startsWith("setDeltaPos")) {
+            String a = event.getMessage().getString().replace("setDeltaPos", "");
             if (a.startsWith("x")) {
                 DeltaX = (float) convert(a.replace("x", ""));
             } else if (a.startsWith("y")) {
@@ -67,8 +72,8 @@ public class DEBUG {
                 DeltaZ = (float) convert(a.replace("z", ""));
             }
         }
-        if (event.getMessage().toString().startsWith("setHeadPos")) {
-            String a = event.getMessage().toString().replace("setHeadPos", "");
+        if (event.getMessage().getString().startsWith("setHeadPos")) {
+            String a = event.getMessage().getString().replace("setHeadPos", "");
             if (a.startsWith("T")) {
                 HeadPosT = (float) convert(a.replace("T", ""));
             } else if (a.startsWith("V")) {
@@ -91,16 +96,16 @@ public class DEBUG {
                 HeadPosZ = (float) convert(a.replace("z", ""));
             }
         }
-        if (event.getMessage().toString().startsWith("setColor:")) {
-            COLORSTRING = event.getMessage().toString().replace("setColor:", "");
+        if (event.getMessage().getString().startsWith("setColor:")) {
+            COLORSTRING = event.getMessage().getString().replace("setColor:", "");
         }
-        if (event.getMessage().toString().startsWith("Show info")) {
+        if (event.getMessage().getString().startsWith("Show info")) {
             event.getPlayer().displayClientMessage(Component.literal("X = " + HeadPosX + "\n" + "Y = " + HeadPosY + "\n" + "Z = " + HeadPosZ + "\n" + "T = " + HeadPosT + "\n" + "V = " + HeadPosV + "\n" + "B = " + HeadPosB + "\n" + "K = " + HeadPosK + "\n" + "L = " + HeadPosL + "\n" + "J = " + HeadPosJ), false);
         }
-        if (event.getMessage().toString().startsWith("Show1")) {
+        if (event.getMessage().getString().startsWith("Show1")) {
             event.getPlayer().displayClientMessage(Component.literal("X = " + DeltaX + "\n" + "Y = " + DeltaY + "\n" + "Z = " + DeltaZ), false);
         }
-        if (event.getMessage().toString().startsWith("Show Info")) {
+        if (event.getMessage().getString().startsWith("Show Info")) {
             new DelayedTask(40, () -> event.getPlayer().displayClientMessage(Component.literal("X = " + StructureUtil.isStructureNearby(event.getPlayer().serverLevel(), event.getPlayer().getOnPos(), "changed_addon:dazed_latex_meteor", 3)), false));
         }
 
@@ -225,6 +230,34 @@ public class DEBUG {
         });
     }
     */
+    @SubscribeEvent
+    public static void onKeyInput(InputEvent.Key event) {
+        if (event.getAction() != GLFW.GLFW_PRESS && event.getAction() != GLFW.GLFW_REPEAT)
+            return;
+
+        // Incremento normal
+        float baseIncrement = 1.0f;
+
+        // Se estiver segurando SHIFT → usa 0.1
+        if (Screen.hasShiftDown()) {
+            baseIncrement = 0.1f;
+        }
+
+        // Y (UP / DOWN)
+        if (event.getKey() == GLFW.GLFW_KEY_UP) {
+            HeadPosY = Math.max(0, HeadPosY + baseIncrement);
+        } else if (event.getKey() == GLFW.GLFW_KEY_DOWN) {
+            HeadPosY = Math.max(0, HeadPosY - baseIncrement);
+        }
+
+        // X (LEFT / RIGHT)
+        else if (event.getKey() == GLFW.GLFW_KEY_LEFT) {
+            HeadPosX = Math.max(0, HeadPosX - baseIncrement);
+        } else if (event.getKey() == GLFW.GLFW_KEY_RIGHT) {
+            HeadPosX = Math.max(0, HeadPosX + baseIncrement);
+        }
+    }
+
 
     @SubscribeEvent
     public static void PARTICLETEST(TickEvent.PlayerTickEvent event) {

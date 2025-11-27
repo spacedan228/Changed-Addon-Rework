@@ -77,12 +77,12 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
 
     @Override
     protected void renderLabels(GuiGraphics pGuiGraphics, int mouseX, int mouseY) {
-        pGuiGraphics.drawString(font, "Nitrogen % = " + catalyzer.nitrogenPower + "%", 6, 8, -12829636);
+        pGuiGraphics.drawString(font, "Nitrogen % = " + catalyzer.nitrogenPower + "%", 6, 8, -12829636, false);
         pGuiGraphics.drawString(font,
-                getMachineState(level, pos), 6, 20, -12829636);
+                getMachineState(level, pos), 6, 20, -12829636, false);
         if (catalyzer.isSlotFull(1))
-            pGuiGraphics.drawString(font, Component.translatable("gui.changed_addon.catalyzer_gui.label_full"), 151, 65, -12829636);
+            pGuiGraphics.drawString(font, Component.translatable("gui.changed_addon.catalyzer_gui.label_full"), 151, 65, -12829636, false);
         pGuiGraphics.drawString(font,
-                getRecipeState(level, pos), 90, 34, -12829636);
+                getRecipeState(level, pos), 90, 34, -12829636, false);
     }
 }

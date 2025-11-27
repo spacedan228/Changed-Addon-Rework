@@ -68,8 +68,8 @@ public class GeneratorguiScreen extends AbstractContainerScreen<GeneratorGuiMenu
 
     @Override
     protected void renderLabels(@NotNull GuiGraphics pGuiGraphics, int mouseX, int mouseY) {
-        pGuiGraphics.drawString(font, energyAmount(), 4, 10, -12829636);
-        pGuiGraphics.drawString(font, "generator is " + (isOn() ? "activated" : "disabled"), 11, 76, -12829636);
+        pGuiGraphics.drawString(font, energyAmount(), 4, 10, -12829636, false);
+        pGuiGraphics.drawString(font, "generator is " + (isOn() ? "activated" : "disabled"), 11, 76, -12829636, false);
     }
 
     private String energyAmount() {

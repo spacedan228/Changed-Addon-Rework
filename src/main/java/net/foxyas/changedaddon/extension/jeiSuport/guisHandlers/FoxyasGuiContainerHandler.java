@@ -6,7 +6,6 @@ import net.foxyas.changedaddon.menu.FoxyasInventoryMenu;
 import net.minecraft.client.renderer.Rect2i;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.List;
 
 public class FoxyasGuiContainerHandler implements IGuiContainerHandler<FoxyasInventoryMenuScreen> {
@@ -22,7 +21,8 @@ public class FoxyasGuiContainerHandler implements IGuiContainerHandler<FoxyasInv
         int extraWidth = gui.getXSize();
         int extraHeight = ExtraInvVHeight;
 
-        Rect2i o = new Rect2i(extraX, extraY, extraWidth, extraHeight);
-        return Collections.singletonList(o);
+        Rect2i normalInventory = new Rect2i(i, j, gui.getXSize(), gui.getYSize());
+        Rect2i extraInventory = new Rect2i(extraX, extraY, 227, 81);
+        return List.of(normalInventory, extraInventory);
     }
 }

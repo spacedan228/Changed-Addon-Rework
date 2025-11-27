@@ -6,7 +6,8 @@
     },
     {
       "item": "minecraft:potion",
-      "nbt": "{Potion:\"minecraft:water\"}"
+      "nbt": "{Potion:\"minecraft:water\"}",
+      "exactlyNbt": false
     },
     {
       "item": "changed_addon:catalyzed_dna"

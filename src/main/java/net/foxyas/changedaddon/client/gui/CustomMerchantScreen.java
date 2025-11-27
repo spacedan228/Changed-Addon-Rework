@@ -18,6 +18,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchantMenu> {
@@ -62,10 +64,10 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
     }
 
     protected void renderLabels(@NotNull GuiGraphics guiGraphics, int x, int y) {
-        guiGraphics.drawString(font, title, 49 + imageWidth / 2 - font.width(title) / 2, 6, 4210752);
-        guiGraphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752);
+        guiGraphics.drawString(font, title, 49 + imageWidth / 2 - font.width(title) / 2, 6, 4210752,false);
+        guiGraphics.drawString(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, 4210752, false);
         int l = font.width(TRADES_LABEL);
-        guiGraphics.drawString(font, TRADES_LABEL, (5 - l / 2 + 48), 6, 4210752);
+        guiGraphics.drawString(font, TRADES_LABEL, (5 - l / 2 + 48), 6, 4210752, false);
     }
 
     protected void renderBg(GuiGraphics pGuiGraphics, float pPartialTick, int pMouseX, int pMouseY) {
@@ -148,6 +150,9 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
                 result = offer.getResult();
                 renderButtonArrows(pGuiGraphics, offer, i, j1);
 
+                String str = String.valueOf(offer.getUsesLeft());
+                pGuiGraphics.drawString(font, str, i + 5 + (46 + 5) + 19 - 2 - font.width(str), (float)(j1 + 6 + 3), 16777215, false);
+
                 pGuiGraphics.renderFakeItem(result, i + 5 + 68, j1);
                 pGuiGraphics.renderItemDecorations(this.font, result, i + 5 + 68, j1);
 
@@ -182,6 +187,9 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
 
     private static ItemStack currentStack(Ingredient ingredient) {
         ItemStack[] stacks = ingredient.getItems();
+        if (stacks.length == 0) {
+            return ItemStack.EMPTY;
+        }
         int time = Math.toIntExact(System.currentTimeMillis() % ((long) stacks.length * MS_PER_ITEM));
         return stacks[time / MS_PER_ITEM];
     }

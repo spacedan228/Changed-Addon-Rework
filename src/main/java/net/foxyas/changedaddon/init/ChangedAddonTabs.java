@@ -19,7 +19,7 @@ public class ChangedAddonTabs {
     public static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), ChangedAddonMod.MODID);
 
     public static final RegistryObject<CreativeModeTab> CHANGED_ADDON_MAIN_TAB = TABS.register("main_tab", () -> CreativeModeTab.builder()
-            .icon(()-> ChangedAddonItems.CHANGED_BOOK.get().getDefaultInstance())
+            .icon(() -> ChangedAddonItems.CHANGED_BOOK.get().getDefaultInstance())
             .title(Component.translatable("itemGroup.changed_addon_main_tab"))
             .displayItems((params, items) -> {
                 for (RegistryObject<Item> itemRegistryObject : REGISTRY.getEntries()) {
@@ -31,11 +31,12 @@ public class ChangedAddonTabs {
                 DYEABLE_TSHIRT.get().fillItemCategory(items);
                 DYEABLE_SHORTS.get().fillItemCategory(items);
                 LASER_POINTER.get().fillItemCategory(items);
-            }).withTabsAfter(ChangedTabs.TAB_CHANGED_MUSIC.getKey()).withTabsBefore(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB.getKey()).build());
+            })//.withTabsAfter(ChangedTabs.TAB_CHANGED_MUSIC.getKey()).withTabsBefore(ChangedAddonTabs.CHANGED_ADDON_OPTIONAL_COMBAT_TAB.getKey())
+            .build());
 
 
     public static final RegistryObject<CreativeModeTab> CHANGED_ADDON_OPTIONAL_COMBAT_TAB = TABS.register("optional_combat_tab", () -> CreativeModeTab.builder()
-            .icon(()-> ChangedAddonItems.ELECTRIC_KATANA.get().getDefaultInstance())
+            .icon(() -> ChangedAddonItems.ELECTRIC_KATANA.get().getDefaultInstance())
             .title(Component.translatable("itemGroup.changed_addon_optional_combat_tab"))
             .displayItems((params, items) -> {
                 items.accept(PAINITE_SWORD.get());
