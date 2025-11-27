@@ -99,6 +99,19 @@ public class RecipeProvider extends net.minecraft.data.recipes.RecipeProvider {
                 .unlockedBy(iridium, hasIridium)
                 .save(recipeConsumer);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.REDSTONE, KEYCARD_ITEM.get())
+                .pattern("IQI")
+                .pattern("NPN")
+                .pattern("CRC")
+                .define('I', Items.IRON_INGOT)
+                .define('N', Items.IRON_NUGGET)
+                .define('Q', Items.QUARTZ)
+                .define('R', Items.REDSTONE)
+                .define('C', Tags.Items.INGOTS_COPPER)
+                .define('P', Items.PAPER)
+                .unlockedBy("has_redstone", has(Items.REDSTONE))
+                .save(recipeConsumer);
+
         reinforce(REINFORCED_WALL_CAUTION.get(), ChangedBlocks.WALL_CAUTION.get(), iridium, hasIridium)
                 .save(recipeConsumer);
 
