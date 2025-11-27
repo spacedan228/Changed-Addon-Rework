@@ -28,7 +28,7 @@ public class BiomeModifierProvider {
     public static void bootstrap(BootstapContext<BiomeModifier> context){
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
-        
+
         addCheetahSpawns(context, biomes);
     }
 
