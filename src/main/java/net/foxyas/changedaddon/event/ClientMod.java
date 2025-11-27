@@ -45,8 +45,5 @@ public class ClientMod {
     public static void onRegisterModelRenderTypes(RegisterNamedRenderTypesEvent event) {
         // Use this as eyes but with fewer pipeline bugs
         event.register("energy", RenderType.cutout(), RenderType.energySwirl(InventoryMenu.BLOCK_ATLAS, 0, 0));
-
-        // To create a good outline effect is good that you use an "inflated" area from the original model
-        event.register("outline", RenderType.cutout(), ChangedAddonRenderTypes.outlineWithDepth(InventoryMenu.BLOCK_ATLAS));
     }
 }
