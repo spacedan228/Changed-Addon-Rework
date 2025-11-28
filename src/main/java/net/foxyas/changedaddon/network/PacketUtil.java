@@ -22,7 +22,7 @@ public class PacketUtil {
 
     public static void playSound(ServerLevel level, Predicate<ServerPlayer> send, double x, double y, double z, SoundEvent sound, SoundSource soundSource, float volume, float pitch) {
         Holder<SoundEvent> direct = Holder.direct(sound);
-        PlayLevelSoundEvent.AtEntity event = ForgeEventFactory.onPlaySoundAtEntity(null, direct, soundSource, volume, pitch);
+        PlayLevelSoundEvent.AtPosition event = ForgeEventFactory.onPlaySoundAtPosition(level, x, y, z, direct, soundSource, volume, pitch);
         if (event.isCanceled() || event.getSound() == null) return;
 
         sound = event.getSound().get();
@@ -35,7 +35,7 @@ public class PacketUtil {
 
     public static void playSound(ServerLevel level, Predicate<ServerPlayer> send, Vec3 position, SoundEvent sound, SoundSource soundSource, float volume, float pitch) {
         Holder<SoundEvent> direct = Holder.direct(sound);
-        PlayLevelSoundEvent.AtEntity event = ForgeEventFactory.onPlaySoundAtEntity(null, direct, soundSource, volume, pitch);
+        PlayLevelSoundEvent.AtPosition event = ForgeEventFactory.onPlaySoundAtPosition(level, position.x, position.y, position.z, direct, soundSource, volume, pitch);
         if (event.isCanceled() || event.getSound() == null) return;
 
         sound = event.getSound().get();
