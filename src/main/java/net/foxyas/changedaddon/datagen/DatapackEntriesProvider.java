@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.datagen.worldgen.*;
 import net.foxyas.changedaddon.datagen.worldgen.template_pool.MeteorPools;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
+import net.foxyas.changedaddon.world.features.processors.DayTimeStructureProcessor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -22,6 +23,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -52,9 +54,14 @@ public class DatapackEntriesProvider extends DatapackBuiltinEntriesProvider {
     private static void biome(BootstapContext<Biome> context){
     }
 
-    public static final ResourceKey<StructureProcessorList> GRAVITY = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("lab_rot"));
+    public static final ResourceKey<StructureProcessorList> GRAVITY = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("gravity_rot"));
+    public static final ResourceKey<StructureProcessorList> DAZED_METEOR_POLL = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("dazed_meteor_rot"));
     private static void processorList(BootstapContext<StructureProcessorList> context){
         context.register(GRAVITY, new StructureProcessorList(List.of(new GravityProcessor(Heightmap.Types.WORLD_SURFACE_WG, -11))));
+        context.register(DAZED_METEOR_POLL, new StructureProcessorList(List.of(
+                new GravityProcessor(Heightmap.Types.WORLD_SURFACE_WG, -11),
+                new DayTimeStructureProcessor(Optional.empty(), DayTimeStructureProcessor.DayPeriod.NIGHT))
+        ));
     }
 
     private static void templatePools(BootstapContext<StructureTemplatePool> context){

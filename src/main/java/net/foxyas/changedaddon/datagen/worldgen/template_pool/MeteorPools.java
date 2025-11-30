@@ -26,7 +26,7 @@ public class MeteorPools {
         HolderGetter<StructureProcessorList> processorListGetter = context.lookup(Registries.PROCESSOR_LIST);
         Holder<StructureTemplatePool> empty = poolGetter.getOrThrow(Pools.EMPTY);
 
-        Holder<StructureProcessorList> gravity = processorListGetter.getOrThrow(DatapackEntriesProvider.GRAVITY);
+        Holder<StructureProcessorList> gravity = processorListGetter.getOrThrow(DatapackEntriesProvider.DAZED_METEOR_POLL);
 
         context.register(START, new StructureTemplatePool(
                 empty, List.of(
