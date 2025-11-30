@@ -38,7 +38,6 @@ public class ChangedAddonMod {
     private static int messageID = 0;
     public static ChangedAddonDataFixer dataFixer;
 
-
     public ChangedAddonMod(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
         ChangedAddonConfigs.register(context);
@@ -69,6 +68,7 @@ public class ChangedAddonMod {
         ChangedAddonFluids.FLUIDS.register(bus);
 
         ChangedAddonBiomeModifiers.BIOME_MODIFIERS.register(bus);
+        ChangedAddonStructureTypes.STRUCTURE_TYPES.register(bus);
         ChangedAddonProcessors.PROCESSORS.register(bus);
 
         ChangedAddonTransfurVariants.REGISTRY.register(bus);

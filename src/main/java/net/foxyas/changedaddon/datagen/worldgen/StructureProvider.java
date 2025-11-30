@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.datagen.worldgen;
 
-import net.foxyas.changedaddon.datagen.worldgen.template_pool.MeteorPools;
-import net.foxyas.changedaddon.worldgen.Structures;
+import net.foxyas.changedaddon.datagen.worldgen.template_pool.DazedMeteorPools;
+import net.foxyas.changedaddon.worldgen.ChangedAddonStructures;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -30,7 +30,7 @@ public class StructureProvider {
         HolderGetter<Biome> biomeGetter = context.lookup(Registries.BIOME);
         HolderGetter<StructureTemplatePool> poolGetter = context.lookup(Registries.TEMPLATE_POOL);
 
-        context.register(Structures.DAZED_METEOR, new JigsawStructure(
+        context.register(ChangedAddonStructures.DAZED_METEOR, new JigsawStructure(
                 new Structure.StructureSettings(
                         HolderSet.direct(
                                 biomeGetter.getOrThrow(Biomes.PLAINS), biomeGetter.getOrThrow(Biomes.SNOWY_PLAINS),
@@ -39,7 +39,7 @@ public class StructureProvider {
                                 biomeGetter.getOrThrow(Biomes.BADLANDS)
                         ), Map.of(), GenerationStep.Decoration.TOP_LAYER_MODIFICATION, TerrainAdjustment.BEARD_THIN
                 ),
-                poolGetter.getOrThrow(MeteorPools.START),
+                poolGetter.getOrThrow(DazedMeteorPools.START),
                 Optional.empty(),
                 4,
                 ConstantHeight.of(VerticalAnchor.absolute(0)),
@@ -52,9 +52,9 @@ public class StructureProvider {
     public static void structureSet(BootstapContext<StructureSet> context){
         HolderGetter<Structure> structureGetter = context.lookup(Registries.STRUCTURE);
 
-        context.register(Structures.DAZED_METEOR_SET, new StructureSet(
+        context.register(ChangedAddonStructures.DAZED_METEOR_SET, new StructureSet(
                 List.of(
-                        StructureSet.entry(structureGetter.getOrThrow(Structures.DAZED_METEOR))
+                        StructureSet.entry(structureGetter.getOrThrow(ChangedAddonStructures.DAZED_METEOR))
                 ),
                 new RandomSpreadStructurePlacement(41, 35, RandomSpreadType.LINEAR, 481422317)));
     }

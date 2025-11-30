@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 //copy from a_changed
-public class MeteorPools {
+public class DazedMeteorPools {
 
     public static final ResourceKey<StructureTemplatePool> START = key("meteor");
 
@@ -26,13 +26,13 @@ public class MeteorPools {
         HolderGetter<StructureProcessorList> processorListGetter = context.lookup(Registries.PROCESSOR_LIST);
         Holder<StructureTemplatePool> empty = poolGetter.getOrThrow(Pools.EMPTY);
 
-        Holder<StructureProcessorList> gravity = processorListGetter.getOrThrow(DatapackEntriesProvider.DAZED_METEOR_POLL);
+        Holder<StructureProcessorList> dazedLatexMeteorProcessors = processorListGetter.getOrThrow(DatapackEntriesProvider.DAZED_METEOR_POLL);
 
         context.register(START, new StructureTemplatePool(
                 empty, List.of(
-                    Pair.of(StructurePoolElement.single(loc("dazed_latex_meteor"), gravity), 1),
-                    Pair.of(StructurePoolElement.single(loc("dazed_latex_meteor_closed"), gravity), 1),
-                    Pair.of(StructurePoolElement.single(loc("dazed_latex_meteor_side_opened"), gravity), 1)
+                    Pair.of(StructurePoolElement.single(loc("dazed_latex_meteor"), dazedLatexMeteorProcessors), 1),
+                    Pair.of(StructurePoolElement.single(loc("dazed_latex_meteor_closed"), dazedLatexMeteorProcessors), 1),
+                    Pair.of(StructurePoolElement.single(loc("dazed_latex_meteor_side_opened"), dazedLatexMeteorProcessors), 1)
                 ),
                 StructureTemplatePool.Projection.RIGID
         ));

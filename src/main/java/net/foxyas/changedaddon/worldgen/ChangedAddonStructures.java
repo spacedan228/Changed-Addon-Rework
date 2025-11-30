@@ -7,7 +7,7 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureSet;
 import org.jetbrains.annotations.NotNull;
 //copy from a_changed
-public class Structures {
+public class ChangedAddonStructures {
 
     public static final ResourceKey<Structure> DAZED_METEOR = key("dazed_meteor");
     public static final ResourceKey<StructureSet> DAZED_METEOR_SET = setKey("dazed_meteor_set");

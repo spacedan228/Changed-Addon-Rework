@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.datagen.worldgen.*;
-import net.foxyas.changedaddon.datagen.worldgen.template_pool.MeteorPools;
+import net.foxyas.changedaddon.datagen.worldgen.template_pool.DazedMeteorPools;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.world.features.processors.DayTimeStructureProcessor;
 import net.minecraft.core.HolderLookup;
@@ -56,15 +56,16 @@ public class DatapackEntriesProvider extends DatapackBuiltinEntriesProvider {
 
     public static final ResourceKey<StructureProcessorList> GRAVITY = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("gravity_rot"));
     public static final ResourceKey<StructureProcessorList> DAZED_METEOR_POLL = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("dazed_meteor_rot"));
+
     private static void processorList(BootstapContext<StructureProcessorList> context){
         context.register(GRAVITY, new StructureProcessorList(List.of(new GravityProcessor(Heightmap.Types.WORLD_SURFACE_WG, -11))));
         context.register(DAZED_METEOR_POLL, new StructureProcessorList(List.of(
-                new GravityProcessor(Heightmap.Types.WORLD_SURFACE_WG, -11),
+                new GravityProcessor(Heightmap.Types.WORLD_SURFACE_WG, -10),
                 new DayTimeStructureProcessor(Optional.empty(), DayTimeStructureProcessor.DayPeriod.NIGHT))
         ));
     }
 
     private static void templatePools(BootstapContext<StructureTemplatePool> context){
-        MeteorPools.bootstrap(context);
+        DazedMeteorPools.bootstrap(context);
     }
 }

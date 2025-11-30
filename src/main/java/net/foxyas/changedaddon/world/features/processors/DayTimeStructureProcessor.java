@@ -16,6 +16,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public class DayTimeStructureProcessor extends StructureProcessor {
