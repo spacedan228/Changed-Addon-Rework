@@ -6,6 +6,7 @@ import net.foxyas.changedaddon.block.MultifaceBlock;
 import net.foxyas.changedaddon.block.advanced.HandScanner;
 import net.foxyas.changedaddon.block.advanced.PawsScanner;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
+import net.foxyas.changedaddon.block.debug.StructureSpawnerBlock;
 import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
@@ -111,6 +112,8 @@ public class ChangedAddonBlocks {
     });
 
     public static final RegistryObject<WolfCrystalPillar> WOLF_CRYSTAL_PILLAR = REGISTRY.register("wolf_crystal_pillar", WolfCrystalPillar::new);
+
+    public static final RegistryObject<StructureSpawnerBlock> STRUCTURE_SPAWNER = REGISTRY.register("structure_spawner", StructureSpawnerBlock::new);
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientSideHandler {

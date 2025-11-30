@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlockEntity;
+import net.foxyas.changedaddon.block.debug.entity.StructureSpawnerBlockEntity;
 import net.foxyas.changedaddon.block.entity.*;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.ContainmentContainerRenderer;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.InformantBlockEntityRenderer;
@@ -38,6 +39,7 @@ public class ChangedAddonBlockEntities {
 
     public static final RegistryObject<BlockEntityType<InformantBlockEntity>> INFORMANT_BLOCK = REGISTRY.register("informant_block_block_entity", () -> BlockEntityType.Builder.of(InformantBlockEntity::new, ChangedAddonBlocks.INFORMANT_BLOCK.get()).build(null));
     public static final RegistryObject<BlockEntityType<ContainmentContainerBlockEntity>> CONTAINMENT_CONTAINER = REGISTRY.register("containment_container_block_entity", () -> BlockEntityType.Builder.of(ContainmentContainerBlockEntity::new, ChangedAddonBlocks.CONTAINMENT_CONTAINER.get()).build(null));
+    public static final RegistryObject<BlockEntityType<StructureSpawnerBlockEntity>> STRUCTURE_SPAWNER = REGISTRY.register("structure_spawner", () -> BlockEntityType.Builder.of(StructureSpawnerBlockEntity::new, ChangedAddonBlocks.STRUCTURE_SPAWNER.get()).build(null));
 
 
     //Stop breaking the lines on this code
