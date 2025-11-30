@@ -4,9 +4,11 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxyas.changedaddon.init.ChangedAddonProcessors;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
@@ -50,7 +52,7 @@ public class DayTimeStructureProcessor extends StructureProcessor {
 
     @Override
     protected @NotNull StructureProcessorType<?> getType() {
-        return ChangedAddonProcessors.OFFSET_SPAWN.get();
+        return ChangedAddonProcessors.DAY_TIME.get();
     }
 
     @Nullable
@@ -62,7 +64,8 @@ public class DayTimeStructureProcessor extends StructureProcessor {
             @NotNull StructurePlaceSettings settings
             , @Nullable StructureTemplate template) {
         // Aplica o offset aos blocos da estrutura
-        if (world instanceof Level level) {
+        if (world instanceof ServerLevelAccessor serverLevelAccessor) {
+            ServerLevel level = serverLevelAccessor.getLevel();
             long dayTime = level.getDayTime();
             if (this.time.isEmpty() && this.dayPeriod != DayPeriod.NOTSET) {
                 if (this.dayPeriod == DayPeriod.DAY && level.isDay()) {

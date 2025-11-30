@@ -4,7 +4,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "changed_addon:dazed_latex_meteor",
-        "processors": "changed_addon:lab_rot",
+        "processors": "changed_addon:dazed_meteor_rot",
         "projection": "rigid"
       },
       "weight": 1
@@ -13,7 +13,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "changed_addon:dazed_latex_meteor_closed",
-        "processors": "changed_addon:lab_rot",
+        "processors": "changed_addon:dazed_meteor_rot",
         "projection": "rigid"
       },
       "weight": 1
@@ -22,7 +22,7 @@
       "element": {
         "element_type": "minecraft:single_pool_element",
         "location": "changed_addon:dazed_latex_meteor_side_opened",
-        "processors": "changed_addon:lab_rot",
+        "processors": "changed_addon:dazed_meteor_rot",
         "projection": "rigid"
       },
       "weight": 1

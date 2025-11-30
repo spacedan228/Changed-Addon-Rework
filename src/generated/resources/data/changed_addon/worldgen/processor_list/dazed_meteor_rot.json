@@ -4,6 +4,10 @@
       "heightmap": "WORLD_SURFACE_WG",
       "offset": -11,
       "processor_type": "minecraft:gravity"
+    },
+    {
+      "processor_type": "changed_addon:day_time",
+      "timeSet": "night"
     }
   ]
 }
