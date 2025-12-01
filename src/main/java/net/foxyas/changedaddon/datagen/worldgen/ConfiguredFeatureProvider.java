@@ -74,7 +74,7 @@ public class ConfiguredFeatureProvider {
 
         register(context, PAINITE_ORE_CONFIG,
                 Feature.ORE,
-                new OreConfiguration(iridiumTargets, 4, 0.5f)
+                new OreConfiguration(painiteTargets, 6, 1)
         );
 
         // REGISTRA TODAS AS CONFIGURED FEATURES

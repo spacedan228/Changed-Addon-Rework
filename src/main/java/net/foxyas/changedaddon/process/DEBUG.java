@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.process;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
+import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.FoxyasUtils;
@@ -10,10 +11,14 @@ import net.foxyas.changedaddon.util.StructureUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.KeyboardInput;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -264,6 +269,19 @@ public class DEBUG {
         if (!DEBUG) {
             return;
         }
+
+        if (PARTICLETEST) {
+            Player player = event.player;
+            BlockPos pos1 = player.blockPosition();
+            for (BlockPos pos : BlockPos.betweenClosed(pos1.offset(-16, -16, -16), pos1.offset(16, 16, 16))) {
+                Level level = player.level();
+                BlockState blockState = level.getBlockState(pos);
+                if (blockState.is(ChangedAddonBlocks.DEEPSLATE_PAINITE_ORE.get())) {
+                    ParticlesUtil.sendParticles(level, new BlockParticleOption(ParticleTypes.BLOCK_MARKER, blockState), pos.getCenter(), 0, 0, 0, 0, 1);
+                }
+            }
+        }
+
         if (PARTICLETEST && event.player.isShiftKeyDown()) {
             ParticlesUtil.sendParticles(event.player.level(), ParticleTypes.GLOW, event.player.getEyePosition().add(FoxyasUtils.getRelativePosition(event.player, DeltaX, DeltaY, DeltaZ, true)), 0f, 0f, 0f, 4, 0);
         }

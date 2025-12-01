@@ -39,7 +39,7 @@ public class PlacedFeatureProvider {
                 new PlacedFeature(
                         lookup.getOrThrow(ChangedAddonFeatures.Configurations.PAINITE_ORE_CONFIG),
                         List.of(
-                                CountPlacement.of(2),
+                                CountPlacement.of(4),
                                 InSquarePlacement.spread(),
                                 HeightRangePlacement.uniform(
                                         VerticalAnchor.absolute(-60),
