@@ -3,7 +3,7 @@
   "experience": 25,
   "cookingtime": 100,
   "ingredient": {
-    "item": "changed_addon:iridium_ore"
+    "item": "changed_addon:deepslate_iridium_ore"
   },
   "result": "changed_addon:iridium"
 }
