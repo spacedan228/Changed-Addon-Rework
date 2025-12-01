@@ -50,7 +50,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         simpleBlock(GOO_CORE);
         horizontalBlock(INFORMANT_BLOCK);
         simpleBlock(IRIDIUM_BLOCK);
-        simpleBlock(IRIDIUM_ORE);
+        simpleBlock(DEEPSLATE_IRIDIUM_ORE);
         simpleBlock(LATEX_INSULATOR);
         simpleBlock(LITIX_CAMONIA_FLUID, BlockStateProperties.LEVEL);
         simpleBlock(LUMINARA_BLOOM);

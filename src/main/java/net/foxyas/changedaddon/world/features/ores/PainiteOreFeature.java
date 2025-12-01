@@ -44,7 +44,7 @@ public class PainiteOreFeature extends OreFeature {
         super(OreConfiguration.CODEC);
     }
 
-    public static Feature<?> feature() {
+    public static PainiteOreFeature feature() {
         FEATURE = new PainiteOreFeature();
 
         // Usando os alvos vanilla (stone + deepslate)
@@ -84,8 +84,8 @@ public class PainiteOreFeature extends OreFeature {
     }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
-    private static class PainiteOreFeatureRuleTest extends RuleTest {
-        static final PainiteOreFeatureRuleTest INSTANCE = new PainiteOreFeatureRuleTest();
+    public static class PainiteOreFeatureRuleTest extends RuleTest {
+        public static final PainiteOreFeatureRuleTest INSTANCE = new PainiteOreFeatureRuleTest();
         private static final com.mojang.serialization.Codec<PainiteOreFeatureRuleTest> CODEC = com.mojang.serialization.Codec.unit(() -> INSTANCE);
         private static final RuleTestType<PainiteOreFeatureRuleTest> CUSTOM_MATCH = () -> CODEC;
 

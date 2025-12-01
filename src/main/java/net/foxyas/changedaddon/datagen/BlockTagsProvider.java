@@ -31,9 +31,9 @@ public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsP
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
-        tag(Tags.Blocks.ORES).add(IRIDIUM_ORE.get());
-        tag(forgeOresIridium).add(IRIDIUM_ORE.get());
-        tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(IRIDIUM_ORE.get());
+        tag(Tags.Blocks.ORES).add(DEEPSLATE_IRIDIUM_ORE.get());
+        tag(forgeOresIridium).add(DEEPSLATE_IRIDIUM_ORE.get());
+        tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(DEEPSLATE_IRIDIUM_ORE.get());
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(IRIDIUM_BLOCK.get());
         tag(forgeStorageBlocksIridium).add(IRIDIUM_BLOCK.get());
@@ -50,9 +50,9 @@ public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsP
 
         tag(BlockTags.ICE).add(WHITE_WOLF_CRYSTAL_BLOCK.get(), ORANGE_WOLF_CRYSTAL_BLOCK.get(), YELLOW_WOLF_CRYSTAL_BLOCK.get(), BLUE_WOLF_CRYSTAL_BLOCK.get(), LUMINAR_CRYSTAL_BLOCK.get(), WOLF_CRYSTAL_PILLAR.get());
         tag(BlockTags.BEACON_BASE_BLOCKS).add(PAINITE_BLOCK.get(), IRIDIUM_BLOCK.get());
-        tag(BlockTags.NEEDS_DIAMOND_TOOL).add(IRIDIUM_BLOCK.get(), IRIDIUM_ORE.get());
+        tag(BlockTags.NEEDS_DIAMOND_TOOL).add(IRIDIUM_BLOCK.get(), DEEPSLATE_IRIDIUM_ORE.get());
 
-        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(IRIDIUM_BLOCK.get(), IRIDIUM_ORE.get(), PAINITE_BLOCK.get(), DEEPSLATE_PAINITE_ORE.get(),
+        tag(BlockTags.MINEABLE_WITH_PICKAXE).add(IRIDIUM_BLOCK.get(), DEEPSLATE_IRIDIUM_ORE.get(), PAINITE_BLOCK.get(), DEEPSLATE_PAINITE_ORE.get(),
                 CATALYZER.get(), UNIFUSER.get(), SIGNAL_BLOCK.get(), INFORMANT_BLOCK.get(), CONTAINMENT_CONTAINER.get(),
                 ADVANCED_UNIFUSER.get(), ADVANCED_CATALYZER.get(), REINFORCED_WALL.get(), REINFORCED_WALL_SILVER_STRIPED.get(),
                 REINFORCED_WALL_SILVER_TILED.get(), REINFORCED_WALL_CAUTION.get(), REINFORCED_CROSS_BLOCK.get(), WALL_WHITE_CRACKED.get(),

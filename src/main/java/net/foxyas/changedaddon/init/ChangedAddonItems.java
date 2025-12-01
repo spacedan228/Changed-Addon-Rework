@@ -61,7 +61,7 @@ public class ChangedAddonItems {
 
     public static final RegistryObject<Item> RAW_IRIDIUM = REGISTRY.register("raw_iridium", RawIridiumItem::new);
     public static final RegistryObject<Item> IRIDIUM = REGISTRY.register("iridium", IridiumItem::new);
-    public static final RegistryObject<BlockItem> IRIDIUM_ORE = block(ChangedAddonBlocks.IRIDIUM_ORE);
+    public static final RegistryObject<BlockItem> DEEPSLATE_IRIDIUM_ORE = block(ChangedAddonBlocks.DEEPSLATE_IRIDIUM_ORE);
     public static final RegistryObject<BlockItem> IRIDIUM_BLOCK = block(ChangedAddonBlocks.IRIDIUM_BLOCK);
 
     public static final RegistryObject<Item> PAINITE = REGISTRY.register("painite", PainiteItem::new);

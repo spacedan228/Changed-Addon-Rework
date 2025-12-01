@@ -24,7 +24,7 @@ import static net.foxyas.changedaddon.init.ChangedAddonBlocks.GOO_CORE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.HAND_SCANNER;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.INFORMANT_BLOCK;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.IRIDIUM_BLOCK;
-import static net.foxyas.changedaddon.init.ChangedAddonBlocks.IRIDIUM_ORE;
+import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DEEPSLATE_IRIDIUM_ORE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.LATEX_INSULATOR;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.LUMINARA_BLOOM;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.LUMINAR_CRYSTAL_BLOCK;
@@ -146,7 +146,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addBlockFromId(GOO_CORE);
         addBlockFromId(INFORMANT_BLOCK);
         addBlockFromId(IRIDIUM_BLOCK);
-        addBlock(IRIDIUM_ORE, "Deepslate Iridium Ore");
+        addBlock(DEEPSLATE_IRIDIUM_ORE, "Deepslate Iridium Ore");
         addBlockFromId(LATEX_INSULATOR);
         addBlockFromId(LITIX_CAMONIA_FLUID); //The Fluid "Block" use the Fluid Type Description ID
         addBlockFromId(LUMINARA_BLOOM);

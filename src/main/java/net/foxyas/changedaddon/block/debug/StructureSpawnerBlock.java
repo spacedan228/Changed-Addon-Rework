@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -28,7 +29,8 @@ import org.jetbrains.annotations.Nullable;
 public class StructureSpawnerBlock extends Block implements EntityBlock {
 
     public StructureSpawnerBlock() {
-        super(Properties.copy(Blocks.STRUCTURE_VOID).strength(-1.0F, 3600000.8F));
+        super(Properties.copy(Blocks.STRUCTURE_VOID).noLootTable().strength(-1.0F, 3600000.8F));
+        this.drops = BuiltInLootTables.EMPTY;
     }
 
     @Override

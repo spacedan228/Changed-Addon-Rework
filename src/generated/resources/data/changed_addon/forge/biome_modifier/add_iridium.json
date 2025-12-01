@@ -1,0 +1,10 @@
+{
+  "type": "forge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": [
+    "changed_addon:iridium_ore_small",
+    "changed_addon:iridium_ore_large",
+    "changed_addon:iridium_ore_buried"
+  ],
+  "step": "underground_ores"
+}

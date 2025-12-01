@@ -12,6 +12,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -44,7 +45,7 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLootSubProvider {
     protected void generate() {
         dropSelf(LATEX_INSULATOR.get());
 
-        add(IRIDIUM_ORE.get(), createOreDrop(IRIDIUM_ORE.get(), ChangedAddonItems.RAW_IRIDIUM.get()));
+        add(DEEPSLATE_IRIDIUM_ORE.get(), createOreDrop(DEEPSLATE_IRIDIUM_ORE.get(), ChangedAddonItems.RAW_IRIDIUM.get()));
         dropSelf(IRIDIUM_BLOCK.get());
 
         dropSelf(IRIDIUM_BLOCK.get());
@@ -133,6 +134,6 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLootSubProvider {
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
-        return REGISTRY.getEntries().stream().map(RegistryObject::get).filter(block -> !(block instanceof LiquidBlock)).toList();
+        return REGISTRY.getEntries().stream().map(RegistryObject::get).filter(block -> !(block instanceof LiquidBlock)).filter((block) -> block.getLootTable() != BuiltInLootTables.EMPTY).toList();
     }
 }

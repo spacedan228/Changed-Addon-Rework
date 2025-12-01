@@ -24,7 +24,7 @@
                   }
                 }
               ],
-              "name": "changed_addon:iridium_ore"
+              "name": "changed_addon:deepslate_iridium_ore"
             },
             {
               "type": "minecraft:item",
@@ -46,5 +46,5 @@
       "rolls": 1.0
     }
   ],
-  "random_sequence": "changed_addon:blocks/iridium_ore"
+  "random_sequence": "changed_addon:blocks/deepslate_iridium_ore"
 }
