@@ -1,9 +1,8 @@
 package net.foxyas.changedaddon.datagen;
 
-//import net.foxyas.changedaddon.datagen.lang.ENLanguageProvider;
-
 import net.foxyas.changedaddon.datagen.ability_tree.AbilityTreeProviderImpl;
 import net.foxyas.changedaddon.datagen.lang.ENLanguageProvider;
+import net.foxyas.changedaddon.datagen.lang.HULanguageProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -51,5 +50,6 @@ public class GatherData {
         //generator.addProvider(new AdvancementProvider(generator, helper));
 
         generator.addProvider(true, new ENLanguageProvider(packOutput));
+        generator.addProvider(true, new HULanguageProvider(packOutput));
     }
 }
