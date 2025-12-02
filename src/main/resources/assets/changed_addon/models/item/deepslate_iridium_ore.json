@@ -1,5 +1,5 @@
 {
-  "parent": "changed_addon:block/iridium_ore",
+  "parent": "changed_addon:block/deepslate_iridium_ore",
   "display": {
     "thirdperson": {
       "rotation": [
