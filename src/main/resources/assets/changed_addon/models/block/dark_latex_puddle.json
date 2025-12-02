@@ -1,5 +1,6 @@
 {
   "parent": "changed_addon:custom/dark_latex_puddle",
+  "render_type": "cutout",
   "textures": {
     "all": "changed_addon:block/dark_latex_puddle_texture",
     "particle": "changed_addon:block/dark_latex_puddle_texture",

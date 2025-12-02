@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
@@ -9,8 +8,6 @@ import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.world.LatexCoverState;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -36,8 +33,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -49,11 +44,6 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
 
     public LatexInsulatorBlock() {
         super(BlockBehaviour.Properties.copy(Blocks.CLAY).sound(SoundType.SLIME_BLOCK).strength(0.05f, 10f).speedFactor(0.5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.LATEX_INSULATOR.get(), renderType -> renderType == RenderType.translucent());
     }
 
     @Override

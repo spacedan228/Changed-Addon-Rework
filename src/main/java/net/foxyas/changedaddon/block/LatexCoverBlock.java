@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.foxyas.changedaddon.fluid.LitixCamoniaFluid;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.minecraft.core.BlockPos;
@@ -22,7 +21,7 @@ import java.util.function.Supplier;
 
 import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.NonLatexCoverableBlock;
 
-public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverableBlock, RenderLayerProvider {
+public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverableBlock {
 
     private final Supplier<LatexType> latexType;
 

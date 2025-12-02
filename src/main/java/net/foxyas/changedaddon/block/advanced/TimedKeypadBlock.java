@@ -1,10 +1,7 @@
 package net.foxyas.changedaddon.block.advanced;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
-import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.ltxprogrammer.changed.block.KeypadBlock;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -23,8 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,11 +28,6 @@ public class TimedKeypadBlock extends KeypadBlock {
     public TimedKeypadBlock() {
         super();
         drops = BuiltInLootTables.EMPTY;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.TIMED_KEYPAD.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override

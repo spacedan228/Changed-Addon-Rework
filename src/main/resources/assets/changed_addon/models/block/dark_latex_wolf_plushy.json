@@ -1,5 +1,6 @@
 {
   "parent": "changed_addon:custom/dark_latex_wolf_plushy_base",
+  "render_type": "cutout",
   "textures": {
     "particle": "changed_addon:block/white_wool_particle",
     "skin": "changed_addon:block/dark_latex_plushy/dark_latex_wolf_plushy"

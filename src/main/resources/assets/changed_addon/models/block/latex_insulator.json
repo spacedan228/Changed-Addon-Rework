@@ -1,5 +1,6 @@
 {
   "parent": "block/cube",
+  "render_type": "translucent",
   "textures": {
     "down": "changed_addon:block/latexinsulatoranimationtexture",
     "up": "changed_addon:block/latexinsulatoranimationtexture",

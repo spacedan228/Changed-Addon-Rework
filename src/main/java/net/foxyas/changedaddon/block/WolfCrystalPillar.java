@@ -1,9 +1,5 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -11,8 +7,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-
 import org.jetbrains.annotations.NotNull;
+
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.NonLatexCoverableBlock;
 
 public class WolfCrystalPillar extends RotatedPillarBlock implements NonLatexCoverableBlock {
 
@@ -41,9 +38,5 @@ public class WolfCrystalPillar extends RotatedPillarBlock implements NonLatexCov
     @Override
     public int getLightBlock(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos) {
         return 1;
-    }
-
-    public static void registerRenderLayer(){
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.WOLF_CRYSTAL_PILLAR.get(), renderType -> renderType == RenderType.translucent());
     }
 }

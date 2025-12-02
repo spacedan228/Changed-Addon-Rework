@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
-import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.util.FoxyasUtils;
@@ -11,8 +10,6 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -46,10 +43,6 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
                         .emissiveRendering((state, blockGetter, blockPos) -> true)
                         .hasPostProcess((state, blockGetter, blockPos) -> true)
                         .noCollission().dynamicShape().instabreak().sound(SoundType.GRASS));
-    }
-
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.LUMINARA_BLOOM.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @SuppressWarnings("deprecation")

@@ -2,19 +2,15 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.ContainmentContainerBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
-import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.block.CustomFallable;
-import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.*;
 import net.ltxprogrammer.changed.item.LatexFlask;
 import net.ltxprogrammer.changed.item.LatexSyringe;
 import net.ltxprogrammer.changed.item.Syringe;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,14 +38,15 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.NonLatexCoverableBlock;
+
 public class ContainmentContainerBlock extends Block implements SimpleWaterloggedBlock, EntityBlock, NonLatexCoverableBlock, CustomFallable {
+
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public static final VoxelShape SHAPE_WHOLE = Block.box(4.0, 0.0, 4.0, 12.0, 16.0, 12.0);
@@ -57,11 +54,6 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
     public ContainmentContainerBlock() {
         super(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).sound(SoundType.GLASS).strength(3f, 5f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false).requiresCorrectToolForDrops());
         this.registerDefaultState(this.stateDefinition.any().setValue(WATERLOGGED, false));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.CONTAINMENT_CONTAINER.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override

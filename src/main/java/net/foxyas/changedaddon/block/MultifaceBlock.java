@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -23,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MultifaceBlock extends Block implements RenderLayerProvider {
+public class MultifaceBlock extends Block {
 
     public static final BooleanProperty UP = PipeBlock.UP;
     public static final BooleanProperty NORTH = PipeBlock.NORTH;

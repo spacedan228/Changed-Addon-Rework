@@ -1,16 +1,12 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.DarkLatexPuddleBlockEntity;
-import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.network.PacketUtil;
-import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.*;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -32,11 +28,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock.NonLatexCoverableBlock;
 
 @ParametersAreNonnullByDefault
 public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements EntityBlock, NonLatexCoverableBlock {
@@ -44,11 +40,6 @@ public class DarkLatexPuddleBlock extends HorizontalDirectionalBlock implements 
     public DarkLatexPuddleBlock() {
         super(BlockBehaviour.Properties.copy(Blocks.STONE).sound(SoundType.SLIME_BLOCK).strength(1f, 10f).speedFactor(0.8f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.DARK_LATEX_PUDDLE.get(), renderType -> renderType == RenderType.cutout());
     }
 
     private static boolean isPlayerDLOrPuro(Player player) {

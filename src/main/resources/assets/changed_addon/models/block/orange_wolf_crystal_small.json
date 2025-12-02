@@ -1,5 +1,6 @@
 {
   "parent": "block/cross",
+  "render_type": "cutout",
   "textures": {
     "cross": "changed_addon:block/orange_wolf_crystal_small",
     "particle": "changed_addon:block/orange_wolf_crystal_small"

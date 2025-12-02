@@ -2,8 +2,6 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -26,10 +24,6 @@ public class PottedLuminaraBloomFlowerBlock extends FlowerPotBlock {
                         .emissiveRendering((state, blockGetter, blockPos) -> true)
                         .hasPostProcess((state, blockGetter, blockPos) -> true)
         );
-    }
-
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.POTTED_LUMINARA_BLOOM.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @SuppressWarnings("deprecation")

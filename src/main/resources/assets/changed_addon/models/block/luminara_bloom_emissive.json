@@ -1,5 +1,6 @@
 {
   "parent": "minecraft:block/cross",
+  "render_type": "cutout",
   "textures": {
     "cross": "changed_addon:block/luminara_bloom_emissive"
   }

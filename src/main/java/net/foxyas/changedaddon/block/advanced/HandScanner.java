@@ -1,12 +1,9 @@
 package net.foxyas.changedaddon.block.advanced;
 
-import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -33,12 +30,11 @@ import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
 public class HandScanner extends Block {
+
     public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty POWERED = LeverBlock.POWERED;
     public static final EnumProperty<LockType> LOCK_TYPE = EnumProperty.create("lock_type", LockType.class);
@@ -52,11 +48,6 @@ public class HandScanner extends Block {
     public HandScanner() {
         super(Properties.copy(Blocks.IRON_BLOCK).mapColor(MapColor.COLOR_BLACK).isRedstoneConductor((state, blockGetter, blockPos) -> state.getValue(POWERED)).sound(SoundType.METAL).strength(3.0F, 3.0F).dynamicShape());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(POWERED, Boolean.FALSE).setValue(LOCK_TYPE, LockType.TRANSFURRED));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.HAND_SCANNER.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override

@@ -1,9 +1,6 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.SignalBlockBlockEntity;
-import net.foxyas.changedaddon.init.ChangedAddonBlocks;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -17,12 +14,9 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,11 +37,6 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
                 .emissiveRendering((bs, br, bp) -> true)
                 .noOcclusion());
         this.registerDefaultState(this.stateDefinition.any().setValue(VARIANT, SignalVariant.VARIANT_1).setValue(FACING, Direction.NORTH));
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.SIGNAL_BLOCK.get(), renderType -> renderType == RenderType.cutoutMipped());
     }
 
     @Override

@@ -1,6 +1,7 @@
 {
 	"format_version": "1.9.0",
 	"credit": "Made with Blockbench",
+	"render_type": "translucent",
 	"textures": {
 		"particle": "changed_addon:block/cover_blocks/dark_latex_cover_block",
 		"cover": "changed_addon:block/cover_blocks/dark_latex_cover_block"

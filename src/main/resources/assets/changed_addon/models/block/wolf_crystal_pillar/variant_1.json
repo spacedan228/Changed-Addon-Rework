@@ -1,4 +1,5 @@
 {
+	"render_type": "translucent",
 	"textures": {
 		"0": "changed_addon:block/wolf_crystal_pillar",
 		"particle": "#0"

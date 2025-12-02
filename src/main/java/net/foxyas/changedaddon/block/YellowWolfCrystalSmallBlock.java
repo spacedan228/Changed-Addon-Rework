@@ -6,24 +6,15 @@ import net.ltxprogrammer.changed.block.DarkLatexBlock;
 import net.ltxprogrammer.changed.block.WolfCrystalBlock;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.world.LatexCoverState;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class YellowWolfCrystalSmallBlock extends AbstractWolfCrystalExtender.AbstractWolfCrystalSmall {
 
     public YellowWolfCrystalSmallBlock() {
         super(ChangedAddonItems.YELLOW_WOLF_CRYSTAL_FRAGMENT);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void registerRenderLayer() {
-        ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.YELLOW_WOLF_CRYSTAL_SMALL.get(), renderType -> renderType == RenderType.cutout());
     }
 
     @Override

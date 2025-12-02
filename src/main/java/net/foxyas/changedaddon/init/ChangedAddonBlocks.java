@@ -7,20 +7,14 @@ import net.foxyas.changedaddon.block.advanced.HandScanner;
 import net.foxyas.changedaddon.block.advanced.PawsScanner;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.foxyas.changedaddon.block.debug.StructureSpawnerBlock;
-import net.foxyas.changedaddon.block.interfaces.RenderLayerProvider;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -80,23 +74,12 @@ public class ChangedAddonBlocks {
         public boolean skipRendering(@NotNull BlockState pState, @NotNull BlockState pAdjacentBlockState, @NotNull Direction pSide) {
             return pAdjacentBlockState.is(this) || super.skipRendering(pState, pAdjacentBlockState, pSide);
         }
-
-        @OnlyIn(Dist.CLIENT)
-        @Override
-        public void registerRenderLayer() {
-            ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
-        }
     });
     public static final RegistryObject<LatexCoverBlock> DARK_LATEX_COVER_BLOCK = REGISTRY.register("dark_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of()
             .noOcclusion()
             .dynamicShape()
             .mapColor(MapColor.COLOR_BLACK)
             .sound(SoundType.SLIME_BLOCK), ChangedLatexTypes.DARK_LATEX::get) {
-        @OnlyIn(Dist.CLIENT)
-        @Override
-        public void registerRenderLayer() {
-            ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.DARK_LATEX_COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
-        }
     });
 
     public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of()
@@ -104,49 +87,11 @@ public class ChangedAddonBlocks {
             .dynamicShape()
             .mapColor(MapColor.TERRACOTTA_WHITE)
             .sound(SoundType.SLIME_BLOCK), ChangedLatexTypes.WHITE_LATEX::get) {
-        @OnlyIn(Dist.CLIENT)
-        @Override
-        public void registerRenderLayer() {
-            ItemBlockRenderTypes.setRenderLayer(ChangedAddonBlocks.WHITE_LATEX_COVER_BLOCK.get(), renderType -> renderType == RenderType.translucent());
-        }
     });
 
     public static final RegistryObject<WolfCrystalPillar> WOLF_CRYSTAL_PILLAR = REGISTRY.register("wolf_crystal_pillar", WolfCrystalPillar::new);
 
     public static final RegistryObject<StructureSpawnerBlock> STRUCTURE_SPAWNER = REGISTRY.register("structure_spawner", StructureSpawnerBlock::new);
-
-    @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientSideHandler {
-
-        @SubscribeEvent
-        public static void clientSetup(FMLClientSetupEvent event) {
-            LatexInsulatorBlock.registerRenderLayer();
-            DarkLatexPuddleBlock.registerRenderLayer();
-            SignalBlockBlock.registerRenderLayer();
-            SnepPlushyBlock.registerRenderLayer();
-            WolfPlushyBlock.registerRenderLayer();
-            DarkLatexWolfPlushyBlock.registerRenderLayer();
-            ContainmentContainerBlock.registerRenderLayer();
-            LuminarCrystalSmallBlock.registerRenderLayer();
-            YellowWolfCrystalSmallBlock.registerRenderLayer();
-            OrangeWolfCrystalSmallBlock.registerRenderLayer();
-            BlueWolfCrystalSmallBlock.registerRenderLayer();
-            WhiteWolfCrystalSmallBlock.registerRenderLayer();
-            GooCoreBlock.registerRenderLayer();
-            FoxtaCanBlock.registerRenderLayer();
-            SnepsiCanBlock.registerRenderLayer();
-            HandScanner.registerRenderLayer();
-            LuminarCrystalBlock.registerRenderLayer();
-            LuminaraBloomFlowerBlock.registerRenderLayer();
-            PottedLuminaraBloomFlowerBlock.registerRenderLayer();
-            WolfCrystalPillar.registerRenderLayer();
-            REGISTRY.getEntries().forEach((registryObject) -> {
-                if (registryObject.isPresent() && registryObject.get() instanceof RenderLayerProvider renderLayerProvider) {
-                    renderLayerProvider.registerRenderLayer();
-                }
-            });
-        }
-    }
 
     @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
     public static class CommonSideHandler {

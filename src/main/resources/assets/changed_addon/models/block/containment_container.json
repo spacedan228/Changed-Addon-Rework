@@ -1,5 +1,6 @@
 {
   "parent": "changed_addon:custom/containment_container",
+  "render_type": "cutout",
   "textures": {
     "all": "changed_addon:block/containment_container",
     "particle": "changed_addon:block/containment_container",
