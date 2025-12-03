@@ -112,7 +112,8 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         modelViewStack.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
 
-        poseStack.translate(0.0D, 0.0D, 2500.0D); // força ainda mais na frente
+        poseStack.pushPose();
+        poseStack.translate(0.0D, 0.0D, 3000.0D); // força ainda mais na frente
         poseStack.scale((float) scale, (float) scale, (float) scale);
 
         Quaternion quaternion = Vector3f.ZP.rotationDegrees(180.0F);
@@ -152,6 +153,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         livingEntity.yHeadRot = f6;
 
         modelViewStack.popPose();
+        poseStack.popPose();
         RenderSystem.applyModelViewMatrix();
         Lighting.setupFor3DItems();
     }
