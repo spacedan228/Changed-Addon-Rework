@@ -22,6 +22,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
@@ -70,8 +71,10 @@ public class BiomeModifierProvider {
             latexCheetahSpawnBiomes.add(biomes.getOrThrow(biomeResourceKey));
         });
 
+        List<Holder<Biome>> shortedCheetahSpawnBiomes = latexCheetahSpawnBiomes.stream().sorted(Comparator.comparing(biomeHolder -> biomeHolder.unwrapKey().get().location().getPath())).toList();
+
         context.register(ADD_LATEX_CHEETAHS_SPAWNS, new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
-                HolderSet.direct(latexCheetahSpawnBiomes),
+                HolderSet.direct(shortedCheetahSpawnBiomes),
                 List.of(
                         new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), 20, 1, 4),
                         new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_FEMALE.get(), 20, 1, 4)

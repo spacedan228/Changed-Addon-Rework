@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.datagen.worldgen.*;
 import net.foxyas.changedaddon.datagen.worldgen.template_pool.DazedMeteorPools;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.world.features.processors.DayTimeStructureProcessor;
+import net.foxyas.changedaddon.world.features.processors.MultiBlockTagSwapProcessor;
 import net.foxyas.changedaddon.world.features.processors.OffSetSpawnProcessor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -12,9 +13,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageScaling;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.minecraft.world.level.levelgen.structure.templatesystem.GravityProcessor;
@@ -46,27 +49,28 @@ public class DatapackEntriesProvider extends DatapackBuiltinEntriesProvider {
         super(output, registries, BUILDER, Set.of(ChangedAddonMod.MODID));
     }
 
-    private static void damageType(BootstapContext<DamageType> context){
+    private static void damageType(BootstapContext<DamageType> context) {
         context.register(ChangedAddonDamageSources.LATEX_SOLVENT.key(), new DamageType("latex_solvent", DamageScaling.NEVER, 0.1f));
         context.register(ChangedAddonDamageSources.CONSCIENCE_LOSE.key(), new DamageType("conscience_lose", DamageScaling.NEVER, 0));
         context.register(ChangedAddonDamageSources.UNTRANSFUR_FAIL.key(), new DamageType("untransfur_fail", DamageScaling.NEVER, 0));
     }
 
-    private static void biome(BootstapContext<Biome> context){
+    private static void biome(BootstapContext<Biome> context) {
     }
 
     public static final ResourceKey<StructureProcessorList> GRAVITY = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("gravity_rot"));
     public static final ResourceKey<StructureProcessorList> DAZED_METEOR_POLL = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("dazed_meteor_rot"));
 
-    private static void processorList(BootstapContext<StructureProcessorList> context){
+    private static void processorList(BootstapContext<StructureProcessorList> context) {
         context.register(GRAVITY, new StructureProcessorList(List.of(new GravityProcessor(Heightmap.Types.WORLD_SURFACE_WG, -11))));
         context.register(DAZED_METEOR_POLL, new StructureProcessorList(List.of(
                 new OffSetSpawnProcessor(0, -10, 0),
-                new DayTimeStructureProcessor(Optional.empty(), DayTimeStructureProcessor.DayPeriod.NIGHT))
+                new DayTimeStructureProcessor(Optional.empty(), DayTimeStructureProcessor.DayPeriod.NIGHT)
+        )
         ));
     }
 
-    private static void templatePools(BootstapContext<StructureTemplatePool> context){
+    private static void templatePools(BootstapContext<StructureTemplatePool> context) {
         DazedMeteorPools.bootstrap(context);
     }
 }
