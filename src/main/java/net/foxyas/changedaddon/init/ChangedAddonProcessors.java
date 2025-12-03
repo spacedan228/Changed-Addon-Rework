@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.world.features.processors.MultiBlockTagSwapProcessor;
 import net.foxyas.changedaddon.world.features.processors.OffSetSpawnProcessor;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
@@ -17,6 +18,8 @@ public class ChangedAddonProcessors {
     public static final DeferredRegister<StructureProcessorType<?>> PROCESSORS = DeferredRegister.create(Registry.STRUCTURE_PROCESSOR_REGISTRY, ChangedAddonMod.MODID);
 
     public static final RegistryObject<StructureProcessorType<OffSetSpawnProcessor>> OFFSET_SPAWN = PROCESSORS.register("offset_spawn", () -> () -> OffSetSpawnProcessor.CODEC);
+
+    public static final RegistryObject<StructureProcessorType<MultiBlockTagSwapProcessor>> MULTI_BLOCK_SWAP = PROCESSORS.register("blocks_swap", () -> () -> MultiBlockTagSwapProcessor.CODEC);
 
     @SubscribeEvent
     public static void register(FMLConstructModEvent event) {

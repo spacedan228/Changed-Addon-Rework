@@ -13,6 +13,19 @@
             "processor_type": "minecraft:gravity",
             "heightmap": "WORLD_SURFACE_WG",
             "offset": -11
+          },
+          {
+            "processor_type": "changed_addon:blocks_swap",
+            "swaps": [
+              {
+                "from_block": {
+                  "Name": "minecraft:grass"
+                },
+                "to": {
+                  "Name": "minecraft:air"
+                }
+              }
+            ]
           }
         ]
       }
@@ -28,6 +41,19 @@
             "processor_type": "minecraft:gravity",
             "heightmap": "WORLD_SURFACE_WG",
             "offset": -11
+          },
+          {
+            "processor_type": "changed_addon:blocks_swap",
+            "swaps": [
+              {
+                "from_block": {
+                  "Name": "minecraft:grass"
+                },
+                "to": {
+                  "Name": "minecraft:air"
+                }
+              }
+            ]
           }
         ]
       }
@@ -43,6 +69,19 @@
             "processor_type": "minecraft:gravity",
             "heightmap": "WORLD_SURFACE_WG",
             "offset": -11
+          },
+          {
+            "processor_type": "changed_addon:blocks_swap",
+            "swaps": [
+              {
+                "from_block": {
+                  "Name": "minecraft:grass"
+                },
+                "to": {
+                  "Name": "minecraft:air"
+                }
+              }
+            ]
           }
         ]
       }
