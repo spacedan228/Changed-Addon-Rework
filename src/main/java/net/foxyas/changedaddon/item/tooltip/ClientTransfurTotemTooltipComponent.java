@@ -53,10 +53,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         if (player != null) {
             BasicPlayerInfo basicPlayerInfo = Changed.config.client.basicPlayerInfo;
             BasicPlayerInfo basicEntityInfo = this.entity.getBasicPlayerInfo();
-            basicEntityInfo.setEyeStyle(basicPlayerInfo.getEyeStyle());
-            basicEntityInfo.setLeftIrisColor(basicPlayerInfo.getLeftIrisColor());
-            basicEntityInfo.setRightIrisColor(basicPlayerInfo.getRightIrisColor());
-            basicEntityInfo.setSize(1f);
+            basicEntityInfo.copyFrom(basicPlayerInfo);
 
             this.entity.setCustomName(entity.getType().getDescription());
             this.entity.setCustomNameVisible(true);
