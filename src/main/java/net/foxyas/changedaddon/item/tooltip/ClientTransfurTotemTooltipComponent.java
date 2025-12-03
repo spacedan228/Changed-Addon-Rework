@@ -53,10 +53,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         if (player != null) {
             BasicPlayerInfo basicPlayerInfo = Changed.config.client.basicPlayerInfo;
             BasicPlayerInfo basicEntityInfo = this.entity.getBasicPlayerInfo();
-            basicEntityInfo.setEyeStyle(basicPlayerInfo.getEyeStyle());
-            basicEntityInfo.setLeftIrisColor(basicPlayerInfo.getLeftIrisColor());
-            basicEntityInfo.setRightIrisColor(basicPlayerInfo.getRightIrisColor());
-            basicEntityInfo.setSize(1f);
+            basicEntityInfo.copyFrom(basicPlayerInfo);
 
             this.entity.setCustomName(entity.getType().getDescription());
             this.entity.setCustomNameVisible(true);
@@ -75,6 +72,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
 
     @Override
     public void renderImage(@NotNull Font font, int posX, int posY, @NotNull GuiGraphics guiGraphics) {
+        ClientTooltipComponent.super.renderImage(font, posX, posY, guiGraphics);
         if (entity == null)
             return;
         this.prepareEntityForRender();
@@ -101,6 +99,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
     public void renderText(@NotNull Font font, int posX, int posY,
                            @NotNull Matrix4f matrix,
                            @NotNull MultiBufferSource.BufferSource bufferSource) {
+        ClientTooltipComponent.super.renderText(font, posX, posY, matrix, bufferSource);
     }
 
     public static void renderEntityInInventory(float posX, float posY, int scale,
@@ -111,7 +110,8 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         modelViewStack.scale(1.0F, 1.0F, -1.0F);
         RenderSystem.applyModelViewMatrix();
 
-        poseStack.translate(0.0D, 0.0D, 2500.0D); // força ainda mais na frente
+        poseStack.pushPose();
+        poseStack.translate(0.0D, 0.0D, 3000.0D); // força ainda mais na frente
         poseStack.scale((float) scale, (float) scale, (float) scale);
 
         Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
@@ -151,6 +151,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         livingEntity.yHeadRot = f6;
 
         modelViewStack.popPose();
+        poseStack.popPose();
         RenderSystem.applyModelViewMatrix();
         Lighting.setupFor3DItems();
     }
