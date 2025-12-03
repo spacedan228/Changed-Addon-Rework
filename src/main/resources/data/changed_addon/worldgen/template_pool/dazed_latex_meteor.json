@@ -18,9 +18,7 @@
             "processor_type": "changed_addon:blocks_swap",
             "swaps": [
               {
-                "from_block": {
-                  "Name": "minecraft:grass"
-                },
+                "from_tag": "minecraft:replaceable_plants",
                 "to": {
                   "Name": "minecraft:air"
                 }
@@ -46,9 +44,7 @@
             "processor_type": "changed_addon:blocks_swap",
             "swaps": [
               {
-                "from_block": {
-                  "Name": "minecraft:grass"
-                },
+                "from_tag": "minecraft:replaceable_plants",
                 "to": {
                   "Name": "minecraft:air"
                 }
@@ -74,9 +70,7 @@
             "processor_type": "changed_addon:blocks_swap",
             "swaps": [
               {
-                "from_block": {
-                  "Name": "minecraft:grass"
-                },
+                "from_tag": "minecraft:replaceable_plants",
                 "to": {
                   "Name": "minecraft:air"
                 }
