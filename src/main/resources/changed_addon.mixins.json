@@ -55,6 +55,7 @@
   },
   "client": [
     "MinecraftMixin",
+    "client.DeathScreenMixin",
     "client.MouseHandlerAccessor",
     "client.PlayerRendererMixin",
     "client.renderer.AdvancedHumanoidModelMixin",
