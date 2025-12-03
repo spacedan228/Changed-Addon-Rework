@@ -69,7 +69,6 @@ public class CommonMod {
         ChangedAddonMod.addNetworkMessage(InformantBlockGuiKeyPacket.class, InformantBlockGuiKeyPacket::encode,
                 InformantBlockGuiKeyPacket::new, InformantBlockGuiKeyPacket::handle);
 
-
         ChangedAddonMod.addNetworkMessage(ServerboundProgressFTKCPacket.class, ServerboundProgressFTKCPacket::encode,
                 ServerboundProgressFTKCPacket::new, ServerPacketHandler::handleProgressFTKCPacket,
                 NetworkDirection.PLAY_TO_SERVER);
@@ -98,5 +97,9 @@ public class CommonMod {
                     });
                 }, NetworkDirection.PLAY_TO_SERVER
         );
+
+        ChangedAddonMod.addNetworkMessage(RespawnAsTransfur.class, RespawnAsTransfur::encode,
+                RespawnAsTransfur::new, RespawnAsTransfur::handler,
+                NetworkDirection.PLAY_TO_SERVER);
     }
 }
