@@ -1,9 +1,10 @@
 {
   "processors": [
     {
-      "heightmap": "WORLD_SURFACE_WG",
-      "offset": -10,
-      "processor_type": "minecraft:gravity"
+      "processor_type": "changed_addon:offset_spawn",
+      "x": 0,
+      "y": -10,
+      "z": 0
     },
     {
       "processor_type": "changed_addon:day_time",

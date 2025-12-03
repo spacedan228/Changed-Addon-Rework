@@ -1,11 +1,11 @@
 {
   "type": "forge:add_spawns",
   "biomes": [
-    "minecraft:jungle",
     "minecraft:savanna",
+    "minecraft:windswept_savanna",
+    "minecraft:jungle",
     "minecraft:sparse_jungle",
-    "minecraft:savanna_plateau",
-    "minecraft:windswept_savanna"
+    "minecraft:savanna_plateau"
   ],
   "spawners": [
     {

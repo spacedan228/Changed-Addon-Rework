@@ -12,13 +12,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -26,6 +33,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
 
@@ -49,6 +57,42 @@ public class DEBUG {
         if (!DEBUG) {
             return;
         }
+
+        if (event.getMessage().getString().startsWith("placeStructure:")) {
+            String id = event.getMessage().getString().replace("placeStructure:", "");
+            ResourceLocation structureToSpawn = ResourceLocation.parse(id);
+            ServerPlayer player = event.getPlayer();
+            ServerLevel serverLevel = player.serverLevel();
+            Holder.Reference<Structure> structureReference = serverLevel.registryAccess()
+                    .registryOrThrow(Registries.STRUCTURE)
+                    .getHolder(ResourceKey.create(Registries.STRUCTURE, structureToSpawn))
+                    .orElse(null);
+            if (structureReference == null) {
+                player.displayClientMessage(Component.literal("Erro in parsing the structure id.\nId: " + structureToSpawn), false);
+                return;
+            }
+            int i = StructureUtil.placeStructure(serverLevel, structureReference, player.blockPosition());
+            player.displayClientMessage(Component.literal("return value = " + i), false);
+            //StructureUtil.placeStructure(serverLevel, structureToSpawn, player.blockPosition(), true);
+            return;
+        } else if (event.getMessage().getString().startsWith("newPlaceStructure:")) {
+            String id = event.getMessage().getString().replace("newPlaceStructure:", "");
+            ResourceLocation structureToSpawn = ResourceLocation.parse(id);
+            ServerPlayer player = event.getPlayer();
+            ServerLevel serverLevel = player.serverLevel();
+            Holder.Reference<Structure> structureReference = serverLevel.registryAccess()
+                    .registryOrThrow(Registries.STRUCTURE)
+                    .getHolder(ResourceKey.create(Registries.STRUCTURE, structureToSpawn))
+                    .orElse(null);
+            if (structureReference == null) {
+                player.displayClientMessage(Component.literal("Erro in parsing the structure id.\nId: " + structureToSpawn), false);
+                return;
+            }
+            //StructureUtil.placeStructure(serverLevel, structureReference, player.getOnPos());
+            StructureUtil.placeStructure(serverLevel, structureToSpawn, player.blockPosition(), true);
+            return;
+        }
+
         if (event.getMessage().getString().startsWith("testMotion")) {
             if (MOTIONTEST == 0) {
                 MOTIONTEST = 1;

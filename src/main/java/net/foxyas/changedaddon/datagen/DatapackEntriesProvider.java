@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.datagen.worldgen.*;
 import net.foxyas.changedaddon.datagen.worldgen.template_pool.DazedMeteorPools;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.world.features.processors.DayTimeStructureProcessor;
+import net.foxyas.changedaddon.world.features.processors.OffSetSpawnProcessor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
@@ -60,7 +61,7 @@ public class DatapackEntriesProvider extends DatapackBuiltinEntriesProvider {
     private static void processorList(BootstapContext<StructureProcessorList> context){
         context.register(GRAVITY, new StructureProcessorList(List.of(new GravityProcessor(Heightmap.Types.WORLD_SURFACE_WG, -11))));
         context.register(DAZED_METEOR_POLL, new StructureProcessorList(List.of(
-                new GravityProcessor(Heightmap.Types.WORLD_SURFACE_WG, -10),
+                new OffSetSpawnProcessor(0, -10, 0),
                 new DayTimeStructureProcessor(Optional.empty(), DayTimeStructureProcessor.DayPeriod.NIGHT))
         ));
     }
