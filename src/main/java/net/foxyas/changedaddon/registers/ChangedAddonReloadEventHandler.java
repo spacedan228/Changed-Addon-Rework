@@ -6,7 +6,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber()
-public class ModReloadEventHandler {
+public class ChangedAddonReloadEventHandler {
     @SubscribeEvent
     public static void onRegisterReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new TransfurVisionReloadListener());
