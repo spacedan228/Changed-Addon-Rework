@@ -83,6 +83,11 @@ public class BiomeModifierProvider {
 
     }
 
+    // Utils for Future Spawn Biome Modifiers
+    private static List<Holder<Biome>> getShortedBiomeList(List<Holder<Biome>> originalList) {
+        return originalList.stream().sorted(Comparator.comparing(holder -> holder.unwrapKey().get().location().getPath())).toList();
+    }
+
     private static ResourceKey<BiomeModifier> create(String id) {
         return ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS,
                 ResourceLocation.fromNamespaceAndPath(ChangedAddonMod.MODID, id));
