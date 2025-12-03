@@ -104,14 +104,8 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
 
     public static void renderEntityInInventory(float posX, float posY, int scale,
                                                float mouseX, float mouseY, @NotNull PoseStack poseStack, @NotNull LivingEntity livingEntity) {
-        PoseStack modelViewStack = RenderSystem.getModelViewStack();
-        modelViewStack.pushPose();
-        modelViewStack.translate(posX, posY, 3000.0D); // bem na frente do tooltip
-        modelViewStack.scale(1.0F, 1.0F, -1.0F);
-        RenderSystem.applyModelViewMatrix();
-
         poseStack.pushPose();
-        poseStack.translate(0.0D, 0.0D, 3000.0D); // força ainda mais na frente
+        poseStack.translate(posX, posY, 3500.0D); // força ainda mais na frente
         poseStack.scale((float) scale, (float) scale, (float) scale);
 
         Quaternionf quaternion = Axis.ZP.rotationDegrees(180.0F);
@@ -149,10 +143,7 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         livingEntity.setXRot(f4);
         livingEntity.yHeadRotO = f5;
         livingEntity.yHeadRot = f6;
-
-        modelViewStack.popPose();
         poseStack.popPose();
-        RenderSystem.applyModelViewMatrix();
         Lighting.setupFor3DItems();
     }
 }
