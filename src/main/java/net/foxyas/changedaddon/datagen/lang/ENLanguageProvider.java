@@ -433,6 +433,13 @@ public class ENLanguageProvider extends LanguageProvider {
         addGui("unifuser_gui.tooltip_put_the_second_ingredient", "Put the second ingredient");
         addGuiO("abilities_radial_screen.mouse.right_click", "Press Right Mouse Button to select the Second Ability");
 
+        add("deathScreen.select_tf", "Respawn as a Transfur?");
+        add("deathScreen.select_tf.hardcore", "Continue as a Transfur?");
+        add("deathScreen.select_tf.confirm", "Are you sure that you want to respawn as transfur?");
+        add("deathScreen.select_tf.confirm.info", "You will not be affected by untransfur items");
+        add("deathScreen.select_tf.spawn_as_infected", "Respawn as Transfured");
+        add("deathScreen.select_tf.cancel_spawn_as_infected", "On second Thought, Cancel");
+
         add("itemGroup.changed_addon_main_tab", "Changed Addon Plus");
         add("itemGroup.changed_addon_optional_combat_tab", "Changed Addon Plus Combat Optional");
 

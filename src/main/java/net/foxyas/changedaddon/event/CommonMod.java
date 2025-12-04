@@ -98,5 +98,9 @@ public class CommonMod {
                     });
                 }, NetworkDirection.PLAY_TO_SERVER
         );
+
+        ChangedAddonMod.addNetworkMessage(RespawnAsTransfurMessage.class, RespawnAsTransfurMessage::encode,
+                RespawnAsTransfurMessage::new, RespawnAsTransfurMessage::handler,
+                NetworkDirection.PLAY_TO_SERVER);
     }
 }

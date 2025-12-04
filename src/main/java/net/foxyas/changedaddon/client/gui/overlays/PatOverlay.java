@@ -167,6 +167,7 @@ public class PatOverlay {
                                         RenderSystem.setShaderColor(pawColor.getRed() / 255f, pawColor.getGreen() / 255f, pawColor.getBlue() / 255f, pawColor.getAlpha() / 255f);
                                         // Renderiza a imagem na tela
                                         guiGraphics.blit(TEXTURE, x, y, 0, 0, largura, altura, largura, altura);
+                                        RenderSystem.setShaderColor(1, 1, 1, 1);
                                         guiGraphics.drawCenteredString(mc.font, getSimplePatInfo(), (int) troubleShotXValue, (int) troubleShotYValue, pawColor.getRGB());
                                     } else {
                                         // Renderiza a imagem na tela

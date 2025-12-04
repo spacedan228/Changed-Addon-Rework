@@ -21,32 +21,42 @@ public class UntransfurOverlayOverlay {
     public static void renderUntransfurProgressOverlay(ForgeGui forgeGui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
         Player player = Minecraft.getInstance().player;
         if (player == null) return;
+
+        // Salvar estado inicial
+        RenderSystem.enableBlend();
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+
+        // Aqui começa o bloco que altera o RenderSystem
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
-        RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        RenderSystem.blendFuncSeparate(
+                GlStateManager.SourceFactor.SRC_ALPHA,
+                GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA,
+                GlStateManager.SourceFactor.ONE,
+                GlStateManager.DestFactor.ZERO
+        );
 
-        ChangedAddonVariables.PlayerVariables playerVariables = null;
-        playerVariables = ChangedAddonVariables.of(player);
-        if (playerVariables == null) return;
+        try {
+            ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
+            if (vars == null) return;
 
-        boolean canShow = playerVariables.untransfurProgress > 0;
-        double progress = playerVariables.untransfurProgress;
-        double doubleProgress = progress / 8.33;
-        int intProgress = (int) doubleProgress;
+            double progress = vars.untransfurProgress;
+            if (progress <= 0) return;
 
+            int intProgress = (int) ((progress / 8.33));
 
-        if (canShow) {
             guiGraphics.blit(NORMAL_BAR, 10, screenHeight - 73, 0, 0, 14, 5, 14, 5);
             guiGraphics.blit(FULL_BAR, 11, screenHeight - 72, 0, 0, intProgress, 3, intProgress, 3);
-        }
 
-        RenderSystem.depthMask(true);
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        } finally {
+            // RESTAURAR SEMPRE
+            RenderSystem.depthMask(true);
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.enableDepthTest();
+            RenderSystem.disableBlend();
+            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader); // seguro
+        }
     }
 }

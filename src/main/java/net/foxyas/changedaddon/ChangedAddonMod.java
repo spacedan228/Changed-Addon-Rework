@@ -34,7 +34,7 @@ public class ChangedAddonMod {
     public static final Logger LOGGER = LogManager.getLogger(ChangedAddonMod.class);
     public static final String MODID = "changed_addon";
     private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(ChangedAddonMod.resourceLoc(MODID), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+    public static final SimpleChannel PACKET_HANDLER = NetworkRegistry.newSimpleChannel(ChangedAddonMod.resourceLoc("network"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
     private static int messageID = 0;
     public static ChangedAddonDataFixer dataFixer;
 
@@ -82,6 +82,10 @@ public class ChangedAddonMod {
 
     public static String resourceLocString(String path) {
         return ResourceLocation.fromNamespaceAndPath(MODID, path).toString();
+    }
+
+    public static String resourceLocStringStyle(String path) {
+        return MODID + ":" + path;
     }
 
     public static ResourceLocation textureLoc(String path) {
