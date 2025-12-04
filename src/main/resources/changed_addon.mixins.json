@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "changed_addon.refmap.json",
   "mixins": [
-    "mods.changed.LatexCoveredBlocksRendererMixin",
     "abilities.AbilityControllerMixin",
     "abilities.GrabEntityAbilityInstanceMixin",
     "abilities.GrabEntityPacketMixin",
@@ -45,6 +44,7 @@
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",
     "mods.changed.EmoteParticleOptionMixin",
+    "mods.changed.LatexCoveredBlocksRendererMixin",
     "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin",
     "world.DataFixTypesMixin",
@@ -58,6 +58,7 @@
   "client": [
     "MinecraftMixin",
     "TempFixMixin",
+    "client.DeathScreenMixin",
     "client.MouseHandlerAccessor",
     "client.PlayerRendererMixin",
     "client.renderer.AdvancedHumanoidModelMixin",
