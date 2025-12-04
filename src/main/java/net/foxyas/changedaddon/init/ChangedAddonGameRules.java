@@ -17,9 +17,9 @@ public class ChangedAddonGameRules {
     public static final GameRules.Key<GameRules.BooleanValue> NEED_PERMISSION_FOR_BOSS_TRANSFUR = register("needPermissionForBossTransfur", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
     public static final GameRules.Key<GameRules.BooleanValue> NEED_FULL_SOURCE_TO_SPREAD = register("blocksNeedFullSourceToSpread", GameRules.Category.MISC, GameRules.BooleanValue.create(false));
     public static final GameRules.Key<GameRules.BooleanValue> CHANGED_ENTITIES_SPAWN_DRESSED = register("changedEntitiesSpawnDressed", GameRules.Category.MOBS, GameRules.BooleanValue.create(false));
-    public static final GameRules.Key<GameRules.BooleanValue> RESPAWN_AS_RANDOM_TF = register("respawnAsRandomTfOption", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false));
+    public static final GameRules.Key<GameRules.BooleanValue> RESPAWN_AS_TRANSFUR = register("respawnAsTransfur", GameRules.Category.PLAYER, GameRules.BooleanValue.create(false));
 
     private static <T extends GameRules.Value<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> value){
-        return GameRules.register(ChangedAddonMod.resourceLoc(name).toString(), category, value);
+        return GameRules.register(ChangedAddonMod.resourceLocStringStyle(name), category, value);
     }
 }

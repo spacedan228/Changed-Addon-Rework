@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.menu.CustomMerchantMenu;
 import net.foxyas.changedaddon.network.*;
 import net.foxyas.changedaddon.network.packet.*;
+import net.foxyas.changedaddon.network.packet.simple.ServerTellClientRespawn;
 import net.foxyas.changedaddon.procedure.blocksHandle.BoneMealExpansion;
 import net.foxyas.changedaddon.recipe.brewing.TransfurSicknessRecipeBrewingRecipe;
 import net.foxyas.changedaddon.recipe.brewing.UntransfurPotionRecipeBrewingRecipe;
@@ -98,8 +99,13 @@ public class CommonMod {
                 }, NetworkDirection.PLAY_TO_SERVER
         );
 
-        ChangedAddonMod.addNetworkMessage(RespawnAsTransfur.class, RespawnAsTransfur::encode,
-                RespawnAsTransfur::new, RespawnAsTransfur::handler,
+        ChangedAddonMod.addNetworkMessage(RespawnAsTransfurMessage.class, RespawnAsTransfurMessage::encode,
+                RespawnAsTransfurMessage::new, RespawnAsTransfurMessage::handler,
                 NetworkDirection.PLAY_TO_SERVER);
+
+
+        ChangedAddonMod.addNetworkMessage(ServerTellClientRespawn.class, ServerTellClientRespawn::encode,
+                ServerTellClientRespawn::new, ServerTellClientRespawn::handle,
+                NetworkDirection.PLAY_TO_CLIENT);
     }
 }
