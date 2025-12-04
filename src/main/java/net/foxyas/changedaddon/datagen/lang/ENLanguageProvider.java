@@ -436,7 +436,7 @@ public class ENLanguageProvider extends LanguageProvider {
         add("deathScreen.select_tf", "Respawn as a Transfur?");
         add("deathScreen.select_tf.hardcore", "Continue as a Transfur?");
         add("deathScreen.select_tf.confirm", "Are you sure that you want to respawn as transfur?");
-        add("deathScreen.select_tf.confirm.info", "You will not be affected by untransfur items");
+        add("deathScreen.select_tf.confirm.info", "You will not be affected by any untransfur items anymore\nThis means that you will be stuck with whatever form that you respawn §bForever§r");
         add("deathScreen.select_tf.spawn_as_infected", "Respawn as Transfured");
         add("deathScreen.select_tf.cancel_spawn_as_infected", "On second Thought, Cancel");
 

@@ -56,8 +56,8 @@ public abstract class DeathScreenMixin extends Screen {
                                         Component.translatable("deathScreen.select_tf.spawn_as_infected"),
                                         Component.translatable("deathScreen.select_tf.cancel_spawn_as_infected")
                                 );
-                                this.minecraft.setScreen(confirmscreen);
                                 confirmscreen.setDelay(20);
+                                this.minecraft.setScreen(confirmscreen);
                             }
                         }
                 ).bounds(this.width / 2 - 100, this.height / 4 + 120, 200, 20).build()

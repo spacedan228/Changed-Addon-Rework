@@ -6,6 +6,7 @@ import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.network.packet.RespawnAsTransfurMessage;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -162,14 +163,16 @@ public class RespawnAsTransfurScreen extends Screen {
     // Respawn Logic
     // ============================================================
     public void handleRespawnAsTransfur(boolean accept) {
-        if (this.minecraft == null) return;
+        Minecraft minecraft = this.minecraft;
+        if (minecraft == null) minecraft = Minecraft.getInstance();
 
         if (!accept) {
-            this.minecraft.setScreen(previousDeathScreen);
+            minecraft.setScreen(null);
+            minecraft.setScreen(previousDeathScreen);
             return;
         }
 
-        Player player = this.minecraft.player;
+        Player player = minecraft.player;
         if (player == null) return;
 
         // -----------------------------------------------------
@@ -209,7 +212,7 @@ public class RespawnAsTransfurScreen extends Screen {
 
         // Respawn player and send packet
         player.respawn();
-        this.minecraft.setScreen(null);
+        minecraft.setScreen(null);
 
         ChangedAddonMod.PACKET_HANDLER.sendToServer(
                 new RespawnAsTransfurMessage(player.getId(), possibleTransfurVariants)
