@@ -110,6 +110,7 @@ public record RespawnAsTransfurMessage(int playerId, List<ResourceLocation> poss
         // 4. Fail-safe final: if nothing left
         if (list.isEmpty()) {
             list.addAll(TransfurVariant.getPublicTransfurVariants().toList());
+            list.removeIf(RespawnAsTransfurMessage::isForRemoval);
         }
         return list;
     }
