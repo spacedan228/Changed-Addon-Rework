@@ -99,8 +99,8 @@ public class CommonMod {
                 }, NetworkDirection.PLAY_TO_SERVER
         );
 
-        ChangedAddonMod.addNetworkMessage(RespawnAsTransfurMessage.class, RespawnAsTransfurMessage::encode,
-                RespawnAsTransfurMessage::new, RespawnAsTransfurMessage::handler,
+        ChangedAddonMod.addNetworkMessage(RespawnAsTransfurPacket.class, RespawnAsTransfurPacket::encode,
+                RespawnAsTransfurPacket::new, RespawnAsTransfurPacket::handler,
                 NetworkDirection.PLAY_TO_SERVER);
 
 

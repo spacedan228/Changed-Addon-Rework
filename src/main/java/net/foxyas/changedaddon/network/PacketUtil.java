@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.network;
 
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
 import net.minecraft.resources.ResourceKey;
@@ -12,12 +13,25 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.event.entity.PlaySoundAtEntityEvent;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 public class PacketUtil {
+
+    public static <R> R readNullable(FriendlyByteBuf buf, Function<FriendlyByteBuf, R> reader){
+        if(buf.readBoolean()) return reader.apply(buf);
+        return null;
+    }
+
+    public static <T> void writeNullable(FriendlyByteBuf buf, BiConsumer<FriendlyByteBuf, T> writer, @Nullable T obj){
+        buf.writeBoolean(obj != null);
+        if(obj != null) writer.accept(buf, obj);
+    }
 
     public static void playSound(ServerLevel level, Predicate<ServerPlayer> send, double x, double y, double z, SoundEvent sound, SoundSource soundSource, float volume, float pitch) {
         PlaySoundAtEntityEvent event = ForgeEventFactory.onPlaySoundAtEntity(null, sound, soundSource, volume, pitch);
