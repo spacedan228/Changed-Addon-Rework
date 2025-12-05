@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.client.gui;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
@@ -8,6 +7,7 @@ import net.foxyas.changedaddon.client.gui.util.SuggestionHelper;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.network.packet.RespawnAsTransfurMessage;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -18,7 +18,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class RespawnAsTransfurScreen extends Screen {
@@ -172,13 +175,14 @@ public class RespawnAsTransfurScreen extends Screen {
         // Case 1: The player is NOT allowed to select variants
         // -----------------------------------------------------
         if (!canChooseVariant || typeBox == null) {
-            possibleTransfurVariants =
-                    TransfurVariantUtils.getTransfurVariantsFormIdFromStringList(
-                            ChangedAddonServerConfiguration.ALLOWED_RESPAWN_TRANSFURS.get(),
-                            player.level,
-                            true,
-                            true
-                    );
+            List<ResourceLocation> transfurVariantsFormIdFromStringList = new ArrayList<>(TransfurVariantUtils.getTransfurVariantsFormIdFromStringList(
+                    ChangedAddonServerConfiguration.ALLOWED_RESPAWN_TRANSFURS.get(),
+                    player.level,
+                    true,
+                    true
+            ));
+            transfurVariantsFormIdFromStringList.removeIf((formId) -> ChangedAddonTransfurVariants.getRemovedVariantsList().stream().map(TransfurVariant::getFormId).toList().contains(formId));
+            possibleTransfurVariants = transfurVariantsFormIdFromStringList;
         }
 
         // -----------------------------------------------------

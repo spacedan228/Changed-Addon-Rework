@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.network.packet;
 
-import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.network.packet.simple.ServerTellClientRespawn;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
@@ -12,7 +11,6 @@ import net.minecraft.Util;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.network.NetworkEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -79,6 +77,7 @@ public record RespawnAsTransfurMessage(int playerId, List<ResourceLocation> poss
         // 1. Case: only exist changed:random
         if (onlyRandom) {
             list.addAll(TransfurVariant.getPublicTransfurVariants().toList());
+            list.removeIf(RespawnAsTransfurMessage::isForRemoval);
         }
 
         // 2. Case: exist random + other variants
@@ -87,7 +86,7 @@ public record RespawnAsTransfurMessage(int playerId, List<ResourceLocation> poss
             for (ResourceLocation id : message.possibleVariants()) {
                 if (!id.equals(Changed.modResource("random"))) {
                     TransfurVariant<?> variant = ChangedRegistry.TRANSFUR_VARIANT.get().getValue(id);
-                    if (variant != null)
+                    if (variant != null && !isForRemoval(variant))
                         list.add(variant);
                 }
             }
@@ -111,7 +110,12 @@ public record RespawnAsTransfurMessage(int playerId, List<ResourceLocation> poss
         // 4. Fail-safe final: if nothing left
         if (list.isEmpty()) {
             list.addAll(TransfurVariant.getPublicTransfurVariants().toList());
+            list.removeIf(RespawnAsTransfurMessage::isForRemoval);
         }
         return list;
+    }
+
+    private static boolean isForRemoval(TransfurVariant<?> variant) {
+        return ChangedAddonTransfurVariants.getRemovedVariantsList().contains(variant);
     }
 }
