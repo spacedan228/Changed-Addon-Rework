@@ -3,9 +3,7 @@ package net.foxyas.changedaddon.client.gui;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.gui.util.SuggestionHelper;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.network.packet.RespawnAsTransfurMessage;
-import net.foxyas.changedaddon.util.TransfurVariantUtils;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.network.packet.RespawnAsTransfurPacket;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -164,11 +162,9 @@ public class RespawnAsTransfurScreen extends Screen {
     // Respawn Logic
     // ============================================================
     public void handleRespawnAsTransfur(boolean accept) {
-        Minecraft minecraft = this.minecraft;
         if (minecraft == null) minecraft = Minecraft.getInstance();
 
         if (!accept) {
-            minecraft.setScreen(null);
             minecraft.setScreen(previousDeathScreen);
             return;
         }
@@ -180,44 +176,35 @@ public class RespawnAsTransfurScreen extends Screen {
         // Case 1: The player is NOT allowed to select variants
         // -----------------------------------------------------
         if (!canChooseVariant || typeBox == null) {
-            List<ResourceLocation> transfurVariantsFormIdFromStringList = new ArrayList<>(TransfurVariantUtils.getTransfurVariantsFormIdFromStringList(
-                    ChangedAddonServerConfiguration.ALLOWED_RESPAWN_TRANSFURS.get(),
-                    player.level,
-                    true,
-                    true
-            ));
-            transfurVariantsFormIdFromStringList.removeIf((formId) -> ChangedAddonTransfurVariants.getRemovedVariantsList().stream().map(TransfurVariant::getFormId).toList().contains(formId));
-            possibleTransfurVariants = transfurVariantsFormIdFromStringList;
+            minecraft.setScreen(null);
+            ChangedAddonMod.PACKET_HANDLER.sendToServer(new RespawnAsTransfurPacket((ResourceLocation) null));
+            return;
         }
 
         // -----------------------------------------------------
         // Case 2: The player CAN choose
         // -----------------------------------------------------
-        else {
-            String chosen = typeBox.getValue();
-            List<TransfurVariant<?>> variants = nameToVariants.get(chosen);
+        String chosen = typeBox.getValue();
+        List<TransfurVariant<?>> variants = nameToVariants.get(chosen);
 
-            if (variants == null || variants.isEmpty()) {
-                // Player typed a formId manually
-                try {
-                    possibleTransfurVariants = List.of(ResourceLocation.parse(chosen));
-                } catch (Exception ignored) {
-                    return;
-                }
-            } else {
-                // Player typed a public name -> convert to formId
-                possibleTransfurVariants = variants.stream()
-                        .map(TransfurVariant::getFormId)
-                        .toList();
+        if (variants == null || variants.isEmpty()) {
+            // Player typed a formId manually
+            try {
+                possibleTransfurVariants = List.of(ResourceLocation.parse(chosen));
             }
+            catch (Exception ignored) {
+                return;
+            }
+        } else {
+            // Player typed a public name -> convert to formId
+            possibleTransfurVariants = variants.stream()
+                    .map(TransfurVariant::getFormId)
+                    .toList();
         }
 
-        // Respawn player and send packet
-        player.respawn();
-        minecraft.setScreen(null);
+        if(possibleTransfurVariants.isEmpty()) return;
 
-        ChangedAddonMod.PACKET_HANDLER.sendToServer(
-                new RespawnAsTransfurMessage(player.getId(), possibleTransfurVariants)
-        );
+        minecraft.setScreen(null);
+        ChangedAddonMod.PACKET_HANDLER.sendToServer(new RespawnAsTransfurPacket(possibleTransfurVariants.get(0)));
     }
 }
