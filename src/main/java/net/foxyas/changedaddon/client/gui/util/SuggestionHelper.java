@@ -54,7 +54,7 @@ public class SuggestionHelper {
     }
 
     /** Navegação ↑ ↓ */
-    public boolean keyPressed(int keyCode) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (filtered.isEmpty()) return false;
 
         switch (keyCode) {
@@ -66,12 +66,6 @@ public class SuggestionHelper {
                 selectedIndex = Math.min(filtered.size() - 1, selectedIndex + 1);
                 return true;
             } case 258 -> { // TAB → CIRCLE and Auto fill
-                if (selectedIndex < 0) {
-                    selectedIndex = 0; // start from the top
-                } else {
-                    selectedIndex = (selectedIndex + 1) % filtered.size();
-                }
-
                 // Autofill the "type bar"
                 autoFillFromSuggestion();
                 return true;
