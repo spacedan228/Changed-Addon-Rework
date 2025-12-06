@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.util;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -60,16 +61,46 @@ public class PlayerUtil {
     }
 
     public static void UnTransfurPlayer(Player player) {
-        ProcessTransfur.ifPlayerTransfurred(player, (variant) -> {
-            variant.unhookAll(player);
+        if (player.level.isClientSide()) return;
+
+        ProcessTransfur.ifPlayerTransfurred(player, (instance) -> {
+            TransfurVariant<?> transfurVariant = null;
+            if (instance != null) transfurVariant = instance.getParent();
+            UntransfurEvent untransfurEvent = new UntransfurEvent(player, transfurVariant, UntransfurEvent.UntransfurType.SURVIVAL);
+            if (ChangedAddonMod.postEvent(untransfurEvent)) {
+                if (untransfurEvent.newVariant != null) {
+                    ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
+                    return;
+                }
+                return;
+            }
+
+            if (instance == null) return;
+
+            instance.unhookAll(player);
             ProcessTransfur.removePlayerTransfurVariant(player);
             ProcessTransfur.setPlayerTransfurProgress(player, 0.0f);
         });
     }
 
     public static void UnTransfurPlayer(Player player, boolean shouldApplyEffects) {
-        ProcessTransfur.ifPlayerTransfurred(player, (variant) -> {
-            variant.unhookAll(player);
+        if (player.level.isClientSide()) return;
+
+        ProcessTransfur.ifPlayerTransfurred(player, (instance) -> {
+            TransfurVariant<?> transfurVariant = null;
+            if (instance != null) transfurVariant = instance.getParent();
+            UntransfurEvent untransfurEvent = new UntransfurEvent(player, transfurVariant, UntransfurEvent.UntransfurType.SURVIVAL);
+            if (ChangedAddonMod.postEvent(untransfurEvent)) {
+                if (untransfurEvent.newVariant != null) {
+                    ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
+                    return;
+                }
+                return;
+            }
+
+            if (instance == null) return;
+
+            instance.unhookAll(player);
             ProcessTransfur.removePlayerTransfurVariant(player);
             ProcessTransfur.setPlayerTransfurProgress(player, 0.0f);
             if (shouldApplyEffects && !player.level().isClientSide()) {
@@ -80,8 +111,23 @@ public class PlayerUtil {
     }
 
     public static void UnTransfurPlayerAndPlaySound(Player player, boolean shouldApplyEffects) {
-        ProcessTransfur.ifPlayerTransfurred(player, (variant) -> {
-            variant.unhookAll(player);
+        if (player.level.isClientSide()) return;
+
+        ProcessTransfur.ifPlayerTransfurred(player, (instance) -> {
+            TransfurVariant<?> transfurVariant = null;
+            if (instance != null) transfurVariant = instance.getParent();
+            UntransfurEvent untransfurEvent = new UntransfurEvent(player, transfurVariant, UntransfurEvent.UntransfurType.SURVIVAL);
+            if (ChangedAddonMod.postEvent(untransfurEvent)) {
+                if (untransfurEvent.newVariant != null) {
+                    ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
+                    return;
+                }
+                return;
+            }
+
+            if (instance == null) return;
+
+            instance.unhookAll(player);
             ProcessTransfur.removePlayerTransfurVariant(player);
             ProcessTransfur.setPlayerTransfurProgress(player, 0.0f);
             if (shouldApplyEffects && !player.level().isClientSide()) {

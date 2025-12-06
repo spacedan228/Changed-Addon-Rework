@@ -34,4 +34,20 @@ public class ProcessTransfurMixin {
         }
     }
 
+//    @Inject(method = "removePlayerTransfurVariant", at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;setPlayerTransfurVariant(Lnet/minecraft/world/entity/player/Player;Lnet/ltxprogrammer/changed/entity/variant/TransfurVariant;Lnet/ltxprogrammer/changed/entity/TransfurContext;F)Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;"), cancellable = true)
+//    private static void removePlayerTransfurVariantHook(Player player, CallbackInfo ci) {
+//        TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
+//        TransfurVariant<?> transfurVariant = null;
+//        if (transfurVariantInstance != null) transfurVariant = transfurVariantInstance.getParent();
+//        UntransfurEvent untransfurEvent = new UntransfurEvent(player, transfurVariant, UntransfurEvent.UntransfurType.SURVIVAL);
+//        if (ChangedAddonMod.postEvent(untransfurEvent)) {
+//            if (untransfurEvent.newVariant != null) {
+//                ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
+//                ci.cancel();
+//                return;
+//            }
+//            ci.cancel();
+//        }
+//    }
+
 }
