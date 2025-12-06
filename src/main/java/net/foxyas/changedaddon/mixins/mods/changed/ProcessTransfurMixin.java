@@ -2,8 +2,11 @@ package net.foxyas.changedaddon.mixins.mods.changed;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.event.ProgressTransfurEvents;
+import net.foxyas.changedaddon.event.UntransfurEvent;
+import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -33,5 +36,22 @@ public class ProcessTransfurMixin {
             }
         }
     }
+
+//
+//    @Inject(method = "removePlayerTransfurVariant", at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;setPlayerTransfurVariant(Lnet/minecraft/world/entity/player/Player;Lnet/ltxprogrammer/changed/entity/variant/TransfurVariant;Lnet/ltxprogrammer/changed/entity/TransfurContext;F)Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;"), cancellable = true)
+//    private static void removePlayerTransfurVariantHook(Player player, CallbackInfo ci) {
+//        TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
+//        TransfurVariant<?> transfurVariant = null;
+//        if (transfurVariantInstance != null) transfurVariant = transfurVariantInstance.getParent();
+//        UntransfurEvent untransfurEvent = new UntransfurEvent(player, transfurVariant, UntransfurEvent.UntransfurType.SURVIVAL);
+//        if (ChangedAddonMod.postEvent(untransfurEvent)) {
+//            if (untransfurEvent.newVariant != null) {
+//                ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
+//                ci.cancel();
+//                return;
+//            }
+//            ci.cancel();
+//        }
+//    }
 
 }

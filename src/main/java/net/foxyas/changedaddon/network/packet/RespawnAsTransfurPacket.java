@@ -1,13 +1,16 @@
 package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.network.PacketUtil;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.Util;
@@ -61,10 +64,14 @@ public record RespawnAsTransfurPacket(ResourceLocation selected) {
 
             if(tf == null) return;
 
-            ProcessTransfur.setPlayerTransfurVariant(player,
+            TransfurVariantInstance<?> instance = ProcessTransfur.setPlayerTransfurVariant(player,
                     tf,
                     TransfurContext.hazard(TransfurCause.DEFAULT),
                     1);
+
+            if (instance instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor) {
+                transfurVariantInstanceExtensor.setUntransfurImmunity(UntransfurEvent.UntransfurType.SURVIVAL, true);
+            }
         });
         context.setPacketHandled(true);
     }

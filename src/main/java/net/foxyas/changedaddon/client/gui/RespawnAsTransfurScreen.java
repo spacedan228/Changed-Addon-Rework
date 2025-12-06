@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.client.gui.util.SuggestionHelper;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.network.packet.RespawnAsTransfurPacket;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.DeathScreen;
@@ -92,7 +93,8 @@ public class RespawnAsTransfurScreen extends Screen {
             // -----------------------------------------------------
             // Initialize the SuggestionHelper
             // -----------------------------------------------------
-            suggestionHelper = new SuggestionHelper(typeBox, allSuggestions, chosen -> {});
+            suggestionHelper = new SuggestionHelper(typeBox, allSuggestions, chosen -> {
+            });
             suggestionHelper.setRenderUpwards(true);    // display suggestions upwards
             suggestionHelper.setMaxSuggestions(6);
 
@@ -144,7 +146,7 @@ public class RespawnAsTransfurScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 
-        if (suggestionHelper != null && suggestionHelper.keyPressed(keyCode))
+        if (suggestionHelper != null && suggestionHelper.keyPressed(keyCode, scanCode, modifiers))
             return true;
 
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -188,8 +190,7 @@ public class RespawnAsTransfurScreen extends Screen {
             // Player typed a formId manually
             try {
                 possibleTransfurVariants = List.of(ResourceLocation.parse(chosen));
-            }
-            catch (Exception ignored) {
+            } catch (Exception ignored) {
                 return;
             }
         } else {
@@ -199,7 +200,11 @@ public class RespawnAsTransfurScreen extends Screen {
                     .toList();
         }
 
-        if(possibleTransfurVariants.isEmpty()) return;
+        if (possibleTransfurVariants.isEmpty() || ChangedRegistry.TRANSFUR_VARIANT.get().getValue(possibleTransfurVariants.get(0)) == null) {
+            minecraft.setScreen(null);
+            ChangedAddonMod.PACKET_HANDLER.sendToServer(new RespawnAsTransfurPacket((ResourceLocation) null));
+            return;
+        }
 
         minecraft.setScreen(null);
         ChangedAddonMod.PACKET_HANDLER.sendToServer(new RespawnAsTransfurPacket(possibleTransfurVariants.get(0)));

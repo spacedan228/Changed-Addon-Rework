@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.mixins.entity.variant;
 import com.google.common.collect.ImmutableMap;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
+import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
@@ -58,12 +59,28 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Final
     public ImmutableMap<AbstractAbility<?>, AbstractAbilityInstance> abilityInstances;
 
-
     @Unique
     public int ticksSinceSecondAbilityActivity;
 
     @Unique
     public boolean secondAbilityKeyState;
+
+    @Unique
+    public boolean untransfurImmunity = false;
+
+    @Unique
+    public boolean untransfurImmunityCommand = false;
+
+    @Override
+    public boolean getUntransfurImmunity(UntransfurEvent.UntransfurType type) {
+        return type == UntransfurEvent.UntransfurType.SURVIVAL ? untransfurImmunity : untransfurImmunityCommand;
+    }
+
+    @Override
+    public void setUntransfurImmunity(UntransfurEvent.UntransfurType type , boolean value) {
+        if (type == UntransfurEvent.UntransfurType.SURVIVAL) untransfurImmunity = value;
+        if (type == UntransfurEvent.UntransfurType.COMMAND) untransfurImmunityCommand = value;
+    }
 
     @Override
     public boolean getSecondAbilityKeyState() {
