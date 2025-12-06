@@ -147,7 +147,7 @@ public class RespawnAsTransfurScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 
-        if (suggestionHelper != null && suggestionHelper.keyPressed(keyCode))
+        if (suggestionHelper != null && suggestionHelper.keyPressed(keyCode, scanCode, modifiers))
             return true;
 
         return super.keyPressed(keyCode, scanCode, modifiers);
