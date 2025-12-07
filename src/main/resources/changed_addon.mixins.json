@@ -60,6 +60,7 @@
     "TempFixMixin",
     "client.DeathScreenMixin",
     "client.MouseHandlerAccessor",
+    "client.PlayerModelMixin",
     "client.PlayerRendererMixin",
     "client.renderer.AdvancedHumanoidModelMixin",
     "client.renderer.AdvancedHumanoidRendererMixin",
