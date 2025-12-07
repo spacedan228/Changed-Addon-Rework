@@ -59,7 +59,6 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Final
     public ImmutableMap<AbstractAbility<?>, AbstractAbilityInstance> abilityInstances;
 
-
     @Unique
     public int ticksSinceSecondAbilityActivity;
 
@@ -253,8 +252,14 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @Inject(method = "save", at = @At("RETURN"))
     private void InjectData(CallbackInfoReturnable<CompoundTag> cir) {
+        CompoundTag returnValue = cir.getReturnValue();
         if (this.getChangedEntity() instanceof VariantExtraStats stats) {
-            stats.saveExtraData(cir.getReturnValue());
+            stats.saveExtraData(returnValue);
+        }
+
+        returnValue.putBoolean("untransfurImmunity", getUntransfurImmunity(UntransfurEvent.UntransfurType.SURVIVAL));
+        if (!getUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND)) {
+            returnValue.putBoolean("untransfurImmunityCommand", getUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND));
         }
     }
 
@@ -263,6 +268,9 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
         if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
             variantExtraStats.readExtraData(tag);
         }
+
+        if (tag.contains("untransfurImmunity")) setUntransfurImmunity(UntransfurEvent.UntransfurType.SURVIVAL, tag.getBoolean("untransfurImmunity"));
+        if (tag.contains("untransfurImmunityCommand")) setUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND, tag.getBoolean("untransfurImmunity"));
     }
 
     /*@Inject(method = "canWear", at = @At("HEAD"), cancellable = true)
