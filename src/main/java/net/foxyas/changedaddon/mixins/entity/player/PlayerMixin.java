@@ -65,7 +65,7 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
         }
         return super.isInWater();
     }
-    
+
     @Inject(method = "sweepAttack", at = @At("HEAD"), cancellable = true)
     private void customSweepAttackEffect(CallbackInfo ci) {
         if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof AbstractKatanaItem abstractKatanaItem) {
