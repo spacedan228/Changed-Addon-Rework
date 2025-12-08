@@ -77,7 +77,9 @@ public class TimedKeypadBlock extends KeypadBlock {
 
     @Override
     public @NotNull VoxelShape getInteractionShape(BlockState blockState, BlockGetter level, BlockPos blockPos) {
-        return calculateShapes(blockState.getValue(FACING), Shapes.or(SHAPE_WHOLE, BUTTON_CENTER, BUTTON_LEFT, BUTTON_RIGHT));
+        VoxelShape main = calculateShapes(blockState.getValue(FACING), SHAPE_WHOLE);
+        VoxelShape buttons = calculateShapes(blockState.getValue(FACING).getClockWise(), Shapes.or(BUTTON_CENTER, BUTTON_LEFT, BUTTON_RIGHT));
+        return Shapes.or(main, buttons);
     }
 
     public @NotNull VoxelShape getOcclusionShape(BlockState blockState, BlockGetter level, BlockPos blockPos) {
@@ -100,7 +102,7 @@ public class TimedKeypadBlock extends KeypadBlock {
 
     public VoxelShape getButtonsInteractionShape(KeypadButton button, BlockState blockState) {
         return calculateShapes(
-                blockState.getValue(FACING),
+                blockState.getValue(FACING).getClockWise(),
                 switch (button) {
                     case LEFT -> BUTTON_LEFT;
                     case CENTER -> BUTTON_CENTER;
@@ -124,6 +126,9 @@ public class TimedKeypadBlock extends KeypadBlock {
 
             for (KeypadButton keypadButton : KeypadButton.values()) {
                 VoxelShape interactionShape = getButtonsInteractionShape(keypadButton, state);
+                player.displayClientMessage(new TextComponent("HEY -> " + interactionShape.bounds()), false);
+                player.displayClientMessage(new TextComponent("HEY2 -> " + localLocation), false);
+
 
                 if (interactionShape.bounds().contains(localLocation)) {
                     player.displayClientMessage(new TextComponent("HEY IT IS WORKING -> " + keypadButton.name()), false);
