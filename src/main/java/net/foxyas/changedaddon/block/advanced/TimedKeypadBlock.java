@@ -8,13 +8,17 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,14 +26,39 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
 public class TimedKeypadBlock extends KeypadBlock {
+
+    public static final VoxelShape BUTTON_LEFT = Block.box(
+            12, 3, 15,
+            13, 4, 15.2
+    );
+
+    public static final VoxelShape BUTTON_RIGHT = Block.box(
+            14, 3, 15,
+            15, 4, 15.2
+    );
+
+    public static final VoxelShape BUTTON_CENTER = Block.box(
+            13, 3, 15,
+            14, 4, 15.2
+    );
+
+    public static final VoxelShape EXTRA_BUTTONS = Shapes.or(
+            BUTTON_LEFT,
+            BUTTON_CENTER,
+            BUTTON_RIGHT
+    );
 
     public TimedKeypadBlock() {
         super();
@@ -47,6 +76,40 @@ public class TimedKeypadBlock extends KeypadBlock {
     }
 
     @Override
+    public @NotNull VoxelShape getInteractionShape(BlockState blockState, BlockGetter level, BlockPos blockPos) {
+        return calculateShapes(blockState.getValue(FACING), Shapes.or(SHAPE_WHOLE, BUTTON_CENTER, BUTTON_LEFT, BUTTON_RIGHT));
+    }
+
+    public @NotNull VoxelShape getOcclusionShape(BlockState blockState, BlockGetter level, BlockPos blockPos) {
+        return this.getInteractionShape(blockState, level, blockPos);
+    }
+
+    public @NotNull VoxelShape getCollisionShape(BlockState blockState, BlockGetter level, BlockPos blockPos, CollisionContext context) {
+        return this.getInteractionShape(blockState, level, blockPos);
+    }
+
+    public @NotNull VoxelShape getShape(BlockState blockState, BlockGetter level, BlockPos blockPos, CollisionContext context) {
+        return this.getInteractionShape(blockState, level, blockPos);
+    }
+
+    public enum KeypadButton {
+        LEFT,
+        CENTER,
+        RIGHT;
+    }
+
+    public VoxelShape getButtonsInteractionShape(KeypadButton button, BlockState blockState) {
+        return calculateShapes(
+                blockState.getValue(FACING),
+                switch (button) {
+                    case LEFT -> BUTTON_LEFT;
+                    case CENTER -> BUTTON_CENTER;
+                    case RIGHT -> BUTTON_RIGHT;
+                }
+        );
+    }
+
+    @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         if (player.isShiftKeyDown() && !state.getValue(KeypadBlock.POWERED)) {
             /*player.displayClientMessage(new TextComponent("Pos:" + (hitResult.getLocation().subtract(hitResult.getBlockPos().getX(),
@@ -56,8 +119,46 @@ public class TimedKeypadBlock extends KeypadBlock {
             Vec3 relative = (hitResult.getLocation().subtract(hitResult.getBlockPos().getX(),
                     hitResult.getBlockPos().getY(),
                     hitResult.getBlockPos().getZ()));
+            Vec3 location = hitResult.getLocation();
+            Vec3 localLocation = location.subtract(pos.getX(), pos.getY(), pos.getZ());
 
-            Direction direction = state.getValue(KeypadBlock.FACING);
+            for (KeypadButton keypadButton : KeypadButton.values()) {
+                VoxelShape interactionShape = getButtonsInteractionShape(keypadButton, state);
+
+                if (interactionShape.bounds().contains(localLocation)) {
+                    player.displayClientMessage(new TextComponent("HEY IT IS WORKING -> " + keypadButton.name()), false);
+                    switch (keypadButton) {
+                        case LEFT -> {
+                            BlockEntity blockEntity = level.getBlockEntity(pos);
+                            if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
+                                keypad.addTimer(1);
+                                keypad.playTimerAdjust(true);
+                            }
+                            return InteractionResult.SUCCESS;
+                        }
+                        case RIGHT -> {
+                            BlockEntity blockEntity = level.getBlockEntity(pos);
+                            if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
+                                keypad.addTimer(-1);
+                                keypad.playTimerAdjust(false);
+                            }
+                            return InteractionResult.SUCCESS;
+                        }
+                        case CENTER -> {
+                            BlockEntity blockEntity = level.getBlockEntity(pos);
+                            if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
+                                if (keypad.getTimer() > 0) {
+                                    keypad.setTimer(0);
+                                    keypad.playTimerAdjust(true);
+                                }
+                            }
+                            return InteractionResult.SUCCESS;
+                        }
+                    }
+                }
+
+            }
+            /*
             if (direction == Direction.NORTH) {
                 if (isInside(relative, 0.0624f, 0.0626f, 0.185f, 0.25f, 0.75f, 0.814f)) {
                     BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -166,8 +267,15 @@ public class TimedKeypadBlock extends KeypadBlock {
                     }
                     return InteractionResult.SUCCESS;
                 }
-            }
+            }*/
 
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
+                if (player instanceof ServerPlayer serverPlayer) {
+                    NetworkHooks.openGui(serverPlayer, keypad, keypad.getBlockPos());
+                }
+                return InteractionResult.SUCCESS;
+            }
 
             return super.use(state, level, pos, player, hand, hitResult);
         }

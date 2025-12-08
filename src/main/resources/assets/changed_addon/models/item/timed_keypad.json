@@ -1,5 +1,5 @@
 {
-  "parent": "changed:block/keypad",
+  "parent": "changed_addon:block/timed_keypad",
   "display": {
     "thirdperson": {
       "rotation": [

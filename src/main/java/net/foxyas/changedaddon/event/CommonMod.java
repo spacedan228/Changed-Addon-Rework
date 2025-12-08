@@ -2,9 +2,12 @@ package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.menu.CustomMerchantMenu;
-import net.foxyas.changedaddon.network.*;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
+import net.foxyas.changedaddon.network.ClientPacketHandler;
+import net.foxyas.changedaddon.network.ServerPacketHandler;
 import net.foxyas.changedaddon.network.packet.*;
 import net.foxyas.changedaddon.network.packet.simple.ServerTellClientRespawn;
+import net.foxyas.changedaddon.network.packet.simple.UpdateTimedKeypadTimerPacket;
 import net.foxyas.changedaddon.procedure.blocksHandle.BoneMealExpansion;
 import net.foxyas.changedaddon.recipe.brewing.TransfurSicknessRecipeBrewingRecipe;
 import net.foxyas.changedaddon.recipe.brewing.UntransfurPotionRecipeBrewingRecipe;
@@ -107,5 +110,8 @@ public class CommonMod {
         ChangedAddonMod.addNetworkMessage(ServerTellClientRespawn.class, ServerTellClientRespawn::encode,
                 ServerTellClientRespawn::new, ServerTellClientRespawn::handle,
                 NetworkDirection.PLAY_TO_CLIENT);
+
+        ChangedAddonMod.addNetworkMessage(UpdateTimedKeypadTimerPacket.class, UpdateTimedKeypadTimerPacket::encode,
+                UpdateTimedKeypadTimerPacket::new, UpdateTimedKeypadTimerPacket::handle);
     }
 }

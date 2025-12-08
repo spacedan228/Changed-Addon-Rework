@@ -24,6 +24,7 @@ public class ChangedAddonMenus {
     public static final RegistryObject<MenuType<InformantGuiMenu>> INFORMANT_MENU = register("informant_gui", InformantGuiMenu::new);
     public static final RegistryObject<MenuType<PrototypeMenu>> PROTOTYPE_MENU = register("prototype_menu", PrototypeMenu::new);
     public static final RegistryObject<MenuType<CustomMerchantMenu>> MERCHANT_MENU = register("merchant_menu", CustomMerchantMenu::new);
+    public static final RegistryObject<MenuType<TimedKeypadTimerMenu>> TIMED_KEYPAD_TIMER = register("timed_keypad_timer", TimedKeypadTimerMenu::new);
 
     private static <T extends AbstractContainerMenu> RegistryObject<MenuType<T>> register(String path, IContainerFactory<T> containerFactory) {
         return REGISTRY.register(path, () -> IForgeMenuType.create(containerFactory));

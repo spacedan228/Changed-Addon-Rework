@@ -28,6 +28,7 @@ public class ClientMod {
             MenuScreens.register(ChangedAddonMenus.PROTOTYPE_MENU.get(), PrototypeMenuScreen::new);
             MenuScreens.register(ChangedAddonMenus.MERCHANT_MENU.get(), CustomMerchantScreen::new);
             MenuScreens.register(ChangedAddonMenus.FOXYAS_INVENTORY_MENU.get(), FoxyasInventoryMenuScreen::new);
+            MenuScreens.register(ChangedAddonMenus.TIMED_KEYPAD_TIMER.get(), TimedKeypadTimerScreen::new);
         });
     }
 
