@@ -126,9 +126,13 @@ public class TimedKeypadBlock extends KeypadBlock {
 
             for (KeypadButton keypadButton : KeypadButton.values()) {
                 VoxelShape interactionShape = getButtonsInteractionShape(keypadButton, state);
-                player.displayClientMessage(new TextComponent("HEY -> " + interactionShape.bounds()), false);
-                player.displayClientMessage(new TextComponent("HEY2 -> " + localLocation), false);
-
+               // player.displayClientMessage(new TextComponent("HEY -> " + interactionShape.bounds()), false);
+               // player.displayClientMessage(new TextComponent("HEY2 -> " + localLocation), false);
+                double distance = interactionShape.bounds().getCenter().distanceTo(localLocation);
+               // player.displayClientMessage(new TextComponent("HEY3 -> " + interactionShape.bounds().getCenter() + "\n HEY+ -> " + distance), false);
+                if (distance > 0.05) {
+                    player.displayClientMessage(new TextComponent("DISTANCE -> " + distance), false);
+                }
 
                 if (interactionShape.bounds().contains(localLocation)) {
                     player.displayClientMessage(new TextComponent("HEY IT IS WORKING -> " + keypadButton.name()), false);
