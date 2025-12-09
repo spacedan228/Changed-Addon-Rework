@@ -4,11 +4,10 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
-import net.foxyas.changedaddon.util.DelayedTask;
-import net.foxyas.changedaddon.util.FoxyasUtils;
-import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.util.StructureUtil;
+import net.foxyas.changedaddon.util.*;
+import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
@@ -16,9 +15,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -27,6 +29,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
+import org.apache.http.util.EntityUtils;
 
 
 @Mod.EventBusSubscriber
@@ -235,60 +238,91 @@ public class DEBUG {
         });
     }
     */
+//    @SubscribeEvent
+//    public static void TEST(RenderLevelStageEvent event) {
+//        if (!RENDERTEST) return;
+//        // Somente no estágio certo (depois do mundo renderado)
+//        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
+//
+//        Minecraft mc = Minecraft.getInstance();
+//        LocalPlayer player = mc.player;
+//        if (mc.level == null || player == null) return;
+//
+//        Level level = mc.level;
+//
+//        // Raio de busca
+//        int radius = 6;
+//
+//        BlockPos playerPos = player.blockPosition();
+//
+//        // Posição da câmera — importante
+//        Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
+//
+//        BlockHitResult blockHitResult = level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getViewVector(0).scale(player.getReachDistance())), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+//        if (blockHitResult.getType() != HitResult.Type.MISS) {
+//            BlockPos pos = blockHitResult.getBlockPos();
+//            BlockState state = level.getBlockState(pos);
+//            if (state.getBlock() instanceof TimedKeypadBlock keypad) {
+//                Vec3 location = blockHitResult.getLocation();
+//                Vec3 localLocation = location.subtract(pos.getX(), pos.getY(), pos.getZ());
+//
+//                for (TimedKeypadBlock.KeypadButton btn : TimedKeypadBlock.KeypadButton.values()) {
+//                    VoxelShape shape = keypad.getButtonsInteractionShape(btn, state);
+//                    // Converte cada AABB da shape
+//                    for (AABB aabb : shape.toAabbs()) {
+//                        // Move para o mundo
+//                        AABB worldAABB = aabb.move(pos);
+//
+//                        // Converter world-space → camera-space
+//                        AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z);
+//
+//                        if (aabb.inflate(0, 0.01, 0).contains(localLocation.scale(1))) {
+//                            // Renderizar a caixa (linhas)
+//                            LevelRenderer.renderLineBox(
+//                                    event.getPoseStack(),
+//                                    mc.renderBuffers().bufferSource().getBuffer(RenderType.lines()),
+//                                    renderAABB,
+//                                    1f, 1f, 1f, 1f     // R, G, B, Alpha
+//                            );
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
-    @SubscribeEvent
-    public static void TEST(RenderLevelStageEvent event) {
-        if (!RENDERTEST) return;
-        // Somente no estágio certo (depois do mundo renderado)
-        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
-
-        Minecraft mc = Minecraft.getInstance();
-        if (mc.level == null || mc.player == null) return;
-
-        Level level = mc.level;
-
-        // Raio de busca
-        int radius = 6;
-
-        BlockPos playerPos = mc.player.blockPosition();
-
-        // Posição da câmera — importante
-        Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
-
-        BlockPos.betweenClosedStream(
-                playerPos.offset(-radius, -radius, -radius),
-                playerPos.offset(radius, radius, radius)
-        ).forEach(pos -> {
-            BlockState state = level.getBlockState(pos);
-
-            if (state.getBlock() instanceof TimedKeypadBlock keypad) {
-
-                for (TimedKeypadBlock.KeypadButton btn : TimedKeypadBlock.KeypadButton.values()) {
-
-                    VoxelShape shape = keypad.getButtonsInteractionShape(btn, state);
-
-                    // Converte cada AABB da shape
-                    for (AABB aabb : shape.toAabbs()) {
-
-                        // Move para o mundo
-                        AABB worldAABB = aabb.move(pos);
-
-                        // Converter world-space → camera-space
-                        AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z);
-
-                        // Renderizar a caixa (linhas)
-                        LevelRenderer.renderLineBox(
-                                event.getPoseStack(),
-                                mc.renderBuffers().bufferSource().getBuffer(RenderType.lines()),
-                                renderAABB,
-                                1f, 1f, 1f, 1f     // R, G, B, Alpha
-                        );
-                    }
-                }
-            }
-        });
-    }
-
+//        BlockPos.betweenClosedStream(
+//                playerPos.offset(-radius, -radius, -radius),
+//                playerPos.offset(radius, radius, radius)
+//        ).forEach(pos -> {
+//            BlockState state = level.getBlockState(pos);
+//
+//            if (state.getBlock() instanceof TimedKeypadBlock keypad) {
+//
+//                for (TimedKeypadBlock.KeypadButton btn : TimedKeypadBlock.KeypadButton.values()) {
+//
+//                    VoxelShape shape = keypad.getButtonsInteractionShape(btn, state);
+//
+//                    // Converte cada AABB da shape
+//                    for (AABB aabb : shape.toAabbs()) {
+//
+//                        // Move para o mundo
+//                        AABB worldAABB = aabb.move(pos);
+//
+//                        // Converter world-space → camera-space
+//                        AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z);
+//
+//                        // Renderizar a caixa (linhas)
+//                        LevelRenderer.renderLineBox(
+//                                event.getPoseStack(),
+//                                mc.renderBuffers().bufferSource().getBuffer(RenderType.lines()),
+//                                renderAABB,
+//                                1f, 1f, 1f, 1f     // R, G, B, Alpha
+//                        );
+//                    }
+//                }
+//            }
+//        });
+//    }
 
 
     @SubscribeEvent

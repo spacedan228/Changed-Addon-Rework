@@ -4,12 +4,14 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.ltxprogrammer.changed.block.KeypadBlock;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,12 +30,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -112,6 +119,58 @@ public class TimedKeypadBlock extends KeypadBlock {
                     case RIGHT -> BUTTON_RIGHT;
                 }
         );
+    }
+
+    @Mod.EventBusSubscriber(value = Dist.CLIENT)
+    public static class ClientEvent {
+
+        @SubscribeEvent
+        public static void RenderOutlineButton(RenderLevelStageEvent event) {
+            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
+
+            Minecraft mc = Minecraft.getInstance();
+            LocalPlayer player = mc.player;
+            if (mc.level == null || player == null) return;
+
+            Level level = mc.level;
+
+
+            // Cam pos — important
+            Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
+
+            BlockHitResult blockHitResult = level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getViewVector(0).scale(player.getReachDistance())), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
+            if (blockHitResult.getType() != HitResult.Type.MISS) {
+                BlockPos pos = blockHitResult.getBlockPos();
+                BlockState state = level.getBlockState(pos);
+                if (state.getBlock() instanceof TimedKeypadBlock keypad) {
+                    Vec3 location = blockHitResult.getLocation();
+                    Vec3 localLocation = location.subtract(pos.getX(), pos.getY(), pos.getZ());
+
+                    for (TimedKeypadBlock.KeypadButton btn : TimedKeypadBlock.KeypadButton.values()) {
+                        VoxelShape shape = keypad.getButtonsInteractionShape(btn, state);
+                        // Convert each AABB from the shape
+                        for (AABB aabb : shape.toAabbs()) {
+                            // Move it to the world
+                            AABB worldAABB = aabb.move(pos);
+
+                            // world-space → camera-space
+                            AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z).inflate(0.0125);
+
+                            if (aabb.inflate(0, 0.01, 0).contains(localLocation.scale(1))) {
+                                // Render Box (Lines)
+                                LevelRenderer.renderLineBox(
+                                        event.getPoseStack(),
+                                        mc.renderBuffers().bufferSource().getBuffer(RenderType.lines()),
+                                        renderAABB,
+                                        1f, 1f, 1f, 1f     // R, G, B, Alpha
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 
     @Override
