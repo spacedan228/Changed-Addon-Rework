@@ -2,11 +2,17 @@ package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.SignalBlockBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -28,11 +34,14 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @ParametersAreNonnullByDefault
 public class SignalBlockBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
     public static final EnumProperty<SignalVariant> VARIANT = EnumProperty.create("variant", SignalVariant.class);
+    private boolean addedParticle = false;
+
     public SignalBlockBlock() {
         super(BlockBehaviour.Properties
                 .of(Material.STONE)
@@ -60,6 +69,18 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         return this.defaultBlockState().setValue(VARIANT, SignalVariant.VARIANT_1).setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, Random pRandom) {
+        super.animateTick(pState, pLevel, pPos, pRandom);
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (!addedParticle && player != null) {
+            if (player.getMainHandItem().is(ChangedAddonItems.SIGNAL_CATCHER.get()) || player.getOffhandItem().is(ChangedAddonItems.SIGNAL_CATCHER.get())) {
+                pLevel.addParticle(ChangedAddonParticleTypes.signal(8, new ItemStack(ChangedAddonItems.SIGNAL_CATCHER.get())), pPos.getX(), pPos.getY(), pPos.getZ(), 0, 0, 0);
+                addedParticle = !addedParticle;
+            }
+        }
     }
 
     @Override
