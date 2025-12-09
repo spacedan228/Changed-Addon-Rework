@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.entity.SignalBlockBlockEntity;
+import net.foxyas.changedaddon.block.entity.SignalBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -19,6 +18,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -30,6 +31,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
@@ -37,12 +39,11 @@ import java.util.List;
 import java.util.Random;
 
 @ParametersAreNonnullByDefault
-public class SignalBlockBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class SignalBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
     public static final EnumProperty<SignalVariant> VARIANT = EnumProperty.create("variant", SignalVariant.class);
-    private boolean addedParticle = false;
 
-    public SignalBlockBlock() {
+    public SignalBlock() {
         super(BlockBehaviour.Properties
                 .of(Material.STONE)
                 .sound(SoundType.STONE)
@@ -74,13 +75,6 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
     @Override
     public void animateTick(BlockState pState, Level pLevel, BlockPos pPos, Random pRandom) {
         super.animateTick(pState, pLevel, pPos, pRandom);
-        LocalPlayer player = Minecraft.getInstance().player;
-        if (!addedParticle && player != null) {
-            if (player.getMainHandItem().is(ChangedAddonItems.SIGNAL_CATCHER.get()) || player.getOffhandItem().is(ChangedAddonItems.SIGNAL_CATCHER.get())) {
-                pLevel.addParticle(ChangedAddonParticleTypes.signal(8, new ItemStack(ChangedAddonItems.SIGNAL_CATCHER.get())), pPos.getX(), pPos.getY(), pPos.getZ(), 0, 0, 0);
-                addedParticle = !addedParticle;
-            }
-        }
     }
 
     @Override
@@ -98,6 +92,13 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
         }
 
         world.scheduleTick(pos, this, 10); // Se quiser tick contínuo
+    }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return ((level, pPos, state, blockEntity) -> {
+            if (blockEntity instanceof SignalBlockEntity signalBlockEntity) signalBlockEntity.tick(level, pPos, state);
+        });
     }
 
     @Override
@@ -143,7 +144,7 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new SignalBlockBlockEntity(pos, state);
+        return new SignalBlockEntity(pos, state);
     }
 
     @Override
@@ -157,7 +158,7 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof SignalBlockBlockEntity be) {
+            if (blockEntity instanceof SignalBlockEntity be) {
                 world.updateNeighbourForOutputSignal(pos, this);
             }
             super.onRemove(state, world, pos, newState, isMoving);

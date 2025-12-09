@@ -56,6 +56,10 @@ public class SignalParticle extends TextureSheetParticle {
         return main.is(signalCatherItem.getItem()) || off.is(signalCatherItem.getItem());
     }
 
+    public int getAge() {
+        return this.age;
+    }
+
     @Override
     public void render(VertexConsumer pBuffer, Camera pRenderInfo, float pPartialTicks) {
         super.render(pBuffer, pRenderInfo, pPartialTicks);
@@ -74,6 +78,12 @@ public class SignalParticle extends TextureSheetParticle {
 
         if (!playerHoldingBlockingItem()) {
             this.age++;
+        } else {
+            if (age + 1 > lifetime) {
+                this.age = 0;
+            } else {
+                this.age++;
+            }
         }
 
         int index = (this.age / delay) % totalSprites;

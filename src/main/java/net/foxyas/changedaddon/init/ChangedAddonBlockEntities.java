@@ -27,7 +27,7 @@ public class ChangedAddonBlockEntities {
     public static final RegistryObject<BlockEntityType<?>> CATALYZER = register("catalyzer_block_entity", ChangedAddonBlocks.CATALYZER, CatalyzerBlockEntity::new);
     public static final RegistryObject<BlockEntityType<?>> UNIFUSER = register("unifuser_block_entity", ChangedAddonBlocks.UNIFUSER, UnifuserBlockEntity::new);
     public static final RegistryObject<BlockEntityType<?>> DARK_LATEX_PUDDLE = register("dark_latex_puddle_block_entity", ChangedAddonBlocks.DARK_LATEX_PUDDLE, DarkLatexPuddleBlockEntity::new);
-    public static final RegistryObject<BlockEntityType<?>> SIGNAL_BLOCK = register("signal_block_block_entity", ChangedAddonBlocks.SIGNAL_BLOCK, SignalBlockBlockEntity::new);
+    public static final RegistryObject<BlockEntityType<?>> SIGNAL_BLOCK = register("signal_block_block_entity", ChangedAddonBlocks.SIGNAL_BLOCK, SignalBlockEntity::new);
     public static final RegistryObject<BlockEntityType<?>> ADVANCED_UNIFUSER = register("advanced_unifuser_block_entity", ChangedAddonBlocks.ADVANCED_UNIFUSER, AdvancedUnifuserBlockEntity::new);
     public static final RegistryObject<BlockEntityType<?>> ADVANCED_CATALYZER = register("advanced_catalyzer_block_entity", ChangedAddonBlocks.ADVANCED_CATALYZER, AdvancedCatalyzerBlockEntity::new);
     public static final RegistryObject<BlockEntityType<?>> GENERATOR = register("generator_block_entity", ChangedAddonBlocks.GENERATOR, GeneratorBlockEntity::new);
