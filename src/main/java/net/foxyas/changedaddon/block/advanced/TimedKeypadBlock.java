@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.block.advanced;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.ltxprogrammer.changed.block.KeypadBlock;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -44,15 +46,16 @@ public class TimedKeypadBlock extends KeypadBlock {
             13, 4, 15.2
     );
 
+    public static final VoxelShape BUTTON_CENTER = Block.box(
+            13, 3, 15,
+            14, 4, 15.2
+    );
+
     public static final VoxelShape BUTTON_RIGHT = Block.box(
             14, 3, 15,
             15, 4, 15.2
     );
 
-    public static final VoxelShape BUTTON_CENTER = Block.box(
-            13, 3, 15,
-            14, 4, 15.2
-    );
 
     public static final VoxelShape EXTRA_BUTTONS = Shapes.or(
             BUTTON_LEFT,
@@ -114,63 +117,46 @@ public class TimedKeypadBlock extends KeypadBlock {
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
         if (player.isShiftKeyDown() && !state.getValue(KeypadBlock.POWERED)) {
-            /*player.displayClientMessage(new TextComponent("Pos:" + (hitResult.getLocation().subtract(hitResult.getBlockPos().getX(),
-                            hitResult.getBlockPos().getY(),
-                            hitResult.getBlockPos().getZ()))),
-                    true);*/
-            Vec3 relative = (hitResult.getLocation().subtract(hitResult.getBlockPos().getX(),
-                    hitResult.getBlockPos().getY(),
-                    hitResult.getBlockPos().getZ()));
+            BlockEntity blockEntity = level.getBlockEntity(pos);
+            if (!(blockEntity instanceof TimedKeypadBlockEntity keypad)) {
+                return InteractionResult.PASS;
+            }
             Vec3 location = hitResult.getLocation();
-            Vec3 localLocation = location.subtract(pos.getX(), pos.getY(), pos.getZ()).normalize();
+            Vec3 localLocation = location.subtract(pos.getX(), pos.getY(), pos.getZ());
 
             for (KeypadButton keypadButton : KeypadButton.values()) {
-                VoxelShape interactionShape = getButtonsInteractionShape(keypadButton, state);
-               // player.displayClientMessage(new TextComponent("HEY -> " + interactionShape.bounds()), false);
-               // player.displayClientMessage(new TextComponent("HEY2 -> " + localLocation), false);
-               // player.displayClientMessage(new TextComponent("HEY3 -> " + interactionShape.bounds().getCenter() + "\n HEY+ -> " + distance), false);
-                double distance = interactionShape.bounds().getCenter().distanceTo(localLocation);
-                double distanceNormalized = interactionShape.bounds().getCenter().distanceTo(localLocation.normalize());
-                if (!player.level.isClientSide()) {
-                    player.displayClientMessage(new TextComponent("DISTANCE -> " + distance), false);
-                    player.displayClientMessage(new TextComponent("DISTANCE NORMALIZED -> " + distanceNormalized), false);
-                    player.displayClientMessage(new TextComponent("VEC3 -> " + hitResult.getLocation()), false);
-                }
+                VoxelShape interactionShape = getButtonsInteractionShape(keypadButton, state).move(0, 0, 0);
 
-                if (interactionShape.bounds().contains(localLocation)) {
-                    player.displayClientMessage(new TextComponent("HEY IT IS WORKING -> " + keypadButton.name()), false);
+                if (interactionShape.bounds().inflate(0, 0.01, 0).contains(localLocation.scale(1))) {
                     switch (keypadButton) {
                         case LEFT -> {
-                            BlockEntity blockEntity = level.getBlockEntity(pos);
-                            if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                                keypad.addTimer(1);
-                                keypad.playTimerAdjust(true);
-                            }
-                            return InteractionResult.SUCCESS;
+                            keypad.addTimer(1);
+                            keypad.playTimerAdjust(true);
                         }
                         case RIGHT -> {
-                            BlockEntity blockEntity = level.getBlockEntity(pos);
-                            if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                                keypad.addTimer(-1);
-                                keypad.playTimerAdjust(false);
-                            }
-                            return InteractionResult.SUCCESS;
+                            keypad.addTimer(-1);
+                            keypad.playTimerAdjust(false);
                         }
                         case CENTER -> {
-                            BlockEntity blockEntity = level.getBlockEntity(pos);
-                            if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                                if (keypad.getTimer() > 0) {
-                                    keypad.setTimer(0);
-                                    keypad.playTimerAdjust(true);
-                                }
+                            if (keypad.getTimer() > 0) {
+                                keypad.setTimer(0);
+                                keypad.playTimerAdjust(true);
                             }
-                            return InteractionResult.SUCCESS;
+                        } default -> {
+                            ChangedAddonMod.LOGGER.error("Some wierd stuff happen that broke the KeypadButton Enum, How that even happened? we don't know but it cause this trigger to be called");
                         }
                     }
+                    return InteractionResult.SUCCESS;
                 }
 
             }
-            /*
+
+            if (player instanceof ServerPlayer serverPlayer) {
+                NetworkHooks.openGui(serverPlayer, keypad.getMenuProvider(state, level, pos), keypad.getBlockPos());
+                return InteractionResult.SUCCESS;
+            }
+
+            /* old code
             if (direction == Direction.NORTH) {
                 if (isInside(relative, 0.0624f, 0.0626f, 0.185f, 0.25f, 0.75f, 0.814f)) {
                     BlockEntity blockEntity = level.getBlockEntity(pos);
@@ -281,14 +267,6 @@ public class TimedKeypadBlock extends KeypadBlock {
                 }
             }*/
 
-            BlockEntity blockEntity = level.getBlockEntity(pos);
-            if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                if (player instanceof ServerPlayer serverPlayer) {
-                    NetworkHooks.openGui(serverPlayer, keypad, keypad.getBlockPos());
-                }
-                return InteractionResult.SUCCESS;
-            }
-
             return super.use(state, level, pos, player, hand, hitResult);
         }
 
@@ -326,6 +304,36 @@ public class TimedKeypadBlock extends KeypadBlock {
                 }
         );
     }
+
+    public static boolean isNearBounds(AABB bound, Vec3 pos, double tolerance) {
+        boolean nearX =
+                Math.abs(pos.x - bound.minX) <= tolerance ||
+                        Math.abs(pos.x - bound.maxX) <= tolerance;
+
+        boolean nearY =
+                Math.abs(pos.y - bound.minY) <= tolerance ||
+                        Math.abs(pos.y - bound.maxY) <= tolerance;
+
+        boolean nearZ =
+                Math.abs(pos.z - bound.minZ) <= tolerance ||
+                        Math.abs(pos.z - bound.maxZ) <= tolerance;
+
+        // TODOS os eixos devem estar perto
+        return nearX && nearY && nearZ;
+    }
+
+
+    public static boolean isDistanceAround3D(double x1, double y1, double z1,
+                                             double x2, double y2, double z2,
+                                             double target, double tolerance) {
+        double dx = x1 - x2;
+        double dy = y1 - y2;
+        double dz = z1 - z2;
+
+        double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        return Math.abs(dist - target) <= tolerance;
+    }
+
 
     // pixelX, pixelY, pixelZ vão de 0 a 15 (inclusive)
     private boolean isInsidePixel(Vec3 relative, int px, int py, int pz) {

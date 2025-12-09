@@ -1,17 +1,27 @@
 package net.foxyas.changedaddon.process;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.StructureUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -24,7 +34,7 @@ import net.minecraftforge.network.PacketDistributor;
 public class DEBUG {
 
     public static boolean DEBUG = true;
-    public static float HeadPosT, HeadPosV, HeadPosB = 0, HeadPosK = 40, HeadPosL, HeadPosJ = 40;
+    public static float HeadPosT, HeadPosV, HeadPosB, HeadPosK, HeadPosL, HeadPosJ;
     public static float HeadPosX, HeadPosY, HeadPosZ;
 
     public static boolean PARTICLETEST = false;
@@ -225,6 +235,61 @@ public class DEBUG {
         });
     }
     */
+
+    @SubscribeEvent
+    public static void TEST(RenderLevelStageEvent event) {
+        if (!RENDERTEST) return;
+        // Somente no estágio certo (depois do mundo renderado)
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
+
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null) return;
+
+        Level level = mc.level;
+
+        // Raio de busca
+        int radius = 6;
+
+        BlockPos playerPos = mc.player.blockPosition();
+
+        // Posição da câmera — importante
+        Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
+
+        BlockPos.betweenClosedStream(
+                playerPos.offset(-radius, -radius, -radius),
+                playerPos.offset(radius, radius, radius)
+        ).forEach(pos -> {
+            BlockState state = level.getBlockState(pos);
+
+            if (state.getBlock() instanceof TimedKeypadBlock keypad) {
+
+                for (TimedKeypadBlock.KeypadButton btn : TimedKeypadBlock.KeypadButton.values()) {
+
+                    VoxelShape shape = keypad.getButtonsInteractionShape(btn, state);
+
+                    // Converte cada AABB da shape
+                    for (AABB aabb : shape.toAabbs()) {
+
+                        // Move para o mundo
+                        AABB worldAABB = aabb.move(pos);
+
+                        // Converter world-space → camera-space
+                        AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z);
+
+                        // Renderizar a caixa (linhas)
+                        LevelRenderer.renderLineBox(
+                                event.getPoseStack(),
+                                mc.renderBuffers().bufferSource().getBuffer(RenderType.lines()),
+                                renderAABB,
+                                1f, 1f, 1f, 1f     // R, G, B, Alpha
+                        );
+                    }
+                }
+            }
+        });
+    }
+
+
 
     @SubscribeEvent
     public static void PARTICLETEST(TickEvent.PlayerTickEvent event) {
