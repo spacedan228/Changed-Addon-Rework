@@ -89,7 +89,9 @@ public class SignalParticle extends TextureSheetParticle {
         int index = (this.age / delay) % totalSprites;
         this.setSprite(spriteSet.get(index, totalSprites));
 
-        this.alpha = this.baseAlpha * (1f - ((float) age / lifetime));
+        if (!playerHoldingBlockingItem()) {
+            this.alpha = this.baseAlpha * (1f - ((float) age / lifetime));
+        }
 
 
         this.move(this.xd, this.yd, this.zd);
