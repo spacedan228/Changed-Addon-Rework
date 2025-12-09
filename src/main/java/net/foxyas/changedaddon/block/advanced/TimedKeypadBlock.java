@@ -122,16 +122,19 @@ public class TimedKeypadBlock extends KeypadBlock {
                     hitResult.getBlockPos().getY(),
                     hitResult.getBlockPos().getZ()));
             Vec3 location = hitResult.getLocation();
-            Vec3 localLocation = location.subtract(pos.getX(), pos.getY(), pos.getZ());
+            Vec3 localLocation = location.subtract(pos.getX(), pos.getY(), pos.getZ()).normalize();
 
             for (KeypadButton keypadButton : KeypadButton.values()) {
                 VoxelShape interactionShape = getButtonsInteractionShape(keypadButton, state);
                // player.displayClientMessage(new TextComponent("HEY -> " + interactionShape.bounds()), false);
                // player.displayClientMessage(new TextComponent("HEY2 -> " + localLocation), false);
-                double distance = interactionShape.bounds().getCenter().distanceTo(localLocation);
                // player.displayClientMessage(new TextComponent("HEY3 -> " + interactionShape.bounds().getCenter() + "\n HEY+ -> " + distance), false);
-                if (distance > 0.05) {
+                double distance = interactionShape.bounds().getCenter().distanceTo(localLocation);
+                double distanceNormalized = interactionShape.bounds().getCenter().distanceTo(localLocation.normalize());
+                if (!player.level.isClientSide()) {
                     player.displayClientMessage(new TextComponent("DISTANCE -> " + distance), false);
+                    player.displayClientMessage(new TextComponent("DISTANCE NORMALIZED -> " + distanceNormalized), false);
+                    player.displayClientMessage(new TextComponent("VEC3 -> " + hitResult.getLocation()), false);
                 }
 
                 if (interactionShape.bounds().contains(localLocation)) {
