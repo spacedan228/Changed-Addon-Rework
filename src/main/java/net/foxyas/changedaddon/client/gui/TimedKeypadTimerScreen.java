@@ -2,8 +2,6 @@ package net.foxyas.changedaddon.client.gui;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.block.advanced.TimedKeypadBlockEntity;
-import net.foxyas.changedaddon.menu.FoxyasInventoryMenu;
 import net.foxyas.changedaddon.menu.TimedKeypadTimerMenu;
 import net.foxyas.changedaddon.network.packet.simple.UpdateTimedKeypadTimerPacket;
 import net.foxyas.changedaddon.util.ComponentUtil;
@@ -13,13 +11,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-@Mod.EventBusSubscriber
 public class TimedKeypadTimerScreen extends AbstractContainerScreen<TimedKeypadTimerMenu> {
 
     private final EditBox textBox;
