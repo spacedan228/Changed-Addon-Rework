@@ -154,9 +154,9 @@ public class TimedKeypadBlock extends KeypadBlock {
                             AABB worldAABB = aabb.move(pos);
 
                             // world-space → camera-space
-                            AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z).inflate(0.0125);
+                            AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z).inflate(0.00125);
 
-                            if (aabb.inflate(0, 0.01, 0).contains(localLocation.scale(1))) {
+                            if (aabb.inflate(0.01, 0.01, 0.0005).contains(localLocation.scale(1))) {
                                 // Render Box (Lines)
                                 LevelRenderer.renderLineBox(
                                         event.getPoseStack(),
@@ -175,7 +175,7 @@ public class TimedKeypadBlock extends KeypadBlock {
 
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
-        if (player.isShiftKeyDown() && !state.getValue(KeypadBlock.POWERED)) {
+        if (!state.getValue(KeypadBlock.POWERED)) {
             BlockEntity blockEntity = level.getBlockEntity(pos);
             if (!(blockEntity instanceof TimedKeypadBlockEntity keypad)) {
                 return InteractionResult.PASS;
@@ -186,23 +186,26 @@ public class TimedKeypadBlock extends KeypadBlock {
             for (KeypadButton keypadButton : KeypadButton.values()) {
                 VoxelShape interactionShape = getButtonsInteractionShape(keypadButton, state).move(0, 0, 0);
 
-                if (interactionShape.bounds().inflate(0, 0.01, 0).contains(localLocation.scale(1))) {
-                    switch (keypadButton) {
-                        case LEFT -> {
-                            keypad.addTimer(1);
-                            keypad.playTimerAdjust(true);
-                        }
-                        case RIGHT -> {
-                            keypad.addTimer(-1);
-                            keypad.playTimerAdjust(false);
-                        }
-                        case CENTER -> {
-                            if (keypad.getTimer() > 0) {
-                                keypad.setTimer(0);
+                if (interactionShape.bounds().inflate(0.01, 0.01, 0.0005).contains(localLocation.scale(1))) {
+                    if (!level.isClientSide()) {
+                        switch (keypadButton) {
+                            case LEFT -> {
+                                keypad.addTimer(1);
                                 keypad.playTimerAdjust(true);
                             }
-                        } default -> {
-                            ChangedAddonMod.LOGGER.error("Some wierd stuff happen that broke the KeypadButton Enum, How that even happened? we don't know but it cause this trigger to be called");
+                            case RIGHT -> {
+                                keypad.addTimer(-1);
+                                keypad.playTimerAdjust(false);
+                            }
+                            case CENTER -> {
+                                if (keypad.getTimer() > 0) {
+                                    keypad.setTimer(0);
+                                    keypad.playTimerAdjust(true);
+                                }
+                            }
+                            default -> {
+                                ChangedAddonMod.LOGGER.error("Some wierd stuff happen that broke the KeypadButton Enum, How that even happened? we don't know but it cause this trigger to be called");
+                            }
                         }
                     }
                     return InteractionResult.SUCCESS;
@@ -210,121 +213,10 @@ public class TimedKeypadBlock extends KeypadBlock {
 
             }
 
-            if (player instanceof ServerPlayer serverPlayer) {
+            if (player instanceof ServerPlayer serverPlayer && serverPlayer.isShiftKeyDown()) {
                 NetworkHooks.openGui(serverPlayer, keypad.getMenuProvider(state, level, pos), keypad.getBlockPos());
                 return InteractionResult.SUCCESS;
             }
-
-            /* old code
-            if (direction == Direction.NORTH) {
-                if (isInside(relative, 0.0624f, 0.0626f, 0.185f, 0.25f, 0.75f, 0.814f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        keypad.addTimer(1);
-                        keypad.playTimerAdjust(true);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (isInside(relative, 0.0624f, 0.0626f, 0.185f, 0.25f, 0.814f, 0.8772f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        if (keypad.getTimer() > 0) {
-                            keypad.setTimer(0);
-                            keypad.playTimerAdjust(true);
-                        }
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (isInside(relative, 0.0624f, 0.0626f, 0.185f, 0.25f, 0.8772f, 0.9404f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        keypad.addTimer(-1);
-                        keypad.playTimerAdjust(false);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-            } else if (direction == Direction.SOUTH) {
-                if (isInside(relative, 0.9374f, 0.9376f, 0.185f, 0.25f, 0.186f, 0.25f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        keypad.addTimer(1);
-                        keypad.playTimerAdjust(true);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (isInside(relative, 0.9374f, 0.9376f, 0.185f, 0.25f, 0.1228f, 0.186f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        if (keypad.getTimer() > 0) {
-                            keypad.setTimer(0);
-                            keypad.playTimerAdjust(true);
-                        }
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (isInside(relative, 0.9374f, 0.9376f, 0.185f, 0.25f, 0.0596f, 0.1228f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        keypad.addTimer(-1);
-                        keypad.playTimerAdjust(false);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-            } else if (direction == Direction.WEST) {
-                if (isInsideWithDirection(relative, direction, 0.9374f, 0.9376f, 0.185f, 0.25f, 0.75f, 0.814f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        keypad.addTimer(1);
-                        keypad.playTimerAdjust(true);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (isInsideWithDirection(relative, direction, 0.9374f, 0.9376f, 0.185f, 0.25f, 0.814f, 0.880f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        if (keypad.getTimer() > 0) {
-                            keypad.setTimer(0);
-                            keypad.playTimerAdjust(true);
-                        }
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (isInsideWithDirection(relative, direction, 0.9374f, 0.9376f, 0.185f, 0.25f, 0.880f, 0.9432f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        keypad.addTimer(-1);
-                        keypad.playTimerAdjust(false);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-            } else if (direction == Direction.EAST) {
-                if (isInsideWithDirection(relative, direction, 0.0624f, 0.0626f, 0.185f, 0.25f, 0.186f, 0.25f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        keypad.addTimer(1);
-                        keypad.playTimerAdjust(true);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (isInsideWithDirection(relative, direction, 0.0624f, 0.0626f, 0.185f, 0.25f, 0.1228f, 0.186f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        if (keypad.getTimer() > 0) {
-                            keypad.setTimer(0);
-                            keypad.playTimerAdjust(true);
-                        }
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-                if (isInsideWithDirection(relative, direction, 0.0624f, 0.0626f, 0.185f, 0.25f, 0.0596f, 0.1228f)) {
-                    BlockEntity blockEntity = level.getBlockEntity(pos);
-                    if (blockEntity instanceof TimedKeypadBlockEntity keypad) {
-                        keypad.addTimer(-1);
-                        keypad.playTimerAdjust(false);
-                    }
-                    return InteractionResult.SUCCESS;
-                }
-            }*/
 
             return super.use(state, level, pos, player, hand, hitResult);
         }

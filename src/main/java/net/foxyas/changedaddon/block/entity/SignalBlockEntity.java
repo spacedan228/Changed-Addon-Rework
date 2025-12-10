@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
@@ -21,15 +22,18 @@ import org.jetbrains.annotations.NotNull;
 
 public class SignalBlockEntity extends BlockEntity {
 
-    @OnlyIn(Dist.CLIENT)
     private SignalParticle signalParticle = null;
 
     public SignalBlockEntity(BlockPos position, BlockState state) {
         super(ChangedAddonBlockEntities.SIGNAL_BLOCK.get(), position, state);
     }
 
+    public SignalParticle getSignalParticle() {
+        return this.level != null && this.level.isClientSide() ? signalParticle : null;
+    }
+
     public void tick(Level level, BlockPos pos, BlockState state) {
-        if (level.isClientSide) {
+        if (level.isClientSide() && level instanceof ClientLevel clientLevel) {
             LocalPlayer player = Minecraft.getInstance().player;
             if (player == null) return;
             // Partícula só se estiver segurando o item

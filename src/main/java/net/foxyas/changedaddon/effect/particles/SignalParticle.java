@@ -91,6 +91,8 @@ public class SignalParticle extends TextureSheetParticle {
 
         if (!playerHoldingBlockingItem()) {
             this.alpha = this.baseAlpha * (1f - ((float) age / lifetime));
+        } else {
+            this.alpha = this.baseAlpha;
         }
 
 
