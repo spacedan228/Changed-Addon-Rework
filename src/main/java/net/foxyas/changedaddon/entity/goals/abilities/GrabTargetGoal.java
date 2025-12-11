@@ -2,8 +2,6 @@ package net.foxyas.changedaddon.entity.goals.abilities;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
-import net.foxyas.changedaddon.network.packet.DynamicGrabEntityPacket;
-import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.minecraft.world.entity.LivingEntity;
@@ -46,7 +44,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
             // manda packet de GRAB (tipo ARMS)
             ChangedAddonMod.PACKET_HANDLER.send(
                     PacketDistributor.TRACKING_ENTITY.with(grabber::asMob),
-                    new DynamicGrabEntityPacket(grabber.asMob(), target, DynamicGrabEntityPacket.GrabType.ARMS)
+                    new GrabEntityPacket(grabber.asMob(), target, GrabEntityPacket.GrabType.ARMS)
             );
 
             grabber.asMob().setTarget(null);
