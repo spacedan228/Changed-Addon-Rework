@@ -1,11 +1,14 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.entity.goals.abilities.GrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.HairStyle;
@@ -47,7 +50,7 @@ import java.util.Objects;
 
 import static net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure.DietType;
 
-public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats {
+public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats, IGrabberEntity {
 
     public static final DietType WOLFY_DIET = DietType.create("WOLFY", ChangedAddonTags.TransfurTypes.WOLF_DIET, ChangedAddonTags.Items.WOLF_DIET, List.of(ChangedAddonItems.FOXTA.get(), ChangedItems.ORANGE.get()));
 
@@ -61,8 +64,11 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         this.setAttributes(getAttributes());
         setNoAi(false);
         setPersistenceRequired();
-    }
 
+        if (this.grabEntityAbilityInstance == null) {
+            this.grabEntityAbilityInstance = this.createGrabAbility();
+        }
+    }
 
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -172,8 +178,24 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
+    public @Nullable GrabEntityAbilityInstance getGrabAbilityInstance() {
+        return super.getGrabAbility();
+    }
+
+    @Override
+    public LivingEntity getGrabTarget() {
+        return getTarget();
+    }
+
+    @Override
+    public PathfinderMob asMob() {
+        return this;
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
+        this.goalSelector.addGoal(1, new GrabTargetGoal(this, 0.4f, false));
 		/*this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
 			@Override
 			protected double getAttackReachSqr(LivingEntity entity) {

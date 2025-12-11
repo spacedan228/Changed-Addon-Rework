@@ -1,5 +1,7 @@
 {
   "values": [
+    "changed:form_latex_snow_leopard/female",
+    "changed:form_latex_snow_leopard/male",
     "changed_addon:form_biosynth_snow_leopard/male",
     "changed_addon:form_biosynth_snow_leopard/female",
     "changed_addon:form_snepsi_leopard",
@@ -9,8 +11,6 @@
     "changed_addon:form_latex_white_snow_leopard/male",
     "changed_addon:form_latex_white_snow_leopard/female",
     "changed_addon:form_latex_snow_leopard_partial",
-    "changed:form_latex_snow_leopard/female",
-    "changed:form_latex_snow_leopard/male",
     "changed:form_latex_red_panda",
     "changed:form_latex_raccoon",
     "changed_addon:form_exp2/female",

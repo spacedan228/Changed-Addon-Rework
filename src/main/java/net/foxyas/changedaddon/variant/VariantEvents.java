@@ -13,10 +13,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
-public class VariantsDetails {
+public class VariantEvents {
 
     @SubscribeEvent
-    public static void entityJump(LivingEvent.LivingJumpEvent event) {
+    public static void entityJumpWithVariant(LivingEvent.LivingJumpEvent event) {
         if(!(event.getEntity() instanceof Player player) || player.onGround()
                 || !player.level.isClientSide || !(player.level instanceof ClientLevel clientLevel)) return;
 

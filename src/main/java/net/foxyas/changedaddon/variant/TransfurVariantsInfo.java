@@ -20,8 +20,8 @@ public class TransfurVariantsInfo {
 
         TransfurVariantsInfo.addWithOwnerName(variants, new TransfurVariant<?>[]{LATEX_WIND_CAT_MALE.get(), LATEX_WIND_CAT_FEMALE.get()}, Component.literal("Species by @BrownBakers"));
 
-        TransfurVariantsInfo.addWithOwnerName(variants, MONGOOSE.get());
-        TransfurVariantsInfo.addWithOwnerName(variants, BLUE_LIZARD.get());
+        TransfurVariantsInfo.addWithOwnerName(variants, MONGOOSE.get(), "@nopemom (PHOBOS)");
+        TransfurVariantsInfo.addWithOwnerName(variants, BLUE_LIZARD.get(), "@V");
 
         TransfurVariantsInfo.addUnknownOwnerName(variants, FENGQI_WOLF.get());
 
@@ -44,10 +44,6 @@ public class TransfurVariantsInfo {
     }
 
     public static void addNoOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
-        map.put(variant, Component.literal("Free For Use, No Owner"));
-    }
-
-    public static void addWithOwnerName(VariantWithOwnerMap map, TransfurVariant<?> variant) {
         map.put(variant, Component.literal("Free For Use, No Owner"));
     }
 

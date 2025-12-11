@@ -1,7 +1,5 @@
 {
   "values": [
-    "changed_addon:form_wolfy",
-    "changed_addon:form_fengqi_wolf",
     "changed:form_gas_wolf",
     "changed:form_pooltoy_wolf",
     "changed:form_white_latex_wolf/female",
@@ -25,6 +23,8 @@
     "changed:form_white_wolf/male",
     "changed:form_pure_white_latex_wolf",
     "changed:form_pure_white_latex_wolf_pup",
+    "changed_addon:form_wolfy",
+    "changed_addon:form_fengqi_wolf",
     "changed:form_latex_purple_fox",
     "changed_addon:form_latex_squid_tiger_shark"
   ]

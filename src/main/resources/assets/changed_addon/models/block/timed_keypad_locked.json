@@ -1,5 +1,5 @@
 {
-  "parent": "changed:custom/keypad",
+  "parent": "changed_addon:custom/timed_keypad",
   "textures": {
     "all": "changed_addon:block/timed_keypad_locked",
     "particle": "changed_addon:block/timed_keypad_locked",

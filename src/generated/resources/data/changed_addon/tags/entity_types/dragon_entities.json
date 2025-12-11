@@ -1,14 +1,14 @@
 {
   "values": [
-    "changed_addon:latex_dragon_snow_leopard_shark",
-    "changed_addon:luminara_flower_beast",
-    "changed_addon:avali",
     "changed:dark_dragon",
     "changed:dark_latex_yufeng",
     "changed:dark_latex_double_yufeng",
     "changed:latex_crow",
     "changed:latex_golden_dragon",
     "changed:latex_pink_yuin_dragon",
-    "changed:latex_red_dragon"
+    "changed:latex_red_dragon",
+    "changed_addon:latex_dragon_snow_leopard_shark",
+    "changed_addon:luminara_flower_beast",
+    "changed_addon:avali"
   ]
 }
