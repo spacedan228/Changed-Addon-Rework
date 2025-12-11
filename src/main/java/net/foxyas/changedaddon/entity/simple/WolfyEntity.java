@@ -98,9 +98,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     @Override
     public boolean tryAbsorbTarget(LivingEntity target, IAbstractChangedEntity source, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions) {
         boolean thisOrUnderlyingPlayerHasEffect = (
-                (
-                        this.getUnderlyingPlayer() != null && this.getUnderlyingPlayer().hasEffect(MobEffects.DAMAGE_BOOST)
-                ) || this.hasEffect(MobEffects.DAMAGE_BOOST)
+                (this.getUnderlyingPlayer() != null && this.getUnderlyingPlayer().hasEffect(MobEffects.DAMAGE_BOOST)) || this.hasEffect(MobEffects.DAMAGE_BOOST)
         );
 
         if (thisOrUnderlyingPlayerHasEffect || target.hasEffect(ChangedAddonMobEffects.LATEX_EXPOSURE.get())) {

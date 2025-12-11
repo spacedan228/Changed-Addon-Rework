@@ -6,6 +6,7 @@
   "refmap": "changed_addon.refmap.json",
   "mixins": [
     "abilities.AbilityControllerMixin",
+    "abilities.GrabEntityAbilityInstanceAccessor",
     "abilities.GrabEntityAbilityInstanceMixin",
     "abilities.GrabEntityPacketMixin",
     "blocks.BlockMixin",
@@ -57,7 +58,6 @@
   },
   "client": [
     "MinecraftMixin",
-    "TempFixMixin",
     "client.DeathScreenMixin",
     "client.MouseHandlerAccessor",
     "client.PlayerModelMixin",

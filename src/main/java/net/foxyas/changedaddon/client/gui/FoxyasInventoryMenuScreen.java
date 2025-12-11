@@ -36,13 +36,13 @@ public class FoxyasInventoryMenuScreen extends AbstractContainerScreen<FoxyasInv
         int i = this.leftPos + FoxyasInventoryMenu.X_OFFSET;
         int j = this.topPos + FoxyasInventoryMenu.Y_OFFSET;
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         pGuiGraphics.blit(TEXTURE, i, j, 0, 0, this.imageWidth, this.imageHeight);
         InventoryScreen.renderEntityInInventoryFollowsMouse(pGuiGraphics, i + 51, j + 75, 30, (float) (i + 51) - mouseX, (float) (j + 75 - 50) - mouseY, menu.getEntity());
 
 
         int ExtraInvVHeight = 81;
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        pGuiGraphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
         pGuiGraphics.blit(TEXTURE_INV, i + 176, j + 2, 0, 0, this.imageWidth, ExtraInvVHeight);
 
     }

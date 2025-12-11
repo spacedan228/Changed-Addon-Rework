@@ -3,10 +3,12 @@ package net.foxyas.changedaddon.mixins.entity;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
+import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
+import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -38,6 +40,8 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
 
     @Shadow
     public abstract LivingEntity maybeGetUnderlying();
+
+    @Shadow public abstract float computeHealthRatio();
 
     @Unique
     protected boolean pacified = false;
@@ -71,6 +75,12 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     @Inject(at = @At("HEAD"), method = "targetSelectorTest", cancellable = true)
     private void onTargetSelectorTest(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
         if (isNeutralTo(livingEntity)) cir.setReturnValue(false);
+
+        Optional<IAbstractChangedEntity> grabberSafe = GrabEntityAbility.getGrabberSafe(livingEntity);
+        if (grabberSafe.isPresent() && grabberSafe.get() instanceof IGrabberEntity changedEntity) {
+            // Only Target if it is grabbed by a Player or a non IGrabberEntity
+            cir.setReturnValue(false);
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "tryAbsorbTarget", cancellable = true)

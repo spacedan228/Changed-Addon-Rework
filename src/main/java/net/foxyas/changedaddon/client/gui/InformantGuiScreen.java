@@ -205,7 +205,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
 
     @Override
     protected void renderBg(@NotNull GuiGraphics pGuiGraphics, float partialTicks, int gx, int gy) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        pGuiGraphics.setColor(1, 1, 1, 1);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderTexture(0, texture);

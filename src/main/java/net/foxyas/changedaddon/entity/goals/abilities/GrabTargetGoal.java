@@ -1,13 +1,22 @@
 package net.foxyas.changedaddon.entity.goals.abilities;
 
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
+import net.foxyas.changedaddon.mixins.abilities.GrabEntityAbilityInstanceAccessor;
 import net.ltxprogrammer.changed.Changed;
+import net.ltxprogrammer.changed.ability.GrabEntityAbility;
+import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.ltxprogrammer.changed.entity.LivingEntityDataExtension;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 public class GrabTargetGoal extends MeleeAttackGoal {
 
@@ -47,6 +56,8 @@ public class GrabTargetGoal extends MeleeAttackGoal {
                     new GrabEntityPacket(grabber.asMob(), target, GrabEntityPacket.GrabType.ARMS)
             );
 
+            ProcessTransfur.forceNearbyToRetarget(target.level(), target);
+
             grabber.asMob().setTarget(null);
 
             // som (opcional, pode mudar)
@@ -65,12 +76,24 @@ public class GrabTargetGoal extends MeleeAttackGoal {
         if (target == null)
             return false;
 
-        var ability = grabber.getGrabAbilityInstance();
+        GrabEntityAbilityInstance ability = grabber.getGrabAbilityInstance();
         if (ability == null)
             return false;
 
-        if (ability.grabbedEntity == target)
+        if (ability.grabbedEntity == target) {
+            grabber.asMob().setTarget(null);
             return false;
+        }
+
+        if (ability instanceof GrabEntityAbilityInstanceAccessor accessor && accessor.getGrabCooldown() > 0) {
+            return false;
+        }
+
+        Optional<IAbstractChangedEntity> grabberSafe = GrabEntityAbility.getGrabberSafe(target);
+        if (grabberSafe.isPresent()) {
+            grabber.asMob().setTarget(null);
+            return false;
+        }
 
         grabber.asMob().setTarget(target);
         return super.canUse();

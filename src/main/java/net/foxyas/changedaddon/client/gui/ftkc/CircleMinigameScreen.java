@@ -69,18 +69,18 @@ public abstract class CircleMinigameScreen extends Screen {
         guiGraphics.fill((int) ((int) x - filledHalfWidth), (int) (y - barHeight / 2f), (int) (x + filledHalfWidth), (int) (y + barHeight / 2f), Color.WHITE.getRGB());
     }
 
-    protected void drawCircles(@NotNull GuiGraphics stack) {
+    protected void drawCircles(@NotNull GuiGraphics guiGraphics) {
         TransfurVariantInstance<?> var = ProcessTransfur.getPlayerTransfurVariant(player);
         if (var != null) {
             Color3 color = var.getTransfurColor();
-            RenderSystem.setShaderColor(1 - color.red(), 1 - color.green(), 1 - color.blue(), 1);
-        } else RenderSystem.setShaderColor(0, 0, 0, 0);
+            guiGraphics.setColor(1 - color.red(), 1 - color.green(), 1 - color.blue(), 1);
+        } else guiGraphics.setColor(0, 0, 0, 0);
 
-        stack.blit(CIRCLE_SLOT, (int) circle.x - 9, (int) circle.y - 9, 0, 0, 19, 19, 19, 19);
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        guiGraphics.blit(CIRCLE_SLOT, (int) circle.x - 9, (int) circle.y - 9, 0, 0, 19, 19, 19, 19);
+        guiGraphics.setColor(1, 1, 1, 1);
 
         RenderSystem.setShaderTexture(0, CIRCLE_CURSOR);
-        stack.blit(CIRCLE_CURSOR, (int) cursor.x - 9, (int) cursor.y - 9, 0, 0, 19, 19, 19, 19);
+        guiGraphics.blit(CIRCLE_CURSOR, (int) cursor.x - 9, (int) cursor.y - 9, 0, 0, 19, 19, 19, 19);
     }
 
     @Override

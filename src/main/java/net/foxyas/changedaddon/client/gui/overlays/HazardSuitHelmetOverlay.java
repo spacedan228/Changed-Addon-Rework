@@ -99,7 +99,7 @@ public class HazardSuitHelmetOverlay {
             RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
             // --- Color and texture stuff
-            RenderSystem.setShaderColor(1, 1, 1, 1);
+            guiGraphics.setColor(1, 1, 1, 1);
 
             // --- Render overlay
             guiGraphics.blit(OVERLAY_TEXTURE, 0, 0, 0, 0, screenWidth, screenHeight, screenWidth, screenHeight);
@@ -109,7 +109,7 @@ public class HazardSuitHelmetOverlay {
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
             RenderSystem.disableBlend();
-            RenderSystem.setShaderColor(1, 1, 1, 1);
+            guiGraphics.setColor(1, 1, 1, 1);
 
             // --- Breath Sound
             if ((breathingSound == null || breathingSound.isStopped())) {

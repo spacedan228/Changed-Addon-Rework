@@ -24,7 +24,7 @@ public class UntransfurOverlayOverlay {
 
         // Salvar estado inicial
         RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        guiGraphics.setColor(1f, 1f, 1f, 1f);
 
         // Aqui começa o bloco que altera o RenderSystem
         RenderSystem.disableDepthTest();
@@ -55,7 +55,7 @@ public class UntransfurOverlayOverlay {
             RenderSystem.defaultBlendFunc();
             RenderSystem.enableDepthTest();
             RenderSystem.disableBlend();
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            guiGraphics.setColor(1f, 1f, 1f, 1f);
             RenderSystem.setShader(GameRenderer::getPositionTexShader); // seguro
         }
     }

@@ -51,7 +51,7 @@ public class UnifuserGuiScreen extends AbstractContainerScreen<UnifuserGuiMenu> 
 
     @Override
     protected void renderBg(@NotNull GuiGraphics pGuiGraphics, float partialTicks, int gx, int gy) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        pGuiGraphics.setColor(1, 1, 1, 1);
 
         pGuiGraphics.blit(ResourceLocation.parse("changed_addon:textures/screens/unifusergui_new.png"), this.leftPos, this.topPos, 0, 0, 200, 187, 200, 187);
 

@@ -112,7 +112,7 @@ public class KeyPressMinigameScreen extends Screen {
             pGuiGraphics.fill(0, 0, width, height, -8355712);
         }
 
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        pGuiGraphics.setColor(1, 1, 1, 1);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         pGuiGraphics.blit(BACKGROUND_TEXTURE, width / 2 - halfImgWidth, height / 2 - halfImgHeight, 0, 0, imageWidth, imageHeight, imageWidth, imageHeight);

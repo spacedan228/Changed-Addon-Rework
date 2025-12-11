@@ -47,7 +47,7 @@ public class GeneratorguiScreen extends AbstractContainerScreen<GeneratorGuiMenu
 
     @Override
     protected void renderBg(@NotNull GuiGraphics pGuiGraphics, float partialTicks, int gx, int gy) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        pGuiGraphics.setColor(1, 1, 1, 1);
         pGuiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
         ResourceLocation stateTexture;

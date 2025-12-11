@@ -47,7 +47,7 @@ public class CatalyzerGuiScreen extends AbstractContainerScreen<CatalyzerGuiMenu
 
     @Override
     protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTicks, int gx, int gy) {
-        RenderSystem.setShaderColor(1, 1, 1, 1);
+        guiGraphics.setColor(1, 1, 1, 1);
         guiGraphics.blit(texture, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight, this.imageWidth, this.imageHeight);
 
         ResourceLocation texture2 = ResourceLocation.parse("changed_addon:textures/screens/empty_bar.png");
