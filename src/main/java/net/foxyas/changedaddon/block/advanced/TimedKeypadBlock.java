@@ -164,6 +164,7 @@ public class TimedKeypadBlock extends KeypadBlock {
                                         renderAABB,
                                         1f, 1f, 1f, 1f     // R, G, B, Alpha
                                 );
+                                break;
                             }
                         }
                     }
