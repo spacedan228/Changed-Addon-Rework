@@ -395,7 +395,7 @@ public class HULanguageProvider extends LanguageProvider {
 
         addGamerule(CHANGED_ADDON_CREATURE_DIETS, "Lények étrendje?", "Lehetővé teszi a transzfuráltak számára, hogy több éhség helyreállítást és telítettséget kapjanak, ha jó ételt esznek számukra");
         addGamerule(CHANGED_ADDON_HARD_MODE_BOSSES, "Changed Addon Nehéz módi fő ellenségek", "Nehézségi szorzó hozzáadása Changed Addon mód fő ellenségeire");
-        //FIXME missing translation addGamerule(TICKS_TO_DARK_LATEX_MASK_TRANSFUR, "Tud-e transzfurálni a sötét latex maszk", "Bekapcsolt állapotban a játékos transzfurálhat a sötét latex maszk tartásával.");
+        addGamerule(TICKS_TO_DARK_LATEX_MASK_TRANSFUR, "Tud-e transzfurálni a sötét latex maszk", "Bekapcsolt állapotban a játékos transzfurálhat a sötét latex maszk tartásával.");
         addGamerule(DO_DAZED_LATEX_BURN, "Dazed latexek égésének engedélyezése", "Bekapcsolt állapotban a Dazed latexek égnek napfényben mint a Dazed játékban");
         addGamerule(DO_LATEX_INFECTION, "Latex fertőzés engedélyezése", "Ha megfertőződött, a fertőzés addig növekszik, amíg teljesen meg nem fertőződött. A hatás erőssége növeli a fertőzés sebességét.");
         addGamerule(FIGHT_TO_KEEP_CONSCIOUSNESS, "Harc az eszmélet megtartásáért", "Hagyja, hogy a harc az eszmélet megtartásáért quick time event megtörténjen (Ez csak akkor történik, ha a játékos elveszíti az eszméletét, egyébként nem)");

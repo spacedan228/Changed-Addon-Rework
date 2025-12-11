@@ -405,6 +405,8 @@
   "gamerule.changed_addon:needPermissionForBossTransfur.description": "Bekapcsolt \u00E1llapotban a j\u00E1t\u00E9kosnak enged\u00E9ly sz\u00FCks\u00E9ges a f\u0151 ellens\u00E9g form\u00E1j\u00E1hoz val\u00F3 transzfur\u00E1l\u00E1s\u00E1hoz",
   "gamerule.changed_addon:painiteGeneration": "Painit gener\u00E1l\u00E1sa",
   "gamerule.changed_addon:painiteGeneration.description": "Aktiv\u00E1lja a pianit\u00E9rc gener\u00E1l\u00E1s\u00E1t",
+  "gamerule.changed_addon:tickToDarkLatexMaskTransfur": "Tud-e transzfur\u00E1lni a s\u00F6t\u00E9t latex maszk",
+  "gamerule.changed_addon:tickToDarkLatexMaskTransfur.description": "Bekapcsolt \u00E1llapotban a j\u00E1t\u00E9kos transzfur\u00E1lhat a s\u00F6t\u00E9t latex maszk tart\u00E1s\u00E1val.",
   "gui.changed_addon.catalyzer_gui.label_full": "Tele",
   "gui.changed_addon.catalyzer_gui.tooltip_put_the_powders_or_syringe": "Tedd ide a porokat vagy a fecskend\u0151t",
   "gui.changed_addon.fight_to_keep_consciousness_minigame.button_fight": "           K\u00FCzdj            ",
