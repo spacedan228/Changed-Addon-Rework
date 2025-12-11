@@ -14,10 +14,10 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.Random;
 
 @Mod.EventBusSubscriber
-public class VariantsDetails {
+public class VariantEvents {
 
     @SubscribeEvent
-    public static void entityJump(LivingEvent.LivingJumpEvent event) {
+    public static void entityJumpWithVariant(LivingEvent.LivingJumpEvent event) {
         if(!(event.getEntityLiving() instanceof Player player) || player.isOnGround()
                 || !player.level.isClientSide || !(player.level instanceof ClientLevel clientLevel)) return;
 
