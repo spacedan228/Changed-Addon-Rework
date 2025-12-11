@@ -7,7 +7,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-version = '2.0.0'
+version = '2.7.0'
 group = 'com.foxyas.changed_addon'
 archivesBaseName = 'changed_addon'
 
