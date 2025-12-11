@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.mixins.entity.CombatTrackerAccessor;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.minecraft.world.damagesource.CombatEntry;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
 import java.util.EnumSet;
@@ -31,7 +32,8 @@ public class MayDropGrabbedEntityGoal extends Goal {
     @Override
     public boolean canUse() {
         GrabEntityAbilityInstance grabAbilityInstance = grabber.getGrabAbilityInstance();
-        return ((CombatTrackerAccessor) grabber.asMob().getCombatTracker()).isTakingDamage() && grabAbilityInstance != null && grabAbilityInstance.grabbedEntity != null;
+        PathfinderMob mob = grabber.asMob();
+        return ((CombatTrackerAccessor) mob.getCombatTracker()).isTakingDamage() && mob.getCombatTracker().getCombatDuration() <= 20 && grabAbilityInstance != null && grabAbilityInstance.grabbedEntity != null;
     }
 
     @Override

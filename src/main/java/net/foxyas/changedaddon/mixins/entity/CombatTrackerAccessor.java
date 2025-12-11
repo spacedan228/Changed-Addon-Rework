@@ -13,6 +13,9 @@ public interface CombatTrackerAccessor {
     @Accessor("takingDamage")
     boolean isTakingDamage();
 
+    @Accessor("inCombat")
+    boolean isInCombat();
+
     @Accessor("entries")
     List<CombatEntry> getEntries();
 }
