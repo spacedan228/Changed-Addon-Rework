@@ -102,5 +102,8 @@ public class CommonMod {
         ChangedAddonMod.addNetworkMessage(RespawnAsTransfurPacket.class, RespawnAsTransfurPacket::encode,
                 RespawnAsTransfurPacket::new, RespawnAsTransfurPacket::handler,
                 NetworkDirection.PLAY_TO_SERVER);
+
+        ChangedAddonMod.addNetworkMessage(UpdateTimedKeypadTimerPacket.class, UpdateTimedKeypadTimerPacket::encode,
+                UpdateTimedKeypadTimerPacket::new, UpdateTimedKeypadTimerPacket::handle);
     }
 }

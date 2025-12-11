@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.entity.SignalBlockBlockEntity;
+import net.foxyas.changedaddon.block.entity.SignalBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -10,6 +10,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -18,16 +20,17 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class SignalBlockBlock extends HorizontalDirectionalBlock implements EntityBlock {
+public class SignalBlock extends HorizontalDirectionalBlock implements EntityBlock {
 
     public static final EnumProperty<SignalVariant> VARIANT = EnumProperty.create("variant", SignalVariant.class);
-    public SignalBlockBlock() {
+    public SignalBlock() {
         super(BlockBehaviour.Properties
                 .copy(Blocks.STONE)
                 .sound(SoundType.STONE)
@@ -67,6 +70,14 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
 
         world.scheduleTick(pos, this, 10); // Se quiser tick contínuo
     }
+
+    @Override
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level pLevel, BlockState pState, BlockEntityType<T> pBlockEntityType) {
+        return ((level, pPos, state, blockEntity) -> {
+            if (blockEntity instanceof SignalBlockEntity signalBlockEntity) signalBlockEntity.tick(level, pPos, state);
+        });
+    }
+
 
     @Override
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
@@ -111,7 +122,7 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return new SignalBlockBlockEntity(pos, state);
+        return new SignalBlockEntity(pos, state);
     }
 
     @Override
@@ -125,7 +136,7 @@ public class SignalBlockBlock extends HorizontalDirectionalBlock implements Enti
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
         if (state.getBlock() != newState.getBlock()) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof SignalBlockBlockEntity be) {
+            if (blockEntity instanceof SignalBlockEntity be) {
                 world.updateNeighbourForOutputSignal(pos, this);
             }
             super.onRemove(state, world, pos, newState, isMoving);

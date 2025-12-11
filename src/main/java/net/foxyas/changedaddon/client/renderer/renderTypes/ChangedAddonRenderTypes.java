@@ -2,13 +2,18 @@ package net.foxyas.changedaddon.client.renderer.renderTypes;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraft.Util;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterShadersEvent;
@@ -29,6 +34,31 @@ import static net.minecraft.client.renderer.RenderType.OutlineProperty.IS_OUTLIN
 // https://github.com/BlakeBr0/Cucumber/blob/1.18/src/main/java/com/blakebr0/cucumber/client/ModRenderTypes.java
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ChangedAddonRenderTypes extends RenderType {
+
+    public static class ParticleRenderTypes {
+        public static final ParticleRenderType OVERLAY = new ParticleRenderType() {
+            @Override
+            public void begin(BufferBuilder builder, @NotNull TextureManager textureManager) {
+                RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
+                RenderSystem.disableDepthTest(); // IGNORA BLOCKS
+                builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
+            }
+
+            @Override
+            public void end(Tesselator tessellator) {
+                tessellator.end();
+                RenderSystem.enableDepthTest(); // restaura para não quebrar o jogo
+            }
+
+            @Override
+            public String toString() {
+                return "OVERLAY_PARTICLE";
+            }
+        };
+
+    }
 
     private static ShaderInstance TRANSLUCENT_OUTLINE_SHADER;
 

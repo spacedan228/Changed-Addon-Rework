@@ -4,7 +4,7 @@ license="MIT License"
 
 [[mods]]
 modId="changed_addon"
-version="2.6.8"
+version="2.7.0"
 displayName="Changed Addon Plus"
 credits="0senia0 (Helper Dev)\nLTXProgrammer (Main Mod Dev)\n Donators : Nazaeura, Axivorn, BlockyBreaker9001, BRUH, Deathswordd, LostyBoy, Dawn The Shark, Márk Fazekas, fengqi, The_Snowwy_Snom Nom, Memenius, breadikals, Rosa Garcia Lobos, justin colburn"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/changed-addon-plus/"
@@ -32,7 +32,7 @@ description="this is a remastered version of my mod addon hope you like it! \n I
     modId="changed"
     mandatory=true
     versionRange="[0.15.0,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.changed_addon]]

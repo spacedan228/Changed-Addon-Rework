@@ -3,15 +3,14 @@ package net.foxyas.changedaddon.init;
 import com.mojang.serialization.Codec;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.particle.SolventParticleParticle;
-import net.foxyas.changedaddon.effect.particles.LaserPointParticle;
-import net.foxyas.changedaddon.effect.particles.ParticleProviderHolder;
-import net.foxyas.changedaddon.effect.particles.ThunderSparkOption;
-import net.foxyas.changedaddon.effect.particles.ThunderSparkParticle;
+import net.foxyas.changedaddon.effect.particles.*;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -31,6 +30,7 @@ public class ChangedAddonParticleTypes {
 
     public static final RegistryObject<ParticleType<SimpleParticleType>> SOLVENT_PARTICLE = REGISTRY.register("solvent_particle", () -> new SimpleParticleType(true));
     public static final RegistryObject<ParticleType<ThunderSparkOption>> THUNDER_SPARK = register("thunder_spark", ThunderSparkOption.DESERIALIZER, ThunderSparkOption::codec);
+    public static final RegistryObject<ParticleType<SignalParticleOption>> SIGNAL_PARTICLE = register("signal_particle", SignalParticleOption.DESERIALIZER, SignalParticleOption::codec);
     public static final RegistryObject<ParticleType<LaserPointParticle.Option>> LASER_POINT = register("laser_point", LaserPointParticle.Option.DESERIALIZER, LaserPointParticle.Option::codec);
 
     public static ThunderSparkOption thunderSpark(int lifespan) {
@@ -39,6 +39,10 @@ public class ChangedAddonParticleTypes {
 
     public static LaserPointParticle.Option laserPoint(Entity entity, Color color) {
         return new LaserPointParticle.Option(entity, color.getRGB(), color.getAlpha() / 255f);
+    }
+
+    public static SignalParticleOption signal(int strength, ItemStack blockingAgeItem) {
+        return new SignalParticleOption(SIGNAL_PARTICLE.get(), strength, blockingAgeItem);
     }
 
     private static <T extends ParticleOptions> RegistryObject<ParticleType<T>> register(String name, ParticleOptions.Deserializer<T> dec, final Function<ParticleType<T>, Codec<T>> fn) {
@@ -51,13 +55,7 @@ public class ChangedAddonParticleTypes {
 
     @SubscribeEvent
     public static void registerParticles(RegisterParticleProvidersEvent event) {
-        var engine = Minecraft.getInstance().particleEngine;
-
-        for (RegistryObject<ParticleType<?>> particleTypeRegistryObject : REGISTRY.getEntries()) {
-            if (particleTypeRegistryObject.get() instanceof ParticleProviderHolder particleProviderHolder) {
-                event.registerSpriteSet(particleTypeRegistryObject.get(), particleProviderHolder::getProvider);
-            }
-        }
+        ParticleEngine engine = Minecraft.getInstance().particleEngine;
 
         event.registerSpriteSet(THUNDER_SPARK.get(), ThunderSparkParticle.Provider::new);
         event.registerSpriteSet(LASER_POINT.get(), LaserPointParticle.Provider::new);
