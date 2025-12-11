@@ -1,42 +1,26 @@
 package net.foxyas.changedaddon.process;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
 import net.foxyas.changedaddon.util.*;
-import net.ltxprogrammer.changed.util.EntityUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
-import org.apache.http.util.EntityUtils;
 
 
 @Mod.EventBusSubscriber
 @Deprecated(forRemoval = true)
 public class DEBUG {
 
-    public static boolean DEBUG = true;
+    public static boolean DebugFileEnable = false;
     public static float HeadPosT, HeadPosV, HeadPosB, HeadPosK, HeadPosL, HeadPosJ;
     public static float HeadPosX, HeadPosY, HeadPosZ;
 
@@ -49,7 +33,7 @@ public class DEBUG {
 
     @SubscribeEvent
     public static void debug(ServerChatEvent event) {
-        if (!DEBUG) {
+        if (!DebugFileEnable) {
             return;
         }
         if (event.getMessage().startsWith("testMotion")) {
@@ -327,7 +311,7 @@ public class DEBUG {
 
     @SubscribeEvent
     public static void PARTICLETEST(TickEvent.PlayerTickEvent event) {
-        if (!DEBUG) {
+        if (!DebugFileEnable) {
             return;
         }
         if (PARTICLETEST && event.player.isShiftKeyDown()) {

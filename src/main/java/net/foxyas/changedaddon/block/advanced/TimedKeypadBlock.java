@@ -149,6 +149,7 @@ public class TimedKeypadBlock extends KeypadBlock {
                     for (TimedKeypadBlock.KeypadButton btn : TimedKeypadBlock.KeypadButton.values()) {
                         VoxelShape shape = keypad.getButtonsInteractionShape(btn, state);
                         // Convert each AABB from the shape
+                        boolean renderAnButton = false;
                         for (AABB aabb : shape.toAabbs()) {
                             // Move it to the world
                             AABB worldAABB = aabb.move(pos);
@@ -164,9 +165,10 @@ public class TimedKeypadBlock extends KeypadBlock {
                                         renderAABB,
                                         1f, 1f, 1f, 1f     // R, G, B, Alpha
                                 );
-                                break;
+                                renderAnButton = true;
                             }
                         }
+                        if (renderAnButton) break;
                     }
                 }
             }

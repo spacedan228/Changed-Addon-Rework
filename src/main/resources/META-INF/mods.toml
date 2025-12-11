@@ -32,7 +32,7 @@ description="this is a remastered version of my mod addon hope you like it! \n I
     modId="changed"
     mandatory=true
     versionRange="[0.14.1,)"
-    ordering="NONE"
+    ordering="AFTER"
     side="BOTH"
 
 [[dependencies.changed_addon]]
