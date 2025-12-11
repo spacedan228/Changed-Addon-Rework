@@ -19,4 +19,15 @@ public interface IGrabberEntity {
             return new GrabEntityAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get(), IAbstractChangedEntity.forEntity(changedEntity));
         } else return null;
     }
+
+    default void mayTickGrabAbility() {
+        GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
+        if (grabAbilityInstance != null) {
+            if (grabAbilityInstance.getController().getHoldTicks() > 0 && (grabAbilityInstance.canUse() && grabAbilityInstance.canKeepUsing())) {
+                grabAbilityInstance.tick();
+            }
+
+            grabAbilityInstance.tickIdle();
+        }
+    }
 }

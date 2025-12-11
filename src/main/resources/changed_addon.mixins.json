@@ -31,6 +31,7 @@
     "entity.attributes.AttributeMapAccessor",
     "entity.goals.AvoidEntityGoalMixin",
     "entity.goals.ChangedEntityGoalsMixin",
+    "entity.goals.MeleeAttackGoalMixin",
     "entity.goals.PhantomAIMixin",
     "entity.goals.VillagerHostilesSensorMixin",
     "entity.player.PlayerMixin",

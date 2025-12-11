@@ -2,12 +2,15 @@ package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.goals.abilities.GrabTargetGoal;
+import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
@@ -43,8 +46,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
@@ -194,17 +197,23 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     protected void registerGoals() {
         super.registerGoals();
         this.goalSelector.addGoal(1, new GrabTargetGoal(this, 0.4f, false));
-		/*this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
-			@Override
-			protected double getAttackReachSqr(LivingEntity entity) {
-				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
-			}
-		});
-		this.goalSelector.addGoal(2, new RandomStrollGoal(this, 1));
-		this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
-		this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new FloatGoal(this));*/
+        this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
+    }
 
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        this.mayTickGrabAbility();
+    }
+
+    @Override
+    public @Nullable GrabEntityAbilityInstance getGrabAbility() {
+        return this.grabEntityAbilityInstance;
+    }
+
+    @Override
+    public <A extends AbstractAbilityInstance> A getAbilityInstance(AbstractAbility<A> ability) {
+        return (A)(this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : super.getAbilityInstance(ability));
     }
 
     public Color3 getDripColor() {

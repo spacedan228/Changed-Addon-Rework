@@ -69,18 +69,15 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     public boolean isNeutralTo(@NotNull LivingEntity target) {
         if (hasEffect(ChangedAddonMobEffects.PACIFIED.get())) return true;
         if (this.isPacified()) return true;
-        return false;
+
+
+        Optional<IAbstractChangedEntity> grabberSafe = GrabEntityAbility.getGrabberSafe(target);
+        return grabberSafe.isPresent() && grabberSafe.get() instanceof IGrabberEntity changedEntity;
     }
 
     @Inject(at = @At("HEAD"), method = "targetSelectorTest", cancellable = true)
     private void onTargetSelectorTest(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
         if (isNeutralTo(livingEntity)) cir.setReturnValue(false);
-
-        Optional<IAbstractChangedEntity> grabberSafe = GrabEntityAbility.getGrabberSafe(livingEntity);
-        if (grabberSafe.isPresent() && grabberSafe.get() instanceof IGrabberEntity changedEntity) {
-            // Only Target if it is grabbed by a Player or a non IGrabberEntity
-            cir.setReturnValue(false);
-        }
     }
 
     @Inject(at = @At("HEAD"), method = "tryAbsorbTarget", cancellable = true)
