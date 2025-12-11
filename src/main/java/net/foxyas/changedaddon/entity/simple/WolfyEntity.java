@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.entity.simple;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.goals.abilities.GrabTargetGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
+import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
@@ -24,6 +25,7 @@ import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.sounds.SoundEvent;
@@ -196,14 +198,33 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(1, new GrabTargetGoal(this, 0.4f, false));
+        //this.goalSelector.addGoal(1, new GrabTargetGoal(this, 0.4f, false));
         this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
+        this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
     }
 
     @Override
     public void baseTick() {
         super.baseTick();
         this.mayTickGrabAbility();
+    }
+
+    @Override
+    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
+        mayDropGrabbedEntity(pDamageSource, pDamageAmount);
+        super.actuallyHurt(pDamageSource, pDamageAmount);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        this.saveGrabAbilityInTag(tag);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.readGrabAbilityInTag(tag);
     }
 
     @Override

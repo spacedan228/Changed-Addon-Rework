@@ -105,5 +105,14 @@ public class CommonMod {
 
         ChangedAddonMod.addNetworkMessage(UpdateTimedKeypadTimerPacket.class, UpdateTimedKeypadTimerPacket::encode,
                 UpdateTimedKeypadTimerPacket::new, UpdateTimedKeypadTimerPacket::handle);
+
+        ChangedAddonMod.addNetworkMessage(SyncGrabberEntity.class, SyncGrabberEntity::encode,
+                SyncGrabberEntity::new, SyncGrabberEntity::handle);
+
+        ChangedAddonMod.addNetworkMessage(C2SReleaseGrabbedEntity.class, C2SReleaseGrabbedEntity::encode,
+                C2SReleaseGrabbedEntity::new, C2SReleaseGrabbedEntity::handle);
+
+        ChangedAddonMod.addNetworkMessage(S2CCheckGrabberEntity.class, S2CCheckGrabberEntity::encode,
+                S2CCheckGrabberEntity::new, S2CCheckGrabberEntity::handle);
     }
 }

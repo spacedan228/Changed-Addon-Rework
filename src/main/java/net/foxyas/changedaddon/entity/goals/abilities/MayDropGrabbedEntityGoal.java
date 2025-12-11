@@ -2,14 +2,12 @@ package net.foxyas.changedaddon.entity.goals.abilities;
 
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.mixins.entity.CombatTrackerAccessor;
-import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
-import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.damagesource.CombatEntry;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraftforge.network.PacketDistributor;
 
 import java.util.EnumSet;
+import java.util.Optional;
 
 public class MayDropGrabbedEntityGoal extends Goal {
 
@@ -39,19 +37,8 @@ public class MayDropGrabbedEntityGoal extends Goal {
     @Override
     public void start() {
         super.start();
-        if (!grabber.asMob().level().isClientSide()) {
-            GrabEntityAbilityInstance grabAbilityInstance = grabber.getGrabAbilityInstance();
-            if (grabAbilityInstance != null) {
-                LivingEntity grabbedEntity = grabAbilityInstance.grabbedEntity;
-                if (grabbedEntity != null) {
-                    grabAbilityInstance.releaseEntity();
-                    // manda packet de GRAB (tipo ARMS)
-                    Changed.PACKET_HANDLER.send(
-                            PacketDistributor.TRACKING_ENTITY.with(grabber::asMob),
-                            new GrabEntityPacket(grabber.asMob(), grabbedEntity, GrabEntityPacket.GrabType.RELEASE)
-                    );
-                }
-            }
-        }
+        CombatTrackerAccessor combatTracker = (CombatTrackerAccessor) grabber.asMob().getCombatTracker();
+        Optional<CombatEntry> first = combatTracker.getEntries().stream().findFirst();
+        first.ifPresent((combatEntry -> grabber.mayDropGrabbedEntity(combatEntry.source(), combatEntry.damage())));
     }
 }
