@@ -1,8 +1,10 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.network.packet.S2CCheckGrabberEntity;
 import net.ltxprogrammer.changed.Changed;
+import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -85,6 +87,10 @@ public interface IGrabberEntity {
                             PacketDistributor.TRACKING_ENTITY.with(this::asMob),
                             new GrabEntityPacket(this.asMob(), grabbedEntity, GrabEntityPacket.GrabType.RELEASE)
                     );
+
+                    if (grabAbilityInstance instanceof GrabEntityAbilityExtensor abilityExtensor) {
+                        abilityExtensor.setGrabCooldown(120);
+                    }
                 }
             }
         }

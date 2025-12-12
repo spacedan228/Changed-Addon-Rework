@@ -54,6 +54,7 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     @Shadow
     public float suitTransitionO;
 
+    @Shadow private int grabCooldown;
     @Unique
     private boolean safeMode = false;
     @Unique
@@ -246,5 +247,15 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
 
 
         return original;
+    }
+
+    @Override
+    public int getGrabCooldown() {
+        return this.grabCooldown;
+    }
+
+    @Override
+    public void setGrabCooldown(int cooldown) {
+        this.grabCooldown = cooldown;
     }
 }
