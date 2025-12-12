@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.mixins.abilities.GrabEntityAbilityInstanceAccessor;
 import net.foxyas.changedaddon.mixins.entity.CombatTrackerAccessor;
 import net.ltxprogrammer.changed.Changed;
+import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
@@ -40,6 +41,7 @@ public class MayGrabTargetGoal extends Goal {
         if (target == null) return false;
         double reachSqr = grabber.asMob().getMeleeAttackRangeSqr(target) * 0.7f; //Closer than a normal punch
         if (grabAbilityInstance == null) return false;
+        if (GrabEntityAbility.getGrabber(target) != null) return false;
         if (grabAbilityInstance instanceof GrabEntityAbilityInstanceAccessor grabEntityAbilityInstanceAccessor && grabEntityAbilityInstanceAccessor.getGrabCooldown() > 0) return false;
 
         return target.distanceToSqr(grabber.asMob()) <= reachSqr && grabAbilityInstance.grabbedEntity == null;

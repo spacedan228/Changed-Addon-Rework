@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
-import net.foxyas.changedaddon.entity.goals.abilities.GrabTargetGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
