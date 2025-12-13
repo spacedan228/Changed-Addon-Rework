@@ -1,11 +1,17 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
+import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.HairStyle;
@@ -18,6 +24,7 @@ import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -45,7 +52,9 @@ import java.util.Objects;
 
 import static net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure.DietType;
 
-public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats {
+public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats, IGrabberEntity {
+
+    protected GrabEntityAbilityInstance grabEntityAbilityInstance;
 
     public WolfyEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.WOLFY.get(), world);
@@ -57,6 +66,8 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         this.setAttributes(getAttributes());
         setNoAi(false);
         setPersistenceRequired();
+
+        this.grabEntityAbilityInstance = this.createGrabAbility();
     }
 
     public static void init() {
@@ -202,19 +213,55 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
+    public @Nullable GrabEntityAbilityInstance getGrabAbilityInstance() {
+        return this.grabEntityAbilityInstance;
+    }
+
+    @Override
+    public LivingEntity getGrabTarget() {
+        return getTarget();
+    }
+
+    @Override
+    public PathfinderMob asMob() {
+        return this;
+    }
+
+    @Override
     protected void registerGoals() {
         super.registerGoals();
-		/*this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
-			@Override
-			protected double getAttackReachSqr(LivingEntity entity) {
-				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
-			}
-		});
-		this.goalSelector.addGoal(2, new RandomStrollGoal(this, 1));
-		this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
-		this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new FloatGoal(this));*/
+        //this.goalSelector.addGoal(1, new GrabTargetGoal(this, 0.4f, false));
+        this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
+        this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
+    }
 
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        this.mayTickGrabAbility();
+    }
+
+    @Override
+    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
+        mayDropGrabbedEntity(pDamageSource, pDamageAmount);
+        super.actuallyHurt(pDamageSource, pDamageAmount);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        this.saveGrabAbilityInTag(tag);
+    }
+
+    @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.readGrabAbilityInTag(tag);
+    }
+
+    @Override
+    public <A extends AbstractAbilityInstance> A getAbilityInstance(AbstractAbility<A> ability) {
+        return (A)(this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : super.getAbilityInstance(ability));
     }
 
     public Color3 getDripColor() {

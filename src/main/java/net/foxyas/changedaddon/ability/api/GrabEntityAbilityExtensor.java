@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 public interface GrabEntityAbilityExtensor {
+    int SNUGGLED_COOLDOWN = 20;
 
     void setSafeMode(boolean safeMode);
 
@@ -18,7 +19,17 @@ public interface GrabEntityAbilityExtensor {
 
     LivingEntity grabber();
 
-    int SNUGGLED_COOLDOWN = 20;
+    boolean isAlreadySnuggled();
+
+    void setSnuggled(boolean value);
+
+    boolean isAlreadySnuggledTight();
+
+    void setSnuggledTight(boolean value);
+
+    void setGrabCooldown(int i);
+
+    int getGrabCooldown();
 
     default void runHug(@NotNull LivingEntity livingEntity) {
         if (grabber() instanceof Player player) {
@@ -36,14 +47,6 @@ public interface GrabEntityAbilityExtensor {
             }
         }
     }
-
-    boolean isAlreadySnuggled();
-
-    void setSnuggled(boolean value);
-
-    boolean isAlreadySnuggledTight();
-
-    void setSnuggledTight(boolean value);
 
     default void runTightHug(@NotNull LivingEntity livingEntity) {
         if (grabber() instanceof Player player) {
@@ -63,4 +66,5 @@ public interface GrabEntityAbilityExtensor {
             }
         }
     }
+
 }

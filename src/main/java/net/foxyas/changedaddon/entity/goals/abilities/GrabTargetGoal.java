@@ -2,8 +2,8 @@ package net.foxyas.changedaddon.entity.goals.abilities;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.network.packet.DynamicGrabEntityPacket;
 import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraftforge.network.PacketDistributor;
@@ -26,7 +26,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
 
     @Override
     protected void checkAndPerformAttack(@NotNull LivingEntity target, double distanceSq) {
-        var ability = grabber.getGrabAbility();
+        var ability = grabber.getGrabAbilityInstance();
         if (ability == null) {
             grabber.asMob().setTarget(null);
             return;
@@ -44,7 +44,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
             // manda packet de GRAB (tipo ARMS)
             ChangedAddonMod.PACKET_HANDLER.send(
                     PacketDistributor.TRACKING_ENTITY.with(grabber::asMob),
-                    new GrabEntityPacket(grabber.asMob(), target, GrabEntityPacket.GrabType.ARMS)
+                    new DynamicGrabEntityPacket(grabber.asMob(), target, DynamicGrabEntityPacket.GrabType.ARMS)
             );
 
             grabber.asMob().setTarget(null);
@@ -65,7 +65,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
         if (target == null)
             return false;
 
-        var ability = grabber.getGrabAbility();
+        var ability = grabber.getGrabAbilityInstance();
         if (ability == null)
             return false;
 
@@ -82,7 +82,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
         if (target == null)
             return false;
 
-        var ability = grabber.getGrabAbility();
+        var ability = grabber.getGrabAbilityInstance();
         if (ability == null)
             return false;
 

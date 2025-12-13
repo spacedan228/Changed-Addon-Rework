@@ -106,12 +106,23 @@ public class CommonMod {
                 RespawnAsTransfurPacket::new, RespawnAsTransfurPacket::handler,
                 NetworkDirection.PLAY_TO_SERVER);
 
-
         ChangedAddonMod.addNetworkMessage(ServerTellClientRespawn.class, ServerTellClientRespawn::encode,
                 ServerTellClientRespawn::new, ServerTellClientRespawn::handle,
                 NetworkDirection.PLAY_TO_CLIENT);
 
         ChangedAddonMod.addNetworkMessage(UpdateTimedKeypadTimerPacket.class, UpdateTimedKeypadTimerPacket::encode,
                 UpdateTimedKeypadTimerPacket::new, UpdateTimedKeypadTimerPacket::handle);
+
+        ChangedAddonMod.addNetworkMessage(DynamicGrabEntityPacket.class, DynamicGrabEntityPacket::write,
+                DynamicGrabEntityPacket::new, DynamicGrabEntityPacket::handle);
+
+        ChangedAddonMod.addNetworkMessage(SyncGrabberEntity.class, SyncGrabberEntity::encode,
+                SyncGrabberEntity::new, SyncGrabberEntity::handle);
+
+        ChangedAddonMod.addNetworkMessage(C2SReleaseGrabbedEntity.class, C2SReleaseGrabbedEntity::encode,
+                C2SReleaseGrabbedEntity::new, C2SReleaseGrabbedEntity::handle);
+
+        ChangedAddonMod.addNetworkMessage(S2CCheckGrabberEntity.class, S2CCheckGrabberEntity::encode,
+                S2CCheckGrabberEntity::new, S2CCheckGrabberEntity::handle);
     }
 }

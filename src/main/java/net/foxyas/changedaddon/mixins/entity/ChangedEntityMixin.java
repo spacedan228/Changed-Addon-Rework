@@ -3,10 +3,12 @@ package net.foxyas.changedaddon.mixins.entity;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
+import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
+import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -65,7 +67,9 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     public boolean isNeutralTo(@NotNull LivingEntity target) {
         if (hasEffect(ChangedAddonMobEffects.PACIFIED.get())) return true;
         if (this.isPacified()) return true;
-        return false;
+
+        Optional<IAbstractChangedEntity> grabberSafe = GrabEntityAbility.getGrabberSafe(target);
+        return grabberSafe.isPresent() && grabberSafe.get() instanceof IGrabberEntity changedEntity;
     }
 
     @Inject(at = @At("HEAD"), method = "targetSelectorTest", cancellable = true)
