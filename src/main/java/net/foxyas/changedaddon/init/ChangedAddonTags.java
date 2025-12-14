@@ -10,6 +10,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.registries.ForgeRegistries;
 
 public final class ChangedAddonTags {
 
@@ -21,7 +22,7 @@ public final class ChangedAddonTags {
         public static final TagKey<Block> PASSABLE_BLOCKS = key("passable_blocks");
 
         private static TagKey<Block> key(String path) {
-            return TagKey.create(BuiltInRegistries.BLOCK.key(), ChangedAddonMod.resourceLoc(path));
+            return TagKey.create(ForgeRegistries.BLOCKS.getRegistryKey(), ChangedAddonMod.resourceLoc(path));
         }
     }
 
@@ -49,7 +50,7 @@ public final class ChangedAddonTags {
         public static final TagKey<Item> WOLF_DIET = key("wolf_diet_list");
 
         private static TagKey<Item> key(String path) {
-            return TagKey.create(BuiltInRegistries.ITEM.key(), ChangedAddonMod.resourceLoc(path));
+            return TagKey.create(ForgeRegistries.ITEMS.getRegistryKey(), ChangedAddonMod.resourceLoc(path));
         }
     }
 
@@ -63,9 +64,11 @@ public final class ChangedAddonTags {
         public static final TagKey<EntityType<?>> PACIFY_IMMUNE = key("pacify_immune");
         public static final TagKey<EntityType<?>> PACIFY_HANDLE_IMMUNE = key("pacify_handle_immune");
         public static final TagKey<EntityType<?>> HAS_CLAWS = key("has_claws");
+        public static final TagKey<EntityType<?>> CAN_GRAB = key("can_grab");
+        public static final TagKey<EntityType<?>> IGNORE_GRABBED_TARGETS = key("ignore_grabber_targets");
 
         private static TagKey<EntityType<?>> key(String path) {
-            return TagKey.create(BuiltInRegistries.ENTITY_TYPE.key(), ChangedAddonMod.resourceLoc(path));
+            return TagKey.create(ForgeRegistries.ENTITY_TYPES.getRegistryKey(), ChangedAddonMod.resourceLoc(path));
         }
     }
 
@@ -102,7 +105,7 @@ public final class ChangedAddonTags {
         }
     }
 
-    public class DamageTypes {
+    public static class DamageTypes {
 
         public static final TagKey<DamageType> IS_LATEX_SOLVENT = key("is_latex_solvent");
 

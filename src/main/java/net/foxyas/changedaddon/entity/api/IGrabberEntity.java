@@ -1,10 +1,9 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.network.packet.S2CCheckGrabberEntity;
 import net.ltxprogrammer.changed.Changed;
-import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -95,4 +94,8 @@ public interface IGrabberEntity {
     void setGrabCooldown(int i);
 
     int getGrabCooldown();
+
+    default boolean shouldRespectGrab(PathfinderMob entitiesTryingToTarget) {
+        return entitiesTryingToTarget.getType().is(ChangedAddonTags.EntityTypes.IGNORE_GRABBED_TARGETS);
+    }
 }
