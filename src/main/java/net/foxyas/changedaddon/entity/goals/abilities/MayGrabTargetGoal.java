@@ -42,7 +42,7 @@ public class MayGrabTargetGoal extends Goal {
         double reachSqr = grabber.asMob().getMeleeAttackRangeSqr(target) * 0.7f; //Closer than a normal punch
         if (grabAbilityInstance == null) return false;
         if (GrabEntityAbility.getGrabber(target) != null) return false;
-        if (grabAbilityInstance instanceof GrabEntityAbilityInstanceAccessor grabEntityAbilityInstanceAccessor && grabEntityAbilityInstanceAccessor.getGrabCooldown() > 0)
+        if (grabber.getGrabCooldown() > 0)
             return false;
 
         return target.distanceToSqr(grabber.asMob()) <= reachSqr && grabAbilityInstance.grabbedEntity == null;
@@ -87,11 +87,7 @@ public class MayGrabTargetGoal extends Goal {
                                 1.0f
                         );
 
-                        if (GrabEntityAbility.getGrabber(target) != null) {
-                            if (grabAbilityInstance instanceof GrabEntityAbilityExtensor abilityExtensor) {
-                                abilityExtensor.setGrabCooldown(120);
-                            }
-                        }
+                        grabber.setGrabCooldown(120);
                     }
                 }
             }

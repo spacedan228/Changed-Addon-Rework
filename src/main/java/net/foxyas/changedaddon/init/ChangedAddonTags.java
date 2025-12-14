@@ -61,6 +61,7 @@ public final class ChangedAddonTags {
         public static final TagKey<EntityType<?>> PACIFY_IMMUNE = key("pacify_immune");
         public static final TagKey<EntityType<?>> PACIFY_HANDLE_IMMUNE = key("pacify_handle_immune");
         public static final TagKey<EntityType<?>> HAS_CLAWS = key("has_claws");
+        public static final TagKey<EntityType<?>> CAN_GRAB = key("can_grab");
 
         private static TagKey<EntityType<?>> key(String path) {
             return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ChangedAddonMod.resourceLoc(path));

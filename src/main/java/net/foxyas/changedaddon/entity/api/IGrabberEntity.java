@@ -57,7 +57,7 @@ public interface IGrabberEntity {
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
             grabAbilityInstance.saveData(grabInstanceTag);
-
+            grabInstanceTag.putInt("grabCooldown", this.getGrabCooldown());
             tag.put("grabAbility", grabInstanceTag);
         }
     }
@@ -67,9 +67,8 @@ public interface IGrabberEntity {
 
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
-            grabAbilityInstance.readData(grabInstanceTag);
-
-            tag.put("grabAbility", grabInstanceTag);
+            grabAbilityInstance.readData(tag);
+            if (grabInstanceTag.contains("grabCooldown")) this.setGrabCooldown(grabInstanceTag.getInt("grabCooldown"));
         }
     }
 
@@ -86,11 +85,13 @@ public interface IGrabberEntity {
                             new DynamicGrabEntityPacket(this.asMob(), grabbedEntity, DynamicGrabEntityPacket.GrabType.RELEASE)
                     );
 
-                    if (grabAbilityInstance instanceof GrabEntityAbilityExtensor abilityExtensor) {
-                        abilityExtensor.setGrabCooldown(120);
-                    }
+                    setGrabCooldown(120);
                 }
             }
         }
     }
+
+    void setGrabCooldown(int i);
+
+    int getGrabCooldown();
 }

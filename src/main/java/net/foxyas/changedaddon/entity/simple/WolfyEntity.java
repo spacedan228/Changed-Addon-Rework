@@ -55,6 +55,7 @@ import static net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure.Die
 public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats, IGrabberEntity {
 
     protected GrabEntityAbilityInstance grabEntityAbilityInstance;
+    protected int grabCooldown = 0;
 
     public WolfyEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.WOLFY.get(), world);
@@ -238,6 +239,9 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     @Override
     public void baseTick() {
         super.baseTick();
+        if (grabEntityAbilityInstance != null && grabEntityAbilityInstance.grabbedEntity == null) {
+            if (grabCooldown > 0) this.grabCooldown--;
+        }
         this.mayTickGrabAbility();
     }
 
@@ -262,6 +266,16 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     @Override
     public <A extends AbstractAbilityInstance> A getAbilityInstance(AbstractAbility<A> ability) {
         return (A)(this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : super.getAbilityInstance(ability));
+    }
+
+    @Override
+    public int getGrabCooldown() {
+        return this.grabCooldown;
+    }
+
+    @Override
+    public void setGrabCooldown(int grabCooldown) {
+        this.grabCooldown = grabCooldown;
     }
 
     public Color3 getDripColor() {

@@ -155,20 +155,19 @@ public class ChangedAddonAdminCommand {
                                 )
                         )
                 )
-                .then(Commands.literal("SetTransfurProgress")//Add/set progress self
-                        .requires(stack -> stack.getEntity() instanceof Player)
+                .then(Commands.literal("setTransfurProgress")//Add/set progress self
                         .then(Commands.argument("Number", DoubleArgumentType.doubleArg())
                                 .then(Commands.literal("add")
                                         .executes(arguments ->
-                                                setTFProgress(arguments.getSource().getPlayerOrException(), FloatArgumentType.getFloat(arguments, "Number"), true))
+                                                setTFProgress(arguments.getSource().getEntity(), FloatArgumentType.getFloat(arguments, "Number"), true))
                                 )
                                 .then(Commands.literal("set")
                                         .executes(arguments ->
-                                                setTFProgress(arguments.getSource().getPlayerOrException(), FloatArgumentType.getFloat(arguments, "Number"), false))
+                                                setTFProgress(arguments.getSource().getEntity(), FloatArgumentType.getFloat(arguments, "Number"), false))
                                 )
                         )
                 )
-                .then(Commands.literal("SetPlayerTransfurProgress")//Add/set progress other
+                .then(Commands.literal("setPlayerTransfurProgress")//Add/set progress other
                         .then(Commands.argument("Target", EntityArgument.player())
                                 .then(Commands.argument("Number", FloatArgumentType.floatArg())
                                         .then(Commands.literal("add")
@@ -217,6 +216,12 @@ public class ChangedAddonAdminCommand {
                         )
                 )
         );
+    }
+
+    private static int setTFProgress(Entity player, float amount, boolean add) {
+        if (player instanceof Player pEntity) {
+            return setTFProgress(pEntity, amount, add);
+        } else return 0;
     }
 
     private static int setTFProgress(Player player, float amount, boolean add) {

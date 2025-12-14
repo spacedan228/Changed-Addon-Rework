@@ -1,0 +1,123 @@
+package net.foxyas.changedaddon.mixins.entity;
+
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
+import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.ltxprogrammer.changed.ability.*;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+@Mixin(value = ChangedEntity.class, remap = false)
+public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity {
+
+    protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
+    protected int grabCooldown = 0;
+
+    protected ChangedEntityGrabHandleMixin(EntityType<? extends Monster> pEntityType, Level pLevel) {
+        super(pEntityType, pLevel);
+    }
+
+    @Inject(at = @At("TAIL"), method = "<init>", cancellable = true)
+    private void initHook(EntityType<? extends Monster> type, Level level, CallbackInfo ci) {
+        if (ChangedAddon$canEntityGrab(type)) {
+            this.grabEntityAbilityInstance = this.createGrabAbility();
+        }
+    }
+
+    @Override
+    public @Nullable GrabEntityAbilityInstance getGrabAbilityInstance() {
+        return this.grabEntityAbilityInstance;
+    }
+
+    @Override
+    public LivingEntity getGrabTarget() {
+        return getTarget();
+    }
+
+    @Override
+    public PathfinderMob asMob() {
+        return this;
+    }
+
+    @Inject(at = @At("TAIL"), method = "registerGoals", remap = true, cancellable = true)
+    private void goalsHook(CallbackInfo ci) {
+        if (ChangedAddon$canEntityGrab()) {
+            this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
+            this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
+        }
+    }
+
+    @Override
+    public void baseTick() {
+        super.baseTick();
+        if (ChangedAddon$canEntityGrab()) {
+            if (grabEntityAbilityInstance != null && grabEntityAbilityInstance.grabbedEntity == null) {
+                if (grabCooldown > 0) this.grabCooldown--;
+            }
+            this.mayTickGrabAbility();
+        }
+    }
+
+    @Override
+    public int getGrabCooldown() {
+        return grabCooldown;
+    }
+
+    @Override
+    public void setGrabCooldown(int grabCooldown) {
+        this.grabCooldown = grabCooldown;
+    }
+
+    @Override
+    protected void actuallyHurt(@NotNull DamageSource pDamageSource, float pDamageAmount) {
+        if (ChangedAddon$canEntityGrab()) {
+            mayDropGrabbedEntity(pDamageSource, pDamageAmount);
+        }
+        super.actuallyHurt(pDamageSource, pDamageAmount);
+    }
+
+    @Override
+    public void addAdditionalSaveData(@NotNull CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        if (ChangedAddon$canEntityGrab()) {
+            this.saveGrabAbilityInTag(tag);
+        }
+    }
+
+    @Override
+    public void readAdditionalSaveData(@NotNull CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        if (ChangedAddon$canEntityGrab()) {
+            this.readGrabAbilityInTag(tag);
+        }
+    }
+
+    @Unique
+    private boolean ChangedAddon$canEntityGrab(EntityType<?> type) {
+        return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB);
+    }
+
+    @Unique
+    private boolean ChangedAddon$canEntityGrab() {
+        return ChangedAddon$canEntityGrab(this.getType());
+    }
+
+    @ModifyReturnValue(method = "getAbilityInstance", at = @At("RETURN"))
+    private <A extends AbstractAbilityInstance> A getAbilityInstanceHook(A original, AbstractAbility<A> ability) {
+        if (ChangedAddon$canEntityGrab()) return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : original);
+        return original;
+    }
+}
