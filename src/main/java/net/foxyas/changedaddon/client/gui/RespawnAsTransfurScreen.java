@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class RespawnAsTransfurScreen extends Screen {
 
     private static final ResourceLocation TEXTURE =
-            ChangedAddonMod.resourceLoc("textures/gui/infected_spawn.png");
+            ChangedAddonMod.textureLoc("textures/gui/infected_spawn");
 
     private final DeathScreen previousDeathScreen;
 
