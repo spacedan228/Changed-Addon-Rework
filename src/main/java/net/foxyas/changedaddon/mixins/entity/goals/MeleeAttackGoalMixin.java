@@ -35,6 +35,12 @@ public class MeleeAttackGoalMixin {
         if (iGrabber != null) {
             LivingEntity grabber = iGrabber.getEntity();
             if (!(grabber instanceof Player)) {
+                
+                if (grabber.is(mob)) {
+                    cir.setReturnValue(false);
+                    return;
+                }
+                
                 if (grabber.getType().is(ChangedAddonTags.EntityTypes.CAN_GRAB) || grabber instanceof IGrabberEntity) {
                     if (grabber instanceof IGrabberEntity grabberEntity) {
                         boolean value = grabberEntity.shouldRespectGrab(mob);
