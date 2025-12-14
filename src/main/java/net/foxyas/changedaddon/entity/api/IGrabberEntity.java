@@ -64,12 +64,11 @@ public interface IGrabberEntity {
         }
     }
 
-    default void readGrabAbilityInTag(CompoundTag tag) {
-        CompoundTag grabInstanceTag = new CompoundTag();
+    default void readGrabAbilityInTag(CompoundTag grabInstanceTag) {
 
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
-            grabAbilityInstance.readData(tag);
+            grabAbilityInstance.readData(grabInstanceTag);
             if (grabInstanceTag.contains("grabCooldown")) this.setGrabCooldown(grabInstanceTag.getInt("grabCooldown"));
         }
     }
