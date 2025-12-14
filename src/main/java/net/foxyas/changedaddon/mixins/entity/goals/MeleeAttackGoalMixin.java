@@ -1,8 +1,10 @@
 package net.foxyas.changedaddon.mixins.entity.goals;
 
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
@@ -29,9 +31,18 @@ public class MeleeAttackGoalMixin {
         }
 
         LivingEntity target = this.mob.getTarget();
-        if (!(GrabEntityAbility.getGrabber(target) instanceof Player)) {
-            if (GrabEntityAbility.getGrabber(target) instanceof IGrabberEntity) {
-                cir.setReturnValue(false);
+        IAbstractChangedEntity iGrabber = GrabEntityAbility.getGrabber(target);
+        if (iGrabber != null) {
+            LivingEntity grabber = iGrabber.getEntity();
+            if (!(grabber instanceof Player)) {
+                if (grabber.getType().is(ChangedAddonTags.EntityTypes.CAN_GRAB) || grabber instanceof IGrabberEntity) {
+                    if (grabber instanceof IGrabberEntity grabberEntity) {
+                        boolean value = grabberEntity.shouldRespectGrab(mob);
+                        cir.setReturnValue(!value);
+                    }
+                    boolean value = mob.getType().is(ChangedAddonTags.EntityTypes.IGNORE_GRABBED_TARGETS);
+                    cir.setReturnValue(!value);
+                }
             }
         }
     }

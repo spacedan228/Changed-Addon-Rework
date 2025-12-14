@@ -156,36 +156,37 @@ public class ChangedAddonAdminCommand {
                         )
                 )
                 .then(Commands.literal("setTransfurProgress")//Add/set progress self
-                        .then(Commands.argument("Number", DoubleArgumentType.doubleArg())
+                        .requires(stack -> stack.getEntity() instanceof Player)
+                        .then(Commands.argument("value", FloatArgumentType.floatArg())
                                 .then(Commands.literal("add")
                                         .executes(arguments ->
-                                                setTFProgress(arguments.getSource().getEntity(), FloatArgumentType.getFloat(arguments, "Number"), true))
+                                                setTFProgress(arguments.getSource().getPlayerOrException(), FloatArgumentType.getFloat(arguments, "value"), true))
                                 )
                                 .then(Commands.literal("set")
                                         .executes(arguments ->
-                                                setTFProgress(arguments.getSource().getEntity(), FloatArgumentType.getFloat(arguments, "Number"), false))
+                                                setTFProgress(arguments.getSource().getPlayerOrException(), FloatArgumentType.getFloat(arguments, "value"), false))
                                 )
                         )
                 )
                 .then(Commands.literal("setPlayerTransfurProgress")//Add/set progress other
-                        .then(Commands.argument("Target", EntityArgument.player())
-                                .then(Commands.argument("Number", FloatArgumentType.floatArg())
+                        .then(Commands.argument("target", EntityArgument.player())
+                                .then(Commands.argument("value", FloatArgumentType.floatArg())
                                         .then(Commands.literal("add")
                                                 .executes(arguments ->
-                                                        setTFProgress(EntityArgument.getPlayer(arguments, "Target"), FloatArgumentType.getFloat(arguments, "Number"), true))
+                                                        setTFProgress(EntityArgument.getPlayer(arguments, "target"), FloatArgumentType.getFloat(arguments, "value"), true))
                                         )
                                         .then(Commands.literal("set")
                                                 .executes(arguments ->
-                                                        setTFProgress(EntityArgument.getPlayer(arguments, "Target"), FloatArgumentType.getFloat(arguments, "Number"), false))
+                                                        setTFProgress(EntityArgument.getPlayer(arguments, "target"), FloatArgumentType.getFloat(arguments, "value"), false))
                                         )
                                 )
                         )
                 )
-                .then(Commands.literal("SetMaxTransfurTolerance")//Set tf tolerance other
+                .then(Commands.literal("setPlayerMaxTransfurTolerance")//Set tf tolerance other
                         .then(Commands.argument("target", EntityArgument.player())
-                                .then(Commands.argument("Number", FloatArgumentType.floatArg(.1f))
+                                .then(Commands.argument("value", FloatArgumentType.floatArg(.1f))
                                         .executes(arguments ->
-                                                setTFTolerance(EntityArgument.getPlayer(arguments, "target"), FloatArgumentType.getFloat(arguments, "Number")))
+                                                setTFTolerance(EntityArgument.getPlayer(arguments, "target"), FloatArgumentType.getFloat(arguments, "value")))
                                 )
                                 .then(Commands.literal("Default")
                                         .executes(arguments ->
@@ -193,7 +194,7 @@ public class ChangedAddonAdminCommand {
                                 )
                         )
                 )
-                .then(Commands.literal("GetMaxTransfurTolerance")//Get tf tolerance self
+                .then(Commands.literal("getMaxTransfurTolerance")//Get tf tolerance self
                         .requires(stack -> stack.getEntity() instanceof Player)
                         .executes(arguments -> {
                             ServerPlayer player = arguments.getSource().getPlayerOrException();
@@ -216,12 +217,6 @@ public class ChangedAddonAdminCommand {
                         )
                 )
         );
-    }
-
-    private static int setTFProgress(Entity player, float amount, boolean add) {
-        if (player instanceof Player pEntity) {
-            return setTFProgress(pEntity, amount, add);
-        } else return 0;
     }
 
     private static int setTFProgress(Player player, float amount, boolean add) {
