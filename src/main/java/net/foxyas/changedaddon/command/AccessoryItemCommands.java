@@ -35,6 +35,8 @@ import static net.ltxprogrammer.changed.data.AccessorySlots.getForEntity;
 
 public class AccessoryItemCommands {
 
+    private static final int MAX_FEEDBACK = 20;
+
     public static final SuggestionProvider<CommandSourceStack> SUGGEST_ACCESSORY_SLOTS =
             (context, builder) -> {
 
@@ -136,6 +138,8 @@ public class AccessoryItemCommands {
                 .createItemStack(1, false);
 
         int changed = 0;
+        int shown = 0;
+        boolean truncated = false;
 
         for (Entity entity : entities) {
             if (!(entity instanceof LivingEntity living)) continue;
@@ -144,6 +148,11 @@ public class AccessoryItemCommands {
 
             // ❌ Entity has no slots
             if (optionalSlots.isEmpty()) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
                         new TranslatableComponent(
                                 multiple
@@ -152,6 +161,7 @@ public class AccessoryItemCommands {
                                 entity.getDisplayName()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -163,6 +173,11 @@ public class AccessoryItemCommands {
 
             // ❌ Slot type does not exist for entity
             if (slotType == null || slots.getSlotTypes().noneMatch(s -> s == slotType)) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
                         new TranslatableComponent(
                                 multiple
@@ -172,6 +187,7 @@ public class AccessoryItemCommands {
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -179,8 +195,37 @@ public class AccessoryItemCommands {
 
             ItemStack copy = stack.copy();
 
+            if (stack.isEmpty()) {
+                /* ✅ Success */
+                slots.setItem(slotType, copy);
+                changed++;
+
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
+                ctx.getSource().sendSuccess(
+                        new TranslatableComponent(
+                                "commands.accessory.set.success",
+                                entity.getDisplayName(),
+                                copy.getDisplayName(),
+                                slotName.toString()
+                        ),
+                        false
+                );
+                shown++;
+
+                continue;
+            }
+
             /* ❌ Y — Slot não aceita esse item */
             if (!slotType.canHoldItem(copy, living)) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
                         new TranslatableComponent(
                                 "commands.accessory.set.invalid_item",
@@ -189,6 +234,7 @@ public class AccessoryItemCommands {
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -199,6 +245,11 @@ public class AccessoryItemCommands {
             boolean available = AccessorySlots.isSlotAvailable(living, slotType);
 
             if (!available) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
                         new TranslatableComponent(
                                 "commands.accessory.set.slot_locked",
@@ -207,6 +258,7 @@ public class AccessoryItemCommands {
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -215,6 +267,11 @@ public class AccessoryItemCommands {
             /* ❌ X — Other Accessory lock the slot */
             boolean canReplaceSlot = canReplaceSlot(living, slotType, copy);
             if (!canReplaceSlot) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
                         new TranslatableComponent(
                                 "commands.accessory.set.locked",
@@ -223,6 +280,7 @@ public class AccessoryItemCommands {
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -232,12 +290,28 @@ public class AccessoryItemCommands {
             slots.setItem(slotType, copy);
             changed++;
 
+            if (shown > MAX_FEEDBACK) {
+                truncated = true;
+                break;
+            }
+
             ctx.getSource().sendSuccess(
                     new TranslatableComponent(
                             "commands.accessory.set.success",
                             entity.getDisplayName(),
                             copy.getDisplayName(),
                             slotName.toString()
+                    ),
+                    false
+            );
+            shown++;
+        }
+
+        if (truncated) {
+            ctx.getSource().sendSuccess(
+                    new TranslatableComponent(
+                            "commands.accessory.too_many",
+                            MAX_FEEDBACK
                     ),
                     false
             );
@@ -263,6 +337,8 @@ public class AccessoryItemCommands {
         ResourceLocation slotName = ResourceLocationArgument.getId(ctx, "slot");
 
         int found = 0;
+        int shown = 0;
+        boolean truncated = false;
 
         for (Entity entity : entities) {
             if (!(entity instanceof LivingEntity living)) continue;
@@ -270,6 +346,11 @@ public class AccessoryItemCommands {
             Optional<AccessorySlots> optionalSlots = getForEntity(living);
 
             if (optionalSlots.isEmpty()) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
                         new net.minecraft.network.chat.TranslatableComponent(
                                 multiple
@@ -278,6 +359,7 @@ public class AccessoryItemCommands {
                                 entity.getDisplayName()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -287,9 +369,12 @@ public class AccessoryItemCommands {
             AccessorySlotType slotType =
                     ChangedRegistry.ACCESSORY_SLOTS.get().getValue(slotName);
 
-            if (slotType != null) found ++;
-
             if (slotType == null || slots.getSlotTypes().noneMatch(s -> s == slotType)) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
                         new net.minecraft.network.chat.TranslatableComponent(
                                 multiple
@@ -299,12 +384,20 @@ public class AccessoryItemCommands {
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
             }
 
+            found++;
+
             Optional<ItemStack> stack = slots.getItem(slotType);
+
+            if (shown > MAX_FEEDBACK) {
+                truncated = true;
+                break;
+            }
 
             ctx.getSource().sendSuccess(
                     new net.minecraft.network.chat.TranslatableComponent(
@@ -312,6 +405,18 @@ public class AccessoryItemCommands {
                             entity.getDisplayName(),
                             stack.orElse(ItemStack.EMPTY).getDisplayName(),
                             slotName.toString()
+                    ),
+                    false
+            );
+            shown++;
+
+        }
+
+        if (truncated) {
+            ctx.getSource().sendSuccess(
+                    new TranslatableComponent(
+                            "commands.accessory.too_many",
+                            MAX_FEEDBACK
                     ),
                     false
             );
@@ -375,6 +480,5 @@ public class AccessoryItemCommands {
                     return true;
                 });
     }
-
 
 }

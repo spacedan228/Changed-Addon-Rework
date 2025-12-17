@@ -294,6 +294,7 @@
   "commands.accessory.set.locked": "%s cannot equip %s in slot %s because another accessory blocks it.",
   "commands.accessory.set.slot_locked": "%s cannot equip %s in slot %s because the slot type is not available",
   "commands.accessory.set.success": "%s now has %s in slot %s.",
+  "commands.accessory.too_many": "Too much data requested, only showing the first %s results.",
   "death.attack.OverDose": "%1$s get a \u00A74OverDose\u00A7r",
   "death.attack.OverDose.player": "%1$s get a \u00A74OverDose\u00A7r while fighting with %2$s",
   "death.attack.assimilation": "%1$s was assimilated",

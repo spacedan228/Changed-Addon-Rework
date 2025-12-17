@@ -655,6 +655,7 @@ public class ENLanguageProvider extends LanguageProvider {
         add("commands.accessory.set.locked", "%s cannot equip %s in slot %s because another accessory blocks it.");
         add("commands.accessory.set.slot_locked", "%s cannot equip %s in slot %s because the slot type is not available");
         add("commands.accessory.get.success", "%s has %s in slot %s.");
+        add("commands.accessory.too_many", "Too much data requested, only showing the first %s results.");
 
     }
 }
