@@ -224,15 +224,13 @@ public class LatexSolventEnchantment extends Enchantment {
                     ? ItemStack.of(tag.getCompound("Trident"))
                     : new ItemStack(Items.TRIDENT);
 
-            tridentItem.getAttributeModifiers(EquipmentSlot.MAINHAND).get(ChangedAddonAttributes.LATEX_SOLVENT_DAMAGE_MULTIPLIER.get()).forEach(mod -> {
-                if(mod != null) attribute.addTransientModifier(mod);
-            });
+            tridentItem.getAttributeModifiers(EquipmentSlot.MAINHAND).get(ChangedAddonAttributes.LATEX_SOLVENT_DAMAGE_MULTIPLIER.get()).stream().filter((mod) -> !attribute.hasModifier(mod)).forEach(attribute::addTransientModifier);
 
             if (trident.getOwner() instanceof LivingEntity owner) {
                 AttributeInstance entityAttrib = owner.getAttribute(ChangedAddonAttributes.LATEX_SOLVENT_DAMAGE_MULTIPLIER.get());
                 if(entityAttrib != null){
                     attribute.setBaseValue(entityAttrib.getBaseValue());
-                    entityAttrib.getModifiers().forEach(attribute::addTransientModifier);
+                    entityAttrib.getModifiers().stream().filter((mod) -> !attribute.hasModifier(mod)).forEach(attribute::addTransientModifier);
                 }
             }
 
