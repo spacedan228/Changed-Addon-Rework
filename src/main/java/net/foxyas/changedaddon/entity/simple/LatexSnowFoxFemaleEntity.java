@@ -49,19 +49,13 @@ public class LatexSnowFoxFemaleEntity extends ChangedEntity implements GenderedE
         setNoAi(false);
     }
 
-//    @SubscribeEvent
-//    public static void addLivingEntityToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
-//        if (SPAWN_BIOMES.contains(event.getName()))
-//            event.getBuilder().getMobSpawnSettings().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_SNOW_FOX_FEMALE.get(), 20, 1, 4));
-//    }
-
     @SubscribeEvent
     public static void init(SpawnPlacementRegisterEvent event) {
         event.register(ChangedAddonEntities.LATEX_SNOW_FOX_FEMALE.get(),
                 SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)),
-                SpawnPlacementRegisterEvent.Operation.OR);
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -326,7 +326,9 @@ public class AbstractLuminarCrystal {
                     if (!livingEntity.hasEffect(MobEffects.WITHER)) {
                         livingEntity.addEffect(EffectInstance);
                     }
-                    livingEntity.setTicksFrozen(livingEntity.getTicksFrozen() + 5);
+                    int pTicksFrozen = livingEntity.getTicksFrozen() + 5;
+                    int frozenTicks = Math.min(livingEntity.getTicksRequiredToFreeze(), pTicksFrozen);
+                    livingEntity.setTicksFrozen(frozenTicks);
                 }
             }
         }
