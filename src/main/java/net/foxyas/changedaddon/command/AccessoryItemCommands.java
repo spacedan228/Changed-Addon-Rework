@@ -213,8 +213,8 @@ public class AccessoryItemCommands {
             }
 
             /* ❌ X — Other Accessory lock the slot */
-            boolean locked = canReplaceSlot(living, slotType, copy);
-            if (locked) {
+            boolean canReplaceSlot = canReplaceSlot(living, slotType, copy);
+            if (!canReplaceSlot) {
                 ctx.getSource().sendFailure(
                         new TranslatableComponent(
                                 "commands.accessory.set.locked",
@@ -375,6 +375,7 @@ public class AccessoryItemCommands {
                     return true;
                 });
     }
+
 
 
 }
