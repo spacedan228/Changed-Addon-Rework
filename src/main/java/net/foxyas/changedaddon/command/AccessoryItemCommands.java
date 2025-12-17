@@ -10,30 +10,30 @@ import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.item.AccessoryItem;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.item.ItemArgument;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static net.ltxprogrammer.changed.data.AccessorySlots.getForEntity;
 
 public class AccessoryItemCommands {
+
+    private static final int MAX_FEEDBACK = 20;
 
     public static final SuggestionProvider<CommandSourceStack> SUGGEST_ACCESSORY_SLOTS =
             (context, builder) -> {
@@ -42,7 +42,7 @@ public class AccessoryItemCommands {
                 List<String> allSlots = ChangedRegistry.ACCESSORY_SLOTS.get()
                         .getValues()
                         .stream()
-                        .map(ForgeRegistryEntry::getRegistryName)
+                        .map(ChangedRegistry.ACCESSORY_SLOTS::getKey)
                         .filter(Objects::nonNull)
                         .map(ResourceLocation::toString)
                         .toList();
@@ -80,7 +80,7 @@ public class AccessoryItemCommands {
 
                 // 🔹 Slots disponíveis para essa entity
                 List<String> entitySlots = slots.getSlotTypes()
-                        .map(ForgeRegistryEntry::getRegistryName)
+                        .map((ChangedRegistry.ACCESSORY_SLOTS::getKey))
                         .filter(Objects::nonNull)
                         .map(ResourceLocation::toString)
                         .toList();
@@ -93,7 +93,7 @@ public class AccessoryItemCommands {
                 return SharedSuggestionProvider.suggest(entitySlots, builder);
             };
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext buildContext) {
         dispatcher.register(
                 Commands.literal("accessory")
                         .requires(src -> src.hasPermission(2))
@@ -103,7 +103,7 @@ public class AccessoryItemCommands {
                                 .then(Commands.argument("targets", EntityArgument.entities())
                                         .then(Commands.argument("slot", ResourceLocationArgument.id())
                                                 .suggests(SUGGEST_ACCESSORY_SLOTS)
-                                                .then(Commands.argument("item", ItemArgument.item())
+                                                .then(Commands.argument("item", ItemArgument.item(buildContext))
                                                         .executes(AccessoryItemCommands::setAccessory)
                                                 )
                                         )
@@ -136,6 +136,8 @@ public class AccessoryItemCommands {
                 .createItemStack(1, false);
 
         int changed = 0;
+        int shown = 0;
+        boolean truncated = false;
 
         for (Entity entity : entities) {
             if (!(entity instanceof LivingEntity living)) continue;
@@ -144,14 +146,20 @@ public class AccessoryItemCommands {
 
             // ❌ Entity has no slots
             if (optionalSlots.isEmpty()) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
-                        new TranslatableComponent(
+                        Component.translatable(
                                 multiple
                                         ? "commands.accessory.no_slots.multiple"
                                         : "commands.accessory.no_slots.single",
                                 entity.getDisplayName()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -163,8 +171,13 @@ public class AccessoryItemCommands {
 
             // ❌ Slot type does not exist for entity
             if (slotType == null || slots.getSlotTypes().noneMatch(s -> s == slotType)) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
-                        new TranslatableComponent(
+                        Component.translatable(
                                 multiple
                                         ? "commands.accessory.invalid_slot.multiple"
                                         : "commands.accessory.invalid_slot.single",
@@ -172,6 +185,7 @@ public class AccessoryItemCommands {
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -179,16 +193,46 @@ public class AccessoryItemCommands {
 
             ItemStack copy = stack.copy();
 
+            if (stack.isEmpty()) {
+                /* ✅ Success */
+                slots.setItem(slotType, copy);
+                changed++;
+
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
+                ctx.getSource().sendSuccess(() ->
+                                Component.translatable(
+                                        "commands.accessory.set.success",
+                                        entity.getDisplayName(),
+                                        copy.getDisplayName(),
+                                        slotName.toString()
+                                ),
+                        false
+                );
+                shown++;
+
+                continue;
+            }
+
             /* ❌ Y — Slot não aceita esse item */
             if (!slotType.canHoldItem(copy, living)) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
-                        new TranslatableComponent(
+                        Component.translatable(
                                 "commands.accessory.set.invalid_item",
                                 entity.getDisplayName(),
                                 copy.getDisplayName(),
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -199,14 +243,20 @@ public class AccessoryItemCommands {
             boolean available = AccessorySlots.isSlotAvailable(living, slotType);
 
             if (!available) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
-                        new TranslatableComponent(
+                        Component.translatable(
                                 "commands.accessory.set.slot_locked",
                                 entity.getDisplayName(),
                                 copy.getDisplayName(),
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -215,14 +265,20 @@ public class AccessoryItemCommands {
             /* ❌ X — Other Accessory lock the slot */
             boolean canReplaceSlot = canReplaceSlot(living, slotType, copy);
             if (!canReplaceSlot) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
-                        new TranslatableComponent(
+                        Component.translatable(
                                 "commands.accessory.set.locked",
                                 entity.getDisplayName(),
                                 copy.getDisplayName(),
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -232,20 +288,36 @@ public class AccessoryItemCommands {
             slots.setItem(slotType, copy);
             changed++;
 
-            ctx.getSource().sendSuccess(
-                    new TranslatableComponent(
-                            "commands.accessory.set.success",
-                            entity.getDisplayName(),
-                            copy.getDisplayName(),
-                            slotName.toString()
-                    ),
+            if (shown > MAX_FEEDBACK) {
+                truncated = true;
+                break;
+            }
+
+            ctx.getSource().sendSuccess(() ->
+                            Component.translatable(
+                                    "commands.accessory.set.success",
+                                    entity.getDisplayName(),
+                                    copy.getDisplayName(),
+                                    slotName.toString()
+                            ),
+                    false
+            );
+            shown++;
+        }
+
+        if (truncated) {
+            ctx.getSource().sendSuccess(() ->
+                            Component.translatable(
+                                    "commands.accessory.too_many",
+                                    MAX_FEEDBACK
+                            ),
                     false
             );
         }
 
         if (changed == 0) {
             throw new SimpleCommandExceptionType(
-                    new TextComponent("No valid accessory slots found")
+                    Component.literal("No valid accessory slots found")
             ).create();
         }
 
@@ -263,6 +335,8 @@ public class AccessoryItemCommands {
         ResourceLocation slotName = ResourceLocationArgument.getId(ctx, "slot");
 
         int found = 0;
+        int shown = 0;
+        boolean truncated = false;
 
         for (Entity entity : entities) {
             if (!(entity instanceof LivingEntity living)) continue;
@@ -270,14 +344,20 @@ public class AccessoryItemCommands {
             Optional<AccessorySlots> optionalSlots = getForEntity(living);
 
             if (optionalSlots.isEmpty()) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
-                        new net.minecraft.network.chat.TranslatableComponent(
+                        Component.translatable(
                                 multiple
                                         ? "commands.accessory.no_slots.multiple"
                                         : "commands.accessory.no_slots.single",
                                 entity.getDisplayName()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
@@ -287,11 +367,14 @@ public class AccessoryItemCommands {
             AccessorySlotType slotType =
                     ChangedRegistry.ACCESSORY_SLOTS.get().getValue(slotName);
 
-            if (slotType != null) found ++;
-
             if (slotType == null || slots.getSlotTypes().noneMatch(s -> s == slotType)) {
+                if (shown > MAX_FEEDBACK) {
+                    truncated = true;
+                    break;
+                }
+
                 ctx.getSource().sendFailure(
-                        new net.minecraft.network.chat.TranslatableComponent(
+                        Component.translatable(
                                 multiple
                                         ? "commands.accessory.invalid_slot.multiple"
                                         : "commands.accessory.invalid_slot.single",
@@ -299,27 +382,47 @@ public class AccessoryItemCommands {
                                 slotName.toString()
                         )
                 );
+                shown++;
 
                 if (!multiple) break;
                 continue;
             }
 
+            found++;
+
             Optional<ItemStack> stack = slots.getItem(slotType);
 
-            ctx.getSource().sendSuccess(
-                    new net.minecraft.network.chat.TranslatableComponent(
-                            "commands.accessory.get.success",
-                            entity.getDisplayName(),
-                            stack.orElse(ItemStack.EMPTY).getDisplayName(),
-                            slotName.toString()
-                    ),
+            if (shown > MAX_FEEDBACK) {
+                truncated = true;
+                break;
+            }
+
+            ctx.getSource().sendSuccess(() ->
+                            Component.translatable(
+                                    "commands.accessory.get.success",
+                                    entity.getDisplayName(),
+                                    stack.orElse(ItemStack.EMPTY).getDisplayName(),
+                                    slotName.toString()
+                            ),
+                    false
+            );
+            shown++;
+
+        }
+
+        if (truncated) {
+            ctx.getSource().sendSuccess(() ->
+                            Component.translatable(
+                                    "commands.accessory.too_many",
+                                    MAX_FEEDBACK
+                            ),
                     false
             );
         }
 
         if (found == 0) {
             throw new SimpleCommandExceptionType(
-                    new TextComponent("No valid accessory slots found")
+                    Component.literal("No valid accessory slots found")
             ).create();
         }
 
@@ -375,7 +478,5 @@ public class AccessoryItemCommands {
                     return true;
                 });
     }
-
-
 
 }

@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.event;
 import com.mojang.brigadier.CommandDispatcher;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock;
+import net.foxyas.changedaddon.command.AccessoryItemCommands;
 import net.foxyas.changedaddon.command.ChangedAddonAdminCommand;
 import net.foxyas.changedaddon.command.ChangedAddonCommandRootCommand;
 import net.foxyas.changedaddon.command.TransfurMe;
@@ -22,6 +23,7 @@ import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -56,8 +58,11 @@ public class CommonEvent {
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event){
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
+        CommandBuildContext buildContext = event.getBuildContext();
+
         ChangedAddonAdminCommand.register(dispatcher);
         ChangedAddonCommandRootCommand.register(dispatcher);
+        AccessoryItemCommands.register(dispatcher, buildContext);
         TransfurMe.register(dispatcher);
     }
 
