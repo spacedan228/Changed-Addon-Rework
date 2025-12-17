@@ -652,5 +652,15 @@ public class ENLanguageProvider extends LanguageProvider {
         addText("swim_speed", "Swim Speed = %s");
         addText("miningStrength", "Mining Strength: %s");
         addText("display.hazard_body_suit.cant_have_helmet", "Mmph... it’s squishing my ears! Better not wear it.");
+        
+        add("commands.accessory.no_slots.single", "%s has no accessory slots.");
+        add("commands.accessory.no_slots.multiple", "%s has no accessory slots, ignoring and passing to the next.");
+        add("commands.accessory.invalid_slot.single", "%s does not have the accessory slot %s.");
+        add("commands.accessory.invalid_slot.multiple", "%s does not have the accessory slot %s, ignoring and passing to the next.");
+        add("commands.accessory.set.success", "%s now has %s in slot %s.");
+        add("commands.accessory.set.invalid_item", "%s cannot equip %s in slot %s.");
+        add("commands.accessory.set.locked", "%s cannot equip %s in slot %s because another accessory blocks it.");
+        add("commands.accessory.set.slot_locked", "%s cannot equip %s in slot %s because the slot type is not available");
+        add("commands.accessory.get.success", "%s has %s in slot %s.");
     }
 }
