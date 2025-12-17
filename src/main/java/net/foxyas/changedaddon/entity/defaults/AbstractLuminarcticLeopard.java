@@ -468,10 +468,11 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
                     return;
                 }
             }
-
+            
+            int pTicksFrozen = target.getTicksFrozen() + (int) (target.getTicksRequiredToFreeze() * 0.25f);
             if (source instanceof AbstractLuminarcticLeopard lumi && lumi.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                 ParticlesUtil.sendParticles(target.level, ParticleTypes.SNOWFLAKE, target.getEyePosition(), 0.3f, 0.5f, 0.3f, 4, 0.05f);
-                target.setTicksFrozen(target.getTicksFrozen() + (int) (target.getTicksRequiredToFreeze() * 0.25f));
+                target.setTicksFrozen(Math.min(target.getTicksRequiredToFreeze(), pTicksFrozen));
                 target.playSound(SoundEvents.PLAYER_HURT_FREEZE, 2f, 1f);
             } else if (source instanceof Player player) {
                 TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
@@ -479,7 +480,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
                         && instance != null
                         && instance.getParent().is(ChangedAddonTags.TransfurTypes.CAUSE_FREEZING)) {
                     ParticlesUtil.sendParticles(target.level, ParticleTypes.SNOWFLAKE, target.getEyePosition(), 0.3f, 0.5f, 0.3f, 4, 0.05f);
-                    target.setTicksFrozen(target.getTicksFrozen() + (int) (target.getTicksRequiredToFreeze() * 0.25f));
+                    target.setTicksFrozen(Math.min(target.getTicksRequiredToFreeze(), pTicksFrozen));
                     target.playSound(SoundEvents.PLAYER_HURT_FREEZE, 2f, 1f);
                 }
             }
