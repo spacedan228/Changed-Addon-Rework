@@ -7,6 +7,7 @@ import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.item.SpecializedItemRendering;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.Cacheable;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
@@ -17,6 +18,9 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -24,12 +28,34 @@ import java.util.function.Consumer;
 
 public class FoxtaItem extends BlockItem implements SpecializedItemRendering {
 
-    private static final ModelResourceLocation GUIMODEL =
-            new ModelResourceLocation(ChangedAddonMod.resourceLoc("foxta_gui"), "inventory");
-    private static final ModelResourceLocation HANDMODEL =
-            new ModelResourceLocation(ChangedAddonMod.resourceLoc("foxta_hand"), "inventory");
-    private static final ModelResourceLocation GROUNDMODEL =
-            new ModelResourceLocation(ChangedAddonMod.resourceLoc("foxta_ground"), "inventory");
+    private static final Cacheable<ResourceLocation> GUIMODEL =
+            Cacheable.of(() -> DistExecutor.unsafeCallWhenOn(
+                    Dist.CLIENT,
+                    () -> () -> new ModelResourceLocation(
+                            ChangedAddonMod.resourceLoc("foxta_gui"),
+                            "inventory"
+                    )
+            ));
+
+    private static final Cacheable<ResourceLocation> HANDMODEL =
+            Cacheable.of(() -> DistExecutor.unsafeCallWhenOn(
+                    Dist.CLIENT,
+                    () -> () -> new ModelResourceLocation(
+                            ChangedAddonMod.resourceLoc("foxta_hand"),
+                            "inventory"
+                    )
+            ));
+
+    private static final Cacheable<ResourceLocation> GROUNDMODEL =
+            Cacheable.of(() -> DistExecutor.unsafeCallWhenOn(
+                    Dist.CLIENT,
+                    () -> () -> new ModelResourceLocation(
+                            ChangedAddonMod.resourceLoc("foxta_ground"),
+                            "inventory"
+                    )
+            ));
+
+
 
     public FoxtaItem() {
         super(ChangedAddonBlocks.FOXTA_CAN.get(), new Item.Properties()
@@ -71,15 +97,15 @@ public class FoxtaItem extends BlockItem implements SpecializedItemRendering {
     }
 
     @Override
-    public ModelResourceLocation getModelLocation(ItemStack itemStack, ItemDisplayContext type) {
-        return type == ItemDisplayContext.GUI || type == ItemDisplayContext.FIXED ? GUIMODEL
-                : type == ItemDisplayContext.GROUND ? GROUNDMODEL : HANDMODEL;
+    public ResourceLocation getModelLocation(ItemStack itemStack, ItemDisplayContext type) {
+        return type == ItemDisplayContext.GUI || type == ItemDisplayContext.FIXED ? GUIMODEL.get()
+                : type == ItemDisplayContext.GROUND ? GROUNDMODEL.get() : HANDMODEL.get();
     }
 
     @Override
     public void loadSpecialModels(Consumer<ResourceLocation> consumer) {
-        consumer.accept(GUIMODEL);
-        consumer.accept(HANDMODEL);
-        consumer.accept(GROUNDMODEL);
+        consumer.accept(GUIMODEL.get());
+        consumer.accept(HANDMODEL.get());
+        consumer.accept(GROUNDMODEL.get());
     }
 }

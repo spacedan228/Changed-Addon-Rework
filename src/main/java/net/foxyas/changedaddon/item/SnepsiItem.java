@@ -9,6 +9,7 @@ import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.item.SpecializedItemRendering;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.Cacheable;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,18 +21,41 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
 public class SnepsiItem extends BlockItem implements SpecializedItemRendering {
 
-    private static final ModelResourceLocation GUIMODEL =
-            new ModelResourceLocation(ChangedAddonMod.resourceLoc("snepsi_gui"), "inventory");
-    private static final ModelResourceLocation HANDMODEL =
-            new ModelResourceLocation(ChangedAddonMod.resourceLoc("snepsi_hand"), "inventory");
-    private static final ModelResourceLocation GROUNDMODEL =
-            new ModelResourceLocation(ChangedAddonMod.resourceLoc("snepsi_ground"), "inventory");
+    private static final Cacheable<ResourceLocation> GUIMODEL =
+            Cacheable.of(() -> DistExecutor.unsafeCallWhenOn(
+                    Dist.CLIENT,
+                    () -> () -> new ModelResourceLocation(
+                            ChangedAddonMod.resourceLoc("snepsi_gui"),
+                            "inventory"
+                    )
+            ));
+
+    private static final Cacheable<ResourceLocation> HANDMODEL =
+            Cacheable.of(() -> DistExecutor.unsafeCallWhenOn(
+                    Dist.CLIENT,
+                    () -> () -> new ModelResourceLocation(
+                            ChangedAddonMod.resourceLoc("snepsi_hand"),
+                            "inventory"
+                    )
+            ));
+
+    private static final Cacheable<ResourceLocation> GROUNDMODEL =
+            Cacheable.of(() -> DistExecutor.unsafeCallWhenOn(
+                    Dist.CLIENT,
+                    () -> () -> new ModelResourceLocation(
+                            ChangedAddonMod.resourceLoc("snepsi_ground"),
+                            "inventory"
+                    )
+            ));
+
 
     public SnepsiItem() {
         super(ChangedAddonBlocks.SNEPSI_CAN.get(), new Item.Properties()
@@ -77,12 +101,6 @@ public class SnepsiItem extends BlockItem implements SpecializedItemRendering {
     }
 
     @Override
-    public ModelResourceLocation getModelLocation(ItemStack itemStack, ItemDisplayContext transformType) {
-        return transformType == ItemDisplayContext.GUI || transformType == ItemDisplayContext.FIXED ? GUIMODEL
-                : transformType == ItemDisplayContext.GROUND ? GROUNDMODEL : HANDMODEL;
-    }
-
-    @Override
     public @NotNull InteractionResult useOn(@NotNull UseOnContext pContext) {
         if (pContext.getPlayer() != null && pContext.getPlayer().isShiftKeyDown()) {
             return super.useOn(pContext);
@@ -93,9 +111,15 @@ public class SnepsiItem extends BlockItem implements SpecializedItemRendering {
     }
 
     @Override
+    public ResourceLocation getModelLocation(ItemStack itemStack, ItemDisplayContext type) {
+        return type == ItemDisplayContext.GUI || type == ItemDisplayContext.FIXED ? GUIMODEL.get()
+                : type == ItemDisplayContext.GROUND ? GROUNDMODEL.get() : HANDMODEL.get();
+    }
+
+    @Override
     public void loadSpecialModels(Consumer<ResourceLocation> consumer) {
-        consumer.accept(GUIMODEL);
-        consumer.accept(HANDMODEL);
-        consumer.accept(GROUNDMODEL);
+        consumer.accept(GUIMODEL.get());
+        consumer.accept(HANDMODEL.get());
+        consumer.accept(GROUNDMODEL.get());
     }
 }

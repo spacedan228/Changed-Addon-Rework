@@ -2,15 +2,14 @@ package net.foxyas.changedaddon.init;
 
 import com.mojang.serialization.Codec;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.particle.SolventParticleParticle;
 import net.foxyas.changedaddon.effect.particles.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -54,9 +53,8 @@ public class ChangedAddonParticleTypes {
     }
 
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public static void registerParticles(RegisterParticleProvidersEvent event) {
-        ParticleEngine engine = Minecraft.getInstance().particleEngine;
-
         event.registerSpriteSet(THUNDER_SPARK.get(), ThunderSparkParticle.Provider::new);
         event.registerSpriteSet(LASER_POINT.get(), LaserPointParticle.Provider::new);
         event.registerSpriteSet(ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(), SolventParticleParticle::provider);

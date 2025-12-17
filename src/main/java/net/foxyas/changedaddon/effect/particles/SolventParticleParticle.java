@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.client.particle;
+package net.foxyas.changedaddon.effect.particles;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;

@@ -11,6 +11,7 @@ import net.ltxprogrammer.changed.init.*;
 import net.ltxprogrammer.changed.item.LatexFlask;
 import net.ltxprogrammer.changed.item.LatexSyringe;
 import net.ltxprogrammer.changed.item.Syringe;
+import net.ltxprogrammer.changed.util.Cacheable;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,6 +39,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,6 +51,7 @@ import static net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverable
 
 public class ContainmentContainerBlock extends Block implements SimpleWaterloggedBlock, EntityBlock, NonLatexCoverableBlock, CustomFallable {
 
+    private static final Cacheable<ResourceLocation> MODEL_NAME = Cacheable.of(() -> DistExecutor.unsafeCallWhenOn(Dist.CLIENT, () -> () -> new ModelResourceLocation(ResourceLocation.parse("changed_addon:containment_container"), "inventory")));
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public static final VoxelShape SHAPE_WHOLE = Block.box(4.0, 0.0, 4.0, 12.0, 16.0, 12.0);
@@ -305,6 +310,6 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
 
     @Override
     public ResourceLocation getModelName() {
-        return new ModelResourceLocation(ResourceLocation.parse("changed_addon:containment_container"), "inventory");
+        return MODEL_NAME.get();
     }
 }

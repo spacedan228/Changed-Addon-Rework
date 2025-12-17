@@ -41,7 +41,7 @@ import org.lwjgl.glfw.GLFW;
 @Deprecated(forRemoval = true)
 public class DEBUG {
 
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = false;
     public static float HeadPosT, HeadPosV, HeadPosB = 0, HeadPosK = 40, HeadPosL, HeadPosJ = 40;
     public static float HeadPosX = 40, HeadPosY = 40, HeadPosZ;
 

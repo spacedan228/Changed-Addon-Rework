@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
@@ -49,8 +51,8 @@ public class StructureSpawnerBlock extends Block implements EntityBlock {
 
     @Override
     public VoxelShape getVisualShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
-        if (Minecraft.getInstance().player != null &&
-                Minecraft.getInstance().player.isCreative()) {
+        if (pContext instanceof EntityCollisionContext entityCollisionContext &&
+                entityCollisionContext.getEntity() instanceof Player player && player.isCreative()) {
             return Shapes.block(); // pequeno cubo
         }
         return Shapes.empty();
@@ -59,8 +61,8 @@ public class StructureSpawnerBlock extends Block implements EntityBlock {
 
     @Override
     public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull CollisionContext ctx) {
-        if (Minecraft.getInstance().player != null &&
-                Minecraft.getInstance().player.isCreative()) {
+        if (ctx instanceof EntityCollisionContext entityCollisionContext &&
+                entityCollisionContext.getEntity() instanceof Player player && player.isCreative()) {
             return Shapes.block(); // pequeno cubo
         }
         return Shapes.empty();
