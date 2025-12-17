@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.simple;
 
-import net.foxyas.changedaddon.item.LaserPointer;
+import net.foxyas.changedaddon.item.LaserPointerItem;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -40,7 +40,7 @@ public class FollowAndLookAtLaser extends Goal {
     private boolean isPlayerUsingLaser() {
         if (laserPlayer == null) return false;
         ItemStack using = laserPlayer.getUseItem();
-        return using.getItem() instanceof LaserPointer && laserPlayer.isUsingItem();
+        return using.getItem() instanceof LaserPointerItem && laserPlayer.isUsingItem();
     }
 
     @Override

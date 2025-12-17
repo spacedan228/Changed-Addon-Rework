@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.util;
 
-import net.foxyas.changedaddon.item.LaserPointer;
+import net.foxyas.changedaddon.item.LaserPointerItem;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.Item;
@@ -92,7 +92,7 @@ public class ItemUtils {
      */
     public static ItemStack dyeLaser(ItemStack input, List<DyeItem> dyes) {
         Item item = input.getItem();
-        if (!(item instanceof LaserPointer dyeable)) {
+        if (!(item instanceof LaserPointerItem dyeable)) {
             return ItemStack.EMPTY; // Not dyeable
         }
 
@@ -105,7 +105,7 @@ public class ItemUtils {
 
         // Include existing color if armor already dyed
         {
-            int color = LaserPointer.getColor(input);
+            int color = LaserPointerItem.getColor(input);
             float r = (float) (color >> 16 & 255) / 255.0F;
             float g = (float) (color >> 8 & 255) / 255.0F;
             float b = (float) (color & 255) / 255.0F;
@@ -150,7 +150,7 @@ public class ItemUtils {
 
         int finalColor = (r << 16) | (g << 8) | b;
 
-        LaserPointer.setLaserColor(result, finalColor);
+        LaserPointerItem.setLaserColor(result, finalColor);
         return result;
     }
 }

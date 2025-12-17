@@ -8,7 +8,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.item.LaserPointer;
+import net.foxyas.changedaddon.item.LaserPointerItem;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -84,19 +84,19 @@ public class LaserPointParticle extends TextureSheetParticle {
         }
 
         ItemStack heldItem = owner.getUseItem();
-        if (heldItem.isEmpty() || !(heldItem.getItem() instanceof LaserPointer) || !owner.isUsingItem()) {
+        if (heldItem.isEmpty() || !(heldItem.getItem() instanceof LaserPointerItem) || !owner.isUsingItem()) {
             this.remove(); // Jogador parou de usar
             return;
         }
 
         Vec3 eyePos = owner.getEyePosition();
-        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(owner.getViewVector(1).scale(LaserPointer.MAX_LASER_REACH)),
-                LaserPointer.IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(owner))
+        HitResult result = level.clip(new DynamicClipContext(eyePos, eyePos.add(owner.getViewVector(1).scale(LaserPointerItem.MAX_LASER_REACH)),
+                LaserPointerItem.IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, CollisionContext.of(owner))
         );
 
         EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(owner, result.getType() != HitResult.Type.MISS
                 ? (float) result.distanceTo(owner)
-                : LaserPointer.MAX_LASER_REACH, false);
+                : LaserPointerItem.MAX_LASER_REACH, false);
 
         Vec3 hitPos = result.getLocation();
         Direction face = null;

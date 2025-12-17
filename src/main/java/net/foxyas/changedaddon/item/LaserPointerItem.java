@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.item;
 import net.foxyas.changedaddon.entity.goals.simple.FollowAndLookAtLaser;
 import net.foxyas.changedaddon.init.ChangedAddonParticleTypes;
 import net.foxyas.changedaddon.item.api.ColorHolder;
+import net.foxyas.changedaddon.item.api.DynamicCreativeTab;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -36,7 +37,7 @@ import javax.annotation.Nullable;
 import java.awt.*;
 import java.util.List;
 
-public class LaserPointer extends Item implements SpecializedAnimations, ColorHolder {
+public class LaserPointerItem extends Item implements SpecializedAnimations, ColorHolder, DynamicCreativeTab {
 
     public static final float MAX_LASER_REACH = 32;
     public static final int FOLLOW_LASER_RADIUS = 16;
@@ -46,7 +47,7 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
         return ClipContext.Block.COLLIDER.get(state, b, pos, context);
     };
 
-    public LaserPointer() {
+    public LaserPointerItem() {
         super(new Properties().stacksTo(1)//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
                 );
     }
@@ -76,7 +77,7 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
     }
 
     public static void setLaserColor(ItemStack stack, int color) {
-        if(!(stack.getItem() instanceof LaserPointer)) return;
+        if(!(stack.getItem() instanceof LaserPointerItem)) return;
 
         stack.getOrCreateTag().putInt("Color", color);
     }
@@ -99,6 +100,7 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
     }
 
 
+    @Override
     public void fillItemCategory(@NotNull CreativeModeTab.Output tab) {
         for (DefaultColors color : DefaultColors.values()) {
             ItemStack stack = new ItemStack(this);
@@ -134,7 +136,7 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
 
         EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(player, result.getType() != HitResult.Type.MISS
                 ? (float) result.distanceTo(player)
-                : LaserPointer.MAX_LASER_REACH, false);
+                : LaserPointerItem.MAX_LASER_REACH, false);
         Vec3 hitPos;
 
         if (entityHitResult != null) {
@@ -170,7 +172,7 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
 
         EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(player, result.getType() != HitResult.Type.MISS
                 ? (float) result.distanceTo(player)
-                : LaserPointer.MAX_LASER_REACH, false);
+                : LaserPointerItem.MAX_LASER_REACH, false);
 
         Vec3 hitPos = result.getLocation();
 
@@ -208,7 +210,7 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
     private void spawnLaserParticle(Level level, Player player, ItemStack stack, Vec3 pos) {
         ParticlesUtil.sendParticles(
                 level,
-                ChangedAddonParticleTypes.laserPoint(player, LaserPointer.getAWTColor(stack)),
+                ChangedAddonParticleTypes.laserPoint(player, LaserPointerItem.getAWTColor(stack)),
                 pos.x, pos.y, pos.z,
                 0.0, 0.0, 0.0,
                 1, 0
@@ -218,18 +220,18 @@ public class LaserPointer extends Item implements SpecializedAnimations, ColorHo
     @Nullable
     @Override
     public AnimationHandler getAnimationHandler() {
-        return ANIMATION_CACHE.computeIfAbsent(this, LaserPointer.Animator::new);
+        return ANIMATION_CACHE.computeIfAbsent(this, LaserPointerItem.Animator::new);
     }
 
     @Override
     public void registerCustomColors(RegisterColorHandlersEvent.Item event, RegistryObject<Item> item) {
-        if (item.get() instanceof LaserPointer) {
+        if (item.get() instanceof LaserPointerItem) {
             event.register((stack, tintIndex) -> {
                 if (tintIndex == 0) { // Só aplica a cor no layer certo
-                    if (LaserPointer.getAWTColor(stack) == null) {
+                    if (LaserPointerItem.getAWTColor(stack) == null) {
                         return -1; // Cor padrão (branco)
                     }
-                    return LaserPointer.getAWTColor(stack).getRGB();
+                    return LaserPointerItem.getAWTColor(stack).getRGB();
                 }
                 return -1; // Cor padrão (branco)
             }, item.get());

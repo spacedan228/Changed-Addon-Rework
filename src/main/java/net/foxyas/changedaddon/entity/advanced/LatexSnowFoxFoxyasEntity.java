@@ -6,7 +6,7 @@ import net.foxyas.changedaddon.entity.goals.generic.TradeWithPlayerGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.clothes.DyeableClothingItem;
-import net.foxyas.changedaddon.item.clothes.DyeableShorts;
+import net.foxyas.changedaddon.item.clothes.DyeableShortsItem;
 import net.foxyas.changedaddon.menu.CustomMerchantOffer;
 import net.foxyas.changedaddon.menu.CustomMerchantOffers;
 import net.foxyas.changedaddon.menu.FoxyasInventoryMenu;
@@ -212,10 +212,10 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
                 Optional<ItemStack> item = slots.getItem(ChangedAccessorySlots.LEGS.get());
                 if (item.isEmpty() || item.get().isEmpty()) {
                     ItemStack stack = new ItemStack(ChangedAddonItems.DYEABLE_SHORTS.get());
-                    if (stack.getItem() instanceof DyeableShorts dyeableShorts) {
-                        boolean flag = dyeableShorts.allowedInSlot(stack, this, ChangedAccessorySlots.LEGS.get());
+                    if (stack.getItem() instanceof DyeableShortsItem dyeableShortsItem) {
+                        boolean flag = dyeableShortsItem.allowedInSlot(stack, this, ChangedAccessorySlots.LEGS.get());
                         DyeableClothingItem.DefaultColors color = Util.getRandom(DyeableClothingItem.DefaultColors.values(), this.random);
-                        dyeableShorts.setColor(stack, color.getColorToInt());
+                        dyeableShortsItem.setColor(stack, color.getColorToInt());
                         if (flag) slots.setItem(ChangedAccessorySlots.LEGS.get(), stack);
                     }
                 }

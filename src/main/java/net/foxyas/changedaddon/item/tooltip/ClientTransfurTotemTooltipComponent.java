@@ -23,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 
+import javax.annotation.Nullable;
+
 public class ClientTransfurTotemTooltipComponent implements ClientTooltipComponent {
     private final TransfurVariant<?> variant;
     private final ItemStack transfurTotemStack;
@@ -87,12 +89,18 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         float offsetX = posX + 45; // centro horizontal do tooltip
         float offsetY = posY + 75; // centro vertical do tooltip
 
-        // Rotação animada
-        float spin = (Minecraft.getInstance().player != null
-                ? Minecraft.getInstance().player.tickCount % 360
-                : 0);
+        Minecraft mc = Minecraft.getInstance();
 
-        renderEntityInInventory(offsetX, offsetY, scale, spin, 0, guiGraphics.pose(), entity);
+        // Rotação animada
+        float time = mc.level != null
+                ? mc.level.getGameTime() + mc.getFrameTime()
+                : 0;
+
+        float spin = (time * 0.25f) % 360;
+
+        //float tickSpin = (mc.player != null ? mc.player.tickCount % 360 : 0);
+
+        renderEntityInInventoryFollowsAngleSameRotation(guiGraphics, offsetX, offsetY, scale, spin, 0, entity);
     }
 
     @Override
@@ -102,7 +110,57 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
         ClientTooltipComponent.super.renderText(font, posX, posY, matrix, bufferSource);
     }
 
-    public static void renderEntityInInventory(float posX, float posY, int scale,
+    public static void renderEntityInInventoryFollowsAngleSameRotation(GuiGraphics pGuiGraphics, float pX, float pY, float pScale, float angleXComponent, float angleYComponent, LivingEntity pEntity) {
+        float f = angleXComponent;
+        float f1 = angleYComponent;
+        Quaternionf quaternionZ = (new Quaternionf()).rotateZ((float)Math.PI);
+        Quaternionf quaternionX = (new Quaternionf()).rotateX(f1 * 20.0F * ((float)Math.PI / 180F));
+        quaternionZ.mul(quaternionX);
+        float f2 = pEntity.yBodyRot;
+        float f22 = pEntity.yBodyRotO;
+        float f3 = pEntity.getYRot();
+        float f4 = pEntity.getXRot();
+        float f5 = pEntity.yHeadRotO;
+        float f6 = pEntity.yHeadRot;
+        pEntity.yBodyRot = 180.0F + f * 20.0F;
+        pEntity.yBodyRotO = pEntity.yBodyRot;
+        pEntity.setYRot(180.0F + f * 20.0F);
+        pEntity.setXRot(-f1 * 20.0F);
+        pEntity.yHeadRot = pEntity.getYRot();
+        pEntity.yHeadRotO = pEntity.getYRot();
+        renderEntityInInventory(pGuiGraphics, pX, pY, pScale, quaternionZ, quaternionX, pEntity);
+        pEntity.yBodyRot = f2;
+        pEntity.yBodyRotO = f22;
+        pEntity.setYRot(f3);
+        pEntity.setXRot(f4);
+        pEntity.yHeadRotO = f5;
+        pEntity.yHeadRot = f6;
+    }
+
+    public static void renderEntityInInventory(GuiGraphics pGuiGraphics, float pX, float pY, float pScale, Quaternionf pPose, @Nullable Quaternionf pCameraOrientation, LivingEntity pEntity) {
+        pGuiGraphics.pose().pushPose();
+        pGuiGraphics.pose().translate(pX, pY, 50.0D);
+        pGuiGraphics.pose().mulPoseMatrix((new Matrix4f()).scaling(pScale, pScale, -pScale));
+        pGuiGraphics.pose().mulPose(pPose);
+        Lighting.setupForEntityInInventory();
+        EntityRenderDispatcher entityrenderdispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
+        if (pCameraOrientation != null) {
+            pCameraOrientation.conjugate();
+            entityrenderdispatcher.overrideCameraOrientation(pCameraOrientation);
+        }
+
+        entityrenderdispatcher.setRenderShadow(false);
+        RenderSystem.runAsFancy(() -> {
+            entityrenderdispatcher.render(pEntity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, pGuiGraphics.pose(), pGuiGraphics.bufferSource(), 15728880);
+        });
+        pGuiGraphics.flush();
+        entityrenderdispatcher.setRenderShadow(true);
+        pGuiGraphics.pose().popPose();
+        Lighting.setupFor3DItems();
+    }
+
+
+    public static void oldRenderEntityInInventory(float posX, float posY, int scale,
                                                float mouseX, float mouseY, @NotNull PoseStack poseStack, @NotNull LivingEntity livingEntity) {
         poseStack.pushPose();
         poseStack.translate(posX, posY, 3500.0D); // força ainda mais na frente

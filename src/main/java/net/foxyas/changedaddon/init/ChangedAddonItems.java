@@ -5,8 +5,8 @@ import net.foxyas.changedaddon.item.*;
 import net.foxyas.changedaddon.item.api.ColorHolder;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
-import net.foxyas.changedaddon.item.clothes.DyeableShorts;
-import net.foxyas.changedaddon.item.clothes.TShirtClothing;
+import net.foxyas.changedaddon.item.clothes.DyeableShortsItem;
+import net.foxyas.changedaddon.item.clothes.TShirtClothingItem;
 import net.foxyas.changedaddon.procedure.DotValueOfViewProcedure;
 import net.foxyas.changedaddon.procedure.LaethinPropertyValueProviderProcedure;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -33,6 +33,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.awt.*;
+import java.util.List;
 
 @SuppressWarnings("unused")
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
@@ -115,8 +116,6 @@ public class ChangedAddonItems {
     public static final RegistryObject<BlockItem> REINFORCED_CROSS_BLOCK = block(ChangedAddonBlocks.REINFORCED_CROSS_BLOCK);
     public static final RegistryObject<BlockItem> WALL_WHITE_CRACKED = block(ChangedAddonBlocks.WALL_WHITE_CRACKED);
     public static final RegistryObject<BlockItem> CONTAINMENT_CONTAINER = block(ChangedAddonBlocks.CONTAINMENT_CONTAINER);
-    //public static final RegistryObject<Item> WALL_WHITE_STAIR = block(ChangedAddonBlocks.WALL_WHITE_STAIR, ChangedAddonTabs.TAB_CHANGED_ADDON);
-    //public static final RegistryObject<Item> WALL_WHITE_SLAB = block(ChangedAddonBlocks.WALL_WHITE_SLAB, ChangedAddonTabs.TAB_CHANGED_ADDON);
 
     public static final RegistryObject<BlockItem> LATEX_INSULATOR = block(ChangedAddonBlocks.LATEX_INSULATOR);
     public static final RegistryObject<BlockItem> DARK_LATEX_PUDDLE = block(ChangedAddonBlocks.DARK_LATEX_PUDDLE);
@@ -159,27 +158,18 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> CRYSTAL_DAGGER_GREEN = REGISTRY.register("crystal_dagger_green", CrystalAddagerGreenItem::new);
     public static final RegistryObject<Item> CRYSTAL_DAGGER_BLACK = REGISTRY.register("crystal_dagger_black", CrystalAddagerBlackItem::new);
     public static final RegistryObject<Item> EMPTY_SPRAY = REGISTRY.register("empty_spray", EmptySprayItem::new);
-    public static final RegistryObject<Item> LITIX_CAMONIA_SPRAY = REGISTRY.register("litix_camonia_spray", () -> new SprayItem(() -> ChangedLatexTypes.NONE.get()));
-    public static final RegistryObject<Item> DARK_LATEX_SPRAY = REGISTRY.register("dark_latex_spray", () -> new SprayItem(() -> ChangedLatexTypes.DARK_LATEX.get()));
-    public static final RegistryObject<Item> WHITE_LATEX_SPRAY = REGISTRY.register("white_latex_spray", () -> new SprayItem(() -> ChangedLatexTypes.WHITE_LATEX.get()));
+    public static final RegistryObject<Item> LITIX_CAMONIA_SPRAY = REGISTRY.register("litix_camonia_spray", () -> new SprayItem(ChangedLatexTypes.NONE::get));
+    public static final RegistryObject<Item> DARK_LATEX_SPRAY = REGISTRY.register("dark_latex_spray", () -> new SprayItem(ChangedLatexTypes.DARK_LATEX::get));
+    public static final RegistryObject<Item> WHITE_LATEX_SPRAY = REGISTRY.register("white_latex_spray", () -> new SprayItem(ChangedLatexTypes.WHITE_LATEX::get));
     public static final RegistryObject<Item> LUNAR_ROSE = REGISTRY.register("lunar_rose", LunarRoseItem::new);
-    //public static final RegistryObject<Item> HAZMAT_SUIT_HELMET = REGISTRY.register("hazmat_suit_helmet", HazmatSuitItem.Helmet::new);
-    //public static final RegistryObject<Item> HAZMAT_SUIT_CHESTPLATE = REGISTRY.register("hazmat_suit_chestplate", HazmatSuitItem.Chestplate::new);
-    //public static final RegistryObject<Item> HAZMAT_SUIT_LEGGINGS = REGISTRY.register("hazmat_suit_leggings", HazmatSuitItem.Leggings::new);
-    //public static final RegistryObject<Item> HAZMAT_SUIT_BOOTS = REGISTRY.register("hazmat_suit_boots", HazmatSuitItem.Boots::new);
-    //public static final RegistryObject<Item> HAZARD_SUIT_HELMET = REGISTRY.register("hazard_suit_helmet", HazardSuitItem.Helmet::new);
-    //public static final RegistryObject<Item> HAZARD_SUIT_CHESTPLATE = REGISTRY.register("hazard_suit_chestplate", HazardSuitItem.Chestplate::new);
-    //public static final RegistryObject<Item> HAZARD_SUIT_LEGGINGS = REGISTRY.register("hazard_suit_leggings", HazardSuitItem.Leggings::new);
-    //public static final RegistryObject<Item> HAZARD_SUIT_BOOTS = REGISTRY.register("hazard_suit_boots", HazardSuitItem.Boots::new);
+
     public static final RegistryObject<Item> GENERATOR = blockNoTab(ChangedAddonBlocks.GENERATOR);
     public static final RegistryObject<Item> CATALYZER_BLOCK_ILLUSTRATIVE_ITEM = REGISTRY.register("catalyzer_block_illustrative_item", CatalyzerBlockIllustrativeItemItem::new);
     public static final RegistryObject<Item> UNIFUSER_BLOCK_ILLUSTRATIVE_ITEM = REGISTRY.register("unifuser_block_illustrative_item", UnifuserBlockIllustrativeItemItem::new);
-    //public static final RegistryObject<Item> AMMONIA_PARTICLES_JEI_ILLUSTRATIVE = REGISTRY.register("ammonia_particles_jei_illustrative", AmmoniaParticlesJeiIllustrativeItem::new);
-    //public static final RegistryObject<Item> FOXTA_CAN = blockNoTab(ChangedAddonBlocks.FOXTA_CAN, null);
-    //public static final RegistryObject<Item> SNEPSI_CAN = blockNoTab(ChangedAddonBlocks.SNEPSI_CAN, null);
     public static final RegistryObject<Item> SNEP_ICON = REGISTRY.register("snep_icon", SnepIconItem::new);
     public static final RegistryObject<Item> FRIENDLY_GOEY_ICON = REGISTRY.register("friendly_goey_icon", FriendlyGoeyIconItem::new);
     public static final RegistryObject<Item> PAT_ICON = REGISTRY.register("pat_icon", PatIconItem::new);
+
     public static final RegistryObject<BlockItem> COVER_ITEM = REGISTRY.register("cover", () -> new BlockItem(ChangedAddonBlocks.COVER_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<BlockItem> DARK_LATEX_COVER_ITEM = REGISTRY.register("dark_latex_cover", () -> new BlockItem(ChangedAddonBlocks.DARK_LATEX_COVER_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<BlockItem> WHITE_LATEX_COVER_ITEM = REGISTRY.register("white_latex_cover", () -> new BlockItem(ChangedAddonBlocks.WHITE_LATEX_COVER_BLOCK.get(), new Item.Properties()));
@@ -218,7 +208,7 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> LUMINARCTIC_LEOPARD_MALE_SPAWN_EGG = REGISTRY.register("luminarctic_leopard_male_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LUMINARCTIC_LEOPARD_MALE, Color3.getColor("#414141").toInt(), Color3.getColor("#FFFFFF").toInt(), new Item.Properties()));
     public static final RegistryObject<Item> LUMINARCTIC_FEMALE_LEOPARD_SPAWN_EGG = REGISTRY.register("luminarctic_leopard_female_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LUMINARCTIC_LEOPARD_FEMALE, Color3.getColor("#414141").toInt(), Color3.getColor("#FFFFFF").toInt(), new Item.Properties()));
     public static final RegistryObject<Item> LATEX_SQUID_TIGER_SHARK_SPAWN_EGG = REGISTRY.register("latex_squid_tiger_shark_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LATEX_SQUID_TIGER_SHARK, Color3.getColor("#969696").toInt(), Color3.BLACK.toInt(), new Item.Properties()));
-    public static final RegistryObject<Item> LYNX_SPAWN_EGG = REGISTRY.register("lynx_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LYNX, Color3.getColor("#ebd182").toInt(), Color3.getColor("eace7a").toInt(), new Item.Properties()));
+    public static final RegistryObject<Item> LYNX_SPAWN_EGG = REGISTRY.register("lynx_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LYNX, Color3.getColor("#ebd182").toInt(), Color3.getColor("#eace7a").toInt(), new Item.Properties()));
     public static final RegistryObject<Item> FOXTA_FOXY_SPAWN_EGG = REGISTRY.register("foxta_foxy_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.FOXTA_FOXY, Color3.getColor("#FF8F33").toInt(), Color3.getColor("#FFBC85").toInt(), new Item.Properties()));
     public static final RegistryObject<Item> SNEPSI_LEOPARD_SPAWN_EGG = REGISTRY.register("snepsi_leopard_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.SNEPSI_LEOPARD, Color3.getColor("#95D161").toInt(), Color3.getColor("#B5DF90").toInt(), new Item.Properties()));
     public static final RegistryObject<Item> FENGQI_WOLF_SPAWN_EGG = REGISTRY.register("fengqi_wolf_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.FENGQI_WOLF, Color3.getColor("#93c6fd").toInt(), Color3.getColor("#FAC576").toInt(), new Item.Properties()));
@@ -252,13 +242,13 @@ public class ChangedAddonItems {
 
     // MISC ITEMS
     public static final RegistryObject<Item> DARK_LATEX_COAT = REGISTRY.register("dark_latex_coat",
-            () -> new DarkLatexCoatItem(ArmorItem.Type.CHESTPLATE, new Item.Properties())); //));
+            () -> new DarkLatexCoatItem(ArmorItem.Type.CHESTPLATE, new Item.Properties()));
     public static final RegistryObject<Item> DARK_LATEX_HEAD_CAP = REGISTRY.register("dark_latex_coat_cap",
-            () -> new DarkLatexCoatItem(ArmorItem.Type.HELMET, new Item.Properties())); //));
-    public static final RegistryObject<LaserPointer> LASER_POINTER = REGISTRY.register("laser_pointer", LaserPointer::new);
+            () -> new DarkLatexCoatItem(ArmorItem.Type.HELMET, new Item.Properties()));
+    public static final RegistryObject<LaserPointerItem> LASER_POINTER = REGISTRY.register("laser_pointer", LaserPointerItem::new);
     //public static final RegistryObject<Item> DYEABLE_SPORTS_BRA = REGISTRY.register("dyeable_sports_bra", DyeableSportsBra::new);
-    public static final RegistryObject<TShirtClothing> DYEABLE_TSHIRT = REGISTRY.register("dyeable_tshirt", TShirtClothing::new);
-    public static final RegistryObject<DyeableShorts> DYEABLE_SHORTS = REGISTRY.register("dyeable_shorts", DyeableShorts::new);
+    public static final RegistryObject<TShirtClothingItem> DYEABLE_TSHIRT = REGISTRY.register("dyeable_tshirt", TShirtClothingItem::new);
+    public static final RegistryObject<DyeableShortsItem> DYEABLE_SHORTS = REGISTRY.register("dyeable_shorts", DyeableShortsItem::new);
     public static final RegistryObject<Item> HAZARD_BODY_SUIT = REGISTRY.register("hazard_body_suit", HazardBodySuit::new);
 
 
@@ -322,5 +312,9 @@ public class ChangedAddonItems {
 
     private static RegistryObject<Item> RegisterBlockItem(RegistryObject<Block> block) {
         return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
+    }
+
+    public static List<RegistryObject<Item>> getNoTabItems() {
+        return List.of(GENERATOR, SNEP_ICON, PAT_ICON, FRIENDLY_GOEY_ICON);
     }
 }

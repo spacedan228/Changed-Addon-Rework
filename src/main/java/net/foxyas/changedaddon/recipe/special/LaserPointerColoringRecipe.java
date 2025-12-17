@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.recipe.special;
 
 import com.google.gson.JsonObject;
 import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
-import net.foxyas.changedaddon.item.LaserPointer;
+import net.foxyas.changedaddon.item.LaserPointerItem;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -76,7 +76,7 @@ public class LaserPointerColoringRecipe extends CustomRecipe {
             result.setCount(1);
 
             // get existing color if present
-            int existingColor = LaserPointer.getColor(result);
+            int existingColor = LaserPointerItem.getColor(result);
             if (existingColor != -1) {
                 totalR += (existingColor >> 16) & 0xFF;
                 totalG += (existingColor >> 8) & 0xFF;
@@ -90,7 +90,7 @@ public class LaserPointerColoringRecipe extends CustomRecipe {
             int b = totalB / colorCount;
             int finalColor = (r << 16) | (g << 8) | b;
 
-            LaserPointer.setLaserColor(result, finalColor);
+            LaserPointerItem.setLaserColor(result, finalColor);
             return result;
         }
 

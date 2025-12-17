@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.item.clothes;
 
 import net.foxyas.changedaddon.item.api.ColorHolder;
+import net.foxyas.changedaddon.item.api.DynamicCreativeTab;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.nbt.CompoundTag;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public abstract class DyeableClothingItem extends ClothingItem implements DyeableLeatherItem, ColorHolder {
+public abstract class DyeableClothingItem extends ClothingItem implements DyeableLeatherItem, ColorHolder, DynamicCreativeTab {
 
     public DyeableClothingItem() {
         super();

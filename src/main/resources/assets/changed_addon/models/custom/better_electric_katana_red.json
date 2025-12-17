@@ -7,14 +7,14 @@
 			"render_type": "changed_addon:energy",
 			"textures": {
 				"laser": "changed_addon:block/red_katana_energy",
-				"particle": "changed_addon:item/blue_katana_energy"
+				"particle": "changed_addon:item/red_katana_energy"
 			}
 		},
 		"base": {
 			"parent": "changed_addon:custom/handle_electric_katana",
 			"textures": {
 				"base": "changed_addon:block/base_energy_katana",
-				"particle": "changed_addon:item/blue_katana_energy"
+				"particle": "changed_addon:item/red_katana_energy"
 			}
 		}
 	},

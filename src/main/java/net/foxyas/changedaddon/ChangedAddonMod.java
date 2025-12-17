@@ -43,7 +43,7 @@ public class ChangedAddonMod {
         ChangedAddonConfigs.register(context);
         ChangedAddonBlocks.REGISTRY.register(bus);
         ChangedAddonPaintingVariants.PAINTING_TYPES.register(bus);
-        ChangedAddonTabs.TABS.register(bus);
+        ChangedAddonCreativeTabs.TABS.register(bus);
 
         ChangedAddonItemTiers.init();
         ChangedAddonAttributes.ATTRIBUTES.register(bus);

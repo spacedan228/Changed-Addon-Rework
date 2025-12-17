@@ -2,10 +2,8 @@ package net.foxyas.changedaddon.item.clothes;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
-import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,19 +11,14 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 
-public class DyeableShorts extends DyeableClothingItem implements DyeableLeatherItem {
+public class DyeableShortsItem extends DyeableClothingItem implements DyeableLeatherItem {
 
-    public DyeableShorts() {
+    public DyeableShortsItem() {
         super();
     }
 
