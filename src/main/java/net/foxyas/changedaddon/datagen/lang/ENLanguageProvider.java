@@ -518,13 +518,16 @@ public class ENLanguageProvider extends LanguageProvider {
         addItemFromId(PAINITE_PICKAXE);
         addItemFromId(PAINITE_SHOVEL);
         addItemFromId(PAINITE_SWORD);
-        addItemFromId(PAT_ICON);
         addItem(POT_WITH_CAMONIA, "Pot with Litix-Camonia");
         addItemFromId(RAW_IRIDIUM);
         addItem(RED_LATEX_GOO, "§4Red Latex Goo");
         add(RED_LATEX_GOO.get().getDescriptionId() + ".description", "§4A Strange goo");
         addItemFromId(SIGNAL_CATCHER);
-        addItemFromId(SNEP_ICON);
+
+        addItem(PAT_ICON, "\"Stealth Pats\" Advancement Icon");
+        addItem(SNEP_ICON, "\"Leaper\" Advancement Icon");
+        addItem(FRIENDLY_GOEY_ICON, "\"Pats on the beasts\" Advancement Icon");
+
         add(SNEPSI.get().getDescriptionId() + ".desc", "Cat-ion? Isn't it spelled caution? Says do NOT drink. Contains goo?");
         addItem(SPAWNEGGOFFOXYAS, "Foxyas Spawn Egg");
         addItem(SYRINGE, "Medical Syringe");
@@ -642,5 +645,16 @@ public class ENLanguageProvider extends LanguageProvider {
         addText("swim_speed", "Swim Speed = %s");
         addText("miningStrength", "Mining Strength: %s");
         addText("display.hazard_body_suit.cant_have_helmet", "Mmph... it’s squishing my ears! Better not wear it.");
+
+        add("commands.accessory.no_slots.single", "%s has no accessory slots.");
+        add("commands.accessory.no_slots.multiple", "%s has no accessory slots, ignoring and passing to the next.");
+        add("commands.accessory.invalid_slot.single", "%s does not have the accessory slot %s.");
+        add("commands.accessory.invalid_slot.multiple", "%s does not have the accessory slot %s, ignoring and passing to the next.");
+        add("commands.accessory.set.success", "%s now has %s in slot %s.");
+        add("commands.accessory.set.invalid_item", "%s cannot equip %s in slot %s.");
+        add("commands.accessory.set.locked", "%s cannot equip %s in slot %s because another accessory blocks it.");
+        add("commands.accessory.set.slot_locked", "%s cannot equip %s in slot %s because the slot type is not available");
+        add("commands.accessory.get.success", "%s has %s in slot %s.");
+
     }
 }

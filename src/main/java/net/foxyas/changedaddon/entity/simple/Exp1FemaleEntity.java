@@ -16,7 +16,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -26,11 +25,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-@Mod.EventBusSubscriber
 public class Exp1FemaleEntity extends ChangedEntity implements GenderedEntity, PowderSnowWalkable {
-    //private static final Set<ResourceLocation> SPAWN_BIOMES = Set.of(ResourceLocation.parse("snowy_plains"), ResourceLocation.parse("snowy_taiga"), ResourceLocation.parse("snowy_beach"));
 
-    public Exp1FemaleEntity(PlayMessages.SpawnEntity packet, Level world) {
+    public Exp1FemaleEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXP_1_FEMALE.get(), world);
     }
 
@@ -41,15 +38,7 @@ public class Exp1FemaleEntity extends ChangedEntity implements GenderedEntity, P
         setNoAi(false);
     }
 
-    //@SubscribeEvent
-    //public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-        //if (SPAWN_BIOMES.contains(event.getName()))
-        //    event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.EXP_1_FEMALE.get(), 20, 1, 4));
-    //}
-
     public static void init() {
-        //SpawnPlacements.register(ChangedAddonEntities.EXP_1_FEMALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                //(entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)));
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.event;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.command.AccessoryItemCommands;
 import net.foxyas.changedaddon.command.ChangedAddonAdminCommand;
 import net.foxyas.changedaddon.command.ChangedAddonCommandRootCommand;
 import net.foxyas.changedaddon.command.TransfurMe;
@@ -45,6 +46,7 @@ public class CommonEvent {
         CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         ChangedAddonAdminCommand.register(dispatcher);
         ChangedAddonCommandRootCommand.register(dispatcher);
+        AccessoryItemCommands.register(dispatcher);
         TransfurMe.register(dispatcher);
     }
 

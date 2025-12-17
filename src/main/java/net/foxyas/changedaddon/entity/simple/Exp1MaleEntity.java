@@ -28,11 +28,9 @@ import java.util.Objects;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-@Mod.EventBusSubscriber
 public class Exp1MaleEntity extends ChangedEntity implements GenderedEntity, PowderSnowWalkable {
-    //private static final Set<ResourceLocation> SPAWN_BIOMES = Set.of(ResourceLocation.parse("snowy_plains"), ResourceLocation.parse("snowy_taiga"), ResourceLocation.parse("snowy_beach"));
 
-    public Exp1MaleEntity(PlayMessages.SpawnEntity packet, Level world) {
+    public Exp1MaleEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXP_1_MALE.get(), world);
     }
 
@@ -43,15 +41,7 @@ public class Exp1MaleEntity extends ChangedEntity implements GenderedEntity, Pow
         setNoAi(false);
     }
 
-//    @SubscribeEvent
-//    public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-//        if (SPAWN_BIOMES.contains(event.getName()))
-//            event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.EXP_1_MALE.get(), 20, 1, 4));
-//    }
-
     public static void init() {
-//        SpawnPlacements.register(ChangedAddonEntities.EXP_1_MALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-//                (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
