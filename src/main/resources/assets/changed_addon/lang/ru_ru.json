@@ -653,8 +653,6 @@
   "text.changed_addon.miningStrength": "Сила копания: %s",
 
   "text.changed_addon.display.hazard_body_suit.cant_have_helmet": "Мфф... Уши не влазят! Лучше не надевать это.",
-
-  "changed_addon.gui.abilities_radial_screen.mouse.right_click": "Нажмите правую кнопку мыши чтобы выбрать Вторую Способность",
   
   "advancements.cuddles_of_eternal_night.title": "Это... сон?",
   "advancements.cuddles_of_eternal_night.descr": "Объятия Вечной Ночи... Не стоило тебе прижимать плюшевую игрушку к себе. Спи спокойно... навсегда.",
