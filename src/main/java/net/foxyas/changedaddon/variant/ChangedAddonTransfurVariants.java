@@ -362,6 +362,7 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAbilities.HYPNOSIS)
                     .jumpStrength(1.35f)
                     .nightVision()
+                    .gills()
                     .reducedFall()
     );
 
