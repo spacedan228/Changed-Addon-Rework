@@ -656,6 +656,5 @@ public class HULanguageProvider extends LanguageProvider {
         add("commands.accessory.set.slot_locked", "%s nem tudja felszerelni a(z) %s kelléket a(z) %s rekeszben, mert a rekesz típusa nem elérhető.");
         add("commands.accessory.get.success", "%s tartalmaz %s-t a(z) %s rekeszben.");
         add("commands.accessory.too_many", "Túl sok adatot kért a rendszer, csak az első %s találatot mutatja.");
-        
     }
 }
