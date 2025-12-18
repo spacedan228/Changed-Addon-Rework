@@ -50,11 +50,6 @@ public class AccessoryEntityProvider implements DataProvider {
         this.modId = modId;
     }
 
-//    public static AccessorySlotType[] getHumanoidSlots() {
-//        if (humanoidSlots == null) humanoidSlots = new AccessorySlotType[]{BODY.get(), FULL_BODY.get(), LEGS.get(), HANDS.get()};
-//        return humanoidSlots;
-//    }
-
     @Override
     public @NotNull CompletableFuture<?> run(@NotNull CachedOutput cache) {
         registerEntityAccessories();
