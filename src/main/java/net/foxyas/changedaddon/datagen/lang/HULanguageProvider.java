@@ -518,13 +518,16 @@ public class HULanguageProvider extends LanguageProvider {
         addItem(PAINITE_PICKAXE, "Painitcsákány");
         addItem(PAINITE_SHOVEL, "Painitásó");
         addItem(PAINITE_SWORD, "Painitkard");
-        addItem(PAT_ICON, "Simogatás ikonja");
         addItem(POT_WITH_CAMONIA, "Litix-kamóniás edény");
         addItem(RAW_IRIDIUM, "Nyersirídium");
         addItem(RED_LATEX_GOO, "§4Vörös latex ragacs");
         add(RED_LATEX_GOO.get().getDescriptionId() + ".description", "§4Egy furcsa ragacs");
         addItem(SIGNAL_CATCHER, "Jelfogó");
-        addItem(SNEP_ICON, "Hópárduc ikon");
+
+        addItem(PAT_ICON, "\"Rejtett simogatás\" előrelépés ikonja");
+        addItem(SNEP_ICON, "\"Szökkenő\" előrelépés ikonja");
+        addItem(FRIENDLY_GOEY_ICON, "\"Lények simogatása\" előrelépés ikonja");
+        
         add(SNEPSI.get().getDescriptionId() + ".desc", "Figyel-macska? Nem azt írják, hogy figyelem? Azt mondja, NE idd meg. Ragacsot tartalmaz?");
         addItem(SPAWNEGGOFFOXYAS, "Foxyasidéző tojás");
         addItem(SYRINGE, "Orvosi fecskendő");
@@ -642,5 +645,17 @@ public class HULanguageProvider extends LanguageProvider {
         addText("swim_speed", "Úszási sebesség = %s");
         addText("miningStrength", "Bányászati erősség: %s");
         addText("display.hazard_body_suit.cant_have_helmet", "Mmph... Nyomja a fülem! Jobb, ha nem veszem fel.");
+
+        add("commands.accessory.no_slots.single", "A(z) %s-nek nincsenek kellék rekeszei.");
+        add("commands.accessory.no_slots.multiple", "%s-nek nincsenek kellék rekeszei, figyelmen kívül hagyja és a következőre ugrik.");
+        add("commands.accessory.invalid_slot.single", "A(z) %s nem rendelkezik a(z) %s kellék rekesszel.");
+        add("commands.accessory.invalid_slot.multiple", "%s nem rendelkezik a(z) %s kellék rekesszel, figyelmen kívül hagyja és a következőre ugrik.");
+        add("commands.accessory.set.success", "%s mostantól %s-t tartalmaz a(z) %s rekeszben.");
+        add("commands.accessory.set.invalid_item", "%s nem tudja felszerelni a(z) %s kelléket a(z) %s rekeszben.");
+        add("commands.accessory.set.locked", "%s nem tudja felszerelni a(z) %s kelléket a(z) %s rekeszben, mert egy másik kellék blokkolja.");
+        add("commands.accessory.set.slot_locked", "%s nem tudja felszerelni a(z) %s kelléket a(z) %s rekeszben, mert a rekesz típusa nem elérhető.");
+        add("commands.accessory.get.success", "%s tartalmaz %s-t a(z) %s rekeszben.");
+        add("commands.accessory.too_many", "Túl sok adatot kért a rendszer, csak az első %s találatot mutatja.");
+        
     }
 }
