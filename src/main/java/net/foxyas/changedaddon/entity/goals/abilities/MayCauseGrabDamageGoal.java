@@ -35,18 +35,19 @@ public class MayCauseGrabDamageGoal extends Goal {
 
     @Override
     public void start() {
+        // Update the "causing dmg" flag of the grab ability instance
         grabber.setCausingGrabDamage(true);
     }
 
     @Override
     public void tick() {
-        // força o tick da habilidade de grab
+        // force a tick of the grab ability instances to avoid issues.
         grabber.mayTickGrabAbility();
     }
 
     @Override
     public boolean canContinueToUse() {
-        // só um tick é suficiente
+        // A Single Tick is enough
         return false;
     }
 
@@ -54,7 +55,7 @@ public class MayCauseGrabDamageGoal extends Goal {
     public void stop() {
         grabber.setCausingGrabDamage(false);
 
-        cooldown = 20 * 2; // 2 seconds
+        cooldown = grabber.getGrabDamageCooldown();
     }
 
     @Override

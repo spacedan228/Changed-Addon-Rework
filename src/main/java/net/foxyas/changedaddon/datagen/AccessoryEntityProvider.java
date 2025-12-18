@@ -24,6 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 
 import static net.ltxprogrammer.changed.init.ChangedAccessorySlots.*;
 
@@ -32,8 +33,10 @@ public class AccessoryEntityProvider implements DataProvider {
 
     private static final Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    // The Changed Mod Objects are registered too late soo is need to make static lists a method
-    private static AccessorySlotType[] humanoidSlots;
+
+    // The Changed Mod Objects are registered too late soo is need to make static supplier a method
+    private static Supplier<AccessorySlotType[]> humanoidSlots = () -> new AccessorySlotType[]{BODY.get(), FULL_BODY.get(), LEGS.get(), HANDS.get()};
+
     protected final String modId;
     private final DataGenerator generator;
     private final Map<String, Appender> appenders = new HashMap<>();
@@ -47,10 +50,10 @@ public class AccessoryEntityProvider implements DataProvider {
         this.modId = modId;
     }
 
-    public static AccessorySlotType[] getHumanoidSlots() {
-        if (humanoidSlots == null) humanoidSlots = new AccessorySlotType[]{BODY.get(), FULL_BODY.get(), LEGS.get()};
-        return humanoidSlots;
-    }
+//    public static AccessorySlotType[] getHumanoidSlots() {
+//        if (humanoidSlots == null) humanoidSlots = new AccessorySlotType[]{BODY.get(), FULL_BODY.get(), LEGS.get(), HANDS.get()};
+//        return humanoidSlots;
+//    }
 
     @Override
     public @NotNull CompletableFuture<?> run(@NotNull CachedOutput cache) {
@@ -82,7 +85,7 @@ public class AccessoryEntityProvider implements DataProvider {
         this.add(ChangedTags.AccessoryEntities.HUMANOIDS)
                 //.entities(ChangedAddonEntities.canUseAccessories().toArray(new EntityType[0]))
                 .entityTypesTag(ChangedAddonTags.EntityTypes.CAN_USE_ACCESSORIES)
-                .slots(getHumanoidSlots());
+                .slots(humanoidSlots.get());
     }
 
     private Path createPath(Path base, String fileName) {

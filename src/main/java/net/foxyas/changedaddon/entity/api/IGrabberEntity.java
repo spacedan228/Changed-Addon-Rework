@@ -103,6 +103,10 @@ public interface IGrabberEntity {
         return entitiesTryingToTarget.getType().is(ChangedAddonTags.EntityTypes.IGNORE_GRABBED_TARGETS);
     }
 
+    default int getGrabDamageCooldown() {
+        return 20 * 2;
+    }
+
     default void setCausingGrabDamage(boolean value) {
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
