@@ -13,7 +13,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraftforge.network.PacketDistributor;
+
+import java.util.List;
 
 public interface IGrabberEntity {
     PathfinderMob asMob();
@@ -97,5 +101,28 @@ public interface IGrabberEntity {
 
     default boolean shouldRespectGrab(PathfinderMob entitiesTryingToTarget) {
         return entitiesTryingToTarget.getType().is(ChangedAddonTags.EntityTypes.IGNORE_GRABBED_TARGETS);
+    }
+
+    default void setCausingGrabDamage(boolean value) {
+        GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
+        if (grabAbilityInstance != null) {
+            grabAbilityInstance.attackDown = value;
+        }
+    }
+
+    default boolean canCauseGrabDamage() {
+        if (!(this instanceof LivingEntity living)) return false;
+        GrabEntityAbilityInstance grabAbilityInstance = getGrabAbilityInstance();
+        if (grabAbilityInstance == null) return false;
+
+        return living.level.getNearbyEntities(
+                LivingEntity.class,
+                TargetingConditions.forNonCombat()
+                        .range(16)
+                        .ignoreLineOfSight()
+                        .ignoreInvisibilityTesting(),
+                living,
+                living.getBoundingBox().inflate(16)
+        ).stream().noneMatch((e) -> e != living && !(e instanceof ArmorStand) && e != grabAbilityInstance.grabbedEntity);
     }
 }

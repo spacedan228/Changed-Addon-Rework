@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.entity.goals.abilities.MayCauseGrabDamageGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
@@ -187,7 +188,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
 
     @Override
     public LivingEntity getGrabTarget() {
-        return getTarget();
+        return grabEntityAbilityInstance != null ? grabEntityAbilityInstance.grabbedEntity : null;
     }
 
     @Override
@@ -201,6 +202,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         //this.goalSelector.addGoal(1, new GrabTargetGoal(this, 0.4f, false));
         this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
         this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
+        this.goalSelector.addGoal(10, new MayCauseGrabDamageGoal(this));
     }
 
     @Override

@@ -44,7 +44,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public LivingEntity getGrabTarget() {
-        return getTarget();
+        return grabEntityAbilityInstance != null ? grabEntityAbilityInstance.grabbedEntity : null;
     }
 
     @Override
