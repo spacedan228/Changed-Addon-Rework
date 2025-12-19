@@ -1,8 +1,10 @@
 package net.foxyas.changedaddon.mixins.entity;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.foxyas.changedaddon.ability.ToggleClimbAbilityInstance;
 import net.foxyas.changedaddon.entity.api.ExtraConditions;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
@@ -36,4 +38,39 @@ public abstract class LivingEntityMixin {
         });
     }
 
+    @ModifyExpressionValue(
+            method = "updateFallFlying",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
+            )
+    )
+    private boolean changedaddon$canElytraFlyRedirect(boolean original) {
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull((LivingEntity)(Object)this))
+                .map(latexVariant -> {
+                    if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
+                        return extra.getFlyType().canGlide();
+                    }
+                    return latexVariant.getParent().canGlide;
+                })
+                .orElse(original);
+    }
+
+    @ModifyExpressionValue(
+            method = "updateFallFlying",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;elytraFlightTick(Lnet/minecraft/world/entity/LivingEntity;I)Z"
+            )
+    )
+    private boolean changedaddon$elytraFlightTickRedirect(boolean original) {
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull((LivingEntity)(Object)this))
+                .map(latexVariant -> {
+                    if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
+                        return extra.getFlyType().canGlide();
+                    }
+                    return latexVariant.getParent().canGlide;
+                })
+                .orElse(original);
+    }
 }

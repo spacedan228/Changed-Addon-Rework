@@ -1,20 +1,42 @@
 package net.foxyas.changedaddon.mixins.entity.player;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.mojang.authlib.GameProfile;
 import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
+import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(LocalPlayer.class)
-public class LocalPlayerMixin implements LivingEntityDataExtensor {
+public abstract class LocalPlayerMixin extends Player implements LivingEntityDataExtensor {
 
+    public LocalPlayerMixin(Level pLevel, BlockPos pPos, float pYRot, GameProfile pGameProfile) {
+        super(pLevel, pPos, pYRot, pGameProfile);
+    }
+
+    @ModifyExpressionValue(
+            method = "aiStep",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
+            )
+    )
+    private boolean changedaddon$canElytraFlyRedirect(boolean original) {
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(this))
+                .map(latexVariant -> {
+                    if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
+                        return extra.getFlyType().canGlide();
+                    }
+                    return latexVariant.getParent().canGlide;
+                })
+                .orElse(original);
+    }
 
     /*@Inject(method = "isUnderWater" ,at = @At("RETURN"), cancellable = true)
     private void customIsUnderWater(CallbackInfoReturnable<Boolean> cir) {

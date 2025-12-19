@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity.player;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.foxyas.changedaddon.ability.ClawsAbility;
 import net.foxyas.changedaddon.client.renderer.items.HazardBodySuitClothingRenderer;
 import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
@@ -14,6 +15,7 @@ import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -205,5 +207,23 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
                 }
             }
         }
+    }
+
+    @ModifyExpressionValue(
+            method = "tryToStartFallFlying",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
+            )
+    )
+    private boolean changedaddon$canElytraFlyRedirect(boolean original) {
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(this))
+                .map(latexVariant -> {
+                    if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
+                        return extra.getFlyType().canGlide();
+                    }
+                    return latexVariant.getParent().canGlide;
+                })
+                .orElse(original);
     }
 }
