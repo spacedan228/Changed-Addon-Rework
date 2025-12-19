@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -12,14 +11,17 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
+import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
+import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.ChatFormatting;
@@ -37,6 +39,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -235,7 +238,7 @@ public class ChangedAddonAdminCommand {
 
     private static int setBlockInfection(CommandContext<CommandSourceStack> ctx, LatexType latexType) {
         CommandSourceStack source = ctx.getSource();
-        ServerLevel world = source.getLevel();
+        ServerLevel level = source.getLevel();
 
         BlockPos minPos;
         BlockPos maxPos;
@@ -243,27 +246,103 @@ public class ChangedAddonAdminCommand {
             minPos = BlockPosArgument.getLoadedBlockPos(ctx, "minPos");
             maxPos = BlockPosArgument.getLoadedBlockPos(ctx, "maxPos");
         } catch (CommandSyntaxException e) {
-            source.sendFailure(Component.literal("One or both of the selected position are not loaded!"));
+            source.sendFailure(Component.literal(
+                    "One or both of the selected positions are not loaded!"
+            ));
             return 0;
         }
 
-        long value = BlockPos.betweenClosedStream(minPos, maxPos).count();
-
-        if (value > Short.MAX_VALUE) {
-            source.sendFailure(Component.literal("Too many blocks selected: " + value + " > " + Short.MAX_VALUE));
+        long count = BlockPos.betweenClosedStream(minPos, maxPos).count();
+        if (count > Short.MAX_VALUE) {
+            source.sendFailure(Component.literal(
+                    "Too many blocks selected: " + count + " > " + Short.MAX_VALUE
+            ));
             return 0;
         }
+
+        final var spreadingType = latexType instanceof SpreadingLatexType st
+                ? st
+                : null;
+
+        int affected = 0;
 
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
-            LatexCoverState latexCoverState = LatexCoverState.getAt(world, pos);
-            if (!latexCoverState.is(ChangedLatexTypes.NONE.get())) {
-                LatexCoverState.setAtAndUpdate(world, pos, ChangedLatexTypes.NONE.get().defaultCoverState());
+            BlockState blockState = level.getBlockState(pos);
+
+            // basic security
+            if (blockState.is(ChangedTags.Blocks.DENY_LATEX_COVER))
+                continue;
+            if (!blockState.isAir())
+                continue;
+
+            LatexCoverState originalCover = LatexCoverState.getAt(level, pos);
+
+            // NONE → limpar
+            if (latexType == ChangedLatexTypes.NONE.get()) {
+                if (!originalCover.is(ChangedLatexTypes.NONE.get())) {
+                    LatexCoverState.setAtAndUpdate(
+                            level,
+                            pos,
+                            ChangedLatexTypes.NONE.get().defaultCoverState()
+                    );
+                    affected++;
+                }
+                continue;
             }
+
+            // Tipos que não espalham → set direto
+            if (spreadingType == null) {
+                LatexCoverState.setAtAndUpdate(
+                        level,
+                        pos,
+                        latexType.defaultCoverState()
+                );
+                affected++;
+                continue;
+            }
+
+            // ---------- NOVO SISTEMA ----------
+            var plannedCover = spreadingType.spreadState(
+                    level,
+                    pos,
+                    spreadingType.sourceCoverState()
+            );
+
+            var event = new SpreadingLatexType.CoveringBlockEvent(
+                    spreadingType,
+                    blockState,
+                    blockState,
+                    plannedCover,
+                    pos,
+                    level
+            );
+
+            spreadingType.defaultCoverBehavior(event);
+
+            if (Changed.postModEvent(event))
+                continue;
+
+            if (event.originalState == event.getPlannedState()
+                    && event.plannedCoverState == originalCover)
+                continue;
+
+            level.setBlockAndUpdate(pos, event.getPlannedState());
+            LatexCoverState.setAtAndUpdate(level, pos, event.plannedCoverState);
+            affected++;
         }
 
-        source.sendSuccess(() -> Component.literal("Set Infection of " + value + " blocks to " + latexType.toString().toLowerCase().replace("_", " ")), true);
-        return 1;
+        int finalAffected = affected;
+        source.sendSuccess(
+                () -> Component.literal(
+                        "Set infection of " + finalAffected + " blocks to "
+                                + latexType.toString().toLowerCase().replace("_", " ")
+                ),
+                true
+        );
+
+        return affected > 0 ? 1 : 0;
     }
+
 
     private static int setUltraInstinctDodge(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();

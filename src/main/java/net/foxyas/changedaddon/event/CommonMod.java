@@ -1,12 +1,17 @@
 package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.menu.CustomMerchantMenu;
-import net.foxyas.changedaddon.network.*;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
+import net.foxyas.changedaddon.network.ClientPacketHandler;
+import net.foxyas.changedaddon.network.ServerPacketHandler;
 import net.foxyas.changedaddon.network.packet.*;
-import net.foxyas.changedaddon.procedure.blocksHandle.BoneMealExpansion;
+import net.foxyas.changedaddon.procedure.blocksHandle.LatexBonemealAndDispenserHandler;
 import net.foxyas.changedaddon.recipe.brewing.TransfurSicknessRecipeBrewingRecipe;
 import net.foxyas.changedaddon.recipe.brewing.UntransfurPotionRecipeBrewingRecipe;
+import net.ltxprogrammer.changed.init.ChangedItems;
+import net.ltxprogrammer.changed.item.AbstractLatexItem;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,8 +33,20 @@ public class CommonMod {
         addPackets();
 
         event.enqueueWork(() -> {
-            BoneMealExpansion.BoneMealDispenserHandler.registerDispenserBehavior();
-            BoneMealExpansion.GooApplyDispenserHandler.registerDispenserBehavior();
+            LatexBonemealAndDispenserHandler.registerBonemealDispenser();
+            LatexBonemealAndDispenserHandler.registerAntiLatexDispenser(ChangedAddonItems.ANTI_LATEX_BASE.get().getDefaultInstance());
+            AbstractLatexItem whiteLatexGoo = ChangedItems.WHITE_LATEX_GOO.get();
+            AbstractLatexItem darkLatexGoo = ChangedItems.DARK_LATEX_GOO.get();
+
+            LatexBonemealAndDispenserHandler.registerGooDispenser(
+                    whiteLatexGoo.getLatexType(),
+                    whiteLatexGoo.getDefaultInstance()
+            );
+
+            LatexBonemealAndDispenserHandler.registerGooDispenser(
+                    darkLatexGoo.getLatexType(),
+                    darkLatexGoo.getDefaultInstance()
+            );
 
             BrewingRecipeRegistry.addRecipe(new UntransfurPotionRecipeBrewingRecipe());
             BrewingRecipeRegistry.addRecipe(new TransfurSicknessRecipeBrewingRecipe());
