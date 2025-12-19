@@ -140,7 +140,7 @@ public class LatexBonemealAndDispenserHandler {
 
             // Determine latex type present on the clicked surface
             LatexCoverState latexState = event.getLatexState();
-            boolean spread = trySpread(latexState, event.getRandom(), pos, level);
+            boolean spread = trySpread(latexState, true, event.getRandom(), pos, level);
             if (spread) {
                 if (!player.getAbilities().instabuild)
                     stack.shrink(1);
@@ -162,7 +162,7 @@ public class LatexBonemealAndDispenserHandler {
             Direction facing = source.getBlockState().getValue(DispenserBlock.FACING);
 
             BlockPos supportPos = source.getPos().relative(facing);
-            boolean success = spreadFromSource(level, supportPos, 5, level.getRandom(), 0.75f);
+            boolean success = spreadFromSource(level, supportPos, 1, true, level.getRandom(), 1f);
 
             if (success && !stack.isEmpty())
                 stack.shrink(1);
@@ -172,6 +172,10 @@ public class LatexBonemealAndDispenserHandler {
     }
 
     public static boolean trySpread(LatexCoverState state, RandomSource random, BlockPos blockPos, Level level) {
+        return trySpread(state, false ,random, blockPos, level);
+    }
+
+    public static boolean trySpread(LatexCoverState state, boolean replace, RandomSource random, BlockPos blockPos, Level level) {
         boolean success = false;
         if (!(state.getType() instanceof SpreadingLatexType latexType)) return false;
         if (!latexType.canSpread(state)) return false;
@@ -182,10 +186,14 @@ public class LatexBonemealAndDispenserHandler {
             BlockState checkState = level.getBlockState(checkPos);
             LatexCoverState checkCoverState = LatexCoverState.getAt(level, checkPos);
 
-            boolean isAirOrLessThanSpread = checkCoverState.isAir() ||
-                    (checkCoverState.is(latexType) && checkCoverState.getValue(SpreadingLatexType.SATURATION) > state.getValue(SpreadingLatexType.SATURATION) + 1);
+            LatexType type = checkCoverState.getType();
+            boolean hostileReplace = replace && type.isHostileTo(latexType);
 
-            if (!checkState.is(ChangedTags.Blocks.DENY_LATEX_COVER) && !checkState.isCollisionShapeFullBlock(level, checkPos) && isAirOrLessThanSpread) {
+            boolean isAirOrLessThanSpreadOrHostileTo = checkCoverState.isAir()
+                    || (checkCoverState.is(latexType)) && checkCoverState.getValue(SpreadingLatexType.SATURATION) > state.getValue(SpreadingLatexType.SATURATION) + 1
+                    || hostileReplace;
+
+            if (!checkState.is(ChangedTags.Blocks.DENY_LATEX_COVER) && !checkState.isCollisionShapeFullBlock(level, checkPos) && isAirOrLessThanSpreadOrHostileTo) {
                 if (checkPos.subtract(blockPos).getY() > 0 && random.nextInt(3) > 0)
                     continue;
 
@@ -213,6 +221,7 @@ public class LatexBonemealAndDispenserHandler {
             ServerLevel level,
             BlockPos source,
             int maxDepth,
+            boolean replaceOthers,
             RandomSource random,
             float chance
     ) {
@@ -223,6 +232,8 @@ public class LatexBonemealAndDispenserHandler {
 
         queue.add(Pair.of(source, 0));
         visited.add(source);
+        LatexCoverState mainSource = LatexCoverState.getAt(level, source);
+
 
         while (!queue.isEmpty()) {
             var current = queue.poll();
@@ -233,7 +244,7 @@ public class LatexBonemealAndDispenserHandler {
                 continue;
 
             LatexCoverState state = LatexCoverState.getAt(level, pos);
-            if (state.isAir())
+            if (state.isAir() || !state.is(mainSource.getType()))
                 continue;
 
             if (!(state.getType() instanceof SpreadingLatexType spreading))
@@ -246,9 +257,10 @@ public class LatexBonemealAndDispenserHandler {
             /* -------------------------------------------------
              * 2. Try spreading to neighbors
              * ------------------------------------------------- */
-            spread = trySpread(state, random, pos, level);
+            boolean didSpread = trySpread(state, replaceOthers, random, pos, level);
+            spread |= didSpread;
 
-            if (spread) level.levelEvent(1505, pos, 1); // particles
+            if (didSpread) level.levelEvent(1505, pos, 1); // particles
 
             /* -------------------------------------------------
              * BFS expansion
@@ -258,10 +270,73 @@ public class LatexBonemealAndDispenserHandler {
                     BlockPos next = pos.relative(dir);
                     if (!visited.contains(next)) {
                         visited.add(next);
-                        queue.add(Pair.of(next, depth + 1));
+                        queue.add(Pair.of(next, depth + (didSpread ? 1 : 0)));
                     }
                 }
             }
+        }
+
+        return spread;
+    }
+
+    public static boolean spreadFromSourceWaves(
+            ServerLevel level,
+            BlockPos source,
+            int maxDepth,
+            RandomSource random,
+            float chance
+    ) {
+        boolean spread = false;
+
+        Set<BlockPos> visited = new HashSet<>();
+        visited.add(source);
+
+        int depth = 0;
+        Queue<BlockPos> current = new ArrayDeque<>();
+        Queue<BlockPos> next = new ArrayDeque<>();
+
+        current.add(source);
+        visited.add(source);
+
+        while (!current.isEmpty() && depth <= maxDepth) {
+            boolean anySpread = false;
+
+            while (!current.isEmpty()) {
+                BlockPos pos = current.poll();
+                LatexCoverState state = LatexCoverState.getAt(level, pos);
+
+                if (state.isAir() || !(state.getType() instanceof SpreadingLatexType))
+                    continue;
+
+                if (random.nextFloat() > chance)
+                    continue;
+
+                boolean didSpread = trySpread(state, random, pos, level);
+                anySpread |= didSpread;
+                spread = anySpread;
+
+                if (didSpread) {
+                    level.levelEvent(1505, pos, 1);
+                }
+
+                for (Direction dir : Direction.values()) {
+                    BlockPos nextPos = pos.relative(dir);
+                    if (visited.add(nextPos)) {
+                        next.add(nextPos);
+                    }
+                }
+            }
+
+            if (!anySpread)
+                break;
+
+
+            Queue<BlockPos> tmp = current;
+            current = next;
+            next = tmp;
+            next.clear();
+
+            depth++;
         }
 
         return spread;
