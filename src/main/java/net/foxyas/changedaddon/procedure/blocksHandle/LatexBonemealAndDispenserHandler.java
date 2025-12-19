@@ -350,11 +350,7 @@ public class LatexBonemealAndDispenserHandler {
             Direction facing = source.getBlockState().getValue(DispenserBlock.FACING);
 
             BlockPos supportPos = source.getPos().relative(facing);
-            BlockPos targetPos = supportPos.relative(facing);
-            LatexCoverState at = LatexCoverState.getAt(level, supportPos);
-
-
-            boolean success = spreadFromSource(level, supportPos, 5, level.getRandom(), 0.75f);
+            boolean success = spreadFromSourceTick(level, supportPos, 5, level.getRandom(), 0.75f);
 
             if (success && !stack.isEmpty())
                 stack.shrink(1);
@@ -418,6 +414,92 @@ public class LatexBonemealAndDispenserHandler {
         return success;
     }
 
+    public static boolean spreadFromSourceTick(
+            ServerLevel level,
+            BlockPos source,
+            int maxDepth,
+            RandomSource random,
+            float chance
+    ) {
+        boolean spread = false;
+
+        Set<BlockPos> visited = new HashSet<>();
+        Queue<Pair<BlockPos, Integer>> queue = new ArrayDeque<>();
+
+        queue.add(Pair.of(source, 0));
+        visited.add(source);
+
+        while (!queue.isEmpty()) {
+            var current = queue.poll();
+            BlockPos pos = current.getFirst();
+            int depth = current.getSecond();
+
+            if (depth > maxDepth)
+                continue;
+
+            LatexCoverState originState = LatexCoverState.getAt(level, pos);
+            if (originState.isAir())
+                continue;
+
+            if (!(originState.getType() instanceof SpreadingLatexType spreading))
+                continue;
+
+            // Chance check
+            if (random.nextFloat() > chance)
+                continue;
+
+            /* -------------------------------------------------
+             * 1. Grow current block (saturation)
+             * ------------------------------------------------- */
+            originState.randomTick(level, pos, random);
+
+            /* -------------------------------------------------
+             * 2. Try spreading to neighbors
+             * ------------------------------------------------- */
+            for (Direction dir : Direction.values()) {
+                BlockPos target = pos.relative(dir);
+                BlockState targetBlock = level.getBlockState(target);
+                LatexCoverState targetCover = LatexCoverState.getAt(level, target);
+
+                boolean validTarget =
+                        targetCover.isAir() || targetCover.is(originState.getType());
+
+                if (!validTarget)
+                    continue;
+
+                if (!targetBlock.isAir() && targetBlock.isCollisionShapeFullBlock(level, target))
+                    continue;
+
+
+                if (targetCover.isAir()) {
+                    LatexCoverState.setAtAndUpdate(level, target, originState);
+                    LatexCoverState.getAt(level, target).randomTick(level, target, random);
+                    spread = true;
+                } else if (targetCover.is(originState.getType())) {
+                    targetCover.randomTick(level, target, random);
+                    spread = true;
+                }
+            }
+
+            level.levelEvent(1505, pos, 1); // particles
+
+            /* -------------------------------------------------
+             * BFS expansion
+             * ------------------------------------------------- */
+            if (depth < maxDepth) {
+                for (Direction dir : Direction.values()) {
+                    BlockPos next = pos.relative(dir);
+                    if (!visited.contains(next)) {
+                        visited.add(next);
+                        queue.add(Pair.of(next, depth + 1));
+                    }
+                }
+            }
+        }
+
+        return spread;
+    }
+
     public static boolean spreadFromSource(
             ServerLevel level,
             BlockPos source,
@@ -479,8 +561,8 @@ public class LatexBonemealAndDispenserHandler {
 
                 LatexCoverState grown = spreadState(level, target, originState);
                 if (grown.isAir() || !grown.hasProperty(SpreadingLatexType.SATURATION)) continue;
-                LatexCoverState grownUpdated = grown.setValue(SpreadingLatexType.SATURATION, Mth.clamp(target.distManhattan(source), 0, 15));
-                LatexCoverState.setAtAndUpdate(level, target, grownUpdated);
+                //LatexCoverState grownUpdated = grown.setValue(SpreadingLatexType.SATURATION, Mth.clamp(target.distManhattan(source), 0, 15));
+                LatexCoverState.setAtAndUpdate(level, target, grown);
                 spread = true;
             }
 
