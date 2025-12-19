@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.mixins.entity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.entity.goals.abilities.MayCauseGrabDamageGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
@@ -44,7 +45,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public LivingEntity getGrabTarget() {
-        return getTarget();
+        return this.grabEntityAbilityInstance != null ? this.grabEntityAbilityInstance.grabbedEntity : null;
     }
 
     @Override
@@ -57,6 +58,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (ChangedAddon$canEntityGrab()) {
             this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
             this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
+            this.goalSelector.addGoal(10, new MayCauseGrabDamageGoal(this));
         }
     }
 

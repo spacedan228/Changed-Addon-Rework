@@ -11,6 +11,7 @@ import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.EnumSet;
@@ -39,6 +40,8 @@ public class MayGrabTargetGoal extends Goal {
         GrabEntityAbilityInstance grabAbilityInstance = grabber.getGrabAbilityInstance();
         LivingEntity target = grabber.asMob().getTarget();
         if (target == null) return false;
+        if (target instanceof Player player && ProcessTransfur.isPlayerTransfurred(player)) return false;
+
         double reachSqr = grabber.asMob().getMeleeAttackRangeSqr(target) * 0.7f; //Closer than a normal punch
         if (grabAbilityInstance == null) return false;
         if (GrabEntityAbility.getGrabber(target) != null) return false;

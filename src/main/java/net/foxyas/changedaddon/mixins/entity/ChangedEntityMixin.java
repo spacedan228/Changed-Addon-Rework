@@ -4,6 +4,9 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
+import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
+import net.foxyas.changedaddon.entity.simple.WolfyEntity;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
@@ -15,10 +18,13 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -40,6 +46,8 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
 
     @Shadow
     public abstract LivingEntity maybeGetUnderlying();
+
+    @Shadow protected abstract boolean targetSelectorTest(LivingEntity livingEntity);
 
     @Unique
     protected boolean pacified = false;
@@ -74,6 +82,17 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
 
     @Inject(at = @At("HEAD"), method = "targetSelectorTest", cancellable = true)
     private void onTargetSelectorTest(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
+        if (livingEntity instanceof WolfyEntity) {
+            cir.setReturnValue(true);
+        } else if (livingEntity instanceof Player player) {
+            boolean isWolfyForm = ProcessTransfur.getPlayerTransfurVariantSafe(player)
+                    .map(instance -> instance.getChangedEntity() instanceof WolfyEntity)
+                    .orElse(false);
+            if (isWolfyForm) {
+                cir.setReturnValue(true);
+            }
+        }
+
         if (isNeutralTo(livingEntity)) cir.setReturnValue(false);
     }
 
@@ -90,6 +109,15 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
                     cir.setReturnValue(false);
                 }
             }
+        }
+    }
+
+
+    @Inject(at = @At("TAIL"), method = "registerGoals", remap = true, cancellable = true)
+    private void goalsHook(CallbackInfo ci) {
+        var self = (ChangedEntity) (Object) this;
+        if (!(self instanceof WolfyEntity)) {
+            this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, ChangedEntity.class, true, this::targetSelectorTest));
         }
     }
 
