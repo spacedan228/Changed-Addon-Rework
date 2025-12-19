@@ -69,6 +69,7 @@ public abstract class LatexTypePlayerEvent extends Event {
         private final InteractionHand hand;
         private final BlockHitResult hitResult;
         private InteractionResult result;
+        private InteractionResult cancellationResult = InteractionResult.PASS;
 
         public RightClick(
                 Player player,
@@ -100,6 +101,14 @@ public abstract class LatexTypePlayerEvent extends Event {
 
         public void setResult(InteractionResult result) {
             this.result = result;
+        }
+
+        public void setCancellationResult(InteractionResult interactionResult) {
+            this.cancellationResult = interactionResult;
+        }
+
+        public InteractionResult getCancellationResult() {
+            return cancellationResult;
         }
     }
 }
