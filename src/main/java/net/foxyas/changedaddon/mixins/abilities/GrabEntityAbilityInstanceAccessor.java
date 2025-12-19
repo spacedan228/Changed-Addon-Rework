@@ -38,5 +38,5 @@ import java.util.List;
 public interface GrabEntityAbilityInstanceAccessor {
 
     @Accessor("grabCooldown")
-    int getGrabCooldown();
+    int getGrabCooldownTicks();
 }

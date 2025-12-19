@@ -14,16 +14,16 @@ import org.spongepowered.asm.mixin.Shadow;
 public abstract class ItemStackMixin implements IForgeItemStack {
     @Shadow public abstract Item getItem();
 
-    @Override
-    public boolean canElytraFly(LivingEntity entity) {
-        ItemStack self = (ItemStack)(IForgeItemStack)this;
-        boolean variantCanFly = ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(entity))
-                .map(latexVariant -> {
-                    if (latexVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                        return variantExtraStats.getFlyType().canGlide();
-                    }
-                    return latexVariant.getParent().canGlide;
-                }).orElse(false);
-        return variantCanFly || this.getItem().canElytraFly(self, entity);
-    }
+//    @Override
+//    public boolean canElytraFly(LivingEntity entity) {
+//        ItemStack self = (ItemStack)(IForgeItemStack)this;
+//        boolean variantCanFly = ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(entity))
+//                .map(latexVariant -> {
+//                    if (latexVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+//                        return variantExtraStats.getFlyType().canGlide();
+//                    }
+//                    return latexVariant.getParent().canGlide;
+//                }).orElse(false);
+//        return variantCanFly || this.getItem().canElytraFly(self, entity);
+//    }
 }

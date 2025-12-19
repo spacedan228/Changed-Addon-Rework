@@ -6,7 +6,6 @@ import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
-import net.foxyas.changedaddon.util.AnimationUtils;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
@@ -15,15 +14,18 @@ import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
@@ -34,9 +36,9 @@ import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -177,33 +179,33 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
         }));
     }
 
-    @Inject(method = "tryToStartFallFlying", at = @At("HEAD"), cancellable = true)
-    private void tryToStartFallFlying(CallbackInfoReturnable<Boolean> ci) {
-        Player player = (Player) (Object) this;
-        TransfurVariantInstance<?> latexVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (latexVariant != null && latexVariant.getParent().canGlide) {
-            if (latexVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                if (variantExtraStats.getFlyType().canGlide()) {
-                    if (ci.getReturnValue() != null && ci.getReturnValue() == false) {
-                        if (!player.onGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
-                            player.startFallFlying();
-                            ci.setReturnValue(true);
-                            ci.cancel();
-                            //player.respawn();
-                        }
-                    }
-                } else if (!variantExtraStats.getFlyType().canGlide()) {
-                    if (!player.onGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
-                        ItemStack itemstack = player.getItemBySlot(EquipmentSlot.CHEST);
-                        if (itemstack.canElytraFly(player) || itemstack.isEmpty()) {
-                            player.stopFallFlying();
-                            ci.setReturnValue(false);
-                            ci.cancel();
-                        }
-                    }
-
-                }
-            }
-        }
-    }
+//    @Inject(method = "tryToStartFallFlying", at = @At(value = "HEAD"), cancellable = true)
+//    private void tryToStartFallFlying(CallbackInfoReturnable<Boolean> ci) {
+//        Player player = (Player) (Object) this;
+//        TransfurVariantInstance<?> latexVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+//        if (latexVariant != null && latexVariant.getParent().canGlide) {
+//            if (latexVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+//                if (variantExtraStats.getFlyType().canGlide()) {
+//                    if (ci.getReturnValue() != null && ci.getReturnValue() == false) {
+//                        if (!player.onGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
+//                            player.startFallFlying();
+//                            ci.setReturnValue(true);
+//                            ci.cancel();
+//                            //player.respawn();
+//                        }
+//                    }
+//                } else if (!variantExtraStats.getFlyType().canGlide()) {
+//                    if (!player.onGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
+//                        ItemStack itemstack = player.getItemBySlot(EquipmentSlot.CHEST);
+//                        if (itemstack.canElytraFly(player) || itemstack.isEmpty()) {
+//                            player.stopFallFlying();
+//                            ci.setReturnValue(false);
+//                            ci.cancel();
+//                        }
+//                    }
+//
+//                }
+//            }
+//        }
+//    }
 }

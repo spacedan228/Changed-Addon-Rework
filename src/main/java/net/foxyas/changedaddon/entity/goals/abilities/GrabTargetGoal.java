@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.abilities;
 
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.mixins.abilities.GrabEntityAbilityInstanceAccessor;
@@ -85,7 +86,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
             return false;
         }
 
-        if (ability instanceof GrabEntityAbilityInstanceAccessor accessor && accessor.getGrabCooldown() > 0) {
+        if (ability instanceof GrabEntityAbilityExtensor abilityExtensor && abilityExtensor.getGrabCooldown() > 0) {
             return false;
         }
 
