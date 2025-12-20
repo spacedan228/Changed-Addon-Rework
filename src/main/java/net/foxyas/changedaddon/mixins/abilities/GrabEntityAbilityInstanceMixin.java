@@ -1,5 +1,8 @@
 package net.foxyas.changedaddon.mixins.abilities;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
@@ -8,6 +11,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -32,6 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 @Mixin(value = GrabEntityAbilityInstance.class, remap = false)
 public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor {
@@ -62,16 +68,35 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     @Unique
     private boolean alreadySnuggledTight = false;
 
+
+    // Right now it works but has a renderer bug. I don't recommend turning this to true
+    @Unique
+    private boolean allowGrabTransfured = false;
+
+    @Override
+    @Unique
+    public void setAllowGrabTransfured(boolean canGrabTransfured) {
+        this.allowGrabTransfured = canGrabTransfured;
+    }
+
+    @Override
+    @Unique
+    public boolean allowGrabTransfured() {
+        return allowGrabTransfured;
+    }
+
     @Inject(method = "saveData", at = @At("TAIL"), cancellable = true)
     public void injectCustomData(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("safeMode", safeMode);
         tag.putBoolean("alreadySnuggledTight", alreadySnuggledTight);
+        tag.putBoolean("allowGrabTransfured", allowGrabTransfured);
     }
 
     @Inject(method = "readData", at = @At("TAIL"), cancellable = true)
     public void readCustomData(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("safeMode")) safeMode = tag.getBoolean("safeMode");
         if (tag.contains("alreadySnuggledTight")) alreadySnuggledTight = tag.getBoolean("alreadySnuggledTight");
+        if (tag.contains("allowGrabTransfured")) allowGrabTransfured = tag.getBoolean("allowGrabTransfured");
     }
 
     @Override
@@ -144,6 +169,34 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
                 this.alreadySnuggledTight = false;
             }
         }
+    }
+
+    @ModifyExpressionValue(method = "tickIdle", at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;isTemporaryFromSuit()Z", remap = true, shift = At.Shift.BY))
+    public boolean allowGrabTransfuredPlayers(boolean original) {
+        if (this.allowGrabTransfured()) {
+            return true;
+        }
+        return original;
+    }
+
+    @WrapOperation(
+            method = "tickIdle",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;ifPlayerTransfurred(Lnet/minecraft/world/entity/player/Player;Ljava/util/function/Consumer;)Z",
+                    remap = false
+            )
+    )
+    private boolean wrapIfPlayerTransfurred(
+            Player player,
+            Consumer<TransfurVariantInstance<?>> consumer,
+            Operation<Boolean> original
+    ) {
+        if (this.allowGrabTransfured()) {
+            return false; // finge que nunca foi transfured
+        }
+
+        return original.call(player, consumer);
     }
 
     @Override
