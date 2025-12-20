@@ -92,10 +92,10 @@ public class BorealisFemaleModel extends AdvancedHumanoidModel<BorealisFemaleEnt
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(24, 1).addBox(-3.1067F, -5.9099F, -0.371F, 6.0F, 6.0F, 5.0F, new CubeDeformation(0.0F))
-                .texOffs(56, 45).addBox(-3.1067F, -5.9599F, -2.371F, 6.0F, 6.0F, 3.0F, new CubeDeformation(0.01F)), PartPose.offsetAndRotation(0.1067F, -0.7855F, -0.7724F, 0.0436F, 0.0F, 0.0F));
+        PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(24, 1).addBox(-3.1067F, -6.4099F, -0.371F, 6.0F, 6.0F, 5.0F, new CubeDeformation(0.0F))
+                .texOffs(56, 45).addBox(-3.1067F, -6.4599F, -2.371F, 6.0F, 6.0F, 3.0F, new CubeDeformation(0.01F)), PartPose.offsetAndRotation(0.1067F, -0.2855F, -0.7724F, 0.0436F, 0.0F, 0.0F));
 
-        PartDefinition RightEar = Head.addOrReplaceChild("RightEar", CubeListBuilder.create(), PartPose.offset(-1.8067F, -3.4145F, 0.7724F));
+        PartDefinition RightEar = Head.addOrReplaceChild("RightEar", CubeListBuilder.create(), PartPose.offset(-1.8067F, -3.9145F, 0.7724F));
 
         PartDefinition RightEarFur_r1 = RightEar.addOrReplaceChild("RightEarFur_r1", CubeListBuilder.create().texOffs(59, 7).mirror().addBox(0.0F, -3.0F, 0.0F, 0.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)).mirror(false), PartPose.offsetAndRotation(-1.35F, -2.7F, -1.25F, -0.4299F, -0.5707F, -0.3633F));
 
@@ -107,7 +107,7 @@ public class BorealisFemaleModel extends AdvancedHumanoidModel<BorealisFemaleEnt
 
         PartDefinition RightEar_r2 = SecondRightEar.addOrReplaceChild("RightEar_r2", CubeListBuilder.create().texOffs(56, 1).addBox(4.25F, -31.25F, -18.25F, 2.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(2.5F, 30.0F, 0.0F, -0.5236F, -0.1745F, -0.2618F));
 
-        PartDefinition LeftEar = Head.addOrReplaceChild("LeftEar", CubeListBuilder.create(), PartPose.offset(1.5933F, -3.4145F, 0.7724F));
+        PartDefinition LeftEar = Head.addOrReplaceChild("LeftEar", CubeListBuilder.create(), PartPose.offset(1.5933F, -3.9145F, 0.7724F));
 
         PartDefinition LeftEarFur_r1 = LeftEar.addOrReplaceChild("LeftEarFur_r1", CubeListBuilder.create().texOffs(49, 7).addBox(0.0F, -3.0F, 0.0F, 0.0F, 3.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(1.35F, -2.7F, -1.25F, -0.4299F, 0.5707F, 0.3633F));
 
@@ -119,7 +119,7 @@ public class BorealisFemaleModel extends AdvancedHumanoidModel<BorealisFemaleEnt
 
         PartDefinition LeftEar_r2 = SecondLeftEar.addOrReplaceChild("LeftEar_r2", CubeListBuilder.create().texOffs(46, 1).addBox(-6.25F, -31.25F, -18.25F, 2.0F, 5.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-2.5F, 30.0F, 0.0F, -0.5236F, 0.1745F, 0.2618F));
 
-        PartDefinition sigils = Head.addOrReplaceChild("sigils", CubeListBuilder.create(), PartPose.offset(2.9896F, -3.4738F, -1.5513F));
+        PartDefinition sigils = Head.addOrReplaceChild("sigils", CubeListBuilder.create(), PartPose.offset(2.9896F, -3.9738F, -1.5513F));
 
         PartDefinition left_r1 = sigils.addOrReplaceChild("left_r1", CubeListBuilder.create().texOffs(80, 75).addBox(-0.5F, -1.5F, -1.5F, 1.0F, 3.0F, 3.0F, new CubeDeformation(-0.45F))
                 .texOffs(72, 78).mirror().addBox(-6.8908F, -1.5F, -1.5F, 1.0F, 3.0F, 3.0F, new CubeDeformation(-0.45F)).mirror(false), PartPose.offsetAndRotation(0.099F, 0.3316F, 1.6932F, -1.2654F, 0.0F, 0.0F));
@@ -127,7 +127,7 @@ public class BorealisFemaleModel extends AdvancedHumanoidModel<BorealisFemaleEnt
         PartDefinition left_r2 = sigils.addOrReplaceChild("left_r2", CubeListBuilder.create().texOffs(64, 78).addBox(-0.7F, -1.5F, -1.5F, 1.0F, 3.0F, 3.0F, new CubeDeformation(0.01F))
                 .texOffs(56, 75).addBox(-6.3F, -1.5F, -1.5F, 1.0F, 3.0F, 3.0F, new CubeDeformation(0.01F)), PartPose.offsetAndRotation(-0.0963F, 1.8316F, 0.6932F, -0.5672F, 0.0F, 0.0F));
 
-        PartDefinition visor = Head.addOrReplaceChild("visor", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.125F, -2.6599F, -0.871F, -0.1745F, 0.0F, 0.0F));
+        PartDefinition visor = Head.addOrReplaceChild("visor", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.125F, -3.1599F, -0.871F, -0.1745F, 0.0F, 0.0F));
 
         PartDefinition middle = visor.addOrReplaceChild("middle", CubeListBuilder.create(), PartPose.offset(0.0183F, 0.9562F, -7.581F));
 
@@ -147,21 +147,21 @@ public class BorealisFemaleModel extends AdvancedHumanoidModel<BorealisFemaleEnt
         PartDefinition Hair = Head.addOrReplaceChild("Hair", CubeListBuilder.create().texOffs(0, 84).addBox(-3.0F, -32.1F, -1.2F, 6.0F, 10.0F, 3.0F, new CubeDeformation(0.2F))
                 .texOffs(0, 97).addBox(-3.0F, -32.1F, -1.3F, 6.0F, 12.0F, 4.0F, new CubeDeformation(0.35F))
                 .texOffs(18, 87).addBox(-3.0F, -31.6954F, -3.4435F, 6.0F, 6.0F, 5.0F, new CubeDeformation(0.25F))
-                .texOffs(20, 98).addBox(-3.0F, -31.6954F, -3.4435F, 6.0F, 6.0F, 5.0F, new CubeDeformation(0.45F)), PartPose.offset(-0.1067F, 25.7855F, 3.0724F));
+                .texOffs(20, 98).addBox(-3.0F, -31.6954F, -3.4435F, 6.0F, 6.0F, 5.0F, new CubeDeformation(0.45F)), PartPose.offset(-0.1067F, 25.2855F, 3.0724F));
 
-        PartDefinition Torso = partdefinition.addOrReplaceChild("Torso", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, 0.5F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 25).addBox(-4.5F, 0.1F, -2.375F, 9.0F, 6.0F, 5.0F, new CubeDeformation(-0.3F)), PartPose.offset(0.0F, -0.5F, 0.0F));
+        PartDefinition Torso = partdefinition.addOrReplaceChild("Torso", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 25).addBox(-4.5F, -0.4F, -2.375F, 9.0F, 6.0F, 5.0F, new CubeDeformation(-0.3F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-        PartDefinition fluff_r1 = Torso.addOrReplaceChild("fluff_r1", CubeListBuilder.create().texOffs(0, 16).addBox(-4.6067F, -1.5F, -3.5F, 9.0F, 3.0F, 6.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(0.1067F, 0.4934F, 0.6411F, 0.2182F, 0.0F, 0.0F));
+        PartDefinition fluff_r1 = Torso.addOrReplaceChild("fluff_r1", CubeListBuilder.create().texOffs(0, 16).addBox(-4.6067F, -1.5F, -3.5F, 9.0F, 3.0F, 6.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(0.1067F, -0.0066F, 0.6411F, 0.2182F, 0.0F, 0.0F));
 
-        PartDefinition Plantoids = Torso.addOrReplaceChild("Plantoids", CubeListBuilder.create(), PartPose.offset(0.0F, 1.5F, -2.0F));
+        PartDefinition Plantoids = Torso.addOrReplaceChild("Plantoids", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, -2.0F));
 
         PartDefinition RightPlantoid_r1 = Plantoids.addOrReplaceChild("RightPlantoid_r1", CubeListBuilder.create().texOffs(27, 81).addBox(-4.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F))
-                .texOffs(15, 81).mirror().addBox(0.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F)).mirror(false), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.2793F, 0.0F, 0.0F));
+                .texOffs(15, 81).mirror().addBox(0.25F, -1.7F, -0.8F, 4.0F, 4.0F, 2.0F, new CubeDeformation(-0.03F)).mirror(false), PartPose.offsetAndRotation(0.0F, 2.5F, 0.0F, -0.2793F, 0.0F, 0.0F));
 
-        PartDefinition Center_r1 = Plantoids.addOrReplaceChild("Center_r1", CubeListBuilder.create().texOffs(39, 81).addBox(-0.5F, -1.3F, -0.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.0F, 2.0F, 0.0F, -0.192F, 0.0F, 0.0F));
+        PartDefinition Center_r1 = Plantoids.addOrReplaceChild("Center_r1", CubeListBuilder.create().texOffs(39, 81).addBox(-0.5F, -1.3F, -0.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(0.2F)), PartPose.offsetAndRotation(0.0F, 2.5F, 0.0F, -0.192F, 0.0F, 0.0F));
 
-        PartDefinition Tail = Torso.addOrReplaceChild("Tail", CubeListBuilder.create(), PartPose.offset(0.0F, 10.5F, 0.0F));
+        PartDefinition Tail = Torso.addOrReplaceChild("Tail", CubeListBuilder.create(), PartPose.offset(0.0F, 10.0F, 0.0F));
 
         PartDefinition TailPrimary = Tail.addOrReplaceChild("TailPrimary", CubeListBuilder.create(), PartPose.offsetAndRotation(0.0F, 0.0F, 0.0F, 0.1309F, 0.0F, 0.0F));
 

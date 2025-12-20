@@ -6,7 +6,7 @@ import net.foxyas.changedaddon.client.model.simple.LatexKaylaSharkModel;
 import net.foxyas.changedaddon.entity.simple.LatexKaylaSharkEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.*;
-import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleSharkModel;
+import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexFemaleSharkModel;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -15,13 +15,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexKaylaSharkRenderer extends AdvancedHumanoidRenderer<LatexKaylaSharkEntity, LatexKaylaSharkModel, ArmorLatexMaleSharkModel<LatexKaylaSharkEntity>> {
+public class LatexKaylaSharkRenderer extends AdvancedHumanoidRenderer<LatexKaylaSharkEntity, LatexKaylaSharkModel, ArmorLatexFemaleSharkModel<LatexKaylaSharkEntity>> {
 
     public static final ResourceLocation EMISSIVE_TEXTURE = ChangedAddonMod.textureLoc("textures/entities/latex_kayla_shark/latex_kayla_shark_emissive");
     public static final ResourceLocation RESOURCE_LOCATION = ChangedAddonMod.textureLoc("textures/entities/latex_kayla_shark/latex_kayla_shark");
 
     public LatexKaylaSharkRenderer(EntityRendererProvider.Context context) {
-        super(context, new LatexKaylaSharkModel(context.bakeLayer(LatexKaylaSharkModel.LAYER_LOCATION)), ArmorLatexMaleSharkModel.MODEL_SET, 0.5f);
+        super(context, new LatexKaylaSharkModel(context.bakeLayer(LatexKaylaSharkModel.LAYER_LOCATION)), ArmorLatexFemaleSharkModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, this.model));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(),
