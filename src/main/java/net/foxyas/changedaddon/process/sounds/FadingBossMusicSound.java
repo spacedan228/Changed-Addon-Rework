@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.process.sounds;
 
+import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.client.sounds.WeighedSoundEvents;
@@ -12,13 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class FadingBossMusicSound extends AbstractTickableSoundInstance {
-    private static final float MAX_VOLUME = 1.0f;
-    private static final int DEFAULT_FADE_TICKS = 40;
     private final LivingEntity trackedEntity;
     public SoundEvent currentSound;
-    private int fadeInTicks;
-    private int fadeOutTicks = -1;
     private boolean stopped = false;
+    protected boolean fadingOutSound = false;
 
     public FadingBossMusicSound(SoundEvent soundEvent, LivingEntity entity) {
         super(soundEvent, SoundSource.MASTER);
@@ -27,11 +25,22 @@ public class FadingBossMusicSound extends AbstractTickableSoundInstance {
         this.looping = true;
         this.volume = 1.0f;
         this.pitch = 1.0f;
-        this.fadeInTicks = DEFAULT_FADE_TICKS;
+    }
+
+    public void setVolume(float volume) {
+        this.volume = volume;
+    }
+
+    public void setPitch(float pitch) {
+        this.pitch = pitch;
     }
 
     public void startFadeOut() {
-        this.fadeOutTicks = DEFAULT_FADE_TICKS;
+        this.fadingOutSound = true;
+    }
+
+    public void stopFadeOut() {
+        this.fadingOutSound = false;
     }
 
     public boolean isStopped() {
@@ -57,11 +66,26 @@ public class FadingBossMusicSound extends AbstractTickableSoundInstance {
         if (isStopped()) {
             this.stop();
         }
+
+        if (fadingOutSound) {
+            this.volume -= 0.025f;
+        } else {
+            if (trackedEntity instanceof IHasBossMusic iHasBossMusic) {
+                this.volume = Math.min(iHasBossMusic.getMusicVolume(), volume + 0.025f);
+            } else {
+                this.volume = Math.min(1, volume + 0.025f);
+            }
+        }
+
         if (trackedEntity == null) {
             startFadeOut();
             this.looping = false;
             this.stopped = true;
             this.stop();
+        }
+
+        if (trackedEntity instanceof IHasBossMusic iHasBossMusic) {
+            this.pitch = iHasBossMusic.getMusicPitch();
         }
 
         if (trackedEntity != null && trackedEntity.isAlive()) {
@@ -73,20 +97,6 @@ public class FadingBossMusicSound extends AbstractTickableSoundInstance {
             this.looping = false;
             this.stopped = true;
             this.stop();
-        }
-
-        if (fadeOutTicks >= 0) {
-            fadeOutTicks--;
-            volume = MAX_VOLUME * (fadeOutTicks / (float) DEFAULT_FADE_TICKS);
-            if (fadeOutTicks <= 0) {
-                stopped = true;
-                this.stop();
-            }
-        } else if (fadeInTicks > 0) {
-            fadeInTicks--;
-            volume = MAX_VOLUME * (1.0f - fadeInTicks / (float) DEFAULT_FADE_TICKS);
-        } else {
-            volume = MAX_VOLUME;
         }
     }
 

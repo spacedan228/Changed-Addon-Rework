@@ -303,6 +303,11 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         return this;
     }
 
+    @Override
+    public float getMusicVolume() {
+        return 0.5f;
+    }
+
     @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
     public static class WhenAttackAEntity {
         @SubscribeEvent

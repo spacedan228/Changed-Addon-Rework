@@ -143,6 +143,11 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         return this;
     }
 
+    @Override
+    public float getMusicVolume() {
+        return 0.5f;
+    }
+
     protected void setAttributes(AttributeMap attributes) {
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((325));

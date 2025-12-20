@@ -75,6 +75,8 @@ public class BossMusicHandler {
         if (event == null) return;
 
         FadingBossMusicSound sound = new FadingBossMusicSound(event, boss.getSelf());
+        sound.setPitch(boss.getMusicPitch());
+        sound.setVolume(boss.getMusicVolume());
         mc.getSoundManager().play(sound);
         activeBosses.put(boss, sound);
     }
