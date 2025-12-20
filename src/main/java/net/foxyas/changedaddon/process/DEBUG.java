@@ -48,11 +48,11 @@ import java.util.List;
 @Deprecated(forRemoval = true)
 public class DEBUG {
 
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
     public static float HeadPosT, HeadPosV, HeadPosB = 0, HeadPosK = 40, HeadPosL, HeadPosJ = 40;
     public static float HeadPosX = 40, HeadPosY = 40, HeadPosZ;
 
-    public static boolean PARTICLETEST = true;
+    public static boolean PARTICLETEST = false;
     public static boolean RENDERTEST = true;
     public static int MOTIONTEST = 0;
 
