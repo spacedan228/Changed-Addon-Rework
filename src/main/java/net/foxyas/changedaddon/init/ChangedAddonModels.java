@@ -46,7 +46,7 @@ public class ChangedAddonModels {
 
         // --- CHANGED ENTITIES MODELS---
         event.registerLayerDefinition(LatexSnowFoxMaleModel.LAYER_LOCATION, LatexSnowFoxMaleModel::createBodyLayer);
-        event.registerLayerDefinition(ModelFemaleSnowFox.LAYER_LOCATION, ModelFemaleSnowFox::createBodyLayer);
+        event.registerLayerDefinition(LatexSnowFoxFemaleModel.LAYER_LOCATION, LatexSnowFoxFemaleModel::createBodyLayer);
         event.registerLayerDefinition(LatexDazedModel.LAYER_LOCATION, LatexDazedModel::createBodyLayer);
         event.registerLayerDefinition(PuroKindMaleModel.LAYER_LOCATION, PuroKindMaleModel::createBodyLayer);
         event.registerLayerDefinition(PuroKindFemaleModel.LAYER_LOCATION, PuroKindFemaleModel::createBodyLayer);
