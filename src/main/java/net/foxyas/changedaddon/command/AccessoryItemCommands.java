@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.command;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -106,7 +107,9 @@ public class AccessoryItemCommands {
                                         .then(Commands.argument("slot", ResourceLocationArgument.id())
                                                 .suggests(SUGGEST_ACCESSORY_SLOTS)
                                                 .then(Commands.argument("item", ItemArgument.item())
-                                                        .executes(AccessoryItemCommands::setAccessory)
+                                                        .then(Commands.argument("forceSet", BoolArgumentType.bool())
+                                                                .executes(AccessoryItemCommands::setAccessory)
+                                                        )
                                                 )
                                         )
                                 )
@@ -132,6 +135,7 @@ public class AccessoryItemCommands {
                 EntityArgument.getEntities(ctx, "targets");
 
         boolean multiple = entities.size() > 1;
+        boolean forceSet = BoolArgumentType.getBool(ctx, "forceSet");
 
         ResourceLocation slotName = ResourceLocationArgument.getId(ctx, "slot");
         ItemStack stack = ItemArgument.getItem(ctx, "item")
@@ -150,7 +154,7 @@ public class AccessoryItemCommands {
             if (optionalSlots.isEmpty()) {
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
-                    break;
+                    continue;
                 }
 
                 ctx.getSource().sendFailure(
@@ -175,7 +179,7 @@ public class AccessoryItemCommands {
             if (slotType == null || slots.getSlotTypes().noneMatch(s -> s == slotType)) {
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
-                    break;
+                    continue;
                 }
 
                 ctx.getSource().sendFailure(
@@ -202,7 +206,7 @@ public class AccessoryItemCommands {
 
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
-                    break;
+                    continue;
                 }
 
                 ctx.getSource().sendSuccess(
@@ -223,7 +227,7 @@ public class AccessoryItemCommands {
             if (!slotType.canHoldItem(copy, living)) {
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
-                    break;
+                    continue;
                 }
 
                 ctx.getSource().sendFailure(
@@ -244,10 +248,10 @@ public class AccessoryItemCommands {
             /* ❌ X — The Accessory is not available */
             boolean available = AccessorySlots.isSlotAvailable(living, slotType);
 
-            if (!available) {
+            if (!available && !forceSet) {
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
-                    break;
+                    continue;
                 }
 
                 ctx.getSource().sendFailure(
@@ -266,10 +270,10 @@ public class AccessoryItemCommands {
 
             /* ❌ X — Other Accessory lock the slot */
             boolean canReplaceSlot = canReplaceSlot(living, slotType, copy);
-            if (!canReplaceSlot) {
+            if (!canReplaceSlot && !forceSet) {
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
-                    break;
+                    continue;
                 }
 
                 ctx.getSource().sendFailure(
@@ -292,7 +296,7 @@ public class AccessoryItemCommands {
 
             if (shown > MAX_FEEDBACK) {
                 truncated = true;
-                break;
+                continue;
             }
 
             ctx.getSource().sendSuccess(
