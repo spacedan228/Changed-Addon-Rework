@@ -44,6 +44,8 @@ public class MaleExp1Model extends AdvancedHumanoidModel<Exp1MaleEntity> impleme
         var tailPrimary = Tail.getChild("TailPrimary");
         var tailSecondary = tailPrimary.getChild("TailSecondary");
         var tailTertiary = tailSecondary.getChild("TailTertiary");
+        //var tailQuaternary = this.Tail.getChild("TailPrimary").getChild("TailSecondary").getChild("TailTertiary").getChild("TailQuaternary");
+        ModelPart tailQuaternary = tailTertiary.getChild("TailQuaternary");
 
         var leftLowerLeg = LeftLeg.getChild("LeftLowerLeg");
         var leftFoot = leftLowerLeg.getChild("LeftFoot");
@@ -54,7 +56,7 @@ public class MaleExp1Model extends AdvancedHumanoidModel<Exp1MaleEntity> impleme
                 .addPreset(AnimatorPresets.wolfLike(
                         Head, Head.getChild("LeftEar"), Head.getChild("RightEar"),
                         Torso, LeftArm, RightArm,
-                        Tail, List.of(tailPrimary, tailSecondary, tailTertiary),
+                        Tail, List.of(tailPrimary, tailSecondary, tailTertiary, tailQuaternary),
                         LeftLeg, leftLowerLeg, leftFoot, leftFoot.getChild("LeftPad"), RightLeg, rightLowerLeg, rightFoot, rightFoot.getChild("RightPad")));
     }
 
@@ -128,6 +130,10 @@ public class MaleExp1Model extends AdvancedHumanoidModel<Exp1MaleEntity> impleme
         PartDefinition TailTertiary = TailSecondary.addOrReplaceChild("TailTertiary", CubeListBuilder.create(), PartPose.offset(0.0F, 0.75F, 2.5F));
 
         PartDefinition Base_r3 = TailTertiary.addOrReplaceChild("Base_r3", CubeListBuilder.create().texOffs(28, 55).addBox(-2.0F, -1.2F, -1.95F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.15F)), PartPose.offsetAndRotation(0.0F, 0.0F, 4.0F, 1.8326F, 0.0F, 0.0F));
+
+        PartDefinition TailQuaternary = TailTertiary.addOrReplaceChild("TailQuaternary", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 5.0F));
+
+        PartDefinition Base_r4 = TailQuaternary.addOrReplaceChild("Base_r4", CubeListBuilder.create().texOffs(28, 55).addBox(-2.0F, -1.2F, -1.95F, 4.0F, 4.0F, 4.0F, new CubeDeformation(-0.95F)), PartPose.offsetAndRotation(0.0F, -0.4F, 1.0F, 2.0071F, 0.0F, 0.0F));
 
         PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(16, 40).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(-5.0F, 1.5F, 0.0F));
 

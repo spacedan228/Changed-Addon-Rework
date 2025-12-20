@@ -307,6 +307,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
 
         @Override
         public void clearRenderState() {
+            RenderSystem.disableCull();
             GL11.glCullFace(GL11.GL_BACK);
         }
     };
