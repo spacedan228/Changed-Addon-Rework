@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.client.renderer;
 
-import net.foxyas.changedaddon.client.model.HimalayanCrystalGasCatModel;
+import net.foxyas.changedaddon.client.model.HimalayanCrystalGasCatMaleModel;
 import net.foxyas.changedaddon.entity.simple.CrystalGasCatMaleEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.*;
@@ -9,9 +9,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class CrystalGasCatMaleRenderer extends AdvancedHumanoidRenderer<CrystalGasCatMaleEntity, HimalayanCrystalGasCatModel, ArmorLatexMaleCatModel<CrystalGasCatMaleEntity>> {
+public class CrystalGasCatMaleRenderer extends AdvancedHumanoidRenderer<CrystalGasCatMaleEntity, HimalayanCrystalGasCatMaleModel, ArmorLatexMaleCatModel<CrystalGasCatMaleEntity>> {
     public CrystalGasCatMaleRenderer(EntityRendererProvider.Context context) {
-        super(context, new HimalayanCrystalGasCatModel(context.bakeLayer(HimalayanCrystalGasCatModel.LAYER_LOCATION)),
+        super(context, new HimalayanCrystalGasCatMaleModel(context.bakeLayer(HimalayanCrystalGasCatMaleModel.LAYER_LOCATION)),
                 ArmorLatexMaleCatModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));

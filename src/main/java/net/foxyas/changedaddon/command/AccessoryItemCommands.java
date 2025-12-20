@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static net.ltxprogrammer.changed.data.AccessorySlots.getForEntity;
 
@@ -356,7 +355,7 @@ public class AccessoryItemCommands {
                 }
 
                 ctx.getSource().sendFailure(
-                        new net.minecraft.network.chat.TranslatableComponent(
+                        new TranslatableComponent(
                                 multiple
                                         ? "commands.accessory.no_slots.multiple"
                                         : "commands.accessory.no_slots.single",
@@ -380,7 +379,7 @@ public class AccessoryItemCommands {
                 }
 
                 ctx.getSource().sendFailure(
-                        new net.minecraft.network.chat.TranslatableComponent(
+                        new TranslatableComponent(
                                 multiple
                                         ? "commands.accessory.invalid_slot.multiple"
                                         : "commands.accessory.invalid_slot.single",
@@ -404,7 +403,7 @@ public class AccessoryItemCommands {
             }
 
             ctx.getSource().sendSuccess(
-                    new net.minecraft.network.chat.TranslatableComponent(
+                    new TranslatableComponent(
                             "commands.accessory.get.success",
                             entity.getDisplayName(),
                             stack.orElse(ItemStack.EMPTY).getDisplayName(),
