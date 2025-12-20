@@ -4,15 +4,15 @@ import net.foxyas.changedaddon.client.model.HimalayanCrystalGasCatFemaleModel;
 import net.foxyas.changedaddon.entity.simple.CrystalGasCatFemaleEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.*;
-import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleCatModel;
+import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexFemaleCatModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class CrystalGasCatFemaleRenderer extends AdvancedHumanoidRenderer<CrystalGasCatFemaleEntity, HimalayanCrystalGasCatFemaleModel, ArmorLatexMaleCatModel<CrystalGasCatFemaleEntity>> {
+public class CrystalGasCatFemaleRenderer extends AdvancedHumanoidRenderer<CrystalGasCatFemaleEntity, HimalayanCrystalGasCatFemaleModel, ArmorLatexFemaleCatModel<CrystalGasCatFemaleEntity>> {
     public CrystalGasCatFemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new HimalayanCrystalGasCatFemaleModel(context.bakeLayer(HimalayanCrystalGasCatFemaleModel.LAYER_LOCATION)),
-                ArmorLatexMaleCatModel.MODEL_SET, 0.5f);
+                ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(), CustomEyesLayer::scleraColor, CustomEyesLayer::glowingIrisColorLeft, CustomEyesLayer::glowingIrisColorRight));
