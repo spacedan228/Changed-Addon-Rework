@@ -17,11 +17,11 @@ public class CrystalGasCatFemaleRenderer extends AdvancedHumanoidRenderer<Crysta
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(), CustomEyesLayer::scleraColor, CustomEyesLayer::glowingIrisColorLeft, CustomEyesLayer::glowingIrisColorRight));
         this.addLayer(new GasMaskLayer<>(this, context.getModelSet()));
-        this.addLayer(new EmissiveBodyLayer<>(this, ResourceLocation.parse("changed_addon:textures/entities/crystal_emission.png")));
+        this.addLayer(new EmissiveBodyLayer<>(this, ResourceLocation.parse("changed_addon:textures/entities/crystal_cats/female/crystal_layer.png")));
     }
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull CrystalGasCatFemaleEntity entity) {
-        return ResourceLocation.parse("changed_addon:textures/entities/himalayan_crystal_gas_cat_female.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/crystal_cats/female/himalayan_crystal_cat_female.png");
     }
 }
