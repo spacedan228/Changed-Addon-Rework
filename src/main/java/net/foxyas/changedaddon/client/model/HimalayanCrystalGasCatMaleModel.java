@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class HimalayanCrystalGasCatModel extends AdvancedHumanoidModel<CrystalGasCatMaleEntity> implements AdvancedHumanoidModelInterface<CrystalGasCatMaleEntity, HimalayanCrystalGasCatModel> {
+public class HimalayanCrystalGasCatMaleModel extends AdvancedHumanoidModel<CrystalGasCatMaleEntity> implements AdvancedHumanoidModelInterface<CrystalGasCatMaleEntity, HimalayanCrystalGasCatMaleModel> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Changed.modResource("himalayan_crystal_gas_cat"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
@@ -29,9 +29,9 @@ public class HimalayanCrystalGasCatModel extends AdvancedHumanoidModel<CrystalGa
     private final ModelPart Head;
     private final ModelPart Torso;
     private final ModelPart Tail;
-    private final HumanoidAnimator<CrystalGasCatMaleEntity, HimalayanCrystalGasCatModel> animator;
+    private final HumanoidAnimator<CrystalGasCatMaleEntity, HimalayanCrystalGasCatMaleModel> animator;
 
-    public HimalayanCrystalGasCatModel(ModelPart root) {
+    public HimalayanCrystalGasCatMaleModel(ModelPart root) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
         this.LeftLeg = root.getChild("LeftLeg");
@@ -235,7 +235,7 @@ public class HimalayanCrystalGasCatModel extends AdvancedHumanoidModel<CrystalGa
         this.LeftArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
     }
 
-    public HumanoidAnimator<CrystalGasCatMaleEntity, HimalayanCrystalGasCatModel> getAnimator(CrystalGasCatMaleEntity entity) {
+    public HumanoidAnimator<CrystalGasCatMaleEntity, HimalayanCrystalGasCatMaleModel> getAnimator(CrystalGasCatMaleEntity entity) {
         return this.animator;
     }
 }
