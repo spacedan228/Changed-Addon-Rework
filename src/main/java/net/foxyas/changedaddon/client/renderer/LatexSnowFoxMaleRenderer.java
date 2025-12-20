@@ -23,6 +23,6 @@ public class LatexSnowFoxMaleRenderer extends AdvancedHumanoidRenderer<LatexSnow
 
     @Override
     public @NotNull ResourceLocation getTextureLocation(@NotNull LatexSnowFoxMaleEntity entity) {
-        return ResourceLocation.parse("changed_addon:textures/entities/latex_snowfox_male_new.png");
+        return ResourceLocation.parse("changed_addon:textures/entities/latex_snow_foxes/latex_snow_fox_male.png");
     }
 }
