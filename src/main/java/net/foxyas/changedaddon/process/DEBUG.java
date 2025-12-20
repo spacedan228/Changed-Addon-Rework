@@ -8,6 +8,9 @@ import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.StructureUtil;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.Gender;
+import net.ltxprogrammer.changed.entity.GenderedEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.KeyboardInput;
@@ -22,6 +25,8 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,6 +40,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.List;
 
 
 @Mod.EventBusSubscriber
@@ -57,6 +64,125 @@ public class DEBUG {
         if (!DEBUG) {
             return;
         }
+
+        if (event.getMessage().getString().startsWith("spawnFemales")) {
+            ServerPlayer player = event.getPlayer();
+            ServerLevel level = event.getPlayer().serverLevel();
+            BlockPos basePos = player.blockPosition();
+
+            int i = 0;
+
+            for (EntityType<?> type : ForgeRegistries.ENTITY_TYPES.getValues().stream().filter((entityType -> ForgeRegistries.ENTITY_TYPES.getKey(entityType).getNamespace().equals(ChangedAddonMod.MODID))).toList()) {
+                ResourceLocation registryName = ForgeRegistries.ENTITY_TYPES.getKey(type);
+                if (registryName == null) continue;
+                String string = registryName.toString();
+
+                Entity entity = type.create(level);
+                if (!(entity instanceof ChangedEntity livingEntity)) continue;
+
+                if (!string.contains("female") && !(livingEntity instanceof GenderedEntity)) continue;
+                if (livingEntity instanceof GenderedEntity genderedEntity && genderedEntity.getGender() != Gender.FEMALE)
+                    continue;
+
+                livingEntity.setNoAi(true);
+                livingEntity.setNoGravity(true);
+
+                // organizar em grid pra debug visual
+                int xOffset = (i % 5) * 3;
+                int zOffset = (i / 5) * 3;
+
+                entity.moveTo(
+                        basePos.getX() + xOffset,
+                        basePos.getY(),
+                        basePos.getZ() + zOffset,
+                        level.random.nextFloat() * 360F,
+                        0F
+                );
+
+                level.addFreshEntity(entity);
+                i++;
+            }
+        }
+
+        if (event.getMessage().getString().startsWith("spawnMales")) {
+            ServerPlayer player = event.getPlayer();
+            ServerLevel level = event.getPlayer().serverLevel();
+            BlockPos basePos = player.blockPosition();
+
+            int i = 0;
+
+            for (EntityType<?> type : ForgeRegistries.ENTITY_TYPES.getValues().stream().filter((entityType -> ForgeRegistries.ENTITY_TYPES.getKey(entityType).getNamespace().equals(ChangedAddonMod.MODID))).toList()) {
+                ResourceLocation registryName = ForgeRegistries.ENTITY_TYPES.getKey(type);
+                if (registryName == null) continue;
+                String string = registryName.toString();
+
+                Entity entity = type.create(level);
+                if (!(entity instanceof ChangedEntity livingEntity)) continue;
+
+                if (!string.contains("male") && !(livingEntity instanceof GenderedEntity)) continue;
+                if (livingEntity instanceof GenderedEntity genderedEntity && genderedEntity.getGender() != Gender.MALE)
+                    continue;
+
+                livingEntity.setNoAi(true);
+                livingEntity.setNoGravity(true);
+
+                // short in grid to debug visual
+                int xOffset = (i % 5) * 3;
+                int zOffset = (i / 5) * 3;
+
+                entity.moveTo(
+                        basePos.getX() + xOffset,
+                        basePos.getY(),
+                        basePos.getZ() + zOffset,
+                        level.random.nextFloat() * 360F,
+                        0F
+                );
+
+                level.addFreshEntity(entity);
+                i++;
+            }
+        }
+
+        if (event.getMessage().getString().startsWith("spawnChangedAddonEntities")) {
+            ServerPlayer player = event.getPlayer();
+            ServerLevel level = event.getPlayer().serverLevel();
+            BlockPos basePos = player.blockPosition();
+
+            int i = 0;
+
+            List<EntityType<?>> list = ForgeRegistries.ENTITY_TYPES.getValues().stream().filter((entityType -> ForgeRegistries.ENTITY_TYPES.getKey(entityType).getNamespace().equals(ChangedAddonMod.MODID))).toList();
+            if (event.getMessage().getString().contains("count")) {
+                player.displayClientMessage(Component.literal("Hey the amount of entities are -> " + list.size()), true);
+                return;
+            }
+            for (EntityType<?> type : list) {
+                ResourceLocation registryName = ForgeRegistries.ENTITY_TYPES.getKey(type);
+                if (registryName == null) continue;
+                String string = registryName.toString();
+
+                Entity entity = type.create(level);
+                if (!(entity instanceof ChangedEntity livingEntity)) continue;
+
+                livingEntity.setNoAi(true);
+                livingEntity.setNoGravity(true);
+
+                // short in grid to debug visual
+                int xOffset = (i % 5) * 3;
+                int zOffset = (i / 5) * 3;
+
+                entity.moveTo(
+                        basePos.getX() + xOffset,
+                        basePos.getY(),
+                        basePos.getZ() + zOffset,
+                        level.random.nextFloat() * 360F,
+                        0F
+                );
+
+                level.addFreshEntity(entity);
+                i++;
+            }
+        }
+
 
         if (event.getMessage().getString().startsWith("placeStructure:")) {
             String id = event.getMessage().getString().replace("placeStructure:", "");
