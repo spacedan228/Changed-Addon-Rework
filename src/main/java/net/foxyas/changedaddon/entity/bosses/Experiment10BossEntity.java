@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.ThrowWitherProjectileGoal;
@@ -13,6 +14,7 @@ import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAtta
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
+import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.*;
@@ -74,7 +76,7 @@ import java.util.UUID;
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, CustomPatReaction, PowderSnowWalkable {
+public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, CustomPatReaction, PowderSnowWalkable, IHasBossMusic {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment10BossEntity.class, EntityDataSerializers.BOOLEAN);
@@ -129,6 +131,16 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
                 }
             }
         }
+    }
+
+    @Override
+    public @Nullable ResourceLocation getBossMusic() {
+        return ChangedAddonSoundEvents.EXP10_THEME.get().getLocation();
+    }
+
+    @Override
+    public LivingEntity getSelf() {
+        return this;
     }
 
     protected void setAttributes(AttributeMap attributes) {

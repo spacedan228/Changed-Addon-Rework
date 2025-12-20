@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.block.AbstractLuminarCrystal;
 import net.foxyas.changedaddon.entity.api.CrawlFeature;
+import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.util.ParticlesUtil;
@@ -20,6 +21,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerBossEvent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
@@ -55,7 +57,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Random;
 
-public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard implements CrawlFeature {
+public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard implements CrawlFeature, IHasBossMusic {
 
     public static final int GLOW_NONE = 0;
     public static final int GLOW_PULSE = 1;
@@ -86,7 +88,6 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         this.setAttributes(this.getAttributes());
         this.dodgeAbilityInstance = this.registerAbility((this::canDodge), new DodgeAbilityInstance(ChangedAddonAbilities.DODGE.get(), IAbstractChangedEntity.forEntity(this)));
     }
-
 
     public static <T extends AbstractLuminarcticLeopard> boolean canSpawnNear(EntityType<T> entityType, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, Random random) {
         if (world.getDifficulty() == Difficulty.PEACEFUL) {
@@ -210,6 +211,16 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         } else if (!this.isBoss() && attributesApplied) {
             handleNonBoss();
         }
+    }
+
+    @Override
+    public @Nullable ResourceLocation getBossMusic() {
+        return ChangedAddonSoundEvents.LUMINARCTIC_LEOPARD.get().getLocation();
+    }
+
+    @Override
+    public LivingEntity getSelf() {
+        return this;
     }
 
     @Override
@@ -468,7 +479,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
                     return;
                 }
             }
-            
+
             int pTicksFrozen = target.getTicksFrozen() + (int) (target.getTicksRequiredToFreeze() * 0.25f);
             if (source instanceof AbstractLuminarcticLeopard lumi && lumi.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                 ParticlesUtil.sendParticles(target.level, ParticleTypes.SNOWFLAKE, target.getEyePosition(), 0.3f, 0.5f, 0.3f, 4, 0.05f);

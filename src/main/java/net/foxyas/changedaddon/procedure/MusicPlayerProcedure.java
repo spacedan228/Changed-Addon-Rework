@@ -26,7 +26,7 @@ import java.util.Objects;
 @Mod.EventBusSubscriber
 public class MusicPlayerProcedure {
 
-    @SubscribeEvent
+    //@SubscribeEvent
     public static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if(event.phase != TickEvent.Phase.END) return;
 
