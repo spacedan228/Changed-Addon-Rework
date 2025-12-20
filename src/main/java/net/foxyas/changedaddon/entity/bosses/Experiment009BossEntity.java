@@ -300,6 +300,11 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
     }
 
     @Override
+    public float getMusicVolume() {
+        return 0.5f;
+    }
+
+    @Override
     public @NotNull MobType getMobType() {
         return MobType.UNDEFINED;
     }
