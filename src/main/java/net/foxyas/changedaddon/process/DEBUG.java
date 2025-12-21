@@ -1,5 +1,7 @@
 package net.foxyas.changedaddon.process;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
@@ -10,17 +12,28 @@ import net.foxyas.changedaddon.util.StructureUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.GenderedEntity;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.debug.PathfindingRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.pathfinder.Node;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -29,6 +42,8 @@ import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
+
+import static net.minecraft.client.renderer.debug.PathfindingRenderer.renderPath;
 
 
 @Mod.EventBusSubscriber
@@ -67,11 +82,12 @@ public class DEBUG {
                 if (!(entity instanceof ChangedEntity livingEntity)) continue;
 
                 if (!string.contains("female") && !(livingEntity instanceof GenderedEntity)) continue;
-                if (livingEntity instanceof GenderedEntity genderedEntity && genderedEntity.getGender() != Gender.FEMALE) continue;
+                if (livingEntity instanceof GenderedEntity genderedEntity && genderedEntity.getGender() != Gender.FEMALE)
+                    continue;
 
                 livingEntity.setNoAi(true);
                 livingEntity.setNoGravity(true);
-                
+
                 // organizar em grid pra debug visual
                 int xOffset = (i % 5) * 3;
                 int zOffset = (i / 5) * 3;
@@ -105,7 +121,8 @@ public class DEBUG {
                 if (!(entity instanceof ChangedEntity livingEntity)) continue;
 
                 if (!string.contains("male") && !(livingEntity instanceof GenderedEntity)) continue;
-                if (livingEntity instanceof GenderedEntity genderedEntity && genderedEntity.getGender() != Gender.MALE) continue;
+                if (livingEntity instanceof GenderedEntity genderedEntity && genderedEntity.getGender() != Gender.MALE)
+                    continue;
 
                 livingEntity.setNoAi(true);
                 livingEntity.setNoGravity(true);
@@ -354,91 +371,76 @@ public class DEBUG {
         });
     }
     */
-//    @SubscribeEvent
-//    public static void TEST(RenderLevelStageEvent event) {
-//        if (!RENDERTEST) return;
-//        // Somente no estágio certo (depois do mundo renderado)
-//        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_CUTOUT_BLOCKS) return;
-//
-//        Minecraft mc = Minecraft.getInstance();
-//        LocalPlayer player = mc.player;
-//        if (mc.level == null || player == null) return;
-//
-//        Level level = mc.level;
-//
-//        // Raio de busca
-//        int radius = 6;
-//
-//        BlockPos playerPos = player.blockPosition();
-//
-//        // Posição da câmera — importante
-//        Vec3 cam = mc.gameRenderer.getMainCamera().getPosition();
-//
-//        BlockHitResult blockHitResult = level.clip(new ClipContext(player.getEyePosition(), player.getEyePosition().add(player.getViewVector(0).scale(player.getReachDistance())), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, player));
-//        if (blockHitResult.getType() != HitResult.Type.MISS) {
-//            BlockPos pos = blockHitResult.getBlockPos();
-//            BlockState state = level.getBlockState(pos);
-//            if (state.getBlock() instanceof TimedKeypadBlock keypad) {
-//                Vec3 location = blockHitResult.getLocation();
-//                Vec3 localLocation = location.subtract(pos.getX(), pos.getY(), pos.getZ());
-//
-//                for (TimedKeypadBlock.KeypadButton btn : TimedKeypadBlock.KeypadButton.values()) {
-//                    VoxelShape shape = keypad.getButtonsInteractionShape(btn, state);
-//                    // Converte cada AABB da shape
-//                    for (AABB aabb : shape.toAabbs()) {
-//                        // Move para o mundo
-//                        AABB worldAABB = aabb.move(pos);
-//
-//                        // Converter world-space → camera-space
-//                        AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z);
-//
-//                        if (aabb.inflate(0, 0.01, 0).contains(localLocation.scale(1))) {
-//                            // Renderizar a caixa (linhas)
-//                            LevelRenderer.renderLineBox(
-//                                    event.getPoseStack(),
-//                                    mc.renderBuffers().bufferSource().getBuffer(RenderType.lines()),
-//                                    renderAABB,
-//                                    1f, 1f, 1f, 1f     // R, G, B, Alpha
-//                            );
-//                        }
-//                    }
-//                }
-//            }
-//        }
+    @SubscribeEvent
+    public static void onRenderLevel(RenderLevelStageEvent event) {
+        if (!RENDERTEST || event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
 
-//        BlockPos.betweenClosedStream(
-//                playerPos.offset(-radius, -radius, -radius),
-//                playerPos.offset(radius, radius, radius)
-//        ).forEach(pos -> {
-//            BlockState state = level.getBlockState(pos);
-//
-//            if (state.getBlock() instanceof TimedKeypadBlock keypad) {
-//
-//                for (TimedKeypadBlock.KeypadButton btn : TimedKeypadBlock.KeypadButton.values()) {
-//
-//                    VoxelShape shape = keypad.getButtonsInteractionShape(btn, state);
-//
-//                    // Converte cada AABB da shape
-//                    for (AABB aabb : shape.toAabbs()) {
-//
-//                        // Move para o mundo
-//                        AABB worldAABB = aabb.move(pos);
-//
-//                        // Converter world-space → camera-space
-//                        AABB renderAABB = worldAABB.move(-cam.x, -cam.y, -cam.z);
-//
-//                        // Renderizar a caixa (linhas)
-//                        LevelRenderer.renderLineBox(
-//                                event.getPoseStack(),
-//                                mc.renderBuffers().bufferSource().getBuffer(RenderType.lines()),
-//                                renderAABB,
-//                                1f, 1f, 1f, 1f     // R, G, B, Alpha
-//                        );
-//                    }
-//                }
-//            }
-//        });
-//    }
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return;
+
+        PoseStack poseStack = event.getPoseStack();
+        Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
+
+
+        // Strategy: In a real GPS mod, you would store the 'Path' received from a packet
+        // in a client-side capability or a static manager.
+        // For now, we'll iterate entities to demonstrate the rendering.
+        for (Entity entity : mc.level.entitiesForRendering()) {
+            if (!(entity instanceof PathfinderMob mob)) continue;
+
+            // CUIDADO: createPath no render é apenas para teste!
+            Path path = mob.getNavigation().createPath(BlockPos.ZERO, 1); // we can change that using a packet to change the client "GPS PATH"
+            if (path == null || path.getNodeCount() == 0) continue;
+
+            renderPathAsLine(poseStack, camPos, path);
+        }
+    }
+
+    /**
+     * Renders a path line with world-space anchoring and HSV gradient.
+     */
+    public static void renderPathAsLine(PoseStack poseStack, Vec3 camPos, Path path) {
+        poseStack.pushPose();
+
+        // Anchor the rendering to world coordinates 0,0,0
+        poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
+
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.disableTexture();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.lineWidth(5.0f);
+
+        Tesselator tesselator = Tesselator.getInstance();
+        BufferBuilder bufferbuilder = tesselator.getBuilder();
+
+        bufferbuilder.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+
+        for (int i = 0; i < path.getNodeCount(); ++i) {
+            Node node = path.getNode(i);
+
+            // Generate a gradient based on the node index
+            float f = (float) i / (float) path.getNodeCount() * 0.33F;
+            int colorRGB = i == 0 ? 0x00FF00 : Mth.hsvToRgb(f, 0.9F, 0.9F);
+            int r = (colorRGB >> 16) & 255;
+            int g = (colorRGB >> 8) & 255;
+            int b = colorRGB & 255;
+
+            // Render vertex with a small Y offset to prevent Z-fighting with the floor
+            bufferbuilder.vertex(poseStack.last().pose(),
+                            (float) node.x + 0.5f,
+                            (float) node.y + 0.1f,
+                            (float) node.z + 0.5f)
+                    .color(r, g, b, 255)
+                    .endVertex();
+        }
+
+        // Restore states to prevent graphical glitches in other parts of the game
+        tesselator.end();
+        poseStack.popPose();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
+    }
 
 
     @SubscribeEvent
