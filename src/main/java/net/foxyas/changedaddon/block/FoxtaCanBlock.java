@@ -36,7 +36,14 @@ public class FoxtaCanBlock extends HorizontalDirectionalBlock implements SimpleW
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public FoxtaCanBlock() {
-        super(BlockBehaviour.Properties.copy(Blocks.IRON_BLOCK).mapColor(MapColor.COLOR_LIGHT_GRAY).sound(SoundType.METAL).strength(0.1f, 10f).noOcclusion().isRedstoneConductor((bs, br, bp) -> false));
+        super(BlockBehaviour.Properties.of()
+                .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                .sound(SoundType.METAL)
+                .strength(0.1f, 10f)
+                .noOcclusion().mapColor(MapColor.COLOR_ORANGE)
+                .sound(SoundType.METAL).strength(0.1f, 10f)
+                .noOcclusion()
+                .isRedstoneConductor((bs, br, bp) -> false));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 

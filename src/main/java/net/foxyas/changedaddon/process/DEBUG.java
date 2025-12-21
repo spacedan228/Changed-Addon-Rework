@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.process;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
@@ -11,6 +12,7 @@ import net.foxyas.changedaddon.util.StructureUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.GenderedEntity;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.KeyboardInput;
@@ -27,28 +29,34 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
+import static net.foxyas.changedaddon.util.RenderUtil.renderPathAsLine;
+
 
 @Mod.EventBusSubscriber
 @Deprecated(forRemoval = true)
 public class DEBUG {
 
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = SharedConstants.IS_RUNNING_IN_IDE || !FMLLoader.isProduction();
     public static float HeadPosT, HeadPosV, HeadPosB = 0, HeadPosK = 40, HeadPosL, HeadPosJ = 40;
     public static float HeadPosX = 40, HeadPosY = 40, HeadPosZ;
 
@@ -405,8 +413,37 @@ public class DEBUG {
         });
     }
     */
+
+
+    //@SubscribeEvent
+    public static void onRenderLevel(RenderLevelStageEvent event) {
+        if (!RENDERTEST || event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
+
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null) return;
+
+        PoseStack poseStack = event.getPoseStack();
+        Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
+
+
+        // Strategy: In a real GPS mod, you would store the 'Path' received from a packet
+        // in a client-side capability or a static manager.
+        // For now, we'll iterate entities to demonstrate the rendering.
+        for (Entity entity : mc.level.entitiesForRendering()) {
+            if (!(entity instanceof PathfinderMob mob)) continue;
+
+            // CUIDADO: createPath no render é apenas para teste!
+            Path path = mob.getNavigation().createPath(BlockPos.ZERO, 1); // we can change that using a packet to change the client "GPS PATH"
+            if (path == null || path.getNodeCount() == 0) continue;
+
+            renderPathAsLine(poseStack, camPos, path);
+        }
+    }
+
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
+        if (!DEBUG) return;
+
         if (event.getAction() != GLFW.GLFW_PRESS && event.getAction() != GLFW.GLFW_REPEAT)
             return;
 
