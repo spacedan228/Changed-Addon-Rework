@@ -23,10 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -412,7 +409,7 @@ public class AbstractLuminarCrystal {
                         }
                     }
                 } else {
-                    var leopardType = level.random.nextBoolean()
+                    EntityType<? extends AbstractLuminarcticLeopard> leopardType = level.random.nextBoolean()
                             ? ChangedAddonEntities.LUMINARCTIC_LEOPARD_FEMALE.get()
                             : ChangedAddonEntities.LUMINARCTIC_LEOPARD_MALE.get();
 
@@ -422,35 +419,50 @@ public class AbstractLuminarCrystal {
                             newLeopard.setBoss(true);
                         }
 
-                        BlockPos spawnPos = pos;
-
-                        /*if (oldState.hasProperty(BlockStateProperties.FACING)) {
-                            Direction facing = oldState.getValue(BlockStateProperties.FACING);
-                            spawnPos = pos.relative(facing);
-                        }
-*/
-
-                        Vec3 spawnVec = new Vec3(spawnPos.getX() + 0.5D, spawnPos.getY(), spawnPos.getZ() + 0.5D);
+                        BlockPos.MutableBlockPos spawnPos = pos.mutable();
+                        Vec3 spawnVec = Vec3.atCenterOf(spawnPos);
                         newLeopard.setPos(spawnVec.x, spawnVec.y, spawnVec.z);
                         newLeopard.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(pos), MobSpawnType.MOB_SUMMONED, null, null);
                         if (closestEntity != null) {
                             newLeopard.setTarget(closestEntity);
 
-                            // Posição atrás da entidade (um bloco de distância)
-                            Vec3 targetPos = closestEntity.position().add(
-                                    closestEntity.getViewVector(1).scale(-1.5) // escala define distância
-                            );
+                            boolean placed = false;
 
-                            spawnPos = new BlockPos((int) targetPos.x, (int) targetPos.y, (int) targetPos.z);
+                            for (double dist = 0.5; dist <= 1.5; dist += 0.5) {
 
-                            if (level.getBlockState(spawnPos).isAir() &&
-                                    level.getBlockState(spawnPos.above()).isAir()) {
+                                Vec3 backward = Vec3.directionFromRotation(0, closestEntity.getYRot());
+                                Vec3 behind = closestEntity.position().subtract(backward.scale(dist));
 
-                                spawnPos = new BlockPos(spawnPos.getX(), level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, spawnPos.getX(), spawnPos.getZ()), spawnPos.getZ());
+                                BlockPos.MutableBlockPos candidate = BlockPos.containing(behind).mutable();
 
-                                newLeopard.setPos(spawnPos.getX() + 0.5, spawnPos.getY(), spawnPos.getZ() + 0.5);
-                                level.addFreshEntity(newLeopard);
+                                newLeopard.setPos(Vec3.atCenterOf(candidate));
+
+                                if (level.noCollision(newLeopard)
+                                        && level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP)
+                                        && newLeopard.hasLineOfSight(closestEntity)) {
+
+                                    spawnPos.set(candidate);
+                                    placed = true;
+                                    break;
+                                } else {
+                                    BlockPos.MutableBlockPos moved = candidate.above().mutable();
+                                    if (level.noCollision(newLeopard)
+                                            && level.getBlockState(moved.below()).isFaceSturdy(level, moved.below(), Direction.UP)
+                                            && newLeopard.hasLineOfSight(closestEntity)) {
+
+                                        spawnPos.set(moved);
+                                        placed = true;
+                                        break;
+                                    }
+                                }
                             }
+
+                            // fallback final
+                            if (!placed) {
+                                spawnPos.set(pos);
+                                newLeopard.setPos(Vec3.atCenterOf(spawnPos));
+                            }
+
                         }
                         level.addFreshEntity(newLeopard);
                         newLeopard.playSound(SoundEvents.ENDERMAN_SCREAM, 1, 0);
