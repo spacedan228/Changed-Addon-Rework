@@ -171,7 +171,8 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         }
     }
 
-    @ModifyExpressionValue(method = "tickIdle", at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;isTemporaryFromSuit()Z", remap = true, shift = At.Shift.BY))
+    @ModifyExpressionValue(method = "tickIdle", at = @At(value = "INVOKE",
+            target = "Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;isTemporaryFromSuit()Z"))
     public boolean allowGrabTransfuredPlayers(boolean original) {
         if (this.allowGrabTransfured()) {
             return true;
@@ -183,8 +184,7 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
             method = "tickIdle",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;ifPlayerTransfurred(Lnet/minecraft/world/entity/player/Player;Ljava/util/function/Consumer;)Z",
-                    remap = false
+                    target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;ifPlayerTransfurred(Lnet/minecraft/world/entity/player/Player;Ljava/util/function/Consumer;)Z"
             )
     )
     private boolean wrapIfPlayerTransfurred(

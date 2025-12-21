@@ -42,7 +42,8 @@ public abstract class LivingEntityMixin {
             method = "updateFallFlying",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
+                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z",
+                    remap = false
             )
     )
     private boolean changedaddon$canElytraFlyRedirect(boolean original) {
@@ -60,7 +61,8 @@ public abstract class LivingEntityMixin {
             method = "updateFallFlying",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;elytraFlightTick(Lnet/minecraft/world/entity/LivingEntity;I)Z"
+                    target = "Lnet/minecraft/world/item/ItemStack;elytraFlightTick(Lnet/minecraft/world/entity/LivingEntity;I)Z",
+                    remap = false
             )
     )
     private boolean changedaddon$elytraFlightTickRedirect(boolean original) {

@@ -24,7 +24,8 @@ public abstract class LocalPlayerMixin extends Player implements LivingEntityDat
             method = "aiStep",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
+                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z",
+                    remap = false
             )
     )
     private boolean changedaddon$canElytraFlyRedirect(boolean original) {

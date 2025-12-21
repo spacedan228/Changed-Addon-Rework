@@ -213,7 +213,8 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
             method = "tryToStartFallFlying",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
+                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z",
+                    remap = false
             )
     )
     private boolean changedaddon$canElytraFlyRedirect(boolean original) {
