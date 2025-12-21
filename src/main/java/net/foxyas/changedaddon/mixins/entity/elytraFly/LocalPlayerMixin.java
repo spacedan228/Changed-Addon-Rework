@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity.elytraFly;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
@@ -14,19 +15,19 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = LocalPlayer.class, priority = 1001)
 public class LocalPlayerMixin {
 
-    @Redirect(
+    @ModifyExpressionValue(
             method = "aiStep",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
+                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z",
+                    remap = false
             )
     )
     private boolean changedaddon$canElytraFlyRedirect(
-            ItemStack stack,
-            LivingEntity entity
+            boolean original
     ) {
-        boolean original = stack.canElytraFly(entity);
-        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(entity))
+        LivingEntity self = (LivingEntity) (Object) this;
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(self))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
                         return extra.getFlyType().canGlide();

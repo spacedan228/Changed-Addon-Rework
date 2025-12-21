@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.mixins.entity.elytraFly;
 
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
@@ -13,19 +14,19 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(value = LivingEntity.class, priority = 1001)
 public class LivingEntityMixin {
 
-    @Redirect(
+    @ModifyExpressionValue(
             method = "updateFallFlying",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z"
+                    target = "Lnet/minecraft/world/item/ItemStack;canElytraFly(Lnet/minecraft/world/entity/LivingEntity;)Z",
+                    remap = false
             )
     )
     private boolean changedaddon$canElytraFlyRedirect(
-            ItemStack stack,
-            LivingEntity livingEntity
+            boolean original
     ) {
-        boolean original = stack.canElytraFly(livingEntity);
-        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(livingEntity))
+        LivingEntity self = (LivingEntity) (Object) this;
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(self))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
                         return extra.getFlyType().canGlide();
@@ -35,18 +36,19 @@ public class LivingEntityMixin {
                 .orElse(original);
     }
 
-    @Redirect(
+    @ModifyExpressionValue(
             method = "updateFallFlying",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/world/item/ItemStack;elytraFlightTick(Lnet/minecraft/world/entity/LivingEntity;I)Z"
+                    target = "Lnet/minecraft/world/item/ItemStack;elytraFlightTick(Lnet/minecraft/world/entity/LivingEntity;I)Z",
+                    remap = false
             )
     )
     private boolean changedaddon$elytraFlightTickRedirect(
-            ItemStack instance, LivingEntity livingEntity, int fallFlyTicks
+            boolean original
     ) {
-        boolean original = instance.elytraFlightTick(livingEntity, fallFlyTicks);
-        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(livingEntity))
+        LivingEntity self = (LivingEntity) (Object) this;
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(self))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
                         return extra.getFlyType().canGlide();
