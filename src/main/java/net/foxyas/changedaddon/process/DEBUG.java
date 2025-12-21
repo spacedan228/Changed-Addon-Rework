@@ -43,6 +43,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.List;
 
+import static net.foxyas.changedaddon.util.RenderUtil.renderPathAsLine;
 import static net.minecraft.client.renderer.debug.PathfindingRenderer.renderPath;
 
 
@@ -396,51 +397,7 @@ public class DEBUG {
         }
     }
 
-    /**
-     * Renders a path line with world-space anchoring and HSV gradient.
-     */
-    public static void renderPathAsLine(PoseStack poseStack, Vec3 camPos, Path path) {
-        poseStack.pushPose();
 
-        // Anchor the rendering to world coordinates 0,0,0
-        poseStack.translate(-camPos.x, -camPos.y, -camPos.z);
-
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableTexture();
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        RenderSystem.lineWidth(5.0f);
-
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder bufferbuilder = tesselator.getBuilder();
-
-        bufferbuilder.begin(VertexFormat.Mode.DEBUG_LINE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-
-        for (int i = 0; i < path.getNodeCount(); ++i) {
-            Node node = path.getNode(i);
-
-            // Generate a gradient based on the node index
-            float f = (float) i / (float) path.getNodeCount() * 0.33F;
-            int colorRGB = i == 0 ? 0x00FF00 : Mth.hsvToRgb(f, 0.9F, 0.9F);
-            int r = (colorRGB >> 16) & 255;
-            int g = (colorRGB >> 8) & 255;
-            int b = colorRGB & 255;
-
-            // Render vertex with a small Y offset to prevent Z-fighting with the floor
-            bufferbuilder.vertex(poseStack.last().pose(),
-                            (float) node.x + 0.5f,
-                            (float) node.y + 0.1f,
-                            (float) node.z + 0.5f)
-                    .color(r, g, b, 255)
-                    .endVertex();
-        }
-
-        // Restore states to prevent graphical glitches in other parts of the game
-        tesselator.end();
-        poseStack.popPose();
-        RenderSystem.enableTexture();
-        RenderSystem.disableBlend();
-    }
 
 
     @SubscribeEvent
