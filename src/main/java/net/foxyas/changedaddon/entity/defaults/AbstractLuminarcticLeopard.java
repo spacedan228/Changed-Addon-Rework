@@ -215,7 +215,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
 
     @Override
     public @Nullable ResourceLocation getBossMusic() {
-        return ChangedAddonSoundEvents.LUMINARCTIC_LEOPARD.get().getLocation();
+        return this.isBoss() ? ChangedAddonSoundEvents.LUMINARCTIC_LEOPARD.get().getLocation() : null;
     }
 
     @Override
