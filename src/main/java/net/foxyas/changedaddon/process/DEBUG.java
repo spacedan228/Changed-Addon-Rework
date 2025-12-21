@@ -372,7 +372,7 @@ public class DEBUG {
         });
     }
     */
-    @SubscribeEvent
+    // @SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
         if (!RENDERTEST || event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES) return;
 
