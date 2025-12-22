@@ -15,11 +15,11 @@
       "item": "minecraft:pink_wool"
     },
     "title": {
-      "translate": "advancement.grab.hug_tight.title",
+      "translate": "advancements.grab.hug_tight.title",
       "color": "red"
     },
     "description": {
-      "translate": "advancement.grab.hug_tight.descr"
+      "translate": "advancements.grab.hug_tight.descr"
     },
     "frame": "challenge",
     "announce_to_chat": true,

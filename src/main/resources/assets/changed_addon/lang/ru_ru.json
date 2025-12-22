@@ -104,11 +104,11 @@
   "advancements.main.rock_fish.title": "Лавовая рыба",
   "advancements.main.rock_fish.description": "Используйте зелье огнестойкости и плавайте в лаве в форме водного существа.",
 
-  "advancement.grab.hug.title": "Тёплые объятия",
-  "advancement.grab.hug.description": "Вы обняли кого-то с теплом ♥",
+  "advancements.grab.hug.title": "Тёплые объятия",
+  "advancements.grab.hug.description": "Вы обняли кого-то с теплом ♥",
 
-  "advancement.grab.hug_tight.title": "Уютное сжатие",
-  "advancement.grab.hug_tight.description": "Вы крепко и уютно обняли кого-то ♥",
+  "advancements.grab.hug_tight.title": "Уютное сжатие",
+  "advancements.grab.hug_tight.description": "Вы крепко и уютно обняли кого-то ♥",
 
   "attribute.changed_addon.latex_infection": "Заражение латексом",
   "attribute.changed_addon.latex_resistance": "Сопротивление латексу",

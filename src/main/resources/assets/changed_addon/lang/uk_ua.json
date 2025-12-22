@@ -106,11 +106,11 @@
   "advancements.cuddles_of_eternal_night.title": "Я мрію?",
   "advancements.cuddles_of_eternal_night.descr": "Обійми вічної ночі... Ви мали б знати, що не варто обіймати плюшеву іграшку. Спи спокійно... назавжди.",
 
-  "advancement.grab.hug.title": "Теплі обійми",
-  "advancement.grab.hug.description": "Обійміть когось ♥",
+  "advancements.grab.hug.title": "Теплі обійми",
+  "advancements.grab.hug.description": "Обійміть когось ♥",
 
-  "advancement.grab.hug_tight.title": "Міцні обійми",
-  "advancement.grab.hug_tight.description": "Міцно обійміть когось ♥",
+  "advancements.grab.hug_tight.title": "Міцні обійми",
+  "advancements.grab.hug_tight.description": "Міцно обійміть когось ♥",
 
   "attribute.changed_addon.latex_infection": "Латексне зараження",
   "attribute.changed_addon.latex_resistance": "Спротив латексу",

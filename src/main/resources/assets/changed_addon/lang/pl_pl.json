@@ -106,11 +106,11 @@
   "advancements.cuddles_of_eternal_night.title": "Objęcia wiecznej nocy",
   "advancements.cuddles_of_eternal_night.descr": "Powinieneś wiedzieć, żeby nie przemycać pluszaka. Śpij mocno... na zawsze.",
 
-  "advancement.grab.hug.title": "Ciepłe objęcie",
-  "advancement.grab.hug.description": "Przytuliłeś się do kogoś ♥",
+  "advancements.grab.hug.title": "Ciepłe objęcie",
+  "advancements.grab.hug.description": "Przytuliłeś się do kogoś ♥",
 
-  "advancement.grab.hug_tight.title": "Mocny uścisk",
-  "advancement.grab.hug_tight.description": "Mocno kogoś uścisnąłeś ♥",
+  "advancements.grab.hug_tight.title": "Mocny uścisk",
+  "advancements.grab.hug_tight.description": "Mocno kogoś uścisnąłeś ♥",
 
   "attribute.changed_addon.latex_infection": "Zarażanie latexem",
   "attribute.changed_addon.latex_resistance": "Odporność na latex",
