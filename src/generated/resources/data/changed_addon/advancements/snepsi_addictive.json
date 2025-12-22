@@ -1,0 +1,57 @@
+{
+  "parent": "changed_addon:drink_snepsi",
+  "display": {
+    "icon": {
+      "item": "changed_addon:snepsi"
+    },
+    "title": {
+      "translate": "advancements.snepsi_addictive.title"
+    },
+    "description": {
+      "translate": "advancements.snepsi_addictive.descr"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "rewards": {
+    "experience": 3500
+  },
+  "criteria": {
+    "snepsi_addictive": {
+      "trigger": "minecraft:consume_item",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "player": {
+                "stats": [
+                  {
+                    "type": "minecraft:used",
+                    "stat": "changed_addon:snepsi",
+                    "value": {
+                      "min": 100
+                    }
+                  }
+                ]
+              }
+            },
+            "entity": "this"
+          }
+        ],
+        "item": {
+          "items": [
+            "changed_addon:snepsi"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "snepsi_addictive"
+    ]
+  ]
+}

@@ -31,7 +31,7 @@ public class GatherData {
 
         generator.addProvider(new BlockStateProvider(generator, helper));
         generator.addProvider(new ItemModelProvider(generator, helper));
-        //generator.addProvider(new AdvancementProvider(generator, helper));
+        generator.addProvider(new AdvancementProvider(generator, helper));
 
         generator.addProvider(new ENLanguageProvider(generator));
         generator.addProvider(new HULanguageProvider(generator));
