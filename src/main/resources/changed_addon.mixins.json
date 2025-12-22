@@ -52,6 +52,7 @@
     "mods.changed.LatexTypeMixin",
     "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin",
+    "world.ConsumeItemTrigger",
     "world.DataFixTypesMixin",
     "world.LevelStorageAccessMixin",
     "world.LevelStorageSourceMixin",

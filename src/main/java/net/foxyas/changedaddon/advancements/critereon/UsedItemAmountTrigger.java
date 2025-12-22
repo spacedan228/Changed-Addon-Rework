@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,6 +40,10 @@ public class UsedItemAmountTrigger
         this.trigger(player, inst -> inst.matches(player));
     }
 
+    public void trigger(ServerPlayer player, ItemStack itemStack) {
+        this.trigger(player, inst -> inst.matches(player, itemStack));
+    }
+
     // --------------------------------------------------
 
     public static class Instance extends AbstractCriterionTriggerInstance {
@@ -63,6 +68,16 @@ public class UsedItemAmountTrigger
         public boolean matches(ServerPlayer player) {
             int used = player.getStats()
                     .getValue(Stats.ITEM_USED.get(item));
+
+            if (used < min) return false;
+            if (max != null && used > max) return false;
+
+            return true;
+        }
+
+        public boolean matches(ServerPlayer player, ItemStack itemStack) {
+            int used = player.getStats()
+                    .getValue(Stats.ITEM_USED.get(itemStack.getItem()));
 
             if (used < min) return false;
             if (max != null && used > max) return false;
