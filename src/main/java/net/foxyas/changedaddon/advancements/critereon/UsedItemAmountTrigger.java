@@ -76,6 +76,10 @@ public class UsedItemAmountTrigger
         }
 
         public boolean matches(ServerPlayer player, ItemStack itemStack) {
+            if (itemStack.getItem() != item) {
+                return false;
+            }
+
             int used = player.getStats()
                     .getValue(Stats.ITEM_USED.get(itemStack.getItem()));
 
