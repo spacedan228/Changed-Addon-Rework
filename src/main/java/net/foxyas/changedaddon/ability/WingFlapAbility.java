@@ -82,7 +82,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
     public int getChargeTime(IAbstractChangedEntity entity) {
         if (entity.getEntity() instanceof Player player) {
             if (player.getAbilities().flying) {
-                return 5;
+                return 15;
             } else if (player.isFallFlying()) {
                 return 45;
             } else if (player.isOnGround()) {
@@ -96,7 +96,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
     public int getCoolDown(IAbstractChangedEntity entity) {
         if (entity.getEntity() instanceof Player player) {
             if (player.getAbilities().flying) {
-                return 10;
+                return 15;
             } else if (player.isFallFlying()) {
                 return 25;
             } else if (player.isOnGround()) {
