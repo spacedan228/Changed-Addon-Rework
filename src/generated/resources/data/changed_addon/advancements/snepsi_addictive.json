@@ -1,0 +1,36 @@
+{
+  "parent": "changed_addon:drink_snepsi",
+  "criteria": {
+    "snepsi_addictive": {
+      "conditions": {
+        "item": "changed_addon:snepsi",
+        "min": 100
+      },
+      "trigger": "changed_addon:used_item_amount"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancements.snepsi_addictive.descr"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "changed_addon:snepsi"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancements.snepsi_addictive.title"
+    }
+  },
+  "requirements": [
+    [
+      "snepsi_addictive"
+    ]
+  ],
+  "rewards": {
+    "experience": 3500
+  },
+  "sends_telemetry_event": true
+}

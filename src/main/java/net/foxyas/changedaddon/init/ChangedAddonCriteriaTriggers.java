@@ -1,9 +1,6 @@
 package net.foxyas.changedaddon.init;
 
-import net.foxyas.changedaddon.advancements.critereon.GrabEntityTrigger;
-import net.foxyas.changedaddon.advancements.critereon.LavaSwimmingTrigger;
-import net.foxyas.changedaddon.advancements.critereon.PatEntityTrigger;
-import net.foxyas.changedaddon.advancements.critereon.SleepNextAPlushyTrigger;
+import net.foxyas.changedaddon.advancements.critereon.*;
 import net.minecraftforge.fml.common.Mod;
 
 import static net.minecraft.advancements.CriteriaTriggers.register;
@@ -15,4 +12,5 @@ public class ChangedAddonCriteriaTriggers {
     public static final GrabEntityTrigger GRAB_ENTITY_TRIGGER = register(new GrabEntityTrigger());
     public static final LavaSwimmingTrigger LAVA_SWIMMING_TRIGGER = register(new LavaSwimmingTrigger());
     public static final SleepNextAPlushyTrigger SLEEP_NEXT_A_PLUSHY_TRIGGER = register(new SleepNextAPlushyTrigger());
+    public static final UsedItemAmountTrigger USED_ITEM_AMOUNT_TRIGGER = register(new UsedItemAmountTrigger());
 }
