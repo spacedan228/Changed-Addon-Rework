@@ -3,12 +3,15 @@ package net.foxyas.changedaddon.network.packet;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.ltxprogrammer.changed.ability.GrabEntityAbility;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.UniversalDist;
 import net.ltxprogrammer.changed.world.inventory.AbilityRadialMenu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
@@ -42,13 +45,13 @@ public class VariantSecondAbilityActivate {
     public VariantSecondAbilityActivate(FriendlyByteBuf buffer) {
         this.uuid = buffer.readUUID();
         this.keyState = buffer.readBoolean();
-        this.ability = ((ForgeRegistry<AbstractAbility<?>>)ChangedRegistry.ABILITY.get()).getValue(buffer.readInt());
+        this.ability = ChangedRegistry.ABILITY.readRegistryObject(buffer);
     }
 
     public void write(FriendlyByteBuf buffer) {
-        buffer.writeUUID(this.uuid);
-        buffer.writeBoolean(this.keyState);
-        buffer.writeInt(((ForgeRegistry<AbstractAbility<?>>)ChangedRegistry.ABILITY.get()).getID(this.ability));
+        buffer.writeUUID(uuid);
+        buffer.writeBoolean(keyState);
+        ChangedRegistry.ABILITY.writeRegistryObject(buffer, ability);
     }
 
     public void handle(Supplier<NetworkEvent.Context> contextSupplier) {
@@ -63,6 +66,14 @@ public class VariantSecondAbilityActivate {
                 ProcessTransfur.ifPlayerTransfurred(sender, (variant) -> {
                     context.setPacketHandled(true);
                     if (variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor) {
+
+                        GrabEntityAbility.getGrabberSafe(sender).ifPresent(entity -> {
+                            if (entity.getAbilityInstanceSafe(ChangedAbilities.GRAB_ENTITY_ABILITY.get())
+                                    .map(ability -> ability.grabbedHasControl).orElse(false)) {
+                                entity.getEntity().interact(sender, InteractionHand.MAIN_HAND);
+                            }
+                        });
+
                         if (!variant.isTemporaryFromSuit()) {
                             if (this.ability != null) {
                                 transfurVariantInstanceExtensor.setSecondSelectedAbility(this.ability);

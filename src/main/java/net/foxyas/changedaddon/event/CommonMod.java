@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.event;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.menu.CustomMerchantMenu;
+import net.foxyas.changedaddon.network.ChangedAddonPackets;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.ClientPacketHandler;
 import net.foxyas.changedaddon.network.ServerPacketHandler;
@@ -22,6 +23,8 @@ import net.minecraftforge.network.NetworkEvent;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonMod {
+
+    public static final ChangedAddonPackets CHANGED_ADDON_PACKETS = new ChangedAddonPackets(ChangedAddonMod.PACKET_HANDLER);
 
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event) {
@@ -53,7 +56,9 @@ public class CommonMod {
         });
     }
 
-    private static void addPackets(){
+    private static void addPackets() {
+        CHANGED_ADDON_PACKETS.registerPackets();
+
         ChangedAddonMod.addNetworkMessage(KeyPressPacket.class, KeyPressPacket::encode,
                 KeyPressPacket::new, KeyPressPacket::handle);
         ChangedAddonMod.addNetworkMessage(SyncTransfurVisionsPacket.class, SyncTransfurVisionsPacket::encode,
@@ -105,8 +110,8 @@ public class CommonMod {
                 ServerboundCustomSelectTradePacket::new,
                 (packet, context) -> {
                     NetworkEvent.Context ctx = context.get();
-                    if(ctx.getSender() == null) return;
-                    ctx.enqueueWork(()-> {
+                    if (ctx.getSender() == null) return;
+                    ctx.enqueueWork(() -> {
                         if (ctx.getSender().containerMenu instanceof CustomMerchantMenu menu) {
                             int i = packet.shopItem();
                             menu.setSelectionHint(i);
