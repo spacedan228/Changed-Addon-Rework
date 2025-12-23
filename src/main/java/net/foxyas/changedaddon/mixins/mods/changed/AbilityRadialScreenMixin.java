@@ -5,6 +5,7 @@ import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.client.gui.AbilityRadialScreen;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.world.inventory.AbilityRadialMenu;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 
 import net.minecraft.resources.ResourceLocation;
@@ -64,21 +65,21 @@ public abstract class AbilityRadialScreenMixin {
                     if (abilityInstance != null) {
                         ResourceLocation registryName = ChangedRegistry.ABILITY.getKey(abilityInstance.getAbility());
                         if (registryName == null) {
-                            list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
+                            list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
                             break;
                         }
                         
                         boolean contains = component.toString().contains(registryName.toString());
                         if (contains) {
                             // BEFORE ID
-                            list.add(i, Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
+                            list.add(i, Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
                             itAdded = true;
                             break;
                         }
                     }
                 }
 
-                if (!itAdded) list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
+                if (!itAdded) list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
 
                 cir.setReturnValue(list);
             }

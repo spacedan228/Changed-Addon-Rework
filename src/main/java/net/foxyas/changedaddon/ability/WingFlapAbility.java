@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 import java.util.Optional;
 
@@ -123,16 +124,14 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
         }
 
         private static void playFlapSound(Player player) {
-            if (!player.level().isClientSide()) {
-                player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_DRAGON_FLAP,
-                        player.getSoundSource(), 2.5F, 1.0F);
-            }
+            playFlapSound(player, 1);
         }
 
         private static void playFlapSound(Player player, float pitch) {
             if (!player.level().isClientSide()) {
                 player.level().playSound(null, player.blockPosition(), SoundEvents.ENDER_DRAGON_FLAP,
                         player.getSoundSource(), 2.5F, pitch);
+                player.gameEvent(GameEvent.ELYTRA_GLIDE);
             }
         }
 
@@ -272,7 +271,6 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
         public void tickIdle() {
             super.tickIdle();
             this.lastDashPower = dashPower;
-            //this.entity.displayClientMessage(Component.literal("VALUE = " + this.lastDashPower) , true);
         }
     }
 }
