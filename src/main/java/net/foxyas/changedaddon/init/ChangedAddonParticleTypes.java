@@ -57,6 +57,7 @@ public class ChangedAddonParticleTypes {
     public static void registerParticles(RegisterParticleProvidersEvent event) {
         event.registerSpriteSet(THUNDER_SPARK.get(), ThunderSparkParticle.Provider::new);
         event.registerSpriteSet(LASER_POINT.get(), LaserPointParticle.Provider::new);
-        event.registerSpriteSet(ChangedAddonParticleTypes.SOLVENT_PARTICLE.get(), SolventParticleParticle::provider);
+        event.registerSpriteSet(SOLVENT_PARTICLE.get(), SolventParticleParticle::provider);
+        event.registerSpriteSet(SIGNAL_PARTICLE.get(), SignalParticle.Provider::new);
     }
 }
