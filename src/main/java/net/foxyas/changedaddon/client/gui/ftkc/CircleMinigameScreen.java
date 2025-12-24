@@ -6,7 +6,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.qte.FightToKeepConsciousness;
-import net.foxyas.changedaddon.util.Vector2f;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
@@ -18,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
@@ -112,7 +112,7 @@ public abstract class CircleMinigameScreen extends Screen {
         }
 
         struggleProgressO = struggleProgress;
-        if (Vector2f.distSqr(cursor, circle) <= INTERACTION_RADIUS_SQR) {
+        if (cursor.distanceSquared(circle) <= INTERACTION_RADIUS_SQR) {
             increaseStruggle();
             return;
         }
@@ -132,7 +132,7 @@ public abstract class CircleMinigameScreen extends Screen {
     @Override
     public void mouseMoved(double mouseX, double mouseY) {
         cursor.add((float) mouseX - mouseLast.x, (float) mouseY - mouseLast.y);
-        cursor.clamp(5, width - 5, 5, height - 5);
+        cursor.set(Mth.clamp(cursor.x, 5, width - 5), Mth.clamp(cursor.y, 5, height - 5));
         mouseLast.set((float) mouseX, (float) mouseY);
     }
 
