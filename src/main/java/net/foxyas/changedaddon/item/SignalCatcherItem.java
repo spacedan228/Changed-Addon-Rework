@@ -30,12 +30,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.pathfinder.Path;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -229,13 +226,6 @@ public class SignalCatcherItem extends Item {
     @Mod.EventBusSubscriber(Dist.CLIENT)
     public static class ClientEvents {
 
-        private static PathfinderMob shadowMob;
-        private static PathNavigation cachedNavigation;
-        private static Path cachedPath;
-
-        private static BlockPos lastTarget;
-        private static boolean lastFlying;
-
         @SubscribeEvent
         public static void onRenderLevel(RenderLevelStageEvent event) {
             if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES)
@@ -244,6 +234,7 @@ public class SignalCatcherItem extends Item {
             Minecraft mc = Minecraft.getInstance();
             ClientLevel level = mc.level;
             LocalPlayer player = mc.player;
+            Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
 
             if (level == null || player == null)
                 return;
@@ -257,92 +248,31 @@ public class SignalCatcherItem extends Item {
                 return;
 
             // ================= Shadow Entity =================
-            if (shadowMob == null || shadowMob.level() != level) {
-                shadowMob = createShadowMob(player, level);
-                if (shadowMob == null)
-                    return;
-
-                cachedNavigation = null;
-                cachedPath = null;
-            }
+            PathfinderMob shadowMob = createShadowMob(player, level);
+            if (shadowMob == null)
+                return;
 
             shadowMob.setPos(player.getX(), player.getY(), player.getZ());
 
-            // ================= Navigation =================
-            boolean flying = shouldUseFlyingNav(player);
+            PathNavigation navigation = getNavigation(player, shadowMob, level);
+            Path path = navigation.createPath(target, 1);
 
-            if (cachedNavigation == null || flying != lastFlying) {
-                cachedNavigation = flying
-                        ? new FlyingPathNavigation(shadowMob, level)
-                        : new GroundPathNavigation(shadowMob, level);
-
-                cachedPath = null;
-                lastFlying = flying;
-            }
-
-            BlockPos playerPos = player.blockPosition();
-
-            boolean shouldRecalculate =
-                    cachedPath == null ||
-                            !target.equals(lastTarget) ||
-                            lastTarget.distSqr(playerPos) > 4; // 2 blocks
-
-            // ================= Path =================
-            if (shouldRecalculate) {
-                cachedPath = cachedNavigation.createPath(target, 1);
-                lastTarget = target;
-            }
-
-            if (cachedPath == null || cachedPath.getNodeCount() <= 1)
+            if (path == null || path.getNodeCount() <= 1)
                 return;
 
-            Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
-
-            // ================= Render =================
-            RenderUtil.renderPathAsLine(event.getPoseStack(), camPos, cachedPath);
+            // ================= Render Path =================
+            RenderUtil.renderPathAsLine(event.getPoseStack(), camPos, path);
         }
 
-        private static boolean shouldUseFlyingNav(LocalPlayer player) {
-            if (player.getAbilities().flying || player.isFallFlying())
-                return true;
+        private static @NotNull PathNavigation getNavigation(LocalPlayer player, PathfinderMob shadowMob, ClientLevel level) {
+            if (player.getAbilities().flying || player.isFallFlying() || !player.onGround())
+                return new FlyingPathNavigation(shadowMob, level);
 
-            if (!player.onGround())
-                return true;
+            if (shadowMob instanceof ChangedEntity changedEntity && (changedEntity.isFlying() || changedEntity.isFallFlying() || !changedEntity.onGround()))
+                return new FlyingPathNavigation(changedEntity, level);
 
-//            double distanceToGround = distanceToGround(player);
-//
-//            // if "Almost on floor" use the grounded one
-//            if (distanceToGround <= 1.0D)
-//                return false;
-
-            return ProcessTransfur.getPlayerTransfurVariantSafe(player)
-                    .map(TransfurVariantInstance::getChangedEntity)
-                    .map(ChangedEntity::isFlying)
-                    .orElse(false);
+            return new GroundPathNavigation(shadowMob, level);
         }
-
-        private static double distanceToGround(LivingEntity player) {
-            Level level = player.level();
-
-            Vec3 start = player.position();
-            Vec3 end = start.subtract(0, 5.0D, 0); // 5 blocos é mais que suficiente
-
-            HitResult hit = level.clip(new ClipContext(
-                    start,
-                    end,
-                    ClipContext.Block.COLLIDER,
-                    ClipContext.Fluid.NONE,
-                    player
-            ));
-
-            if (hit.getType() == HitResult.Type.BLOCK) {
-                return start.y - hit.getLocation().y;
-            }
-
-            // Sem chão detectado (void, voo real)
-            return Double.MAX_VALUE;
-        }
-
 
         /* --------------------------------------------------------- */
 
