@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.util.RenderUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -288,7 +289,7 @@ public class SignalCatcherItem extends Item {
 
         private static PathfinderMob createShadowMob(LocalPlayer player, Level level) {
             ChangedEntity changedEntity = ProcessTransfur.getPlayerTransfurVariantSafe(player).map(TransfurVariantInstance::getChangedEntity).orElse(null);
-            return changedEntity == null ? EntityType.VILLAGER.create(level) : changedEntity;
+            return changedEntity == null ? ChangedEntities.GAS_WOLF.get().create(level) : changedEntity;
         }
     }
 }
