@@ -1,20 +1,30 @@
 package net.foxyas.changedaddon.item;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.util.FoxyasUtils;
+import net.foxyas.changedaddon.util.RenderUtil;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -22,12 +32,19 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.pathfinder.Path;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SignalCatcherItem extends Item {
 
@@ -36,7 +53,7 @@ public class SignalCatcherItem extends Item {
     private static final int MAX_FOUND_BLOCKS = 10;
 
     public SignalCatcherItem() {
-        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
+        super(new Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
                 .stacksTo(64).rarity(Rarity.COMMON));
     }
 
@@ -54,7 +71,7 @@ public class SignalCatcherItem extends Item {
 
     @Override
     public @NotNull ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity) {
-        if(!isSignalCatcherInHand(entity)) return stack;
+        if (!isSignalCatcherInHand(entity)) return stack;
 
         Player player = (Player) entity;
         if (!player.getCooldowns().isOnCooldown(ChangedAddonItems.SIGNAL_CATCHER.get())) {
@@ -175,6 +192,96 @@ public class SignalCatcherItem extends Item {
 
             // Envia cada linha individualmente
             player.displayClientMessage(message, false);
+        }
+    }
+
+    @Nullable
+    public static BlockPos getTargetFromItem(Player player) {
+        ItemStack stack = player.getMainHandItem().is(ChangedAddonItems.SIGNAL_CATCHER.get())
+                ? player.getMainHandItem()
+                : player.getOffhandItem();
+
+        if (!stack.is(ChangedAddonItems.SIGNAL_CATCHER.get())) return null;
+
+        CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.getBoolean("set")) return null;
+
+        return BlockPos.containing(new Vec3(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z")));
+    }
+
+    @Nullable
+    public static BlockPos getTargetFromItem(ItemStack stack) {
+        if (!stack.is(ChangedAddonItems.SIGNAL_CATCHER.get())) return null;
+
+        CompoundTag tag = stack.getTag();
+        if (tag == null || !tag.getBoolean("set")) return null;
+
+        return BlockPos.containing(new Vec3(tag.getDouble("x"), tag.getDouble("y"), tag.getDouble("z")));
+    }
+
+    /* ========================================================= */
+    /* ===================== CLIENT EVENTS ===================== */
+    /* ========================================================= */
+
+    @OnlyIn(Dist.CLIENT)
+    @Mod.EventBusSubscriber(Dist.CLIENT)
+    public static class ClientEvents {
+
+        private static 
+
+        @SubscribeEvent
+        public static void onRenderLevel(RenderLevelStageEvent event) {
+            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_PARTICLES)
+                return;
+
+            Minecraft mc = Minecraft.getInstance();
+            ClientLevel level = mc.level;
+            LocalPlayer player = mc.player;
+            Vec3 camPos =  mc.gameRenderer.getMainCamera().getPosition();
+
+            if (level == null || player == null)
+                return;
+
+            ItemStack stack = getSignalCatcher(player);
+            if (stack == null)
+                return;
+
+            BlockPos target = getTargetFromItem(stack);
+            if (target == null)
+                return;
+
+            // ================= Shadow Entity =================
+            PathfinderMob shadowMob = createShadowMob(player, level);
+            if (shadowMob == null)
+                return;
+
+            shadowMob.setPos(player.getX(), player.getY(), player.getZ());
+
+            PathNavigation navigation = shadowMob.getNavigation();
+            Path path = navigation.createPath(target, 1);
+
+            if (path == null || path.getNodeCount() <= 1)
+                return;
+
+            // ================= Render Path =================
+            RenderUtil.renderPathAsLine(event.getPoseStack(), camPos, path);
+        }
+
+        /* --------------------------------------------------------- */
+
+        private static ItemStack getSignalCatcher(LocalPlayer player) {
+            if (player.getMainHandItem().is(ChangedAddonItems.SIGNAL_CATCHER.get()))
+                return player.getMainHandItem();
+
+            if (player.getOffhandItem().is(ChangedAddonItems.SIGNAL_CATCHER.get()))
+                return player.getOffhandItem();
+
+            return null;
+        }
+
+        private static PathfinderMob createShadowMob(LocalPlayer player, Level level) {
+            ChangedEntity changedEntity = ProcessTransfur.getPlayerTransfurVariantSafe(player).map(TransfurVariantInstance::getChangedEntity).orElse(null);
+            return changedEntity == null ? EntityType.VILLAGER.create(level) : changedEntity;
         }
     }
 }
