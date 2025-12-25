@@ -21,6 +21,7 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,9 +34,12 @@ public class TransfurMe {
     private static final SimpleCommandExceptionType NO_SPECIAL_FORM = new SimpleCommandExceptionType(Component.translatable("command.changed.error.no_special_form"));
     private static final ResourceLocation RANDOM_VARIANT = Changed.modResource("random");
 
+    @ApiStatus.Internal
+    public static boolean funcRegistration = false;
+
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
         LiteralCommandNode<CommandSourceStack> transfurNode = dispatcher.register(Commands.literal("transfurme")
-                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS) && stack.getEntity() instanceof ServerPlayer)
+                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS) && (stack.getEntity() instanceof ServerPlayer || funcRegistration))
                 .then(Commands.argument("form", ResourceLocationArgument.id())
                         .suggests(CommandTransfur.SUGGEST_TRANSFUR_VARIANT)
                         .executes(context ->
@@ -49,7 +53,7 @@ public class TransfurMe {
         );
 
         dispatcher.register(Commands.literal("tfme")
-                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS) && stack.getEntity() instanceof ServerPlayer)
+                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS) && (stack.getEntity() instanceof ServerPlayer || funcRegistration))
                 .redirect(transfurNode)
         );
     }
