@@ -21,7 +21,6 @@ import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import org.jetbrains.annotations.ApiStatus;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,12 +33,9 @@ public class TransfurMe {
     private static final SimpleCommandExceptionType NO_SPECIAL_FORM = new SimpleCommandExceptionType(Component.translatable("command.changed.error.no_special_form"));
     private static final ResourceLocation RANDOM_VARIANT = Changed.modResource("random");
 
-    @ApiStatus.Internal
-    public static boolean funcRegistration = false;
-
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
         LiteralCommandNode<CommandSourceStack> transfurNode = dispatcher.register(Commands.literal("transfurme")
-                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS) && (stack.getEntity() instanceof ServerPlayer || funcRegistration))
+                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("form", ResourceLocationArgument.id())
                         .suggests(CommandTransfur.SUGGEST_TRANSFUR_VARIANT)
                         .executes(context ->
@@ -53,18 +49,17 @@ public class TransfurMe {
         );
 
         dispatcher.register(Commands.literal("tfme")
-                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS) && (stack.getEntity() instanceof ServerPlayer || funcRegistration))
+                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .redirect(transfurNode)
         );
     }
 
     private static int transfurPlayer(CommandSourceStack source, ResourceLocation form, String cause) throws CommandSyntaxException {
+        ServerPlayer player = source.getPlayerOrException();
+        if (ChangedCompatibility.isPlayerUsedByOtherMod(player)) throw USED_BY_OTHER_MOD.create();
+
         TransfurCause transfurCause = TransfurCause.fromSerial(cause).result().orElse(null);
         if (transfurCause == null) throw NOT_CAUSE.create();
-
-        ServerPlayer player = source.getPlayerOrException();
-
-        if (ChangedCompatibility.isPlayerUsedByOtherMod(player)) throw USED_BY_OTHER_MOD.create();
 
         if (form.equals(RANDOM_VARIANT)) {
             form = Util.<TransfurVariant<?>>getRandom(TransfurVariant.getPublicTransfurVariants().collect(Collectors.toList()), player.getRandom()).getFormId();
