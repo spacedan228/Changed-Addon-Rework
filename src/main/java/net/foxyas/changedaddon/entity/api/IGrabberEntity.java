@@ -124,6 +124,19 @@ public interface IGrabberEntity {
                         .ignoreInvisibilityTesting(),
                 living,
                 living.getBoundingBox().inflate(16)
-        ).stream().noneMatch((e) -> e != living && !(e instanceof ArmorStand) && e != grabAbilityInstance.grabbedEntity);
+        ).stream().noneMatch((e) -> {
+            // 1. If X is the grabber, it does not block the damage
+            if (e == living) return false;
+
+            // 2. If X is the grabbed entity, it does not block the damage
+            if (e == grabAbilityInstance.grabbedEntity) return false;
+
+            // 3. Armor stands are considered inanimate/empty and do not block damage
+            if (e instanceof ArmorStand) return false;
+
+            // 4. Skip entities that are tagged to NOT target grabbed entities.
+            // Since they won't interfere, they don't block they ability to cause damage.
+            return !e.getType().is(ChangedAddonTags.EntityTypes.IGNORE_GRABBED_TARGETS);
+        });
     }
 }

@@ -36,7 +36,7 @@ public class TransfurMe {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher){
         LiteralCommandNode<CommandSourceStack> transfurNode = dispatcher.register(Commands.literal("transfurme")
-                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS) && stack.getEntity() instanceof ServerPlayer)
+                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("form", ResourceLocationArgument.id())
                         .suggests(CommandTransfur.SUGGEST_TRANSFUR_VARIANT)
                         .executes(context ->
@@ -50,7 +50,7 @@ public class TransfurMe {
         );
 
         dispatcher.register(Commands.literal("tfme")
-                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS) && stack.getEntity() instanceof ServerPlayer)
+                .requires(stack -> stack.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .redirect(transfurNode)
         );
     }
