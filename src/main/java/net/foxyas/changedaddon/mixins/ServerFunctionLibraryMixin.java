@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.mixins;
 
+import com.llamalad7.mixinextras.injector.ModifyReceiver;
 import net.foxyas.changedaddon.command.TransfurMe;
 import net.minecraft.server.ServerFunctionLibrary;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -10,9 +11,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
 
 @Mixin(ServerFunctionLibrary.class)
 public class ServerFunctionLibraryMixin {
@@ -22,8 +24,12 @@ public class ServerFunctionLibraryMixin {
         TransfurMe.funcRegistration = true;
     }
 
-    @Inject(at = @At("HEAD"), method = "lambda$reload$3")
-    private static void funcRegFinish(Map map, Void p_179949_, Throwable p_179950_, CallbackInfoReturnable<Map> cir){
-        TransfurMe.funcRegistration = false;
+    @ModifyReceiver(at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;thenCompose(Ljava/util/function/Function;)Ljava/util/concurrent/CompletableFuture;"),
+            method = "reload")
+    private static <T, U> CompletableFuture funcRegFinish(CompletableFuture instance, Function<? super T, ? extends CompletionStage<U>> fn){
+        return instance.thenApply(map -> {
+            TransfurMe.funcRegistration = false;
+            return map;
+        });
     }
 }
