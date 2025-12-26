@@ -45,6 +45,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SignalCatcherItem extends Item {
 
@@ -266,13 +267,24 @@ public class SignalCatcherItem extends Item {
         }
 
         private static @NotNull PathNavigation getNavigation(LocalPlayer player, PathfinderMob shadowMob, ClientLevel level) {
-            if (player.getAbilities().flying || player.isFallFlying() || !player.onGround())
-                return new FlyingPathNavigation(shadowMob, level);
+            if (player.getAbilities().flying || player.isFallFlying() || !player.onGround()) {
+                FlyingPathNavigation flyingPathNavigation = new FlyingPathNavigation(shadowMob, level);
+                flyingPathNavigation.setCanOpenDoors(true);
+                flyingPathNavigation.setCanPassDoors(true);
+                return flyingPathNavigation;
+            }
 
-            if (shadowMob instanceof ChangedEntity changedEntity && (changedEntity.isFlying() || changedEntity.isFallFlying() || !changedEntity.onGround()))
-                return new FlyingPathNavigation(changedEntity, level);
+            if (shadowMob instanceof ChangedEntity changedEntity && (player.getAbilities().flying || player.isFallFlying() || !player.onGround())) {
+                FlyingPathNavigation flyingPathNavigation = new FlyingPathNavigation(changedEntity, level);
+                flyingPathNavigation.setCanOpenDoors(true);
+                flyingPathNavigation.setCanPassDoors(true);
+                return flyingPathNavigation;
+            }
 
-            return new GroundPathNavigation(shadowMob, level);
+            GroundPathNavigation groundPathNavigation = new GroundPathNavigation(shadowMob, level);
+            groundPathNavigation.setCanOpenDoors(true);
+            groundPathNavigation.setCanPassDoors(true);
+            return groundPathNavigation;
         }
 
         /* --------------------------------------------------------- */
