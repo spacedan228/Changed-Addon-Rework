@@ -247,14 +247,25 @@ public class SignalCatcherItem extends Item {
             RenderUtil.renderPathAsLine(event.getPoseStack(), camPos, path);
         }
 
-        public static @NotNull PathNavigation getNavigation(LocalPlayer player, PathfinderMob shadowMob, ClientLevel level) {
-            if (player.getAbilities().flying || player.isFallFlying() || !player.isOnGround())
-                return new FlyingPathNavigation(shadowMob, level);
+        private static @NotNull PathNavigation getNavigation(LocalPlayer player, PathfinderMob shadowMob, ClientLevel level) {
+            if (player.getAbilities().flying || player.isFallFlying() || !player.isOnGround()) {
+                FlyingPathNavigation flyingPathNavigation = new FlyingPathNavigation(shadowMob, level);
+                flyingPathNavigation.setCanOpenDoors(true);
+                flyingPathNavigation.setCanPassDoors(true);
+                return flyingPathNavigation;
+            }
 
-            if (shadowMob instanceof ChangedEntity changedEntity && (changedEntity.isFlying() || changedEntity.isFallFlying() || !changedEntity.isOnGround()))
-                return new FlyingPathNavigation(changedEntity, level);
+            if (shadowMob instanceof ChangedEntity changedEntity && (player.getAbilities().flying || player.isFallFlying() || !player.isOnGround())) {
+                FlyingPathNavigation flyingPathNavigation = new FlyingPathNavigation(changedEntity, level);
+                flyingPathNavigation.setCanOpenDoors(true);
+                flyingPathNavigation.setCanPassDoors(true);
+                return flyingPathNavigation;
+            }
 
-            return new GroundPathNavigation(shadowMob, level);
+            GroundPathNavigation groundPathNavigation = new GroundPathNavigation(shadowMob, level);
+            groundPathNavigation.setCanOpenDoors(true);
+            groundPathNavigation.setCanPassDoors(true);
+            return groundPathNavigation;
         }
 
         /* --------------------------------------------------------- */
