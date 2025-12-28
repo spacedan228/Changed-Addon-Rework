@@ -54,7 +54,7 @@ public class RibbonParticle extends Particle {
         }
 
         this.length = length;
-        if (isLengthBased()){
+        if (isLengthBased()) {
             segmentLength = length / segments;
             segmentLengthSqr = segmentLength * segmentLength;
         } else segmentLength = segmentLengthSqr = 0;
@@ -68,11 +68,11 @@ public class RibbonParticle extends Particle {
         return false;
     }
 
-    public boolean isLengthBased(){
+    public boolean isLengthBased() {
         return length > 0;
     }
 
-    public boolean hasRotation(){
+    public boolean hasRotation() {
         return rotationRad != 0;
     }
 
@@ -91,18 +91,18 @@ public class RibbonParticle extends Particle {
             curr = segments[i];
             curr.first().set(curr.second());
 
-            if (i == 0){
+            if (i == 0) {
                 curr.second().set(x, y, z);
             } else {
                 if (isLengthBased()) {
                     if (tmp.isFinite()) curr.second().set(tmp);
-                }
-                else curr.second().set(segments[i - 1].first());
+                } else curr.second().set(segments[i - 1].first());
             }
 
-            if (isLengthBased()){
+            if (isLengthBased()) {
                 tmp.set(Float.POSITIVE_INFINITY);
-                if (i + 1 == segments.length || segments[i + 1].second().distanceSquared(curr.second()) <= segmentLengthSqr) continue;
+                if (i + 1 == segments.length || segments[i + 1].second().distanceSquared(curr.second()) <= segmentLengthSqr)
+                    continue;
 
                 curr.second().sub(curr.second().sub(segments[i + 1].second(), tmp).normalize(segmentLength), tmp);
             }
@@ -125,7 +125,7 @@ public class RibbonParticle extends Particle {
             segment = segments[i];
             segment.first().lerp(segment.second(), pPartialTicks, lerpSegment);
 
-            if (i == 0){
+            if (i == 0) {
                 lerpPrev.set(segment.second());
             } else {
                 prevSegment = segments[i - 1];
@@ -140,7 +140,7 @@ public class RibbonParticle extends Particle {
 
             segmentUp.normalize().mul(scaleY * outQuadratic(1 - (float) (i + 1) / length));
 
-            if (hasRotation()){
+            if (hasRotation()) {
                 if (lerpSegment.equals(lerpPrev)) lerpPrev.sub(segments[1].first(), tmp);
                 mat.identity().rotate(rotationRad, tmp.normalize());
                 segmentUp.mulPosition(mat);
@@ -149,7 +149,7 @@ public class RibbonParticle extends Particle {
             lerpSegment.sub((float) camPos.x, (float) camPos.y, (float) camPos.z);
 
             //write 2 verts
-            if (i != 0){//finish prev
+            if (i != 0) {//finish prev
                 pBuffer.vertex(lerpSegment.x - segmentUp.x, lerpSegment.y - segmentUp.y, lerpSegment.z - segmentUp.z).color(color).endVertex();
                 pBuffer.vertex(lerpSegment.x + segmentUp.x, lerpSegment.y + segmentUp.y, lerpSegment.z + segmentUp.z).color(color).endVertex();
                 if (i + 1 == length) break;//last
@@ -161,15 +161,15 @@ public class RibbonParticle extends Particle {
         }
     }
 
-    protected float outQuadratic(float t){
+    protected float outQuadratic(float t) {
         return -t * (t - 2);
     }
 
-    protected float outCubic(float t){
+    protected float outCubic(float t) {
         return outX(t, 3);
     }
 
-    protected float outX(float t, float pow){
+    protected float outX(float t, float pow) {
         return (float) (1 - Math.pow(1 - t, pow));
     }
 
@@ -201,7 +201,8 @@ public class RibbonParticle extends Particle {
         }
     };
 
-    public record Options(Entity target, int color, int segments, float length, float sizeY, float rotationRad) implements ParticleOptions {
+    public record Options(Entity target, int color, int segments, float length, float sizeY,
+                          float rotationRad) implements ParticleOptions {
 
         public static final ParticleOptions.Deserializer<Options> DESERIALIZER = new Deserializer() {
             @Override
@@ -236,7 +237,7 @@ public class RibbonParticle extends Particle {
                         Codec.FLOAT.fieldOf("rotationRad").forGetter(Options::rotationRad)
                 ).apply(instance, Options::new));
 
-        public static Codec<Options> codec(ParticleType<Options> type){
+        public static Codec<Options> codec(ParticleType<Options> type) {
             return CODEC;
         }
 

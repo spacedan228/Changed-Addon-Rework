@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.init;
 
 import com.mojang.serialization.Codec;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.particle.AgeableRibbonParticle;
 import net.foxyas.changedaddon.client.particle.RibbonParticle;
 import net.foxyas.changedaddon.effect.particles.*;
 import net.minecraft.core.particles.ParticleOptions;
@@ -34,6 +35,7 @@ public class ChangedAddonParticleTypes {
     public static final RegistryObject<ParticleType<LaserPointParticle.Option>> LASER_POINT = register("laser_point", LaserPointParticle.Option.DESERIALIZER, LaserPointParticle.Option::codec);
 
     public static final RegistryObject<ParticleType<RibbonParticle.Options>> RIBBON = register("ribbon", RibbonParticle.Options.DESERIALIZER, RibbonParticle.Options::codec);
+    public static final RegistryObject<ParticleType<AgeableRibbonParticle.Options>> AGEABLE_RIBBON = register("ribbon", AgeableRibbonParticle.Options.DESERIALIZER, AgeableRibbonParticle.Options::codec);
 
     public static ThunderSparkOption thunderSpark(int lifespan) {
         return new ThunderSparkOption(THUNDER_SPARK.get(), lifespan);
@@ -45,6 +47,14 @@ public class ChangedAddonParticleTypes {
 
     public static SignalParticleOption signal(int strength, ItemStack blockingAgeItem) {
         return new SignalParticleOption(SIGNAL_PARTICLE.get(), strength, blockingAgeItem);
+    }
+
+    public static RibbonParticle.Options ribbon(Entity target, int color, int segments, float length, float sizeY, float rotationRad) {
+        return new RibbonParticle.Options(target, color, segments, length, sizeY, rotationRad);
+    }
+
+    public static AgeableRibbonParticle.Options ageableRibbon(Entity target, int color, int segments, float length, float sizeY, float rotationRad, int maxAge) {
+        return new AgeableRibbonParticle.Options(target, color, segments, length, sizeY, rotationRad, maxAge);
     }
 
     private static <T extends ParticleOptions> RegistryObject<ParticleType<T>> register(String name, ParticleOptions.Deserializer<T> dec, final Function<ParticleType<T>, Codec<T>> fn) {
