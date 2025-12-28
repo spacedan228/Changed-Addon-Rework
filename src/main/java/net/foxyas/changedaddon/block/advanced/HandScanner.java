@@ -41,8 +41,7 @@ import java.util.Objects;
 import java.util.Random;
 
 @SuppressWarnings("deprecation")
-public class HandScanner extends Block {
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
+public class HandScanner extends HorizontalDirectionalBlock {
     public static final BooleanProperty POWERED = LeverBlock.POWERED;
     public static final EnumProperty<LockType> LOCK_TYPE = EnumProperty.create("lock_type", LockType.class);
     // Shapes por direção
