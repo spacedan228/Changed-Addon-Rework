@@ -33,9 +33,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("deprecation")
-public class HandScanner extends Block {
+public class HandScanner extends HorizontalDirectionalBlock {
 
-    public static final DirectionProperty FACING = HorizontalDirectionalBlock.FACING;
     public static final BooleanProperty POWERED = LeverBlock.POWERED;
     public static final EnumProperty<LockType> LOCK_TYPE = EnumProperty.create("lock_type", LockType.class);
     // Shapes por direção

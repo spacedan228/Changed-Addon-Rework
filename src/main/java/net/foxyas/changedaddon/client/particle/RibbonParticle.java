@@ -21,6 +21,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,17 +31,17 @@ import org.joml.Vector3fc;
 
 public class RibbonParticle extends Particle {
 
-    protected final Entity target;
-    protected final int color;
+    protected Entity target;
+    protected int color;
     protected final Pair<Vector3f, Vector3f>[] segments;//first prev tick, second current for lerping
+    public Vec3 offset = Vec3.ZERO;
 
-    protected final float length;
-    protected final float segmentLength;
-    protected final float segmentLengthSqr;
+    protected float length;
+    protected float segmentLength;
+    protected float segmentLengthSqr;
 
-    protected final float scaleY;
-
-    protected final float rotationRad;
+    protected float scaleY;
+    protected float rotationRad;
 
     protected RibbonParticle(ClientLevel pLevel, Entity target, int color, int segments, float length, float scaleY, float rotationRad) {
         super(pLevel, target.getX(), target.getY(), target.getZ());
@@ -84,7 +85,11 @@ public class RibbonParticle extends Particle {
         }
 
         Vec3 targetPos = target.position();
-        setPos(targetPos.x, targetPos.y + target.getBbHeight() / 2, targetPos.z);
+        if (target instanceof LivingEntity livingEntity) {
+            Vec3 offsetRotated = offset.yRot((float) Math.toRadians(-livingEntity.yBodyRotO));
+            setPos(targetPos.x + offsetRotated.x, targetPos.y + target.getBbHeight() / 2 + offsetRotated.y, targetPos.z + offsetRotated.z);
+        } else
+            setPos(targetPos.x + offset.x, targetPos.y + target.getBbHeight() / 2 + offset.y, targetPos.z + offset.z);
 
         Pair<Vector3f, Vector3f> curr;
         for (int i = 0; i < segments.length; i++) {
@@ -266,7 +271,9 @@ public class RibbonParticle extends Particle {
 
         @Override
         public @Nullable Particle createParticle(@NotNull Options options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            return new RibbonParticle(pLevel, options.target, options.color, options.segments, options.length, options.sizeY, options.rotationRad);
+            RibbonParticle ribbonParticle = new RibbonParticle(pLevel, options.target, options.color, options.segments, options.length, options.sizeY, options.rotationRad);
+            ribbonParticle.offset = new Vec3(pXSpeed, pYSpeed, pZSpeed);
+            return ribbonParticle;
         }
     }
 }

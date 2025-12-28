@@ -11,6 +11,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
@@ -54,6 +55,10 @@ public class ChangedAddonParticleTypes {
     }
 
     public static RibbonParticle.Options ribbon(Entity target, int color, int segments, float length, float sizeY, float rotationRad) {
+        return new RibbonParticle.Options(target, color, segments, length, sizeY, rotationRad);
+    }
+
+    public static RibbonParticle.Options ribbonWithOffset(Entity target, Vec3 positionOffset, int color, int segments, float length, float sizeY, float rotationRad) {
         return new RibbonParticle.Options(target, color, segments, length, sizeY, rotationRad);
     }
 

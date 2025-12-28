@@ -43,8 +43,8 @@ public class MultiColorRibbonParticle extends RibbonParticle {
         int idx = Math.min((int) scaled, colors.length - 2);
         float frac = scaled - idx;
 
-        float[] c0 = colors[idx].getRGBColorComponents(new float[4]);
-        float[] c1 = colors[idx + 1].getRGBColorComponents(new float[4]);
+        float[] c0 = colors[idx].getRGBComponents(new float[4]);
+        float[] c1 = colors[idx + 1].getRGBComponents(new float[4]);
         return new float[]{
             c0[0] + (c1[0] - c0[0]) * frac,
             c0[1] + (c1[1] - c0[1]) * frac,
@@ -251,7 +251,7 @@ public class MultiColorRibbonParticle extends RibbonParticle {
                 colorObjs[i] = new Color(options.colors()[i], true);
             }
 
-            return new MultiColorRibbonParticle(
+            MultiColorRibbonParticle multiColorRibbonParticle = new MultiColorRibbonParticle(
                     level,
                     options.target(),
                     colorObjs,
@@ -260,6 +260,9 @@ public class MultiColorRibbonParticle extends RibbonParticle {
                     options.sizeY(),
                     options.rotationRad()
             );
+
+            multiColorRibbonParticle.offset = new Vec3(xs, ys, zs);
+            return multiColorRibbonParticle;
         }
     }
 }

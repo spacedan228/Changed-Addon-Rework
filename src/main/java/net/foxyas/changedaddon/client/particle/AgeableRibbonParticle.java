@@ -16,6 +16,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,7 +109,9 @@ public class AgeableRibbonParticle extends RibbonParticle {
 
         @Override
         public @Nullable Particle createParticle(@NotNull Options options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            return new AgeableRibbonParticle(pLevel, options.target, options.color, options.segments, options.length, options.sizeY, options.rotationRad, options.lifeTime);
+            AgeableRibbonParticle ageableRibbonParticle = new AgeableRibbonParticle(pLevel, options.target, options.color, options.segments, options.length, options.sizeY, options.rotationRad, options.lifeTime);
+            ageableRibbonParticle.offset = new Vec3(pXSpeed, pYSpeed, pZSpeed);
+            return ageableRibbonParticle;
         }
     }
 }
