@@ -456,7 +456,7 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
 
     @Override
     public void setupHand(LuminaraFlowerBeastEntity entity) {
-        animatorWingedForm.setupHand();
+        this.getAnimator(entity).setupHand();
     }
 
     @Override
@@ -469,7 +469,7 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
 
     @Override
     public void prepareMobModel(@NotNull LuminaraFlowerBeastEntity entity, float limbSwing, float limbSwingAmount, float partialTicks) {
-        this.prepareMobModel(animatorWingedForm, entity, limbSwing, limbSwingAmount, partialTicks);
+        this.prepareMobModel(this.getAnimator(entity), entity, limbSwing, limbSwingAmount, partialTicks);
         this.handleVisibility(entity);
     }
 
