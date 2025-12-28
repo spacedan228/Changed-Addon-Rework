@@ -84,7 +84,7 @@ public class AgeableRibbonParticle extends RibbonParticle {
 
         @Override
         public @NotNull ParticleType<?> getType() {
-            return ChangedAddonParticleTypes.RIBBON.get();
+            return ChangedAddonParticleTypes.AGEABLE_RIBBON.get();
         }
 
         @Override
@@ -100,7 +100,7 @@ public class AgeableRibbonParticle extends RibbonParticle {
 
         @Override
         public @NotNull String writeToString() {
-            return ChangedAddonParticleTypes.RIBBON.getId().toString();
+            return ChangedAddonParticleTypes.AGEABLE_RIBBON.getId().toString();
         }
     }
 

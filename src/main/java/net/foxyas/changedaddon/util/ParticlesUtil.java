@@ -155,6 +155,14 @@ public class ParticlesUtil {
         }
     }
 
+    public static void sendParticles(Level level, ParticleOptions particleOptions, Entity entity, float XV, float YV, float ZV, int count, float speed) {
+        // Enviar as partículas
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(particleOptions,
+                    entity.getX(), entity.getY(), entity.getZ(), count, XV, YV, ZV, speed);
+        }
+    }
+
     public static void sendParticles(Level level, ParticleOptions particleOptions, double x, double y, double z, double XV, double YV, double ZV, int count, float speed) {
         // Enviar as partículas
         if (level instanceof ServerLevel serverLevel) {

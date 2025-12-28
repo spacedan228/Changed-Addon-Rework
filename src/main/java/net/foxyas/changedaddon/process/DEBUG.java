@@ -2,6 +2,9 @@ package net.foxyas.changedaddon.process;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.particle.AgeableRibbonParticle;
+import net.foxyas.changedaddon.client.particle.MultiColorRibbonParticle;
+import net.foxyas.changedaddon.client.particle.RibbonParticle;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
@@ -190,6 +193,44 @@ public class DEBUG {
                 i++;
             }
         }
+
+        if (event.getMessage().getString().startsWith("startRibbon:")) {
+            Level level = event.getPlayer().level();
+            ServerPlayer player = event.getPlayer();
+            String replace = event.getMessage().getString().replace("startRibbon:", "");
+            if (replace.startsWith("multiColor")) {
+                ParticlesUtil.sendParticles(level, new MultiColorRibbonParticle.Options(
+                                player,
+                                new int[]{0xffffffff, 0xffff0000},
+                                2,
+                                1,
+                                1,
+                                0),
+                        player.position(), 0,0,0,1,0
+                );
+            } else if (replace.startsWith("singleColor")) {
+                ParticlesUtil.sendParticles(level, new RibbonParticle.Options(
+                                player,
+                                0xffff0000,
+                                2,
+                                1,
+                                1,
+                                0),
+                        player.position(), 0,0,0,1,0
+                );
+            } else if (replace.startsWith("ageable")) {
+                ParticlesUtil.sendParticles(level, new AgeableRibbonParticle.Options(
+                                player,
+                                0xffff0000,
+                                2,
+                                1,
+                                1,
+                                0, 15),
+                        player.position(), 0,0,0,1,0
+                );
+            }
+        }
+
 
 
         if (event.getMessage().getString().startsWith("placeStructure:")) {
