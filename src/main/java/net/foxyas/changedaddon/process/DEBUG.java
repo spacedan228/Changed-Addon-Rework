@@ -5,10 +5,8 @@ import com.mojang.blaze3d.vertex.*;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
-import net.foxyas.changedaddon.util.DelayedTask;
-import net.foxyas.changedaddon.util.FoxyasUtils;
-import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.util.StructureUtil;
+import net.foxyas.changedaddon.process.features.LatexLanguageTranslator;
+import net.foxyas.changedaddon.util.*;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.GenderedEntity;
@@ -16,8 +14,10 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.debug.PathfindingRenderer;
+import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -67,6 +67,13 @@ public class DEBUG {
         if (!DebugFileEnable) {
             return;
         }
+
+        if (event.getMessage().startsWith("translateThis:")) {
+            String normalText = event.getMessage().replace("translateThis:", "");
+            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.TO);
+            event.setComponent(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
+        }
+
         if (event.getMessage().startsWith("spawnFemales")) {
             ServerPlayer player = event.getPlayer();
             ServerLevel level = event.getPlayer().getLevel();

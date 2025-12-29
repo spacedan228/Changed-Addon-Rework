@@ -40,7 +40,7 @@ public class AccessoryItemCommands {
     public static final SuggestionProvider<CommandSourceStack> SUGGEST_ACCESSORY_SLOTS =
             (context, builder) -> {
 
-                // 🔹 Todos os slots registrados (fallback padrão)
+                // All registered slots (default fallback)
                 List<String> allSlots = ChangedRegistry.ACCESSORY_SLOTS.get()
                         .getValues()
                         .stream()
@@ -49,45 +49,45 @@ public class AccessoryItemCommands {
                         .map(ResourceLocation::toString)
                         .toList();
 
-                // 🔹 Tenta resolver entities
+                // Try to resolve entities
                 Collection<? extends Entity> entities =
                         EntityArgument.getOptionalEntities(context, "targets");
 
-                // Nenhuma entity ainda → sugere tudo
+                // No entities found yet -> suggest all slots
                 if (entities.isEmpty()) {
                     return SharedSuggestionProvider.suggest(allSlots, builder);
                 }
 
-                // Múltiplas entities → sugere tudo
+                // Multiple entities -> suggest all slots
                 if (entities.size() > 1) {
                     return SharedSuggestionProvider.suggest(allSlots, builder);
                 }
 
-                // 🔹 Entidade única
+                // Single entity logic
                 Entity entity = entities.iterator().next();
 
                 if (!(entity instanceof LivingEntity living)) {
                     return SharedSuggestionProvider.suggest(allSlots, builder);
                 }
 
-                // 🔹 AccessorySlots é Optional
+                // AccessorySlots is an Optional
                 Optional<AccessorySlots> optionalSlots = getForEntity(living);
 
-                // Entity não tem accessory slots → fallback
+                // Entity has no accessory slots -> fallback to all slots
                 if (optionalSlots.isEmpty()) {
                     return SharedSuggestionProvider.suggest(allSlots, builder);
                 }
 
                 AccessorySlots slots = optionalSlots.get();
 
-                // 🔹 Slots disponíveis para essa entity
+                // Slots available for this specific entity
                 List<String> entitySlots = slots.getSlotTypes()
                         .map(ForgeRegistryEntry::getRegistryName)
                         .filter(Objects::nonNull)
                         .map(ResourceLocation::toString)
                         .toList();
 
-                // Se por algum motivo estiver vazio, fallback
+                // If empty for some reason, fallback to all slots
                 if (entitySlots.isEmpty()) {
                     return SharedSuggestionProvider.suggest(allSlots, builder);
                 }
@@ -149,7 +149,7 @@ public class AccessoryItemCommands {
 
             Optional<AccessorySlots> optionalSlots = getForEntity(living);
 
-            // ❌ Entity has no slots
+            // Error: Entity has no slots
             if (optionalSlots.isEmpty()) {
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
@@ -174,7 +174,7 @@ public class AccessoryItemCommands {
             AccessorySlotType slotType =
                     ChangedRegistry.ACCESSORY_SLOTS.get().getValue(slotName);
 
-            // ❌ Slot type does not exist for entity
+            // Error: Slot type does not exist for entity
             if (slotType == null || slots.getSlotTypes().noneMatch(s -> s == slotType)) {
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
@@ -199,7 +199,7 @@ public class AccessoryItemCommands {
             ItemStack copy = stack.copy();
 
             if (stack.isEmpty()) {
-                /* ✅ Success */
+                // Success: Clearing the slot
                 slots.setItem(slotType, copy);
                 changed++;
 
@@ -222,7 +222,7 @@ public class AccessoryItemCommands {
                 continue;
             }
 
-            /* ❌ Y — Slot não aceita esse item */
+            // Error: Slot does not accept this item
             if (!slotType.canHoldItem(copy, living)) {
                 if (shown > MAX_FEEDBACK) {
                     truncated = true;
@@ -244,7 +244,7 @@ public class AccessoryItemCommands {
             }
 
 
-            /* ❌ X — The Accessory is not available */
+            // Error: The Accessory slot is not available
             boolean available = AccessorySlots.isSlotAvailable(living, slotType);
 
             if (!available && !forceSet) {
@@ -267,7 +267,7 @@ public class AccessoryItemCommands {
                 continue;
             }
 
-            /* ❌ X — Other Accessory lock the slot */
+            // Error: Another Accessory locks the slot
             boolean canReplaceSlot = canReplaceSlot(living, slotType, copy);
             if (!canReplaceSlot && !forceSet) {
                 if (shown > MAX_FEEDBACK) {
@@ -289,7 +289,7 @@ public class AccessoryItemCommands {
                 continue;
             }
 
-            /* ✅ Success */
+            // Success: Setting the item
             slots.setItem(slotType, copy);
             changed++;
 
