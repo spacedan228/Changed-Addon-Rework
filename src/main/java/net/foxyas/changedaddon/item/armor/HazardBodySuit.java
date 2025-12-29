@@ -132,6 +132,12 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         return true;
     }
 
+    //For future api
+    public float accessoryHurt(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
+        accessoryDamaged(slotContext,source, amount);
+        return amount;
+    }
+
     public void accessoryDamaged(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
         LivingEntity wearer = slotContext.wearer();
         /*if (wearer instanceof Player player) {
@@ -145,6 +151,8 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         if (wearer.hurtMarked || !nonHurtFrame) return;
         if (amount <= 0) return;
         if (wearer.isDamageSourceBlocked(source)) return;
+
+        wearer.getCombatTracker().recheckStatus();
         if (!wearer.getCombatTracker().takingDamage) return;
 
         if (!source.is(DamageTypeTags.BYPASSES_ARMOR) && !(source.is(ChangedDamageSources.TRANSFUR.key()))) {
