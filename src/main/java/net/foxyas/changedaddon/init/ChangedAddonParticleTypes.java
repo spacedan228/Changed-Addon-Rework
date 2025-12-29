@@ -2,9 +2,7 @@ package net.foxyas.changedaddon.init;
 
 import com.mojang.serialization.Codec;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.particle.AgeableRibbonParticle;
-import net.foxyas.changedaddon.client.particle.MultiColorRibbonParticle;
-import net.foxyas.changedaddon.client.particle.RibbonParticle;
+import net.foxyas.changedaddon.client.particle.*;
 import net.foxyas.changedaddon.effect.particles.*;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleType;
@@ -24,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.Function;
 
 
@@ -38,9 +35,9 @@ public class ChangedAddonParticleTypes {
     public static final RegistryObject<ParticleType<SignalParticleOption>> SIGNAL_PARTICLE = register("signal_particle", SignalParticleOption.DESERIALIZER, SignalParticleOption::codec);
     public static final RegistryObject<ParticleType<LaserPointParticle.Option>> LASER_POINT = register("laser_point", LaserPointParticle.Option.DESERIALIZER, LaserPointParticle.Option::codec);
 
-    public static final RegistryObject<ParticleType<RibbonParticle.Options>> RIBBON = register("ribbon", RibbonParticle.Options.DESERIALIZER, RibbonParticle.Options::codec);
-    public static final RegistryObject<ParticleType<AgeableRibbonParticle.Options>> AGEABLE_RIBBON = register("ageable_ribbon", AgeableRibbonParticle.Options.DESERIALIZER, AgeableRibbonParticle.Options::codec);
-    public static final RegistryObject<ParticleType<MultiColorRibbonParticle.Options>> MULTI_COLOR_RIBBON = register("multi_color_ribbon", MultiColorRibbonParticle.Options.DESERIALIZER, MultiColorRibbonParticle.Options::codec);
+    public static final RegistryObject<ParticleType<RibbonParticleOption>> RIBBON = register("ribbon", RibbonParticleOption.DESERIALIZER, RibbonParticleOption::codec);
+    public static final RegistryObject<ParticleType<AgeableRibbonParticleOption>> AGEABLE_RIBBON = register("ageable_ribbon", AgeableRibbonParticleOption.DESERIALIZER, AgeableRibbonParticleOption::codec);
+    public static final RegistryObject<ParticleType<MultiColorRibbonParticleOption>> MULTI_COLOR_RIBBON = register("multi_color_ribbon", MultiColorRibbonParticleOption.DESERIALIZER, MultiColorRibbonParticleOption::codec);
 
     public static ThunderSparkOption thunderSpark(int lifespan) {
         return new ThunderSparkOption(THUNDER_SPARK.get(), lifespan);
@@ -54,21 +51,21 @@ public class ChangedAddonParticleTypes {
         return new SignalParticleOption(SIGNAL_PARTICLE.get(), strength, blockingAgeItem);
     }
 
-    public static RibbonParticle.Options ribbon(Entity target, int color, int segments, float length, float sizeY, float rotationRad) {
-        return new RibbonParticle.Options(target, color, segments, length, sizeY, rotationRad);
+    public static RibbonParticleOption ribbon(Entity target, int color, int segments, float length, float sizeY, float rotationRad) {
+        return new RibbonParticleOption(target, color, segments, length, sizeY, rotationRad);
     }
 
-    public static RibbonParticle.Options ribbonWithOffset(Entity target, Vec3 positionOffset, int color, int segments, float length, float sizeY, float rotationRad) {
-        return new RibbonParticle.Options(target, color, segments, length, sizeY, rotationRad);
+    public static RibbonParticleOption ribbonWithOffset(Entity target, Vec3 positionOffset, int color, int segments, float length, float sizeY, float rotationRad) {
+        return new RibbonParticleOption(target, color, segments, length, sizeY, rotationRad);
     }
 
-    public static AgeableRibbonParticle.Options ageableRibbon(Entity target, int color, int segments, float length, float sizeY, float rotationRad, int maxAge) {
-        return new AgeableRibbonParticle.Options(target, color, segments, length, sizeY, rotationRad, maxAge);
+    public static AgeableRibbonParticleOption ageableRibbon(Entity target, int color, int segments, float length, float sizeY, float rotationRad, int maxAge) {
+        return new AgeableRibbonParticleOption(target, color, segments, length, sizeY, rotationRad, maxAge);
     }
 
-    public static MultiColorRibbonParticle.Options multiColorRibbon(Entity target, Color[] colors, int segments, float length, float sizeY, float rotationRad) {
+    public static MultiColorRibbonParticleOption multiColorRibbon(Entity target, Color[] colors, int segments, float length, float sizeY, float rotationRad) {
         int[] array = Arrays.stream(colors).mapToInt(Color::getRGB).toArray();
-        return new MultiColorRibbonParticle.Options(target, array, segments, length, sizeY, rotationRad);
+        return new MultiColorRibbonParticleOption(target, array, segments, length, sizeY, rotationRad);
     }
 
     private static <T extends ParticleOptions> RegistryObject<ParticleType<T>> register(String name, ParticleOptions.Deserializer<T> dec, final Function<ParticleType<T>, Codec<T>> fn) {

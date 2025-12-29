@@ -2,9 +2,9 @@ package net.foxyas.changedaddon.process;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.particle.AgeableRibbonParticle;
-import net.foxyas.changedaddon.client.particle.MultiColorRibbonParticle;
-import net.foxyas.changedaddon.client.particle.RibbonParticle;
+import net.foxyas.changedaddon.client.particle.AgeableRibbonParticleOption;
+import net.foxyas.changedaddon.client.particle.MultiColorRibbonParticleOption;
+import net.foxyas.changedaddon.client.particle.RibbonParticleOption;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
@@ -18,14 +18,12 @@ import net.ltxprogrammer.changed.entity.GenderedEntity;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.player.KeyboardInput;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -199,7 +197,7 @@ public class DEBUG {
             ServerPlayer player = event.getPlayer();
             String replace = event.getMessage().getString().replace("startRibbon:", "");
             if (replace.startsWith("multiColor")) {
-                ParticlesUtil.sendParticles(level, new MultiColorRibbonParticle.Options(
+                ParticlesUtil.sendParticles(level, new MultiColorRibbonParticleOption(
                                 player,
                                 new int[]{0xffffffff, 0xffff0000},
                                 2,
@@ -209,7 +207,7 @@ public class DEBUG {
                         player.position(), 0,0,0,1,0
                 );
             } else if (replace.startsWith("singleColor")) {
-                ParticlesUtil.sendParticles(level, new RibbonParticle.Options(
+                ParticlesUtil.sendParticles(level, new RibbonParticleOption(
                                 player,
                                 0xffff0000,
                                 2,
@@ -219,7 +217,7 @@ public class DEBUG {
                         player.position(), 0,0,0,1,0
                 );
             } else if (replace.startsWith("ageable")) {
-                ParticlesUtil.sendParticles(level, new AgeableRibbonParticle.Options(
+                ParticlesUtil.sendParticles(level, new AgeableRibbonParticleOption(
                                 player,
                                 0xffff0000,
                                 2,
