@@ -145,7 +145,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         if (wearer.hurtMarked || !nonHurtFrame) return;
         if (amount <= 0) return;
         if (wearer.isDamageSourceBlocked(source)) return;
-        if (!(wearer.getCombatTracker() instanceof CombatTrackerAccessor combatTrackerAccessor && combatTrackerAccessor.isTakingDamage())) return;
+        if (!wearer.getCombatTracker().takingDamage) return;
 
         if (!source.is(DamageTypeTags.BYPASSES_ARMOR) && !(source.is(ChangedDamageSources.TRANSFUR.key()))) {
             this.applyDamage(source, amount, slotContext);
