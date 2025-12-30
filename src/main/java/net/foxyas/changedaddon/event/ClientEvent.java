@@ -118,9 +118,13 @@ public class ClientEvent {
             }
 
             if (ChangedAddonTransfurVariants.isVariantOC(loc, entity.getLevel())) {
-                Component ocVariantComponent = ChangedAddonTransfurVariants.getOcVariantComponent(tf);
+                List<Component> ocVariantComponents = ChangedAddonTransfurVariants.getVariantComponentIfAny(tf, entity.getLevel());
                 MutableComponent append = new TextComponent("§8OC Transfur");
-                if (ocVariantComponent != null) append.append("\n").append(ocVariantComponent);
+                if (ocVariantComponents != null && !ocVariantComponents.isEmpty()) {
+                    for (Component ocVariantComponent : ocVariantComponents) {
+                        append.append("\n").append(ocVariantComponent);
+                    }
+                }
                 tooltip.add(append);
             }
         }

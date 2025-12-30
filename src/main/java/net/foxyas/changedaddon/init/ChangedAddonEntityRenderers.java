@@ -55,6 +55,7 @@ public class ChangedAddonEntityRenderers {
         event.registerEntityRenderer(ChangedAddonEntities.HAYDEN_FENNEC_FOX.get(), HaydenFennecFoxRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.BLUE_LIZARD.get(), BlueLizardRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.AVALI.get(), AvaliRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.AVALI_ZERGODMASTER.get(), AvaliZerGodMasterRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_KITSUNE_FEMALE.get(), LatexKitsuneFemaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_KITSUNE_MALE.get(), LatexKitsuneMaleRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_CALICO_CAT.get(), LatexCalicoCatRenderer::new);

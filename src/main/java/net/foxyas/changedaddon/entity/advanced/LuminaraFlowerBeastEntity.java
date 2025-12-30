@@ -381,8 +381,11 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
                     || !(instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast)) return;
 
             // Only cancel OUT_OF_WORLD damage
-            if(event.getSource() != DamageSource.OUT_OF_WORLD) return;
+            if (event.getSource() != DamageSource.OUT_OF_WORLD) return;
+            boolean isOutOfWorld = player.getY() < (double) (player.getLevel().getMinBuildHeight() - 64);
+            if (!isOutOfWorld || event.getAmount() == Float.MAX_VALUE) return;
 
+            // /kill should be canceled '-'
             triggerVoidTransformation(player, luminaraFlowerBeast);
 
             event.setCanceled(true);
@@ -397,19 +400,19 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
      * - Spawn explosion-like particles
      */
     private static void triggerVoidTransformation(Player player, LuminaraFlowerBeastEntity luminaraFlowerBeast) {
-        if(luminaraFlowerBeast.isHyperAwakened()) return;
+        if (luminaraFlowerBeast.isHyperAwakened()) return;
 
         boolean isAwakened = luminaraFlowerBeast.isAwakened();
-        if(!isAwakened) luminaraFlowerBeast.setAwakened(true);
+        if (!isAwakened) luminaraFlowerBeast.setAwakened(true);
 
         if (tryExtractDragonBreath(player)) {
             luminaraFlowerBeast.setHyperAwakened(true);
             player.level.playSound(null, player, SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 5, 1);
-        } else if(isAwakened) return;
+        } else if (isAwakened) return;
 
         // Cancel fall/void velocity and launch player upwards
         Vec3 vec = new Vec3(0, 8, 0);
-        if(luminaraFlowerBeast.isHyperAwakened()) vec = vec.scale(1.5);
+        if (luminaraFlowerBeast.isHyperAwakened()) vec = vec.scale(1.5);
         player.setDeltaMovement(vec); // strong vertical push
 
         player.hurtMarked = true; // force velocity update to client
@@ -425,7 +428,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 20 * 10, 2));
 
         // Explosion-like particles
-        if(!(player.level instanceof ServerLevel serverLevel)) return;
+        if (!(player.level instanceof ServerLevel serverLevel)) return;
 
         float radius = 1f;
         float angle = 22.5f;
@@ -456,16 +459,16 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
                 SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 2.0F, 0.8F);
     }
 
-    private static boolean tryExtractDragonBreath(Player player){
+    private static boolean tryExtractDragonBreath(Player player) {
         Inventory inv = player.getInventory();
         ItemStack stack;
-        for(int i = 0; i < inv.getContainerSize(); i++){
+        for (int i = 0; i < inv.getContainerSize(); i++) {
             stack = inv.getItem(i);
-            if(!stack.is(Items.DRAGON_BREATH)) continue;
+            if (!stack.is(Items.DRAGON_BREATH)) continue;
 
-            if(!player.isCreative()) {
+            if (!player.isCreative()) {
                 stack.shrink(1);
-                if(stack.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
+                if (stack.isEmpty()) inv.setItem(i, ItemStack.EMPTY);
             }
             return true;
         }

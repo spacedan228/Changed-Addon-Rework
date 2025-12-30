@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.variant;
 import com.google.common.base.Suppliers;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.*;
+import net.foxyas.changedaddon.entity.api.IOriginalCharacterEntity;
 import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.partials.SnowLeopardPartialEntity;
 import net.foxyas.changedaddon.entity.simple.*;
@@ -304,6 +305,17 @@ public class ChangedAddonTransfurVariants {
 
     //Advanced
     public static final RegistryObject<TransfurVariant<AvaliEntity>> AVALI = register("form_avali",
+            TransfurVariant.Builder.of(ChangedAddonEntities.AVALI)
+                    .stepSize(0.7F)
+                    .breatheMode(TransfurVariant.BreatheMode.NORMAL)
+                    .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
+                    .glide()
+                    .transfurMode(TransfurMode.NONE)
+                    .scares(List.of())
+                    .nightVision()
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
+
+    public static final RegistryObject<TransfurVariant<AvaliEntity>> AVALI_ZERGODMASTER = register("form_avali_zergodmaster",
             TransfurVariant.Builder.of(ChangedAddonEntities.AVALI)
                     .stepSize(0.7F)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
@@ -767,16 +779,29 @@ public class ChangedAddonTransfurVariants {
     }
 
     @Nullable
-    public static Component getOcVariantComponent(TransfurVariant<?> transfurVariant) {
+    public static List<Component> getOcVariantComponent(TransfurVariant<?> transfurVariant) {
         return OCS.get().get(transfurVariant);
+    }
+
+    @Nullable
+    public static List<Component> getVariantComponentIfAny(TransfurVariant<?> transfurVariant, Level level) {
+        if (isVariantOC(transfurVariant, level)) {
+            if (transfurVariant.getEntityType().create(level) instanceof IOriginalCharacterEntity iOriginalCharacterEntity) {
+                return iOriginalCharacterEntity.getOcVariantComponents();
+            }
+            return OCS.get().get(transfurVariant);
+        }
+        return null;
     }
 
     public static boolean isVariantOC(TransfurVariant<?> transfurVariant, @Nullable Level level) {
         if (level != null && transfurVariant.getEntityType()
                 .create(level) instanceof PatronOC) {
             return true;
-        } else return OCS.get()
-                .containsKey(transfurVariant);
+        } else if (level != null && transfurVariant.getEntityType()
+                .create(level) instanceof IOriginalCharacterEntity) {
+            return true;
+        } else return OCS.get().containsKey(transfurVariant);
     }
 
     public static boolean isVariantOC(ResourceLocation transfurVariantID, @Nullable Level level) {
