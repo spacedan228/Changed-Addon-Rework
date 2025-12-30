@@ -34,6 +34,7 @@ import net.minecraft.world.phys.*;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -440,6 +441,39 @@ public class PlayerUtil {
                 Stream<Entity> entities;
                 entities = StreamSupport.stream(serverLevel.getAllEntities().spliterator(), false);
                 return entities.filter(entity -> entity.getStringUUID().equals(uuid)).findFirst().orElse(null);
+            } catch (Exception e) {
+                ChangedAddonMod.LOGGER.error(e.getMessage()); // Log the exception for debugging purposes
+                return null;
+            }
+        }
+
+        @Nullable
+        public static Entity getEntityByUUID(LevelAccessor world, UUID uuid) {
+            try {
+                Stream<Entity> entities;
+
+                if (world instanceof ServerLevel serverLevel) {
+                    entities = StreamSupport.stream(serverLevel.getAllEntities().spliterator(), false);
+                } else if (world instanceof ClientLevel clientLevel) {
+                    entities = StreamSupport.stream(clientLevel.entitiesForRendering().spliterator(), false);
+                } else {
+                    return null;
+                }
+
+                return entities.filter(entity -> entity.getUUID().equals(uuid)).findFirst().orElse(null);
+            } catch (Exception e) {
+                ChangedAddonMod.LOGGER.error(e.getMessage()); // Log the exception for debugging purposes
+                return null;
+            }
+        }
+
+
+        @Nullable
+        public static Entity getEntityByUUID(ServerLevel serverLevel, UUID uuid) {
+            try {
+                Stream<Entity> entities;
+                entities = StreamSupport.stream(serverLevel.getAllEntities().spliterator(), false);
+                return entities.filter(entity -> entity.getUUID().equals(uuid)).findFirst().orElse(null);
             } catch (Exception e) {
                 ChangedAddonMod.LOGGER.error(e.getMessage()); // Log the exception for debugging purposes
                 return null;

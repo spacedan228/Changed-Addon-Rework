@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.configuration;
 
 import net.foxyas.changedaddon.world.gamerules.ChangedEntitySpawnDressedType;
 import net.ltxprogrammer.changed.data.RegistryElementPredicate;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.List;
@@ -23,6 +22,7 @@ public class ChangedAddonServerConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_PLAYERS_TO_SELECT_RESPAWN_TRANSFUR;
     public static final ForgeConfigSpec.ConfigValue<Boolean> APPLY_UNTRANSFUR_IMMUNITY_AFTER_RESPAWN_AS_TRANSFUR;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_TRANSFURED_PLAYERS_TO_RESPAWN_WAS_TRANSFUR;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE;
 
     static {
         ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -48,6 +48,10 @@ public class ChangedAddonServerConfiguration {
         BUILDER.pop();
         BUILDER.push("Player Handle");
         ALLOW_SECOND_ABILITY_USE = BUILDER.comment("Allow the Player to use the second selected ability (similar to offhand and main hand)").define("Allow Second Ability use", false);
+
+        BUILDER.push("Chat"); {
+            TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE = BUILDER.comment("The Chat of Transfured Players Should be affect by Latex Language?").define("Transfured Players Chat in Latex Language", false);
+        } BUILDER.pop();
 
         BUILDER.push("Respawn As Transfur"); {
             ALLOW_RESPAWN_AS_TRANSFUR = BUILDER.comment("Allow the Player to respawn as a transfured entity").define("Allow Respawn as Transfur", false);

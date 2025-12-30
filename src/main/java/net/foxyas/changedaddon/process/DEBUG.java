@@ -51,7 +51,7 @@ import static net.minecraft.client.renderer.debug.PathfindingRenderer.renderPath
 @Deprecated(forRemoval = true)
 public class DEBUG {
 
-    public static boolean DebugFileEnable = true;
+    public static boolean DebugFileEnable = false;
     public static float HeadPosT, HeadPosV, HeadPosB, HeadPosK, HeadPosL, HeadPosJ;
     public static float HeadPosX, HeadPosY, HeadPosZ;
 
