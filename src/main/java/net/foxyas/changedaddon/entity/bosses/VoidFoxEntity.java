@@ -33,8 +33,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.*;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -975,12 +974,17 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         this.dodgeHealthBossBar.addPlayer(player);
         this.bossBar.addPlayer(player);
 
+        // Mensagem atmosférica
+        MutableComponent chatComponent = Component.literal(
+                "A chill runs down your spine...\n" +
+                        "Something is watching."
+        ).withStyle(style -> style
+                .withColor(ChatFormatting.DARK_GRAY)
+                .withItalic(true)
+        );
+
         player.displayClientMessage(
-                Component.literal("A dark presence spreads through the land...\nWill you dare to confront its origin?").withStyle((style -> {
-                    Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
-                    returnStyle = returnStyle.withItalic(true);
-                    return returnStyle;
-                })),
+                chatComponent,
                 false
         );
     }

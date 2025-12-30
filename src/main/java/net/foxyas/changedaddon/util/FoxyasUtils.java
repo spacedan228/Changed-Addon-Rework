@@ -5,15 +5,22 @@ import com.mojang.datafixers.util.Pair;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
 import net.ltxprogrammer.changed.world.LatexCoverState;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.OutgoingChatMessage;
+import net.minecraft.network.chat.PlayerChatMessage;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -32,6 +39,12 @@ import java.util.stream.Stream;
 import static net.foxyas.changedaddon.util.DynamicClipContext.IGNORE_TRANSLUCENT;
 
 public class FoxyasUtils {
+
+    public static void sendPlayerLikeChat(Component chatComponent, LivingEntity talker, ServerPlayer player, boolean filtered) {
+        OutgoingChatMessage chatMessage = new OutgoingChatMessage.Player(PlayerChatMessage.unsigned(player.getUUID(), chatComponent.getString()));
+        ChatType.Bound bound = ChatType.bind(ChatType.CHAT, talker);
+        player.sendChatMessage(chatMessage, filtered, bound);
+    }
 
 
     public static Stream<BlockPos> getBlockPositionsInSphere(BlockPos center, int radius) {

@@ -8,10 +8,8 @@ import net.foxyas.changedaddon.client.particle.RibbonParticleOption;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
-import net.foxyas.changedaddon.util.DelayedTask;
-import net.foxyas.changedaddon.util.FoxyasUtils;
-import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.util.StructureUtil;
+import net.foxyas.changedaddon.process.features.LatexLanguageTranslator;
+import net.foxyas.changedaddon.util.*;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.GenderedEntity;
@@ -72,6 +70,18 @@ public class DEBUG {
     public static void debug(ServerChatEvent event) {
         if (!DEBUG) {
             return;
+        }
+
+        if (event.getMessage().getString().startsWith("translateThisTo:")) {
+            String normalText = event.getMessage().getString().replace("translateThisTo:", "");
+            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.TO);
+            event.setMessage(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
+        }
+
+        if (event.getMessage().getString().startsWith("translateThisFrom:")) {
+            String normalText = event.getMessage().getString().replace("translateThisFrom:", "");
+            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.FROM);
+            event.setMessage(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
         }
 
         if (event.getMessage().getString().startsWith("spawnFemales")) {
