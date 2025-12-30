@@ -41,7 +41,7 @@ public class LatexLanguageTranslator {
     }
 
     public static String translateText(String text, TranslationType translationType) {
-        return translationType.getTranslated(text);
+        return translationType.getTranslated(text.toLowerCase());
     }
 
     // Runnable

@@ -34,8 +34,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.*;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -979,15 +978,23 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         this.dodgeHealthBossBar.addPlayer(player);
         this.bossBar.addPlayer(player);
 
-        player.displayClientMessage(
-                new TextComponent("A dark presence spreads through the land...\nWill you dare to confront its origin?").withStyle((style -> {
-                    Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
-                    returnStyle = returnStyle.withItalic(true);
-                    return returnStyle;
-                })),
-                false
+        // Mensagem atmosférica
+        MutableComponent chatComponent = new TextComponent(
+                "A chill runs down your spine...\n" +
+                        "Something is watching."
+        ).withStyle(style -> style
+                .withColor(ChatFormatting.DARK_GRAY)
+                .withItalic(true)
         );
+
+//        player.displayClientMessage(
+//                chatComponent,
+//                false
+//        );
+
+        player.sendMessage(chatComponent, ChatType.CHAT,this.getUUID());
     }
+
 
     @Override
     public void stopSeenByPlayer(@NotNull ServerPlayer player) {

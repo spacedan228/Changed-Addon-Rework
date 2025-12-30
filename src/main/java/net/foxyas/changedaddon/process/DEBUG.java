@@ -68,9 +68,15 @@ public class DEBUG {
             return;
         }
 
-        if (event.getMessage().startsWith("translateThis:")) {
-            String normalText = event.getMessage().replace("translateThis:", "");
+        if (event.getMessage().startsWith("translateThisTo:")) {
+            String normalText = event.getMessage().replace("translateThisTo:", "");
             String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.TO);
+            event.setComponent(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
+        }
+
+        if (event.getMessage().startsWith("translateThisFrom:")) {
+            String normalText = event.getMessage().replace("translateThisFrom:", "");
+            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.FROM);
             event.setComponent(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
         }
 
