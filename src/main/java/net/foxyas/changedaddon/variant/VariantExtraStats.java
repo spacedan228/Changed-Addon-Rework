@@ -4,8 +4,11 @@ import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure.DietType;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EquipmentSlot;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public interface VariantExtraStats {
 

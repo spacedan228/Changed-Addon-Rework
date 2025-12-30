@@ -52,7 +52,7 @@ public abstract class LivingEntityMixin {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
                         return extra.getFlyType().canGlide();
                     }
-                    return latexVariant.getParent().canGlide;
+                    return latexVariant.getParent().canGlide || original;
                 })
                 .orElse(original);
     }
@@ -69,9 +69,9 @@ public abstract class LivingEntityMixin {
         return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull((LivingEntity)(Object)this))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
-                        return extra.getFlyType().canGlide();
+                        return extra.getFlyType().canGlide() || original;
                     }
-                    return latexVariant.getParent().canGlide;
+                    return latexVariant.getParent().canGlide || original;
                 })
                 .orElse(original);
     }

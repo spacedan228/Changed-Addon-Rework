@@ -202,7 +202,7 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
                 } else if (!variantExtraStats.getFlyType().canGlide()) {
                     if (!player.isOnGround() && !player.isFallFlying() && !player.isInWater() && !player.hasEffect(MobEffects.LEVITATION)) {
                         ItemStack itemstack = player.getItemBySlot(EquipmentSlot.CHEST);
-                        if (itemstack.canElytraFly(player) || itemstack.isEmpty()) {
+                        if (!itemstack.canElytraFly(player) || itemstack.isEmpty()) {
                             player.stopFallFlying();
                             ci.setReturnValue(false);
                             ci.cancel();
@@ -226,9 +226,9 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
         return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(this))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
-                        return extra.getFlyType().canGlide();
+                        return extra.getFlyType().canGlide() || original;
                     }
-                    return latexVariant.getParent().canGlide;
+                    return latexVariant.getParent().canGlide || original;
                 })
                 .orElse(original);
     }
