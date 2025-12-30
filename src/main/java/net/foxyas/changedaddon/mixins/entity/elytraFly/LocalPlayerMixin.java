@@ -30,9 +30,9 @@ public class LocalPlayerMixin {
         return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(self))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
-                        return extra.getFlyType().canGlide();
+                        return extra.getFlyType().canGlide() || original;
                     }
-                    return latexVariant.getParent().canGlide;
+                    return latexVariant.getParent().canGlide || original;
                 })
                 .orElse(original);
     }
