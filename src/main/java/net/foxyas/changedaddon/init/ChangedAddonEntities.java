@@ -429,6 +429,15 @@ public class ChangedAddonEntities {
                     .clientTrackingRange(10)
                     .sized(0.7f, 1.93f));
 
+    public static final RegistryObject<EntityType<AvaliEntity>> AVALI_ZERGODMASTER = registerChangedEntity("avali_zergodmaster",
+            EntityType.Builder.<AvaliEntity>of(AvaliEntity::new, ChangedMobCategories.CHANGED)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .setTrackingRange(64)
+                    .setUpdateInterval(3)
+                    .setCustomClientFactory(AvaliEntity::new)
+                    .clientTrackingRange(10)
+                    .sized(0.7f, 1.93f));
+
     public static final RegistryObject<EntityType<LatexKitsuneMaleEntity>> LATEX_KITSUNE_MALE = registerChangedEntity("latex_kitsune_male",
             EntityType.Builder.<LatexKitsuneMaleEntity>of(LatexKitsuneMaleEntity::new, ChangedMobCategories.CHANGED)
                     .setShouldReceiveVelocityUpdates(true)
@@ -670,6 +679,7 @@ public class ChangedAddonEntities {
         event.put(SNOW_LEOPARD_PARTIAL.get(), SnowLeopardPartialEntity.createAttributes().build());
         event.put(BLUE_LIZARD.get(), BlueLizard.createAttributes().build());
         event.put(AVALI.get(), AvaliEntity.createAttributes().build());
+        event.put(AVALI_ZERGODMASTER.get(), AvaliEntity.createAttributes().build());
         event.put(LATEX_KITSUNE_MALE.get(), LatexKitsuneMaleEntity.createAttributes().build());
         event.put(LATEX_KITSUNE_FEMALE.get(), LatexKitsuneFemaleEntity.createAttributes().build());
         event.put(LATEX_CALICO_CAT.get(), LatexCalicoCatEntity.createAttributes().build());

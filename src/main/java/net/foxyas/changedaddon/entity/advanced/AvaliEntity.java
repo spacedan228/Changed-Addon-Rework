@@ -28,11 +28,11 @@ import java.util.Set;
 
 public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats {
 
-    private static final EntityDataAccessor<Integer> PRIMARY_COLOR = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> SECONDARY_COLOR = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> STRIPES_COLOR = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Float> SIZE_SCALE = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.FLOAT);
-    private static final EntityDataAccessor<String> STYLE_OF_COLOR = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.STRING);
+    protected static final EntityDataAccessor<Integer> PRIMARY_COLOR = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Integer> SECONDARY_COLOR = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Integer> STRIPES_COLOR = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.INT);
+    protected static final EntityDataAccessor<Float> SIZE_SCALE = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.FLOAT);
+    protected static final EntityDataAccessor<String> STYLE_OF_COLOR = SynchedEntityData.defineId(AvaliEntity.class, EntityDataSerializers.STRING);
     public final Set<String> StyleTypes = Set.of("male", "female");
 
     public AvaliEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {

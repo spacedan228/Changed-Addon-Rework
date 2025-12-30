@@ -1,8 +1,8 @@
 package net.foxyas.changedaddon.variant;
 
-import com.google.common.base.Suppliers;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.*;
+import net.foxyas.changedaddon.entity.api.IOriginalCharacterEntity;
 import net.foxyas.changedaddon.entity.bosses.*;
 import net.foxyas.changedaddon.entity.partials.SnowLeopardPartialEntity;
 import net.foxyas.changedaddon.entity.simple.*;
@@ -20,7 +20,6 @@ import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.animal.AbstractGolem;
 import net.minecraft.world.entity.animal.Rabbit;
 import net.minecraft.world.entity.monster.*;
@@ -30,7 +29,6 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -313,6 +311,17 @@ public class ChangedAddonTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
+    public static final RegistryObject<TransfurVariant<AvaliEntity>> AVALI_ZERGODMASTER = register("form_avali_zergodmaster",
+            TransfurVariant.Builder.of(ChangedAddonEntities.AVALI)
+                    .stepSize(0.7F)
+                    .breatheMode(TransfurVariant.BreatheMode.NORMAL)
+                    .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
+                    .glide()
+                    .transfurMode(TransfurMode.NONE)
+                    .scares(List.of())
+                    .nightVision()
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
+
     public static final RegistryObject<TransfurVariant<ProtogenEntity>> PROTOGEN = register("form_protogen",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.PROTOGEN)
                     .nightVision()
@@ -465,7 +474,7 @@ public class ChangedAddonTransfurVariants {
                     .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<PinkCyanSkunkEntity>> PINK_CYAN_SKUNK = register("form_pink_cyan_skunk",
-            () ->  TransfurVariant.Builder.of(ChangedAddonEntities.PINK_CYAN_SKUNK)
+            () -> TransfurVariant.Builder.of(ChangedAddonEntities.PINK_CYAN_SKUNK)
                     .stepSize(0.7F)
                     .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
@@ -766,16 +775,29 @@ public class ChangedAddonTransfurVariants {
     }
 
     @Nullable
-    public static Component getOcVariantComponent(TransfurVariant<?> transfurVariant) {
+    public static List<Component> getOcVariantComponent(TransfurVariant<?> transfurVariant) {
         return OCS.get().get(transfurVariant);
+    }
+
+    @Nullable
+    public static List<Component> getVariantComponentIfAny(TransfurVariant<?> transfurVariant, Level level) {
+        if (isVariantOC(transfurVariant, level)) {
+            if (transfurVariant.getEntityType().create(level) instanceof IOriginalCharacterEntity iOriginalCharacterEntity) {
+                return iOriginalCharacterEntity.getOcVariantComponents();
+            }
+            return OCS.get().get(transfurVariant);
+        }
+        return null;
     }
 
     public static boolean isVariantOC(TransfurVariant<?> transfurVariant, @Nullable Level level) {
         if (level != null && transfurVariant.getEntityType()
                 .create(level) instanceof PatronOC) {
             return true;
-        } else return OCS.get()
-                .containsKey(transfurVariant);
+        } else if (level != null && transfurVariant.getEntityType()
+                .create(level) instanceof IOriginalCharacterEntity) {
+            return true;
+        } else return OCS.get().containsKey(transfurVariant);
     }
 
     public static boolean isVariantOC(ResourceLocation transfurVariantID, @Nullable Level level) {

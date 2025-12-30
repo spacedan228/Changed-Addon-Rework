@@ -451,7 +451,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     public static class TransfurEvolveEventsHandle {
 
         /**
-         * Cancel void damage if player is transformed.
+         * Cancel void damage if player is transformed and out of the world.
          */
         @SubscribeEvent
         public static void handleVoidDamage(LivingAttackEvent event) {
@@ -463,6 +463,8 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
             // Only cancel OUT_OF_WORLD damage
             if (!event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD)) return;
+            boolean isOutOfWorld = player.getY() < (double) (player.level.getMinBuildHeight() - 64); // Same
+            if (!isOutOfWorld || event.getAmount() == Float.MAX_VALUE) return;
 
             triggerVoidTransformation(player, luminaraFlowerBeast);
 
