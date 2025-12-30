@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.mixins.mods.changed;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.entity.simple.WolfyEntity;
 import net.foxyas.changedaddon.event.ProgressTransfurEvents;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.ltxprogrammer.changed.entity.TransfurCause;
@@ -10,6 +11,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,6 +36,22 @@ public class ProcessTransfurMixin {
             if (ChangedAddonMod.postEvent(event)) {
                 cir.setReturnValue(false);
             }
+        }
+    }
+
+    @Inject(method = "onLivingAttacked", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/event/entity/living/LivingAttackEvent;setCanceled(Z)V", ordinal = 3), cancellable = true)
+    private static void cancelDamageHook(LivingAttackEvent event, CallbackInfo ci) {
+        if (!(event.getSource().getEntity() instanceof LivingEntity sourceEntity))
+            return;
+
+        if (sourceEntity instanceof Player player) {
+            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof WolfyEntity) {
+                ci.cancel();
+            }
+        }
+        if (sourceEntity instanceof WolfyEntity) {
+            ci.cancel();
         }
     }
 
