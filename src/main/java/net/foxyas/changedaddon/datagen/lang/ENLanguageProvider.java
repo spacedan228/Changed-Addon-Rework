@@ -327,6 +327,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addEnchantment(TRANSFUR_ASPECT, "Transfur Aspect", "Inflicts Transfur damage on humanoid entities, with the infection type determined by the attacker's variant.", "Inflicts %1$s of Transfur damage to humanoid entities, with the infection type determined by the attacker's variant.");
 
         addEntityFromId(AVALI);
+        addEntityFromId(AVALI_ZERGODMASTER);
         addEntityFromId(BAGEL);
         addEntityFromId(BLUE_LIZARD);
         addEntityFromId(BOREALIS_FEMALE);
