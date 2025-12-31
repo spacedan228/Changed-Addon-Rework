@@ -73,7 +73,7 @@ public class LatexSolventEnchantment extends Enchantment {
             ItemStack stack = event.getItemStack();
             if (stack.isEmpty() || stack.is(Items.ENCHANTED_BOOK)) return;
 
-            int level = EnchantmentHelper.getItemEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get(), stack);
+            int level = stack.getEnchantmentLevel(ChangedAddonEnchantments.LATEX_SOLVENT.get());
             if (level <= 0) return;
 
             // Só aplica se estiver na mão principal

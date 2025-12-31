@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.HashMap;
 import java.util.Map;
 
-@Mixin(Enchantment.class)
+@Mixin(value = Enchantment.class, priority = 1001)
 public class EnchantmentMixin {
 
     @Inject(method = "getSlotItems", at = @At("RETURN"), cancellable = true)
