@@ -27,4 +27,8 @@ public class AvaliZerGodMasterEntity extends AvaliEntity {
     @Override
     public void readColors(CompoundTag originalTag) {
     }
+
+    @Override
+    protected void applyRandomColors() {
+    }
 }
