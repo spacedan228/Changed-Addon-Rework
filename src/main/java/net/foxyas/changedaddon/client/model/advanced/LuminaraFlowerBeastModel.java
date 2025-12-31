@@ -501,18 +501,10 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
         poseStack.scale(1.5f, 1.5f, 1.5f);
 
         poseStack.pushPose();
-        /*poseStack.translate(0, -0.05f, -0.1f);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(45f));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(0));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(0));*/
         LeftWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.popPose();
 
         poseStack.pushPose();
-        /*poseStack.translate(0, -0.05f, -0.1f);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(45f));
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(0));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(0));*/
         RightWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         poseStack.popPose();
 

@@ -11,6 +11,7 @@
     "abilities.GrabEntityPacketMixin",
     "blocks.AbstractLatexBlockMixin",
     "blocks.BlockMixin",
+    "blocks.BlockStateBaseMixin",
     "blocks.CrossCollisionBlockMixin",
     "blocks.DroppedSyringeMixin",
     "blocks.FluidsMixin",
