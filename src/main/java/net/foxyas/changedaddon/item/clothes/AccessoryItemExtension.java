@@ -17,7 +17,18 @@ public interface AccessoryItemExtension {
             return this.isAffectedByMending(slotType, itemStack);
         }
 
+        return false;
+    }
 
+    default boolean isConsideredBySlots(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
+        return false;
+    }
+
+    default boolean isConsideredIntoPostDamageEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
+        return false;
+    }
+
+    default boolean isConsideredIntoPostHurtEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
         return false;
     }
 }
