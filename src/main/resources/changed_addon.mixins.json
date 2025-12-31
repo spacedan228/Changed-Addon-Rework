@@ -51,6 +51,7 @@
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",
     "mods.changed.EmoteParticleOptionMixin",
+    "mods.changed.FacilitySinglePieceInstanceAccessor",
     "mods.changed.LatexTypeMixin",
     "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin",
