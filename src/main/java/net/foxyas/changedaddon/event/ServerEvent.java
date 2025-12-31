@@ -2,11 +2,14 @@ package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.item.TranslatorItem;
 import net.foxyas.changedaddon.process.features.LatexLanguageTranslator;
 import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -56,7 +59,12 @@ public class ServerEvent {
     }
 
     private static boolean hasTranslator(Player player) {
-        return player.getInventory().contains(Items.DEBUG_STICK.getDefaultInstance()); //.contains(new ItemStack(ChangedAddonItems.TRANSLATOR.get()));
+        ItemStack pStack = new ItemStack(ChangedAddonItems.TRANSLATOR.get());
+        if (!player.getInventory().contains(pStack)) return false;
+
+        int itemSlot = player.getInventory().findSlotMatchingItem(pStack);
+        ItemStack itemStack = player.getInventory().getItem(itemSlot);
+        return TranslatorItem.isEnabled(itemStack);
     }
 
     private static boolean shouldTranslateTo(Player sender, Player receiver) {

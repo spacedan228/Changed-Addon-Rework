@@ -123,6 +123,7 @@ public class ChangedAddonItems {
     public static final RegistryObject<BlockItem> DORMANT_WHITE_LATEX = block(ChangedAddonBlocks.DORMANT_WHITE_LATEX, ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB);
     public static final RegistryObject<BlockItem> SIGNAL_BLOCK = block(ChangedAddonBlocks.SIGNAL_BLOCK, ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB);
     public static final RegistryObject<Item> SIGNAL_CATCHER = REGISTRY.register("signal_catcher", SignalCatcherItem::new);
+    public static final RegistryObject<TranslatorItem> TRANSLATOR = REGISTRY.register("translator", TranslatorItem::new);
     public static final RegistryObject<BlockItem> INFORMANT_BLOCK = block(ChangedAddonBlocks.INFORMANT_BLOCK, ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB);
 
     public static final RegistryObject<Item> LUMINAR_CRYSTAL_SHARD = REGISTRY.register("luminar_crystal_shard", LuminarCrystalShardItem::new);
