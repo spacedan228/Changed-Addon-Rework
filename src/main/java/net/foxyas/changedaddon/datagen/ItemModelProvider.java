@@ -29,6 +29,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         basicSpawnEgg(LATEX_BORDER_COLLIE_SPAWN_EGG);
 
         basicSpawnEgg(AVALI_ZERGODMASTER_SPAWN_EGG);
+        basicItem(TRANSLATOR.get());
 
         layeredItemMirroredHands(KEYCARD_ITEM.get(),
                 List.of(
