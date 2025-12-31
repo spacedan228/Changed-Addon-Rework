@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.advanced;
 
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -30,6 +31,14 @@ public class AvaliZerGodMasterEntity extends AvaliEntity {
         if (originalTag.contains("size_scale")) {
             setDimensionScale(originalTag.getFloat("size_scale"));
         }
+    }
+
+    @Override
+    public void setColor(int layer, Color3 color3) {
+    }
+
+    @Override
+    protected void failSafe() {
     }
 
     @Override
