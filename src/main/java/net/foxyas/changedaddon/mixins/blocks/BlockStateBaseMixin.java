@@ -28,9 +28,11 @@ import java.util.Optional;
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public abstract class BlockStateBaseMixin {
 
-    @Shadow public abstract Block getBlock();
+    @Shadow
+    public abstract Block getBlock();
 
-    @Shadow public abstract boolean is(Block pBlock);
+    @Shadow
+    public abstract boolean is(Block pBlock);
 
     @Inject(method = "getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", at = @At("RETURN"), cancellable = true)
     private void getCollisionShape(BlockGetter pLevel, BlockPos pPos, CollisionContext pContext, CallbackInfoReturnable<VoxelShape> cir) {
@@ -52,7 +54,7 @@ public abstract class BlockStateBaseMixin {
 
         iAbstractChangedEntity.ifPresent((iAbstractChanged) -> {
             if (iAbstractChanged.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
-                if (luminaraFlowerBeast.isHyperAwakened() && !luminaraFlowerBeast.isShiftKeyDown()) {
+                if (luminaraFlowerBeast.isHyperAwakened() && !luminaraFlowerBeast.isShiftKeyDown() && (!luminaraFlowerBeast.isFlying() || !luminaraFlowerBeast.isFallFlying())) {
                     if (pLevel.getBlockState(pPos).is(Blocks.VOID_AIR)) {
                         cir.setReturnValue(Shapes.block());
                     }
