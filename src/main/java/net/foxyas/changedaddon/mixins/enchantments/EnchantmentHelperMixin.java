@@ -1,5 +1,7 @@
 package net.foxyas.changedaddon.mixins.enchantments;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,9 +17,9 @@ import java.util.List;
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
 
-    @Redirect(method = "doPostDamageEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAllSlots()Ljava/lang/Iterable;"))
-    private static Iterable<ItemStack> accessoriesDoPostDamageEffects(LivingEntity livingEntity) {
-        Iterable<ItemStack> original = livingEntity.getAllSlots();
+    @WrapOperation(method = "doPostDamageEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAllSlots()Ljava/lang/Iterable;"))
+    private static Iterable<ItemStack> accessoriesDoPostDamageEffects(LivingEntity livingEntity, Operation<Iterable<ItemStack>> originalOperation) {
+        Iterable<ItemStack> original = originalOperation.call(livingEntity);
         List<ItemStack> defaultStacks = new ArrayList<>();
         List<ItemStack> stacks = new ArrayList<>();
         original.forEach(defaultStacks::add);
@@ -41,9 +43,9 @@ public class EnchantmentHelperMixin {
         return defaultStacks;
     }
 
-    @Redirect(method = "doPostHurtEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAllSlots()Ljava/lang/Iterable;"))
-    private static Iterable<ItemStack> accessoriesDoPostHurtEffects(LivingEntity livingEntity) {
-        Iterable<ItemStack> original = livingEntity.getAllSlots();
+    @WrapOperation(method = "doPostHurtEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAllSlots()Ljava/lang/Iterable;"))
+    private static Iterable<ItemStack> accessoriesDoPostHurtEffects(LivingEntity livingEntity, Operation<Iterable<ItemStack>> originalOperation) {
+        Iterable<ItemStack> original = originalOperation.call(livingEntity);
         List<ItemStack> defaultStacks = new ArrayList<>();
         List<ItemStack> stacks = new ArrayList<>();
         original.forEach(defaultStacks::add);
