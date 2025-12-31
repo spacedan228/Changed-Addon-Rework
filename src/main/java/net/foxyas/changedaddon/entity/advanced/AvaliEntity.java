@@ -150,12 +150,16 @@ public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements Va
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType reason, @Nullable SpawnGroupData data, @Nullable CompoundTag tag) {
         // Randomize as cores
+        applyRandomColors();
+
+        return super.finalizeSpawn(world, difficulty, reason, data, tag);
+    }
+
+    protected void applyRandomColors() {
         this.setPrimaryColor(Color3.fromInt(random.nextInt(0, Integer.MAX_VALUE - 1)));
         this.setSecondaryColor(Color3.fromInt(random.nextInt(0, Integer.MAX_VALUE - 1)));
         this.setStripesColor(Color3.fromInt(random.nextInt(0, Integer.MAX_VALUE - 1)));
         this.setStyleOfColor(this.random.nextBoolean() ? "male" : "female");
-
-        return super.finalizeSpawn(world, difficulty, reason, data, tag);
     }
 
     public Color3 getColor(int layer) {

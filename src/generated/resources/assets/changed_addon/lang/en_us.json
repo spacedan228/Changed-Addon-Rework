@@ -336,6 +336,7 @@
   "enchantment.changed_addon.transfur_aspect.desc": "Inflicts Transfur damage on humanoid entities, with the infection type determined by the attacker's variant.",
   "enchantment.changed_addon.transfur_aspect.jei_desc": "Inflicts %1$s of Transfur damage to humanoid entities, with the infection type determined by the attacker's variant.",
   "entity.changed_addon.avali": "Avali",
+  "entity.changed_addon.avali_zergodmaster": "Avali Zergodmaster",
   "entity.changed_addon.bagel": "Bagel",
   "entity.changed_addon.blue_lizard": "Blue Lizard",
   "entity.changed_addon.borealis_female": "Borealis Female",
