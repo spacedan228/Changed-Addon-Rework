@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static net.foxyas.changedaddon.init.ChangedAddonItems.*;
+import static net.foxyas.changedaddon.init.ChangedAddonItems.AVALI_ZERGODMASTER_SPAWN_EGG;
 
 public class ItemModelProvider extends net.minecraftforge.client.model.generators.ItemModelProvider {
 
@@ -26,6 +27,8 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         basicSpawnEgg(PROTOGEN_0SENIA0_SPAWN_EGG);
         basicSpawnEgg(LATEX_KAYLA_SHARK_SPAWN_EGG);
         basicSpawnEgg(LATEX_BORDER_COLLIE_SPAWN_EGG);
+
+        basicSpawnEgg(AVALI_ZERGODMASTER_SPAWN_EGG);
 
         layeredItemMirroredHands(KEYCARD_ITEM.get(),
                 List.of(

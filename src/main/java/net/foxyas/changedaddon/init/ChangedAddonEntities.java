@@ -429,12 +429,12 @@ public class ChangedAddonEntities {
                     .clientTrackingRange(10)
                     .sized(0.7f, 1.93f));
 
-    public static final RegistryObject<EntityType<AvaliEntity>> AVALI_ZERGODMASTER = registerChangedEntity("avali_zergodmaster",
-            EntityType.Builder.<AvaliEntity>of(AvaliEntity::new, ChangedMobCategories.CHANGED)
+    public static final RegistryObject<EntityType<AvaliZerGodMasterEntity>> AVALI_ZERGODMASTER = registerChangedEntity("avali_zergodmaster",
+            EntityType.Builder.<AvaliZerGodMasterEntity>of(AvaliZerGodMasterEntity::new, ChangedMobCategories.CHANGED)
                     .setShouldReceiveVelocityUpdates(true)
                     .setTrackingRange(64)
                     .setUpdateInterval(3)
-                    .setCustomClientFactory(AvaliEntity::new)
+                    .setCustomClientFactory(AvaliZerGodMasterEntity::new)
                     .clientTrackingRange(10)
                     .sized(0.7f, 1.93f));
 

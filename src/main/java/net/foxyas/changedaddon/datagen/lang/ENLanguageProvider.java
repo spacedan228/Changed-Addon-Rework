@@ -330,6 +330,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addEnchantment(TRANSFUR_ASPECT, "Transfur Aspect", "Inflicts Transfur damage on humanoid entities, with the infection type determined by the attacker's variant.", "Inflicts %1$s of Transfur damage to humanoid entities, with the infection type determined by the attacker's variant.");
 
         addEntityFromId(AVALI);
+        addEntityFromId(AVALI_ZERGODMASTER);
         addEntityFromId(BAGEL);
         addEntityFromId(BLUE_LIZARD);
         addEntityFromId(BOREALIS_FEMALE);
@@ -557,6 +558,7 @@ public class ENLanguageProvider extends LanguageProvider {
         add("item.minecraft.tipped_arrow.effect.transfur_sickness_potion", "Arrow of Transfur Sickness");
 
         addItemFromId(AVALI_SPAWN_EGG);
+        addItemFromId(AVALI_ZERGODMASTER_SPAWN_EGG);
         addItemFromId(BAGEL_SPAWN_EGG);
         addItemFromId(BLUE_LIZARD_SPAWN_EGG);
         addItemFromId(BOREALIS_FEMALE_SPAWN_EGG);

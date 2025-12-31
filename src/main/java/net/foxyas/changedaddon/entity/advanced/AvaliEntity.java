@@ -60,6 +60,10 @@ public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements Va
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
+        defineAvaliSyncData();
+    }
+
+    protected void defineAvaliSyncData() {
         this.entityData.define(PRIMARY_COLOR, Color3.WHITE.toInt());
         this.entityData.define(SECONDARY_COLOR, Color3.WHITE.toInt());
         this.entityData.define(STRIPES_COLOR, Color3.WHITE.toInt());
