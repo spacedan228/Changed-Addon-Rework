@@ -39,9 +39,12 @@ public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements Va
         this(ChangedAddonEntities.AVALI.get(), world);
     }
 
-
     public AvaliEntity(EntityType<? extends ChangedEntity> type, Level level) {
         super(type, level);
+    }
+
+    public boolean isColorful() {
+        return true;
     }
 
     @Override
@@ -166,7 +169,9 @@ public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements Va
         this.setStyleOfColor(this.random.nextBoolean() ? "male" : "female");
     }
 
+    @Nullable
     public Color3 getColor(int layer) {
+        if (!isColorful()) return null;
         return switch (layer) {
             case 1 -> getSecondaryColor();
             case 2 -> getStripesColor();
@@ -183,6 +188,7 @@ public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements Va
     }
 
     public void setColor(int layer, Color3 color3) {
+        if (!isColorful()) return;
         switch (layer) {
             case 1 -> setSecondaryColor(color3);
             case 2 -> setStripesColor(color3);

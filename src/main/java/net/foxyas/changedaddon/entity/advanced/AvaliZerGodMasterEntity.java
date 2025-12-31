@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.advanced;
 
+import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
@@ -9,7 +10,7 @@ import net.minecraftforge.network.PlayMessages;
 
 public class AvaliZerGodMasterEntity extends AvaliEntity {
     public AvaliZerGodMasterEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
-        super(ignoredPacket, world);
+        super(ChangedAddonEntities.AVALI_ZERGODMASTER.get(), world);
     }
 
     public AvaliZerGodMasterEntity(EntityType<? extends ChangedEntity> type, Level level) {
@@ -17,36 +18,7 @@ public class AvaliZerGodMasterEntity extends AvaliEntity {
     }
 
     @Override
-    protected void defineAvaliSyncData() {
-        this.entityData.define(SIZE_SCALE, 0.8f);
-    }
-
-    @Override
-    public void baseTick() {
-        super.baseTick();
-    }
-
-    @Override
-    protected void failSafe() {
-    }
-
-    @Override
-    public void setColor(int layer, Color3 color3) {
-    }
-
-    @Override
-    public void saveColors(CompoundTag originalTag) {
-        originalTag.putFloat("size_scale", getDimensionScale());
-    }
-
-    @Override
-    public void readColors(CompoundTag originalTag) {
-        if (originalTag.contains("size_scale")) {
-            setDimensionScale(originalTag.getFloat("size_scale"));
-        }
-    }
-
-    @Override
-    protected void applyRandomColors() {
+    public boolean isColorful() {
+        return false;
     }
 }
