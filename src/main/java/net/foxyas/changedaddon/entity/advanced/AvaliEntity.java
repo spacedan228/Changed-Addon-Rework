@@ -142,6 +142,10 @@ public class AvaliEntity extends AbstractBasicOrganicChangedEntity implements Va
     @Override
     public void baseTick() {
         super.baseTick();
+        failSafe();
+    }
+
+    protected void failSafe() {
         if (!getStyleOfColor().equals("male") && !getStyleOfColor().equals("female")) {
             this.setStyleOfColor("male");
         }

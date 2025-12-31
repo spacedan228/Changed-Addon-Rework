@@ -22,6 +22,19 @@ public class AvaliZerGodMasterEntity extends AvaliEntity {
     }
 
     @Override
+    public void baseTick() {
+        super.baseTick();
+    }
+
+    @Override
+    protected void failSafe() {
+    }
+
+    @Override
+    public void setColor(int layer, Color3 color3) {
+    }
+
+    @Override
     public void saveColors(CompoundTag originalTag) {
         originalTag.putFloat("size_scale", getDimensionScale());
     }
