@@ -526,6 +526,9 @@ public class ENLanguageProvider extends LanguageProvider {
         addItem(RED_LATEX_GOO, "§4Red Latex Goo");
         add(RED_LATEX_GOO.get().getDescriptionId() + ".description", "§4A Strange goo");
         addItemFromId(SIGNAL_CATCHER);
+        addItemFromId(TRANSLATOR);
+        add("item.changedaddon.translator.on", "Translator: ON");
+        add("item.changedaddon.translator.off", "Translator: OFF");
 
         addItem(PAT_ICON, "\"Stealth Pats\" Advancement Icon");
         addItem(SNEP_ICON, "\"Leaper\" Advancement Icon");
@@ -665,5 +668,7 @@ public class ENLanguageProvider extends LanguageProvider {
         add("commands.accessory.set.slot_locked", "%s cannot equip %s in slot %s because the slot type is not available");
         add("commands.accessory.get.success", "%s has %s in slot %s.");
         add("commands.accessory.too_many", "Too much data requested, only showing the first %s results.");
+
+
     }
 }
