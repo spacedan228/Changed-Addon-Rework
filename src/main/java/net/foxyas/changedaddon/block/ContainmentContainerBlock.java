@@ -179,7 +179,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
                 changedEntity.moveTo(blockPos, changedEntity.getYRot(), changedEntity.getXRot());
                 level.addFreshEntity(changedEntity);
             } else {
-                if (blockEntity.getTransfurVariant().is(ChangedTransfurVariants.GAS_WOLF.get())
+                if ((blockEntity.getTransfurVariant().is(ChangedTransfurVariants.GAS_WOLF_MALE.get()) || (blockEntity.getTransfurVariant().is(ChangedTransfurVariants.GAS_WOLF_FEMALE.get())))
                         || blockEntity.getTransfurVariant().getFormId().toString().contains("gas")) {
                     if (level instanceof ServerLevel serverLevel) {
                         serverLevel.sendParticles(ChangedParticles.gas(blockEntity.getTransfurVariant().getColors().getFirst()), blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f, 5, 0.5, 0.5, 0.5, 0);
@@ -201,7 +201,7 @@ public class ContainmentContainerBlock extends Block implements SimpleWaterlogge
                 changedEntity.moveTo(blockPos, changedEntity.getYRot(), changedEntity.getXRot());
                 level.addFreshEntity(changedEntity);
             } else {
-                if (blockEntity.getTransfurVariant().is(ChangedTransfurVariants.GAS_WOLF.get())
+                if ((blockEntity.getTransfurVariant().is(ChangedTransfurVariants.GAS_WOLF_MALE.get()) || (blockEntity.getTransfurVariant().is(ChangedTransfurVariants.GAS_WOLF_FEMALE.get())))
                         || blockEntity.getTransfurVariant().getFormId().toString().contains("gas")) {
                     if (level instanceof ServerLevel serverLevel) {
                         serverLevel.sendParticles(ChangedParticles.gas(blockEntity.getTransfurVariant().getColors().getFirst()), blockPos.getX() + 0.5f, blockPos.getY() + 0.5f, blockPos.getZ() + 0.5f, 5, 0.5, 0.5, 0.5, 0);

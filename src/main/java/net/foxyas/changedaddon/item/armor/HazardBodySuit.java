@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
-import net.foxyas.changedaddon.mixins.entity.CombatTrackerAccessor;
 import net.foxyas.changedaddon.util.ComponentUtil;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
@@ -167,12 +166,12 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         return super.getBreakSound(itemStack);
     }
 
-    public boolean isAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
+    public boolean shouldBeAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
         return true;
     }
 
     @Override
-    public boolean isConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
+    public boolean shouldBeConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
         if (enchantment == ChangedEnchantments.TRANSFUR_RESISTANCE.get()) {
             return slotType.canHoldItem(itemStack, pEntity);
         }
@@ -186,16 +185,16 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         }
 
 
-        return AccessoryItemExtension.super.isConsideredByEnchantment(enchantment, itemStack, slotType, pEntity);
+        return AccessoryItemExtension.super.shouldBeConsideredByEnchantment(enchantment, itemStack, slotType, pEntity);
     }
 
     @Override
-    public boolean isConsideredBySlots(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
+    public boolean isConsideredInSlots(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
         return slotType.canHoldItem(itemStack, livingEntity);
     }
 
     @Override
-    public boolean isConsideredIntoPostHurtEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
+    public boolean shouldBeConsideredIntoPostHurtEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
         return true;
     }
 

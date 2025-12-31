@@ -8,27 +8,27 @@ import net.minecraft.world.item.enchantment.Enchantments;
 
 public interface AccessoryItemExtension {
 
-    default boolean isAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
+    default boolean shouldBeAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
         return false;
     }
 
-    default boolean isConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
+    default boolean shouldBeConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
         if (enchantment == Enchantments.MENDING) {
-            return this.isAffectedByMending(slotType, itemStack);
+            return this.shouldBeAffectedByMending(slotType, itemStack);
         }
 
         return false;
     }
 
-    default boolean isConsideredBySlots(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
+    default boolean isConsideredInSlots(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
         return false;
     }
 
-    default boolean isConsideredIntoPostDamageEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
+    default boolean shouldBeConsideredIntoPostDamageEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
         return false;
     }
 
-    default boolean isConsideredIntoPostHurtEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
+    default boolean shouldBeConsideredIntoPostHurtEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
         return false;
     }
 }

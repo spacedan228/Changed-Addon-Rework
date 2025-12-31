@@ -1,23 +1,17 @@
 package net.foxyas.changedaddon.mixins.enchantments;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.ltxprogrammer.changed.data.AccessorySlots;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Mixin(value = EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
@@ -33,7 +27,7 @@ public class EnchantmentHelperMixin {
                 slots.forEachSlot((slotType, itemStack) -> {
                     if (itemStack.isEmpty()) return;
                     if (!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-                    if (accessoryItemExtension.isConsideredIntoPostDamageEffects(itemStack, slotType, livingEntity)) {
+                    if (accessoryItemExtension.shouldBeConsideredIntoPostDamageEffects(itemStack, slotType, livingEntity)) {
                         stacks.add(itemStack);
                     } else {
                         defaultStacks.remove(itemStack);
@@ -59,7 +53,7 @@ public class EnchantmentHelperMixin {
                 slots.forEachSlot((slotType, itemStack) -> {
                     if (itemStack.isEmpty()) return;
                     if (!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-                    if (accessoryItemExtension.isConsideredIntoPostHurtEffects(itemStack, slotType, livingEntity)) {
+                    if (accessoryItemExtension.shouldBeConsideredIntoPostHurtEffects(itemStack, slotType, livingEntity)) {
                         stacks.add(itemStack);
                     } else {
                         defaultStacks.remove(itemStack);

@@ -1,11 +1,9 @@
 package net.foxyas.changedaddon.mixins.entity;
 
-import com.google.common.collect.Iterables;
 import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,9 +12,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Mixin(Entity.class)
 public class EntityMixin implements LivingEntityDataExtensor {
@@ -42,7 +38,7 @@ public class EntityMixin implements LivingEntityDataExtensor {
                 slots.forEachSlot((slotType, itemStack) -> {
                     if (itemStack.isEmpty()) return;
                     if (!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-                    if (accessoryItemExtension.isConsideredBySlots(itemStack, slotType, livingEntity)) {
+                    if (accessoryItemExtension.isConsideredInSlots(itemStack, slotType, livingEntity)) {
                         stacks.add(itemStack);
                     }
                 })

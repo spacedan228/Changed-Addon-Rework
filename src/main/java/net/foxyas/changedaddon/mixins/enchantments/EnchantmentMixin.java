@@ -24,7 +24,7 @@ public class EnchantmentMixin {
                 slots.forEachSlot((slotType, itemStack) -> {
                     if (itemStack.isEmpty()) return;
                     if (!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-                    if (accessoryItemExtension.isConsideredByEnchantment(self(), itemStack, slotType, pEntity)) {
+                    if (accessoryItemExtension.shouldBeConsideredByEnchantment(self(), itemStack, slotType, pEntity)) {
                         Map<EquipmentSlot, ItemStack> returnValue = cir.getReturnValue();
                         Map<EquipmentSlot, ItemStack> newReturnValue = new HashMap<>();
                         if (returnValue != null) {

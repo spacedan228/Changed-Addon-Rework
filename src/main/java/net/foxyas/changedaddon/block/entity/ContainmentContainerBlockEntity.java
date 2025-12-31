@@ -45,7 +45,7 @@ public class ContainmentContainerBlockEntity extends BlockEntity {
         if (variant == null) {
             return false;
         }
-        return !variant.is(ChangedTransfurVariants.GAS_WOLF.get())
+        return variant.is(ChangedTransfurVariants.GAS_WOLF_MALE.get()) || variant.is(ChangedTransfurVariants.GAS_WOLF_FEMALE.get())
                 || variant.getFormId().toString().contains("gas");
     }
 

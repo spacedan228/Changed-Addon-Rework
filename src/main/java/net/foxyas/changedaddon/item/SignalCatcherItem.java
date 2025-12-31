@@ -301,7 +301,7 @@ public class SignalCatcherItem extends Item {
 
         private static PathfinderMob createShadowMob(LocalPlayer player, Level level) {
             ChangedEntity changedEntity = ProcessTransfur.getPlayerTransfurVariantSafe(player).map(TransfurVariantInstance::getChangedEntity).orElse(null);
-            return changedEntity == null ? ChangedEntities.GAS_WOLF.get().create(level) : changedEntity;
+            return changedEntity == null ? ChangedEntities.GAS_WOLF_MALE.get().create(level) : changedEntity;
         }
     }
 }
