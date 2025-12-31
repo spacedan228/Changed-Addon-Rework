@@ -32,8 +32,10 @@ public class AvaliColorsLayer<M extends AdvancedHumanoidModel<T>, T extends Chan
     public void render(@NotNull PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
         if (!entity.isInvisible()) {
             if (entity instanceof AvaliEntity avaliEntity) {
+                if (!avaliEntity.isColorful()) return;
                 ResourceLocation texture = getTextureStyle(avaliEntity);
                 Color3 bodyColor = avaliEntity.getColor(layer);
+                if (bodyColor == null) return;
                 int overlay = LivingEntityRenderer.getOverlayCoords(entity, 0.0F);
                 this.model.renderToBuffer(pose, bufferSource.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, overlay, bodyColor.red(), bodyColor.green(), bodyColor.blue(), 1.0F);
             }
@@ -51,8 +53,10 @@ public class AvaliColorsLayer<M extends AdvancedHumanoidModel<T>, T extends Chan
     public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
         FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
         if (entity instanceof AvaliEntity avaliEntity) {
+            if (!avaliEntity.isColorful()) return;
             ResourceLocation texture = getTextureStyle(avaliEntity);
             Color3 bodyColor = avaliEntity.getColor(layer);
+            if (bodyColor == null) return;
             stack.pushPose();
             stack.scale(1.0002F, 1.0002F, 1.0002F);
             FormRenderHandler.renderModelPartWithTexture(this.model.getArm(arm), stackCorrector, stack, bufferSource.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, bodyColor.red(), bodyColor.green(), bodyColor.blue(), 1.0F);
