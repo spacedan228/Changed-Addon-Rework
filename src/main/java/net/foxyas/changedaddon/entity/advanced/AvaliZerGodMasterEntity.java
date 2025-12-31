@@ -17,14 +17,19 @@ public class AvaliZerGodMasterEntity extends AvaliEntity {
 
     @Override
     protected void defineAvaliSyncData() {
+        this.entityData.define(SIZE_SCALE, 0.8f);
     }
 
     @Override
     public void saveColors(CompoundTag originalTag) {
+        originalTag.putFloat("size_scale", getDimensionScale());
     }
 
     @Override
     public void readColors(CompoundTag originalTag) {
+        if (originalTag.contains("size_scale")) {
+            setDimensionScale(originalTag.getFloat("size_scale"));
+        }
     }
 
     @Override
