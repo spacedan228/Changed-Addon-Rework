@@ -524,6 +524,9 @@ public class ENLanguageProvider extends LanguageProvider {
         addItem(RED_LATEX_GOO, "§4Red Latex Goo");
         add(RED_LATEX_GOO.get().getDescriptionId() + ".description", "§4A Strange goo");
         addItemFromId(SIGNAL_CATCHER);
+        addItemFromId(TRANSLATOR);
+        add("item.changedaddon.translator.on", "Translator: ON");
+        add("item.changedaddon.translator.off", "Translator: OFF");
 
         addItem(PAT_ICON, "\"Stealth Pats\" Advancement Icon");
         addItem(SNEP_ICON, "\"Leaper\" Advancement Icon");

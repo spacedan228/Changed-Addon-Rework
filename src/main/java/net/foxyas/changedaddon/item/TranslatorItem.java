@@ -1,6 +1,9 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
+import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +33,16 @@ public class TranslatorItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
 
         if (!level.isClientSide) {
+            ChangedSounds.broadcastSound(player, ChangedSounds.KEY, 1, 1);
             toggle(stack);
+            player.displayClientMessage(
+                    new TranslatableComponent(
+                            isEnabled(stack)
+                                    ? "item.changedaddon.translator.on"
+                                    : "item.changedaddon.translator.off"
+                    ),
+                    true
+            );
         }
 
         return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
