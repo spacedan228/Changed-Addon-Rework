@@ -132,22 +132,14 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     }
 
     //For future api
+    @Override
     public float accessoryHurt(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
-        accessoryDamaged(slotContext,source, amount);
-        return amount;
+        damageSuit(slotContext,source, amount);
+        return super.accessoryHurt(slotContext, source, amount);
     }
 
-    public void accessoryDamaged(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
+    public void damageSuit(AccessorySlotContext<?> slotContext, DamageSource source, float amount) {
         LivingEntity wearer = slotContext.wearer();
-        /*if (wearer instanceof Player player) {
-            player.displayClientMessage(Component.literal("Iframes =" + player.invulnerableTime + "\n"
-                    + player.hurtDir + "\n"
-                    + player.hurtDuration + "\n"
-                    + player.hurtMarked + "\n"
-                    + player.hurtTime + "\n"), false);
-        }*/
-        boolean nonHurtFrame = wearer.hurtTime <= 10 && wearer.invulnerableTime <= 10;
-        if (wearer.hurtMarked || !nonHurtFrame) return;
         if (amount <= 0) return;
         if (wearer.isDamageSourceBlocked(source)) return;
 
