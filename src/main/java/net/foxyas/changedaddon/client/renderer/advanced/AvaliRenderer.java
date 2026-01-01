@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.renderer.advanced;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.client.model.advanced.AvaliModel;
+import net.foxyas.changedaddon.client.model.armors.ArmorAvaliModel;
 import net.foxyas.changedaddon.client.renderer.layers.AvaliColorsLayer;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
@@ -13,7 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class AvaliRenderer extends AdvancedHumanoidRenderer<AvaliEntity, AvaliModel<AvaliEntity>, ArmorLatexMaleDragonModel<AvaliEntity>> {
+public class AvaliRenderer extends AdvancedHumanoidRenderer<AvaliEntity, AvaliModel<AvaliEntity>, ArmorAvaliModel<AvaliEntity>> {
     public AvaliRenderer(EntityRendererProvider.Context context) {
         super(context, new AvaliModel<>(context.bakeLayer(AvaliModel.LAYER_LOCATION)), ArmorLatexMaleDragonModel.MODEL_SET, 0.5f);
         //this.addLayer(new LatexParticlesLayer<>(this, getModel()));
