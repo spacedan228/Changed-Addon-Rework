@@ -272,6 +272,14 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     @Override
     public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
+
+        if (itemstack.is(Items.NAME_TAG)){
+            InteractionResult interactionresult = itemstack.interactLivingEntity(player, this, hand);
+            if (interactionresult.consumesAction()) {
+                return interactionresult;
+            }
+        }
+
         if (!player.isShiftKeyDown()) {
             if (!level().isClientSide) {
                 depositType = depositType.nextDepositType();
@@ -281,6 +289,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
             if (!level().isClientSide) {
                 NetworkHooks.openScreen((ServerPlayer) player, this, buf -> buf.writeVarInt(getId()));
             }
+            return InteractionResult.SUCCESS;
         }
 
         if (isTame()) {
