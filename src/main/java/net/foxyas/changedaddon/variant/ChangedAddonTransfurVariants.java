@@ -315,8 +315,8 @@ public class ChangedAddonTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
-    public static final RegistryObject<TransfurVariant<AvaliEntity>> AVALI_ZERGODMASTER = register("form_avali_zergodmaster",
-            TransfurVariant.Builder.of(ChangedAddonEntities.AVALI)
+    public static final RegistryObject<TransfurVariant<AvaliZerGodMasterEntity>> AVALI_ZERGODMASTER = register("form_avali_zergodmaster",
+            TransfurVariant.Builder.of(ChangedAddonEntities.AVALI_ZERGODMASTER)
                     .stepSize(0.7F)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
                     .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
