@@ -388,14 +388,23 @@ public class TransfurTotemItem extends Item {
 
         @SubscribeEvent
         public static void execute(ProcessTransfur.KeepConsciousEvent event) {
-            if (event.shouldKeepConscious
-                    || event.player == null
-                    || !event.player.getInventory().contains(new ItemStack(ChangedAddonItems.TRANSFUR_TOTEM.get()))) return;
+            Player player = event.player;
+            if (event.shouldKeepConscious || player == null) return;
 
-            if (ProcessTransfur.getPlayerTransfurVariant(event.player) != null && StackUtil.callStackContainsClass(WhiteLatexTransportInterface.class, 15)) return;
+            boolean totemFound = false;
+            for (ItemStack stack : player.getInventory().items) {
+                if (!stack.is(ChangedAddonItems.TRANSFUR_TOTEM.get())) continue;
+
+                totemFound = true;
+                break;
+            }
+            
+            if (!totemFound) return;
+
+            if (ProcessTransfur.getPlayerTransfurVariant(player) != null && StackUtil.callStackContainsClass(WhiteLatexTransportInterface.class, 15)) return;
 
             event.shouldKeepConscious = true;
-            if (event.player instanceof ServerPlayer serverPlayer) {
+            if (player instanceof ServerPlayer serverPlayer) {
                 Component text = Component.translatable("changed_addon.latex_totem.tittle.text_1");
                 Component text2 = Component.translatable("changed_addon.latex_totem.tittle.text_2");
                 serverPlayer.displayClientMessage(text, true);
