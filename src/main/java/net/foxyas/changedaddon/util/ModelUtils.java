@@ -108,13 +108,54 @@ public class ModelUtils {
         return tailParts;
     }
 
+    /**
+     * Calculates the world position from a model part using a custom transform approach with rotation mirroring support.
+     *
+     * @param part                 The model part to use.
+     * @param partOffset               offset relative to the model part.
+     * @param worldOffset                 variable used on the Matrix4f
+     * @param entity               The entity used for base position and orientation.
+     * @param stackRotation             Rotation vector (in degrees).
+     * @param originalPoseStack       Last PoseStack From Model [Can Be Null if None]
+     * @return The resulting world-space position as a {@link Vec3}.
+     */
+
+    public static Vec3 getWorldSpaceFromModelPartNew(ModelPart part, Vector3f partOffset, Vector3f worldOffset,
+                                                  @NotNull Entity entity, Vec3 stackRotation, @Nullable PoseStack originalPoseStack) {
+        PoseStack stack = originalPoseStack == null ? new PoseStack() : originalPoseStack;
+
+        // Aplica transformações da entidade
+        stack.pushPose();
+
+        stack.mulPose(Axis.YP.rotationDegrees(entity instanceof LivingEntity livingEntity ? -livingEntity.yBodyRotO : -entity.yRotO));
+
+        // Aplica rotações personalizadas
+        stack.mulPose(Axis.YP.rotationDegrees((float) stackRotation.y()));
+        stack.mulPose(Axis.XP.rotationDegrees((float) stackRotation.x()));
+        stack.mulPose(Axis.ZP.rotationDegrees((float) stackRotation.z()));
+
+        part.translateAndRotate(stack);
+
+        // Aplica offset local
+        stack.translate(worldOffset.x(), worldOffset.y(), worldOffset.z());
+
+        // Converte posição final
+        Matrix4f matrix = stack.last().pose();
+        Vector4f pos = new Vector4f(partOffset.x(), partOffset.y(), partOffset.z(), 1.0F);
+        matrix.transform(pos);
+        //pos.mul(matrix);
+        stack.popPose();
+
+        return new Vec3(pos.x(), pos.y(), pos.z());
+    }
+
 
     /**
      * Calculates the world position from a model part using a custom transform approach with rotation mirroring support.
      *
      * @param part                 The model part to use.
      * @param Offset               offset relative to the model part.
-     * @param vec3                 variable used on the Matrix4f
+     * @param worldOffset                 variable used on the Matrix4f
      * @param entity               The entity used for base position and orientation.
      * @param entityPosOffset      offset relative to the entity position part.
      * @param Rotation             Rotation vector (in degrees).
@@ -123,7 +164,7 @@ public class ModelUtils {
      * @return The resulting world-space position as a {@link Vec3}.
      */
 
-    public static Vec3 getWorldSpaceFromModelPart(ModelPart part, Vector3f Offset, Vector3f vec3,
+    public static Vec3 getWorldSpaceFromModelPart(ModelPart part, Vector3f Offset, Vector3f worldOffset,
                                                   @NotNull Entity entity, @Nullable Vec3 entityPosOffset,
                                                   @Nullable Vec3 Rotation, @Nullable PoseStack ModelPoseStack,
                                                   boolean affectEntityViewXrot) {
@@ -165,7 +206,7 @@ public class ModelUtils {
 
         // Converte posição final
         Matrix4f matrix = stack.last().pose();
-        Vector4f pos = new Vector4f(vec3.x(), vec3.y(), vec3.z(), 1.0F);
+        Vector4f pos = new Vector4f(worldOffset.x(), worldOffset.y(), worldOffset.z(), 1.0F);
         pos.mul(matrix);
 
         return new Vec3(pos.x(), pos.y(), pos.z());
