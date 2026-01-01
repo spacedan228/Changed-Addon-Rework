@@ -96,8 +96,6 @@ public class DEBUG {
                         event.setCanceled(true);
                         break;
                     }
-                } else if (piece instanceof FacilityKeystone facilityKeyStone) {
-                    //
                 }
             }
         }
