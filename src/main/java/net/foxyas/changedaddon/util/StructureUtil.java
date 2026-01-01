@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.util;
 
-import net.ltxprogrammer.changed.init.ChangedStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.data.BuiltinRegistries;
@@ -27,14 +26,40 @@ public class StructureUtil {
     }
 
     /**
-     * Gets the facility as a structure start at a specific position in the world using its structure ID.
+     * Gets the structure start at a specific position in the world using its structure ID.
      *
      * @param level       the server level
      * @param pos         the block position to check
+     * @param structureKey the ResourceKey of the structure (e.g., "minecraft:village")
+     * @return the StructureStart if found, or null if not present
+     */
+    public static StructureStart getStructureAtByKey(ServerLevel level, BlockPos pos, ResourceKey<ConfiguredStructureFeature<?, ?>> structureKey) {
+        return level.structureFeatureManager().getStructureWithPieceAt(pos, structureKey);
+    }
+
+    /**
+     * Gets the structure start at a specific position in the world using its structure ID.
+     *
+     * @param level       the server level
+     * @param pos         the block position to check
+     * @param structureId the ID of the structure (e.g., "minecraft:village")
+     * @return the StructureStart if found, or null if not present
+     */
+    public static StructureStart getStructureAtByKey(ServerLevel level, BlockPos pos, ResourceLocation structureId) {
+        ResourceKey<ConfiguredStructureFeature<?, ?>> structureKey = ResourceKey.create(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.key(), structureId);
+        return level.structureFeatureManager().getStructureWithPieceAt(pos, structureKey);
+    }
+
+    /**
+     * Gets the facility as a structure start at a specific position in the world using its structure ID.
+     *
+     * @param level the server level
+     * @param pos   the block position to check
      * @return the StructureStart if found, or null if not present
      */
     public static StructureStart getFacilityAt(ServerLevel level, BlockPos pos) {
-        return level.structureFeatureManager().getStructureAt(pos, ChangedStructures.FACILITY.value());
+        ResourceKey<ConfiguredStructureFeature<?, ?>> structureKey = ResourceKey.create(BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.key(), ResourceLocation.parse("changed:facility"));
+        return level.structureFeatureManager().getStructureWithPieceAt(pos, structureKey);
     }
 
     /**
