@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.client.renderer.advanced;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.client.model.advanced.AvaliModel;
-import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
+import net.foxyas.changedaddon.client.model.armors.ArmorAvaliModel;
 import net.foxyas.changedaddon.entity.advanced.AvaliZerGodMasterEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class AvaliZerGodMasterRenderer extends AdvancedHumanoidRenderer<AvaliZerGodMasterEntity, AvaliModel<AvaliZerGodMasterEntity>, ArmorLatexMaleDragonModel<AvaliZerGodMasterEntity>> {
+public class AvaliZerGodMasterRenderer extends AdvancedHumanoidRenderer<AvaliZerGodMasterEntity, AvaliModel<AvaliZerGodMasterEntity>, ArmorAvaliModel<AvaliZerGodMasterEntity>> {
     public AvaliZerGodMasterRenderer(EntityRendererProvider.Context context) {
         super(context, new AvaliModel<>(context.bakeLayer(AvaliModel.LAYER_LOCATION)), ArmorLatexMaleDragonModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));
