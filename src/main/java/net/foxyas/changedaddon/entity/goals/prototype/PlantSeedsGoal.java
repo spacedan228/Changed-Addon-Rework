@@ -5,7 +5,6 @@ import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.init.ChangedParticles;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -115,12 +114,9 @@ public class PlantSeedsGoal extends Goal {
 
             level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
 
-            if (level.isClientSide() && level instanceof ClientLevel clientLevel) {
-                clientLevel.addParticle(ChangedParticles.emote(entity, Emote.IDEA), false,
-                        entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
-                        1, 0, 0);
-
-            }
+            ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
+                    entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
+                    1, 0, 0, 0, 0);
         }
     }
 
