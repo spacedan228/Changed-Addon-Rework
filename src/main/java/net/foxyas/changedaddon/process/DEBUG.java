@@ -2,14 +2,18 @@ package net.foxyas.changedaddon.process;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
+import com.sun.jna.Structure;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
+import net.foxyas.changedaddon.mixins.mods.changed.FacilitySinglePieceInstanceAccessor;
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
 import net.foxyas.changedaddon.process.features.LatexLanguageTranslator;
 import net.foxyas.changedaddon.util.*;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.GenderedEntity;
+import net.ltxprogrammer.changed.world.features.structures.facility.FacilitySinglePiece;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -19,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -30,6 +35,8 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
@@ -38,6 +45,7 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -51,7 +59,7 @@ import static net.minecraft.client.renderer.debug.PathfindingRenderer.renderPath
 @Deprecated(forRemoval = true)
 public class DEBUG {
 
-    public static boolean DebugFileEnable = false;
+    public static boolean DebugFileEnable = SharedConstants.IS_RUNNING_IN_IDE || !FMLLoader.isProduction();
     public static float HeadPosT, HeadPosV, HeadPosB, HeadPosK, HeadPosL, HeadPosJ;
     public static float HeadPosX, HeadPosY, HeadPosZ;
 
@@ -66,6 +74,26 @@ public class DEBUG {
     public static void debug(ServerChatEvent event) {
         if (!DebugFileEnable) {
             return;
+        }
+
+        if (event.getMessage().startsWith("FacilityHasPiece:")) {
+            String id = event.getMessage().replace("FacilityHasPiece:", "");
+            ResourceLocation resourceId = ResourceLocation.parse(id);
+            StructureStart structureAt = StructureUtil.getFacilityAt(event.getPlayer().getLevel(), event.getPlayer().getOnPos());
+            List<StructurePiece> pieces = structureAt.getPieces();
+
+            for (StructurePiece piece : pieces) {
+                if (piece instanceof FacilitySinglePiece.StructureInstance facilityPieceInstance) {
+                    FacilitySinglePieceInstanceAccessor accessor = (FacilitySinglePieceInstanceAccessor) facilityPieceInstance;
+                    ResourceLocation templateName = accessor.getTemplateName();
+                    if (templateName.equals(resourceId)) {
+                        BlockPos center = facilityPieceInstance.getBoundingBox().getCenter();
+                        event.getPlayer().displayClientMessage(new TextComponent("Facility has " + resourceId + " room and it pos is \n" + accessor.getGenerationPosition() + "\n Center: " + center), false);
+                        event.setCanceled(true);
+                        break;
+                    }
+                }
+            }
         }
 
         if (event.getMessage().startsWith("translateThisTo:")) {

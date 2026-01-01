@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.util;
 
+import net.ltxprogrammer.changed.init.ChangedStructures;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.data.BuiltinRegistries;
@@ -23,6 +24,17 @@ public class StructureUtil {
     public static StructureStart getStructureAt(ServerLevel level, BlockPos pos, ResourceLocation structureId) {
         ConfiguredStructureFeature<?, ?> structure = BuiltinRegistries.CONFIGURED_STRUCTURE_FEATURE.get(structureId);
         return structure == null ? null : level.structureFeatureManager().getStructureAt(pos, structure);
+    }
+
+    /**
+     * Gets the facility as a structure start at a specific position in the world using its structure ID.
+     *
+     * @param level       the server level
+     * @param pos         the block position to check
+     * @return the StructureStart if found, or null if not present
+     */
+    public static StructureStart getFacilityAt(ServerLevel level, BlockPos pos) {
+        return level.structureFeatureManager().getStructureAt(pos, ChangedStructures.FACILITY.value());
     }
 
     /**

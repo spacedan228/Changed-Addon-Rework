@@ -49,6 +49,7 @@
     "mods.changed.ChangedMixin",
     "mods.changed.CommandTransfurMixin",
     "mods.changed.EmoteParticleOptionMixin",
+    "mods.changed.FacilitySinglePieceInstanceAccessor",
     "mods.changed.ProcessTransfurMixin",
     "mods.nean.NEAElytraAnimationMixin",
     "world.LevelStorageAccessMixin",
