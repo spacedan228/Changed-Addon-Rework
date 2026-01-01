@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.ltxprogrammer.changed.entity.Emote;
 import net.ltxprogrammer.changed.init.ChangedParticles;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -96,7 +97,8 @@ public class PlantSeedsGoal extends Goal {
         if (entity.blockPosition().closerThan(targetPos, 3)) {
             plantSeedAt();
             findPlantableFarmland(level, entity.blockPosition()); // reset target after planting
-            if(targetPos != null) navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
+            if (targetPos != null)
+                navigation.moveTo(targetPos.getX() + 0.5, targetPos.getY(), targetPos.getZ() + 0.5, 0.25f);
         }
 
         if (navigation.isStuck() || (navigation.getPath() != null && !navigation.getPath().canReach())) {
@@ -113,10 +115,13 @@ public class PlantSeedsGoal extends Goal {
             pendingEffects = false;
 
             level.playSound(null, entity.blockPosition(), ChangedAddonSoundEvents.PROTOTYPE_IDEA.get(), SoundSource.MASTER, 1, 1);
+            if (level.isClientSide() && level instanceof ClientLevel clientLevel) {
+                clientLevel.addParticle(ChangedParticles.emote(entity, Emote.IDEA), false,
+                        entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
+                        1, 0, 0);
 
-            ((ServerLevel)level).sendParticles(ChangedParticles.emote(entity, Emote.IDEA),
-                    entity.getX(), entity.getY() + entity.getDimensions(entity.getPose()).height + 0.65, entity.getZ(),
-                    1, 0, 0, 0, 0);
+            }
+
         }
     }
 
@@ -162,7 +167,7 @@ public class PlantSeedsGoal extends Goal {
                 center.offset(-searchRange, -1, -searchRange),
                 center.offset(searchRange, 1, searchRange))) {
             dist = (float) pos.distSqr(center);
-            if(dist >= closestDist || isBlockInvalid(level, level.getBlockState(pos), pos.above())) continue;
+            if (dist >= closestDist || isBlockInvalid(level, level.getBlockState(pos), pos.above())) continue;
 
             closestDist = dist;
             closestPos = pos.above();
