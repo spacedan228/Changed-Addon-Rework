@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.process;
 
+import com.google.errorprone.annotations.DoNotCall;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.particle.AgeableRibbonParticleOption;
@@ -45,6 +46,8 @@ import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.ServerChatEvent;
@@ -494,6 +497,8 @@ public class DEBUG {
     }
     */
 
+    @Mod.EventBusSubscriber(value = Dist.CLIENT)
+    public static class client {
 
     //@SubscribeEvent
     public static void onRenderLevel(RenderLevelStageEvent event) {
@@ -521,6 +526,7 @@ public class DEBUG {
     }
 
     @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
     public static void onKeyInput(InputEvent.Key event) {
         if (!DEBUG) return;
 
@@ -549,6 +555,68 @@ public class DEBUG {
             HeadPosX = Math.max(0, HeadPosX + baseIncrement);
         }
     }
+
+
+
+        @SubscribeEvent
+        @OnlyIn(Dist.CLIENT)
+        public static void onClientTick(TickEvent.ClientTickEvent event) {
+            if (!DEBUG) return;
+            if (event.phase != TickEvent.Phase.END) return;
+
+            Minecraft mc = Minecraft.getInstance();
+            Level level = mc.level;
+            Player player = mc.player;
+
+            if (level == null || player == null) return;
+
+            debugRenderArmorStandArms(level, player);
+        }
+
+        private static void debugRenderArmorStandArms(Level level, Player player) {
+            double radius = 6.0;
+
+            List<ArmorStand> stands = level.getEntitiesOfClass(
+                    ArmorStand.class,
+                    player.getBoundingBox().inflate(radius)
+            );
+
+            for (ArmorStand stand : stands) {
+                renderArmParticle(stand, true);  // braço direito
+                renderArmParticle(stand, false); // braço esquerdo
+            }
+        }
+
+        private static void renderArmParticle(ArmorStand stand, boolean rightArm) {
+            Minecraft mc = Minecraft.getInstance();
+            Level level = mc.level;
+
+            if (level == null) return;
+
+            EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
+            EntityRenderer<? super ArmorStand> renderer = dispatcher.getRenderer(stand);
+
+            if (!(renderer instanceof ArmorStandRenderer armorStandRenderer)) return;
+
+            ArmorStandArmorModel model = armorStandRenderer.getModel();
+
+            ModelPart arm = rightArm ? model.rightArm : model.leftArm;
+            Vec3 worldPos = ModelUtils.getWorldSpaceFromModelPartNew(arm, new Vector3f(0, 1, 0), new Vector3f(), stand, new Vec3(180, 0, 0), null);
+
+            worldPos = stand.position().add(worldPos).add(0, 1.6f, 0);
+
+            // Partícula DEBUG
+            level.addParticle(
+                    ParticleTypes.END_ROD,
+                    worldPos.x,
+                    worldPos.y,
+                    worldPos.z,
+                    0.0, 0.0, 0.0
+            );
+        }
+    }
+
+
 
 
     @SubscribeEvent
@@ -596,62 +664,6 @@ public class DEBUG {
         }
         //Player player = event.player;
         //player.displayClientMessage(Component.literal("Dot = " + DotValueOfViewProcedure.execute(player,player.getMainHandItem())), false);
-    }
-
-    @SubscribeEvent
-    public static void onClientTick(TickEvent.ClientTickEvent event) {
-        if (!DEBUG) return;
-        if (event.phase != TickEvent.Phase.END) return;
-
-        Minecraft mc = Minecraft.getInstance();
-        Level level = mc.level;
-        Player player = mc.player;
-
-        if (level == null || player == null) return;
-
-        debugRenderArmorStandArms(level, player);
-    }
-
-    private static void debugRenderArmorStandArms(Level level, Player player) {
-        double radius = 6.0;
-
-        List<ArmorStand> stands = level.getEntitiesOfClass(
-                ArmorStand.class,
-                player.getBoundingBox().inflate(radius)
-        );
-
-        for (ArmorStand stand : stands) {
-            renderArmParticle(stand, true);  // braço direito
-            renderArmParticle(stand, false); // braço esquerdo
-        }
-    }
-
-    private static void renderArmParticle(ArmorStand stand, boolean rightArm) {
-        Minecraft mc = Minecraft.getInstance();
-        Level level = mc.level;
-
-        if (level == null) return;
-
-        EntityRenderDispatcher dispatcher = mc.getEntityRenderDispatcher();
-        EntityRenderer<? super ArmorStand> renderer = dispatcher.getRenderer(stand);
-
-        if (!(renderer instanceof ArmorStandRenderer armorStandRenderer)) return;
-
-        ArmorStandArmorModel model = armorStandRenderer.getModel();
-
-        ModelPart arm = rightArm ? model.rightArm : model.leftArm;
-        Vec3 worldPos = ModelUtils.getWorldSpaceFromModelPartNew(arm, new Vector3f(0, 1, 0), new Vector3f(), stand, new Vec3(180, 0, 0), null);
-
-        worldPos = stand.position().add(worldPos).add(0, 1.6f, 0);
-
-        // Partícula DEBUG
-        level.addParticle(
-                ParticleTypes.END_ROD,
-                worldPos.x,
-                worldPos.y,
-                worldPos.z,
-                0.0, 0.0, 0.0
-        );
     }
 
 
