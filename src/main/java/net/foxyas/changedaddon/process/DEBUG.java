@@ -87,15 +87,14 @@ public class DEBUG {
             List<StructurePiece> pieces = structureAt.getPieces();
 
             for (StructurePiece piece : pieces) {
-                if (piece instanceof FacilityPieceInstance facilityPieceInstance) {
-                    //
-                } else if (piece instanceof FacilitySinglePiece.StructureInstance facilityPieceInstance) {
-                    if (facilityPieceInstance instanceof FacilitySinglePieceInstanceAccessor accessor) {
-                        ResourceLocation templateName = accessor.getTemplateName();
-                        if (templateName.equals(resourceId)) {
-                            event.getPlayer().displayClientMessage(Component.literal("Facility has " + resourceId + " room"), false);
-                            break;
-                        }
+                if (piece instanceof FacilitySinglePiece.StructureInstance facilityPieceInstance) {
+                    FacilitySinglePieceInstanceAccessor accessor = (FacilitySinglePieceInstanceAccessor) facilityPieceInstance;
+                    ResourceLocation templateName = accessor.getTemplateName();
+                    if (templateName.equals(resourceId)) {
+                        BlockPos center = facilityPieceInstance.getBoundingBox().getCenter();
+                        event.getPlayer().displayClientMessage(Component.literal("Facility has " + resourceId + " room and it pos is \n" + accessor.getGenerationPosition() + "\n Center: " + center), false);
+                        event.setCanceled(true);
+                        break;
                     }
                 } else if (piece instanceof FacilityKeystone facilityKeyStone) {
                     //
