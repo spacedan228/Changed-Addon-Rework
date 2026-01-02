@@ -158,12 +158,8 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
         return super.getBreakSound(itemStack);
     }
 
-    public boolean shouldBeAffectedByMending(AccessorySlotType slotType, ItemStack itemStack) {
-        return true;
-    }
-
     @Override
-    public boolean shouldBeConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
+    public boolean isConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
         if (enchantment == ChangedEnchantments.TRANSFUR_RESISTANCE.get()) {
             return slotType.canHoldItem(itemStack, pEntity);
         }
@@ -176,18 +172,7 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
             return slotType.canHoldItem(itemStack, pEntity);
         }
 
-
-        return AccessoryItemExtension.super.shouldBeConsideredByEnchantment(enchantment, itemStack, slotType, pEntity);
-    }
-
-    @Override
-    public boolean isConsideredInSlots(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
-        return slotType.canHoldItem(itemStack, livingEntity);
-    }
-
-    @Override
-    public boolean shouldBeConsideredIntoPostHurtEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
-        return true;
+        return super.isConsideredByEnchantment(enchantment, itemStack, slotType, pEntity);
     }
 
     @Override

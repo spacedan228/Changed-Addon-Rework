@@ -26,31 +26,4 @@ public class EntityMixin implements LivingEntityDataExtensor {
             }
         }
     }
-
-    @Inject(method = "getAllSlots", at = @At("RETURN"), cancellable = true)
-    private void hookAccessoriesSlots(CallbackInfoReturnable<Iterable<ItemStack>> cir) {
-        Entity self = (Entity) (Object) this;
-        if (!(self instanceof LivingEntity livingEntity)) return;
-        List<ItemStack> defaultStacks = new ArrayList<>();
-        List<ItemStack> stacks = new ArrayList<>();
-
-        AccessorySlots.getForEntity(livingEntity).ifPresent((slots) ->
-                slots.forEachSlot((slotType, itemStack) -> {
-                    if (itemStack.isEmpty()) return;
-                    if (!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-                    if (accessoryItemExtension.isConsideredInSlots(itemStack, slotType, livingEntity)) {
-                        stacks.add(itemStack);
-                    }
-                })
-        );
-
-        if (!stacks.isEmpty()) {
-            Iterable<ItemStack> returnValue = cir.getReturnValue();
-            if (returnValue != null) {
-                returnValue.forEach(defaultStacks::add);
-                stacks.addAll(defaultStacks);
-                cir.setReturnValue(stacks);
-            }
-        }
-    }
 }

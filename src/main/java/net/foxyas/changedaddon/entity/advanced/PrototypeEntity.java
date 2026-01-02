@@ -296,8 +296,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
         if (!player.isShiftKeyDown()) {
             if (!level().isClientSide) {
                 depositType = depositType.nextDepositType();
+                player.displayClientMessage(Component.translatable("entity.changed_addon.prototype.deposit_type.switch", depositType.getFormatedName()), true);
             }
-            player.displayClientMessage(Component.translatable("entity.changed_addon.prototype.deposit_type.switch", depositType.getFormatedName()), true);
         } else {
             if (!level().isClientSide) {
                 NetworkHooks.openScreen((ServerPlayer) player, this, buf -> buf.writeVarInt(getId()));

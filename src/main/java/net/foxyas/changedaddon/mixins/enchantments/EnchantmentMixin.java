@@ -18,24 +18,6 @@ import java.util.Map;
 @Mixin(value = Enchantment.class, priority = 1001)
 public class EnchantmentMixin {
 
-    @Inject(method = "getSlotItems", at = @At("RETURN"), cancellable = true)
-    private void accessoriesEnchantmentHook(LivingEntity pEntity, CallbackInfoReturnable<Map<EquipmentSlot, ItemStack>> cir) {
-        AccessorySlots.getForEntity(pEntity).ifPresent((slots) ->
-                slots.forEachSlot((slotType, itemStack) -> {
-                    if (itemStack.isEmpty()) return;
-                    if (!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-                    if (accessoryItemExtension.shouldBeConsideredByEnchantment(self(), itemStack, slotType, pEntity)) {
-                        Map<EquipmentSlot, ItemStack> returnValue = cir.getReturnValue();
-                        Map<EquipmentSlot, ItemStack> newReturnValue = new HashMap<>();
-                        if (returnValue != null) {
-                            newReturnValue.put(slotType.getEquivalentSlot(), itemStack);
-                            cir.setReturnValue(newReturnValue);
-                        }
-                    }
-                })
-        );
-    }
-
     @Unique
     private Enchantment self() {
         return (Enchantment) (Object) this;
