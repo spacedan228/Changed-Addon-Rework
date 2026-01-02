@@ -558,7 +558,7 @@ public class DEBUG {
 
 
 
-        @SubscribeEvent
+        //@SubscribeEvent
         @OnlyIn(Dist.CLIENT)
         public static void onClientTick(TickEvent.ClientTickEvent event) {
             if (!DEBUG) return;
