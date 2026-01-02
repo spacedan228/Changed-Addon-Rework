@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.mixins.client.renderer;
 
-import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.WingFlapAbility;
+import net.foxyas.changedaddon.client.model.animations.AvaliUpperBodyInitAnimator;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.client.renderer.animate.wing.AbstractWingAnimatorV2;
 import net.ltxprogrammer.changed.client.renderer.animate.wing.DragonWingInitAnimator;
@@ -25,27 +25,6 @@ public abstract class WingFlyAnimationMixin<T extends ChangedEntity, M extends A
         super(leftWingRoot, leftWingBone1, leftWingBone2, rightWingRoot, rightWingBone1, rightWingBone2);
     }
 
-    // Função de suavização
-    @Unique
-    private static float easeInOut(float t) {
-        return t * t * (3 - 2 * t);
-    }
-
-    @Unique
-    private static float easeOutCubic(float t) {
-        return 1 - (float) Math.pow(1 - t, 3);
-    }
-
-    // Method para limitar o valor entre min e max
-    @Unique
-    private static float capLevel(float value, float min, float max) {
-        if (value < min) {
-            return min;
-        } else if (value > max) {
-            return max;
-        }
-        return value;
-    }
 
     @Inject(method = "setupAnim", at = @At("TAIL"))
     private void WingAnimation(@NotNull ChangedEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci) {
@@ -57,8 +36,8 @@ public abstract class WingFlyAnimationMixin<T extends ChangedEntity, M extends A
 
                 // Aplicação no cálculo da rotação
                 float progress = instance.getController().getHoldTicks() / (float) WingFlapAbility.MAX_TICK_HOLD;
-                float easedProgress = easeOutCubic(progress); // Aplica suavização
-                float maxRotation = capLevel(35 * easedProgress, 0, 35); // Aplica o level cap
+                float easedProgress = AvaliUpperBodyInitAnimator.easeOutCubic(progress); // Aplica suavização
+                float maxRotation = AvaliUpperBodyInitAnimator.capLevel(35 * easedProgress, 0, 35); // Aplica o level cap
 
                 // Interpolação suave
                 this.leftWingRoot.zRot = -maxRotation * Mth.DEG_TO_RAD;

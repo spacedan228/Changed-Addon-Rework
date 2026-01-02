@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = ElytraAnimation.class, remap = false)
 @RequiredMods("notenoughanimations")
-public class NEAElytraAnimationMixin {
+public class NEAAvaliElytraAnimationMixin {
     @Inject(method = "apply", at = @At("HEAD"), cancellable = true)
     private void injectAvaliAnimation(AbstractClientPlayer entity, PlayerData data, PlayerModel<AbstractClientPlayer> model, BodyPart part, float delta, float tickCounter, CallbackInfo ci) {
         var tf = ProcessTransfur.getPlayerTransfurVariant(entity);
