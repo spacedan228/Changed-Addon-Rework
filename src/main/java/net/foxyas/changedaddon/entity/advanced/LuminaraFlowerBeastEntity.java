@@ -90,6 +90,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         if (tryExtractDragonBreath(player)) {
             luminaraFlowerBeast.setHyperAwakened(true);
             player.level.playSound(null, player, SoundEvents.ENDER_DRAGON_GROWL, SoundSource.PLAYERS, 5, 1);
+            luminaraFlowerBeast.attributesApplied = false;//reset attributesApplied so that HyperAwaken attributes get applied
         } else if (isAwakened) return;
 
         // Cancel fall/void velocity and launch player upwards
