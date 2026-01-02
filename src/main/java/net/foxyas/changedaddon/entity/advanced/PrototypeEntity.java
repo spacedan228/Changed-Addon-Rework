@@ -280,18 +280,6 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
             }
         }
 
-        if (!player.isShiftKeyDown()) {
-            if (!level().isClientSide) {
-                depositType = depositType.nextDepositType();
-            }
-            player.displayClientMessage(Component.translatable("entity.changed_addon.prototype.deposit_type.switch", depositType.getFormatedName()), true);
-        } else {
-            if (!level().isClientSide) {
-                NetworkHooks.openScreen((ServerPlayer) player, this, buf -> buf.writeVarInt(getId()));
-            }
-            return InteractionResult.SUCCESS;
-        }
-
         if (isTame()) {
             if (isTameItem(itemstack) && getHealth() < getMaxHealth()) {
                 itemstack.shrink(1);
@@ -300,7 +288,19 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
                     _level.sendParticles(ParticleTypes.HEART, (this.getX()), (this.getY() + 1), (this.getZ()), 7, 0.3, 0.3, 0.3, 1); //Spawn Heal Particles
                 }
                 this.gameEvent(GameEvent.ENTITY_INTERACT, this);
+                player.swing(hand);
                 return InteractionResult.SUCCESS;
+            }
+        }
+
+        if (!player.isShiftKeyDown()) {
+            if (!level().isClientSide) {
+                depositType = depositType.nextDepositType();
+            }
+            player.displayClientMessage(Component.translatable("entity.changed_addon.prototype.deposit_type.switch", depositType.getFormatedName()), true);
+        } else {
+            if (!level().isClientSide) {
+                NetworkHooks.openScreen((ServerPlayer) player, this, buf -> buf.writeVarInt(getId()));
             }
         }
 

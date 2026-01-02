@@ -32,14 +32,17 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -452,17 +455,29 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
         /**
          * Cancel void damage if player is transformed and out of the world.
+         * Also cancels dragon breath damage.
          */
         @SubscribeEvent
-        public static void handleVoidDamage(LivingAttackEvent event) {
+        public static void handleDamage(LivingAttackEvent event) {
             if (!(event.getEntity() instanceof Player player) || player.isSpectator()) return;
 
             TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
             if (instance == null || !instance.is(ChangedAddonTransfurVariants.LUMINARA_FLOWER_BEAST)
                     || !(instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast)) return;
 
+            DamageSource source = event.getSource();
+
+            if (source.getDirectEntity() instanceof AreaEffectCloud cloud) {
+                LivingEntity shooter = cloud.getOwner();
+                if (cloud.getParticle().getType() == ParticleTypes.DRAGON_BREATH
+                        && (shooter instanceof LuminaraFlowerBeastEntity || shooter instanceof EnderDragon)) {
+                    event.setCanceled(true);
+                    return;
+                }
+            }
+
             // Only cancel OUT_OF_WORLD damage
-            if (!event.getSource().is(DamageTypes.FELL_OUT_OF_WORLD)) return;
+            if (!source.is(DamageTypes.FELL_OUT_OF_WORLD)) return;
             boolean isOutOfWorld = player.getY() < (double) (player.level.getMinBuildHeight() - 64); // Same
             if (!isOutOfWorld || event.getAmount() == Float.MAX_VALUE) return;
 
