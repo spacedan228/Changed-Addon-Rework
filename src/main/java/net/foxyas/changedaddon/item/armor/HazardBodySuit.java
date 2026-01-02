@@ -164,6 +164,10 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
             return slotType.canHoldItem(itemStack, pEntity);
         }
 
+        if (enchantment == Enchantments.ALL_DAMAGE_PROTECTION) {
+            return slotType.canHoldItem(itemStack, pEntity);
+        }
+
         if (enchantment == Enchantments.MENDING) {
             return slotType.canHoldItem(itemStack, pEntity);
         }
@@ -178,6 +182,10 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         if (enchantment == ChangedEnchantments.TRANSFUR_RESISTANCE.get()) {
+            return true;
+        }
+
+        if (enchantment == Enchantments.ALL_DAMAGE_PROTECTION) {
             return true;
         }
 
