@@ -35,11 +35,13 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.AreaEffectCloud;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -56,11 +58,12 @@ import java.util.List;
 
 public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats, CustomPatReaction, PowderSnowWalkable {
 
+    public static final CreatureDietsHandleProcedure.DietType LUMINARA_DIET = CreatureDietsHandleProcedure.DietType.create("LUMINARA", ChangedAddonTags.TransfurTypes.DRAGON_LIKE, ChangedAddonTags.Items.DRAGON_DIET, List.of(Items.CHORUS_FRUIT, ChangedItems.ORANGE.get()));
     private static final EntityDataAccessor<Boolean> AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HYPER_AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
+    public boolean spawnParticles = true;
     private boolean attributesApplied;
     private boolean attributesAppliedEntity;
-    public boolean spawnParticles = true;
 
     public LuminaraFlowerBeastEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.LUMINARA_FLOWER_BEAST.get(), world);
@@ -69,7 +72,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     public LuminaraFlowerBeastEntity(EntityType<? extends ChangedEntity> type, Level level) {
         super(type, level);
     }
-
     public Vec3 getMouthPosition() {
         return this.getEyePosition().subtract(0, 0.25, 0);
     }
@@ -112,8 +114,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_KNOCKBACK), 2.0f);
     }
 
-    public static final CreatureDietsHandleProcedure.DietType LUMINARA_DIET = CreatureDietsHandleProcedure.DietType.create("LUMINARA", ChangedAddonTags.TransfurTypes.DRAGON_LIKE, ChangedAddonTags.Items.DRAGON_DIET, List.of(Items.CHORUS_FRUIT, ChangedItems.ORANGE.get()));
-
     @Override
     public List<CreatureDietsHandleProcedure.DietType> getExtraDietTypes() {
         return List.of(LUMINARA_DIET);
@@ -147,7 +147,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         }
         return new MobEffectInstance(ChangedAddonMobEffects.UNTRANSFUR.get(), 600);
     }
-
 
     @Override
     protected void defineSynchedData() {
@@ -249,7 +248,6 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
             );
         }
     }
-
 
     @Override
     public void baseTick() {
@@ -370,22 +368,33 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     public static class TransfurEvolveEventsHandle {
 
         /**
-         * Cancel void damage if player is transformed.
+         * Cancel void damage if player is transformed and out of the world.
+         * Also cancels dragon breath damage.
          */
         @SubscribeEvent
-        public static void handleVoidDamage(LivingAttackEvent event) {
+        public static void handleDamage(LivingAttackEvent event) {
             if (!(event.getEntity() instanceof Player player) || player.isSpectator()) return;
 
             TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
             if (instance == null || !instance.is(ChangedAddonTransfurVariants.LUMINARA_FLOWER_BEAST)
                     || !(instance.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast)) return;
 
+            DamageSource source = event.getSource();
+
+            if (source.getDirectEntity() instanceof AreaEffectCloud cloud) {
+                LivingEntity shooter = cloud.getOwner();
+                if (cloud.getParticle().getType() == ParticleTypes.DRAGON_BREATH
+                        && (shooter instanceof LuminaraFlowerBeastEntity || shooter instanceof EnderDragon)) {
+                    event.setCanceled(true);
+                    return;
+                }
+            }
+
             // Only cancel OUT_OF_WORLD damage
-            if (event.getSource() != DamageSource.OUT_OF_WORLD) return;
+            if (source != DamageSource.OUT_OF_WORLD) return;
             boolean isOutOfWorld = player.getY() < (double) (player.getLevel().getMinBuildHeight() - 64);
             if (!isOutOfWorld || event.getAmount() == Float.MAX_VALUE) return;
 
-            // /kill should be canceled '-'
             triggerVoidTransformation(player, luminaraFlowerBeast);
 
             event.setCanceled(true);
