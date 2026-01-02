@@ -260,7 +260,7 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
                 return InteractionResult.SUCCESS;
             }
         }
-        
+
         if (!player.isShiftKeyDown()) {
             if (!getLevel().isClientSide) {
                 depositType = depositType.nextDepositType();

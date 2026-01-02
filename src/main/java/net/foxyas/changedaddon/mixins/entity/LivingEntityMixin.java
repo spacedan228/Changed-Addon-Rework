@@ -95,7 +95,7 @@ public abstract class LivingEntityMixin {
         MutableInt total = new MutableInt();
 
         LivingEntity self = (LivingEntity) (Object) this;
-        AccessorySlots.getForEntity(self).get().forEachSlot((slot, itemStack) -> {
+        AccessorySlots.getForEntity(self).ifPresent((accessorySlots -> accessorySlots.forEachSlot((slot, itemStack) -> {
             if (!itemStack.isEmpty() && itemStack.getItem() instanceof AccessoryItemExtension accessoryItem) {
                 for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(itemStack).entrySet()) {
                     if (accessoryItem.isConsideredByEnchantment(new AccessorySlotContext<>(self, slot, itemStack), entry.getKey())) {
@@ -103,7 +103,7 @@ public abstract class LivingEntityMixin {
                     }
                 }
             }
-        });
+        })));
 
         return total.intValue() + original.call(armorSlots, damageSource);
     }
