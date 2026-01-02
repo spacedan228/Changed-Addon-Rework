@@ -19,7 +19,7 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
     private final ModelPart rightArm;
     private final ModelPart leftArm;
 
-    public static final float WING_FLAP_TARGET_X = (float) Math.toRadians(25);
+    public static final float WING_FLAP_TARGET_X = (float) Math.toRadians(-25);
 
     public AvaliFallFlyAnimator(ModelPart rightArm, ModelPart leftArm) {
         super();
@@ -61,7 +61,7 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
 
                 // Interpolação suave
                 this.rightArm.xRot = Mth.lerp(easedProgress, this.rightArm.xRot, WING_FLAP_TARGET_X);
-                this.leftArm.xRot = Mth.lerp(easedProgress, this.leftArm.xRot, -WING_FLAP_TARGET_X);
+                this.leftArm.xRot = Mth.lerp(easedProgress, this.leftArm.xRot, WING_FLAP_TARGET_X);
 
             });
         }
