@@ -2,71 +2,101 @@ package net.foxyas.changedaddon.mixins.enchantments;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
+import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlots;
+import net.ltxprogrammer.changed.item.AccessoryItem;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
 
-    @WrapOperation(method = "doPostDamageEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAllSlots()Ljava/lang/Iterable;"))
-    private static Iterable<ItemStack> accessoriesDoPostDamageEffects(LivingEntity livingEntity, Operation<Iterable<ItemStack>> originalOperation) {
-        Iterable<ItemStack> original = originalOperation.call(livingEntity);
-        List<ItemStack> defaultStacks = new ArrayList<>();
-        List<ItemStack> stacks = new ArrayList<>();
-        original.forEach(defaultStacks::add);
+    @WrapOperation(method = "getRandomItemWith(Lnet/minecraft/world/item/enchantment/Enchantment;Lnet/minecraft/world/entity/LivingEntity;Ljava/util/function/Predicate;)Ljava/util/Map$Entry;",
+            at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList()Ljava/util/ArrayList;"))
+    private static ArrayList<Map.Entry<EquipmentSlot, ItemStack>> orRandomAccessoryWith(Operation<ArrayList<Map.Entry<EquipmentSlot, ItemStack>>> original,
+                                                                                        @Local(argsOnly = true) Enchantment enchantment,
+                                                                                        @Local(argsOnly = true) LivingEntity livingEntity,
+                                                                                        @Local(argsOnly = true) Predicate<ItemStack> predicate) {
+        var list = original.call();
+        AccessorySlots.getForEntity(livingEntity).ifPresent(slots -> {
+            slots.forEachSlot((slot, itemStack) -> {
+                if (!itemStack.isEmpty() &&
+                        itemStack.getItem() instanceof AccessoryItemExtension accessoryItem &&
+                        EnchantmentHelper.getItemEnchantmentLevel(enchantment, itemStack) > 0 &&
+                        accessoryItem.isConsideredByEnchantment(new AccessorySlotContext<>(livingEntity, slot, itemStack), enchantment) &&
+                        predicate.test(itemStack)) {
+                    list.add(new Map.Entry<>() {
+                        @Override
+                        public EquipmentSlot getKey() {
+                            return slot.getEquivalentSlot();
+                        }
 
-        AccessorySlots.getForEntity(livingEntity).ifPresent((slots) ->
-                slots.forEachSlot((slotType, itemStack) -> {
-                    if (itemStack.isEmpty()) return;
-                    if (!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-                    if (accessoryItemExtension.isConsideredIntoPostDamageEffects(itemStack, slotType, livingEntity)) {
-                        stacks.add(itemStack);
-                    } else {
-                        defaultStacks.remove(itemStack);
-                    }
-                })
-        );
+                        @Override
+                        public ItemStack getValue() {
+                            return slots.getItem(slot).orElse(ItemStack.EMPTY);
+                        }
 
-        if (!stacks.isEmpty()) {
-            stacks.addAll(defaultStacks);
-            return stacks;
-        }
-        return defaultStacks;
+                        @Override
+                        public ItemStack setValue(ItemStack value) {
+                            if (value == null)
+                                throw new IllegalArgumentException("ItemStack cannot be null");
+                            var old = getValue();
+                            slots.setItem(slot, value);
+                            return old;
+                        }
+                    });
+                }
+            });
+        });
+        return list;
     }
 
-    @WrapOperation(method = "doPostHurtEffects", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;getAllSlots()Ljava/lang/Iterable;"))
-    private static Iterable<ItemStack> accessoriesDoPostHurtEffects(LivingEntity livingEntity, Operation<Iterable<ItemStack>> originalOperation) {
-        Iterable<ItemStack> original = originalOperation.call(livingEntity);
-        List<ItemStack> defaultStacks = new ArrayList<>();
-        List<ItemStack> stacks = new ArrayList<>();
-        original.forEach(defaultStacks::add);
+    @WrapOperation(method = "getEnchantmentLevel(Lnet/minecraft/world/item/enchantment/Enchantment;Lnet/minecraft/world/entity/LivingEntity;)I",
+            at = @At(value = "INVOKE", target = "Ljava/util/Map;values()Ljava/util/Collection;"))
+    @SuppressWarnings("unchecked")
+    private static Collection<ItemStack> includingAccessorySlots(Map<EquipmentSlot, ItemStack> instance, Operation<Collection<ItemStack>> original,
+                                                                 @Local(argsOnly = true) Enchantment enchantment,
+                                                                 @Local(argsOnly = true) LivingEntity livingEntity) {
+        var list = new ArrayList<ItemStack>(Objects.requireNonNullElse(original.call(instance), (Collection<ItemStack>)Collections.EMPTY_LIST));
+        AccessorySlots.getForEntity(livingEntity).ifPresent(slots -> {
+            slots.forEachSlot((slot, itemStack) -> {
+                if (!itemStack.isEmpty() &&
+                        itemStack.getItem() instanceof AccessoryItemExtension accessoryItem &&
+                        accessoryItem.isConsideredByEnchantment(new AccessorySlotContext<>(livingEntity, slot, itemStack), enchantment)) {
+                    list.add(itemStack);
+                }
+            });
+        });
+        return list;
+    }
 
-        AccessorySlots.getForEntity(livingEntity).ifPresent((slots) ->
-                slots.forEachSlot((slotType, itemStack) -> {
-                    if (itemStack.isEmpty()) return;
-                    if (!(itemStack.getItem() instanceof AccessoryItemExtension accessoryItemExtension)) return;
-                    if (accessoryItemExtension.isConsideredIntoPostHurtEffects(itemStack, slotType, livingEntity)) {
-                        stacks.add(itemStack);
-                    } else {
-                        defaultStacks.remove(itemStack);
+    @Inject(method = { "doPostHurtEffects", "doPostDamageEffects" }, at = @At("TAIL"))
+    private static void andPostEffectsOnAccessories(LivingEntity livingEntity, Entity target, CallbackInfo ci,
+                                                    @Local EnchantmentHelper.EnchantmentVisitor visitor) {
+        AccessorySlots.getForEntity(livingEntity).ifPresent(slots -> {
+            slots.forEachSlot((slot, itemStack) -> {
+                if (!itemStack.isEmpty() && itemStack.getItem() instanceof AccessoryItemExtension accessoryItem) {
+                    for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(itemStack).entrySet()) {
+                        if (accessoryItem.isConsideredByEnchantment(new AccessorySlotContext<>(livingEntity, slot, itemStack), entry.getKey()))
+                            visitor.accept(entry.getKey(), entry.getValue());
                     }
-                })
-        );
-
-        if (!stacks.isEmpty()) {
-            stacks.addAll(defaultStacks);
-            return stacks;
-        }
-
-        return defaultStacks;
+                }
+            });
+        });
     }
 }

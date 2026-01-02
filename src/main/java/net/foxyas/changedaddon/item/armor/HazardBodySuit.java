@@ -174,31 +174,23 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     }
 
     @Override
-    public boolean isConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
+    public boolean isConsideredByEnchantment(AccessorySlotContext<?> slotContext, Enchantment enchantment) {
+        AccessorySlotType slotType = slotContext.slotType();
+        ItemStack itemStack = slotContext.stack();
+        LivingEntity wearer = slotContext.wearer();
         if (enchantment == ChangedEnchantments.TRANSFUR_RESISTANCE.get()) {
-            return slotType.canHoldItem(itemStack, pEntity);
+            return slotType.canHoldItem(itemStack, wearer);
         }
 
         if (enchantment == Enchantments.MENDING) {
-            return slotType.canHoldItem(itemStack, pEntity);
+            return slotType.canHoldItem(itemStack, wearer);
         }
 
         if (enchantment == Enchantments.THORNS) {
-            return slotType.canHoldItem(itemStack, pEntity);
+            return slotType.canHoldItem(itemStack, wearer);
         }
 
-
-        return AccessoryItemExtension.super.isConsideredByEnchantment(enchantment, itemStack, slotType, pEntity);
-    }
-
-    @Override
-    public boolean isConsideredBySlots(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
-        return slotType.canHoldItem(itemStack, livingEntity);
-    }
-
-    @Override
-    public boolean isConsideredIntoPostHurtEffects(ItemStack itemStack, AccessorySlotType slotType, LivingEntity livingEntity) {
-        return true;
+        return AccessoryItemExtension.super.isConsideredByEnchantment(slotContext, enchantment);
     }
 
     @Override

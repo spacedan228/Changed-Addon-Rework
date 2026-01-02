@@ -1,18 +1,31 @@
 package net.foxyas.changedaddon.mixins.entity;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.ability.ToggleClimbAbilityInstance;
 import net.foxyas.changedaddon.entity.api.ExtraConditions;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.data.AccessorySlotContext;
+import net.ltxprogrammer.changed.data.AccessorySlots;
+import net.ltxprogrammer.changed.item.AccessoryItem;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.Map;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
@@ -74,5 +87,24 @@ public abstract class LivingEntityMixin {
                     return latexVariant.getParent().canGlide || original;
                 })
                 .orElse(original);
+    }
+
+    @WrapOperation(method = "getDamageAfterMagicAbsorb",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getDamageProtection(Ljava/lang/Iterable;Lnet/minecraft/world/damagesource/DamageSource;)I"))
+    public int andAccessorySlots(Iterable<ItemStack> armorSlots, DamageSource damageSource, Operation<Integer> original) {
+        MutableInt total = new MutableInt();
+
+        LivingEntity self = (LivingEntity) (Object) this;
+        AccessorySlots.getForEntity(self).get().forEachSlot((slot, itemStack) -> {
+            if (!itemStack.isEmpty() && itemStack.getItem() instanceof AccessoryItemExtension accessoryItem) {
+                for (Map.Entry<Enchantment, Integer> entry : EnchantmentHelper.getEnchantments(itemStack).entrySet()) {
+                    if (accessoryItem.isConsideredByEnchantment(new AccessorySlotContext<>(self, slot, itemStack), entry.getKey())) {
+                        total.add(entry.getKey().getDamageProtection(entry.getValue(), damageSource));
+                    }
+                }
+            }
+        });
+
+        return total.intValue() + original.call(armorSlots, damageSource);
     }
 }
