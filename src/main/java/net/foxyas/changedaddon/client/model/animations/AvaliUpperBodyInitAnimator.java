@@ -49,10 +49,8 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
             this.leftArm.zRot = 0.0F;
             this.rightArm.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 2.0F * limbSwingAmount * 0.5F / f;
             this.leftArm.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F / f;
-            ModelPart var10000 = this.rightArm;
-            var10000.zRot += Mth.lerp(this.core.reachOut, 0.0F, 0.1745329F);
-            var10000 = this.leftArm;
-            var10000.zRot += Mth.lerp(this.core.reachOut, 0.0F, -0.1745329F);
+            this.rightArm.zRot += Mth.lerp(this.core.reachOut, 0.0F, 0.1745329F);
+            this.leftArm.zRot += Mth.lerp(this.core.reachOut, 0.0F, -0.1745329F);
             this.rightArm.xRot = Mth.lerp(this.core.reachOut, this.rightArm.xRot, (-(float) Math.PI / 6F));
             this.leftArm.xRot = Mth.lerp(this.core.reachOut, this.leftArm.xRot, (-(float) Math.PI / 6F));
         }
@@ -62,6 +60,7 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
             variantInstance.ifHasAbility(ChangedAddonAbilities.WING_FLAP_ABILITY.get(), (instance) -> {
                 if (!instance.canUse()) return;
                 if (entity.getUnderlyingPlayer().getAbilities().flying) return;
+                if (entity.isFallFlying()) return;
 
                 // Aplicação no cálculo da rotação
                 float progress = instance.getController().getHoldTicks() / (float) WingFlapAbility.MAX_TICK_HOLD;

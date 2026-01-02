@@ -20,6 +20,8 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
     private final ModelPart leftArm;
 
     public static final float WING_FLAP_TARGET_X = (float) Math.toRadians(25);
+    private float targetY;
+    private float targetZ;
 
     public AvaliFallFlyAnimator(ModelPart rightArm, ModelPart leftArm) {
         super();
@@ -39,20 +41,8 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
         float t = Mth.clamp(ticks / 15.0F, 0.0F, 1.0F);
         float flyAmount = smootherStep(t); // Muito mais suave!
 
-        // float old2_flyAmount = t * t * (3.0F - 2.0F * t); // Smoothstep
-
-        // float old_flyAmount = Mth.clamp(ticks * ticks / 100.0F, 0.0F, 1.0F); // Suavização
-
-
-        float targetY = (float) Math.toRadians(90);
-        float targetZ = (float) Math.toRadians(90);
-
-        this.rightArm.yRot = Mth.lerp(flyAmount, this.rightArm.yRot, targetY);
-        this.rightArm.zRot = Mth.lerp(flyAmount, this.rightArm.zRot, targetZ);
-
-        this.leftArm.yRot = Mth.lerp(flyAmount, this.leftArm.yRot, -targetY);
-        this.leftArm.zRot = Mth.lerp(flyAmount, this.leftArm.zRot, -targetZ);
-
+        targetY = (float) Math.toRadians(90);
+        targetZ = (float) Math.toRadians(90);
 
         if (entity.getUnderlyingPlayer() != null && ProcessTransfur.getPlayerTransfurVariant(entity.getUnderlyingPlayer()) != null) { // Just a Fail Safe Check
             TransfurVariantInstance<?> variantInstance = ProcessTransfur.getPlayerTransfurVariant(entity.getUnderlyingPlayer());
@@ -62,14 +52,25 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
 
                 // Aplicação no cálculo da rotação
                 float progress = instance.getController().getHoldTicks() / (float) WingFlapAbility.MAX_TICK_HOLD;
+                if (progress <= 0) return;
                 float easedProgress = easeOutCubic(progress); // Aplica suavização
 
                 // Interpolação suave
-                this.rightArm.xRot = Mth.lerp(easedProgress, this.rightArm.xRot, WING_FLAP_TARGET_X);
+                //this.rightArm.xRot = Mth.lerp(easedProgress, this.rightArm.xRot, WING_FLAP_TARGET_X);
+                //this.leftArm.xRot = Mth.lerp(easedProgress, this.leftArm.xRot, -WING_FLAP_TARGET_X);
 
-                this.leftArm.xRot = Mth.lerp(easedProgress, this.leftArm.xRot, -WING_FLAP_TARGET_X);
+                this.targetY = (float) Math.toRadians(90) + WING_FLAP_TARGET_X * easedProgress;
+                this.targetZ = (float) Math.toRadians(90) + WING_FLAP_TARGET_X * easedProgress;
+
+
             });
         }
+
+        this.rightArm.yRot = Mth.lerp(flyAmount, this.rightArm.yRot, targetY);
+        this.rightArm.zRot = Mth.lerp(flyAmount, this.rightArm.zRot, targetZ);
+
+        this.leftArm.yRot = Mth.lerp(flyAmount, this.leftArm.yRot, -targetY);
+        this.leftArm.zRot = Mth.lerp(flyAmount, this.leftArm.zRot, -targetZ);
     }
 
     float smootherStep(float t) {
