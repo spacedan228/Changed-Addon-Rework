@@ -14,6 +14,7 @@ import net.ltxprogrammer.changed.entity.beast.LatexHuman;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.*;
+import net.ltxprogrammer.changed.item.AccessoryItem;
 import net.ltxprogrammer.changed.item.ClothingItem;
 import net.ltxprogrammer.changed.item.ClothingState;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -159,24 +160,27 @@ public class HazardBodySuit extends ClothingItem implements AccessoryItemExtensi
     }
 
     @Override
-    public boolean isConsideredByEnchantment(Enchantment enchantment, ItemStack itemStack, AccessorySlotType slotType, LivingEntity pEntity) {
+    public boolean isConsideredByEnchantment(AccessorySlotContext<?> slotContext, Enchantment enchantment) {
+        AccessorySlotType slotType = slotContext.slotType();
+        ItemStack itemStack = slotContext.stack();
+        LivingEntity wearer = slotContext.wearer();
         if (enchantment == ChangedEnchantments.TRANSFUR_RESISTANCE.get()) {
-            return slotType.canHoldItem(itemStack, pEntity);
+            return slotType.canHoldItem(itemStack, wearer);
         }
 
         if (enchantment == Enchantments.ALL_DAMAGE_PROTECTION) {
-            return slotType.canHoldItem(itemStack, pEntity);
+            return slotType.canHoldItem(itemStack, wearer);
         }
 
         if (enchantment == Enchantments.MENDING) {
-            return slotType.canHoldItem(itemStack, pEntity);
+            return slotType.canHoldItem(itemStack, wearer);
         }
 
         if (enchantment == Enchantments.THORNS) {
-            return slotType.canHoldItem(itemStack, pEntity);
+            return slotType.canHoldItem(itemStack, wearer);
         }
 
-        return super.isConsideredByEnchantment(enchantment, itemStack, slotType, pEntity);
+        return super.isConsideredByEnchantment(slotContext, enchantment);
     }
 
     @Override

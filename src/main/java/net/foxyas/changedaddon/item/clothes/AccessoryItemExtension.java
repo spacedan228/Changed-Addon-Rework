@@ -7,5 +7,4 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 public interface AccessoryItemExtension {
-
 }
