@@ -91,7 +91,7 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
 
         // aplica em Z (mais natural pra "tensão")
         rightArm.zRot = capLevel(rightArm.zRot + bob, WING_FLAP_TARGET_Z - BOB_AMPLITUDE, WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
-        leftArm.zRot = capLevel(leftArm.zRot - bob, WING_FLAP_TARGET_Z - BOB_AMPLITUDE, WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
+        leftArm.zRot = capLevel(leftArm.zRot - bob, -WING_FLAP_TARGET_Z - BOB_AMPLITUDE, -WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
     }
 
 
