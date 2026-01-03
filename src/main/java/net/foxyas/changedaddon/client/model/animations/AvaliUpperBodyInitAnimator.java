@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.client.model.animations;
 
 import static net.foxyas.changedaddon.ability.WingFlapAbility.*;
+
+import net.foxyas.changedaddon.ability.WingFlapAbility;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator.AnimateStage;
@@ -66,10 +68,10 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
 
                 // Interpolação suave
                 this.rightArm.yRot = Mth.lerp(easedProgress, this.rightArm.yRot, AVALI_WING_FLAP_TARGET_Y);
-                this.rightArm.zRot = Mth.lerp(easedProgress, this.rightArm.zRot, AVALI_WING_FLAP_TARGET_X);
+                this.rightArm.zRot = Mth.lerp(easedProgress, this.rightArm.zRot, AVALI_WING_FLAP_TARGET_Z);
 
                 this.leftArm.yRot = Mth.lerp(easedProgress, this.leftArm.yRot, -AVALI_WING_FLAP_TARGET_Y);
-                this.leftArm.zRot = Mth.lerp(easedProgress, this.leftArm.zRot, -AVALI_WING_FLAP_TARGET_X);
+                this.leftArm.zRot = Mth.lerp(easedProgress, this.leftArm.zRot, -AVALI_WING_FLAP_TARGET_Z);
 
                 // aplica bob quando chegou no ready
                 if (progress >= 1.0f) {
@@ -87,8 +89,8 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
         float bob = Mth.sin(time * BOB_SPEED) * BOB_AMPLITUDE;
 
         // aplica em Z (mais natural pra "tensão")
-        rightArm.zRot = capLevel(rightArm.zRot + bob, AVALI_WING_FLAP_TARGET_X - BOB_AMPLITUDE, AVALI_WING_FLAP_TARGET_X + BOB_AMPLITUDE);
-        leftArm.zRot = capLevel(leftArm.zRot - bob, -AVALI_WING_FLAP_TARGET_X - BOB_AMPLITUDE, -AVALI_WING_FLAP_TARGET_X + BOB_AMPLITUDE);
+        rightArm.zRot = capLevel(rightArm.zRot + bob, AVALI_WING_FLAP_TARGET_Z - BOB_AMPLITUDE, AVALI_WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
+        leftArm.zRot = capLevel(leftArm.zRot - bob, -AVALI_WING_FLAP_TARGET_Z - BOB_AMPLITUDE, -AVALI_WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
     }
 
 
