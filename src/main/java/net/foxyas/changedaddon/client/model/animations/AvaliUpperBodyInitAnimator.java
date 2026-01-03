@@ -1,6 +1,6 @@
 package net.foxyas.changedaddon.client.model.animations;
 
-import net.foxyas.changedaddon.ability.WingFlapAbility;
+import static net.foxyas.changedaddon.ability.WingFlapAbility.*;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator.AnimateStage;
@@ -16,8 +16,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> extends AbstractUpperBodyAnimator<T, M> {
 
-    public static final float WING_FLAP_TARGET_Y = (float) Math.toRadians(90);
-    public static final float WING_FLAP_TARGET_Z = (float) Math.toRadians(90);
     public static final float BOB_AMPLITUDE = (float) Math.toRadians(4);
 
     public AvaliUpperBodyInitAnimator(ModelPart head, ModelPart torso, ModelPart leftArm, ModelPart rightArm) {
@@ -63,15 +61,15 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
                 if (entity.isFallFlying()) return;
 
                 // Aplicação no cálculo da rotação
-                float progress = instance.getController().getHoldTicks() / (float) WingFlapAbility.MAX_TICK_HOLD;
+                float progress = instance.getController().getHoldTicks() / (float) MAX_TICK_HOLD;
                 float easedProgress = easeOutCubic(progress); // Aplica suavização
 
                 // Interpolação suave
-                this.rightArm.yRot = Mth.lerp(easedProgress, this.rightArm.yRot, WING_FLAP_TARGET_Y);
-                this.rightArm.zRot = Mth.lerp(easedProgress, this.rightArm.zRot, WING_FLAP_TARGET_Z);
+                this.rightArm.yRot = Mth.lerp(easedProgress, this.rightArm.yRot, AVALI_WING_FLAP_TARGET_Y);
+                this.rightArm.zRot = Mth.lerp(easedProgress, this.rightArm.zRot, AVALI_WING_FLAP_TARGET_X);
 
-                this.leftArm.yRot = Mth.lerp(easedProgress, this.leftArm.yRot, -WING_FLAP_TARGET_Y);
-                this.leftArm.zRot = Mth.lerp(easedProgress, this.leftArm.zRot, -WING_FLAP_TARGET_Z);
+                this.leftArm.yRot = Mth.lerp(easedProgress, this.leftArm.yRot, -AVALI_WING_FLAP_TARGET_Y);
+                this.leftArm.zRot = Mth.lerp(easedProgress, this.leftArm.zRot, -AVALI_WING_FLAP_TARGET_X);
 
                 // aplica bob quando chegou no ready
                 if (progress >= 1.0f) {
@@ -89,8 +87,8 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
         float bob = Mth.sin(time * BOB_SPEED) * BOB_AMPLITUDE;
 
         // aplica em Z (mais natural pra "tensão")
-        rightArm.zRot = capLevel(rightArm.zRot + bob, WING_FLAP_TARGET_Z - BOB_AMPLITUDE, WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
-        leftArm.zRot = capLevel(leftArm.zRot - bob, -WING_FLAP_TARGET_Z - BOB_AMPLITUDE, -WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
+        rightArm.zRot = capLevel(rightArm.zRot + bob, AVALI_WING_FLAP_TARGET_X - BOB_AMPLITUDE, AVALI_WING_FLAP_TARGET_X + BOB_AMPLITUDE);
+        leftArm.zRot = capLevel(leftArm.zRot - bob, -AVALI_WING_FLAP_TARGET_X - BOB_AMPLITUDE, -AVALI_WING_FLAP_TARGET_X + BOB_AMPLITUDE);
     }
 
 
