@@ -4,6 +4,7 @@ import dev.tr7zw.notenoughanimations.access.PlayerData;
 import dev.tr7zw.notenoughanimations.animations.vanilla.ElytraAnimation;
 import dev.tr7zw.notenoughanimations.versionless.animations.BodyPart;
 import net.foxyas.changedaddon.ability.WingFlapAbility;
+import net.foxyas.changedaddon.client.model.animations.AvaliFallFlyAnimator;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.extension.RequiredMods;
@@ -61,21 +62,25 @@ public class AvaliElytraAnimationMixin {
             });
         }
 
-        // Quanto o flap influencia (0 → 20 graus)
-        float flapDeg = flapProgress.get() * 20.0f;
+        // Quanto o flap influencia (20 → 30 graus)
+        float flapDeg = 20.0f + flapProgress.get() * 10.0f;
+
+        float t = Mth.clamp(tickCounter * 0.6662F, 0.0F, 1.0F);
+        float flyAmount = changedAddon$smootherStep(t); // Muito mais suave!
+
 
         // =========================
         // SEM FLAP (activation <= 0)
         // =========================
         if (flapProgress.get() <= 0.0f) {
             if (part == BodyPart.RIGHT_ARM) {
-                model.rightArm.xRot = 0.0f;
-                model.rightArm.yRot = Mth.HALF_PI;      // 90°
-                model.rightArm.zRot = Mth.HALF_PI;      // 90°
+                model.rightArm.xRot = Mth.lerp(flyAmount, model.rightArm.xRot, Mth.HALF_PI); // 90°
+                model.rightArm.yRot = Mth.lerp(flyAmount, model.rightArm.yRot, (float) Math.toRadians(90.0f - AvaliFallFlyAnimator.FALL_FLY_ROTATION));
+                model.rightArm.zRot = Mth.lerp(flyAmount, model.rightArm.zRot, (float) Math.toRadians(180.0f));
             } else {
-                model.leftArm.xRot = 0.0f;
-                model.leftArm.yRot = -Mth.HALF_PI;     // -90°
-                model.leftArm.zRot = -Mth.HALF_PI;     // -90°
+                model.leftArm.xRot = Mth.lerp(flyAmount, model.leftArm.xRot, Mth.HALF_PI); // 90°
+                model.leftArm.yRot = Mth.lerp(flyAmount, model.leftArm.yRot, (float) Math.toRadians(-90.0f + AvaliFallFlyAnimator.FALL_FLY_ROTATION));
+                model.leftArm.zRot = Mth.lerp(flyAmount, model.leftArm.zRot, (float) Math.toRadians(-180.0f));
             }
             return;
         }
@@ -83,17 +88,17 @@ public class AvaliElytraAnimationMixin {
         // =========================
         // COM FLAP (activation > 0)
         // =========================
-        model.rightArm.xRot = Mth.HALF_PI; // 90°
-        model.rightArm.yRot = (float) Math.toRadians(90.0f - flapDeg);
-        model.rightArm.zRot = (float) Math.toRadians(180.0f);
-        model.leftArm.xRot = Mth.HALF_PI; // 90°
-        model.leftArm.yRot = (float) Math.toRadians(-90.0f + flapDeg);
-        model.leftArm.zRot = (float) Math.toRadians(-180.0f);
+        model.rightArm.xRot = Mth.lerp(flyAmount, model.rightArm.xRot, Mth.HALF_PI); // 90°
+        model.rightArm.yRot = Mth.lerp(flyAmount, model.rightArm.yRot, (float) Math.toRadians(90.0f - flapDeg));
+        model.rightArm.zRot = Mth.lerp(flyAmount, model.rightArm.zRot, (float) Math.toRadians(180.0f));
+        model.leftArm.xRot = Mth.lerp(flyAmount, model.leftArm.xRot, Mth.HALF_PI); // 90°
+        model.leftArm.yRot = Mth.lerp(flyAmount, model.leftArm.yRot, (float) Math.toRadians(-90.0f + flapDeg));
+        model.leftArm.zRot = Mth.lerp(flyAmount, model.leftArm.zRot, (float) Math.toRadians(-180.0f));
     }
 
 
     @Unique
-    private float smootherStep(float t) {
+    private float changedAddon$smootherStep(float t) {
         return t * t * t * (t * (t * 6 - 15) + 10);
     }
 }
