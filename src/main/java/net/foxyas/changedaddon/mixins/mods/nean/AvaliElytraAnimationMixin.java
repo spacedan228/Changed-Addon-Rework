@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Mixin(value = ElytraAnimation.class, remap = false)
 @RequiredMods("notenoughanimations")
-public class NEAAvaliElytraAnimationMixin {
+public class AvaliElytraAnimationMixin {
 
     @Inject(method = "apply", at = @At("HEAD"), cancellable = true)
     private void injectAvaliAnimation(
