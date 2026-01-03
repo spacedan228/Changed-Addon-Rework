@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> extends HumanoidAnimator.Animator<T, M> {
 
+    public static final float FALL_FLY_ROTATION = 20.0f;
     private final ModelPart rightArm;
     private final ModelPart leftArm;
 
@@ -60,19 +61,19 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
             }
         }
 
-        // Quanto o flap influencia (0 → 90 graus)
-        float flapDeg = flapProgress.get() * 20.0f;
+        // Quanto o flap influencia (20° → 30°)
+        float flapDeg = FALL_FLY_ROTATION + flapProgress.get() * 10.0f;
 
         // =========================
         // SEM FLAP (activation <= 0)
         // =========================
         if (flapProgress.get() <= 0.0f) {
-            this.rightArm.xRot = Mth.lerp(flyAmount, rightArm.xRot, 0);
-            this.rightArm.yRot = Mth.lerp(flyAmount, rightArm.yRot, Mth.HALF_PI);      // 90°
-            this.rightArm.zRot = Mth.lerp(flyAmount, rightArm.zRot, Mth.HALF_PI);      // 90°
-            this.leftArm.xRot = Mth.lerp(flyAmount, leftArm.xRot, 0);
-            this.leftArm.yRot = Mth.lerp(flyAmount, leftArm.yRot, -Mth.HALF_PI);      // -90°
-            this.leftArm.zRot = Mth.lerp(flyAmount, leftArm.zRot, -Mth.HALF_PI);      // -90°
+            this.rightArm.xRot = Mth.lerp(flyAmount, this.rightArm.xRot, Mth.HALF_PI); // 90°
+            this.rightArm.yRot = Mth.lerp(flyAmount, this.rightArm.yRot, (float) Math.toRadians(90.0f - FALL_FLY_ROTATION));
+            this.rightArm.zRot = Mth.lerp(flyAmount, this.rightArm.zRot, (float) Math.toRadians(180.0f));
+            this.leftArm.xRot = Mth.lerp(flyAmount, this.leftArm.xRot, Mth.HALF_PI); // 90°
+            this.leftArm.yRot = Mth.lerp(flyAmount, this.leftArm.yRot, (float) Math.toRadians(-90.0f + FALL_FLY_ROTATION));
+            this.leftArm.zRot = Mth.lerp(flyAmount, this.leftArm.zRot, (float) Math.toRadians(-180.0f));
             return;
         }
 
