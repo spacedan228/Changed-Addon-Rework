@@ -60,8 +60,8 @@ public class NEAAvaliElytraAnimationMixin {
             });
         }
 
-        // Quanto o flap influencia (0 → 90 graus)
-        float flapDeg = flapProgress.get() * 90.0f;
+        // Quanto o flap influencia (0 → 20 graus)
+        float flapDeg = flapProgress.get() * 20.0f;
 
         // =========================
         // SEM FLAP (activation <= 0)

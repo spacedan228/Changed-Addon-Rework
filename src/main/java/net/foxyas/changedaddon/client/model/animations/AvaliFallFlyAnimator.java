@@ -61,7 +61,7 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
         }
 
         // Quanto o flap influencia (0 → 90 graus)
-        float flapDeg = flapProgress.get() * 90.0f;
+        float flapDeg = flapProgress.get() * 20.0f;
 
         // =========================
         // SEM FLAP (activation <= 0)
