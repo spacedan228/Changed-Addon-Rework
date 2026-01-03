@@ -53,7 +53,7 @@
     "mods.changed.FacilitySinglePieceInstanceAccessor",
     "mods.changed.LatexTypeMixin",
     "mods.changed.ProcessTransfurMixin",
-    "mods.nean.NEAElytraAnimationMixin",
+    "mods.nean.AvaliElytraAnimationMixin",
     "world.ConsumeItemTrigger",
     "world.DataFixTypesMixin",
     "world.LevelStorageAccessMixin",

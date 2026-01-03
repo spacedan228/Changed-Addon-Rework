@@ -1,22 +1,29 @@
 package net.foxyas.changedaddon.client.model.animations;
 
+import net.foxyas.changedaddon.ability.WingFlapAbility;
+import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator.AnimateStage;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> extends HumanoidAnimator.Animator<T, M> {
 
-    private final ModelPart RightArm;
-    private final ModelPart LeftArm;
+    private final ModelPart rightArm;
+    private final ModelPart leftArm;
 
     public AvaliFallFlyAnimator(ModelPart rightArm, ModelPart leftArm) {
         super();
-        RightArm = rightArm;
-        LeftArm = leftArm;
+        this.rightArm = rightArm;
+        this.leftArm = leftArm;
     }
 
     @Override
@@ -31,19 +38,53 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
         float t = Mth.clamp(ticks / 15.0F, 0.0F, 1.0F);
         float flyAmount = smootherStep(t); // Muito mais suave!
 
-        // float old2_flyAmount = t * t * (3.0F - 2.0F * t); // Smoothstep
+        AtomicReference<Float> flapProgress = new AtomicReference<>(0.0f);
 
-        // float old_flyAmount = Mth.clamp(ticks * ticks / 100.0F, 0.0F, 1.0F); // Suavização
+        Player player = entity.getUnderlyingPlayer();
+        if (player != null) {
+            var tf = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (tf == null || !tf.is(ChangedAddonTransfurVariants.AVALI)) {
+                return;
+            }
 
+            if (tf.hasAbility(ChangedAddonAbilities.WING_FLAP_ABILITY.get())) {
+                tf.ifHasAbility(ChangedAddonAbilities.WING_FLAP_ABILITY.get(), ability -> {
+                    if (!ability.canUse()) return;
+                    if (player.getAbilities().flying) return;
 
-        float targetY = (float) Math.toRadians(90);
-        float targetZ = (float) Math.toRadians(90);
+                    float raw = ability.getController().getHoldTicks() / (float) WingFlapAbility.MAX_TICK_HOLD;
 
-        this.RightArm.yRot = Mth.lerp(flyAmount, this.RightArm.yRot, targetY);
-        this.RightArm.zRot = Mth.lerp(flyAmount, this.RightArm.zRot, targetZ);
+                    // clamp + easing leve
+                    flapProgress.set(Mth.clamp(raw, 0.0f, 1.0f));
+                });
+            }
+        }
 
-        this.LeftArm.yRot = Mth.lerp(flyAmount, this.LeftArm.yRot, -targetY);
-        this.LeftArm.zRot = Mth.lerp(flyAmount, this.LeftArm.zRot, -targetZ);
+        // Quanto o flap influencia (0 → 90 graus)
+        float flapDeg = flapProgress.get() * 20.0f;
+
+        // =========================
+        // SEM FLAP (activation <= 0)
+        // =========================
+        if (flapProgress.get() <= 0.0f) {
+            this.rightArm.xRot = Mth.lerp(flyAmount, rightArm.xRot, 0);
+            this.rightArm.yRot = Mth.lerp(flyAmount, rightArm.yRot, Mth.HALF_PI);      // 90°
+            this.rightArm.zRot = Mth.lerp(flyAmount, rightArm.zRot, Mth.HALF_PI);      // 90°
+            this.leftArm.xRot = Mth.lerp(flyAmount, leftArm.xRot, 0);
+            this.leftArm.yRot = Mth.lerp(flyAmount, leftArm.yRot, -Mth.HALF_PI);      // -90°
+            this.leftArm.zRot = Mth.lerp(flyAmount, leftArm.zRot, -Mth.HALF_PI);      // -90°
+            return;
+        }
+
+        // =========================
+        // COM FLAP (activation > 0)
+        // =========================
+        this.rightArm.xRot = Mth.lerp(flyAmount, this.rightArm.xRot, Mth.HALF_PI); // 90°
+        this.rightArm.yRot = Mth.lerp(flyAmount, this.rightArm.yRot, (float) Math.toRadians(90.0f - flapDeg));
+        this.rightArm.zRot = Mth.lerp(flyAmount, this.rightArm.zRot, (float) Math.toRadians(180.0f));
+        this.leftArm.xRot = Mth.lerp(flyAmount, this.leftArm.xRot, Mth.HALF_PI); // 90°
+        this.leftArm.yRot = Mth.lerp(flyAmount, this.leftArm.yRot, (float) Math.toRadians(-90.0f + flapDeg));
+        this.leftArm.zRot = Mth.lerp(flyAmount, this.leftArm.zRot, (float) Math.toRadians(-180.0f));
     }
 
     float smootherStep(float t) {
