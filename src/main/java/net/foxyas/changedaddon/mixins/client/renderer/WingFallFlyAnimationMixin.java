@@ -63,27 +63,6 @@ public abstract class WingFallFlyAnimationMixin<T extends ChangedEntity, M exten
                 this.leftWingRoot.zRot = -maxRotation * Mth.DEG_TO_RAD;
                 this.rightWingRoot.zRot = maxRotation * Mth.DEG_TO_RAD;
             });
-
-
-            /*
-            Old Code
-            WingFlapAbility.AbilityInstance abilityInstance = variantInstance.getAbilityInstance(ChangedAddonAbilities.WING_FLAP_ABILITY.get());
-            if (variantInstance.hasAbility(ChangedAddonAbilities.WING_FLAP_ABILITY.get()) && abilityInstance.canUse()
-                    && variantInstance.getSelectedAbility() instanceof WingFlapAbility.AbilityInstance WingFlapAbilityInstance) {
-                if (entity.getUnderlyingPlayer().getAbilities().flying) {
-                    return;
-                }
-
-                // Aplicação no cálculo da rotação
-                float progress = WingFlapAbilityInstance.getController().getHoldTicks() / (float) WingFlapAbility.MAX_TICK_HOLD;
-                float easedProgress = easeOutCubic(progress); // Aplica suavização
-                float maxRotation = capLevel(35 * easedProgress, 0, 35); // Aplica o level cap
-
-                // Interpolação suave
-                this.leftWingRoot.zRot = -maxRotation * Mth.DEG_TO_RAD;
-                this.rightWingRoot.zRot = maxRotation * Mth.DEG_TO_RAD;
-            }
-            */
         }
     }
 }
