@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.util;
 
+import com.google.common.base.Predicates;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
@@ -9,12 +10,10 @@ import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.beast.AbstractLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -23,14 +22,17 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -149,7 +151,7 @@ public class PlayerUtil {
 
     public static boolean isWolfTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
-        if(variant.is(ChangedAddonTags.TransfurTypes.WOLF_LIKE)) return true;
+        if (variant.is(ChangedAddonTags.TransfurTypes.WOLF_LIKE)) return true;
 
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return Objects.requireNonNull(entity.getType().getRegistryName()).toString().contains("dog") ||
@@ -157,137 +159,70 @@ public class PlayerUtil {
                 entity instanceof AbstractLatexWolf;
     }
 
+    //=================================================== LookingAt ==================================================//
+
+    public static final ClipContext.ShapeGetter BLOCK_COLLISION = ClipContext.Block.COLLIDER;
+
+    public static final Predicate<Entity> NON_SPECTATOR = entity -> !entity.isSpectator();
+
     @Nullable
-    public static Entity getEntityPlayerLookingAt(Player player, double range) {
-        Level world = player.level;
-        Vec3 startVec = player.getEyePosition(1.0F); // Player's eye position
-        Vec3 lookVec = player.getLookAngle(); // Player's look direction
-        Vec3 endVec = startVec.add(lookVec.scale(range)); // End point of the line of sight
-
-        Entity closestEntity = null;
-        double closestDistance = range;
-
-        // Iterate over all entities within range
-        for (Entity entity : world.getEntities(player, player.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0D))) {
-            // Ignore entities in spectator mode
-            if (entity.isSpectator()) {
-                continue;
-            }
-
-            AABB entityBoundingBox = entity.getBoundingBox().inflate(entity.getPickRadius());
-
-            // Check if the line of sight intersects the entity's bounding box
-            if (entityBoundingBox.contains(startVec) || entityBoundingBox.clip(startVec, endVec).isPresent()) {
-                double distanceToEntity = startVec.distanceTo(entity.position());
-
-                if (distanceToEntity < closestDistance) {
-                    closestEntity = entity;
-                    closestDistance = distanceToEntity;
-                }
-            }
-        }
-
-        return closestEntity; // Return the closest entity the player is looking at
+    public static Entity getEntityLookingAt(Entity entity, float reach, @Nullable ClipContext.ShapeGetter testLineOfSight) {
+        EntityHitResult hit = getEntityHitLookingAt(entity, reach, testLineOfSight);
+        return hit != null ? hit.getEntity() : null;
     }
 
     @Nullable
-    public static Entity getEntityPlayerLookingAt(Entity player, double range) {
-        Level world = player.level;
-        Vec3 startVec = player.getEyePosition(1.0F); // Player's eye position
-        Vec3 lookVec = player.getLookAngle(); // Player's look direction
-        Vec3 endVec = startVec.add(lookVec.scale(range)); // End point of the line of sight
-
-        Entity closestEntity = null;
-        double closestDistance = range;
-
-        // Iterate over all entities within range
-        for (Entity entity : world.getEntities(player, player.getBoundingBox().expandTowards(lookVec.scale(range)).inflate(1.0D))) {
-            // Ignore entities in spectator mode
-            if (entity.isSpectator()) {
-                continue;
-            }
-
-            AABB entityBoundingBox = entity.getBoundingBox().inflate(entity.getPickRadius());
-
-            // Check if the line of sight intersects the entity's bounding box
-            if (entityBoundingBox.contains(startVec) || entityBoundingBox.clip(startVec, endVec).isPresent()) {
-                double distanceToEntity = startVec.distanceTo(entity.position());
-
-                if (distanceToEntity < closestDistance) {
-                    closestEntity = entity;
-                    closestDistance = distanceToEntity;
-                }
-            }
-        }
-
-        return closestEntity; // Return the closest entity the player is looking at
+    public static Entity getEntityLookingAt(Entity entity, float reach, @Nullable ClipContext.ShapeGetter testLineOfSight, Predicate<Entity> targetPredicate) {
+        EntityHitResult hit = getEntityHitLookingAt(entity, reach, testLineOfSight, targetPredicate);
+        return hit != null ? hit.getEntity() : null;
     }
 
     @Nullable
-    public static Entity getEntityLookingAt(Entity entity, double reach) {
-        double distance = reach * reach;
-        Vec3 eyePos = entity.getEyePosition(1.0f);
-        HitResult hitResult = entity.pick(reach, 1.0f, false);
-
-        if (hitResult.getType() != HitResult.Type.MISS) {
-            distance = hitResult.getLocation().distanceToSqr(eyePos);
-        }
-
-        Vec3 viewVec = entity.getViewVector(1.0F);
-        Vec3 toVec = eyePos.add(viewVec.x * reach, viewVec.y * reach, viewVec.z * reach);
-        AABB aabb = entity.getBoundingBox().expandTowards(viewVec.scale(reach)).inflate(1.0D, 1.0D, 1.0D);
-
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, aabb, e -> !e.isSpectator(), distance);
-
-        if (entityHitResult != null) {
-            Entity hitEntity = entityHitResult.getEntity();
-            if (eyePos.distanceToSqr(entityHitResult.getLocation()) <= reach * reach) {
-                return hitEntity;
-            }
-        }
-        return null;
+    public static <E extends Entity> E getEntityLookingAt(Entity entity, float reach, @Nullable ClipContext.ShapeGetter testLineOfSight, Class<E> entityClass) {
+        return getEntityLookingAt(entity, reach, testLineOfSight, NON_SPECTATOR, entityClass);
     }
 
     @Nullable
+    public static <E extends Entity> E getEntityLookingAt(Entity entity, float reach, @Nullable ClipContext.ShapeGetter testLineOfSight, Predicate<Entity> targetPredicate, Class<E> entityClass) {
+        EntityHitResult hit = getEntityHitLookingAt(entity, reach, testLineOfSight, targetPredicate.and(entityClass::isInstance));
+        return hit != null ? (E) hit.getEntity() : null;
+    }
+
+    /**
+     * @deprecated Use {@link PlayerUtil#getEntityHitLookingAt(Entity, float, ClipContext.ShapeGetter)}
+     */
+    @Nullable @Deprecated(forRemoval = true)
     public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, boolean testLineOfSight) {
-        return getEntityHitLookingAt(entity, reach, testLineOfSight, e -> !e.isSpectator());
+        return getEntityHitLookingAt(entity, reach, testLineOfSight ? ClipContext.Block.OUTLINE : null);
     }
 
     @Nullable
-    public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, boolean testLineOfSight, Predicate<Entity> targetPredicate) {
+    public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, @Nullable ClipContext.ShapeGetter testLineOfSight) {
+        return getEntityHitLookingAt(entity, reach, testLineOfSight, NON_SPECTATOR);
+    }
+
+    @Nullable
+    public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, @Nullable ClipContext.ShapeGetter testLineOfSight, Predicate<Entity> targetPredicate) {
         double reachSqr = reach * reach;
         Vec3 eyePos = entity.getEyePosition();
+        Vec3 viewVec = entity.getLookAngle();
+        Vec3 toVec = eyePos.add(viewVec.x * reach, viewVec.y * reach, viewVec.z * reach);
 
-        if (testLineOfSight) {
-            HitResult hitResult = entity.pick(reach, 1.0f, false);
+        if (testLineOfSight != null) {
+            HitResult hitResult = entity.level.clip(new DynamicClipContext(eyePos, toVec,
+                    testLineOfSight, Predicates.alwaysFalse(), CollisionContext.of(entity)));
 
             if (hitResult.getType() != HitResult.Type.MISS) {
                 reachSqr = hitResult.getLocation().distanceToSqr(eyePos);
                 reach = (float) Math.sqrt(reachSqr);
+                toVec = eyePos.add(viewVec.x * reach, viewVec.y * reach, viewVec.z * reach);
             }
         }
-
-        Vec3 viewVec = entity.getLookAngle();
-        Vec3 toVec = eyePos.add(viewVec.x * reach, viewVec.y * reach, viewVec.z * reach);
 
         return ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, new AABB(eyePos, toVec), targetPredicate, reachSqr);
     }
 
-    public static HitResult getEntityBlockHitLookingAt(Entity entity, double reach, float deltaTicks, boolean affectByFluids) {
-        return entity.pick(reach, deltaTicks, affectByFluids);
-    }
-
-    @Nullable
-    public static Vec3 getRelativeHitPosition(LivingEntity entity, float distance) {
-        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(entity, distance, true);
-        if (hitResult != null) {
-            Vec3 hitLocation = hitResult.getLocation();
-            Vec3 entityPosition = hitResult.getEntity().getPosition(1);
-            return hitLocation.subtract(entityPosition);
-        }
-        return null;
-    }
-
+    //================================================================================================================//
 
     public static boolean isLineOfSightClear(Player player, Entity entity) {
         var level = player.getLevel();
@@ -305,46 +240,6 @@ public class PlayerUtil {
 
         // Retorna true se o resultado for MISS (nenhum bloco obstruindo)
         return result.getType() == HitResult.Type.MISS;
-    }
-
-    @Nullable
-    public static Entity getEntityPlayerLookingAtType2(Entity entity, Entity player, double entityReach) {
-        double distance = entityReach * entityReach;
-        Vec3 eyePos = player.getEyePosition(1.0f);
-        HitResult hitResult = entity.pick(entityReach, 1.0f, false);
-
-        if (hitResult.getType() != HitResult.Type.MISS) {
-            distance = hitResult.getLocation().distanceToSqr(eyePos);
-            double blockReach = 5;
-
-            if (distance > blockReach * blockReach) {
-                Vec3 pos = hitResult.getLocation();
-                hitResult = BlockHitResult.miss(pos, Direction.getNearest(eyePos.x, eyePos.y, eyePos.z), new BlockPos(pos));
-            }
-        }
-
-        Vec3 viewVec = player.getViewVector(1.0F);
-        Vec3 toVec = eyePos.add(viewVec.x * entityReach, viewVec.y * entityReach, viewVec.z * entityReach);
-        AABB aabb = entity.getBoundingBox().expandTowards(viewVec.scale(entityReach)).inflate(1.0D, 1.0D, 1.0D);
-        EntityHitResult entityHitResult = ProjectileUtil.getEntityHitResult(player, eyePos, toVec, aabb, (p_234237_) -> !p_234237_.isSpectator(), distance);
-
-        if (entityHitResult != null) {
-            Entity targetEntity = entityHitResult.getEntity();
-            Vec3 targetPos = entityHitResult.getLocation();
-            double distanceToTarget = eyePos.distanceToSqr(targetPos);
-
-            if (distanceToTarget > distance || distanceToTarget > entityReach * entityReach) {
-                hitResult = BlockHitResult.miss(targetPos, Direction.getNearest(viewVec.x, viewVec.y, viewVec.z), new BlockPos(targetPos));
-            } else if (distanceToTarget < distance) {
-                hitResult = entityHitResult;
-            }
-        }
-
-        if (hitResult.getType() == HitResult.Type.ENTITY) {
-            return ((EntityHitResult) hitResult).getEntity();
-        }
-
-        return null;
     }
 
     public static boolean isProjectileMovingTowardsPlayer(Player player, Entity projectile) {
@@ -502,7 +397,7 @@ public class PlayerUtil {
                         .orElse(null);
 
             } catch (Exception e) {
-                ChangedAddonMod.LOGGER.error("Error getting entity by name: " + e.getMessage());
+                ChangedAddonMod.LOGGER.error("Error getting entity by name: {}", e.getMessage());
                 return null;
             }
         }
