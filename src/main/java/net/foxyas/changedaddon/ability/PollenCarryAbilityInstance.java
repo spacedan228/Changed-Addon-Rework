@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.ability;
 
 import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -42,7 +41,7 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
 
     public void startUsing() {
         LivingEntity livingEntity = entity.getEntity();
-        HitResult entityBlockHitLookingAt = PlayerUtil.getEntityBlockHitLookingAt(livingEntity, livingEntity instanceof Player player ? player.getEntityReach() : 4, 1, false);
+        HitResult entityBlockHitLookingAt = livingEntity.pick(livingEntity instanceof Player player ? player.getEntityReach() : 4, 1, false);
         if (entityBlockHitLookingAt.getType() != HitResult.Type.MISS && entityBlockHitLookingAt instanceof BlockHitResult blockHitResult) {
             Level level = livingEntity.level();
             BlockState blockState = level.getBlockState(blockHitResult.getBlockPos());

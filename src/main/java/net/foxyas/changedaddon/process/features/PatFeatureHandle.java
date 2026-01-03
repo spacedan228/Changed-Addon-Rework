@@ -49,7 +49,7 @@ public class PatFeatureHandle {
         InteractionHand emptyHand = getEmptyHand(player);
         if(emptyHand == null) return;
 
-        EntityHitResult targetEntityResult = PlayerUtil.getEntityHitLookingAt(player, (float) player.getEntityReach(), true, e -> {
+        EntityHitResult targetEntityResult = PlayerUtil.getEntityHitLookingAt(player, (float) player.getEntityReach(), PlayerUtil.BLOCK_COLLISION, e -> {
             if (e.isSpectator()) return false;
             if (!(e instanceof LivingEntity le)) return false;
             if (GrabEntityAbility.getGrabber(le) == null) return true;

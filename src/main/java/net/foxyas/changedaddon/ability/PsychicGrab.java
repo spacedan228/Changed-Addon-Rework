@@ -29,17 +29,18 @@ import java.util.Set;
 import java.util.UUID;
 
 public class PsychicGrab extends SimpleAbility {
+
     public static final Set<Integer> Keys = Set.of(
             GLFW.GLFW_KEY_UP,
             GLFW.GLFW_KEY_DOWN,
             GLFW.GLFW_KEY_LEFT,
             GLFW.GLFW_KEY_RIGHT
     );
+
     public Vec3 offset = Vec3.ZERO;
     public Vec3 look = Vec3.ZERO;
     public UUID TargetID = UUID.fromString("0-0-0-0-0"); //Fail Safe
     private AbstractAbilityInstance abilityInstance;
-    private Controller controller;
 
     public static boolean isSpectator(Entity entity) {
         return entity instanceof Player player && player.isSpectator();
@@ -160,7 +161,7 @@ public class PsychicGrab extends SimpleAbility {
             return;
         }
         Entity target = getTarget(entity.getLevel(), TargetID);
-        Entity lookingAt = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6);
+        Entity lookingAt = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6, PlayerUtil.BLOCK_COLLISION);
         if (entity.getEntity().isShiftKeyDown() || getTargetByID(entity.getLevel(), TargetID) == null) {
             if (lookingAt == null) {
                 return;
@@ -208,7 +209,7 @@ public class PsychicGrab extends SimpleAbility {
         if (target != null) {
             if (entity.getEntity().isShiftKeyDown()) {
                 if (entity.getAbilityInstance(this) != null && entity.getAbilityInstance(this).getController().getHoldTicks() <= 3) {
-                    Entity lookingAt = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6);
+                    Entity lookingAt = PlayerUtil.getEntityLookingAt(entity.getEntity(), 6, PlayerUtil.BLOCK_COLLISION);
                     if (lookingAt != null && lookingAt != getTargetByID(entity.getLevel(), TargetID)) {
                         TargetID = lookingAt.getUUID();
                     }

@@ -25,16 +25,20 @@ import javax.annotation.Nullable;
 public class ProcessPatFeature {
 
     public static void SpawnEmote(Player player, LivingEntity target) {
-        if (!(target instanceof ChangedEntity changedEntity) || changedEntity.getTarget() == player) return;
+        if (target instanceof Player targetPl && !ProcessTransfur.isPlayerTransfurred(targetPl)) return;
 
-        if (PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
-            player.level().addParticle(ChangedParticles.emote(changedEntity, Emote.CONFUSED),
-                    target.getX(), target.getY() + (double) target.getDimensions(target.getPose()).height + 0.65, target.getZ(),
-                    0.0f, 0.0f, 0.0f);
-            return;
+        if (target instanceof ChangedEntity changedEntity){
+            if (changedEntity.getTarget() == player) return;
+
+            if (PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
+                player.level().addParticle(ChangedParticles.emote(target, Emote.CONFUSED),
+                        target.getX(), target.getY() + (double) target.getDimensions(target.getPose()).height + 0.65, target.getZ(),
+                        0.0f, 0.0f, 0.0f);
+                return;
+            }
         }
 
-        player.level().addParticle(ChangedParticles.emote(changedEntity, Emote.HEART),
+        player.level().addParticle(ChangedParticles.emote(target, Emote.HEART),
                 target.getX(), target.getY() + (double) target.getDimensions(target.getPose()).height + 0.65, target.getZ(),
                 0.0f, 0.0f, 0.0f);
     }
@@ -94,12 +98,7 @@ public class ProcessPatFeature {
                 }
             }
 
-            if (event.world instanceof ServerLevel serverLevel) {
-                //serverLevel.sendParticles(ParticleTypes.HEART, target.getX(), target.getY() + 1, target.getZ(), 4, 0.3, 0.3, 0.3, 1);
-            } else {
-                SpawnEmote(player, target);
-            }
-
+            SpawnEmote(player, target);
         }
     }
 
