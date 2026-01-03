@@ -321,7 +321,7 @@ public class ChangedAddonTransfurVariants {
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
                     .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
                     .glide()
-                    .transfurMode(TransfurMode.NONE)
+                    .transfurMode(TransfurMode.REPLICATION)
                     .scares(List.of())
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
