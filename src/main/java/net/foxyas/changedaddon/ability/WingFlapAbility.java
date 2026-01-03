@@ -25,6 +25,11 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
     public static final int MAX_TICK_HOLD = 30;
     public static final int TICK_HOLD_NEED = 10;
 
+    public static final float AVALI_WING_FLAP_TARGET_X = (float) Math.toRadians(90);
+    public static final float AVALI_WING_FLAP_FALL_FLY_X = (float) Math.toRadians(5);
+    public static final float AVALI_WING_FLAP_TARGET_Y = (float) Math.toRadians(90);
+    public static final float AVALI_WING_FLAP_TARGET_Z = (float) Math.toRadians(0);
+
     public WingFlapAbility() {
         super(WingFlapAbility.AbilityInstance::new);
     }
