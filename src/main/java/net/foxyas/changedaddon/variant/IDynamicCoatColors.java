@@ -1,5 +1,7 @@
 package net.foxyas.changedaddon.variant;
 
+import net.foxyas.changedaddon.client.model.advanced.AvaliModel;
+import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -17,7 +19,7 @@ public interface IDynamicCoatColors extends VariantExtraStats {
             return false;
         }
         TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (transfur != null && transfur.is(ChangedAddonTransfurVariants.AVALI)) {
+        if (transfur != null && (transfur.is(ChangedAddonTransfurVariants.AVALI) || transfur.getChangedEntity() instanceof AvaliEntity)) {
             return true;
         }
         return transfur != null && transfur.getChangedEntity() instanceof IDynamicCoatColors;

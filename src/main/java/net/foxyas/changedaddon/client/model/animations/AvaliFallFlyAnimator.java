@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.client.model.animations;
 
 import net.foxyas.changedaddon.ability.WingFlapAbility;
+import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
@@ -44,7 +45,7 @@ public class AvaliFallFlyAnimator<T extends ChangedEntity, M extends AdvancedHum
         Player player = entity.getUnderlyingPlayer();
         if (player != null) {
             var tf = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (tf == null || !tf.is(ChangedAddonTransfurVariants.AVALI)) {
+            if (tf == null || !(tf.getChangedEntity() instanceof AvaliEntity) || !tf.is(ChangedAddonTransfurVariants.AVALI)) {
                 return;
             }
 
