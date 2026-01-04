@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
@@ -20,5 +21,10 @@ public class AvaliZerGodMasterEntity extends AvaliEntity {
     @Override
     public boolean isColorful() {
         return false;
+    }
+
+    @Override
+    public TransfurMode getTransfurMode() {
+        return TransfurMode.REPLICATION;
     }
 }
