@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
+import net.foxyas.changedaddon.command.ChangedAddonCommandRootCommand;
 import net.foxyas.changedaddon.process.sounds.BossMusicHandler;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
@@ -19,6 +20,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -36,6 +39,11 @@ public class ClientEvent {
             BossMusicHandler.tick(Minecraft.getInstance().level);
             SonarOutlineLayer.SonarClientState.tick();
         }
+    }
+
+    @SubscribeEvent
+    public static void registerCommands(RegisterClientCommandsEvent clientCommandsEvent) {
+        ChangedAddonCommandRootCommand.registerClientCommands(clientCommandsEvent.getDispatcher());
     }
 
     @SubscribeEvent
