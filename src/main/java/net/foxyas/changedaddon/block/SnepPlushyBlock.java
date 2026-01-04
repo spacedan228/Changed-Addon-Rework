@@ -35,6 +35,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Random;
@@ -105,19 +106,6 @@ public class SnepPlushyBlock extends AbstractPlushyBlock {
                 }
 
                 return InteractionResult.SUCCESS;
-            }
-        }
-
-        double hitX = hit.getLocation().x;
-        double hitY = hit.getLocation().y;
-        double hitZ = hit.getLocation().z;
-        if (blockEntity instanceof SnepPlushyBlockEntity plushBlockEntity) {
-            if (!plushBlockEntity.isSqueezed()) {
-                if (!world.isClientSide()) {
-                    //plushBlockEntity.squeezedTicks = 4;
-                    world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND.get(), SoundSource.BLOCKS, 1f, 1);
-                }
-                return InteractionResult.sidedSuccess(world.isClientSide());
             }
         }
         return retValue;

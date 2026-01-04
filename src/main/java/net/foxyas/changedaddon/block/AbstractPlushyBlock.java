@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.block;
 
 import net.foxyas.changedaddon.block.entity.AbstractPlushyBlockEntity;
+import net.foxyas.changedaddon.block.entity.SnepPlushyBlockEntity;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,6 +31,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Random;
 
@@ -104,20 +106,25 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
     @Override
     public @NotNull InteractionResult use(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player entity, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         InteractionResult retValue = super.use(blockstate, world, pos, entity, hand, hit);
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        squeezePlushy(world, hit, blockEntity);
+        return retValue;
+    }
+
+    protected @Nullable InteractionResult squeezePlushy(Level world, BlockHitResult hit, BlockEntity blockEntity) {
         double hitX = hit.getLocation().x;
         double hitY = hit.getLocation().y;
         double hitZ = hit.getLocation().z;
-        BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof AbstractPlushyBlockEntity plushBlockEntity) {
             if (!plushBlockEntity.isSqueezed()) {
                 if (!world.isClientSide()) {
+                    //plushBlockEntity.squeezedTicks = 4;
                     world.playSound(null, hitX, hitY, hitZ, ChangedAddonSoundEvents.PLUSHY_SOUND.get(), SoundSource.BLOCKS, 1f, 1);
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide());
             }
         }
-
-        return retValue;
+        return null;
     }
 
     @Override
