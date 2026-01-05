@@ -7,19 +7,14 @@ import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
-import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -60,7 +55,8 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     @Shadow
     public float suitTransitionO;
 
-    @Shadow private int grabCooldown;
+    @Shadow
+    private int grabCooldown;
     @Unique
     private boolean safeMode = false;
     @Unique
@@ -119,48 +115,26 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         return getSelf().entity.getEntity();
     }
 
-    @Redirect(
-            method = "tickIdle",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/ltxprogrammer/changed/entity/ChangedEntity;tryAbsorbTarget(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;FLjava/util/List;)Z"
-            )
-    )
-    private boolean changedaddon$customAbsorb(ChangedEntity instance, LivingEntity target, IAbstractChangedEntity loserPlayer, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions) {
-        GrabEntityAbilityInstance selfThis = (GrabEntityAbilityInstance) (Object) this;
-        AttributeInstance attribute = instance.maybeGetUnderlying().getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get());
-        if (attribute == null) {
-            return instance.tryAbsorbTarget(this.grabbedEntity, selfThis.entity, amount, possibleMobFusions);
-        }
-        double attributeValue = attribute.getValue();
-        float dmg = Mth.ceil((float) attributeValue * 1.33f);
-        return instance.tryAbsorbTarget(this.grabbedEntity, selfThis.entity, dmg, possibleMobFusions);
-    }
-
     @Inject(method = "tickIdle", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F", remap = true, shift = At.Shift.AFTER), cancellable = true)
-    public void cancelSuitDmg(CallbackInfo ci) {
+    public void cancelSuit(CallbackInfo ci) {
         if (this.isSafeMode()) {
+            ci.cancel();
+
             if (snuggleCooldown > 0) snuggleCooldown--;
 
-            if (this.suitTransition >= 3.0f) {
-                ci.cancel();
+            if (this.suitTransition >= 3) {
+                this.suitTransition = 3.0F;
 
                 if (getSelf().entity.getChangedEntity() instanceof ChangedEntityExtension changedEntityExtension && changedEntityExtension.shouldAlwaysHoldGrab(grabbedEntity)) {
                     this.grabStrength = 1;
-                    if (getSelf().getController().getHoldTicks() >= 1) {
+                    if (getSelf().getController().getHoldTicks() >= 2) {
                         this.suitTransition -= 0.25f;
                     }
+                }
 
-                    if (grabbedEntity != null) {
-                        if (!isAlreadySnuggledTight()) {
-                            this.runTightHug(this.grabbedEntity);
-                        }
-                    }
-                } else {
-                    if (grabbedEntity != null) {
-                        if (!isAlreadySnuggledTight()) {
-                            this.runTightHug(this.grabbedEntity);
-                        }
+                if (grabbedEntity != null) {
+                    if (!isAlreadySnuggledTight()) {
+                        this.runTightHug(this.grabbedEntity);
                     }
                 }
 
