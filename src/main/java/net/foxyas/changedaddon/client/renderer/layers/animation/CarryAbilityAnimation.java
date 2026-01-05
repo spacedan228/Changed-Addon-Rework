@@ -7,7 +7,6 @@ import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 
 public class CarryAbilityAnimation {
@@ -45,10 +44,10 @@ public class CarryAbilityAnimation {
 
         // Aplica animações normais aos braços com base na rotação da cabeça apenas se isWithCarryAbilitySelected for true
         if (entity.getUnderlyingPlayer() != null && entity.getUnderlyingPlayer().getFirstPassenger() == null) {
-            Entity entity1 = PlayerUtil.getEntityPlayerLookingAt(entity.getUnderlyingPlayer(), 3);
-            if (isWithCarryAbilitySelected && entity1 instanceof LivingEntity livingEntity) {
-                if (livingEntity.getType().is(ChangedTags.EntityTypes.HUMANOIDS)
-                        || livingEntity.getType().is(ChangedAddonTags.EntityTypes.CAN_CARRY)
+            LivingEntity entity1 = PlayerUtil.getEntityLookingAt(entity.getUnderlyingPlayer(), 3, PlayerUtil.BLOCK_COLLISION, LivingEntity.class);
+            if (isWithCarryAbilitySelected && entity1 != null) {
+                if (entity1.getType().is(ChangedTags.EntityTypes.HUMANOIDS)
+                        || entity1.getType().is(ChangedAddonTags.EntityTypes.CAN_CARRY)
                         && entity.getFirstPassenger() == null) {
 
                     if (entity.getMainHandItem().isEmpty()) {
