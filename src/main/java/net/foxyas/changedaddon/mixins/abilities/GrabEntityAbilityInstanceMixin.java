@@ -119,49 +119,51 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         return getSelf().entity.getEntity();
     }
 
-    @Redirect(
+    @WrapOperation(
             method = "tickIdle",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/ltxprogrammer/changed/entity/ChangedEntity;tryAbsorbTarget(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;FLjava/util/List;)Z"
             )
     )
-    private boolean changedaddon$customAbsorb(ChangedEntity instance, LivingEntity target, IAbstractChangedEntity loserPlayer, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions) {
+    private boolean changedaddon$modifyAbsorbDamage(ChangedEntity instance, LivingEntity target, IAbstractChangedEntity loserPlayer,
+                                                    float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions, Operation<Boolean> original) {
         GrabEntityAbilityInstance selfThis = (GrabEntityAbilityInstance) (Object) this;
-        AttributeInstance attribute = instance.maybeGetUnderlying().getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get());
-        if (attribute == null) {
-            return instance.tryAbsorbTarget(this.grabbedEntity, selfThis.entity, amount, possibleMobFusions);
+
+        AttributeInstance attribute =
+                instance.maybeGetUnderlying()
+                        .getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get());
+
+        float finalAmount = amount;
+
+        if (attribute != null) {
+            finalAmount = (float) attribute.getValue() * 1.5f;
         }
-        double attributeValue = attribute.getValue();
-        float dmg = Mth.ceil((float) attributeValue * 1.33f);
-        boolean result = instance.tryAbsorbTarget(this.grabbedEntity, selfThis.entity, dmg, possibleMobFusions);
-        return result;
+
+        // Original
+        return original.call(instance, target, loserPlayer, finalAmount, possibleMobFusions);
     }
 
     @Inject(method = "tickIdle", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F", remap = true, shift = At.Shift.AFTER), cancellable = true)
-    public void cancelSuitDmg(CallbackInfo ci) {
+    public void cancelSuit(CallbackInfo ci) {
         if (this.isSafeMode()) {
+            ci.cancel();
+
             if (snuggleCooldown > 0) snuggleCooldown--;
 
             if (this.suitTransition >= 3.0f) {
-                ci.cancel();
+                this.suitTransition = 3.0F;
 
                 if (getSelf().entity.getChangedEntity() instanceof ChangedEntityExtension changedEntityExtension && changedEntityExtension.shouldAlwaysHoldGrab(grabbedEntity)) {
                     this.grabStrength = 1;
                     if (getSelf().getController().getHoldTicks() >= 1) {
                         this.suitTransition -= 0.25f;
                     }
+                }
 
-                    if (grabbedEntity != null) {
-                        if (!isAlreadySnuggledTight()) {
-                            this.runTightHug(this.grabbedEntity);
-                        }
-                    }
-                } else {
-                    if (grabbedEntity != null) {
-                        if (!isAlreadySnuggledTight()) {
-                            this.runTightHug(this.grabbedEntity);
-                        }
+                if (grabbedEntity != null) {
+                    if (!isAlreadySnuggledTight()) {
+                        this.runTightHug(this.grabbedEntity);
                     }
                 }
 
