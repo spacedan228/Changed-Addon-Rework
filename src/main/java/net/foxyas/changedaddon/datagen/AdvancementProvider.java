@@ -1,8 +1,11 @@
 package net.foxyas.changedaddon.datagen;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.advancements.critereon.UsedItemAmountTrigger;
 import net.foxyas.changedaddon.datagen.customData.AdvancementWriter;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.ltxprogrammer.changed.Changed;
+import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
@@ -17,12 +20,46 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class AdvancementProvider extends net.minecraft.data.advancements.AdvancementProvider {
+
+    public static final String[] ADDON_FORM_RECIPES = new String[]{
+            "form_avali",
+            "form_biosynth_snow_leopard",
+            "form_blue_lizard",
+            "form_buny",
+            "form_dazed_latex",
+            "form_exp6",
+            "form_exp_2",
+            "form_experiment009",
+            "form_experiment_10",
+            "form_fengqi_wolf",
+            "form_himalayan_crystal_gas_cat",
+            "form_latex_calico_cat",
+            "form_latex_cheetah",
+            "form_latex_dragon_snow_leopard_shark",
+            "form_latex_kitsune",
+            "form_latex_snow_fox",
+            "form_latex_snow_leopard_partial",
+            "form_latex_white_snow_leopard",
+            "form_luminara_flower_beast",
+            "form_luminarctic_leopard",
+            "form_lynx",
+            "form_mirror_white_tiger",
+            "form_puro_kind",
+            "form_wolfy"
+    };
+
+    public static final String[] ADDON_FORM_RECIPES_JSON = Arrays.stream(ADDON_FORM_RECIPES).map(id -> id.endsWith(".json") ? id : id + ".json").toArray(String[]::new);
+
+    public static final AdvancementWriter advancementWrite = new AdvancementWriter();
 
     protected final PackOutput output;
 
@@ -80,10 +117,28 @@ public class AdvancementProvider extends net.minecraft.data.advancements.Advance
                 .rewards(AdvancementRewards.Builder.experience(3500).build());
 
 
-        CompletableFuture<?> snepsi = AdvancementWriter.write(cache, output, ResourceLocation.parse("changed_addon:snepsi_addictive"), snepsiBuilder);
-        CompletableFuture<?> foxta = AdvancementWriter.write(cache, output, ResourceLocation.parse("changed_addon:foxta_addictive"), foxtaBuilder);
+        advancementWrite.write(cache, output, ResourceLocation.parse("changed_addon:snepsi_addictive"), snepsiBuilder);
+        advancementWrite.write(cache, output, ResourceLocation.parse("changed_addon:foxta_addictive"), foxtaBuilder);
 
-        return CompletableFuture.allOf(snepsi, foxta);
+        AdvancementRewards.Builder formsRecipes = new AdvancementRewards.Builder();
+        for (String id : ADDON_FORM_RECIPES) {
+            formsRecipes.addRecipe(ChangedAddonMod.resourceLoc(id));
+        }
+
+        Advancement.Builder formsRecipesGiver = Advancement.Builder.advancement()
+                .rewards(formsRecipes)
+                .addCriterion("has_item", InventoryChangeTrigger.TriggerInstance.hasItems(ChangedItems.LATEX_BASE.get()))
+                .addCriterion("has_recipe", RecipeUnlockedTrigger.unlocked(Changed.modResource("form_white_latex_wolf")));
+
+        advancementWrite.write(cache,
+                output,
+                Path.of("recipes", "changed_addon_forms"),
+                ResourceLocation.parse("changed_addon:latex_forms"),
+                formsRecipesGiver
+        );
+
+
+        return CompletableFuture.allOf(advancementWrite.completableFutureList.toArray(CompletableFuture[]::new));
     }
 
     // ---------------------------------------------------------

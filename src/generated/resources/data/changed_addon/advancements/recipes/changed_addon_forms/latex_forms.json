@@ -1,0 +1,59 @@
+{
+  "criteria": {
+    "has_item": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "changed:latex_base"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_recipe": {
+      "conditions": {
+        "recipe": "changed:form_white_latex_wolf"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ],
+    [
+      "has_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "changed_addon:form_avali",
+      "changed_addon:form_biosynth_snow_leopard",
+      "changed_addon:form_blue_lizard",
+      "changed_addon:form_buny",
+      "changed_addon:form_dazed_latex",
+      "changed_addon:form_exp6",
+      "changed_addon:form_exp_2",
+      "changed_addon:form_experiment009",
+      "changed_addon:form_experiment_10",
+      "changed_addon:form_fengqi_wolf",
+      "changed_addon:form_himalayan_crystal_gas_cat",
+      "changed_addon:form_latex_calico_cat",
+      "changed_addon:form_latex_cheetah",
+      "changed_addon:form_latex_dragon_snow_leopard_shark",
+      "changed_addon:form_latex_kitsune",
+      "changed_addon:form_latex_snow_fox",
+      "changed_addon:form_latex_snow_leopard_partial",
+      "changed_addon:form_latex_white_snow_leopard",
+      "changed_addon:form_luminara_flower_beast",
+      "changed_addon:form_luminarctic_leopard",
+      "changed_addon:form_lynx",
+      "changed_addon:form_mirror_white_tiger",
+      "changed_addon:form_puro_kind",
+      "changed_addon:form_wolfy"
+    ]
+  },
+  "sends_telemetry_event": true
+}
