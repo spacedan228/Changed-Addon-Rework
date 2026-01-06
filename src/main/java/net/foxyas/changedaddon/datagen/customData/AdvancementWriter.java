@@ -34,8 +34,51 @@ public class AdvancementWriter {
                  .resolve("advancements")
                  .resolve(id.getPath() + ".json");
 
-//         Files.createDirectories(path.getParent());
-//         Files.writeString(path, GSON.toJson(json));
+         DataProvider.save(GSON, cache, json, path);
+
+      } catch (IOException e) {
+         throw new RuntimeException("Failed to write advancement " + id, e);
+      }
+   }
+
+   public static void write(
+           HashCache cache,
+           DataGenerator generator,
+           String group,
+           ResourceLocation id,
+           Advancement.Builder builder) {
+      try {
+         JsonObject json = builder.serializeToJson();
+
+         Path path = generator.getOutputFolder()
+                 .resolve("data")
+                 .resolve(id.getNamespace())
+                 .resolve("advancements")
+                 .resolve(group)
+                 .resolve(id.getPath() + ".json");
+
+         DataProvider.save(GSON, cache, json, path);
+
+      } catch (IOException e) {
+         throw new RuntimeException("Failed to write advancement " + id, e);
+      }
+   }
+
+   public static void write(
+           HashCache cache,
+           DataGenerator generator,
+           Path groupPaths,
+           ResourceLocation id,
+           Advancement.Builder builder) {
+      try {
+         JsonObject json = builder.serializeToJson();
+
+         Path path = generator.getOutputFolder()
+                 .resolve("data")
+                 .resolve(id.getNamespace())
+                 .resolve("advancements")
+                 .resolve(groupPaths)
+                 .resolve(id.getPath() + ".json");
 
          DataProvider.save(GSON, cache, json, path);
 
