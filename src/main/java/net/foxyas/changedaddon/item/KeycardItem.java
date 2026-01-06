@@ -124,63 +124,21 @@ public class KeycardItem extends Item implements ColorHolder {
     }
 
     @Override
-    public @NotNull InteractionResult useOn(@NotNull UseOnContext context) {
-//        Player player = context.getPlayer();
-//        ItemStack itemInHand = context.getItemInHand();
-//        Level level = context.getLevel();
-//        BlockPos pos = context.getClickedPos();
-//        BlockState blockState = level.getBlockState(pos);
-//        BlockEntity blockEntity = level.getBlockEntity(pos);
-//
-//        if (player == null) return InteractionResult.PASS;
-//
-//        if (!(blockState.getBlock() instanceof KeypadBlock keypadBlock) ||
-//                !(blockEntity instanceof KeypadBlockEntity keypadEntity))
-//            return InteractionResult.PASS;
-//
-//        byte[] itemCode = getCode(itemInHand);
-//        if (itemCode == null) {
-//            if (keypadEntity.code != null && player.isShiftKeyDown()) {
-//                setCode(itemInHand, keypadEntity.code);
-//                playWrite(level, pos);
-//                return InteractionResult.sidedSuccess(level.isClientSide());
-//            }
-//            return InteractionResult.PASS;
-//        }
-//
-//        // Converte o código para lista de bytes (se o keypad usar isso)
-//        List<Byte> codeList = new ArrayList<>();
-//        for (byte b : itemCode)
-//            codeList.add(b);
-//
-//        // Agora insere o código automaticamente no keypad
-//        if (!level.isClientSide) {
-//            keypadEntity.useCode(codeList);
-//            player.displayClientMessage(
-//                    new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN),
-//                    true
-//            );
-//            return InteractionResult.SUCCESS;
-//        }
-//
-        return super.useOn(context);
-    }
-
-    @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         Player player = context.getPlayer();
+        if (player == null) return InteractionResult.PASS;
+
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         BlockState blockState = level.getBlockState(pos);
-        BlockEntity blockEntity = level.getBlockEntity(pos);
         InteractionHand hand = context.getHand();
 
-        if (player == null) return InteractionResult.PASS;
-
         // Try to clean the stored Keypad code from the keycard
-        if (blockState.getBlock() instanceof Computer computer) {
+        if (blockState.getBlock() instanceof Computer) {
             return handleComputerFeature(stack, level, player, pos, hand);
         }
+
+        BlockEntity blockEntity = level.getBlockEntity(pos);
 
         if (!(blockState.getBlock() instanceof KeypadBlock) ||
                 !(blockEntity instanceof KeypadBlockEntity keypadBlockEntity))
@@ -194,7 +152,9 @@ public class KeycardItem extends Item implements ColorHolder {
                 return InteractionResult.PASS;
             }
 
-            if (!clientSide && player.isShiftKeyDown() && keypadBlockEntity.code != null) {
+            if (clientSide) return player.isShiftKeyDown() ? InteractionResult.SUCCESS : InteractionResult.PASS;
+
+            if (player.isShiftKeyDown() && keypadBlockEntity.code != null) {
                 setCode(stack, keypadBlockEntity.code);
                 playWrite(level, pos);
                 player.swing(hand, true);
@@ -203,44 +163,40 @@ public class KeycardItem extends Item implements ColorHolder {
             return InteractionResult.PASS;
         }
 
+        // Agora insere o código automaticamente no keypad
+        if (blockState.getValue(KeypadBlock.POWERED)) {
+            return InteractionResult.PASS;
+        }
+
+        if (clientSide) return InteractionResult.SUCCESS;
+
         // Converte o código para lista de bytes (se o keypad usar isso)
         List<Byte> codeList = new ArrayList<>();
         for (byte b : itemCode)
             codeList.add(b);
 
-        // Agora insere o código automaticamente no keypad
-        if (!clientSide) {
-            if (blockState.getValue(KeypadBlock.POWERED)) {
-                return InteractionResult.PASS;
-            }
+        boolean fail = false;
+        keypadBlockEntity.useCode(codeList);
+        if (codeList.size() != keypadBlockEntity.code.length) {
+            fail = true;
+        }
 
-            if (!blockState.getValue(KeypadBlock.POWERED)) {
-                boolean fail = false;
-                keypadBlockEntity.useCode(codeList);
-                if (codeList.size() != keypadBlockEntity.code.length) {
-                    fail = true;
-                }
-
-                for (int idx = 0; idx < keypadBlockEntity.code.length; ++idx) {
-                    if (codeList.get(idx) != keypadBlockEntity.code[idx]) {
-                        fail = true;
-                        break;
-                    }
-                }
-
-                MutableComponent chatComponent = !fail ?
-                        new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN) :
-                        new TranslatableComponent("item.changed_addon.keycard.message.used.fail").withStyle(ChatFormatting.RED);
-
-                if (!fail) playUnlock(level, pos);
-                player.displayClientMessage(chatComponent, true);
-                player.swing(hand);
-
-                return InteractionResult.sidedSuccess(false);
+        for (int idx = 0; idx < keypadBlockEntity.code.length; ++idx) {
+            if (codeList.get(idx) != keypadBlockEntity.code[idx]) {
+                fail = true;
+                break;
             }
         }
 
-        return InteractionResult.sidedSuccess(clientSide);
+        MutableComponent chatComponent = !fail ?
+                new TranslatableComponent("item.changed_addon.keycard.message.used.success").withStyle(ChatFormatting.GREEN) :
+                new TranslatableComponent("item.changed_addon.keycard.message.used.fail").withStyle(ChatFormatting.RED);
+
+        if (!fail) playUnlock(level, pos);
+        player.displayClientMessage(chatComponent, true);
+        player.swing(hand);
+
+        return InteractionResult.sidedSuccess(false);
     }
 
     public @NotNull InteractionResult handleComputerFeature(ItemStack stack, Level level, Player player, BlockPos pos, InteractionHand hand) {
@@ -251,35 +207,36 @@ public class KeycardItem extends Item implements ColorHolder {
         InteractionHand otherHand = hand == InteractionHand.MAIN_HAND ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND;
         ItemStack otherStack = player.getItemInHand(otherHand);
 
-        // --- If this keycard already has a code ---
-        if (itemCode != null) {
+        // --- This keycard has no code ---
+        if (itemCode == null) return InteractionResult.PASS;
 
-            // SHIFT action: clear the code
-            if (!clientSide && player.isShiftKeyDown()) {
-                setCode(stack, null);
+        // --- If this keycard already has a code ---
+        // SHIFT action: clear the code
+        if (clientSide) return player.isShiftKeyDown()
+                || (otherStack.isEmpty() && otherStack.getItem() instanceof KeycardItem && getCode(otherStack) != null) ?
+                InteractionResult.SUCCESS : InteractionResult.PASS;
+
+        if (player.isShiftKeyDown()) {
+            setCode(stack, null);
+            playWrite(level, pos);
+            player.swing(hand, true);
+            return InteractionResult.sidedSuccess(false);
+        }
+
+        // --- OTHER LOGIC: copy the code to the offhand keycard ---
+        if (!otherStack.isEmpty() && otherStack.getItem() instanceof KeycardItem) {
+
+            byte[] otherCode = getCode(otherStack);
+
+            // Only copy if the offhand keycard has no code
+            if (otherCode == null) {
+                setCode(otherStack, itemCode.clone()); // Cloning to avoid sharing the same array
                 playWrite(level, pos);
                 player.swing(hand, true);
                 return InteractionResult.sidedSuccess(false);
             }
-
-            // --- OTHER LOGIC: copy the code to the offhand keycard ---
-            if (!clientSide && !otherStack.isEmpty() && otherStack.getItem() instanceof KeycardItem) {
-
-                byte[] otherCode = getCode(otherStack);
-
-                // Only copy if the offhand keycard has no code
-                if (otherCode == null) {
-                    setCode(otherStack, itemCode.clone()); // Cloning to avoid sharing the same array
-                    playWrite(level, pos);
-                    player.swing(hand, true);
-                    return InteractionResult.sidedSuccess(false);
-                }
-            }
-
-            return InteractionResult.PASS;
         }
 
-        // --- This keycard has no code ---
         return InteractionResult.PASS;
     }
 
