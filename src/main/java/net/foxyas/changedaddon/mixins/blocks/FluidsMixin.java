@@ -33,7 +33,7 @@ public class FluidsMixin {
         if (pContext instanceof EntityCollisionContext entityCollisionContext) {
             Entity entity = entityCollisionContext.getEntity();
             if (entity instanceof LivingEntity livingEntity) {
-                //final VoxelShape wantedHitShapeNotSneak = LiquidBlock.STABLE_SHAPE.move(0, 0.35, 0);
+                if (livingEntity.isShiftKeyDown()) return;
                 final VoxelShape wantedHitShape = Shapes.create(new AABB(0, 0.99, 0, 1, 1, 1));
 
                 if ((livingEntity instanceof Player player)) {
