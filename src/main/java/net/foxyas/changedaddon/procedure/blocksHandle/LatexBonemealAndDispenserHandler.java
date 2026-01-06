@@ -11,6 +11,7 @@ import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -279,6 +280,95 @@ public class LatexBonemealAndDispenserHandler {
         return spread;
     }
 
+    public record LatexNode(BlockPos pos, LatexCoverState state) {}
+
+    public static Set<LatexNode> collectConnectedLatex(
+            ServerLevel level,
+            BlockPos source,
+            int maxDepth
+    ) {
+        Set<BlockPos> visited = new HashSet<>();
+        Set<LatexNode> result = new HashSet<>();
+
+        Queue<Pair<BlockPos, Integer>> queue = new ArrayDeque<>();
+        queue.add(Pair.of(source, 0));
+        visited.add(source);
+
+        LatexCoverState sourceState = LatexCoverState.getAt(level, source);
+        if (sourceState.isAir())
+            return result;
+
+        while (!queue.isEmpty()) {
+            var entry = queue.poll();
+            BlockPos pos = entry.getFirst();
+            int depth = entry.getSecond();
+
+            if (depth > maxDepth)
+                continue;
+
+            LatexCoverState state = LatexCoverState.getAt(level, pos);
+            if (state.isAir() || !state.is(sourceState.getType()))
+                continue;
+
+            if (!(state.getType() instanceof SpreadingLatexType))
+                continue;
+
+            result.add(new LatexNode(pos, state));
+
+            for (Direction dir : Direction.values()) {
+                BlockPos next = pos.relative(dir);
+                if (visited.add(next)) {
+                    queue.add(Pair.of(next, depth + 1));
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static boolean cleanLatexPositions(
+            ServerLevel level,
+            Set<LatexNode> latexNodes
+    ) {
+        boolean cleaned = false;
+
+        for (LatexNode node : latexNodes) {
+            LatexCoverState state = node.state();
+            if (!(state.getType() instanceof SpreadingLatexType))
+                continue;
+
+            int sat = state.getValue(SpreadingLatexType.SATURATION);
+            if (sat < 0) continue;
+            LatexCoverState newState = state.trySetValue(SpreadingLatexType.SATURATION, Math.max(sat - 1, 0));
+            LatexCoverState.setAtAndUpdate(level, node.pos(), newState);
+            LatexCoverState at = LatexCoverState.getAt(level, node.pos);
+            at.randomTick(level, node.pos, level.getRandom());
+
+            cleaned = at.isAir() || at.getValue(SpreadingLatexType.SATURATION) <= 0;
+        }
+
+        return cleaned;
+    }
+
+
+    public static boolean cleanFromSourceCorners(
+            ServerLevel level,
+            BlockPos source,
+            int maxDepth
+    ) {
+        LatexCoverState sourceState = LatexCoverState.getAt(level, source);
+        if (sourceState.isAir())
+            return false;
+
+        Set<LatexNode> all = collectConnectedLatex(level, source, maxDepth);
+        if (all.isEmpty()) return false;
+        cleanLatexPositions(level, all);
+
+
+        return true;
+    }
+
+
     public static boolean spreadFromSourceWaves(
             ServerLevel level,
             BlockPos source,
@@ -383,11 +473,12 @@ public class LatexBonemealAndDispenserHandler {
 
             // Remove any existing latex cover
             if (!cover.is(ChangedLatexTypes.NONE.get())) {
-                LatexCoverState.setAtAndUpdate(
-                        level,
-                        pos,
-                        ChangedLatexTypes.NONE.get().defaultCoverState()
-                );
+                cleanFromSourceCorners(level, pos, 16);
+//                LatexCoverState.setAtAndUpdate(
+//                        level,
+//                        pos,
+//                        ChangedLatexTypes.NONE.get().defaultCoverState()
+//                );
 
                 level.levelEvent(1505, pos, 1);
 

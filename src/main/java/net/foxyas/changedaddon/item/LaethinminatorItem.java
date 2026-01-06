@@ -50,6 +50,18 @@ public class LaethinminatorItem extends Item implements SpecializedAnimations {
     }
 
     @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Player player = context.getPlayer();
+        InteractionHand hand = context.getHand();
+        if (player != null) {
+            ItemStack itemstack = player.getItemInHand(hand);
+            player.startUsingItem(hand);
+            return InteractionResult.CONSUME;
+        }
+        return super.onItemUseFirst(stack, context);
+    }
+
+    @Override
     public void onUseTick(@NotNull Level level, @NotNull LivingEntity entity, @NotNull ItemStack stack, int ticks) {
         super.onUseTick(level, entity, stack, ticks);
         if (!(entity instanceof Player player)) {

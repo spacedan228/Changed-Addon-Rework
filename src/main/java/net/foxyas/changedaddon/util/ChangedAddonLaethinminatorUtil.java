@@ -1,7 +1,9 @@
 package net.foxyas.changedaddon.util;
 
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
+import net.foxyas.changedaddon.util.GasAreaUtil.GasHit;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedTags;
@@ -18,13 +20,17 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static net.foxyas.changedaddon.util.FoxyasUtils.getRelativePosition;
 
@@ -32,9 +38,140 @@ public class ChangedAddonLaethinminatorUtil {
 
     public static void shootDynamicLaser(Level world, Player player, int maxRange, int horizontalRadius, int verticalRadius) {
         if (world instanceof ServerLevel serverLevel) {
-            shootDynamicLaser(serverLevel, player, maxRange, horizontalRadius, verticalRadius);
+            shootGas(serverLevel, player, maxRange);
         }
     }
+
+    public static void shootGas(ServerLevel level, Player player, int range) {
+        spawnGasParticles(level, player, range);
+
+        List<GasHit> hits = GasAreaUtil.getGasConeHits(
+                level,
+                player,
+                range,
+                0.35,   // spread
+                2       // density
+        );
+
+        hits = GasAreaUtil.dedupe(hits);
+
+        applyGasToLatex(level, hits);
+
+        List<Vec3> gasVolume = GasAreaUtil.sampleGasCone(
+                player,
+                range,
+                0.35,
+                0.6
+        );
+
+        applyGasToEntities(level, player, gasVolume);
+    }
+
+    private static void spawnGasParticles(ServerLevel level, Player player, int range) {
+        Color start = new Color(255, 255, 255, 255);
+        Color end = new Color(255, 179, 179, 255);
+        ParticleOptions particle = ChangedParticles.gas(Color3.fromInt(start.getRGB()));
+
+        Vec3 eye = player.getEyePosition(1.0F);
+        Vec3 look = player.getLookAngle().normalize();
+
+        for (int i = 1; i <= range; i++) {
+            Vec3 pos = eye.add(look.scale(i * 0.5));
+            ParticlesUtil.sendParticles(
+                    level,
+                    particle,
+                    pos,
+                    0.15f, 0.15f, 0.15f,
+                    2,
+                    0.02f
+            );
+        }
+    }
+
+    private static void applyGasToLatex(ServerLevel level, List<GasHit> hits) {
+        for (GasHit hit : hits) {
+            BlockPos pos = hit.pos();
+
+            LatexCoverState state = LatexCoverState.getAt(level, pos);
+            if (state.isAir())
+                continue;
+
+            if (!(state.getType() instanceof SpreadingLatexType spreading))
+                continue;
+
+            BooleanProperty faceProp = SpreadingLatexType.FACES.get(hit.face().getOpposite());
+            if (faceProp == null)
+                continue;
+
+            if (!state.hasProperty(faceProp))
+                continue;
+
+            if (!state.getValue(faceProp))
+                continue; // já limpo
+
+            LatexCoverState newState = state.setValue(faceProp, false).setValue(SpreadingLatexType.SATURATION, 0);
+
+            if (newState != state) {
+                LatexCoverState.setAtAndUpdate(level, pos, newState);
+
+
+                // partículas no impacto
+                ParticleOptions particle = ChangedParticles.gas(
+                        Color3.fromInt(new Color(93, 93, 93).getRGB())
+                );
+
+                ParticlesUtil.sendParticles(
+                        level,
+                        particle,
+                        pos,
+                        0.25f, 0.25f, 0.25f,
+                        1,
+                        0f
+                );
+            }
+        }
+    }
+
+    private static void applyGasToEntities(
+            ServerLevel level,
+            Player player,
+            List<Vec3> gasVolume
+    ) {
+        Set<ChangedEntity> affected = new HashSet<>();
+
+        for (Vec3 pos : gasVolume) {
+            AABB area = new AABB(pos, pos).inflate(0.8);
+
+            List<ChangedEntity> entities = level.getEntitiesOfClass(
+                    ChangedEntity.class,
+                    area,
+                    e -> e.getType().is(ChangedTags.EntityTypes.LATEX)
+            );
+
+            for (ChangedEntity entity : entities) {
+                if (!player.canAttack(entity)) continue;
+                if (player.isAlliedTo(entity)) continue;
+
+                // evita dano duplicado exagerado
+                if (!affected.add(entity)) continue;
+
+                DamageSource solvent = new DamageSource(
+                        ChangedAddonDamageSources.LATEX_SOLVENT
+                                .source(level)
+                                .typeHolder(),
+                        player
+                ) {
+                    @Override
+                    public boolean is(@NotNull TagKey<DamageType> tag) {
+                        return tag == DamageTypeTags.IS_PROJECTILE || super.is(tag);
+                    }
+                };
+
+                entity.hurt(solvent, 4.0F);
+            }
+        }
+    }
+
 
     public static void spawnDirectionalParticle(ServerLevel level, Player player, ParticleOptions particleType, float speed) {
         if (level == null || player == null) return;
@@ -122,7 +259,7 @@ public class ChangedAddonLaethinminatorUtil {
 
                 DamageSource solvent = new DamageSource(ChangedAddonDamageSources.LATEX_SOLVENT.source(player.level()).typeHolder(), player) {
                     @Override
-                    public boolean is(TagKey<DamageType> pDamageTypeKey) {
+                    public boolean is(@NotNull TagKey<DamageType> pDamageTypeKey) {
                         if (pDamageTypeKey == DamageTypeTags.IS_PROJECTILE) {
                             return true;
                         }

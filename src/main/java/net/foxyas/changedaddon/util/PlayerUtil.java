@@ -12,6 +12,7 @@ import net.ltxprogrammer.changed.entity.beast.AbstractLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.world.LatexCoverGetter;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -28,12 +29,10 @@ import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Objects;
@@ -222,6 +221,27 @@ public class PlayerUtil {
 
         return ProjectileUtil.getEntityHitResult(entity, eyePos, toVec, new AABB(eyePos, toVec), targetPredicate, reachSqr);
     }
+
+    public static @NotNull BlockHitResult clipLatex(
+            Level level,
+            Entity entity,
+            double range
+    ) {
+        Vec3 from = entity.getEyePosition(1.0F);
+        Vec3 to = from.add(entity.getLookAngle().scale(range));
+
+        ClipContext context = new ClipContext(
+                from,
+                to,
+                ClipContext.Block.OUTLINE,
+                ClipContext.Fluid.NONE,
+                entity
+        );
+
+        LatexCoverGetter getter = LatexCoverGetter.extendDefault(level);
+        return getter.clip(context);
+    }
+
 
     //================================================================================================================//
 
