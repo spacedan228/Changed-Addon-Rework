@@ -77,13 +77,14 @@ public class ChangedAddonLaethinminatorUtil {
 
         for (int i = 1; i <= range; i++) {
             Vec3 pos = eye.add(look.scale(i * 0.5));
-            ParticlesUtil.sendParticles(
+            ParticlesUtil.sendParticlesWithMotion(
                     level,
                     particle,
                     pos,
-                    0.15f, 0.15f, 0.15f,
+                    new Vec3(0.15f, 0.15f, 0.15f),
+                    look.scale(i * 0.5d),
                     2,
-                    0.02f
+                    0.10f
             );
         }
     }

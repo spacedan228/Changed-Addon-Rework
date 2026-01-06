@@ -473,7 +473,7 @@ public class LatexBonemealAndDispenserHandler {
 
             // Remove any existing latex cover
             if (!cover.is(ChangedLatexTypes.NONE.get())) {
-                cleanFromSourceCorners(level, pos, 16);
+                cleanFromSourceCorners(level, pos, 24);
 //                LatexCoverState.setAtAndUpdate(
 //                        level,
 //                        pos,
