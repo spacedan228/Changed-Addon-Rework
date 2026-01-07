@@ -3,10 +3,7 @@ package net.foxyas.changedaddon.event;
 import com.mojang.brigadier.CommandDispatcher;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock;
-import net.foxyas.changedaddon.command.AccessoryItemCommands;
-import net.foxyas.changedaddon.command.ChangedAddonAdminCommand;
-import net.foxyas.changedaddon.command.ChangedAddonCommandRootCommand;
-import net.foxyas.changedaddon.command.TransfurMe;
+import net.foxyas.changedaddon.command.*;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
@@ -64,6 +61,7 @@ public class CommonEvent {
         ChangedAddonCommandRootCommand.register(dispatcher);
         AccessoryItemCommands.register(dispatcher, buildContext);
         TransfurMe.register(dispatcher);
+        ChangedAddonDebugCommands.register(dispatcher);
     }
 
     @SubscribeEvent

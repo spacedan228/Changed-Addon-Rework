@@ -113,12 +113,10 @@ public class ClientEvent {
             if (ChangedAddonTransfurVariants.isVariantOC(loc, entity.level())) {
                 List<Component> ocVariantComponents = ChangedAddonTransfurVariants.getVariantComponentIfAny(tf, entity.level());
                 MutableComponent append = Component.literal("§8OC Transfur");
-                if (ocVariantComponents != null && !ocVariantComponents.isEmpty()) {
-                    for (Component ocVariantComponent : ocVariantComponents) {
-                        append.append("\n").append(ocVariantComponent);
-                    }
-                }
                 tooltip.add(append);
+                if (ocVariantComponents != null && !ocVariantComponents.isEmpty()) {
+                    tooltip.addAll(ocVariantComponents);
+                }
             }
         }
 
