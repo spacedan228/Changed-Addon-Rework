@@ -67,12 +67,51 @@ public final class ChangedAddonRenderTypes extends RenderType {
         event.registerShader(new ShaderInstance(event.getResourceManager(), ChangedAddonMod.resourceLoc("translucent_outline"), DefaultVertexFormat.POSITION_COLOR_TEX), shader -> TRANSLUCENT_OUTLINE_SHADER = shader);
     }
 
-    private static final Function<ResourceLocation, RenderType> GLOW_WITH_NO_TRANSLUCED = Util.memoize((p_173255_) -> {
+    private static final Function<ResourceLocation, RenderType> GLOW_WITH_DEEP_TEST = Util.memoize((p_173255_) -> {
         RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173255_,
                 false,
                 false);
 
-        return create(ChangedAddonMod.resourceLocString("glow_with_no_transluced"),
+        return create(ChangedAddonMod.resourceLocString("glow_with_deep"),
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS,
+                256,
+                false,
+                true,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RENDERTYPE_EYES_SHADER)
+                        .setTextureState(renderstateshard$texturestateshard)
+                        .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                        .setWriteMaskState(COLOR_DEPTH_WRITE)
+                        .createCompositeState(false));
+    });
+
+    private static final Function<ResourceLocation, RenderType> GLOW_WITH_DEEP_TEST_CULL = Util.memoize((p_173255_) -> {
+        RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173255_,
+                false,
+                false);
+
+        return create(ChangedAddonMod.resourceLocString("glow_with_deep_cull"),
+                DefaultVertexFormat.NEW_ENTITY,
+                VertexFormat.Mode.QUADS,
+                256,
+                false,
+                true,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RENDERTYPE_EYES_SHADER)
+                        .setTextureState(renderstateshard$texturestateshard)
+                        .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                        .setWriteMaskState(COLOR_DEPTH_WRITE)
+                        .setCullState(RenderStateShard.CULL)
+                        .createCompositeState(false));
+    });
+
+    private static final Function<ResourceLocation, RenderType> GLOW_WITH_NO_TRANSPARENCY = Util.memoize((p_173255_) -> {
+        RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173255_,
+                false,
+                false);
+
+        return create(ChangedAddonMod.resourceLocString("glow_with_no_transparency"),
                 DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.QUADS,
                 256,
@@ -86,12 +125,12 @@ public final class ChangedAddonRenderTypes extends RenderType {
                         .createCompositeState(false));
     });
 
-    private static final Function<ResourceLocation, RenderType> GLOW_WITH_NO_TRANSLUCED_CULL = Util.memoize((p_173255_) -> {
+    private static final Function<ResourceLocation, RenderType> GLOW_WITH_NO_TRANSPARENCY_CULL = Util.memoize((p_173255_) -> {
         RenderStateShard.TextureStateShard renderstateshard$texturestateshard = new RenderStateShard.TextureStateShard(p_173255_,
                 false,
                 false);
 
-        return create(ChangedAddonMod.resourceLocString("glow_with_no_transluced_cull"),
+        return create(ChangedAddonMod.resourceLocString("glow_with_no_transparency_cull"),
                 DefaultVertexFormat.NEW_ENTITY,
                 VertexFormat.Mode.QUADS,
                 256,
@@ -106,13 +145,79 @@ public final class ChangedAddonRenderTypes extends RenderType {
                         .createCompositeState(false));
     });
 
+    private static final Function<ResourceLocation, RenderType> GLOW_CUTOUT =
+            Util.memoize((texture) -> {
+
+                RenderStateShard.TextureStateShard tex =
+                        new RenderStateShard.TextureStateShard(texture, false, false);
+
+                return RenderType.create(
+                        ChangedAddonMod.resourceLocString("glow_cutout"),
+                        DefaultVertexFormat.NEW_ENTITY,
+                        VertexFormat.Mode.QUADS,
+                        256,
+                        false,
+                        false,
+                        RenderType.CompositeState.builder()
+                                .setShaderState(RENDERTYPE_ENTITY_CUTOUT_SHADER)
+                                .setTextureState(tex)
+                                .setTransparencyState(NO_TRANSPARENCY)
+                                .setLightmapState(LIGHTMAP)
+                                .setOverlayState(OVERLAY)
+                                .setCullState(NO_CULL)
+                                .setWriteMaskState(COLOR_DEPTH_WRITE)
+                                .createCompositeState(true)
+                );
+            });
+
+    private static final Function<ResourceLocation, RenderType> GLOW_CUTOUT_CULL =
+            Util.memoize((texture) -> {
+
+                RenderStateShard.TextureStateShard tex =
+                        new RenderStateShard.TextureStateShard(texture, false, false);
+
+                return RenderType.create(
+                        ChangedAddonMod.resourceLocString("glow_cutout_cull"),
+                        DefaultVertexFormat.NEW_ENTITY,
+                        VertexFormat.Mode.QUADS,
+                        256,
+                        false,
+                        false,
+                        RenderType.CompositeState.builder()
+                                .setShaderState(RENDERTYPE_ENTITY_CUTOUT_SHADER)
+                                .setTextureState(tex)
+                                .setTransparencyState(NO_TRANSPARENCY)
+                                .setLightmapState(LIGHTMAP)
+                                .setOverlayState(OVERLAY)
+                                .setCullState(CULL)
+                                .setWriteMaskState(COLOR_DEPTH_WRITE)
+                                .createCompositeState(true)
+                );
+            });
+
 
     public static RenderType glowWithNoTransluced(ResourceLocation location) {
-        return GLOW_WITH_NO_TRANSLUCED.apply(location);
+        return GLOW_WITH_NO_TRANSPARENCY.apply(location);
     }
 
     public static RenderType glowWithNoTranslucedCull(ResourceLocation location) {
-        return GLOW_WITH_NO_TRANSLUCED_CULL.apply(location);
+        return GLOW_WITH_NO_TRANSPARENCY_CULL.apply(location);
+    }
+
+    public static RenderType glowCutout(ResourceLocation location) {
+        return GLOW_CUTOUT.apply(location);
+    }
+
+    public static RenderType glowCutoutCull(ResourceLocation location) {
+        return GLOW_CUTOUT_CULL.apply(location);
+    }
+
+    public static RenderType glowWithDepthTest(ResourceLocation location) {
+        return GLOW_WITH_DEEP_TEST.apply(location);
+    }
+
+    public static RenderType glowWithDepthTestCull(ResourceLocation location) {
+        return GLOW_WITH_DEEP_TEST_CULL.apply(location);
     }
 
     public static final RenderType QUADS_WITH_TRANSPARENCY = RenderType.create(

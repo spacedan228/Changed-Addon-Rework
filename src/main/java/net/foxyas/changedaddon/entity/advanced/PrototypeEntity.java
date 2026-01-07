@@ -9,10 +9,7 @@ import net.foxyas.changedaddon.menu.PrototypeMenu;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.EyeStyle;
-import net.ltxprogrammer.changed.entity.TransfurCause;
-import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
@@ -265,9 +262,11 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
         SpawnGroupData ret = super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
 
-        getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
-        getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#59c5ff"));
-        getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#59c5ff"));
+        BasicPlayerInfo basicPlayerInfo = getBasicPlayerInfo();
+        basicPlayerInfo.setEyeStyle(EyeStyle.TALL);
+        basicPlayerInfo.setRightIrisColor(Color3.parseHex("#59c5ff"));
+        basicPlayerInfo.setLeftIrisColor(Color3.parseHex("#59c5ff"));
+        basicPlayerInfo.setHairColor(Color3.parseHex("#59c5ff"));
         return ret;
     }
 

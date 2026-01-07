@@ -44,7 +44,7 @@ public class KnockBackBurstGoal extends Goal {
             ticks = 0;
 
 
-// reset
+            // reset
             recentDamage = 0;
             recentHits = 0;
 
