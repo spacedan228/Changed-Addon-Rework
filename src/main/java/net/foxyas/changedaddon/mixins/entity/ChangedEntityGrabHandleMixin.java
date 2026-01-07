@@ -26,14 +26,17 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
     protected int grabCooldown = 0;
+    protected boolean ableToGrab;
 
     protected ChangedEntityGrabHandleMixin(EntityType<? extends Monster> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.ableToGrab = level.getRandom().nextFloat() <= 0.15f; // Just for fail-safe
     }
 
     @Inject(at = @At("TAIL"), method = "<init>", cancellable = true)
     private void initHook(EntityType<? extends Monster> type, Level level, CallbackInfo ci) {
-        if (ChangedAddon$canEntityGrab(type)) {
+        this.ableToGrab = level.getRandom().nextFloat() <= 0.15f;
+        if (canEntityGrab(type, level)) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
         }
     }
@@ -55,7 +58,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Inject(at = @At("TAIL"), method = "registerGoals", remap = true, cancellable = true)
     private void goalsHook(CallbackInfo ci) {
-        if (ChangedAddon$canEntityGrab()) {
+        if (canEntityGrab(this.getType(), this.level)) {
             this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
             this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
             this.goalSelector.addGoal(10, new MayCauseGrabDamageGoal(this));
@@ -65,7 +68,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Override
     public void baseTick() {
         super.baseTick();
-        if (ChangedAddon$canEntityGrab()) {
+        if (canEntityGrab(this.getType(), level)) {
             if (grabEntityAbilityInstance != null && grabEntityAbilityInstance.grabbedEntity == null) {
                 if (grabCooldown > 0) this.grabCooldown--;
             }
@@ -85,7 +88,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     protected void actuallyHurt(@NotNull DamageSource pDamageSource, float pDamageAmount) {
-        if (ChangedAddon$canEntityGrab()) {
+        if (canEntityGrab(this.getType(), level)) {
             mayDropGrabbedEntity(pDamageSource, pDamageAmount);
         }
         super.actuallyHurt(pDamageSource, pDamageAmount);
@@ -94,7 +97,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Override
     public void addAdditionalSaveData(@NotNull CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        if (ChangedAddon$canEntityGrab()) {
+        if (canEntityGrab(this.getType(), level)) {
             this.saveGrabAbilityInTag(tag);
         }
     }
@@ -102,14 +105,14 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Override
     public void readAdditionalSaveData(@NotNull CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        if (ChangedAddon$canEntityGrab()) {
+        if (canEntityGrab(this.getType(), level)) {
             this.readGrabAbilityInTag(tag);
         }
     }
 
     @Unique
     private boolean ChangedAddon$canEntityGrab(EntityType<?> type) {
-        return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB);
+        return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || ableToGrab;
     }
 
     @Unique
@@ -117,9 +120,14 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         return ChangedAddon$canEntityGrab(this.getType());
     }
 
+    @Override
+    public boolean canEntityGrab(EntityType<?> type, Level level) {
+        return ChangedAddon$canEntityGrab(type);
+    }
+
     @ModifyReturnValue(method = "getAbilityInstance", at = @At("RETURN"))
     private <A extends AbstractAbilityInstance> A getAbilityInstanceHook(A original, AbstractAbility<A> ability) {
-        if (ChangedAddon$canEntityGrab()) return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : original);
+        if (canEntityGrab(this.getType(), level)) return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : original);
         return original;
     }
 }

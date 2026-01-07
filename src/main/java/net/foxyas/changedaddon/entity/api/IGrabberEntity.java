@@ -10,10 +10,12 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
 
 public interface IGrabberEntity {
@@ -138,5 +140,9 @@ public interface IGrabberEntity {
             // Since they won't interfere, they don't block they ability to cause damage.
             return !e.getType().is(ChangedAddonTags.EntityTypes.IGNORE_GRABBED_TARGETS);
         });
+    }
+
+    default boolean canEntityGrab(EntityType<?> type, Level level) {
+        return true;
     }
 }
