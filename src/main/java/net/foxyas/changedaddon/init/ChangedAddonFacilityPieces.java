@@ -33,13 +33,13 @@ public class ChangedAddonFacilityPieces {
     }
 
     public static void registerAddonRooms(FacilityPieceCollectionBuilder builder) {
-        builder.register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
+        builder.register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON + 40,
                         new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/exp009room"),
-                                ResourceLocation.parse("changed_addon:chests/experiment_009_loot_dna")))
-                .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
+                                null))
+                .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON + 40,
                         new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/exp10room"),
                                 ResourceLocation.parse("changed_addon:chests/experiment_10_loot_op")))
-                .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON,
+                .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON + 40,
                         new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/luminar_crystal_room"),
                                 ResourceLocation.parse("changed:chests/high_tier_lab")));
 //                .register(FacilityPieceCollectionBuilder.WEIGHT_COMMON,

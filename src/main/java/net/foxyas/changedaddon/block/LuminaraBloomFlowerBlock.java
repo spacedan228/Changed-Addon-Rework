@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -69,6 +70,10 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
     public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull Random pRandom) {
         super.tick(pState, pLevel, pPos, pRandom);
         tryToPacifyNearbyEntities(pLevel, pPos, 64);
+        if (pState.hasProperty(AbstractLatexBlock.COVERED) && pState.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL) {
+            performBonemeal(pLevel, pRandom, pPos, pState);
+            pLevel.setBlockAndUpdate(pPos, pState.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
+        }
         pLevel.scheduleTick(pPos, this, 10);
     }
 
