@@ -690,6 +690,7 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
                 return false;
             } else {
                 this.hurtDodgeHealth(source, amount);
+                if (getDodgeHealth() > 0) this.setDodgeHealth(0);
                 this.RegisterDamage(amount);
                 //this.setDodging(source.getEntity());
                 return super.hurt(source, amount);
@@ -708,6 +709,11 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
         }
 
         return super.hurt(source, amount);
+    }
+
+    @Override
+    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
+        super.actuallyHurt(pDamageSource, pDamageAmount);
     }
 
     public boolean hurtDodgeHealth(@NotNull DamageSource damageSource, float damageAmount) {
