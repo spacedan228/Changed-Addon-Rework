@@ -10,6 +10,7 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -104,6 +105,16 @@ public interface IGrabberEntity {
     }
 
     default int getGrabDamageCooldown() {
+        if (this instanceof LivingEntity living) {
+            Level level = living.level();
+            Difficulty difficulty = level.getDifficulty();
+            return switch (difficulty) {
+                case HARD -> 5;
+                case NORMAL -> 10;
+                case EASY -> 20;
+                case PEACEFUL -> 20 * 2;
+            };
+        }
         return 20 * 2;
     }
 
