@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.block.StackableCanBlock;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,6 +21,8 @@ import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.client.model.generators.MultiPartBlockStateBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
@@ -45,7 +48,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         simpleBlock(DEEPSLATE_PAINITE_ORE);
         simpleBlock(DORMANT_DARK_LATEX);
         simpleBlock(DORMANT_WHITE_LATEX);
-        horizontalBlock(FOXTA_CAN, BlockStateProperties.WATERLOGGED);
+        stackableCan(FOXTA_CAN);
         simpleBlock(GENERATOR);
         simpleBlock(GOO_CORE);
         horizontalBlock(INFORMANT_BLOCK);
@@ -61,7 +64,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         simpleBlock(REINFORCED_WALL_CAUTION);
         simpleBlock(REINFORCED_WALL_SILVER_STRIPED);
         simpleBlock(REINFORCED_WALL_SILVER_TILED);
-        horizontalBlock(SNEPSI_CAN, BlockStateProperties.WATERLOGGED);
+        stackableCan(SNEPSI_CAN);
         simpleBlock(WALL_WHITE_CRACKED);
         simpleBlock(WHITE_WOLF_CRYSTAL_BLOCK);
         simpleBlock(WHITE_WOLF_CRYSTAL_SMALL);
@@ -90,7 +93,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         );
     }
 
-    private ResourceLocation blockLoc(ResourceLocation loc){
+    private static ResourceLocation blockLoc(ResourceLocation loc){
         return ResourceLocation.fromNamespaceAndPath(loc.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + loc.getPath());
     }
 
@@ -114,6 +117,36 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
                         .rotationY(((int) state.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot() + 180) % 360)
                         .build(),
         ignore);
+    }
+
+    private static final ResourceLocation CAN = blockLoc(ChangedAddonMod.resourceLoc("stackable_can"));
+
+    private void stackableCan(RegistryObject<? extends StackableCanBlock> can){
+        ResourceLocation loc = blockLoc(can.getId());
+
+        ModelFile[] models = new ModelFile[4];
+        for (int i = 0; i < 4; i++) {
+            models[i] = models().withExistingParent(withSuffix(loc, "/can_" + (i + 1)).toString(), withSuffix(CAN, "/can_" + (i + 1)))
+                    .texture("texture", loc);
+        }
+
+        getVariantBuilder(can.get()).forAllStatesExcept(state ->
+                horizontalRotatedModelAr(models[state.getValue(StackableCanBlock.CANS) - 1], state.getValue(StackableCanBlock.FACING)),
+                StackableCanBlock.WATERLOGGED);
+    }
+
+    @Contract("_, _ -> new")
+    private ConfiguredModel @NotNull [] horizontalRotatedModelAr(ModelFile file, Direction direction){
+        return new ConfiguredModel[]{horizontalRotatedModel(file, direction)};
+    }
+
+    private ConfiguredModel horizontalRotatedModel(ModelFile file, Direction direction){
+        return switch (direction){
+            case EAST -> new ConfiguredModel(file, 0, 90, false);
+            case SOUTH -> new ConfiguredModel(file, 0, 180, false);
+            case WEST -> new ConfiguredModel(file, 0, 270, false);
+            default -> new ConfiguredModel(file);
+        };
     }
 
     private void simpleWithVariants(RegistryObject<? extends Block> block, int variants, int itemModelIndex){

@@ -1,18 +1,63 @@
 {
   "variants": {
-    "facing=east": {
-      "model": "changed_addon:block/foxta_can",
+    "cans=1,facing=east": {
+      "model": "changed_addon:block/foxta_can/can_1",
       "y": 90
     },
-    "facing=north": {
-      "model": "changed_addon:block/foxta_can"
+    "cans=1,facing=north": {
+      "model": "changed_addon:block/foxta_can/can_1"
     },
-    "facing=south": {
-      "model": "changed_addon:block/foxta_can",
+    "cans=1,facing=south": {
+      "model": "changed_addon:block/foxta_can/can_1",
       "y": 180
     },
-    "facing=west": {
-      "model": "changed_addon:block/foxta_can",
+    "cans=1,facing=west": {
+      "model": "changed_addon:block/foxta_can/can_1",
+      "y": 270
+    },
+    "cans=2,facing=east": {
+      "model": "changed_addon:block/foxta_can/can_2",
+      "y": 90
+    },
+    "cans=2,facing=north": {
+      "model": "changed_addon:block/foxta_can/can_2"
+    },
+    "cans=2,facing=south": {
+      "model": "changed_addon:block/foxta_can/can_2",
+      "y": 180
+    },
+    "cans=2,facing=west": {
+      "model": "changed_addon:block/foxta_can/can_2",
+      "y": 270
+    },
+    "cans=3,facing=east": {
+      "model": "changed_addon:block/foxta_can/can_3",
+      "y": 90
+    },
+    "cans=3,facing=north": {
+      "model": "changed_addon:block/foxta_can/can_3"
+    },
+    "cans=3,facing=south": {
+      "model": "changed_addon:block/foxta_can/can_3",
+      "y": 180
+    },
+    "cans=3,facing=west": {
+      "model": "changed_addon:block/foxta_can/can_3",
+      "y": 270
+    },
+    "cans=4,facing=east": {
+      "model": "changed_addon:block/foxta_can/can_4",
+      "y": 90
+    },
+    "cans=4,facing=north": {
+      "model": "changed_addon:block/foxta_can/can_4"
+    },
+    "cans=4,facing=south": {
+      "model": "changed_addon:block/foxta_can/can_4",
+      "y": 180
+    },
+    "cans=4,facing=west": {
+      "model": "changed_addon:block/foxta_can/can_4",
       "y": 270
     }
   }

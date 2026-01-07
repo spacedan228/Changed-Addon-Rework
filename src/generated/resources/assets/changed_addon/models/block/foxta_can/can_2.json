@@ -1,0 +1,6 @@
+{
+  "parent": "changed_addon:block/stackable_can/can_2",
+  "textures": {
+    "texture": "changed_addon:block/foxta_can"
+  }
+}

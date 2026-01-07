@@ -3,14 +3,85 @@
   "pools": [
     {
       "bonus_rolls": 0.0,
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ],
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "conditions": [
+                {
+                  "block": "changed_addon:foxta_can",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "cans": "1"
+                  }
+                }
+              ],
+              "count": 1.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changed_addon:foxta"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "conditions": [
+                {
+                  "block": "changed_addon:foxta_can",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "cans": "2"
+                  }
+                }
+              ],
+              "count": 2.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changed_addon:foxta"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "conditions": [
+                {
+                  "block": "changed_addon:foxta_can",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "cans": "3"
+                  }
+                }
+              ],
+              "count": 3.0,
+              "function": "minecraft:set_count"
+            }
+          ],
+          "name": "changed_addon:foxta"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "add": false,
+              "conditions": [
+                {
+                  "block": "changed_addon:foxta_can",
+                  "condition": "minecraft:block_state_property",
+                  "properties": {
+                    "cans": "4"
+                  }
+                }
+              ],
+              "count": 4.0,
+              "function": "minecraft:set_count"
+            }
+          ],
           "name": "changed_addon:foxta"
         }
       ],
