@@ -31,17 +31,17 @@ public class BiomeModifierProvider {
     public static final ResourceKey<BiomeModifier> ADD_LATEX_CHEETAHS_SPAWNS =
             ChangedAddonMod.resourceKey(ForgeRegistries.Keys.BIOME_MODIFIERS, "add_latex_cheetahs_spawns");
 
-    public static final ResourceKey<BiomeModifier> ADD_IRIDIUM =
+    public static final ResourceKey<BiomeModifier> ADD_IRIDIUM_GEN =
             create("add_iridium");
 
-    public static final ResourceKey<BiomeModifier> ADD_PAINITE =
+    public static final ResourceKey<BiomeModifier> ADD_PAINITE_GEN =
             create("add_painite");
 
     public static void bootstrap(BootstapContext<BiomeModifier> context){
         HolderGetter<PlacedFeature> placedFeatures = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<Biome> biomes = context.lookup(Registries.BIOME);
         context.register(
-                ADD_IRIDIUM,
+                ADD_IRIDIUM_GEN,
                 new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                         HolderSet.direct(List.of(
@@ -54,7 +54,7 @@ public class BiomeModifierProvider {
         );
 
         context.register(
-                ADD_PAINITE,
+                ADD_PAINITE_GEN,
                 new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
                         biomes.getOrThrow(BiomeTags.IS_OVERWORLD),
                         HolderSet.direct(placedFeatures.getOrThrow(ChangedAddonFeatures.Placements.PAINITE_ORE_PLACED)),

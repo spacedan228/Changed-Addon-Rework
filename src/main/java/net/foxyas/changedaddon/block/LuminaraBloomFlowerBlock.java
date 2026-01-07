@@ -7,8 +7,10 @@ import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -61,6 +63,11 @@ public class LuminaraBloomFlowerBlock extends FlowerBlock implements Bonemealabl
     public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull RandomSource pRandom) {
         super.tick(pState, pLevel, pPos, pRandom);
         tryToPacifyNearbyEntities(pLevel, pPos, 64);
+        LatexCoverState at = LatexCoverState.getAt(pLevel, pPos);
+        if (!at.isAir()) {
+            performBonemeal(pLevel, pRandom, pPos, pState);
+            LatexCoverState.setAtAndUpdate(pLevel, pPos, ChangedLatexTypes.NONE.get().defaultCoverState());
+        }
         pLevel.scheduleTick(pPos, this, 10);
     }
 

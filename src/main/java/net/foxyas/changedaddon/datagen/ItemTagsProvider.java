@@ -120,8 +120,6 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
                 ELECTRIC_KATANA.get(),
                 ELECTRIC_KATANA_RED.get(),
                 THE_DECIMATOR.get(),
-                PAINITE_SWORD.get(),
-                PAINITE_AXE.get(),
                 CROWBAR.get(),
                 Items.WOODEN_SWORD,
                 Items.WOODEN_AXE,

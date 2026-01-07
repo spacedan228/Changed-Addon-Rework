@@ -512,15 +512,6 @@ public class HULanguageProvider extends LanguageProvider {
         addItem(ORANGE_WOLF_CRYSTAL_FRAGMENT, "§6Narancssárga§r farkas kristályszilánk");
         addItem(ORANGE_JUICE, "Narancslé");
         addItem(PAINITE, "Painit");
-        addItem(PAINITE_ARMOR_BOOTS, "Netheritcsizma painit dísszel");
-        addItem(PAINITE_ARMOR_LEGGINGS, "Netherit lábszárvédő painit dísszel");
-        addItem(PAINITE_ARMOR_CHESTPLATE, "Netherit mellvért painit dísszel");
-        addItem(PAINITE_ARMOR_HELMET, "Netheritsisak painit dísszel");
-        addItem(PAINITE_AXE, "Painitfejsze");
-        addItem(PAINITE_HOE, "Painitkapa");
-        addItem(PAINITE_PICKAXE, "Painitcsákány");
-        addItem(PAINITE_SHOVEL, "Painitásó");
-        addItem(PAINITE_SWORD, "Painitkard");
         addItem(POT_WITH_CAMONIA, "Litix-kamóniás edény");
         addItem(RAW_IRIDIUM, "Nyersirídium");
         addItem(RED_LATEX_GOO, "§4Vörös latex ragacs");

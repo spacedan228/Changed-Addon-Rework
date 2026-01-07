@@ -65,17 +65,8 @@ public class ChangedAddonItems {
     public static final RegistryObject<BlockItem> DEEPSLATE_IRIDIUM_ORE = block(ChangedAddonBlocks.DEEPSLATE_IRIDIUM_ORE);
     public static final RegistryObject<BlockItem> IRIDIUM_BLOCK = block(ChangedAddonBlocks.IRIDIUM_BLOCK);
 
-    public static final RegistryObject<Item> PAINITE = REGISTRY.register("painite", PainiteItem::new);
+    public static final RegistryObject<Item> PAINITE = REGISTRY.register("painite", PainiteGemItem::new);
     public static final RegistryObject<Item> ACCESSORIES_CHESTPLATE = REGISTRY.register("accessories_chestplate", AccessoriesItem.Chestplate::new);
-    public static final RegistryObject<Item> PAINITE_SWORD = REGISTRY.register("painite_sword", PainiteSwordItem::new);
-    public static final RegistryObject<Item> PAINITE_PICKAXE = REGISTRY.register("painite_pickaxe", PainitePickaxeItem::new);
-    public static final RegistryObject<Item> PAINITE_AXE = REGISTRY.register("painite_axe", PainiteAxeItem::new);
-    public static final RegistryObject<Item> PAINITE_SHOVEL = REGISTRY.register("painite_shovel", PainiteShovelItem::new);
-    public static final RegistryObject<Item> PAINITE_HOE = REGISTRY.register("painite_hoe", PainiteHoeItem::new);
-    public static final RegistryObject<Item> PAINITE_ARMOR_HELMET = REGISTRY.register("painite_armor_helmet", PainiteArmorItem.Helmet::new);
-    public static final RegistryObject<Item> PAINITE_ARMOR_CHESTPLATE = REGISTRY.register("painite_armor_chestplate", PainiteArmorItem.Chestplate::new);
-    public static final RegistryObject<Item> PAINITE_ARMOR_LEGGINGS = REGISTRY.register("painite_armor_leggings", PainiteArmorItem.Leggings::new);
-    public static final RegistryObject<Item> PAINITE_ARMOR_BOOTS = REGISTRY.register("painite_armor_boots", PainiteArmorItem.Boots::new);
     public static final RegistryObject<BlockItem> PAINITE_ORE = block(ChangedAddonBlocks.DEEPSLATE_PAINITE_ORE);
     public static final RegistryObject<BlockItem> PAINITE_BLOCK = block(ChangedAddonBlocks.PAINITE_BLOCK);
 

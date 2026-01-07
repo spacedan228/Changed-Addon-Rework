@@ -512,15 +512,6 @@ public class ENLanguageProvider extends LanguageProvider {
         addItem(ORANGE_WOLF_CRYSTAL_FRAGMENT, "§6Orange§r Wolf Crystal Fragment");
         addItemFromId(ORANGE_JUICE);
         addItemFromId(PAINITE);
-        addItem(PAINITE_ARMOR_BOOTS, "Netherite Boots with Painite trim");
-        addItem(PAINITE_ARMOR_LEGGINGS, "Netherite Leggings with Painite trim");
-        addItem(PAINITE_ARMOR_CHESTPLATE, "Netherite Chestplate with Painite trim");
-        addItem(PAINITE_ARMOR_HELMET, "Netherite Helmet with Painite trim");
-        addItemFromId(PAINITE_AXE);
-        addItemFromId(PAINITE_HOE);
-        addItemFromId(PAINITE_PICKAXE);
-        addItemFromId(PAINITE_SHOVEL);
-        addItemFromId(PAINITE_SWORD);
         addItem(POT_WITH_CAMONIA, "Pot with Litix-Camonia");
         addItemFromId(RAW_IRIDIUM);
         addItem(RED_LATEX_GOO, "§4Red Latex Goo");

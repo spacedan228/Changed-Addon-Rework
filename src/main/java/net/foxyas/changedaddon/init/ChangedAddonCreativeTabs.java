@@ -41,16 +41,6 @@ public class ChangedAddonCreativeTabs {
             .icon(() -> ChangedAddonItems.ELECTRIC_KATANA.get().getDefaultInstance())
             .title(Component.translatable("itemGroup.changed_addon_optional_combat_tab"))
             .displayItems((params, items) -> {
-                items.accept(PAINITE_SWORD.get());
-                items.accept(PAINITE_PICKAXE.get());
-                items.accept(PAINITE_AXE.get());
-                items.accept(PAINITE_SHOVEL.get());
-                items.accept(PAINITE_HOE.get());
-                items.accept(PAINITE_ARMOR_HELMET.get());
-                items.accept(PAINITE_ARMOR_CHESTPLATE.get());
-                items.accept(PAINITE_ARMOR_LEGGINGS.get());
-                items.accept(PAINITE_ARMOR_BOOTS.get());
-
                 items.accept(THE_DECIMATOR.get());
             }).withTabsBefore(ChangedAddonCreativeTabs.CHANGED_ADDON_MAIN_TAB.getKey()).withTabsBefore(ChangedTabs.TAB_CHANGED_MUSIC.getKey()).build());
 }
