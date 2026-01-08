@@ -12,6 +12,7 @@ import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -21,13 +22,13 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(value = ChangedEntity.class, remap = false)
-public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity {
+public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity, IAlphaAbleEntity {
 
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
     protected int grabCooldown = 0;
@@ -46,19 +47,13 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         }
     }
 
-    @Unique
-    public boolean isThisAlpha() {
-        ChangedEntity self = (ChangedEntity) (Object) this;
-        return self instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha();
-    }
-
     @Override
     public @Nullable GrabEntityAbilityInstance getGrabAbilityInstance() {
         return this.grabEntityAbilityInstance;
     }
 
     @Override
-    public LivingEntity getGrabTarget() {
+    public LivingEntity getGrabbedEntity() {
         return this.grabEntityAbilityInstance != null ? this.grabEntityAbilityInstance.grabbedEntity : null;
     }
 
@@ -69,18 +64,30 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Inject(at = @At("TAIL"), method = "registerGoals", remap = true, cancellable = true)
     private void goalsHook(CallbackInfo ci) {
-        if (canEntityGrab(this.getType(), this.level)) {
-            this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
-            this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
-            this.goalSelector.addGoal(10, new MayCauseGrabDamageGoal(this));
-        }
+        this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
+        this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
+        this.goalSelector.addGoal(10, new MayCauseGrabDamageGoal(this));
+    }
+
+    @Override
+    public boolean canEntityGrab(EntityType<?> type, Level level) {
+        return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab() || isAlpha();
+    }
+
+    @Inject(method = "tick", at = @At("TAIL"))
+    private void tickHook(CallbackInfo ci) {
     }
 
     @Override
     public void baseTick() {
         super.baseTick();
+
         if (canEntityGrab(this.getType(), level)) {
-            if (grabEntityAbilityInstance != null && grabEntityAbilityInstance.grabbedEntity == null) {
+            if (grabEntityAbilityInstance == null) {
+                this.grabEntityAbilityInstance = createGrabAbility(); // fail-safe
+                return;
+            }
+            if (grabEntityAbilityInstance.grabbedEntity == null) {
                 if (grabCooldown > 0) this.grabCooldown--;
             }
             this.mayTickGrabAbility();
@@ -111,6 +118,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (canEntityGrab(this.getType(), level)) {
             this.saveGrabAbilityInTag(tag);
         }
+        tag.putBoolean("isAlpha", isAlpha());
     }
 
     @Override
@@ -119,26 +127,57 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (canEntityGrab(this.getType(), level)) {
             this.readGrabAbilityInTag(tag);
         }
-    }
-
-    @Unique
-    private boolean ChangedAddon$canEntityGrab(EntityType<?> type) {
-        return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || ableToGrab;
-    }
-
-    @Unique
-    private boolean ChangedAddon$canEntityGrab() {
-        return ChangedAddon$canEntityGrab(this.getType());
+        if (tag.contains("isAlpha")) setAlpha(tag.getBoolean("isAlpha"));
     }
 
     @Override
-    public boolean canEntityGrab(EntityType<?> type, Level level) {
-        return ChangedAddon$canEntityGrab(type) || isThisAlpha();
+    public boolean isAbleToGrab() {
+        return ableToGrab || isAlpha();
     }
 
     @ModifyReturnValue(method = "getAbilityInstance", at = @At("RETURN"))
     private <A extends AbstractAbilityInstance> A getAbilityInstanceHook(A original, AbstractAbility<A> ability) {
         if (canEntityGrab(this.getType(), level)) return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : original);
         return original;
+    }
+
+    @Override
+    public void setAlpha(boolean alpha) {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        if (this.isAlpha() != alpha) {
+            self.getEntityData().set(IS_ALPHA, alpha);
+            this.refreshDimensions();
+        }
+    }
+
+    @Override
+    public boolean isAlpha() {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        return self.getEntityData().get(IS_ALPHA);
+    }
+
+    @Inject(method = "savePlayerVariantData", at = @At("HEAD"), cancellable = true)
+    private void savePlayerVariantDataHook(CallbackInfoReturnable<CompoundTag> cir) {
+        CompoundTag tag = cir.getReturnValue();
+        tag.putBoolean("isAlpha", isAlpha());
+    }
+
+    @Inject(method = "readPlayerVariantData", at = @At("HEAD"), cancellable = true)
+    private void readPlayerVariantDataHook(CompoundTag tag, CallbackInfo ci) {
+        if (tag.contains("isAlpha")) setAlpha(tag.getBoolean("isAlpha"));
+    }
+
+    @Inject(method = "defineSynchedData", at = @At("HEAD"), remap = true, cancellable = true)
+    private void defineSynchedDataHook(CallbackInfo ci) {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        self.getEntityData().define(IS_ALPHA, false);
+    }
+
+    @Override
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {
+        super.onSyncedDataUpdated(pKey);
+        if (pKey == IS_ALPHA) {
+            this.refreshDimensions();
+        }
     }
 }

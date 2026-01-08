@@ -22,7 +22,7 @@ import net.minecraftforge.network.PacketDistributor;
 public interface IGrabberEntity {
     PathfinderMob asMob();
 
-    LivingEntity getGrabTarget();
+    LivingEntity getGrabbedEntity();
 
     GrabEntityAbilityInstance getGrabAbilityInstance();
 
@@ -153,7 +153,12 @@ public interface IGrabberEntity {
         });
     }
 
+    boolean isAbleToGrab();
+
     default boolean canEntityGrab(EntityType<?> type, Level level) {
-        return true;
+        if (this instanceof ChangedEntity changedEntity) {
+            if (changedEntity instanceof IAlphaAbleEntity alphaAbleEntity) return alphaAbleEntity.isAlpha();
+        }
+        return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab();
     }
 }

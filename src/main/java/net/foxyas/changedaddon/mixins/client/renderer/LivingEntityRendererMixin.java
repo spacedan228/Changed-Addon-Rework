@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.mixins.client.renderer;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -21,5 +23,16 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     private void addExtraLayers(EntityRendererProvider.Context pContext, M pModel, float pShadowRadius, CallbackInfo ci){
         LivingEntityRenderer<T, M> self = (LivingEntityRenderer<T,M>) (Object) this;
         this.addLayer(new SonarOutlineLayer<>(self));
+    }
+
+    @Inject(method = "scale",
+            at = @At("RETURN"))
+    private void applyAlphaScale(T pLivingEntity, PoseStack pPoseStack, float pPartialTickTime, CallbackInfo ci) {
+        if (pLivingEntity instanceof IAlphaAbleEntity alphaAbleEntity) {
+            if (alphaAbleEntity.isAlpha()) {
+                pPoseStack.scale(alphaAbleEntity.alphaScaleForRender(), alphaAbleEntity.alphaScaleForRender(), alphaAbleEntity.alphaScaleForRender());
+            }
+        }
+
     }
 }

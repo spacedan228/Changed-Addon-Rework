@@ -1,12 +1,10 @@
 package net.foxyas.changedaddon.mixins.entity.projectiles;
 
-import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.projectile.GasParticle;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.EntityHitResult;

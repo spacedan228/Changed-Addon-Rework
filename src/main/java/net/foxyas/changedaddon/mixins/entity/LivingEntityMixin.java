@@ -5,13 +5,13 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.ability.ToggleClimbAbilityInstance;
 import net.foxyas.changedaddon.entity.api.ExtraConditions;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.item.clothes.AccessoryItemExtension;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlots;
-import net.ltxprogrammer.changed.item.AccessoryItem;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.world.damagesource.DamageSource;
@@ -106,5 +106,15 @@ public abstract class LivingEntityMixin {
         })));
 
         return total.intValue() + original.call(armorSlots, damageSource);
+    }
+
+    @Inject(method = "getScale", at = @At("RETURN"), cancellable = true)
+    private void getScaleHook(CallbackInfoReturnable<Float> cir) {
+        float originalValue = cir.getReturnValue();
+        var self = (LivingEntity) (Object) this;
+        if (self instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+            float alphaScale = iAlphaAbleEntity.alphaAdditionalScale();
+            cir.setReturnValue(originalValue + alphaScale);
+        }
     }
 }

@@ -61,7 +61,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
 
     @Override
     public boolean canUse() {
-        LivingEntity target = grabber.getGrabTarget();
+        LivingEntity target = grabber.getGrabbedEntity();
         if (target == null)
             return false;
 
@@ -78,7 +78,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
 
     @Override
     public boolean canContinueToUse() {
-        LivingEntity target = grabber.getGrabTarget();
+        LivingEntity target = grabber.getGrabbedEntity();
         if (target == null)
             return false;
 

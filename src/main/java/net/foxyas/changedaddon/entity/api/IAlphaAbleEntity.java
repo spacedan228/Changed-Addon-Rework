@@ -1,12 +1,18 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.process.DEBUG;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.level.Level;
 
 public interface IAlphaAbleEntity {
+
+    EntityDataAccessor<Boolean> IS_ALPHA = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.BOOLEAN);
 
     void setAlpha(boolean alphaGene);
 
@@ -29,10 +35,17 @@ public interface IAlphaAbleEntity {
         return 0.025f; //Fail Safe
     }
 
-    default EntityDimensions scaleForAlphaDimension(EntityDimensions original) {
+    default float alphaScaleForRender() {
         if (this instanceof ChangedEntity changedEntity) {
-            original.scale(1.25f); // For future changes
+            return 1.5f + DEBUG.HeadPosY; // For future changes
         }
-        return original.scale(1.25f);
+        return 1f;
+    }
+
+    default float alphaAdditionalScale() {
+        if (this instanceof ChangedEntity changedEntity) {
+            return 0.25f + DEBUG.HeadPosZ; // For future changes
+        }
+        return 0f;
     }
 }
