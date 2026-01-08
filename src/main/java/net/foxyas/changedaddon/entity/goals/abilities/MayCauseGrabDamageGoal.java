@@ -28,7 +28,7 @@ public class MayCauseGrabDamageGoal extends Goal {
 
         if (!mob.isAlive()) return false;
 
-        if (grabber.getGrabTarget() == null) return false;
+        if (grabber.getGrabbedEntity() == null) return false;
 
         return grabber.canCauseGrabDamage();
     }

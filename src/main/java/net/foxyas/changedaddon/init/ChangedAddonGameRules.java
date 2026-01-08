@@ -17,6 +17,6 @@ public class ChangedAddonGameRules {
     public static final GameRules.Key<GameRules.BooleanValue> CHANGED_ADDON_CREATURE_DIETS = register("changed_addon:doCreatureDiets", GameRules.Category.PLAYER, GameRules.BooleanValue.create(true));
     public static final GameRules.Key<GameRules.BooleanValue> NEED_PERMISSION_FOR_BOSS_TRANSFUR = register("changed_addon:needPermissionForBossTransfur", GameRules.Category.MISC, GameRules.BooleanValue.create(true));
     public static final GameRules.Key<GameRules.BooleanValue> CHANGED_ENTITIES_SPAWN_DRESSED = register("changed_addon:changedEntitiesSpawnDressed", GameRules.Category.MOBS, GameRules.BooleanValue.create(false));
-    public static final GameRules.Key<GameRules.BooleanValue> DO_ALPHAS_SPAWN = register("doAlphasSpawn", GameRules.Category.MOBS, GameRules.BooleanValue.create(true));
+    public static final GameRules.Key<GameRules.BooleanValue> DO_ALPHAS_SPAWN = register("changed_addon:doAlphasSpawn", GameRules.Category.MOBS, GameRules.BooleanValue.create(true));
 
 }

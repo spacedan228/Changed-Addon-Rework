@@ -71,7 +71,7 @@ public class DEBUG {
 
     public static boolean DEBUG = SharedConstants.IS_RUNNING_IN_IDE || !FMLLoader.isProduction();
     public static float HeadPosT, HeadPosV, HeadPosB = 0, HeadPosK = 180, HeadPosL = 180, HeadPosJ = 180;
-    public static float HeadPosX = 1, HeadPosY = 1, HeadPosZ = 1;
+    public static float HeadPosX = 0, HeadPosY = 0, HeadPosZ = 0;
 
     public static boolean PARTICLETEST = false;
     public static boolean RENDERTEST = true;

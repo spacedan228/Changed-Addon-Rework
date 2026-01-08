@@ -37,6 +37,9 @@ public class MayGrabTargetGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        boolean ableToGrab = grabber.isAbleToGrab();
+        if (!ableToGrab) return false;
+
         GrabEntityAbilityInstance grabAbilityInstance = grabber.getGrabAbilityInstance();
         LivingEntity target = grabber.asMob().getTarget();
         if (target == null) return false;

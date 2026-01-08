@@ -182,12 +182,17 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
+    public boolean isAbleToGrab() {
+        return true;
+    }
+
+    @Override
     public @Nullable GrabEntityAbilityInstance getGrabAbilityInstance() {
         return super.getGrabAbility();
     }
 
     @Override
-    public LivingEntity getGrabTarget() {
+    public LivingEntity getGrabbedEntity() {
         return grabEntityAbilityInstance != null ? grabEntityAbilityInstance.grabbedEntity : null;
     }
 

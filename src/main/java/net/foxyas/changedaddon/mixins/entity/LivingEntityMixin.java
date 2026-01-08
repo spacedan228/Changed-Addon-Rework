@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.ability.ToggleClimbAbilityInstance;
 import net.foxyas.changedaddon.entity.api.ExtraConditions;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -34,6 +35,16 @@ public abstract class LivingEntityMixin {
                 }
             }
         });
+    }
+
+    @Inject(method = "getScale", at = @At("RETURN"), cancellable = true)
+    private void getScaleHook(CallbackInfoReturnable<Float> cir) {
+        float originalValue = cir.getReturnValue();
+        var self = (LivingEntity) (Object) this;
+        if (self instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+            float alphaScale = iAlphaAbleEntity.alphaAdditionalScale();
+            cir.setReturnValue(originalValue + alphaScale);
+        }
     }
 
 }

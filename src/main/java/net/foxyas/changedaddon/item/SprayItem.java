@@ -57,7 +57,11 @@ public class SprayItem extends Item {
             ItemStack itemInHand = player.getItemInHand(hand);
             if (itemInHand.getItem() instanceof SprayItem sprayItem) {
                 BlockHitResult hitResult = clickEvent.getHitResult();
-                sprayItem.useOn(new UseOnContext(player, hand, hitResult));
+                if (!player.getCooldowns().isOnCooldown(sprayItem)) {
+                    InteractionResult result = sprayItem.useOn(new UseOnContext(player, hand, hitResult));
+                    if (result.shouldSwing()) player.swing(hand);
+                    clickEvent.setResult(result);
+                }
             }
         }
     }

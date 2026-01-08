@@ -2,13 +2,10 @@ package net.foxyas.changedaddon.entity.goals.abilities;
 
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
-import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
-import net.foxyas.changedaddon.mixins.abilities.GrabEntityAbilityInstanceAccessor;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.entity.LivingEntityDataExtension;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -73,7 +70,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
 
     @Override
     public boolean canUse() {
-        LivingEntity target = grabber.getGrabTarget();
+        LivingEntity target = grabber.getGrabbedEntity();
         if (target == null)
             return false;
 
@@ -102,7 +99,7 @@ public class GrabTargetGoal extends MeleeAttackGoal {
 
     @Override
     public boolean canContinueToUse() {
-        LivingEntity target = grabber.getGrabTarget();
+        LivingEntity target = grabber.getGrabbedEntity();
         if (target == null)
             return false;
 
