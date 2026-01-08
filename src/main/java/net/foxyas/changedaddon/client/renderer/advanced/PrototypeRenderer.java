@@ -33,12 +33,6 @@ public class PrototypeRenderer extends AdvancedHumanoidRenderer<PrototypeEntity,
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));
         this.addLayer(getEmissiveBaseLayer());
         this.addLayer(new DynamicEmissiveBodyLayer<>(this, ChangedAddonMod.textureLoc("textures/entities/prototype/prototype_glowing_layer")));
-        this.addLayer(CustomEyesLayer.builder(this, context.getModelSet())
-                .withEyebrows(CustomEyesLayer::noRender)
-                .withEyelashes(CustomEyesLayer::noRender)
-                .withSclera(Color3.parseHex("#0e1216"))
-                .withIris(CustomEyesLayer::glowingIrisColorLeft, CustomEyesLayer::glowingIrisColorRight)
-                .build());
         this.addLayer(new GasMaskLayer<>(this, context.getModelSet()));
     }
 

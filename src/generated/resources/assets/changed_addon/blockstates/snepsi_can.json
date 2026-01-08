@@ -1,18 +1,183 @@
 {
   "variants": {
-    "facing=north": {
-      "model": "changed_addon:block/snepsi_can"
+    "cans=1,covered_with=neutral,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_1"
     },
-    "facing=south": {
-      "model": "changed_addon:block/snepsi_can",
+    "cans=2,covered_with=neutral,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_2"
+    },
+    "cans=3,covered_with=neutral,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_3"
+    },
+    "cans=4,covered_with=neutral,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_4"
+    },
+    "cans=1,covered_with=dark_latex,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_1"
+    },
+    "cans=2,covered_with=dark_latex,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_2"
+    },
+    "cans=3,covered_with=dark_latex,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_3"
+    },
+    "cans=4,covered_with=dark_latex,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_4"
+    },
+    "cans=1,covered_with=white_latex,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_1"
+    },
+    "cans=2,covered_with=white_latex,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_2"
+    },
+    "cans=3,covered_with=white_latex,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_3"
+    },
+    "cans=4,covered_with=white_latex,facing=north": {
+      "model": "changed_addon:block/snepsi_can/can_4"
+    },
+    "cans=1,covered_with=neutral,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_1",
       "y": 180
     },
-    "facing=west": {
-      "model": "changed_addon:block/snepsi_can",
+    "cans=2,covered_with=neutral,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 180
+    },
+    "cans=3,covered_with=neutral,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 180
+    },
+    "cans=4,covered_with=neutral,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_4",
+      "y": 180
+    },
+    "cans=1,covered_with=dark_latex,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_1",
+      "y": 180
+    },
+    "cans=2,covered_with=dark_latex,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 180
+    },
+    "cans=3,covered_with=dark_latex,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 180
+    },
+    "cans=4,covered_with=dark_latex,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_4",
+      "y": 180
+    },
+    "cans=1,covered_with=white_latex,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_1",
+      "y": 180
+    },
+    "cans=2,covered_with=white_latex,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 180
+    },
+    "cans=3,covered_with=white_latex,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 180
+    },
+    "cans=4,covered_with=white_latex,facing=south": {
+      "model": "changed_addon:block/snepsi_can/can_4",
+      "y": 180
+    },
+    "cans=1,covered_with=neutral,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_1",
       "y": 270
     },
-    "facing=east": {
-      "model": "changed_addon:block/snepsi_can",
+    "cans=2,covered_with=neutral,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 270
+    },
+    "cans=3,covered_with=neutral,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 270
+    },
+    "cans=4,covered_with=neutral,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_4",
+      "y": 270
+    },
+    "cans=1,covered_with=dark_latex,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_1",
+      "y": 270
+    },
+    "cans=2,covered_with=dark_latex,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 270
+    },
+    "cans=3,covered_with=dark_latex,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 270
+    },
+    "cans=4,covered_with=dark_latex,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_4",
+      "y": 270
+    },
+    "cans=1,covered_with=white_latex,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_1",
+      "y": 270
+    },
+    "cans=2,covered_with=white_latex,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 270
+    },
+    "cans=3,covered_with=white_latex,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 270
+    },
+    "cans=4,covered_with=white_latex,facing=west": {
+      "model": "changed_addon:block/snepsi_can/can_4",
+      "y": 270
+    },
+    "cans=1,covered_with=neutral,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_1",
+      "y": 90
+    },
+    "cans=2,covered_with=neutral,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 90
+    },
+    "cans=3,covered_with=neutral,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 90
+    },
+    "cans=4,covered_with=neutral,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_4",
+      "y": 90
+    },
+    "cans=1,covered_with=dark_latex,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_1",
+      "y": 90
+    },
+    "cans=2,covered_with=dark_latex,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 90
+    },
+    "cans=3,covered_with=dark_latex,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 90
+    },
+    "cans=4,covered_with=dark_latex,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_4",
+      "y": 90
+    },
+    "cans=1,covered_with=white_latex,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_1",
+      "y": 90
+    },
+    "cans=2,covered_with=white_latex,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_2",
+      "y": 90
+    },
+    "cans=3,covered_with=white_latex,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_3",
+      "y": 90
+    },
+    "cans=4,covered_with=white_latex,facing=east": {
+      "model": "changed_addon:block/snepsi_can/can_4",
       "y": 90
     }
   }

@@ -2,11 +2,13 @@ package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.block.LuminarCrystalSmallBlock;
 import net.foxyas.changedaddon.block.MultifaceBlock;
+import net.foxyas.changedaddon.block.StackableCanBlock;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -23,6 +25,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePrope
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
@@ -99,8 +102,8 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
         );
 
         dropSelf(GENERATOR.get());
-        dropOther(FOXTA_CAN.get(), ChangedAddonItems.FOXTA.get());
-        dropOther(SNEPSI_CAN.get(), ChangedAddonItems.SNEPSI.get());
+        dropStackableCan(FOXTA_CAN, ChangedAddonItems.FOXTA);
+        dropStackableCan(SNEPSI_CAN, ChangedAddonItems.SNEPSI);
         dropSelf(HAND_SCANNER.get());
         dropSelf(PAWS_SCANNER.get());
 
@@ -111,6 +114,20 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
         coverBlockDrop(COVER_BLOCK.get());
         coverBlockDrop(DARK_LATEX_COVER_BLOCK.get());
         coverBlockDrop(WHITE_LATEX_COVER_BLOCK.get());
+    }
+
+    private void dropStackableCan(RegistryObject<? extends StackableCanBlock> canBlock, RegistryObject<? extends Item> canItem) {
+        StackableCanBlock block = canBlock.get();
+        LootTable.Builder table = LootTable.lootTable();
+        LootPool.Builder pool = LootPool.lootPool();
+        for (int i = 1; i < 5; i++) {
+            pool.add(LootItem.lootTableItem(canItem.get()).apply(SetItemCountFunction.setCount(ConstantValue.exactly(i))
+                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                            .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(StackableCanBlock.CANS, i)))));
+        }
+
+        table.withPool(pool);
+        add(block, table);
     }
 
     private void coverBlockDrop(MultifaceBlock cover){

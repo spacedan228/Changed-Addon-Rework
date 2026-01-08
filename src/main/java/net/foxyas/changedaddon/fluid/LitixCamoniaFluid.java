@@ -4,7 +4,13 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonFluids;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.ltxprogrammer.changed.block.AbstractLatexBlock;
+import net.ltxprogrammer.changed.entity.LatexType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -25,6 +31,19 @@ public abstract class LitixCamoniaFluid extends ForgeFlowingFluid {
 
     private LitixCamoniaFluid() {
         super(PROPERTIES);
+    }
+
+    @Override
+    public void tick(@NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull FluidState pState) {
+        super.tick(pLevel, pPos, pState);
+        if (pLevel.isClientSide()) return;
+        for (Direction value : Direction.values()) {
+            BlockPos relative = pPos.relative(value);
+            BlockState blockState = pLevel.getBlockState(relative);
+            if (blockState.hasProperty(AbstractLatexBlock.COVERED) && blockState.getValue(AbstractLatexBlock.COVERED) != LatexType.NEUTRAL) {
+                pLevel.setBlockAndUpdate(relative, blockState.setValue(AbstractLatexBlock.COVERED, LatexType.NEUTRAL));
+            }
+        }
     }
 
     public static class Source extends LitixCamoniaFluid {
