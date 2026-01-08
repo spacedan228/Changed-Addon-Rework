@@ -23,6 +23,11 @@ public class ChangedAddonServerConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Boolean> APPLY_UNTRANSFUR_IMMUNITY_AFTER_RESPAWN_AS_TRANSFUR;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_TRANSFURED_PLAYERS_TO_RESPAWN_WAS_TRANSFUR;
     public static final ForgeConfigSpec.ConfigValue<Boolean> TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE;
+    public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_PEACEFUL;
+    public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_EASY;
+    public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_NORMAL;
+    public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_HARD;
+    public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_HARDCORE;
 
     static {
         ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -40,6 +45,25 @@ public class ChangedAddonServerConfiguration {
         BUILDER.push("Beasts Behavior");
         DL_COAT_AFFECT_ALL = BUILDER.comment("When active, the Dark Latex Coat will affect all beasts").define("DL Coat Confuse All Creatures", true);
         BUILDER.push("Changed Entities");
+
+        BUILDER.push("Alpha Spawn Difficulty Scaling");
+        ALPHA_SPAWN_PEACEFUL = BUILDER
+                .comment("Chance for an Alpha to spawn on Peaceful difficulty (0.0 - 1.0)")
+                .defineInRange("Alpha Spawn Chance Peaceful", 0.0D, 0.0D, 1.0D);
+        ALPHA_SPAWN_EASY = BUILDER
+                .comment("Chance for an Alpha to spawn on Easy difficulty (0.0 - 1.0)")
+                .defineInRange("Alpha Spawn Chance Easy", 0.00025f, 0.0D, 1.0D);
+        ALPHA_SPAWN_NORMAL = BUILDER
+                .comment("Chance for an Alpha to spawn on Normal difficulty (0.0 - 1.0)")
+                .defineInRange("Alpha Spawn Chance Normal", 0.0025f, 0.0D, 1.0D);
+        ALPHA_SPAWN_HARD = BUILDER
+                .comment("Chance for an Alpha to spawn on Hard difficulty (0.0 - 1.0)")
+                .defineInRange("Alpha Spawn Chance Hard", 0.025f, 0.0D, 1.0D);
+        ALPHA_SPAWN_HARDCORE = BUILDER
+                .comment("Chance for an Alpha to spawn on HardCore difficulty (0.0 - 1.0)")
+                .defineInRange("Alpha Spawn Chance HardCore", 0.15f, 0.0D, 1.0D);
+        BUILDER.pop();
+
         CHANGED_SPAWN_DRESS_MODE = BUILDER
                 .comment("Defines how Changed entities spawn with clothing.")
                 .worldRestart()

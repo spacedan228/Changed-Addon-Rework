@@ -1,16 +1,21 @@
-package net.foxyas.changedaddon.mixins.entity;
+package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.goals.abilities.MayCauseGrabDamageGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.ltxprogrammer.changed.ability.*;
+import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -39,6 +44,12 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (canEntityGrab(type, level)) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
         }
+    }
+
+    @Unique
+    public boolean isThisAlpha() {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        return self instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha();
     }
 
     @Override
@@ -122,7 +133,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public boolean canEntityGrab(EntityType<?> type, Level level) {
-        return ChangedAddon$canEntityGrab(type);
+        return ChangedAddon$canEntityGrab(type) || isThisAlpha();
     }
 
     @ModifyReturnValue(method = "getAbilityInstance", at = @At("RETURN"))
