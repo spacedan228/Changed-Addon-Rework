@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.mixins.entity;
+package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
@@ -94,17 +94,6 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
                 }
             }
         }
-    }
-
-    @Override
-    public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor pLevel, @NotNull DifficultyInstance pDifficulty, @NotNull MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData, @Nullable CompoundTag pDataTag) {
-        SpawnGroupData spawnGroupData = super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData, pDataTag);
-
-        boolean flag = pLevel.getLevel().getGameRules().getBoolean(ChangedAddonGameRules.CHANGED_ENTITIES_SPAWN_DRESSED);
-        boolean match = ChangedAddonServerConfiguration.CHANGED_SPAWN_DRESS_MODE.get().isMatch(this);
-        if (flag && match) this.setDefaultClothing((ChangedEntity) (Object) this);
-
-        return spawnGroupData;
     }
 
     @Inject(at = @At("HEAD"), method = "addAdditionalSaveData", remap = true)

@@ -1,6 +1,7 @@
-package net.foxyas.changedaddon.mixins.entity;
+package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
@@ -38,6 +39,12 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (ChangedAddon$canEntityGrab(type)) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
         }
+    }
+
+    @Unique
+    public boolean isThisAlpha() {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        return self instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha();
     }
 
     @Override
@@ -120,7 +127,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public boolean canEntityGrab(EntityType<?> type, Level level) {
-        return ChangedAddon$canEntityGrab(type);
+        return ChangedAddon$canEntityGrab(type) || isThisAlpha();
     }
 
     @ModifyReturnValue(method = "getAbilityInstance", at = @At("RETURN"))
