@@ -338,13 +338,13 @@ public class LatexBonemealAndDispenserHandler {
                 continue;
 
             int sat = state.getValue(SpreadingLatexType.SATURATION);
-            if (sat < 0) continue;
-            LatexCoverState newState = state.trySetValue(SpreadingLatexType.SATURATION, Math.max(sat - 1, 0));
+            if (sat >= 15) continue;
+            LatexCoverState newState = state.trySetValue(SpreadingLatexType.SATURATION, Math.min(sat + 1, 15));
             LatexCoverState.setAtAndUpdate(level, node.pos(), newState);
             LatexCoverState at = LatexCoverState.getAt(level, node.pos);
-            at.randomTick(level, node.pos, level.getRandom());
+            if (at.getValue(SpreadingLatexType.SATURATION) >= 15) at.randomTick(level, node.pos, level.getRandom()); // natural degradation
 
-            cleaned = at.isAir() || at.getValue(SpreadingLatexType.SATURATION) <= 0;
+            cleaned = at.isAir() || at.getValue(SpreadingLatexType.SATURATION) >= 15;
         }
 
         return cleaned;
@@ -367,6 +367,54 @@ public class LatexBonemealAndDispenserHandler {
 
         return true;
     }
+
+    public static boolean cleanLatexPositionsFromWeak(
+            ServerLevel level,
+            Set<LatexNode> latexNodes
+    ) {
+        int highest = -1;
+
+        for (LatexNode node : latexNodes) {
+            if (!(node.state().getType() instanceof SpreadingLatexType))
+                continue;
+
+            int sat = node.state().getValue(SpreadingLatexType.SATURATION);
+
+            // nunca remove source
+            if (sat == 0)
+                continue;
+
+            if (sat > highest) {
+                highest = sat;
+            }
+        }
+
+        if (highest < 0)
+            return false;
+
+        boolean cleaned = false;
+
+        for (LatexNode node : latexNodes) {
+            if (!(node.state().getType() instanceof SpreadingLatexType))
+                continue;
+
+            int sat = node.state().getValue(SpreadingLatexType.SATURATION);
+
+            if (sat != highest)
+                continue;
+
+            LatexCoverState.setAtAndUpdate(
+                    level,
+                    node.pos(),
+                    ChangedLatexTypes.NONE.get().defaultCoverState()
+            );
+
+            cleaned = true;
+        }
+
+        return cleaned;
+    }
+
 
 
     public static boolean spreadFromSourceWaves(

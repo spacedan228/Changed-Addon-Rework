@@ -1,5 +1,7 @@
 package net.foxyas.changedaddon.item;
 
+import net.foxyas.changedaddon.event.LatexCoverStateEvent;
+import net.foxyas.changedaddon.event.LatexTypePlayerEvent;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
@@ -9,6 +11,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -17,6 +20,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -41,6 +45,21 @@ public class SprayItem extends Item {
     @Override
     public @NotNull UseAnim getUseAnimation(@NotNull ItemStack stack) {
         return UseAnim.BLOCK;
+    }
+
+    @Mod.EventBusSubscriber
+    public static class Event {
+
+        @SubscribeEvent
+        public static void useOnLatexHook(LatexTypePlayerEvent.RightClick clickEvent) {
+            InteractionHand hand = clickEvent.getHand();
+            Player player = clickEvent.getPlayer();
+            ItemStack itemInHand = player.getItemInHand(hand);
+            if (itemInHand.getItem() instanceof SprayItem sprayItem) {
+                BlockHitResult hitResult = clickEvent.getHitResult();
+                sprayItem.useOn(new UseOnContext(player, hand, hitResult));
+            }
+        }
     }
 
     @Override

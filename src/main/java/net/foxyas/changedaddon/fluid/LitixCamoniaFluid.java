@@ -5,19 +5,25 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonFluids;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.fluid.AbstractLatexFluid;
+import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.init.ChangedTags;
+import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -49,6 +55,19 @@ public abstract class LitixCamoniaFluid extends ForgeFlowingFluid {
 
     private LitixCamoniaFluid() {
         super(PROPERTIES);
+    }
+
+    @Override
+    public void tick(@NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull FluidState pState) {
+        super.tick(pLevel, pPos, pState);
+        if (pLevel.isClientSide()) return;
+        for (Direction value : Direction.values()) {
+            BlockPos relative = pPos.relative(value);
+            LatexCoverState coverState = LatexCoverState.getAt(pLevel, relative);
+            if (!coverState.isAir()) {
+                LatexCoverState.setAtAndUpdate(pLevel, relative, ChangedLatexTypes.NONE.get().defaultCoverState());
+            }
+        }
     }
 
     public static class FluidType extends net.minecraftforge.fluids.FluidType {

@@ -135,12 +135,12 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLootSubProvider {
         add(cover, table);
     }
 
-    private void dropStackableCan(RegistryObject<? extends StackableCanBlock> can, RegistryObject<? extends Item> item) {
-        StackableCanBlock block = can.get();
+    private void dropStackableCan(RegistryObject<? extends StackableCanBlock> canBlock, RegistryObject<? extends Item> canItem) {
+        StackableCanBlock block = canBlock.get();
         LootTable.Builder table = LootTable.lootTable();
         LootPool.Builder pool = LootPool.lootPool();
         for (int i = 1; i < 5; i++) {
-            pool.add(LootItem.lootTableItem(item.get()).apply(SetItemCountFunction.setCount(ConstantValue.exactly(i))
+            pool.add(LootItem.lootTableItem(canItem.get()).apply(SetItemCountFunction.setCount(ConstantValue.exactly(i))
                     .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
                             .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(StackableCanBlock.CANS, i)))));
         }

@@ -100,6 +100,7 @@ public class ChangedAddonLaethinminatorUtil {
             if (!(state.getType() instanceof SpreadingLatexType spreading))
                 continue;
 
+            Integer saturationValue = hit.state().getValue(SpreadingLatexType.SATURATION);
             BooleanProperty faceProp = SpreadingLatexType.FACES.get(hit.face().getOpposite());
             if (faceProp == null)
                 continue;
@@ -110,7 +111,7 @@ public class ChangedAddonLaethinminatorUtil {
             if (!state.getValue(faceProp))
                 continue; // já limpo
 
-            LatexCoverState newState = state.setValue(faceProp, false).setValue(SpreadingLatexType.SATURATION, 0);
+            LatexCoverState newState = state.setValue(faceProp, false).setValue(SpreadingLatexType.SATURATION, saturationValue);
 
             if (newState != state) {
                 LatexCoverState.setAtAndUpdate(level, pos, newState);
