@@ -1,13 +1,11 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.process.DEBUG;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.Difficulty;
-import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.level.Level;
 
 public interface IAlphaAbleEntity {
@@ -35,16 +33,21 @@ public interface IAlphaAbleEntity {
         return 0.025f; //Fail Safe
     }
 
+    default float alphaCameraOffset() {
+        if (isAlpha()) return alphaScaleForRender() - 1.25f;
+        return 0;
+    }
+
     default float alphaScaleForRender() {
         if (this instanceof ChangedEntity changedEntity) {
-            return 1.75f + DEBUG.HeadPosY; // For future changes
+            return 1.75f; // For future changes
         }
         return 1f;
     }
 
     default float alphaAdditionalScale() {
         if (this instanceof ChangedEntity changedEntity) {
-            return 0.75f + DEBUG.HeadPosZ; // For future changes
+            return 0.75f; // For future changes
         }
         return 0f;
     }

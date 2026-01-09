@@ -7,6 +7,7 @@ import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.GenderedEntity;
+import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
@@ -34,6 +35,17 @@ public interface ChangedEntityExtension {
     default void setPacified(boolean value) {
     }
 
+    default IDynamicPawColor.PawStyle getPawStyle() {
+        if (this instanceof ChangedEntity changedEntity) {
+            return switch (changedEntity.getEntityShape()) {
+                case ANTHRO -> IDynamicPawColor.PawStyle.ANTHRO;
+                case FERAL -> IDynamicPawColor.PawStyle.FERAL;
+                default -> IDynamicPawColor.PawStyle.DEFAULT;
+            };
+        }
+        return IDynamicPawColor.PawStyle.DEFAULT;
+    }
+
     static ChangedEntityExtension of(ChangedEntity entity) {
         return (ChangedEntityExtension) entity;
     }
@@ -42,7 +54,9 @@ public interface ChangedEntityExtension {
         return of(entity).isNeutralTo(target);
     }
 
-    boolean isNeutralTo(LivingEntity target);
+    default boolean isNeutralTo(LivingEntity target) {
+        return false;
+    }
 
     default List<Item> getAcceptedSpawnClothes(ChangedEntity changedEntity) {
         List<Item> acceptedSpawnClothes = new ArrayList<>();

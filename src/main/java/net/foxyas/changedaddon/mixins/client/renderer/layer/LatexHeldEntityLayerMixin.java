@@ -32,7 +32,6 @@ public abstract class LatexHeldEntityLayerMixin<T extends ChangedEntity, M exten
     ) {
         if (entity instanceof IAlphaAbleEntity alpha && alpha.isAlpha()) {
             float reduction = (1 / alpha.alphaScaleForRender());
-            //pose.scale(0.4286f, 0.4286f, 0.4286f); // to return a value from +75% we need to use this value
             pose.scale(reduction, reduction, reduction);
             pose.translate(0, 0.35, 0);
         }

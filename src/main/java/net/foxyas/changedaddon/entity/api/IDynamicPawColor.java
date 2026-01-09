@@ -16,4 +16,10 @@ public interface IDynamicPawColor {
         }
         return Color.WHITE;
     }
+
+    static enum PawStyle {
+        DEFAULT,
+        ANTHRO,
+        FERAL;
+    }
 }
