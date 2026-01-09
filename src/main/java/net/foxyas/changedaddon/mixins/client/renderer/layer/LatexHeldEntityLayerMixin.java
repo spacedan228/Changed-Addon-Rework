@@ -2,9 +2,11 @@ package net.foxyas.changedaddon.mixins.client.renderer.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
+import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.client.renderer.layers.LatexHeldEntityLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.minecraft.SharedConstants;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
@@ -39,7 +41,9 @@ public abstract class LatexHeldEntityLayerMixin<T extends ChangedEntity, M exten
             PoseStack pose, MultiBufferSource bufferSource, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci
     ) {
         if (entity instanceof IAlphaAbleEntity alpha && alpha.isAlpha()) {
-            pose.scale(0.4286f, 0.4286f, 0.4286f); // to return a value from +75% we need to use this value
+            float reduction = (1 / alpha.alphaScaleForRender());
+            //pose.scale(0.4286f, 0.4286f, 0.4286f); // to return a value from +75% we need to use this value
+            pose.scale(reduction, reduction, reduction);
             pose.translate(0, 0.35, 0);
         }
     }

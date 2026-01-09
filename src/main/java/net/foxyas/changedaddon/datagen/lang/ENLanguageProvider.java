@@ -659,6 +659,10 @@ public class ENLanguageProvider extends LanguageProvider {
         add("commands.accessory.set.slot_locked", "%s cannot equip %s in slot %s because the slot type is not available");
         add("commands.accessory.get.success", "%s has %s in slot %s.");
         add("commands.accessory.too_many", "Too much data requested, only showing the first %s results.");
+        add("commands.changed_addon.alpha.set.success", "Alpha gene set to %s for %s entities");
+        add("commands.changed_addon.alpha.set.fail", "No valid Alpha-capable entities found");
+        add("commands.changed_addon.alpha.get.success", "Alpha gene: %s");
+        add("commands.changed_addon.alpha.get.fail", "Target does not support Alpha gene");
 
 
     }

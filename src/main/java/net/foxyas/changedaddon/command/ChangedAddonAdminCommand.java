@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.ltxprogrammer.changed.Changed;
@@ -49,6 +50,18 @@ public class ChangedAddonAdminCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("changed-addon-admin")
                 .requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .then(Commands.literal("setEntityAlphaGene")
+                        .then(Commands.argument("targets", EntityArgument.entities())
+                                .then(Commands.argument("value", BoolArgumentType.bool())
+                                        .executes(ChangedAddonAdminCommand::setEntityAlphaGene)
+                                )
+                        )
+                )
+                .then(Commands.literal("getEntityAlphaGene")
+                        .then(Commands.argument("target", EntityArgument.entity())
+                                .executes(ChangedAddonAdminCommand::getEntityAlphaGene)
+                        )
+                )
                 .then(Commands.literal("setUltraInstinctDodge")
                         .then(Commands.argument("targets", EntityArgument.entities())
                                 .then(Commands.argument("value", BoolArgumentType.bool())
@@ -269,7 +282,6 @@ public class ChangedAddonAdminCommand {
         for (BlockPos pos : BlockPos.betweenClosed(minPos, maxPos)) {
             BlockState blockState = level.getBlockState(pos);
 
-            // basic security
             if (blockState.is(ChangedTags.Blocks.DENY_LATEX_COVER))
                 continue;
             if (!blockState.isAir())
@@ -277,7 +289,6 @@ public class ChangedAddonAdminCommand {
 
             LatexCoverState originalCover = LatexCoverState.getAt(level, pos);
 
-            // NONE → limpar
             if (latexType == ChangedLatexTypes.NONE.get()) {
                 if (!originalCover.is(ChangedLatexTypes.NONE.get())) {
                     LatexCoverState.setAtAndUpdate(
@@ -290,7 +301,6 @@ public class ChangedAddonAdminCommand {
                 continue;
             }
 
-            // Tipos que não espalham → set direto
             if (spreadingType == null) {
                 LatexCoverState.setAtAndUpdate(
                         level,
@@ -301,7 +311,6 @@ public class ChangedAddonAdminCommand {
                 continue;
             }
 
-            // ---------- NOVO SISTEMA ----------
             var plannedCover = spreadingType.spreadState(
                     level,
                     pos,
@@ -342,6 +351,76 @@ public class ChangedAddonAdminCommand {
 
         return affected > 0 ? 1 : 0;
     }
+
+    private static int setEntityAlphaGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Collection<? extends Entity> entities = EntityArgument.getEntities(context, "targets");
+        boolean value = BoolArgumentType.getBool(context, "value");
+
+        int affected = 0;
+
+        for (Entity entity : entities) {
+            entity = resolveChangedEntity(entity);
+            if (entity instanceof IAlphaAbleEntity alpha) {
+                alpha.setAlpha(value);
+                affected++;
+            }
+        }
+
+        if (affected > 0) {
+            int finalAffected = affected;
+            context.getSource().sendSuccess(
+                    () -> Component.translatable(
+                            "commands.changed_addon.alpha.set.success",
+                            value,
+                            finalAffected
+                    ),
+                    true
+            );
+            return affected;
+        }
+
+        context.getSource().sendFailure(
+                Component.translatable("commands.changed_addon.alpha.set.fail")
+        );
+        return 0;
+    }
+
+
+    private static int getEntityAlphaGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Entity entity = EntityArgument.getEntity(context, "target");
+        entity = resolveChangedEntity(entity);
+
+        if (entity instanceof IAlphaAbleEntity alpha) {
+            boolean value = alpha.isAlpha();
+
+            context.getSource().sendSuccess(
+                    () -> Component.translatable(
+                            "commands.changed_addon.alpha.get.success",
+                            value
+                    ),
+                    false
+            );
+
+            return value ? 1 : 0;
+        }
+
+        context.getSource().sendFailure(
+                Component.translatable("commands.changed_addon.alpha.get.fail")
+        );
+        return 0;
+    }
+
+
+    private static Entity resolveChangedEntity(Entity entity) {
+        if (entity instanceof Player player) {
+            TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfur != null) {
+                return transfur.getChangedEntity();
+            }
+        }
+        return entity;
+    }
+
 
 
     private static int setUltraInstinctDodge(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {

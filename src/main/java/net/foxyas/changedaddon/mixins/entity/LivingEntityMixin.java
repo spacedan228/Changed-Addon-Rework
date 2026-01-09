@@ -41,7 +41,7 @@ public abstract class LivingEntityMixin {
     private void getScaleHook(CallbackInfoReturnable<Float> cir) {
         float originalValue = cir.getReturnValue();
         var self = (LivingEntity) (Object) this;
-        if (self instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+        if (self instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
             float alphaScale = iAlphaAbleEntity.alphaAdditionalScale();
             cir.setReturnValue(originalValue + alphaScale);
         }

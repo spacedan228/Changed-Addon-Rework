@@ -9,6 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -16,6 +18,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -102,6 +109,123 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
                 OverlayTexture.NO_OVERLAY,
                 r, g, b, alpha
         );
+    }
+
+    @Mod.EventBusSubscriber(value = Dist.CLIENT)
+    public static class ClientHandle {
+
+        @SubscribeEvent
+        public static void renderSonarFailSafe(RenderLevelStageEvent event) {
+            if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
+            if (!SonarOutlineLayer.SonarClientState.isActive()) return;
+
+            Minecraft mc = Minecraft.getInstance();
+            MultiBufferSource buffer = mc.renderBuffers().bufferSource();
+            PoseStack pose = event.getPoseStack();
+
+            Entity camera = mc.cameraEntity;
+            if (!(camera instanceof LivingEntity)) return;
+
+            if (mc.level == null) return;
+
+            for (Entity e : mc.level.entitiesForRendering()) {
+                if (!(e instanceof LivingEntity living)) continue;
+
+                if (SonarClientState.getRenderMode() == RenderMode.KINETIC_SIGHT) {
+                    if (living.isSilent() || living.getDeltaMovement().length() <= 0.01f || living.isShiftKeyDown())
+                        continue;
+                }
+
+                if (camera.distanceToSqr(living) > SonarOutlineLayer.SonarClientState.getMaxDistSqr())
+                    continue;
+
+                EntityRenderer<? super Entity> renderer =
+                        mc.getEntityRenderDispatcher().getRenderer(living);
+                if (!(renderer instanceof LivingEntityRenderer<? super LivingEntity, ?> livingEntityRenderer)) return;
+
+                boolean canNormallyRender =
+                        livingEntityRenderer.shouldRender(
+                                living,
+                                mc.levelRenderer.getFrustum(),
+                                living.getX(), living.getY(), living.getZ()
+                        );
+
+                if (canNormallyRender) {
+                    continue;
+                }
+
+
+                pose.pushPose();
+
+                Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
+                pose.translate(
+                        living.getX() - camPos.x,
+                        living.getY() - camPos.y,
+                        living.getZ() - camPos.z
+                );
+
+                float partialTick = event.getPartialTick();
+                float alpha = SonarOutlineLayer.SonarClientState.getAlpha(event.getPartialTick());
+                if (alpha <= 0.01f) {
+                    pose.popPose();
+                    continue;
+                }
+
+                RenderType outline = ChangedAddonRenderTypes
+                        .outlineWithTranslucencyCull(livingEntityRenderer.getTextureLocation(living));
+
+                EntityModel<? super LivingEntity> model = livingEntityRenderer.getModel();
+                // Moviment
+                float limbSwing = living.walkAnimation.position(partialTick);
+                float limbSwingAmount = living.walkAnimation.speed(partialTick);
+
+                // Time
+                float ageInTicks = living.tickCount + partialTick;
+
+                // Head
+                float netHeadYaw = Mth.rotLerp(
+                        partialTick,
+                        living.yHeadRotO,
+                        living.yHeadRot
+                ) - Mth.rotLerp(
+                        partialTick,
+                        living.yBodyRotO,
+                        living.yBodyRot
+                );
+
+                float headPitch = Mth.lerp(
+                        partialTick,
+                        living.xRotO,
+                        living.getXRot()
+                );
+
+                model.prepareMobModel(
+                        living,
+                        limbSwing,
+                        limbSwingAmount,
+                        partialTick
+                );
+
+                model.setupAnim(
+                        living,
+                        limbSwing,
+                        limbSwingAmount,
+                        ageInTicks,
+                        netHeadYaw,
+                        headPitch
+                );
+
+                model.renderToBuffer(
+                        pose,
+                        buffer.getBuffer(outline),
+                        0xF000F0,
+                        OverlayTexture.NO_OVERLAY,
+                        1f, 1f, 1f, alpha
+                );
+
+                pose.popPose();
+            }
+        }
     }
 
     // estado global do cliente
