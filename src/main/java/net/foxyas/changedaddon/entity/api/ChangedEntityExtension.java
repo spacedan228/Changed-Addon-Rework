@@ -35,17 +35,6 @@ public interface ChangedEntityExtension {
     default void setPacified(boolean value) {
     }
 
-    default IDynamicPawColor.PawStyle getPawStyle() {
-        if (this instanceof ChangedEntity changedEntity) {
-            return switch (changedEntity.getEntityShape()) {
-                case ANTHRO -> IDynamicPawColor.PawStyle.ANTHRO;
-                case FERAL -> IDynamicPawColor.PawStyle.FERAL;
-                default -> IDynamicPawColor.PawStyle.DEFAULT;
-            };
-        }
-        return IDynamicPawColor.PawStyle.DEFAULT;
-    }
-
     static ChangedEntityExtension of(ChangedEntity entity) {
         return (ChangedEntityExtension) entity;
     }

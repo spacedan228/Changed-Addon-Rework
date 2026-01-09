@@ -8,13 +8,29 @@ import java.awt.*;
 
 public interface IDynamicPawColor {
 
-    Color getPawBeansColor();
-
-    default Color getPawColor() {
+    default Color getPawBeansColor() {
         if (this instanceof ChangedEntity changedEntity) {
             return new Color(AbstractRadialScreen.getColors(IAbstractChangedEntity.forEntity(changedEntity).getTransfurVariantInstance()).setForegroundToBright().foreground().toInt());
         }
+        return Color.GRAY;
+    }
+
+    default Color getPawColor() {
+        if (this instanceof ChangedEntity changedEntity) {
+            return new Color(AbstractRadialScreen.getColors(IAbstractChangedEntity.forEntity(changedEntity).getTransfurVariantInstance()).setForegroundToBright().background().toInt());
+        }
         return Color.WHITE;
+    }
+
+    default IDynamicPawColor.PawStyle getPawStyle() {
+        if (this instanceof ChangedEntity changedEntity) {
+            return switch (changedEntity.getEntityShape()) {
+                case ANTHRO -> IDynamicPawColor.PawStyle.ANTHRO;
+                case FERAL -> IDynamicPawColor.PawStyle.FERAL;
+                default -> IDynamicPawColor.PawStyle.DEFAULT;
+            };
+        }
+        return IDynamicPawColor.PawStyle.DEFAULT;
     }
 
     static enum PawStyle {

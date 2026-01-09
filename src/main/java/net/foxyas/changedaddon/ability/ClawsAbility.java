@@ -54,8 +54,8 @@ public class ClawsAbility extends SimpleAbility {
         AbstractRadialScreen.ColorScheme scheme = AbilityColors.getAbilityColors(abilityInstance);
         if (abilityInstance.ability instanceof ClawsAbility) {
             ChangedEntity changedEntity = abilityInstance.entity.getChangedEntity();
-            if (changedEntity instanceof ChangedEntityExtension changedEntityExtension && changedEntityExtension.getPawStyle() != IDynamicPawColor.PawStyle.DEFAULT) {
-                IDynamicPawColor.PawStyle pawStyle = changedEntityExtension.getPawStyle();
+            if (changedEntity instanceof IDynamicPawColor iDynamicPawColor && iDynamicPawColor.getPawStyle() != IDynamicPawColor.PawStyle.DEFAULT) {
+                IDynamicPawColor.PawStyle pawStyle = iDynamicPawColor.getPawStyle();
                 switch (pawStyle) {
                     case ANTHRO -> {
                         if (layer == 0) {
@@ -64,15 +64,9 @@ public class ClawsAbility extends SimpleAbility {
                     }
                     case FERAL -> {
                         if (layer == 1) {
-                            if (changedEntity instanceof IDynamicPawColor dynamicPawColor) {
-                                return Optional.of(dynamicPawColor.getPawColor().getRGB());
-                            }
-                            return Optional.of(scheme.foreground().toInt());
+                            return Optional.of(iDynamicPawColor.getPawColor().getRGB());
                         } else if (layer == 2) {
-                            if (changedEntity instanceof IDynamicPawColor dynamicPawColor) {
-                                return Optional.of(dynamicPawColor.getPawBeansColor().getRGB());
-                            }
-                            return Optional.of(scheme.foreground().toInt());
+                            return Optional.of(iDynamicPawColor.getPawBeansColor().getRGB());
                         }
                     }
                 }
