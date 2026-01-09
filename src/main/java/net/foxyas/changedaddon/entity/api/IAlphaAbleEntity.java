@@ -34,7 +34,7 @@ public interface IAlphaAbleEntity {
     }
 
     default float alphaCameraOffset() {
-        if (isAlpha()) return alphaScaleForRender() - 1.25f;
+        if (isAlpha()) return alphaScaleForRender() / 2f;
         return 0;
     }
 
