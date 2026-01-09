@@ -23,7 +23,10 @@ public class SummonDLPupAbility extends SimpleAbility {
         var referenceEntity = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
 
         return BlockPos.betweenClosedStream(near.offset(-4, -2, -4), near.offset(4, 2, 4)).filter(
-                pos -> level.getBlockState(pos).entityCanStandOnFace(level, pos, referenceEntity, Direction.UP)
+                pos -> {
+                    assert referenceEntity != null;
+                    return level.getBlockState(pos).entityCanStandOnFace(level, pos, referenceEntity, Direction.UP);
+                }
         );
     }
 
@@ -42,6 +45,7 @@ public class SummonDLPupAbility extends SimpleAbility {
             var blockPos = list.get(level.random.nextInt(list.size()));
 
             var pup = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
+            assert pup != null;
             level.addFreshEntity(pup);
 
             if (entity.isPlayer()) {

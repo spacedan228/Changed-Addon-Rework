@@ -20,8 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 
 public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity {
     protected final SimpleAbilityInstance summonPups;

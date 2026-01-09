@@ -5,10 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.simple.DarkLatexYufengQueenEntity;
 import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
-import net.foxyas.changedaddon.client.model.animations.DragonBigWingCreativeFlyAnimator;
-import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
-import net.ltxprogrammer.changed.client.renderer.animate.tail.DragonTailCreativeFlyAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -19,8 +16,6 @@ import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-
-import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.dragonTail;
 
 public class DarkLatexYufengQueenModel extends AdvancedHumanoidModel<DarkLatexYufengQueenEntity> implements AdvancedHumanoidModelInterface<DarkLatexYufengQueenEntity, DarkLatexYufengQueenModel> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
