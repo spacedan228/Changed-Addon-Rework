@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.ability;
 
+import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
@@ -7,6 +8,8 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.ltxprogrammer.changed.client.AbilityColors;
 import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -50,21 +53,46 @@ public class ClawsAbility extends SimpleAbility {
     public static Optional<Integer> getColor(AbstractAbilityInstance abilityInstance, int layer) {
         AbstractRadialScreen.ColorScheme scheme = AbilityColors.getAbilityColors(abilityInstance);
         if (abilityInstance.ability instanceof ClawsAbility) {
-            if (abilityInstance.entity.getAccessorySlots().stream().anyMatch((accessorySlots -> accessorySlots.hasSlot(ChangedAccessorySlots.BODY.get())))) {
-                if (layer == 0) {
-                    return Optional.of(scheme.foreground().toInt());
+            ChangedEntity changedEntity = abilityInstance.entity.getChangedEntity();
+            if (changedEntity instanceof ChangedEntityExtension changedEntityExtension && changedEntityExtension.getPawStyle() != IDynamicPawColor.PawStyle.DEFAULT) {
+                IDynamicPawColor.PawStyle pawStyle = changedEntityExtension.getPawStyle();
+                switch (pawStyle) {
+                    case ANTHRO -> {
+                        if (layer == 0) {
+                            return Optional.of(scheme.foreground().toInt());
+                        }
+                    }
+                    case FERAL -> {
+                        if (layer == 1) {
+                            if (changedEntity instanceof IDynamicPawColor dynamicPawColor) {
+                                return Optional.of(dynamicPawColor.getPawColor().getRGB());
+                            }
+                            return Optional.of(scheme.foreground().toInt());
+                        } else if (layer == 2) {
+                            if (changedEntity instanceof IDynamicPawColor dynamicPawColor) {
+                                return Optional.of(dynamicPawColor.getPawBeansColor().getRGB());
+                            }
+                            return Optional.of(scheme.foreground().toInt());
+                        }
+                    }
                 }
-            } else if (abilityInstance.entity.getAccessorySlots().stream().noneMatch((accessorySlots -> accessorySlots.hasSlot(ChangedAccessorySlots.BODY.get())))) {
-                if (layer == 1) {
-                    if (abilityInstance.entity.getChangedEntity() instanceof IDynamicPawColor dynamicPawColor) {
-                        return Optional.of(dynamicPawColor.getPawColor().getRGB());
+            } else {
+                if (changedEntity.getEntityShape() == EntityShape.ANTHRO) {
+                    if (layer == 0) {
+                        return Optional.of(scheme.foreground().toInt());
                     }
-                    return Optional.of(scheme.foreground().toInt());
-                } else if (layer == 2) {
-                    if (abilityInstance.entity.getChangedEntity() instanceof IDynamicPawColor dynamicPawColor) {
-                        return Optional.of(dynamicPawColor.getPawBeansColor().getRGB());
+                } else if (changedEntity.getEntityShape() == EntityShape.FERAL) {
+                    if (layer == 1) {
+                        if (changedEntity instanceof IDynamicPawColor dynamicPawColor) {
+                            return Optional.of(dynamicPawColor.getPawColor().getRGB());
+                        }
+                        return Optional.of(scheme.foreground().toInt());
+                    } else if (layer == 2) {
+                        if (changedEntity instanceof IDynamicPawColor dynamicPawColor) {
+                            return Optional.of(dynamicPawColor.getPawBeansColor().getRGB());
+                        }
+                        return Optional.of(scheme.foreground().toInt());
                     }
-                    return Optional.of(scheme.foreground().toInt());
                 }
             }
         }

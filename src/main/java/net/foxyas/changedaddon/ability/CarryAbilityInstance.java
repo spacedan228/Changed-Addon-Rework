@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.EntityHitResult;
@@ -51,10 +52,12 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
     }
 
     @Override
-    public void tick() {}
+    public void tick() {
+    }
 
     @Override
-    public void stopUsing() {}
+    public void stopUsing() {
+    }
 
     @Override
     public void onRemove() {
@@ -111,7 +114,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
 
 
     public static @Nullable Entity carryTarget(Player player) {
-        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(player, ((float) player.getEntityReach()), true);
+        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(player, ((float) player.getEntityReach()), ClipContext.Block.OUTLINE);
         if (hitResult == null) {
             return null;
         }

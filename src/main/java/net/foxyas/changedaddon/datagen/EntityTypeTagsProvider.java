@@ -88,7 +88,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 ChangedAddonEntities.canUseAccessories().toArray(new EntityType[0])
         );
 
-        tag(ChangedAddonTags.EntityTypes.HAS_CLAWS);
+        tag(ChangedAddonTags.EntityTypes.HAS_CLAWS).add(VOID_FOX.get());
 
         tag(ChangedTags.EntityTypes.CAN_WEAR_EXOSKELETON).add(canUseExoskeleton().toArray(new EntityType[0]));
     }

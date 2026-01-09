@@ -4,18 +4,28 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntityRenderer.class)
-public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extends EntityModel<T>> {
+public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extends EntityModel<T>> extends EntityRenderer<T> implements RenderLayerParent<T, M> {
+
+    @Unique
+    private float defaultValue;
+
+    protected LivingEntityRendererMixin(EntityRendererProvider.Context pContext) {
+        super(pContext);
+    }
 
     @Shadow public abstract boolean addLayer(RenderLayer<T, M> pLayer);
 
@@ -23,6 +33,7 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
     private void addExtraLayers(EntityRendererProvider.Context pContext, M pModel, float pShadowRadius, CallbackInfo ci){
         LivingEntityRenderer<T, M> self = (LivingEntityRenderer<T,M>) (Object) this;
         this.addLayer(new SonarOutlineLayer<>(self));
+        this.defaultValue = pShadowRadius;
     }
 
     @Inject(method = "scale", at = @At("RETURN"))
@@ -30,7 +41,8 @@ public abstract class LivingEntityRendererMixin<T extends LivingEntity, M extend
         if (pLivingEntity instanceof IAlphaAbleEntity alphaAbleEntity) {
             if (alphaAbleEntity.isAlpha()) {
                 pPoseStack.scale(alphaAbleEntity.alphaScaleForRender(), alphaAbleEntity.alphaScaleForRender(), alphaAbleEntity.alphaScaleForRender());
-            }
+                this.shadowRadius = defaultValue * alphaAbleEntity.alphaScaleForRender();
+            } else this.shadowRadius = defaultValue;
         }
 
     }
