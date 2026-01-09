@@ -10,6 +10,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.ComponentUtil;
@@ -50,7 +51,18 @@ public class ChangedAddonAdminCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("changed-addon-admin")
                 .requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                .then(Commands.literal("setUltraInstinctDodge")
+                .then(Commands.literal("setEntityAlphaGene")
+                        .then(Commands.argument("targets", EntityArgument.entities())
+                                .then(Commands.argument("value", BoolArgumentType.bool())
+                                        .executes(ChangedAddonAdminCommand::setEntityAlphaGene)
+                                )
+                        )
+                )
+                .then(Commands.literal("getEntityAlphaGene")
+                        .then(Commands.argument("target", EntityArgument.entity())
+                                .executes(ChangedAddonAdminCommand::getEntityAlphaGene)
+                        )
+                ).then(Commands.literal("setUltraInstinctDodge")
                         .then(Commands.argument("targets", EntityArgument.entities())
                                 .then(Commands.argument("value", BoolArgumentType.bool())
                                         .executes(ChangedAddonAdminCommand::setUltraInstinctDodge)
@@ -235,6 +247,74 @@ public class ChangedAddonAdminCommand {
         ChangedAddonMod.LOGGER.info("Transfur Tolerance of {} has been set to {}", player.getDisplayName().getString(), amount);
 
         return Command.SINGLE_SUCCESS;
+    }
+
+    private static int setEntityAlphaGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Collection<? extends Entity> entities = EntityArgument.getEntities(context, "targets");
+        boolean value = BoolArgumentType.getBool(context, "value");
+
+        int affected = 0;
+
+        for (Entity entity : entities) {
+            entity = resolveChangedEntity(entity);
+            if (entity instanceof IAlphaAbleEntity alpha) {
+                alpha.setAlpha(value);
+                affected++;
+            }
+        }
+
+        if (affected > 0) {
+            context.getSource().sendSuccess(
+                    new TranslatableComponent(
+                            "commands.changed_addon.alpha.set.success",
+                            value,
+                            affected
+                    ),
+                    true
+            );
+            return affected;
+        }
+
+        context.getSource().sendFailure(
+                new TranslatableComponent("commands.changed_addon.alpha.set.fail")
+        );
+        return 0;
+    }
+
+
+    private static int getEntityAlphaGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Entity entity = EntityArgument.getEntity(context, "target");
+        entity = resolveChangedEntity(entity);
+
+        if (entity instanceof IAlphaAbleEntity alpha) {
+            boolean value = alpha.isAlpha();
+
+            context.getSource().sendSuccess(
+                    new TranslatableComponent(
+                            "commands.changed_addon.alpha.get.success",
+                            value
+                    ),
+                    false
+            );
+
+            return value ? 1 : 0;
+        }
+
+        context.getSource().sendFailure(
+                new TranslatableComponent("commands.changed_addon.alpha.get.fail")
+        );
+        return 0;
+    }
+
+
+    private static Entity resolveChangedEntity(Entity entity) {
+        if (entity instanceof Player player) {
+            TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfur != null) {
+                return transfur.getChangedEntity();
+            }
+        }
+        return entity;
     }
 
     private static int setBlockInfection(CommandContext<CommandSourceStack> ctx, LatexType enumValue) {

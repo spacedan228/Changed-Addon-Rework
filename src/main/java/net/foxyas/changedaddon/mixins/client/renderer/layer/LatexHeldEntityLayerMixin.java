@@ -39,7 +39,7 @@ public abstract class LatexHeldEntityLayerMixin<T extends ChangedEntity, M exten
             PoseStack pose, MultiBufferSource bufferSource, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci
     ) {
         if (entity instanceof IAlphaAbleEntity alpha && alpha.isAlpha()) {
-            float reduction = 1 - (1 / alpha.alphaScaleForRender());
+            float reduction = (1 / alpha.alphaScaleForRender());
             //pose.scale(0.4286f, 0.4286f, 0.4286f); // to return a value from +75% we need to use this value
             pose.scale(reduction, reduction, reduction);
             pose.translate(0, 0.35, 0);
