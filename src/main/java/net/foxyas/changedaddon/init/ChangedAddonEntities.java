@@ -628,6 +628,11 @@ public class ChangedAddonEntities {
                     .setCustomClientFactory(LatexBorderCollieEntity::new)
                     .sized(0.7f, 1.93f));
 
+    public static final RegistryObject<EntityType<DarkLatexYufengQueenEntity>> DARK_LATEX_YUFENG_QUEEN = registerChangedEntity("dark_latex_yufeng_queen",
+            EntityType.Builder.of(DarkLatexYufengQueenEntity::new, ChangedMobCategories.CHANGED)
+                    .setTrackingRange(64)
+                    .sized(0.7f *1.3F, 2f *1.3F));
+
     // --- MONSTER/MOB ENTITIES ---
     public static final RegistryObject<EntityType<ErikEntity>> ERIK = registerMob("erik",
             EntityType.Builder.<ErikEntity>of(ErikEntity::new, MobCategory.MONSTER)
@@ -698,6 +703,7 @@ public class ChangedAddonEntities {
         event.put(PROTOGEN_0SENIA0.get(), Protogen0senia0Entity.createAttributes().build());
         event.put(LATEX_KAYLA_SHARK.get(), LatexKaylaSharkEntity.createLatexAttributes().build());
         event.put(LATEX_BORDER_COLLIE.get(), LatexBorderCollieEntity.createLatexAttributes().build());
+        event.put(DARK_LATEX_YUFENG_QUEEN.get(), DarkLatexYufengQueenEntity.createLatexAttributes().build());
     }
 
     @SubscribeEvent

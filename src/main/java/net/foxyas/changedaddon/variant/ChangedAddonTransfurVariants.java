@@ -656,6 +656,14 @@ public class ChangedAddonTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
+    public static final RegistryObject<TransfurVariant<DarkLatexYufengQueenEntity>> DARK_LATEX_YUFENG_QUEEN = register("form_dark_latex_yufeng_queen",
+            TransfurVariant.Builder.of(ChangedAddonEntities.DARK_LATEX_YUFENG_QUEEN)
+                    .glide()
+                    .jumpStrength(1.5F)
+                    .absorbing()
+                    .addAbility(ChangedAbilities.TOGGLE_WAVE_VISION)
+                    .addAbility(ChangedAddonAbilities.SUMMON_DL_PUP));
+
     public static class Gendered {
         public static final GenderedPair<PuroKindMaleEntity, PuroKindFemaleEntity> PURO_KIND = new GenderedPair<>(PURO_KIND_MALE, PURO_KIND_FEMALE);
         public static final GenderedPair<SnowLeopardMaleOrganicEntity, SnowLeopardFemaleOrganicEntity> ORGANIC_SNOW_LEOPARD = new GenderedPair<>(ORGANIC_SNOW_LEOPARD_MALE, ORGANIC_SNOW_LEOPARD_FEMALE);

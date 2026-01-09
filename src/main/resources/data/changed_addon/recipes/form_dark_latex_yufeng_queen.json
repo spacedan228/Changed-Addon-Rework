@@ -1,0 +1,30 @@
+{
+  "type": "changed:infuser",
+  "ingredients": [
+    {
+      "item": "changed:latex_base"
+    },
+    {
+      "item": "minecraft:iron_block"
+    },
+    {
+      "item": "changed:dark_latex_block"
+    },
+    {
+      "item": "changed:dark_latex_mask"
+    },
+    {
+      "item": "minecraft:diamond"
+    },
+    {
+      "item": "changed_addon:iridium"
+    },
+    {
+      "item": "changed:dark_latex_crystal_fragment"
+    },
+    {
+      "item": "minecraft:phantom_membrane"
+    }
+  ],
+  "form": "changed_addon:form_dark_latex_yufeng_queen"
+}

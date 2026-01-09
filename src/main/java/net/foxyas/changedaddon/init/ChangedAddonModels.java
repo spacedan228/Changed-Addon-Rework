@@ -104,6 +104,7 @@ public class ChangedAddonModels {
         event.registerLayerDefinition(LatexKaylaSharkModel.LAYER_LOCATION, LatexKaylaSharkModel::createBodyLayer);
         event.registerLayerDefinition(LatexSnowFoxFoxyasModel.LAYER_LOCATION, LatexSnowFoxFoxyasModel::createBodyLayer);
         event.registerLayerDefinition(LatexBorderCollieModel.LAYER_LOCATION, LatexBorderCollieModel::createBodyLayer);
+        event.registerLayerDefinition(DarkLatexYufengQueenModel.LAYER_LOCATION, DarkLatexYufengQueenModel::createBodyLayer);
 
 
 
@@ -116,6 +117,7 @@ public class ChangedAddonModels {
         ArmorLuminaraFlowerBeastModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
         ArmorLatexDazedModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
         ArmorProtogen0senia0.ARMOR.registerDefinitions(event::registerLayerDefinition);
+        ArmorLatexFemaleDragonAltTailModel.MODEL_SET.registerDefinitions(event::registerLayerDefinition);
 
         // --- Non Anthro Entities Model ---
         event.registerLayerDefinition(LatexSnepModel.LAYER_LOCATION, LatexSnepModel::createBodyLayer);
