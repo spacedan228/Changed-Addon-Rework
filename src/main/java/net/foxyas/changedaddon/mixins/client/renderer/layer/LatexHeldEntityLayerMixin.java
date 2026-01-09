@@ -21,14 +21,6 @@ public abstract class LatexHeldEntityLayerMixin<T extends ChangedEntity, M exten
         super(pRenderer);
     }
 
-//    @WrapOperation(method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/ltxprogrammer/changed/entity/ChangedEntity;FFFFFF)V", at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/client/LivingEntityRendererExtender;directRender(Lnet/minecraft/world/entity/LivingEntity;FFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;I)V"))
-//    private void scaleDownEntity(LivingEntityRendererExtender<T, M> instance, LivingEntity entity, float yaw, float partialTicks, PoseStack pose, MultiBufferSource bufferSource, int packedLight, Operation<Void> original) {
-//        if (entity instanceof IAlphaAbleEntity alpha && alpha.isAlpha()) {
-//            pose.scale(DEBUG.HeadPosX, DEBUG.HeadPosY, DEBUG.HeadPosZ);
-//        }
-//        original.call(instance, entity, yaw, partialTicks, pose, bufferSource, packedLight);
-//    }
-
     @Inject(
             method = "render(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/ltxprogrammer/changed/entity/ChangedEntity;FFFFFF)V",
             at = @At(

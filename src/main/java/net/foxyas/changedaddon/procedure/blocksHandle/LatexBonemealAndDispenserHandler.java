@@ -338,7 +338,12 @@ public class LatexBonemealAndDispenserHandler {
                 continue;
 
             int sat = state.getValue(SpreadingLatexType.SATURATION);
-            if (sat >= 15) continue;
+
+            if (sat >= 15) {
+                state.randomTick(level, node.pos, level.getRandom());
+                continue;
+            }
+
             LatexCoverState newState = state.trySetValue(SpreadingLatexType.SATURATION, Math.min(sat + 1, 15));
             LatexCoverState.setAtAndUpdate(level, node.pos(), newState);
             LatexCoverState at = LatexCoverState.getAt(level, node.pos);

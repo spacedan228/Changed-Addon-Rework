@@ -36,7 +36,8 @@ import java.util.List;
 @Mixin(value = ChangedEntity.class, remap = false)
 public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity, IAlphaAbleEntity {
 
-    @Shadow public abstract TransfurVariant<?> getSelfVariant();
+    @Shadow
+    public abstract TransfurVariant<?> getSelfVariant();
 
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
     protected int grabCooldown = 0;
@@ -147,7 +148,8 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @ModifyReturnValue(method = "getAbilityInstance", at = @At("RETURN"))
     private <A extends AbstractAbilityInstance> A getAbilityInstanceHook(A original, AbstractAbility<A> ability) {
-        if (canEntityGrab(this.getType(), level)) return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : original);
+        if (canEntityGrab(this.getType(), level))
+            return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : original);
         return original;
     }
 
@@ -170,7 +172,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     private void savePlayerVariantDataHook(CallbackInfoReturnable<CompoundTag> cir) {
         CompoundTag tag = cir.getReturnValue();
         if (tag == null) tag = new CompoundTag();//temporary fix so it doesnt crash
-        if (isAlpha() || tag.contains("isAlpha")) tag.putBoolean("isAlpha", isAlpha());
+        tag.putBoolean("isAlpha", isAlpha());
     }
 
     @Inject(method = "readPlayerVariantData", at = @At("HEAD"), cancellable = true)
