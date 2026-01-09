@@ -76,8 +76,7 @@ public class SonarAbility extends SimpleAbility {
                         1.0f  // pitch
                 );*/
             }
-
-            ClientboundSonarUpdatePacket.update(serverPlayer, 400, 10, 50, 32, mode);
+            ClientboundSonarUpdatePacket.update(serverPlayer, 400, 10, 50, (float) Math.pow(16, 2), mode);
         }
     }
 

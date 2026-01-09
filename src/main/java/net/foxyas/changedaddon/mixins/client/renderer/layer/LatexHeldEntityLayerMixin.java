@@ -27,7 +27,7 @@ public abstract class LatexHeldEntityLayerMixin<T extends ChangedEntity, M exten
                     value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/vertex/PoseStack;mulPose(Lorg/joml/Quaternionf;)V",
                     shift = At.Shift.AFTER
-            )
+            ), remap = true
     )
     private void scaleAfterPush(
             PoseStack pose, MultiBufferSource bufferSource, int packedLight, T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo ci
