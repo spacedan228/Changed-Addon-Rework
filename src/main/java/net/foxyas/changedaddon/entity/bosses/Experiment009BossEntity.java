@@ -254,19 +254,6 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
     }
 
-    //private void addOldAI() {
-    //    this.targetSelector.addGoal(9, new Exp9AttacksHandle.ThunderPathway(this));
-    //    this.targetSelector.addGoal(8, new Exp9AttacksHandle.ThunderShock(this));
-    //    this.targetSelector.addGoal(5, new Exp9AttacksHandle.ThunderSpeed(this));
-    //    this.targetSelector.addGoal(5, new Exp9AttacksHandle.ThunderWave(this));
-    //    this.targetSelector.addGoal(5, new Exp9AttacksHandle.TeleportAttack(this));
-    //    this.targetSelector.addGoal(20, new Exp9AttacksHandle.RandomTeleportAttack(this));
-    //    this.targetSelector.addGoal(4, new Exp9AttacksHandle.TeleportComboGoal(this));
-    //    this.targetSelector.addGoal(4, new Exp9AttacksHandle.TeleportAirComboGoal(this));
-    //    this.targetSelector.addGoal(8, new Exp9AttacksHandle.ThunderBoltImpactAttack(this));
-    //    this.targetSelector.addGoal(7, new Exp9AttacksHandle.ThunderBoltAreaAttack(this));
-    //}
-
     @Override
     public void variantTick(Level level) {
         super.variantTick(level);
@@ -548,13 +535,6 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 } else {
                     applyStatModifier(this, 1.5);
                 }
-            /*
-            Color[] colors = new Color[2];
-            colors[0] = new Color(70, 199, 255);
-            colors[1] = new Color(13, 160, 208);
-            ParticleOptions dustColor = getParticleOptions(colors[0], colors[1]);
-            PlayerUtilProcedure.ParticlesUtil.sendParticles(this.level(), dustColor, this.position().add(0, 0.5, 0), 0.35f, 0.70f, 0.35f, 5, 0);
-            */
             } else {
                 removeStatModifiers();
             }

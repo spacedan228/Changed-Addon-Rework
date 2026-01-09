@@ -215,7 +215,7 @@ public class FoxyasUtils {
 
         // Then, raycast from eyeEntity to targetToSee to check if the view is blocked
         HitResult result = level.clip(new ClipContext(
-                from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, eyeEntity
+                from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, eyeEntity
         ));
 
         // If result is MISS or hit point is very close to target, it's considered visible
@@ -262,7 +262,7 @@ public class FoxyasUtils {
      * @param targetToSee A entidade que deve ser visível.
      * @return true se for visível, false se houver obstrução.
      */
-    public static boolean canEntitySeeOther(LivingEntity eyeEntity, LivingEntity targetToSee) {
+    public static boolean canEntitySeeOther(Entity eyeEntity, Entity targetToSee) {
         Level level = eyeEntity.level;
         if (level != targetToSee.level) return false;
 
@@ -270,7 +270,7 @@ public class FoxyasUtils {
         Vec3 to = targetToSee.getEyePosition(1.0F);
 
         HitResult result = level.clip(new ClipContext(
-                from, to, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, eyeEntity
+                from, to, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, eyeEntity
         ));
 
         // Se o hit for MISS (sem blocos no caminho), ou o bloco atingido estiver além da entidade-alvo
@@ -284,7 +284,7 @@ public class FoxyasUtils {
      * @param targetToSee A entidade que deve ser visível.
      * @return true se for visível, false se houver obstrução.
      */
-    public static boolean canEntitySeeOtherIgnoreGlass(LivingEntity eyeEntity, LivingEntity targetToSee) {
+    public static boolean canEntitySeeOtherIgnoreGlass(Entity eyeEntity, Entity targetToSee) {
         Level level = eyeEntity.level;
         if (level != targetToSee.level) return false;
 
@@ -308,7 +308,7 @@ public class FoxyasUtils {
      * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
      * @return true if visible and within FOV, false otherwise.
      */
-    public static boolean canEntitySeeOtherIgnoreGlass(LivingEntity eyeEntity, LivingEntity targetToSee, double fovDegrees) {
+    public static boolean canEntitySeeOtherIgnoreGlass(Entity eyeEntity, Entity targetToSee, double fovDegrees) {
         Level level = eyeEntity.level;
         if (level != targetToSee.level) return false;
 
@@ -322,7 +322,7 @@ public class FoxyasUtils {
         double dot = lookVec.dot(directionToTarget);
         double requiredDot = Math.cos(Math.toRadians(fovDegrees / 2.0));
         if (dot < requiredDot)
-            return false; // Outside of FOV
+            return false; // Outside FOV
 
         // Then, raycast from eyeEntity to targetToSee to check if the view is blocked
         HitResult result = level.clip(new DynamicClipContext(from, to,
@@ -341,7 +341,7 @@ public class FoxyasUtils {
      * @param to        Target position
      * @return true se for visível, false se houver obstrução.
      */
-    public static boolean canEntitySeePosIgnoreGlass(LivingEntity eyeEntity, Vec3 to) {
+    public static boolean canEntitySeePosIgnoreGlass(Entity eyeEntity, Vec3 to) {
         Level level = eyeEntity.level;
 
         Vec3 from = eyeEntity.getEyePosition(1.0F);

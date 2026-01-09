@@ -121,8 +121,6 @@ public class CustomMerchantScreen extends AbstractContainerScreen<CustomMerchant
         int j = (height - imageHeight) / 2;
         int k = j + 16 + 1;
         int l = i + 5 + 5;
-        //RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        //RenderSystem.setShaderTexture(0, VILLAGER_LOCATION);
         renderScroller(pGuiGraphics, i, j, offers);
         int i1 = 0;
 

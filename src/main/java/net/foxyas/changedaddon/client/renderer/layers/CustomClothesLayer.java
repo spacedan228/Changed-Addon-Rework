@@ -77,60 +77,6 @@ public class CustomClothesLayer<E extends ChangedEntity, M extends AdvancedHuman
 
 
         //OLD
-        /*for (EquipmentSlot slot : EquipmentSlot.values()) {
-            model.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
-            model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-            ResourceLocation accessoryTexture = getClothTexture();
-            if (accessoryTexture == null) continue;
-            VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(accessoryTexture));
-            Color3 color = getClothColor(entity);
-            float alpha = getClothAlpha(entity);
-            float zFightOffset = CustomEyesLayer.getZFightingOffset(entity);
-            if (slot == EquipmentSlot.CHEST) {
-                poseStack.pushPose();
-                model.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
-                model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                poseStack.scale(1.0025f + zFightOffset, 1.0025f + zFightOffset, 1.0025f + zFightOffset);
-                poseStack.pushPose();
-                poseStack.translate(-0.003f, 0, 0);
-                poseStack.scale(1.005f, 1.005f, 1.005f);
-                if (color != null) {
-                    model.getArm(HumanoidArm.LEFT).render(poseStack, vertexConsumer, packedLight, getOverlayCoords(entity, 0.0f), color.red(), color.green(), color.blue(), alpha);
-                } else {
-                    model.getArm(HumanoidArm.LEFT).render(poseStack, vertexConsumer, packedLight, getOverlayCoords(entity, 0.0f), 1.0F, 1.0F, 1.0F, 1.0F);
-                }
-                poseStack.popPose();
-                poseStack.pushPose();
-                poseStack.translate(0.003f, 0, 0);
-                poseStack.scale(1.005f, 1.005f, 1.005f);
-                if (color != null) {
-                    model.getArm(HumanoidArm.RIGHT).render(poseStack, vertexConsumer, packedLight, getOverlayCoords(entity, 0.0f), color.red(), color.green(), color.blue(), alpha);
-                } else {
-                    model.getArm(HumanoidArm.RIGHT).render(poseStack, vertexConsumer, packedLight, getOverlayCoords(entity, 0.0f), 1.0F, 1.0F, 1.0F, 1.0F);
-                }
-                poseStack.popPose();
-                List<ModelPart> modelPartStream = List.of(model.getLeg(HumanoidArm.LEFT), model.getLeg(HumanoidArm.RIGHT), model.getTorso(), model.getHead());
-                for (ModelPart part : modelPartStream) {
-                    if (color != null) {
-                        part.render(poseStack, vertexConsumer, packedLight, getOverlayCoords(entity, 0.0f), color.red(), color.green(), color.blue(), alpha);
-                    } else {
-                        part.render(poseStack, vertexConsumer, packedLight, getOverlayCoords(entity, 0.0f), 1.0F, 1.0F, 1.0F, 1.0F);
-                    }
-                }
-                poseStack.popPose();
-            } else {
-                poseStack.pushPose();
-                model.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
-                model.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-                poseStack.scale(1.0025f + zFightOffset, 1.0025f + zFightOffset, 1.0025f + zFightOffset);
-                if (color != null) {
-                    model.renderToBuffer(poseStack, vertexConsumer, packedLight, getOverlayCoords(entity, 0.0f), color.red(), color.green(), color.blue(), alpha);
-                } else {
-                    model.renderToBuffer(poseStack, vertexConsumer, packedLight, getOverlayCoords(entity, 0.0f), 1.0F, 1.0F, 1.0F, 1.0F);
-                }
-                poseStack.popPose();
-            }
-        }*/
     }
 
     @Override

@@ -139,11 +139,6 @@ public class AbstractLuminarCrystal {
                 }
                 //level.scheduleTick(pos, this, 20); //delay de 20 ticks antes de agir
             }
-		/*BlockPos above = pos.above();
-		if (level.getBlockState(above).is(Blocks.AIR)) {
-			level.setBlock(above, ChangedAddonModBlocks.WHITE_WOLF_CRYSTAL_SMALL.get().defaultBlockState(), 3);
-			level.playSound(null, pos, ChangedSounds.ICE2, SoundSource.BLOCKS, 1.0f, 1.0f);
-		}*/
         }
 
         @Override

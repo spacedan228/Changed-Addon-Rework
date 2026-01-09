@@ -72,9 +72,6 @@ public class Exp6Entity extends AbstractCanTameSnepChangedEntity {
 
     public InteractionResult Exp2(Player player, InteractionHand hand, Player Host) {
         ItemStack itemstack = player.getItemInHand(hand);
-		/*if(Host != null){
-			return super.mobInteract(player, hand);
-		}*/
 
         if (this.level.isClientSide) {
             boolean flag = this.isOwnedBy(player) || this.isTame() || this.isTameItem(itemstack) && !this.isTame();

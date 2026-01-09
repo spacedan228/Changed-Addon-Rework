@@ -66,9 +66,6 @@ public abstract class AbstractCanTameChangedEntity extends AbstractBasicChangedE
     @Override
     public void stopSleeping() {
         super.stopSleeping();
-        //if (this.getPose() == Pose.SLEEPING) {
-        //    this.setPose(Pose.STANDING);
-        //}
     }
 
     @Override

@@ -21,12 +21,6 @@ public class DragonBigWingCreativeFlyAnimator<T extends ChangedEntity, M extends
     }
 
     public void setupAnim(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-//        this.leftWingRoot.xRot = Mth.lerp(this.core.flyAmount, this.leftWingRoot.xRot, (float) Math.toRadians(DEBUG.HeadPosJ));
-//        this.leftWingRoot.yRot = Mth.lerp(this.core.flyAmount, this.leftWingRoot.yRot, 0.087266F);
-//        this.leftWingRoot.zRot = Mth.lerp(this.core.flyAmount, this.leftWingRoot.zRot, 0.0F);
-//        this.rightWingRoot.xRot = Mth.lerp(this.core.flyAmount, this.rightWingRoot.xRot, (float) Math.toRadians(DEBUG.HeadPosJ));
-//        this.rightWingRoot.yRot = Mth.lerp(this.core.flyAmount, this.rightWingRoot.yRot, -0.087266F);
-//        this.rightWingRoot.zRot = Mth.lerp(this.core.flyAmount, this.rightWingRoot.zRot, 0.0F);
 
 
         this.leftWingRoot.xRot = Mth.lerp(this.core.flyAmount, this.leftWingRoot.xRot, (float) Math.toRadians(40f));

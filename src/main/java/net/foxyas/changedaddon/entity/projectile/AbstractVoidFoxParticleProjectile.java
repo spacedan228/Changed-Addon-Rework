@@ -295,19 +295,6 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
         ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.3f, 0.3f, 0.3f, 1, 0.005f);
 
         // Partículas
-        /*if (level.isClientSide) {
-            for (int i = 0; i < 2; ++i) {
-                double offsetX = (random.nextDouble() - 0.5) * 0.2;
-                double offsetY = (random.nextDouble() - 0.5) * 0.2;
-                double offsetZ = (random.nextDouble() - 0.5) * 0.2;
-                level.addParticle(particle,
-                        getX() + offsetX,
-                        getY() + offsetY,
-                        getZ() + offsetZ,
-                        0.0, 0.01, 0.0
-                );
-            }
-        }*/
     }
 
     public boolean isSmoothMotion() {

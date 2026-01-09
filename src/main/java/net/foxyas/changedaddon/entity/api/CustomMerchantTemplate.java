@@ -132,10 +132,6 @@ public abstract class CustomMerchantTemplate extends Mob implements CustomMercha
     @Override
     public void notifyTradeUpdated(@NotNull ItemStack stack) {
         //play sound
-        //if (!this.level.isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
-        //    this.ambientSoundTime = -this.getAmbientSoundInterval();
-        //    this.playSound(this.getTradeUpdatedSound(!stack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
-        //}
     }
 
     @Override

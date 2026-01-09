@@ -132,11 +132,6 @@ public class FengQIWolfEntity extends ChangedEntity implements GenderedEntity, P
     @Override
     public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType reason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag tag) {
         SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata, tag);
-        /*setEyeStyle(EyeStyle.TALL);
-        CompoundTag dataIndex0 = new CompoundTag();
-        this.saveWithoutId(dataIndex0);
-        dataIndex0.getCompound("LocalVariantInfo").putFloat("scale", 1);
-        this.load(dataIndex0);*/
         this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#e24340"));
         this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#e24340"));
         return retval;
