@@ -87,7 +87,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
         );
 
         tag(ChangedAddonTags.EntityTypes.HAS_CLAWS).add(VOID_FOX.get());
-        tag(ChangedAddonTags.EntityTypes.CANT_SPAWN_AS_ALPHA_ENTITY).addTag(ChangedTags.EntityTypes.PUDDING).add(DARK_LATEX_WOLF_PUP.get(), PURE_WHITE_LATEX_WOLF_PUP.get());
+        tag(ChangedAddonTags.EntityTypes.CANT_SPAWN_AS_ALPHA_ENTITY).add(DARK_LATEX_WOLF_PUP.get(), PURE_WHITE_LATEX_WOLF_PUP.get()).addOptionalTag(ChangedTags.EntityTypes.PUDDING.location()).addOptionalTag(ChangedTags.EntityTypes.PARTIAL_LATEX.location());
 
 
         tag(ChangedTags.EntityTypes.CAN_WEAR_EXOSKELETON).add(canUseExoskeleton().toArray(new EntityType[0]));
