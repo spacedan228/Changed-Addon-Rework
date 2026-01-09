@@ -37,14 +37,14 @@ public interface IAlphaAbleEntity {
 
     default float alphaScaleForRender() {
         if (this instanceof ChangedEntity changedEntity) {
-            return 1.5f + DEBUG.HeadPosY; // For future changes
+            return 1.75f + DEBUG.HeadPosY; // For future changes
         }
         return 1f;
     }
 
     default float alphaAdditionalScale() {
         if (this instanceof ChangedEntity changedEntity) {
-            return 0.25f + DEBUG.HeadPosZ; // For future changes
+            return 0.75f + DEBUG.HeadPosZ; // For future changes
         }
         return 0f;
     }

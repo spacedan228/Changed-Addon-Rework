@@ -7,12 +7,83 @@
       "entries": [
         {
           "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "changed_addon:snepsi_can",
+                  "properties": {
+                    "cans": "1"
+                  }
+                }
+              ],
+              "count": 1.0,
+              "add": false
+            }
+          ],
           "name": "changed_addon:snepsi"
-        }
-      ],
-      "conditions": [
+        },
         {
-          "condition": "minecraft:survives_explosion"
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "changed_addon:snepsi_can",
+                  "properties": {
+                    "cans": "2"
+                  }
+                }
+              ],
+              "count": 2.0,
+              "add": false
+            }
+          ],
+          "name": "changed_addon:snepsi"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "changed_addon:snepsi_can",
+                  "properties": {
+                    "cans": "3"
+                  }
+                }
+              ],
+              "count": 3.0,
+              "add": false
+            }
+          ],
+          "name": "changed_addon:snepsi"
+        },
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "conditions": [
+                {
+                  "condition": "minecraft:block_state_property",
+                  "block": "changed_addon:snepsi_can",
+                  "properties": {
+                    "cans": "4"
+                  }
+                }
+              ],
+              "count": 4.0,
+              "add": false
+            }
+          ],
+          "name": "changed_addon:snepsi"
         }
       ]
     }

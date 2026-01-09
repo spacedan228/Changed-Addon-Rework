@@ -135,7 +135,7 @@ public class LaserPointer extends Item implements SpecializedAnimations {
 
         EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(player, result.getType() != HitResult.Type.MISS
                 ? (float) result.distanceTo(player)
-                : LaserPointer.MAX_LASER_REACH, false);
+                : LaserPointer.MAX_LASER_REACH, null);
         Vec3 hitPos;
 
         if (entityHitResult != null) {
@@ -170,7 +170,7 @@ public class LaserPointer extends Item implements SpecializedAnimations {
 
         EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(player, result.getType() != HitResult.Type.MISS
                 ? (float) result.distanceTo(player)
-                : LaserPointer.MAX_LASER_REACH, false);
+                : LaserPointer.MAX_LASER_REACH, null);
 
         Vec3 hitPos = result.getLocation();
 

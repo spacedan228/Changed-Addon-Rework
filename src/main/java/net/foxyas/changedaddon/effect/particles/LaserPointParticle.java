@@ -96,7 +96,7 @@ public class LaserPointParticle extends TextureSheetParticle {
 
         EntityHitResult entityHitResult = PlayerUtil.getEntityHitLookingAt(owner, result.getType() != HitResult.Type.MISS
                 ? (float) result.distanceTo(owner)
-                : LaserPointer.MAX_LASER_REACH, false);
+                : LaserPointer.MAX_LASER_REACH, null);
 
         Vec3 hitPos = result.getLocation();
         Direction face = null;

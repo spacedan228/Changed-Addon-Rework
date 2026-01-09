@@ -167,14 +167,14 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         return self.getEntityData().get(IS_ALPHA);
     }
 
-    @Inject(method = "savePlayerVariantData", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "savePlayerVariantData", at = @At("RETURN"), cancellable = true)
     private void savePlayerVariantDataHook(CallbackInfoReturnable<CompoundTag> cir) {
         CompoundTag tag = cir.getReturnValue();
         if (tag == null) tag = new CompoundTag();//temporary fix so it doesnt crash
         tag.putBoolean("isAlpha", isAlpha());
     }
 
-    @Inject(method = "readPlayerVariantData", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "readPlayerVariantData", at = @At("RETURN"), cancellable = true)
     private void readPlayerVariantDataHook(CompoundTag tag, CallbackInfo ci) {
         if (tag == null) return;
         if (tag.contains("isAlpha")) setAlpha(tag.getBoolean("isAlpha"));

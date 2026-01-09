@@ -21,6 +21,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.EntityHitResult;
@@ -111,7 +112,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
 
 
     public static @Nullable Entity carryTarget(Player player) {
-        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(player, ((float) player.getAttackRange()), true);
+        EntityHitResult hitResult = PlayerUtil.getEntityHitLookingAt(player, ((float) player.getAttackRange()), ClipContext.Block.OUTLINE);
         if (hitResult == null) {
             return null;
         }

@@ -1,5 +1,5 @@
 package net.foxyas.changedaddon.client.renderer.layers.features;
 
 public enum RenderMode {
-    SONAR, ECHO_LOCATION
+    SONAR, KINETIC_SIGHT, ECHO_LOCATION
 }
