@@ -64,10 +64,7 @@ public class BunyEntity extends ChangedEntity {
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
     }
 
-    /*@Override
-    protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return false;
-    }*/ //Maybe later
+    //Maybe later
     public Color3 getHairColor(int i) {
         return Color3.getColor("#9c8c73");
     }

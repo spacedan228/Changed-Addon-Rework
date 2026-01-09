@@ -46,11 +46,6 @@ public class CatalyzerRecipeCategory implements IRecipeCategory<CatalyzerRecipe>
     }
 
 
-//    @Override
-//    public @NotNull IDrawable getBackground() {
-//        return this.background;
-//    }
-
     @Override
     public int getHeight() {
         return background.getHeight();

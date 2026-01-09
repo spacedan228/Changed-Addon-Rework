@@ -434,69 +434,6 @@ public class DEBUG {
      * }
      */
 
-    /*
-
-    private static boolean lock;
-
-    @SubscribeEvent
-    public static void onRenderHand(RenderHandEvent event) {
-        if (lock) return;
-        AbstractClientPlayer player = Minecraft.getInstance().player;
-        if (player == null) return;
-
-        ProcessTransfur.ifPlayerTransfurred(player, variant -> {
-            PoseStack stack = event.getPoseStack();
-            MultiBufferSource buffer = event.getMultiBufferSource();
-            int light = event.getPackedLight();
-            float partialTicks = event.getPartialTicks();
-
-            EntityRenderer<? super LivingEntity> entRenderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
-            if (entRenderer instanceof LivingEntityRenderer<?, ?> livingEntityRenderer) {
-                if (livingEntityRenderer instanceof PlayerRenderer playerRenderer) {
-                    lock = true;
-                    if (event.getHand() == InteractionHand.MAIN_HAND) {
-                        stack.pushPose();
-                        boolean rightHand = player.getMainArm() == HumanoidArm.RIGHT;
-
-                        //float playerSwimAmount = player.getSwimAmount(partialTicks);
-                        //ItemInHandRenderer itemInHandRenderer = Minecraft.getInstance().getItemInHandRenderer();
-                        //float equipProgress = 1.0F - Mth.lerp(partialTicks, ((ItemInHandRendererAccessor) itemInHandRenderer).getoMainHandHeight(), ((ItemInHandRendererAccessor) itemInHandRenderer).getMainHandHeight());
-
-                        float f = rightHand ? -1.0F : 1.0F;
-                        float pSwingProgress = event.getSwingProgress();//entity.attackProgress on main hand
-                        float f1 = Mth.sqrt(pSwingProgress);
-                        float f2 = -0.3F * Mth.sin(f1 * (float) Math.PI);
-                        float f3 = 0.4F * Mth.sin(f1 * ((float) Math.PI * 2F));
-                        float f4 = -0.4F * Mth.sin(pSwingProgress * (float) Math.PI);
-
-                        stack.translate(f * (f2 + 0.64000005F), f3 + -0.6F + event.getEquipProgress() * -0.6F, f4 + -0.71999997F);// 0 here is an inaccessible variable from ItemInHandRenderer
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * 45.0F));
-                        float f5 = Mth.sin(pSwingProgress * pSwingProgress * (float) Math.PI);
-                        float f6 = Mth.sin(f1 * (float) Math.PI);
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * f6 * 70.0F));
-                        stack.mulPose(Vector3f.ZP.rotationDegrees(f * f5 * -20.0F));
-                        stack.translate(f * -1.0F, 3.6F, 3.5D);
-                        stack.mulPose(Vector3f.ZP.rotationDegrees(f * 120.0F));
-                        stack.mulPose(Vector3f.XP.rotationDegrees(200.0F));
-                        stack.mulPose(Vector3f.YP.rotationDegrees(f * -135.0F));
-                        stack.translate(f * 5.6F, 0.0D, 0.0D);
-                        //applyBobbing(stack, partialTicks);
-                        if (rightHand) {
-                            playerRenderer.renderLeftHand(stack, buffer, light, player);
-                        } else {
-                            //playerRenderer.renderLeftHand(stack, buffer, light, player);
-                            playerRenderer.renderRightHand(stack, buffer, light, player);
-                        }
-                        stack.popPose();
-                    }
-                    lock = false;
-                }
-            }
-            return true;
-        });
-    }
-    */
-
     @Mod.EventBusSubscriber(value = Dist.CLIENT)
     public static class client {
 
@@ -651,19 +588,10 @@ public class DEBUG {
                 }
             } else if (MOTIONTEST == 2) {
                 if (!player.level().isClientSide() && player instanceof ServerPlayer serverPlayer) {
-                    /*Vec3 oldPos = new Vec3(player.xOld, player.yOld, player.zOld);
-                    Vec3 playerPosition = player.position();
-                    Vec3 posRelative = playerPosition.subtract(oldPos);
-                    double fakeSpeed = posRelative.length();
-
-                    ChangedAddonMod.LOGGER.info("Player Fake Speed is:{}", fakeSpeed);
-                    ChangedAddonMod.LOGGER.info("Player Fake Vec Speed is:{}", posRelative);*/
                     ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new RequestMovementCheckPacket(true));
                 }
             }
         }
-        //Player player = event.player;
-        //player.displayClientMessage(Component.literal("Dot = " + DotValueOfViewProcedure.execute(player,player.getMainHandItem())), false);
     }
 
 

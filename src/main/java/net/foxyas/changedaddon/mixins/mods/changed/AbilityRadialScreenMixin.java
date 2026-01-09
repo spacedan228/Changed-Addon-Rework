@@ -21,33 +21,6 @@ import java.util.List;
 @Mixin(value = AbilityRadialScreen.class, remap = false)
 public abstract class AbilityRadialScreenMixin {
 
-    //    @Inject(method = "tooltipsFor", at = @At("RETURN"), remap = false, cancellable = true)
-//    private void toolTipsHook(int section, CallbackInfoReturnable<List<Component>> cir) {
-//        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-//            List<Component> toolTips = cir.getReturnValue();
-//            if (toolTips != null) {
-//                List<Component> list = new ArrayList<>(toolTips);
-//                int index = -1;
-//                AbilityRadialMenu menu = getSelf().getMenu();
-//                for (Component component : list) {
-//                    AbstractAbilityInstance abilityInstance = menu.variant.getAbilityInstance(getSelf().abilities.get(section));
-//                    if (abilityInstance != null) {
-//                        ResourceLocation registryName = abilityInstance.getAbility().getRegistryName();
-//                        if (registryName != null) {
-//                            if (component.toString().contains(registryName.toString())) {
-//
-//                            }
-//                        }
-//                    }
-//                }
-//
-//                list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
-//                cir.setReturnValue(list);
-//            }
-//        }
-//    }
-//
-
     @Inject(method = "tooltipsFor", at = @At("RETURN"), remap = false, cancellable = true)
     private void toolTipsHook(int section, CallbackInfoReturnable<List<Component>> cir) {
         if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
@@ -91,17 +64,4 @@ public abstract class AbilityRadialScreenMixin {
         return ((AbilityRadialScreen) (Object) this);
     }
 
-//    @ModifyVariable(method = "tooltipsFor",
-//            at = @At(value = "INVOKE",
-//                    target = "Lcom/google/common/collect/ImmutableList$Builder;build()Lcom/google/common/collect/ImmutableList;",
-//                    remap = true,
-//                    shift = At.Shift.BY),
-//            remap = false)
-//    private ImmutableList.Builder<Component> addRightClickTip(ImmutableList.Builder<Component> builder, int section) {
-//        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-//            builder.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click"));
-//                    //.withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
-//        }
-//        return builder;
-//    }
 }

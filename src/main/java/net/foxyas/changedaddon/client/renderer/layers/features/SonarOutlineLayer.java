@@ -3,6 +3,8 @@ package net.foxyas.changedaddon.client.renderer.layers.features;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
+import net.foxyas.changedaddon.util.FoxyasUtils;
+import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
@@ -136,8 +138,12 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
                         continue;
                 }
 
-                if (camera.distanceToSqr(living) > SonarOutlineLayer.SonarClientState.getMaxDistSqr())
-                    continue;
+                if (camera.distanceToSqr(living) > SonarOutlineLayer.SonarClientState.getMaxDistSqr()) {
+                    if (!FoxyasUtils.canEntitySeeOther(camera, living)) {
+                        continue;
+                    }
+                }
+
 
                 EntityRenderer<? super Entity> renderer =
                         mc.getEntityRenderDispatcher().getRenderer(living);

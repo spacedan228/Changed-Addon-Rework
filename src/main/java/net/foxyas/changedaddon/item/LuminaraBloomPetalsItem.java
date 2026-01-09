@@ -46,7 +46,7 @@ public class LuminaraBloomPetalsItem extends Item {
         }
 
         // Perform a ray trace to detect what the player is looking at
-        HitResult hit = PlayerUtil.getEntityHitLookingAt(player, (float) player.getEntityReach(), false);
+        HitResult hit = PlayerUtil.getEntityHitLookingAt(player, (float) player.getEntityReach(), null);
 
         if (hit != null && hit.getType() == HitResult.Type.ENTITY && hit instanceof EntityHitResult entityHitResult) {
             // If the hit is an entity, try to interact specifically with it

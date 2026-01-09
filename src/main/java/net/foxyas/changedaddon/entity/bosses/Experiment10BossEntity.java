@@ -546,9 +546,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
                     TpCooldown = 40;
                 }
 
-				/*if((TpCooldown != 0)){
-					TpCooldown -= 0.5f;
-				}*/
             }
         } else {
             TpCooldown -= 0.5f;

@@ -99,30 +99,6 @@ public interface ChangedEntityExtension {
                 }
             }
 
-            /*if (slots.hasSlot(ChangedAccessorySlots.BODY.get())) {
-                Optional<ItemStack> item = slots.getItem(ChangedAccessorySlots.BODY.get());
-                if (item.isEmpty() || item.get().isEmpty()) {
-                    ItemStack stack = new ItemStack(ChangedAddonItems.DYEABLE_TSHIRT.get());
-                    if (stack.getItem() instanceof DyeableClothingItem dyeableShorts) {
-                        boolean flag = dyeableShorts.allowedInSlot(stack, changedEntity, ChangedAccessorySlots.BODY.get());
-                        DyeableClothingItem.DefaultColors color = Util.getRandom(DyeableClothingItem.DefaultColors.values(), changedEntity.getRandom());
-                        dyeableShorts.setColor(stack, color.getColorToInt());
-                        if (flag) slots.setItem(ChangedAccessorySlots.BODY.get(), stack);
-                    }
-                }
-            }
-            if (slots.hasSlot(ChangedAccessorySlots.LEGS.get())) {
-                Optional<ItemStack> item = slots.getItem(ChangedAccessorySlots.LEGS.get());
-                if (item.isEmpty() || item.get().isEmpty()) {
-                    ItemStack stack = new ItemStack(ChangedAddonItems.DYEABLE_SHORTS.get());
-                    if (stack.getItem() instanceof DyeableShorts dyeableShorts) {
-                        boolean flag = dyeableShorts.allowedInSlot(stack, changedEntity, ChangedAccessorySlots.LEGS.get());
-                        DyeableClothingItem.DefaultColors color = Util.getRandom(DyeableClothingItem.DefaultColors.values(), changedEntity.getRandom());
-                        dyeableShorts.setColor(stack, color.getColorToInt());
-                        if (flag) slots.setItem(ChangedAccessorySlots.LEGS.get(), stack);
-                    }
-                }
-            }*/
         });
     }
 

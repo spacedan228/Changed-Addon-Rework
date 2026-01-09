@@ -25,8 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ArmorLatexDragonSnowLeopardSharkModel<T extends ChangedEntity> extends LatexHumanoidArmorModel<T, ArmorLatexDragonSnowLeopardSharkModel<T>> {
-    //public static final ModelLayerLocation INNER_ARMOR = ArmorModelLayerLocation.createInnerArmorLocation(ChangedAddonMod.resourceLoc("armor_latex_winged_dragon_male_unified")).get();
-    //public static final ModelLayerLocation OUTER_ARMOR = ArmorModelLayerLocation.createOuterArmorLocation(ChangedAddonMod.resourceLoc("armor_latex_winged_dragon_male_unified")).get();
     public static final ArmorModelSet<ChangedEntity, ArmorLatexDragonSnowLeopardSharkModel<ChangedEntity>> MODEL_SET = ArmorModelSet.of(ChangedAddonMod.resourceLoc("armor_latex_winged_dragon_male_unified"), ArmorLatexDragonSnowLeopardSharkModel::createArmorLayer, ArmorLatexDragonSnowLeopardSharkModel::new);
     private final ModelPart Head;
     private final ModelPart Torso;

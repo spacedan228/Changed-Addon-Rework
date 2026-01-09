@@ -122,8 +122,6 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
         registration.addRecipes(RecipeTypes.BREWING, brewingRecipes);
 
         // This may be a better way to add Brewing Recipes
-        // registration.addRecipes(RecipeTypes.BREWING, List.of(UntransfurPotionJeiRecipeBrewing.getAllRecipes()));
-        // registration.addRecipes(RecipeTypes.BREWING, List.of(TransfurSicknessJeiRecipeBrewing.getAllRecipes()));
     }
 
     public static class ChangedAddonJeiGuiHandler {

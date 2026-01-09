@@ -212,13 +212,6 @@ public class FemaleExp1Model extends AdvancedHumanoidModel<Exp1FemaleEntity> imp
         this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
     }
 
-    /* public PoseStack getPlacementCorrectors(CorrectorType type) {
-         PoseStack corrector = AdvancedHumanoidModelInterface.super.getPlacementCorrectors(type);
-         if (type.isArm())
-             corrector.translate(-0.02f, 0.12f, 0.12f);
-         return corrector;
-     }
-  */
     @Override
     public void setupHand(Exp1FemaleEntity entity) {
         animator.setupHand();
@@ -231,15 +224,6 @@ public class FemaleExp1Model extends AdvancedHumanoidModel<Exp1FemaleEntity> imp
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         PsychicGrabAbilityAnimation.playAnimation(entity, this);
     }
-
-    /*public PoseStack getPlacementCorrectors(CorrectorType type) {
-		PoseStack corrector = AdvancedHumanoidModelInterface.super.getPlacementCorrectors(type);
-		if (type == CorrectorType.HAIR)
-			corrector.translate(0.0f, 0.5f / 15.0f, 0.0f);
-		else if (type == CorrectorType.LOWER_HAIR)
-			corrector.translate(0.0f, -0.5f / 16.0f, -0.025f);
-		return corrector;
-	}*/
 
     public @NotNull ModelPart getArm(HumanoidArm p_102852) {
         return p_102852 == HumanoidArm.LEFT ? this.LeftArm : this.RightArm;

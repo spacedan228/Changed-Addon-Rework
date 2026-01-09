@@ -37,11 +37,6 @@ public interface CrawlFeature {
                 //this.refreshDimensions();
             }
 
-            //BlockPos pPos = new BlockPos(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ());
-            //BlockState blockState = livingEntity.level.getBlockState(pPos.above());
-            //if (!this.isSwimming() && !blockState.isAir() && (blockState.isSuffocating(level, pPos.above()) || blockState.isSolidRender(level, pPos.above()))) {
-            //    this.setPose(Pose.SWIMMING);
-            //}
         }
     }
 

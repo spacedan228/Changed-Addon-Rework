@@ -26,8 +26,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ArmorLatexSquidTigerSharkModel<T extends ChangedEntity> extends LatexHumanoidArmorModel<T, ArmorLatexSquidTigerSharkModel<T>> implements DoubleArmedModel<T> {
-    //public static final ModelLayerLocation INNER_ARMOR = ArmorModelLayerLocation.createInnerArmorLocation(ResourceLocation.parse("changed_addon", "squid_tiger_shark_armor")).get();
-    //public static final ModelLayerLocation OUTER_ARMOR = ArmorModelLayerLocation.createInnerArmorLocation(ResourceLocation.parse("changed_addon", "squid_tiger_shark_armor")).get();
     public static final ArmorModelSet<ChangedEntity, ArmorLatexSquidTigerSharkModel<ChangedEntity>> MODEL_SET = ArmorModelSet.of(ChangedAddonMod.resourceLoc("armor_squid_tiger_shark"), ArmorLatexSquidTigerSharkModel::createArmorLayer, ArmorLatexSquidTigerSharkModel::new);
 
     private final ModelPart Head;
@@ -55,11 +53,6 @@ public class ArmorLatexSquidTigerSharkModel<T extends ChangedEntity> extends Lat
         var leftFoot = leftLowerLeg.getChild("LeftFoot");
         var rightLowerLeg = RightLeg.getChild("RightLowerLeg");
         var rightFoot = rightLowerLeg.getChild("RightFoot");
-
-        /*var Tail = this.Torso.getChild("Tail");
-        ModelPart tailPrimary = Tail.getChild("TailPrimary");
-        ModelPart tailSecondary = tailPrimary.getChild("TailSecondary");
-*/
 
         var upperRightTentacle = List.of(Torso.getChild("RightUpperTentacle"));
         var upperLeftTentacle = List.of(Torso.getChild("LeftUpperTentacle"));
@@ -113,18 +106,6 @@ public class ArmorLatexSquidTigerSharkModel<T extends ChangedEntity> extends Lat
         PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, layer.deformation.extend(0.25F)), PartPose.offset(0.0F, -2.2F, 0.0F));
 
         PartDefinition Torso = partdefinition.addOrReplaceChild("Torso", CubeListBuilder.create().texOffs(16, 16).addBox(-4.0F, 0.1F, -2.2F, 8.0F, 12.0F, 4.0F, layer.dualDeformation.extend(0.1f)), PartPose.offset(0.0F, -2.2F, 0.0F));
-
-        //PartDefinition Tail = Torso.addOrReplaceChild("Tail", CubeListBuilder.create(), PartPose.offset(0.0F, 10.5F, 0.0F));
-
-        //PartDefinition TailPrimary = Tail.addOrReplaceChild("TailPrimary", CubeListBuilder.create(), PartPose.offset(0.0F, -0.5F, 0.75F));
-
-        //TailPrimary.addOrReplaceChild("Base_r1", CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, -4.0F, -2.0F, 4.0F, 8.0F, 4.0F, layer.altDeformation.extend(0.505F)), PartPose.offsetAndRotation(0.0F, 1.7091F, 3.8476F, -1.1781F, 0.0F, 3.1416F));
-
-        //PartDefinition TailSecondary = TailPrimary.addOrReplaceChild("TailSecondary", CubeListBuilder.create(), PartPose.offset(0.0F, 3.25F, 7.25F));
-
-        //TailSecondary.addOrReplaceChild("Base_r2", CubeListBuilder.create().texOffs(0, 20).addBox(-1.5F, -1.3563F, -0.6088F, 3.0F, 5.0F, 3.0F, layer.altDeformation.extend(0.5F)), PartPose.offsetAndRotation(0.0F, 1.25F, 1.0F, 1.309F, 0.0F, 0.0F));
-
-        //TailSecondary.addOrReplaceChild("Base_r3", CubeListBuilder.create().texOffs(0, 16).addBox(-0.5F, 5.3462F, -1.8296F, 1.0F, 1.0F, 1.0F, layer.altDeformation.extend(-0.05F + 0.5F)), PartPose.offsetAndRotation(0.0F, 2.0F, 8.75F, 1.1345F, 0.0F, 0.0F));
 
         PartDefinition RightUpperTentacle = Torso.addOrReplaceChild("RightUpperTentacle", CubeListBuilder.create(), PartPose.offset(-2.5F, 2.7F, 1.0F));
 

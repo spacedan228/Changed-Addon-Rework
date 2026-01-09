@@ -42,15 +42,7 @@ public class Exp1FemaleEntity extends ChangedEntity implements GenderedEntity, P
         setNoAi(false);
     }
 
-    //@SubscribeEvent
-    //public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
-    //if (SPAWN_BIOMES.contains(event.getName()))
-    //    event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.EXP_1_FEMALE.get(), 20, 1, 4));
-    //}
-
     public static void init() {
-        //SpawnPlacements.register(ChangedAddonEntities.EXP_1_FEMALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-        //(entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -137,18 +129,6 @@ public class Exp1FemaleEntity extends ChangedEntity implements GenderedEntity, P
     @Override
     protected void registerGoals() {
         super.registerGoals();
-		/*
-		this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
-			@Override
-			protected double getAttackReachSqr(LivingEntity entity) {
-				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
-			}
-		});
-		this.goalSelector.addGoal(2, new RandomStrollGoal(this, 1));
-		this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
-		this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new FloatGoal(this));
-		*/
     }
 
     @Override

@@ -213,9 +213,6 @@ public class BossComboAbilityGoal extends Goal {
 
         public void spawnImpactEffect(Vec3 pos, int type) {
             if (attacker.level instanceof ServerLevel serverLevel) {
-            /*if (type <= impactParticle.length) {
-                serverLevel.sendParticles(impactParticle[type], pos.x, pos.y, pos.z, 10, 0.5, 0.5, 0.5, 0);
-            }*/
                 if (type <= impactSound.length) {
                     attacker.playSound(impactSound[type], 2, 1);
                 }

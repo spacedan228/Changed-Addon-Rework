@@ -244,12 +244,6 @@ public class Experiment009Model extends AdvancedHumanoidModel<Experiment009Entit
         this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
     }
 
-    /* public PoseStack getPlacementCorrectors(CorrectorType type) {
-        PoseStack corrector = AdvancedHumanoidModelInterface.super.getPlacementCorrectors(type);
-        if (type.isArm())
-            corrector.translate(-0.02f, 0.12f, 0.12f);
-        return corrector;
-    } */
     @Override
     public void setupHand(Experiment009Entity entity) {
         animator.setupHand();

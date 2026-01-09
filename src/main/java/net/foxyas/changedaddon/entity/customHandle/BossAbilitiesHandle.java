@@ -69,36 +69,6 @@ public record BossAbilitiesHandle(AbstractLuminarcticLeopard boss) {
         int abilityIndex; // 8 habilidades ativas restantes, índices de 0 a
         LivingEntity bossTarget = this.boss.getTarget();
 
-			/*if (boss.DEVATTACKTESTTICK != 0){
-				int abilitytest = boss.DEVATTACKTESTTICK;
-				switch (abilitytest) {
-					case 1:
-						glacialSpikes();
-						break;
-					case 2:
-						frostNova();
-						break;
-					case 3:
-						crystallineShield();
-						break;
-					case 4:
-						radioactiveBurst();
-						break;
-					case 5:
-						irradiatedPulse();
-						break;
-					case 6:
-						radiantField();
-						break;
-					case 7:
-						meltdown();
-						break;
-					case 8:
-						arcticDash();
-						break;
-				}
-			}*/
-
 
         if (bossTarget != null) {
             if (bossTarget.distanceTo(boss) >= 4) {
@@ -379,10 +349,6 @@ public record BossAbilitiesHandle(AbstractLuminarcticLeopard boss) {
                             player.addEffect(new MobEffectInstance(MobEffects.POISON, 30, 2)); // Aplica "Radiação"
                         }
                     }
-						/*if (entity != null && boss != null){
-							CameraUtil.tugEntityLookDirection(player, boss, 0.095);
-							// player.hurt(DamageSource.mobAttack(boss).bypassInvul().bypassArmor(), 1.0F); // Causa dano fraco
-						}*/
                 }
             }
         }
@@ -448,9 +414,6 @@ public record BossAbilitiesHandle(AbstractLuminarcticLeopard boss) {
                     toxicGlare(entity);
                     this.boss.PassivesTicksCooldown++;
                 }
-                // else if (isToUseHypnoticGaze) {
-                //hypnoticGaze(entity);
-                //}
             }
         }
     }

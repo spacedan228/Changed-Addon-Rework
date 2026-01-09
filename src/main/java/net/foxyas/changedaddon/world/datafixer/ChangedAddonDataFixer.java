@@ -86,8 +86,6 @@ public class ChangedAddonDataFixer {
     }
 
     private void fixData(@NotNull CompoundTag dataTag) {
-        //if (!rootTag.contains("Data")) return; // 10 = CompoundTag
-        //CompoundTag dataTag = rootTag.getCompound("Data");
 
         if (!dataTag.contains("GameRules")) return;
         CompoundTag gameRules = dataTag.getCompound("GameRules");

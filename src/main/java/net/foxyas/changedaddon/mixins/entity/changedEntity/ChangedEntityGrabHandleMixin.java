@@ -11,6 +11,9 @@ import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.EntityShape;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.damagesource.DamageSource;
@@ -22,26 +25,33 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
+
 @Mixin(value = ChangedEntity.class, remap = false)
 public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity, IAlphaAbleEntity {
+
+    @Shadow public abstract TransfurVariant<?> getSelfVariant();
 
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
     protected int grabCooldown = 0;
     protected boolean ableToGrab;
 
-    protected ChangedEntityGrabHandleMixin(EntityType<? extends Monster> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
-        this.ableToGrab = level.getRandom().nextFloat() <= 0.15f; // Just for fail-safe
+    protected ChangedEntityGrabHandleMixin(EntityType<? extends Monster> type, Level pLevel) {
+        super(type, pLevel);
     }
 
     @Inject(at = @At("TAIL"), method = "<init>", cancellable = true)
     private void initHook(EntityType<? extends Monster> type, Level level, CallbackInfo ci) {
-        this.ableToGrab = level.getRandom().nextFloat() <= 0.15f;
+        List<? extends AbstractAbility<?>> listOfAbilities = this.getSelfVariant().abilities.stream().map((entityTypeFunction -> entityTypeFunction.apply(type))).toList();
+        if (listOfAbilities.contains(ChangedAbilities.GRAB_ENTITY_ABILITY.get())) {
+            this.ableToGrab = level.getRandom().nextFloat() <= 0.15f; // Just for fail-safe
+        }
         if (canEntityGrab(type, level)) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
         }
@@ -71,11 +81,12 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public boolean canEntityGrab(EntityType<?> type, Level level) {
-        return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab();
-    }
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        if (self.getEntityShape() == EntityShape.FERAL) {
+            return false;
+        }
 
-    @Inject(method = "tick", at = @At("TAIL"))
-    private void tickHook(CallbackInfo ci) {
+        return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab();
     }
 
     @Override
