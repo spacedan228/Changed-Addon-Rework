@@ -1,18 +1,13 @@
 package net.foxyas.changedaddon.mixins.client.renderer.layer;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
-import net.foxyas.changedaddon.process.DEBUG;
-import net.ltxprogrammer.changed.client.LivingEntityRendererExtender;
 import net.ltxprogrammer.changed.client.renderer.layers.LatexHeldEntityLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -37,7 +32,7 @@ public abstract class LatexHeldEntityLayerMixin<T extends ChangedEntity, M exten
             at = @At(
                     value = "INVOKE",
                     target = "Lcom/mojang/blaze3d/vertex/PoseStack;mulPose(Lorg/joml/Quaternionf;)V",
-                    shift = At.Shift.BY
+                    shift = At.Shift.AFTER
             )
     )
     private void scaleAfterPush(
@@ -45,6 +40,7 @@ public abstract class LatexHeldEntityLayerMixin<T extends ChangedEntity, M exten
     ) {
         if (entity instanceof IAlphaAbleEntity alpha && alpha.isAlpha()) {
             pose.scale(0.4286f, 0.4286f, 0.4286f); // to return a value from +75% we need to use this value
+            pose.translate(0, 0.35, 0);
         }
     }
 }

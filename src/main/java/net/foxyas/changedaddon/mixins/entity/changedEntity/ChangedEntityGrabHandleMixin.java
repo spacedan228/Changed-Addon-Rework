@@ -17,19 +17,15 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.Set;
 
 @Mixin(value = ChangedEntity.class, remap = false)
 public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity, IAlphaAbleEntity {
@@ -162,6 +158,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Inject(method = "savePlayerVariantData", at = @At("HEAD"), cancellable = true)
     private void savePlayerVariantDataHook(CallbackInfoReturnable<CompoundTag> cir) {
         CompoundTag tag = cir.getReturnValue();
+        if (tag == null) tag = new CompoundTag();//temporary fix so it doesnt crash
         tag.putBoolean("isAlpha", isAlpha());
     }
 
