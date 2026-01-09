@@ -8,6 +8,7 @@ import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -50,6 +51,11 @@ public class LatexSnepEntity extends AbstractCanTameSnepChangedEntity implements
         xpReward = 0;
         this.setAttributes(this.getAttributes());
         setNoAi(false);
+    }
+
+    @Override
+    public @NotNull EntityShape getEntityShape() {
+        return EntityShape.FERAL;
     }
 
     public static void init() {
