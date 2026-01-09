@@ -128,6 +128,7 @@ public interface IGrabberEntity {
         if (!(this instanceof LivingEntity living)) return false;
         GrabEntityAbilityInstance grabAbilityInstance = getGrabAbilityInstance();
         if (grabAbilityInstance == null) return false;
+        if (living instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) return true;
 
         return living.level.getNearbyEntities(
                 LivingEntity.class,

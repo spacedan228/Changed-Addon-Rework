@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -18,6 +19,9 @@ public interface IAlphaAbleEntity {
 
     default float chanceToSpawnAsAlpha() {
         if (this instanceof ChangedEntity changedEntity) {
+            boolean cantSpawn = changedEntity.getType().is(ChangedAddonTags.EntityTypes.CANT_SPAWN_AS_ALPHA_ENTITY);
+            if (cantSpawn) return 0f;
+
             Level level = changedEntity.level;
             Difficulty difficulty = level.getDifficulty();
             if (level.getLevelData().isHardcore()) return ChangedAddonServerConfiguration.ALPHA_SPAWN_HARDCORE.get().floatValue();
