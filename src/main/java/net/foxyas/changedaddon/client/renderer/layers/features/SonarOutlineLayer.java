@@ -66,7 +66,18 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
 
         Minecraft minecraft = Minecraft.getInstance();
         Entity camera = minecraft.cameraEntity;
-        if (camera == null || camera.distanceToSqr(livingEntity) > SonarClientState.maxDistSqr) return;
+        if (camera == null) return;
+
+        if (SonarClientState.getRenderMode() == RenderMode.KINETIC_SIGHT) {
+            if (livingEntity.isSilent() || livingEntity.getDeltaMovement().length() <= 0.01f || livingEntity.isShiftKeyDown())
+                return;
+        }
+
+        if (camera.distanceToSqr(livingEntity) > SonarOutlineLayer.SonarClientState.getMaxDistSqr()) {
+            if (!FoxyasUtils.canEntitySeeOther(camera, livingEntity)) {
+                return;
+            }
+        }
 
         Player player = minecraft.player;
         if (player == null) return;
@@ -117,7 +128,7 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
     public static class ClientHandle {
 
         @SubscribeEvent
-        public static void renderSonarFailSafe(RenderLevelStageEvent event) {
+        public static void renderSonarFailSafe(RenderLevelStageEvent event) { // Fail-safe for custom culling mods
             if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
             if (!SonarOutlineLayer.SonarClientState.isActive()) return;
 
@@ -152,7 +163,7 @@ public class SonarOutlineLayer<T extends LivingEntity, M extends EntityModel<T>>
                 boolean canNormallyRender =
                         livingEntityRenderer.shouldRender(
                                 living,
-                                mc.levelRenderer.getFrustum(),
+                                event.getFrustum(),
                                 living.getX(), living.getY(), living.getZ()
                         );
 
