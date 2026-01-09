@@ -422,7 +422,6 @@ public class ChangedAddonAdminCommand {
     }
 
 
-
     private static int setUltraInstinctDodge(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         Collection<? extends Entity> entitiesList = EntityArgument.getEntities(context, "targets");
