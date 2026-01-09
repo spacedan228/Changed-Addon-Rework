@@ -164,8 +164,6 @@ public class FoxyasUtils {
     }
 
 
-
-
     /**
      * Checks if one entity (eyeEntity) can see another (targetToSee), using raycasting and FOV.
      *
@@ -203,9 +201,9 @@ public class FoxyasUtils {
     /**
      * Checks if one entity (eyeEntity) can see another (targetToSee), using raycasting and FOV.
      *
-     * @param eyeEntity   The entity doing the looking.
-     * @param to  The target pos to be looked at.
-     * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
+     * @param eyeEntity  The entity doing the looking.
+     * @param to         The target pos to be looked at.
+     * @param fovDegrees Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
      * @return true if visible and within FOV, false otherwise.
      */
     public static boolean canEntitySeePos(LivingEntity eyeEntity, Vec3 to, double fovDegrees) {
@@ -235,9 +233,9 @@ public class FoxyasUtils {
     /**
      * Checks if one entity (eyeEntity) can see another (targetToSee), using raycasting and FOV.
      *
-     * @param eyeEntity   The entity doing the looking.
-     * @param to  The target pos to be looked at.
-     * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
+     * @param eyeEntity  The entity doing the looking.
+     * @param to         The target pos to be looked at.
+     * @param fovDegrees Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
      * @return true if visible and within FOV, false otherwise.
      */
     public static boolean canEntitySeePosIgnoreGlass(LivingEntity eyeEntity, Vec3 to, double fovDegrees) {
@@ -270,7 +268,7 @@ public class FoxyasUtils {
      * @param targetToSee A entidade que deve ser visível.
      * @return true se for visível, false se houver obstrução.
      */
-    public static boolean canEntitySeeOther(LivingEntity eyeEntity, LivingEntity targetToSee) {
+    public static boolean canEntitySeeOther(Entity eyeEntity, Entity targetToSee) {
         Level level = eyeEntity.level;
         if (level != targetToSee.level) return false;
 
@@ -292,7 +290,7 @@ public class FoxyasUtils {
      * @param targetToSee A entidade que deve ser visível.
      * @return true se for visível, false se houver obstrução.
      */
-    public static boolean canEntitySeeOtherIgnoreGlass(LivingEntity eyeEntity, LivingEntity targetToSee) {
+    public static boolean canEntitySeeOtherIgnoreGlass(Entity eyeEntity, Entity targetToSee) {
         Level level = eyeEntity.level;
         if (level != targetToSee.level) return false;
 
@@ -316,7 +314,7 @@ public class FoxyasUtils {
      * @param fovDegrees  Field of view angle in degrees (e.g., 90 means 45 degrees to each side).
      * @return true if visible and within FOV, false otherwise.
      */
-    public static boolean canEntitySeeOtherIgnoreGlass(LivingEntity eyeEntity, LivingEntity targetToSee, double fovDegrees) {
+    public static boolean canEntitySeeOtherIgnoreGlass(Entity eyeEntity, Entity targetToSee, double fovDegrees) {
         Level level = eyeEntity.level;
         if (level != targetToSee.level) return false;
 
@@ -330,7 +328,7 @@ public class FoxyasUtils {
         double dot = lookVec.dot(directionToTarget);
         double requiredDot = Math.cos(Math.toRadians(fovDegrees / 2.0));
         if (dot < requiredDot)
-            return false; // Outside of FOV
+            return false; // Outside FOV
 
         // Then, raycast from eyeEntity to targetToSee to check if the view is blocked
         HitResult result = level.clip(new DynamicClipContext(from, to,
@@ -345,11 +343,11 @@ public class FoxyasUtils {
     /**
      * Verifica se eyeEntity consegue ver targetToSee com base na linha de visão.
      *
-     * @param eyeEntity   A entidade que está observando.
-     * @param to Target position
+     * @param eyeEntity A entidade que está observando.
+     * @param to        Target position
      * @return true se for visível, false se houver obstrução.
      */
-    public static boolean canEntitySeePosIgnoreGlass(LivingEntity eyeEntity, Vec3 to) {
+    public static boolean canEntitySeePosIgnoreGlass(Entity eyeEntity, Vec3 to) {
         Level level = eyeEntity.level;
 
         Vec3 from = eyeEntity.getEyePosition(1.0F);

@@ -8,6 +8,7 @@ import net.foxyas.changedaddon.network.packet.DynamicGrabEntityPacket;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -37,8 +38,9 @@ public class MayGrabTargetGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        boolean ableToGrab = grabber.isAbleToGrab();
-        if (!ableToGrab) return false;
+        if (!(grabber instanceof LivingEntity living)) return false;
+        boolean canEntityGrab = grabber.canEntityGrab(living.getType(), living.level);
+        if (!canEntityGrab) return false;
 
         GrabEntityAbilityInstance grabAbilityInstance = grabber.getGrabAbilityInstance();
         LivingEntity target = grabber.asMob().getTarget();
@@ -48,7 +50,8 @@ public class MayGrabTargetGoal extends Goal {
         double reachSqr = grabber.asMob().getMeleeAttackRangeSqr(target) * 0.7f; //Closer than a normal punch
         if (grabAbilityInstance == null) return false;
         if (GrabEntityAbility.getGrabber(target) != null) return false;
-        if (grabber.getGrabCooldown() > 0)
+        if (grabber.getGrabCooldown() > 0) return false;
+        if (!target.getType().is(ChangedTags.EntityTypes.HUMANOIDS))
             return false;
 
         return target.distanceToSqr(grabber.asMob()) <= reachSqr && grabAbilityInstance.grabbedEntity == null;

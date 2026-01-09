@@ -65,6 +65,7 @@
     "client.DeathScreenMixin",
     "client.MouseHandlerAccessor",
     "client.PlayerRendererMixin",
+    "client.gui.InventoryScreenMixin",
     "client.renderer.AdvancedHumanoidModelMixin",
     "client.renderer.AdvancedHumanoidRendererMixin",
     "client.renderer.GameRendererMixin",
