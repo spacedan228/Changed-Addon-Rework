@@ -36,6 +36,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -74,10 +75,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.Objects;
 import java.util.Random;
 
-public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable, ChangedEntityExtension {
+public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable, IDynamicPawColor {
     public static final int MAX_1_COOLDOWN = 120;
     public static final int MAX_2_COOLDOWN = 120;
     private static final int MAX_COOLDOWN = 120;
@@ -100,6 +102,16 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
     @Override
     public IDynamicPawColor.PawStyle getPawStyle() {
         return IDynamicPawColor.PawStyle.FERAL;
+    }
+
+    @Override
+    public Color getPawBeansColor() {
+        return Color.WHITE;
+    }
+
+    @Override
+    public Color getPawColor() {
+        return Color.BLACK;
     }
 
     public VoidFoxEntity(EntityType<VoidFoxEntity> type, Level world) {
