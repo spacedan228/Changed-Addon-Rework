@@ -11,6 +11,8 @@ import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.beast.boss.Behemoth;
+import net.ltxprogrammer.changed.entity.beast.boss.BehemothHand;
 import net.ltxprogrammer.changed.entity.beast.boss.BehemothHead;
 import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
@@ -29,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -42,8 +45,11 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Shadow
     public abstract TransfurVariant<?> getSelfVariant();
 
+    @Unique
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
+    @Unique
     protected int grabCooldown = 0;
+    @Unique
     protected boolean ableToGrab;
 
     protected ChangedEntityGrabHandleMixin(EntityType<? extends Monster> type, Level pLevel) {
@@ -133,6 +139,28 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Override
     public void setGrabCooldown(int grabCooldown) {
         this.grabCooldown = grabCooldown;
+    }
+
+    @Override
+    public int getGrabMaxCooldown() {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+
+        if (self instanceof Behemoth behemoth) {
+            int appliedCooldown = 200;
+            if (behemoth instanceof BehemothHand hand && (IAlphaAbleEntity.isEntityAlpha(hand.head) || IAlphaAbleEntity.isEntityAlpha(hand))) {
+                return (int) (appliedCooldown * 1.5f);
+            }
+            if (behemoth instanceof BehemothHead head && IAlphaAbleEntity.isEntityAlpha(head)) {
+                return (int) (appliedCooldown * 1.5f);
+            }
+            return appliedCooldown;
+        }
+
+        if (IAlphaAbleEntity.isEntityAlpha(self)) {
+            return (int) (120 * 1.5);
+        }
+
+        return 120;
     }
 
     @Override

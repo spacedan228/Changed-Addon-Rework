@@ -100,6 +100,14 @@ public interface IGrabberEntity {
 
     int getGrabCooldown();
 
+    default void applyGrabCooldown(int extraTime) {
+        this.setGrabCooldown(getGrabMaxCooldown() + extraTime);
+    }
+
+    default int getGrabMaxCooldown() {
+        return 120;
+    }
+
     default boolean shouldRespectGrab(PathfinderMob entitiesTryingToTarget) {
         return entitiesTryingToTarget.getType().is(ChangedAddonTags.EntityTypes.IGNORE_GRABBED_TARGETS);
     }
