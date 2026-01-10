@@ -34,7 +34,7 @@ public interface IAlphaAbleEntity {
     UUID ATTACK_SPEED = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a008");
 
     static void applyOrRemoveAlphaModifiers(LivingEntity entity, boolean isAlpha, float alphaScale) {
-        if (entity.getLevel().isClientSide) return;
+        if (entity.level.isClientSide) return;
         removeAlphaModifiers(entity);
 
         if (!isAlpha) {
@@ -42,24 +42,23 @@ public interface IAlphaAbleEntity {
             return;
         }
 
-        float normalized = alphaScale / 0.75f;
-        float softScale = (float) Math.pow(normalized, 0.65);
+        float normalized = 1 - (alphaScale / 0.75f);
 
-        apply(entity, Attributes.MAX_HEALTH, MAX_HEALTH, "Alpha Max Health", 20.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.MAX_HEALTH, MAX_HEALTH, "Alpha Max Health", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE, "Alpha Attack Damage", 4.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE, "Alpha Attack Damage", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ARMOR, ARMOR, "Alpha Armor", 6.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ARMOR, ARMOR, "Alpha Armor", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS, "Alpha Armor Toughness", 2.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS, "Alpha Armor Toughness", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_HEIGHT, "Alpha Step Height", 0.6 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_HEIGHT, "Alpha Step Height", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE, "Alpha Transfur Damage", 3.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE, "Alpha Transfur Damage", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ATTACK_KNOCKBACK, ATTACK_KNOCKBACK, "Alpha Knockback", 0.8 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ATTACK_KNOCKBACK, ATTACK_KNOCKBACK, "Alpha Knockback", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED, "Alpha Attack Speed", 0.2 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED, "Alpha Attack Speed", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         entity.setHealth(entity.getMaxHealth());
     }
