@@ -656,6 +656,8 @@ public class ENLanguageProvider extends LanguageProvider {
         add("commands.changed_addon.alpha.set.fail", "No valid Alpha-capable entities found");
         add("commands.changed_addon.alpha.get.success", "Alpha gene: %s");
         add("commands.changed_addon.alpha.get.fail", "Target does not support Alpha gene");
+        add("commands.changed_addon.alpha_scale.set.success", "Alpha scale set to %s for %s entities");
+        add("commands.changed_addon.alpha_scale.get.success", "Alpha scale: %s");
 
     }
 }

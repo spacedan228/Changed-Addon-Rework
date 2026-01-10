@@ -51,16 +51,30 @@ public class ChangedAddonAdminCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("changed-addon-admin")
                 .requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
-                .then(Commands.literal("setEntityAlphaGene")
-                        .then(Commands.argument("targets", EntityArgument.entities())
-                                .then(Commands.argument("value", BoolArgumentType.bool())
-                                        .executes(ChangedAddonAdminCommand::setEntityAlphaGene)
+                .then(Commands.literal("alphaGene")
+                        .then(Commands.literal("setEntityAlphaGene")
+                                .then(Commands.argument("targets", EntityArgument.entities())
+                                        .then(Commands.argument("value", BoolArgumentType.bool())
+                                                .executes(ChangedAddonAdminCommand::setEntityAlphaGene)
+                                        )
                                 )
                         )
-                )
-                .then(Commands.literal("getEntityAlphaGene")
-                        .then(Commands.argument("target", EntityArgument.entity())
-                                .executes(ChangedAddonAdminCommand::getEntityAlphaGene)
+                        .then(Commands.literal("getEntityAlphaGene")
+                                .then(Commands.argument("target", EntityArgument.entity())
+                                        .executes(ChangedAddonAdminCommand::getEntityAlphaGene)
+                                )
+                        )
+                        .then(Commands.literal("setEntityAlphaGeneScale")
+                                .then(Commands.argument("targets", EntityArgument.entities())
+                                        .then(Commands.argument("scale", FloatArgumentType.floatArg())
+                                                .executes(ChangedAddonAdminCommand::setEntityAlphaGeneScale)
+                                        )
+                                )
+                        )
+                        .then(Commands.literal("getEntityAlphaGeneScale")
+                                .then(Commands.argument("target", EntityArgument.entity())
+                                        .executes(ChangedAddonAdminCommand::getEntityAlphaGeneScale)
+                                )
                         )
                 ).then(Commands.literal("setUltraInstinctDodge")
                         .then(Commands.argument("targets", EntityArgument.entities())
@@ -298,6 +312,64 @@ public class ChangedAddonAdminCommand {
             );
 
             return value ? 1 : 0;
+        }
+
+        context.getSource().sendFailure(
+                new TranslatableComponent("commands.changed_addon.alpha.get.fail")
+        );
+        return 0;
+    }
+
+
+    private static int setEntityAlphaGeneScale(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Collection<? extends Entity> entities = EntityArgument.getEntities(context, "targets");
+        float value = FloatArgumentType.getFloat(context, "scale");
+
+        int affected = 0;
+
+        for (Entity entity : entities) {
+            entity = resolveChangedEntity(entity);
+            if (entity instanceof IAlphaAbleEntity alpha) {
+                alpha.setAlphaScale(value);
+                affected++;
+            }
+        }
+
+        if (affected > 0) {
+            context.getSource().sendSuccess(
+                    new TranslatableComponent(
+                            "commands.changed_addon.alpha_scale.set.success",
+                            value,
+                            affected
+                    ),
+                    true
+            );
+            return affected;
+        }
+
+        context.getSource().sendFailure(
+                new TranslatableComponent("commands.changed_addon.alpha.set.fail")
+        );
+        return 0;
+    }
+
+
+    private static int getEntityAlphaGeneScale(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Entity entity = EntityArgument.getEntity(context, "target");
+        entity = resolveChangedEntity(entity);
+
+        if (entity instanceof IAlphaAbleEntity alpha) {
+            float value = alpha.alphaAdditionalScale();
+
+            context.getSource().sendSuccess(
+                    new TranslatableComponent(
+                            "commands.changed_addon.alpha_scale.get.success",
+                            value
+                    ),
+                    false
+            );
+
+            return (int) value;
         }
 
         context.getSource().sendFailure(

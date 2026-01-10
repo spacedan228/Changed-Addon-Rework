@@ -299,6 +299,8 @@
   "commands.changed_addon.alpha.get.success": "Alpha gene: %s",
   "commands.changed_addon.alpha.set.fail": "No valid Alpha-capable entities found",
   "commands.changed_addon.alpha.set.success": "Alpha gene set to %s for %s entities",
+  "commands.changed_addon.alpha_scale.get.success": "Alpha scale: %s",
+  "commands.changed_addon.alpha_scale.set.success": "Alpha scale set to %s for %s entities",
   "death.attack.OverDose": "%1$s get a \u00A74OverDose\u00A7r",
   "death.attack.OverDose.player": "%1$s get a \u00A74OverDose\u00A7r while fighting with %2$s",
   "death.attack.assimilation": "%1$s was assimilated",

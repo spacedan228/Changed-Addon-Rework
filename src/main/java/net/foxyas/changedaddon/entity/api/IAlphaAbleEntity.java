@@ -12,10 +12,13 @@ import net.minecraft.world.level.Level;
 public interface IAlphaAbleEntity {
 
     EntityDataAccessor<Boolean> IS_ALPHA = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.BOOLEAN);
+    EntityDataAccessor<Float> ALPHA_SCALE = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.FLOAT);
 
     void setAlpha(boolean alphaGene);
 
     boolean isAlpha();
+
+    void setAlphaScale(float scale);
 
     default float chanceToSpawnAsAlpha() {
         if (this instanceof ChangedEntity changedEntity) {
@@ -44,14 +47,21 @@ public interface IAlphaAbleEntity {
 
     default float alphaScaleForRender() {
         if (this instanceof ChangedEntity changedEntity) {
-            return 1.75f; // For future changes
+            return 1 + alphaAdditionalScale(); // For future changes
         }
         return 1f;
     }
 
     default float alphaAdditionalScale() {
         if (this instanceof ChangedEntity changedEntity) {
-            return 0.75f; // For future changes
+            SynchedEntityData entityData = changedEntity.getEntityData();
+            float scale;
+            try {
+                scale = entityData.get(ALPHA_SCALE);
+            } catch (Exception e) {
+                scale = 0.75f;
+            }
+            return scale; // For future changes
         }
         return 0f;
     }
