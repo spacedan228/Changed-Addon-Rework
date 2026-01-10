@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
+import net.foxyas.changedaddon.entity.api.ICrawlAbleEntity;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.Exp9AttacksHandle;
@@ -38,7 +39,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.UniformFloat;
@@ -76,7 +76,7 @@ import java.util.*;
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment009BossEntity extends ChangedEntity implements CustomPatReaction, PowderSnowWalkable, IHasBossMusic {
+public class Experiment009BossEntity extends ChangedEntity implements CustomPatReaction, PowderSnowWalkable, IHasBossMusic, ICrawlAbleEntity {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.BOOLEAN);
@@ -538,7 +538,6 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             } else {
                 removeStatModifiers();
             }
-            updateSwimmingMovement();
             setSpeed(this);
             crawlingSystem(this.getTarget());
         }
@@ -641,69 +640,6 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             if (entity.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(speedModifier)) {
                 entity.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(speedModifier);
             }
-        }
-    }
-
-    public void crawlingSystem(LivingEntity target) {
-        if (target != null) {
-            setCrawlingPoseIfNeeded(target);
-            crawlToTarget(target);
-        } else {
-            BlockPos pPos = new BlockPos((int) this.getX(),(int) this.getEyeY(),(int) this.getZ());
-            BlockState blockState = this.level.getBlockState(pPos.above());
-
-            Pose currentPose = this.getPose();
-            Pose safePose = currentPose;
-
-            if (!this.canEnterPose(currentPose)) {
-                if (this.canEnterPose(Pose.CROUCHING)) {
-                    safePose = Pose.CROUCHING;
-                } else if (this.canEnterPose(Pose.SWIMMING)) {
-                    safePose = Pose.SWIMMING;
-                }
-            }
-
-            if (safePose != currentPose) {
-                this.setPose(safePose);
-                //this.refreshDimensions();
-            }
-        }
-    }
-
-    public void setCrawlingPoseIfNeeded(LivingEntity target) {
-        if (target.getPose() == Pose.SWIMMING && this.getPose() != Pose.SWIMMING) {
-            if (target.getY() < this.getEyeY() && !target.level.getBlockState(new BlockPos((int) target.getX(), (int) target.getEyeY(), (int) target.getZ()).above()).isAir()) {
-                this.setPose(Pose.SWIMMING);
-            }
-        } else {
-            if (!this.isSwimming() && this.level.getBlockState(new BlockPos((int) this.getX(),(int) this.getEyeY(),(int) this.getZ()).above()).isAir()) {
-                this.setPose(Pose.STANDING);
-            }
-        }
-    }
-
-    public void crawlToTarget(LivingEntity target) {
-        if (target.getPose() == Pose.SWIMMING && this.getPose() == Pose.SWIMMING) {
-            Vec3 direction = target.position().subtract(this.position()).normalize();
-            this.setDeltaMovement(this.getDeltaMovement().add(direction.scale(0.05)));
-        }
-    }
-
-    public void updateSwimmingMovement() {
-        if (this.isInWater()) {
-            if (this.getTarget() != null) {
-                Vec3 direction = this.getTarget().position().subtract(this.position()).normalize();
-                this.setDeltaMovement(this.getDeltaMovement().add(direction.scale(0.07)));
-            }
-            if (this.isEyeInFluid(FluidTags.WATER)) {
-                this.setPose(Pose.SWIMMING);
-                this.setSwimming(true);
-            } else {
-                this.setPose(Pose.STANDING);
-                this.setSwimming(false);
-            }
-        } else if (this.getPose() == Pose.SWIMMING && !this.isInWater() && (this.level.getBlockState(new BlockPos((int) this.getX(),(int) this.getEyeY(),(int) this.getZ()).above()).isAir() || this.canEnterPose(Pose.STANDING))) {
-            this.setPose(Pose.STANDING);
         }
     }
 
