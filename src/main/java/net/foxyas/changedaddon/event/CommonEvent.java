@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.event;
 import com.mojang.brigadier.CommandDispatcher;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.command.*;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
@@ -30,6 +31,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,6 +39,14 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
 public class CommonEvent {
+
+    @SubscribeEvent
+    public static void modifyExperience(LivingExperienceDropEvent experienceDropEvent) {
+        int experience = experienceDropEvent.getDroppedExperience();
+        if (experienceDropEvent.getEntity() instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
+            experienceDropEvent.setDroppedExperience((int) (experience * iAlphaAbleEntity.alphaAdditionalScale()));
+        }
+    }
 
     @SubscribeEvent
     public static void registerCommands(RegisterCommandsEvent event){

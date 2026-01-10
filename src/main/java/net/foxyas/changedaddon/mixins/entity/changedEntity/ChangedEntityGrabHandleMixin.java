@@ -218,6 +218,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (this.isAlpha() != alpha) {
             self.getEntityData().set(IS_ALPHA, alpha);
             this.refreshDimensions();
+            refreshAttributes(self);
         }
     }
 
@@ -233,6 +234,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (this.alphaAdditionalScale() != scale) {
             self.getEntityData().set(ALPHA_SCALE, scale);
             this.refreshDimensions();
+            refreshAttributes(self);
         }
     }
 
