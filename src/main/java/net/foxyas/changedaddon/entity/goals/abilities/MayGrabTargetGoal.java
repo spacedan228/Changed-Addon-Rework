@@ -13,6 +13,7 @@ import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.AABB;
@@ -75,9 +76,12 @@ public class MayGrabTargetGoal extends Goal {
     }
 
     private void tryGrabNearbyTarget() {
-        LivingEntity target = grabber.asMob().getTarget();
-        if (!grabber.asMob().level().isClientSide()) {
-            if (target != null && target.distanceTo(grabber.asMob()) <= 2.5f) {
+        PathfinderMob living = grabber.asMob();
+        LivingEntity target = living.getTarget();
+        if (!living.level().isClientSide()) {
+            EntityDimensions dimensions = living.getDimensions(living.getPose()).scale(1.25f);
+            AABB grabReach = dimensions.makeBoundingBox(living.position());
+            if (target != null && (grabReach.contains(target.position()) || target.distanceTo(living) <= 2.5f)) {
                 GrabEntityAbilityInstance grabAbilityInstance = grabber.getGrabAbilityInstance();
                 if (grabAbilityInstance != null) {
                     LivingEntity grabbedEntity = grabAbilityInstance.grabbedEntity;
