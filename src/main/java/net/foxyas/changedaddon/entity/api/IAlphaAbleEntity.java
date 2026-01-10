@@ -3,17 +3,89 @@ package net.foxyas.changedaddon.entity.api;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.ForgeMod;
+
+import java.util.UUID;
 
 public interface IAlphaAbleEntity {
 
     EntityDataAccessor<Boolean> IS_ALPHA = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.BOOLEAN);
     EntityDataAccessor<Float> ALPHA_SCALE = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.FLOAT);
+
+    UUID MAX_HEALTH = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a001");
+    UUID ATTACK_DAMAGE = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a002");
+    UUID ARMOR = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a003");
+    UUID ARMOR_TOUGHNESS = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a004");
+    UUID STEP_HEIGHT = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a005");
+    UUID TRANSFUR_DAMAGE = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a006");
+    UUID ATTACK_KNOCKBACK = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a007");
+    UUID ATTACK_SPEED = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a008");
+
+    static void applyOrRemoveAlphaModifiers(LivingEntity entity, boolean isAlpha, float alphaScale) {
+        if (entity.getLevel().isClientSide) return;
+        removeAlphaModifiers(entity);
+
+        if (!isAlpha) {
+            entity.setHealth(entity.getMaxHealth());
+            return;
+        }
+
+        float normalized = alphaScale / 0.75f;
+        float softScale = (float) Math.pow(normalized, 0.65);
+
+        apply(entity, Attributes.MAX_HEALTH, MAX_HEALTH, "Alpha Max Health", 20.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+
+        apply(entity, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE, "Alpha Attack Damage", 4.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+
+        apply(entity, Attributes.ARMOR, ARMOR, "Alpha Armor", 6.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+
+        apply(entity, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS, "Alpha Armor Toughness", 2.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+
+        apply(entity, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_HEIGHT, "Alpha Step Height", 0.6 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+
+        apply(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE, "Alpha Transfur Damage", 3.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+
+        apply(entity, Attributes.ATTACK_KNOCKBACK, ATTACK_KNOCKBACK, "Alpha Knockback", 0.8 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+
+        apply(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED, "Alpha Attack Speed", 0.2 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+
+        entity.setHealth(entity.getMaxHealth());
+    }
+
+    private static void apply(LivingEntity entity, Attribute attribute, UUID uuid, String name, double value, AttributeModifier.Operation op) {
+        AttributeInstance inst = entity.getAttribute(attribute);
+        if (inst == null || value == 0) return;
+
+        inst.addPermanentModifier(new AttributeModifier(uuid, name, value, op));
+    }
+
+    static void removeAlphaModifiers(LivingEntity entity) {
+        remove(entity, Attributes.MAX_HEALTH, MAX_HEALTH);
+        remove(entity, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE);
+        remove(entity, Attributes.ARMOR, ARMOR);
+        remove(entity, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS);
+        remove(entity, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_HEIGHT);
+        remove(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE);
+        remove(entity, Attributes.ATTACK_KNOCKBACK, ATTACK_KNOCKBACK);
+        remove(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED);
+    }
+
+    private static void remove(LivingEntity entity, Attribute attr, UUID uuid) {
+        AttributeInstance inst = entity.getAttribute(attr);
+        if (inst != null) inst.removeModifier(uuid);
+    }
 
     static boolean isEntityAlpha(Entity entity) {
         return entity instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha();

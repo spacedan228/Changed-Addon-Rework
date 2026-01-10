@@ -17,6 +17,7 @@ public class ChangedAddonClientConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_EXTRA_HAND;
     public static final ForgeConfigSpec.ConfigValue<Boolean> SMOOTH_LASER_MOVEMENT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> PLANTOIDS_VISIBILITY;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ALPHA_COMPATIBILITY_MODE_RENDER;
 
     static {
         ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -45,6 +46,7 @@ public class ChangedAddonClientConfiguration {
 
         BUILDER.push("ModelsHandle");
         PLANTOIDS_VISIBILITY = BUILDER.comment("Turn off the Plantoids [Female Chest Features]").define("Turn Off the Plantoids", false);
+        ALPHA_COMPATIBILITY_MODE_RENDER = BUILDER.comment("Turn the Compatibility Mode Render For Alpha Scales, turning this off may add some performance").define("Alpha Compatibility Render Mode", true);
         BUILDER.pop();
 
         SPEC = BUILDER.build();

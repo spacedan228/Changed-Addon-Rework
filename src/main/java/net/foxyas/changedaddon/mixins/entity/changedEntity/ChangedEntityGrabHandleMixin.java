@@ -10,16 +10,19 @@ import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.boss.Behemoth;
 import net.ltxprogrammer.changed.entity.beast.boss.BehemothHand;
 import net.ltxprogrammer.changed.entity.beast.boss.BehemothHead;
 import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -43,6 +46,8 @@ import java.util.List;
 public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity, IAlphaAbleEntity {
 
     @Shadow public abstract TransfurVariant<?> getSelfVariant();
+
+    @Shadow public abstract LivingEntity maybeGetUnderlying();
 
     @Unique
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
@@ -253,11 +258,14 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         self.getEntityData().define(ALPHA_SCALE, 0.75f);
     }
 
-    @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {
-        super.onSyncedDataUpdated(pKey);
-        if (pKey == IS_ALPHA || pKey == ALPHA_SCALE) {
-            this.refreshDimensions();
-        }
-    }
+//    @Override
+//    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {
+//        super.onSyncedDataUpdated(pKey);
+//        ChangedEntity self = (ChangedEntity) (Object) this;
+//        if (pKey == IS_ALPHA || pKey == ALPHA_SCALE) {
+//            this.refreshDimensions();
+//            IAlphaAbleEntity.applyOrRemoveAlphaModifiers(self, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
+//            IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+//        }
+//    }
 }
