@@ -6,6 +6,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
+import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -189,7 +190,7 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         IAbstractChangedEntity entity = self.entity;
         if (!(entity.getEntity() instanceof Player) && grabbedEntity instanceof Player) {
             if (!grabbedEntity.level().isClientSide()) {
-                ChangedAddonMod.PACKET_HANDLER.send(
+                Changed.PACKET_HANDLER.send(
                         PacketDistributor.TRACKING_ENTITY.with(entity::getEntity),
                         new GrabEntityPacket(entity.getEntity(), grabbedEntity, GrabEntityPacket.GrabType.RELEASE)
                 );
