@@ -119,7 +119,7 @@ public interface ICrawlAbleEntity {
                 } else {
                     livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(direction.scale(speed / 4)));
                 }
-                livingEntity.getLookControl().setLookAt(livingEntity.getTarget());
+                livingEntity.getLookControl().setLookAt(livingEntity.getTarget(), 30, 30);
             }
             if (livingEntity.isEyeInFluid(FluidTags.WATER)) {
                 livingEntity.setPose(Pose.SWIMMING);
