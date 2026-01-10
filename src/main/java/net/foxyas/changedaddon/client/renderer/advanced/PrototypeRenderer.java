@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
 
-public class PrototypeRenderer extends AdvancedHumanoidRenderer<PrototypeEntity, PrototypeModel, ArmorLatexMaleWolfModel<PrototypeEntity>> {
+public class PrototypeRenderer extends AdvancedHumanoidRenderer<PrototypeEntity, PrototypeModel> {
     public PrototypeRenderer(EntityRendererProvider.Context context) {
         super(context, new PrototypeModel(context.bakeLayer(PrototypeModel.LAYER_LOCATION)),
                 ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);

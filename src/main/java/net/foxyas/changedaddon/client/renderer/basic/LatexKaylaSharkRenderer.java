@@ -15,7 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexKaylaSharkRenderer extends AdvancedHumanoidRenderer<LatexKaylaSharkEntity, LatexKaylaSharkModel, ArmorLatexFemaleSharkModel<LatexKaylaSharkEntity>> {
+public class LatexKaylaSharkRenderer extends AdvancedHumanoidRenderer<LatexKaylaSharkEntity, LatexKaylaSharkModel> {
 
     public static final ResourceLocation EMISSIVE_TEXTURE = ChangedAddonMod.textureLoc("textures/entities/latex_kayla_shark/latex_kayla_shark_emissive");
     public static final ResourceLocation RESOURCE_LOCATION = ChangedAddonMod.textureLoc("textures/entities/latex_kayla_shark/latex_kayla_shark");

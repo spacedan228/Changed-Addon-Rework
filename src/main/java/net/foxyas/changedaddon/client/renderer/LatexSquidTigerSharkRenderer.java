@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexSquidTigerSharkRenderer extends AdvancedHumanoidRenderer<LatexSquidTigerSharkEntity, LatexSquidTigerSharkModel, ArmorLatexSquidTigerSharkModel<LatexSquidTigerSharkEntity>> {
+public class LatexSquidTigerSharkRenderer extends AdvancedHumanoidRenderer<LatexSquidTigerSharkEntity, LatexSquidTigerSharkModel> {
     public LatexSquidTigerSharkRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexSquidTigerSharkModel(context.bakeLayer(LatexSquidTigerSharkModel.LAYER_LOCATION)),
                 ArmorLatexSquidTigerSharkModel.MODEL_SET, 0.65f);

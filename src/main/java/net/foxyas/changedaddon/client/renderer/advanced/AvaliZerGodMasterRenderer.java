@@ -14,9 +14,9 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class AvaliZerGodMasterRenderer extends AdvancedHumanoidRenderer<AvaliZerGodMasterEntity, AvaliModel<AvaliZerGodMasterEntity>, ArmorAvaliModel<AvaliZerGodMasterEntity>> {
+public class AvaliZerGodMasterRenderer extends AdvancedHumanoidRenderer<AvaliZerGodMasterEntity, AvaliModel<AvaliZerGodMasterEntity>> {
     public AvaliZerGodMasterRenderer(EntityRendererProvider.Context context) {
-        super(context, new AvaliModel<>(context.bakeLayer(AvaliModel.LAYER_LOCATION)), ArmorLatexMaleDragonModel.MODEL_SET, 0.5f);
+        super(context, new AvaliModel<>(context.bakeLayer(AvaliModel.LAYER_LOCATION)), ArmorAvaliModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet()));
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));

@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class Protogen0senia0Renderer extends AdvancedHumanoidRenderer<Protogen0senia0Entity, Protogen0senia0Model, ArmorLatexMaleWolfModel<Protogen0senia0Entity>> {
+public class Protogen0senia0Renderer extends AdvancedHumanoidRenderer<Protogen0senia0Entity, Protogen0senia0Model> {
 
     public Protogen0senia0Renderer(EntityRendererProvider.Context context) {
         super(context, new Protogen0senia0Model(context.bakeLayer(Protogen0senia0Model.LAYER_LOCATION)), ArmorProtogen0senia0.ARMOR, 0.5f);

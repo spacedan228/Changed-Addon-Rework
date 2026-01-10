@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 
-public class PuroKindFemaleRenderer extends AdvancedHumanoidRenderer<PuroKindFemaleEntity, PuroKindFemaleModel, ArmorLatexFemaleWolfModel<PuroKindFemaleEntity>> {
+public class PuroKindFemaleRenderer extends AdvancedHumanoidRenderer<PuroKindFemaleEntity, PuroKindFemaleModel> {
     public PuroKindFemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new PuroKindFemaleModel(context.bakeLayer(PuroKindFemaleModel.LAYER_LOCATION)), ArmorLatexFemaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotMask));

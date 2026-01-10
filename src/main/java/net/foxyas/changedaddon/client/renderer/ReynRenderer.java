@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class ReynRenderer extends AdvancedHumanoidRenderer<ReynEntity, ReynModel, ArmorLatexMaleWolfModel<ReynEntity>> {
+public class ReynRenderer extends AdvancedHumanoidRenderer<ReynEntity, ReynModel> {
     public ReynRenderer(EntityRendererProvider.Context context) {
         super(context, new ReynModel(context.bakeLayer(ReynModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new CustomDisplay<>(this, getModel(), ResourceLocation.parse("changed_addon:textures/entities/reyn_eye_display.png"), ResourceLocation.parse("changed_addon:textures/entities/reyn_display.png"), true));

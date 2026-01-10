@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class MongooseRenderer extends AdvancedHumanoidRenderer<MongooseEntity, MongooseModel, ArmorLatexMaleCatModel<MongooseEntity>> {
+public class MongooseRenderer extends AdvancedHumanoidRenderer<MongooseEntity, MongooseModel> {
     private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/mongoose/mongoose");
 
     public MongooseRenderer(EntityRendererProvider.Context context) {

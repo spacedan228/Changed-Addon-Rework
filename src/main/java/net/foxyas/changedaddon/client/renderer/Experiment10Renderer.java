@@ -21,7 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
 
-public class Experiment10Renderer extends AdvancedHumanoidRenderer<Experiment10Entity, Experiment10Model, ArmorLatexFemaleCatModel<Experiment10Entity>> {
+public class Experiment10Renderer extends AdvancedHumanoidRenderer<Experiment10Entity, Experiment10Model> {
     public Experiment10Renderer(EntityRendererProvider.Context context) {
         super(context, new Experiment10Model(context.bakeLayer(Experiment10Model.LAYER_LOCATION)),
                 ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);

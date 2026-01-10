@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BunyRenderer extends AdvancedHumanoidRenderer<BunyEntity, BunyModel, ArmorLatexMaleWolfModel<BunyEntity>> {
+public class BunyRenderer extends AdvancedHumanoidRenderer<BunyEntity, BunyModel> {
     public BunyRenderer(EntityRendererProvider.Context context) {
         super(context, new BunyModel(context.bakeLayer(BunyModel.LAYER_LOCATION)),
                 ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);

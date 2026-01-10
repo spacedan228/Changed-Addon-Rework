@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class Exp2MaleRenderer extends AdvancedHumanoidRenderer<Exp2MaleEntity, MaleExp2Model, ArmorLatexMaleCatModel<Exp2MaleEntity>> {
+public class Exp2MaleRenderer extends AdvancedHumanoidRenderer<Exp2MaleEntity, MaleExp2Model> {
     public Exp2MaleRenderer(EntityRendererProvider.Context context) {
         super(context, new MaleExp2Model(context.bakeLayer(MaleExp2Model.LAYER_LOCATION)),
                 ArmorLatexMaleCatModel.MODEL_SET, 0.5f);

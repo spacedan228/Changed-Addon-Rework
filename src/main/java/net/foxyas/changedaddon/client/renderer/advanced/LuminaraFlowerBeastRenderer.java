@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LuminaraFlowerBeastRenderer extends AdvancedHumanoidRenderer<LuminaraFlowerBeastEntity, LuminaraFlowerBeastModel, ArmorLuminaraFlowerBeastModel<LuminaraFlowerBeastEntity>> {
+public class LuminaraFlowerBeastRenderer extends AdvancedHumanoidRenderer<LuminaraFlowerBeastEntity, LuminaraFlowerBeastModel> {
 
     public static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/luminara_beast/luminara_flower_beast_base");
     public static final ResourceLocation GLOW_LAYER_TEXTURE = ChangedAddonMod.textureLoc("textures/entities/luminara_beast/luminara_flower_beast_base_layer_glow");

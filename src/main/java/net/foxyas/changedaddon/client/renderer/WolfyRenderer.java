@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class WolfyRenderer extends AdvancedHumanoidRenderer<WolfyEntity, WolfyModel, ArmorLatexMaleWolfModel<WolfyEntity>> {
+public class WolfyRenderer extends AdvancedHumanoidRenderer<WolfyEntity, WolfyModel> {
     public WolfyRenderer(EntityRendererProvider.Context context) {
         super(context, new WolfyModel(context.bakeLayer(WolfyModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotMask));

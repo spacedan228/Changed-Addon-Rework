@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class SnowLeopardPartialRenderer extends AdvancedHumanoidRenderer<SnowLeopardPartialEntity, SnowLeopardPartialModel, ArmorLatexMaleCatModel<SnowLeopardPartialEntity>> {
+public class SnowLeopardPartialRenderer extends AdvancedHumanoidRenderer<SnowLeopardPartialEntity, SnowLeopardPartialModel> {
 
     public SnowLeopardPartialRenderer(EntityRendererProvider.Context context, boolean slim) {
         super(context, SnowLeopardPartialModel.human(context.bakeLayer(getLayerLocation(slim))),

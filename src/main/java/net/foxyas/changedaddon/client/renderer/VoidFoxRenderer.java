@@ -17,7 +17,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class VoidFoxRenderer extends AdvancedHumanoidRenderer<VoidFoxEntity, VoidFoxModel, ArmorLatexMaleWolfModel<VoidFoxEntity>> {
+public class VoidFoxRenderer extends AdvancedHumanoidRenderer<VoidFoxEntity, VoidFoxModel> {
     public VoidFoxRenderer(EntityRendererProvider.Context context) {
         super(context, new VoidFoxModel(context.bakeLayer(VoidFoxModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new CustomEyesLayer<>(this, context.getModelSet(), CustomEyesLayer::scleraColor, CustomEyesLayer.fixedColorGlowing(Color3.WHITE), CustomEyesLayer.fixedColorGlowing(Color3.WHITE), CustomEyesLayer::noRender, CustomEyesLayer::noRender));

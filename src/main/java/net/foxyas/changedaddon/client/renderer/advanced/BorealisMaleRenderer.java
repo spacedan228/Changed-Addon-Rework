@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BorealisMaleRenderer extends AdvancedHumanoidRenderer<BorealisMaleEntity, BorealisMaleModel, ArmorLatexMaleWolfModel<BorealisMaleEntity>> {
+public class BorealisMaleRenderer extends AdvancedHumanoidRenderer<BorealisMaleEntity, BorealisMaleModel> {
     public BorealisMaleRenderer(EntityRendererProvider.Context context) {
         super(context, new BorealisMaleModel(context.bakeLayer(BorealisMaleModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new ProtogenDisplay<>(this, getModel(),

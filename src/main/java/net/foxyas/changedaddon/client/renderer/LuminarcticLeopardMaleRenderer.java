@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LuminarcticLeopardMaleRenderer extends AdvancedHumanoidRenderer<LuminarcticLeopardMaleEntity, LuminarcticLeopardMaleModel, ArmorLatexMaleCatModel<LuminarcticLeopardMaleEntity>> {
+public class LuminarcticLeopardMaleRenderer extends AdvancedHumanoidRenderer<LuminarcticLeopardMaleEntity, LuminarcticLeopardMaleModel> {
     public LuminarcticLeopardMaleRenderer(EntityRendererProvider.Context context) {
         super(context, new LuminarcticLeopardMaleModel(context.bakeLayer(LuminarcticLeopardMaleModel.LAYER_LOCATION)),
                 ArmorLatexMaleCatModel.MODEL_SET, 0.5f);

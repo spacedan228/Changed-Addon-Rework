@@ -62,7 +62,7 @@ public class InformantBlockEntityRenderer implements BlockEntityRenderer<Informa
         ChangedEntity entity = getDisplayEntity(tfVariant);
 
         if (entity == null) return;
-        if (!(Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity) instanceof AdvancedHumanoidRenderer<?, ?, ?> renderer))
+        if (!(Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity) instanceof AdvancedHumanoidRenderer<?, ?> renderer))
             return;
 
         assert Minecraft.getInstance().player != null;

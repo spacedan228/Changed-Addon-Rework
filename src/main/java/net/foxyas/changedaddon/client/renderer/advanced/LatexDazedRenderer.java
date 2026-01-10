@@ -21,11 +21,11 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntity, LatexDazedModel, ArmorLatexDazedModel<DazedLatexEntity>> {
+public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntity, LatexDazedModel> {
 
     public LatexDazedRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexDazedModel(context.bakeLayer(LatexDazedModel.LAYER_LOCATION)),
-                ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
+                ArmorLatexDazedModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotPuddle));
         this.addLayer(new ConditionalCustomEyesLayer<>(this,
                 new CustomEyesLayer<>(this, context.getModelSet(),
