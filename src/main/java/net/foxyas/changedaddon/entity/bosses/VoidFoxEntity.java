@@ -5,8 +5,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
 import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
-import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
-import net.foxyas.changedaddon.entity.api.CrawlFeature;
+import net.foxyas.changedaddon.entity.api.ICrawlFeature;
 import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.ComboAbilityGoal;
@@ -76,7 +75,7 @@ import org.jetbrains.annotations.Nullable;
 import java.awt.*;
 import java.util.Objects;
 
-public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable, IDynamicPawColor {
+public class VoidFoxEntity extends ChangedEntity implements ICrawlFeature, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable, IDynamicPawColor {
     public static final int MAX_1_COOLDOWN = 120;
     public static final int MAX_2_COOLDOWN = 120;
     private static final int MAX_COOLDOWN = 120;

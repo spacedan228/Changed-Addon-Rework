@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.entity.bosses;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.ICrawlFeature;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.Exp9AttacksHandle;
 import net.foxyas.changedaddon.entity.goals.exp9.*;
@@ -76,7 +77,7 @@ import java.util.UUID;
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment009BossEntity extends ChangedEntity implements CustomPatReaction, PowderSnowWalkable, IHasBossMusic {
+public class Experiment009BossEntity extends ChangedEntity implements CustomPatReaction, PowderSnowWalkable, IHasBossMusic, ICrawlFeature {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.BOOLEAN);
@@ -567,19 +568,11 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 } else {
                     applyStatModifier(this, 1.5);
                 }
-            /*
-            Color[] colors = new Color[2];
-            colors[0] = new Color(70, 199, 255);
-            colors[1] = new Color(13, 160, 208);
-            ParticleOptions dustColor = getParticleOptions(colors[0], colors[1]);
-            PlayerUtilProcedure.ParticlesUtil.sendParticles(this.getLevel(), dustColor, this.position().add(0, 0.5, 0), 0.35f, 0.70f, 0.35f, 5, 0);
-            */
             } else {
                 removeStatModifiers();
             }
-            updateSwimmingMovement();
             setSpeed(this);
-            crawlingSystem(this.getTarget());
+            this.crawlingSystem(0.025f);
         }
     }
 
@@ -681,71 +674,6 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             if (entity.getAttribute(Attributes.MOVEMENT_SPEED).hasModifier(speedModifier)) {
                 entity.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(speedModifier);
             }
-        }
-    }
-
-    public void crawlingSystem(LivingEntity target) {
-        if (target != null) {
-            setCrawlingPoseIfNeeded(target);
-            crawlToTarget(target);
-        } else {
-            BlockPos pPos = new BlockPos(this.getX(), this.getEyeY(), this.getZ());
-            BlockState blockState = this.level.getBlockState(pPos.above());
-
-            Pose currentPose = this.getPose();
-            Pose safePose = currentPose;
-
-            if (!this.canEnterPose(currentPose)) {
-                if (this.canEnterPose(Pose.STANDING)) {
-                    safePose = Pose.STANDING;
-                } else if (this.canEnterPose(Pose.CROUCHING)) {
-                    safePose = Pose.CROUCHING;
-                } else if (this.canEnterPose(Pose.SWIMMING)) {
-                    safePose = Pose.SWIMMING;
-                }
-            }
-
-            if (safePose != currentPose) {
-                this.setPose(safePose);
-                //this.refreshDimensions();
-            }
-        }
-    }
-
-    public void setCrawlingPoseIfNeeded(LivingEntity target) {
-        if (target.getPose() == Pose.SWIMMING && this.getPose() != Pose.SWIMMING) {
-            if (target.getY() < this.getEyeY() && !target.level.getBlockState(new BlockPos(target.getX(), target.getEyeY(), target.getZ()).above()).isAir()) {
-                this.setPose(Pose.SWIMMING);
-            }
-        } else {
-            if (!this.isSwimming() && this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir()) {
-                this.setPose(Pose.STANDING);
-            }
-        }
-    }
-
-    public void crawlToTarget(LivingEntity target) {
-        if (target.getPose() == Pose.SWIMMING && this.getPose() == Pose.SWIMMING) {
-            Vec3 direction = target.position().subtract(this.position()).normalize();
-            this.setDeltaMovement(this.getDeltaMovement().add(direction.scale(0.05)));
-        }
-    }
-
-    public void updateSwimmingMovement() {
-        if (this.isInWater()) {
-            if (this.getTarget() != null) {
-                Vec3 direction = this.getTarget().position().subtract(this.position()).normalize();
-                this.setDeltaMovement(this.getDeltaMovement().add(direction.scale(0.07)));
-            }
-            if (this.isEyeInFluid(FluidTags.WATER)) {
-                this.setPose(Pose.SWIMMING);
-                this.setSwimming(true);
-            } else {
-                this.setPose(Pose.STANDING);
-                this.setSwimming(false);
-            }
-        } else if (this.getPose() == Pose.SWIMMING && !this.isInWater() && (this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir() || this.canEnterPose(Pose.STANDING))) {
-            this.setPose(Pose.STANDING);
         }
     }
 

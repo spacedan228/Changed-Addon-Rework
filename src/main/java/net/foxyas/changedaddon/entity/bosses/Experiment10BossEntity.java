@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.ICrawlFeature;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
@@ -76,7 +77,7 @@ import java.util.UUID;
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, CustomPatReaction, PowderSnowWalkable, IHasBossMusic {
+public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, CustomPatReaction, PowderSnowWalkable, IHasBossMusic, ICrawlFeature {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment10BossEntity.class, EntityDataSerializers.BOOLEAN);
@@ -386,12 +387,11 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     @Override
     public void baseTick() {
         super.baseTick();
-        updateSwimmingMovement();
         SetDefense(this);
         SetAttack(this);
         SetSpeed(this);
         TpEntity(this);
-        crawlSystem(this.getTarget());
+        this.crawlingSystem(0.025f);
         thisBurstAttack();
     }
 
@@ -399,82 +399,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         if (TpCooldown <= 0) {
             BossAbilitiesHandle.BurstAttack(this);
             this.TpCooldown = 50;
-        }
-    }
-
-
-    public void crawlSystem(LivingEntity target) {
-        if (target != null) {
-            setCrawlingPoseIfNeeded(target);
-            crawlToTarget(target);
-        } else {
-            Pose currentPose = this.getPose();
-            Pose safePose = currentPose;
-
-            if (!this.canEnterPose(currentPose)) {
-                if (this.canEnterPose(Pose.STANDING)) {
-                    safePose = Pose.STANDING;
-                } else if (this.canEnterPose(Pose.CROUCHING)) {
-                    safePose = Pose.CROUCHING;
-                } else if (this.canEnterPose(Pose.SWIMMING)) {
-                    safePose = Pose.SWIMMING;
-                }
-            }
-
-            if (safePose != currentPose) {
-                this.setPose(safePose);
-                //this.refreshDimensions();
-            }
-        }
-    }
-
-    public void setCrawlingPoseIfNeeded(LivingEntity target) {
-        if (target.getPose() == Pose.SWIMMING && !(this.getPose() == Pose.SWIMMING)) {
-            if (target.getY() < getEyeY() && !(target.level.getBlockState(new BlockPos(target.getX(), target.getEyeY(), target.getZ()).above()).isAir())) {
-                this.setPose(Pose.SWIMMING);
-            }
-        } else {
-            if (!this.isSwimming() && this.level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir()) {
-                this.setPose(Pose.STANDING);
-            }
-        }
-    }
-
-    public void crawlToTarget(LivingEntity target) {
-        if (target.getPose() == Pose.SWIMMING && this.getPose() == Pose.SWIMMING) {
-            Vec3 delta = target.position().subtract(this.position());
-            double distance = delta.length();
-
-            if (distance > 1.0) {
-                Vec3 motion = delta.normalize().scale(0.00015);
-                this.setDeltaMovement(this.getDeltaMovement().add(motion));
-            }
-        }
-    }
-
-
-    public void updateSwimmingMovement() {
-        if (!this.isInWater()) {
-            if (this.getPose() == Pose.SWIMMING && level.getBlockState(new BlockPos(this.getX(), this.getEyeY(), this.getZ()).above()).isAir()) {
-                this.setPose(Pose.STANDING);
-                this.setSwimming(false);
-            }
-            return;
-        }
-
-        LivingEntity target = this.getTarget();
-        if (target != null) {
-            Vec3 delta = target.position().subtract(this.position());
-            double distance = delta.length();
-            if (distance > 0) {
-                Vec3 motion = delta.normalize().scale(0.07);
-                this.setDeltaMovement(this.getDeltaMovement().add(motion));
-            }
-        }
-
-        if (this.isEyeInFluid(FluidTags.WATER)) {
-            this.setPose(Pose.SWIMMING);
-            this.setSwimming(true);
         }
     }
 

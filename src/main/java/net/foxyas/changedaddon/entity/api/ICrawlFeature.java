@@ -3,13 +3,12 @@ package net.foxyas.changedaddon.entity.api;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-public interface CrawlFeature {
+public interface ICrawlFeature {
 
     default void crawlingSystem(ChangedEntity livingEntity, LivingEntity target, float swimSpeed) {
         updateSwimmingMovement(livingEntity, swimSpeed);
@@ -50,7 +49,43 @@ public interface CrawlFeature {
 
 
     default void crawlingSystem(ChangedEntity livingEntity, LivingEntity target) {
-        crawlingSystem(livingEntity, target, 0.07f);
+        crawlingSystem(livingEntity, target, 0.015f);
+    }
+
+    default void crawlingSystem() {
+        if (this instanceof ChangedEntity changedEntity) {
+            crawlingSystem(changedEntity, changedEntity.getTarget(), 0.015f);
+        }
+    }
+
+    default void crawlingSystem(LivingEntity target) {
+        if (this instanceof ChangedEntity changedEntity) {
+            crawlingSystem(changedEntity, target, 0.015f);
+        }
+    }
+
+    default void crawlingSystem(LivingEntity target, float speed) {
+        if (this instanceof ChangedEntity changedEntity) {
+            crawlingSystem(changedEntity, target, speed);
+        }
+    }
+
+    default void crawlingSystem(float speed) {
+        if (this instanceof ChangedEntity changedEntity) {
+            crawlingSystem(changedEntity, changedEntity.getTarget(), speed);
+        }
+    }
+
+    default void onlyCrawlingSystem() {
+        if (this instanceof ChangedEntity changedEntity) {
+            OnlyCrawlingSystem(changedEntity, changedEntity.getTarget());
+        }
+    }
+
+    default void OnlyCrawlingSystem(LivingEntity target) {
+        if (this instanceof ChangedEntity changedEntity) {
+            OnlyCrawlingSystem(changedEntity, target);
+        }
     }
 
     default void OnlyCrawlingSystem(LivingEntity livingEntity, LivingEntity target) {
