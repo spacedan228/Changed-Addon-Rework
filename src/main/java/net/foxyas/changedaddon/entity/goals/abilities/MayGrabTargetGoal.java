@@ -11,8 +11,11 @@ import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.network.PacketDistributor;
 
 import java.util.EnumSet;
@@ -45,14 +48,18 @@ public class MayGrabTargetGoal extends Goal {
         GrabEntityAbilityInstance grabAbilityInstance = grabber.getGrabAbilityInstance();
         LivingEntity target = grabber.asMob().getTarget();
         if (target == null) return false;
+        if (target instanceof Player player && ProcessTransfur.isPlayerTransfurred(player)) return false;
+
         double reachSqr = grabber.asMob().getMeleeAttackRangeSqr(target) * 0.7f; //Closer than a normal punch
+        EntityDimensions dimensions = living.getDimensions(living.getPose()).scale(1.25f);
+        AABB grabReach = dimensions.makeBoundingBox(living.position());
         if (grabAbilityInstance == null) return false;
         if (GrabEntityAbility.getGrabber(target) != null) return false;
         if (grabber.getGrabCooldown() > 0) return false;
         if (!target.getType().is(ChangedTags.EntityTypes.HUMANOIDS))
             return false;
 
-        return target.distanceToSqr(grabber.asMob()) <= reachSqr && grabAbilityInstance.grabbedEntity == null;
+        return (grabReach.contains(living.position()) || target.distanceToSqr(grabber.asMob()) <= reachSqr) && grabAbilityInstance.grabbedEntity == null;
     }
 
     @Override
