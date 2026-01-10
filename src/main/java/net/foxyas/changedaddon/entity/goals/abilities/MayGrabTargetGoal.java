@@ -58,7 +58,7 @@ public class MayGrabTargetGoal extends Goal {
         if (!target.getType().is(ChangedTags.EntityTypes.HUMANOIDS))
             return false;
 
-        return (grabReach.contains(living.position()) || target.distanceToSqr(grabber.asMob()) <= reachSqr) && grabAbilityInstance.grabbedEntity == null;
+        return (grabReach.contains(target.position()) || target.distanceToSqr(grabber.asMob()) <= reachSqr) && grabAbilityInstance.grabbedEntity == null;
     }
 
     @Override
