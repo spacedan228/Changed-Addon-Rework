@@ -92,6 +92,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
         tag(ChangedAddonTags.EntityTypes.HAS_CLAWS).add(VOID_FOX.get());
         //noinspection unchecked
         tag(ChangedAddonTags.EntityTypes.CANT_SPAWN_AS_ALPHA_ENTITY).add(DARK_LATEX_WOLF_PUP.get(), PURE_WHITE_LATEX_WOLF_PUP.get(), GAS_WOLF_PUP.get()).addOptionalTags(ChangedTags.EntityTypes.PUDDING, ChangedTags.EntityTypes.PARTIAL_LATEX);
+        tag(ChangedAddonTags.EntityTypes.CANT_USE_GRAB);
 
         tag(ChangedTags.EntityTypes.CAN_WEAR_EXOSKELETON).add(canUseExoskeleton().toArray(new EntityType[0]));
     }

@@ -11,11 +11,15 @@ import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.beast.boss.BehemothHead;
 import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
+import net.ltxprogrammer.changed.init.ChangedEntities;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -49,9 +53,11 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Inject(at = @At("TAIL"), method = "<init>", cancellable = true)
     private void initHook(EntityType<? extends Monster> type, Level level, CallbackInfo ci) {
-        List<? extends AbstractAbility<?>> listOfAbilities = this.getSelfVariant().abilities.stream().map((entityTypeFunction -> entityTypeFunction.apply(type))).toList();
-        if (listOfAbilities.contains(ChangedAbilities.GRAB_ENTITY_ABILITY.get())) {
-            this.ableToGrab = level.getRandom().nextFloat() <= 0.15f; // Just for fail-safe
+        if (this.getSelfVariant() != null) {
+            List<? extends AbstractAbility<?>> listOfAbilities = this.getSelfVariant().abilities.stream().map((entityTypeFunction -> entityTypeFunction.apply(type))).toList();
+            if (listOfAbilities.contains(ChangedAbilities.GRAB_ENTITY_ABILITY.get())) {
+                this.ableToGrab = level.getRandom().nextFloat() <= 0.15f; // Just for fail-safe
+            }
         }
         if (canEntityGrab(type, level)) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
@@ -105,6 +111,21 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         }
     }
 
+    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+    private void tickHook(CallbackInfo ci) {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        if (self instanceof BehemothHead behemothHead) {
+            if (behemothHead instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+                if (behemothHead.rightHand instanceof IAlphaAbleEntity alphaAbleEntity) {
+                    alphaAbleEntity.setAlpha(iAlphaAbleEntity.isAlpha());
+                }
+                if (behemothHead.leftHand instanceof IAlphaAbleEntity alphaAbleEntity) {
+                    alphaAbleEntity.setAlpha(iAlphaAbleEntity.isAlpha());
+                }
+            }
+        }
+    }
+
     @Override
     public int getGrabCooldown() {
         return grabCooldown;
@@ -142,7 +163,11 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     }
 
     @Override
-    public boolean isAbleToGrab() {
+    public boolean isAbleToGrab() {EntityType<?> type = this.getType();
+        if (type == ChangedEntities.BEHEMOTH_HEAD.get() || type == ChangedEntities.BEHEMOTH_HAND_LEFT.get() || type == ChangedEntities.BEHEMOTH_HAND_RIGHT.get()) {
+            this.ableToGrab = level.getDifficulty().equals(Difficulty.HARD);
+        }
+
         return ableToGrab || isAlpha();
     }
 
