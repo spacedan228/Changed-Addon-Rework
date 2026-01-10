@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LogicHandler.class)
+@Mixin(value = LogicHandler.class, remap = false)
 @RequiredMods("firstpersonmod")
 public abstract class LogicHandleMixin {
 
@@ -31,9 +31,9 @@ public abstract class LogicHandleMixin {
             at = @At("TAIL")
     )
     private void changedaddon$reuseBodyOffset(Entity entity, float delta, CallbackInfo ci) {
-        if (entity != client.player) return;
+        if (entity != client.getCameraEntity()) return;
         if (!isSnep(client.player)) return;
-        this.offset = this.offset.multiply(0.8f, 0.8f, 0.8f);
+        this.offset = this.offset.multiply(1.75f, 1f, 1.75f);
     }
 
 
