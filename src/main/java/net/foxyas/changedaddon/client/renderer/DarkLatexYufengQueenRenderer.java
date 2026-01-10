@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class DarkLatexYufengQueenRenderer extends AdvancedHumanoidRenderer<DarkLatexYufengQueenEntity, DarkLatexYufengQueenModel, ArmorLatexFemaleDragonAltTailModel<DarkLatexYufengQueenEntity>> {
+public class DarkLatexYufengQueenRenderer extends AdvancedHumanoidRenderer<DarkLatexYufengQueenEntity, DarkLatexYufengQueenModel> {
 
     private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/dark_latex_yufeng_queen");
 
