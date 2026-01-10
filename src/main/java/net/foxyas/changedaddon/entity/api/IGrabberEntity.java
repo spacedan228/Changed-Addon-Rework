@@ -157,6 +157,9 @@ public interface IGrabberEntity {
     boolean isAbleToGrab();
 
     default boolean canEntityGrab(EntityType<?> type, Level level) {
+        if (type.is(ChangedAddonTags.EntityTypes.CANT_USE_GRAB)) {
+            return false;
+        }
         if (this instanceof ChangedEntity changedEntity) {
             if (changedEntity instanceof IAlphaAbleEntity alphaAbleEntity) return alphaAbleEntity.isAlpha();
         }

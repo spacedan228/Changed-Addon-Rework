@@ -28,7 +28,7 @@ public class InventoryScreenMixin {
     )
     private static void changedaddon$modifyPoseStack(PoseStack instance, Quaternion pQuaternion, Operation<Void> original, @Local(argsOnly = true) LivingEntity livingEntity) {
         original.call(instance, pQuaternion);
-        if (resolveChangedEntity(livingEntity) instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+        if (resolveChangedEntity(livingEntity) instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
             float reduction = (1 / iAlphaAbleEntity.alphaScaleForRender());
             instance.scale(reduction, reduction, reduction);
         }
