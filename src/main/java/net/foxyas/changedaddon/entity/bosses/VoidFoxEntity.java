@@ -5,7 +5,9 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.client.renderer.layers.features.SonarOutlineLayer;
 import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
+import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.entity.api.CrawlFeature;
+import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.ComboAbilityGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.ComboBurstGoal;
@@ -34,6 +36,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -72,10 +75,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.Objects;
 import java.util.Random;
 
-public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable {
+public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable, IDynamicPawColor {
     public static final int MAX_1_COOLDOWN = 120;
     public static final int MAX_2_COOLDOWN = 120;
     private static final int MAX_COOLDOWN = 120;
@@ -93,6 +97,21 @@ public class VoidFoxEntity extends ChangedEntity implements CrawlFeature, IHasBo
 
     public VoidFoxEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.VOID_FOX.get(), world);
+    }
+
+    @Override
+    public IDynamicPawColor.PawStyle getPawStyle() {
+        return IDynamicPawColor.PawStyle.FERAL;
+    }
+
+    @Override
+    public Color getPawBeansColor() {
+        return Color.WHITE;
+    }
+
+    @Override
+    public Color getPawColor() {
+        return Color.BLACK;
     }
 
     public VoidFoxEntity(EntityType<VoidFoxEntity> type, Level world) {

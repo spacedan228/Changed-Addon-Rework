@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.process.DEBUG;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -19,6 +19,9 @@ public interface IAlphaAbleEntity {
 
     default float chanceToSpawnAsAlpha() {
         if (this instanceof ChangedEntity changedEntity) {
+            boolean cantSpawn = changedEntity.getType().is(ChangedAddonTags.EntityTypes.CANT_SPAWN_AS_ALPHA_ENTITY);
+            if (cantSpawn) return 0f;
+
             Level level = changedEntity.level;
             Difficulty difficulty = level.getDifficulty();
             if (level.getLevelData().isHardcore()) return ChangedAddonServerConfiguration.ALPHA_SPAWN_HARDCORE.get().floatValue();
@@ -34,16 +37,21 @@ public interface IAlphaAbleEntity {
         return 0.025f; //Fail Safe
     }
 
+    default float alphaCameraOffset() {
+        if (isAlpha()) return alphaScaleForRender() / 2f;
+        return 0;
+    }
+
     default float alphaScaleForRender() {
         if (this instanceof ChangedEntity changedEntity) {
-            return 1.75f + DEBUG.HeadPosY; // For future changes
+            return 1.75f; // For future changes
         }
         return 1f;
     }
 
     default float alphaAdditionalScale() {
         if (this instanceof ChangedEntity changedEntity) {
-            return 0.75f + DEBUG.HeadPosZ; // For future changes
+            return 0.75f; // For future changes
         }
         return 0f;
     }

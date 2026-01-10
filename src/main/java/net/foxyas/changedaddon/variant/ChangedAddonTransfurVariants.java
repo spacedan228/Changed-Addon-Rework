@@ -281,7 +281,6 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<VoidFoxEntity>> VOID_FOX = register("form_void_fox",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.VOID_FOX)
                     .addAbility(ChangedAddonAbilities.SONAR)
-                    .addAbility(ChangedAddonAbilities.CLAWS)
                     .jumpStrength(1.1f)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)

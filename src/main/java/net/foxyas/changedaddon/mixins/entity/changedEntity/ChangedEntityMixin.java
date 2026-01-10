@@ -69,7 +69,6 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         if (hasEffect(ChangedAddonMobEffects.PACIFIED.get())) return true;
         if (this.isPacified()) return true;
 
-
         Optional<IAbstractChangedEntity> grabberSafe = GrabEntityAbility.getGrabberSafe(target);
         return grabberSafe.isPresent() && grabberSafe.get() instanceof IGrabberEntity changedEntity;
     }

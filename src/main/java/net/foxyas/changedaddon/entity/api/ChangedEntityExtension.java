@@ -42,7 +42,9 @@ public interface ChangedEntityExtension {
     default void setPacified(boolean value) {
     }
 
-    boolean isNeutralTo(LivingEntity target);
+    default boolean isNeutralTo(LivingEntity target) {
+        return false;
+    }
 
     default List<Item> getAcceptedSpawnClothes(ChangedEntity changedEntity) {
         List<Item> acceptedSpawnClothes = new ArrayList<>();

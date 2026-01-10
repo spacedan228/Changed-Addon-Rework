@@ -129,6 +129,7 @@ public interface IGrabberEntity {
         if (!(this instanceof LivingEntity living)) return false;
         GrabEntityAbilityInstance grabAbilityInstance = getGrabAbilityInstance();
         if (grabAbilityInstance == null) return false;
+        if (living instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) return true;
 
         return living.level.getNearbyEntities(
                 LivingEntity.class,
@@ -157,6 +158,12 @@ public interface IGrabberEntity {
     boolean isAbleToGrab();
 
     default boolean canEntityGrab(EntityType<?> type, Level level) {
+        if (type.is(ChangedAddonTags.EntityTypes.CANT_USE_GRAB)) {
+            return false;
+        }
+        if (this instanceof ChangedEntity changedEntity) {
+            if (changedEntity instanceof IAlphaAbleEntity alphaAbleEntity) return alphaAbleEntity.isAlpha();
+        }
         return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab();
     }
 }
