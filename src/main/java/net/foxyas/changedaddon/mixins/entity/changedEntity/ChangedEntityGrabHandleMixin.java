@@ -150,6 +150,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
             this.saveGrabAbilityInTag(tag);
         }
         tag.putBoolean("isAlpha", isAlpha());
+        tag.putFloat("alphaScale", alphaAdditionalScale());
     }
 
     @Override
@@ -159,6 +160,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
             this.readGrabAbilityInTag(tag);
         }
         if (tag.contains("isAlpha")) setAlpha(tag.getBoolean("isAlpha"));
+        if (tag.contains("alphaScale")) setAlphaScale(tag.getFloat("alphaScale"));
     }
 
     @Override

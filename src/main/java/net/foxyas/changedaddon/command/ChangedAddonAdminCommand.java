@@ -65,7 +65,7 @@ public class ChangedAddonAdminCommand {
                         )
                         .then(Commands.literal("setEntityAlphaGeneScale")
                                 .then(Commands.argument("targets", EntityArgument.entities())
-                                        .then(Commands.argument("scale", BoolArgumentType.bool())
+                                        .then(Commands.argument("scale", FloatArgumentType.floatArg())
                                                 .executes(ChangedAddonAdminCommand::setEntityAlphaGeneScale)
                                         )
                                 )
@@ -462,7 +462,7 @@ public class ChangedAddonAdminCommand {
         entity = resolveChangedEntity(entity);
 
         if (entity instanceof IAlphaAbleEntity alpha) {
-            boolean value = alpha.isAlpha();
+            float value = alpha.alphaAdditionalScale();
 
             context.getSource().sendSuccess(
                     () -> Component.translatable(
@@ -472,7 +472,7 @@ public class ChangedAddonAdminCommand {
                     false
             );
 
-            return value ? 1 : 0;
+            return (int) value;
         }
 
         context.getSource().sendFailure(
