@@ -8,7 +8,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-public interface ICrawlFeature {
+public interface ICrawlAbleEntity {
 
     default void crawlingSystem(ChangedEntity livingEntity, LivingEntity target, float swimSpeed) {
         updateSwimmingMovement(livingEntity, swimSpeed);
