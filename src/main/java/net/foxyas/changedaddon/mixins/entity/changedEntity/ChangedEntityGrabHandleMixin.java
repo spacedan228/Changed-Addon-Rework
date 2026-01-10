@@ -253,11 +253,14 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         self.getEntityData().define(ALPHA_SCALE, 0.75f);
     }
 
-    @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {
-        super.onSyncedDataUpdated(pKey);
-        if (pKey == IS_ALPHA || pKey == ALPHA_SCALE) {
-            this.refreshDimensions();
-        }
-    }
+    //    @Override
+//    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {
+//        super.onSyncedDataUpdated(pKey);
+//        ChangedEntity self = (ChangedEntity) (Object) this;
+//        if (pKey == IS_ALPHA || pKey == ALPHA_SCALE) {
+//            this.refreshDimensions();
+//            IAlphaAbleEntity.applyOrRemoveAlphaModifiers(self, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
+//            IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+//        }
+//    }
 }
