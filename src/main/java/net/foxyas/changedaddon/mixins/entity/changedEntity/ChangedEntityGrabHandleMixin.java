@@ -10,12 +10,14 @@ import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.boss.Behemoth;
 import net.ltxprogrammer.changed.entity.beast.boss.BehemothHand;
 import net.ltxprogrammer.changed.entity.beast.boss.BehemothHead;
 import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.minecraft.nbt.CompoundTag;
@@ -213,6 +215,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (this.isAlpha() != alpha) {
             self.getEntityData().set(IS_ALPHA, alpha);
             this.refreshDimensions();
+            refreshAttributes(self);
         }
     }
 
@@ -228,6 +231,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (this.alphaAdditionalScale() != scale) {
             self.getEntityData().set(ALPHA_SCALE, scale);
             this.refreshDimensions();
+            refreshAttributes(self);
         }
     }
 

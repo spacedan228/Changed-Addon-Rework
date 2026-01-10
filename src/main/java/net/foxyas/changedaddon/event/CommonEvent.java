@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock;
 import net.foxyas.changedaddon.command.*;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -49,6 +51,14 @@ public class CommonEvent {
         BlockState blockState = level.getBlockState(blockPos);
         if (blockState.getBlock() instanceof ConditionalLatexCoverableBlock conditionalLatexCoverableBlock) {
             event.setCanceled(!conditionalLatexCoverableBlock.canBeSpread(level, blockState, blockPos));
+        }
+    }
+
+    @SubscribeEvent
+    public static void modifyExperience(LivingExperienceDropEvent experienceDropEvent) {
+        int experience = experienceDropEvent.getDroppedExperience();
+        if (experienceDropEvent.getEntity() instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
+            experienceDropEvent.setDroppedExperience((int) (experience * iAlphaAbleEntity.alphaAdditionalScale()));
         }
     }
 

@@ -2,7 +2,9 @@ package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -42,7 +44,7 @@ public interface IAlphaAbleEntity {
             return;
         }
 
-        float normalized = 1 - (alphaScale / 0.75f);
+        float normalized = alphaScale / 0.75f;
 
         apply(entity, Attributes.MAX_HEALTH, MAX_HEALTH, "Alpha Max Health", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
@@ -96,6 +98,12 @@ public interface IAlphaAbleEntity {
     boolean isAlpha();
 
     void setAlphaScale(float scale);
+
+    default void refreshAttributes(ChangedEntity self) {
+        SynchedEntityData entityData = self.getEntityData();
+        IAlphaAbleEntity.applyOrRemoveAlphaModifiers(self, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
+        IAbstractChangedEntity.forEitherSafe(self.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+    }
 
     default float chanceToSpawnAsAlpha() {
         if (this instanceof ChangedEntity changedEntity) {
