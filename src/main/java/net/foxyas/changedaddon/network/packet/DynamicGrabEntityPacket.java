@@ -12,6 +12,7 @@ import net.ltxprogrammer.changed.network.packet.ChangedPacket;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.UniversalDist;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -72,11 +73,36 @@ public class DynamicGrabEntityPacket implements ChangedPacket {
             if (!target.getType().is(ChangedTags.EntityTypes.HUMANOIDS) && !(target instanceof Player))
                 return;
             context.setPacketHandled(true);
-            if (sender.getId() == sourceEntity) {
-                if (ProcessTransfur.isPlayerNotLatex(sender))
-                    return; // Invalid, sender has to be latex
-            } else {
-                return; // Invalid, sender cannot dictate other entities grab action
+            Entity sourceEntity = level.getEntity(this.sourceEntity);
+            if (sourceEntity instanceof Player) {
+                if (sender.getId() == this.sourceEntity) {
+                    if (ProcessTransfur.isPlayerNotLatex(sender))
+                        return; // Invalid, sender has to be latex
+                } else {
+                    return; // Invalid, sender cannot dictate other entities grab action
+                }
+            } else if (sourceEntity instanceof LivingEntity livingSource) {
+                IAbstractChangedEntity latexSource = IAbstractChangedEntity.forEither(livingSource);
+                if (latexSource != null) {
+                    latexSource.getAbilityInstanceSafe(ChangedAbilities.GRAB_ENTITY_ABILITY.get()).ifPresent(ability -> {
+                        switch (type) {
+                            case RELEASE -> ability.releaseEntity();
+                            case SUIT -> {
+                                if (livingTarget instanceof Player && !Changed.config.server.isGrabEnabled.get())
+                                    return;
+
+                                ability.suitEntity(livingTarget);
+                            }
+                            case ARMS -> {
+                                if (livingTarget instanceof Player && !Changed.config.server.isGrabEnabled.get())
+                                    return;
+
+                                ability.grabEntity(livingTarget);
+                            }
+                        }
+                    });
+                    return;
+                }
             }
 
             ProcessTransfur.ifPlayerTransfurred(sender, variant -> {
