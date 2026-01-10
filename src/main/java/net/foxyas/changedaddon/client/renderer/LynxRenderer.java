@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LynxRenderer extends AdvancedHumanoidRenderer<LynxEntity, LynxModel, ArmorLatexMaleCatModel<LynxEntity>> {
+public class LynxRenderer extends AdvancedHumanoidRenderer<LynxEntity, LynxModel> {
     public LynxRenderer(EntityRendererProvider.Context context) {
         super(context, new LynxModel(context.bakeLayer(LynxModel.LAYER_LOCATION)),
                 ArmorLatexMaleCatModel.MODEL_SET, 0.5f);

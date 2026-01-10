@@ -11,12 +11,13 @@ import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.beast.boss.Behemoth;
+import net.ltxprogrammer.changed.entity.beast.boss.BehemothHand;
 import net.ltxprogrammer.changed.entity.beast.boss.BehemothHead;
 import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedEntities;
-import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.Difficulty;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -43,8 +45,11 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Shadow
     public abstract TransfurVariant<?> getSelfVariant();
 
+    @Unique
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
+    @Unique
     protected int grabCooldown = 0;
+    @Unique
     protected boolean ableToGrab;
 
     protected ChangedEntityGrabHandleMixin(EntityType<? extends Monster> type, Level pLevel) {
@@ -111,7 +116,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         }
     }
 
-    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "tick", at = @At("HEAD"), remap = true, cancellable = true)
     private void tickHook(CallbackInfo ci) {
         ChangedEntity self = (ChangedEntity) (Object) this;
         if (self instanceof BehemothHead behemothHead) {
@@ -137,6 +142,28 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     }
 
     @Override
+    public int getGrabMaxCooldown() {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+
+        if (self instanceof Behemoth behemoth) {
+            int appliedCooldown = 200;
+            if (behemoth instanceof BehemothHand hand && (IAlphaAbleEntity.isEntityAlpha(hand.head) || IAlphaAbleEntity.isEntityAlpha(hand))) {
+                return (int) (appliedCooldown * 1.5f);
+            }
+            if (behemoth instanceof BehemothHead head && IAlphaAbleEntity.isEntityAlpha(head)) {
+                return (int) (appliedCooldown * 1.5f);
+            }
+            return appliedCooldown;
+        }
+
+        if (IAlphaAbleEntity.isEntityAlpha(self)) {
+            return (int) (120 * 1.5);
+        }
+
+        return 120;
+    }
+
+    @Override
     protected void actuallyHurt(@NotNull DamageSource pDamageSource, float pDamageAmount) {
         if (canEntityGrab(this.getType(), level)) {
             mayDropGrabbedEntity(pDamageSource, pDamageAmount);
@@ -151,6 +178,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
             this.saveGrabAbilityInTag(tag);
         }
         tag.putBoolean("isAlpha", isAlpha());
+        tag.putFloat("alphaScale", alphaAdditionalScale());
     }
 
     @Override
@@ -160,6 +188,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
             this.readGrabAbilityInTag(tag);
         }
         if (tag.contains("isAlpha")) setAlpha(tag.getBoolean("isAlpha"));
+        if (tag.contains("alphaScale")) setAlphaScale(tag.getFloat("alphaScale"));
     }
 
     @Override
@@ -193,29 +222,41 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         return self.getEntityData().get(IS_ALPHA);
     }
 
+    @Override
+    public void setAlphaScale(float scale) {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        if (this.alphaAdditionalScale() != scale) {
+            self.getEntityData().set(ALPHA_SCALE, scale);
+            this.refreshDimensions();
+        }
+    }
+
     @Inject(method = "savePlayerVariantData", at = @At("RETURN"), cancellable = true)
     private void savePlayerVariantDataHook(CallbackInfoReturnable<CompoundTag> cir) {
         CompoundTag tag = cir.getReturnValue();
         if (tag == null) tag = new CompoundTag();//temporary fix so it doesnt crash
         tag.putBoolean("isAlpha", isAlpha());
+        tag.putFloat("alphaScale", alphaAdditionalScale());
     }
 
     @Inject(method = "readPlayerVariantData", at = @At("RETURN"), cancellable = true)
     private void readPlayerVariantDataHook(CompoundTag tag, CallbackInfo ci) {
         if (tag == null) return;
         if (tag.contains("isAlpha")) setAlpha(tag.getBoolean("isAlpha"));
+        if (tag.contains("alphaScale")) setAlphaScale(tag.getFloat("alphaScale"));
     }
 
     @Inject(method = "defineSynchedData", at = @At("HEAD"), remap = true, cancellable = true)
     private void defineSynchedDataHook(CallbackInfo ci) {
         ChangedEntity self = (ChangedEntity) (Object) this;
         self.getEntityData().define(IS_ALPHA, false);
+        self.getEntityData().define(ALPHA_SCALE, 0.75f);
     }
 
     @Override
     public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {
         super.onSyncedDataUpdated(pKey);
-        if (pKey == IS_ALPHA) {
+        if (pKey == IS_ALPHA || pKey == ALPHA_SCALE) {
             this.refreshDimensions();
         }
     }

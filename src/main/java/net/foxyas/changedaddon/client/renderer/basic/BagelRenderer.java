@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BagelRenderer extends AdvancedHumanoidRenderer<BagelEntity, BagelModel, ArmorLatexMaleWolfModel<BagelEntity>> {
+public class BagelRenderer extends AdvancedHumanoidRenderer<BagelEntity, BagelModel> {
     public BagelRenderer(EntityRendererProvider.Context context) {
         super(context, new BagelModel(context.bakeLayer(BagelModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));

@@ -22,7 +22,7 @@ import java.util.NoSuchElementException;
 public abstract class AdvancedHumanoidRendererMixin {
 
     @Shadow
-    private LatexHumanoidArmorLayer<ChangedEntity, AdvancedHumanoidModel<ChangedEntity>, LatexHumanoidArmorModel<ChangedEntity, ?>> armorLayer;
+    private LatexHumanoidArmorLayer<ChangedEntity, AdvancedHumanoidModel<ChangedEntity>> armorLayer;
 
     @Shadow
     public abstract AdvancedHumanoidModel<ChangedEntity> getModel(ChangedEntity entity);

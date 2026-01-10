@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class PinkCyanSkunkRenderer extends AdvancedHumanoidRenderer<PinkCyanSkunkEntity, PinkCyanSkunkModel, ArmorLatexMaleWolfModel<PinkCyanSkunkEntity>> {
+public class PinkCyanSkunkRenderer extends AdvancedHumanoidRenderer<PinkCyanSkunkEntity, PinkCyanSkunkModel> {
 
     private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/pink_cyan_skunk/pink_cyan_skunk");
 

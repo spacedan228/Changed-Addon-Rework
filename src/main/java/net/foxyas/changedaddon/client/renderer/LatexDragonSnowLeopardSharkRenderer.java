@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexDragonSnowLeopardSharkRenderer extends AdvancedHumanoidRenderer<LatexDragonSnowLeopardSharkEntity, LatexDragonSnowLeopardSharkModel, ArmorLatexDragonSnowLeopardSharkModel<LatexDragonSnowLeopardSharkEntity>> {
+public class LatexDragonSnowLeopardSharkRenderer extends AdvancedHumanoidRenderer<LatexDragonSnowLeopardSharkEntity, LatexDragonSnowLeopardSharkModel> {
     public LatexDragonSnowLeopardSharkRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexDragonSnowLeopardSharkModel(context.bakeLayer(LatexDragonSnowLeopardSharkModel.LAYER_LOCATION)),
                 ArmorLatexDragonSnowLeopardSharkModel.MODEL_SET, 0.5F);

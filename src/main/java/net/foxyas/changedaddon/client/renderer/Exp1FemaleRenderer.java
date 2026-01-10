@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class Exp1FemaleRenderer extends AdvancedHumanoidRenderer<Exp1FemaleEntity, FemaleExp1Model, ArmorLatexFemaleWolfModel<Exp1FemaleEntity>> {
+public class Exp1FemaleRenderer extends AdvancedHumanoidRenderer<Exp1FemaleEntity, FemaleExp1Model> {
     public Exp1FemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new FemaleExp1Model(context.bakeLayer(FemaleExp1Model.LAYER_LOCATION)), ArmorLatexFemaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));

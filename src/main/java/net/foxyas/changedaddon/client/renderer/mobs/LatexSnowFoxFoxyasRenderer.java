@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static net.foxyas.changedaddon.entity.advanced.LatexSnowFoxFoxyasEntity.FOXYAS_SCALE;
 
-public class LatexSnowFoxFoxyasRenderer extends AdvancedHumanoidRenderer<LatexSnowFoxFoxyasEntity, LatexSnowFoxFoxyasModel, ArmorLatexMaleWolfModel<LatexSnowFoxFoxyasEntity>> {
+public class LatexSnowFoxFoxyasRenderer extends AdvancedHumanoidRenderer<LatexSnowFoxFoxyasEntity, LatexSnowFoxFoxyasModel> {
     public LatexSnowFoxFoxyasRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexSnowFoxFoxyasModel(context.bakeLayer(LatexSnowFoxFoxyasModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));

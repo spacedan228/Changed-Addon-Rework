@@ -21,7 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
 
-public class Experiment10BossRenderer extends AdvancedHumanoidRenderer<Experiment10BossEntity, Experiment10BossModel, ArmorLatexFemaleCatModel<Experiment10BossEntity>> {
+public class Experiment10BossRenderer extends AdvancedHumanoidRenderer<Experiment10BossEntity, Experiment10BossModel> {
     public Experiment10BossRenderer(EntityRendererProvider.Context context) {
         super(context, new Experiment10BossModel(context.bakeLayer(Experiment10BossModel.LAYER_LOCATION)),
                 ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);

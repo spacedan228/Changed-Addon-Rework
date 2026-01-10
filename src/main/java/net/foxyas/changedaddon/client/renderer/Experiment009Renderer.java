@@ -29,7 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
 import org.jetbrains.annotations.NotNull;
 
-public class Experiment009Renderer extends AdvancedHumanoidRenderer<Experiment009Entity, Experiment009Model, ArmorLatexMaleWolfModel<Experiment009Entity>> {
+public class Experiment009Renderer extends AdvancedHumanoidRenderer<Experiment009Entity, Experiment009Model> {
     public Experiment009Renderer(EntityRendererProvider.Context context) {
         super(context, new Experiment009Model(context.bakeLayer(Experiment009Model.LAYER_LOCATION)),
                 ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);

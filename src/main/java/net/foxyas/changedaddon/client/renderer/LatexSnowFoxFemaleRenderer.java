@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexSnowFoxFemaleRenderer extends AdvancedHumanoidRenderer<LatexSnowFoxFemaleEntity, LatexSnowFoxFemaleModel, ArmorLatexFemaleWolfModel<LatexSnowFoxFemaleEntity>> {
+public class LatexSnowFoxFemaleRenderer extends AdvancedHumanoidRenderer<LatexSnowFoxFemaleEntity, LatexSnowFoxFemaleModel> {
     public LatexSnowFoxFemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexSnowFoxFemaleModel(context.bakeLayer(LatexSnowFoxFemaleModel.LAYER_LOCATION)), ArmorLatexFemaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));

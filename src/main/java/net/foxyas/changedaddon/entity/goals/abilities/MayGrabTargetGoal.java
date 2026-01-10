@@ -105,7 +105,7 @@ public class MayGrabTargetGoal extends Goal {
                                 1.0f
                         );
 
-                        grabber.setGrabCooldown(120);
+                        grabber.applyGrabCooldown(0);
                     }
                 }
             }

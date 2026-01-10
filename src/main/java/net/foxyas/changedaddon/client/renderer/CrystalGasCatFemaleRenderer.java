@@ -9,7 +9,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class CrystalGasCatFemaleRenderer extends AdvancedHumanoidRenderer<CrystalGasCatFemaleEntity, HimalayanCrystalGasCatFemaleModel, ArmorLatexFemaleCatModel<CrystalGasCatFemaleEntity>> {
+public class CrystalGasCatFemaleRenderer extends AdvancedHumanoidRenderer<CrystalGasCatFemaleEntity, HimalayanCrystalGasCatFemaleModel> {
     public CrystalGasCatFemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new HimalayanCrystalGasCatFemaleModel(context.bakeLayer(HimalayanCrystalGasCatFemaleModel.LAYER_LOCATION)),
                 ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);

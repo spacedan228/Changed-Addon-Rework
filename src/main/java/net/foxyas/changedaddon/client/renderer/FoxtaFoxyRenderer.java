@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class FoxtaFoxyRenderer extends AdvancedHumanoidRenderer<FoxtaFoxyEntity, FoxtaFoxyModel, ArmorLatexMaleWolfModel<FoxtaFoxyEntity>> {
+public class FoxtaFoxyRenderer extends AdvancedHumanoidRenderer<FoxtaFoxyEntity, FoxtaFoxyModel> {
     public FoxtaFoxyRenderer(EntityRendererProvider.Context context) {
         super(context, new FoxtaFoxyModel(context.bakeLayer(FoxtaFoxyModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5F);
         //this.addLayer(new LatexParticlesLayer<>(this, this.getModel()));

@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BlueLizardRenderer extends AdvancedHumanoidRenderer<BlueLizard, BlueLizardModel, ArmorLatexMaleDragonModel<BlueLizard>> {
+public class BlueLizardRenderer extends AdvancedHumanoidRenderer<BlueLizard, BlueLizardModel> {
     public BlueLizardRenderer(EntityRendererProvider.Context context) {
         super(context, new BlueLizardModel(context.bakeLayer(BlueLizardModel.LAYER_LOCATION)), ArmorLatexMaleDragonModel.MODEL_SET, 0.5F);
         this.addLayer(TransfurCapeLayer.normalCape(this, context.getModelSet()));

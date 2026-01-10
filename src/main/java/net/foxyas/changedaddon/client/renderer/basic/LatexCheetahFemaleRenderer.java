@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexCheetahFemaleRenderer extends AdvancedHumanoidRenderer<LatexCheetahFemale, LatexCheetahFemaleModel, ArmorLatexFemaleCatModel<LatexCheetahFemale>> {
+public class LatexCheetahFemaleRenderer extends AdvancedHumanoidRenderer<LatexCheetahFemale, LatexCheetahFemaleModel> {
     public LatexCheetahFemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexCheetahFemaleModel(context.bakeLayer(LatexCheetahFemaleModel.LAYER_LOCATION)), ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));

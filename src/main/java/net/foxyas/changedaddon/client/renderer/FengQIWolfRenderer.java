@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class FengQIWolfRenderer extends AdvancedHumanoidRenderer<FengQIWolfEntity, FengQIWolfModel, ArmorLatexMaleWolfModel<FengQIWolfEntity>> {
+public class FengQIWolfRenderer extends AdvancedHumanoidRenderer<FengQIWolfEntity, FengQIWolfModel> {
     public FengQIWolfRenderer(EntityRendererProvider.Context context) {
         super(context, new FengQIWolfModel(context.bakeLayer(FengQIWolfModel.LAYER_LOCATION)),
                 ArmorLatexMaleWolfModel.MODEL_SET, 0.5F);

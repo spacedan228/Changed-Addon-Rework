@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class ProtogenRenderer extends AdvancedHumanoidRenderer<ProtogenEntity, ProtogenModel, ArmorLatexMaleWolfModel<ProtogenEntity>> {
+public class ProtogenRenderer extends AdvancedHumanoidRenderer<ProtogenEntity, ProtogenModel> {
     public ProtogenRenderer(EntityRendererProvider.Context context) {
         super(context, new ProtogenModel(context.bakeLayer(ProtogenModel.LAYER_LOCATION)), ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new ProtogenDisplay<>(this, getModel(),

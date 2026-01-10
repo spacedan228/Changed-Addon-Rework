@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexBorderCollieRenderer extends AdvancedHumanoidRenderer<LatexBorderCollieEntity, LatexBorderCollieModel, ArmorLatexMaleWolfModel<LatexBorderCollieEntity>> {
+public class LatexBorderCollieRenderer extends AdvancedHumanoidRenderer<LatexBorderCollieEntity, LatexBorderCollieModel> {
     public LatexBorderCollieRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexBorderCollieModel(context.bakeLayer(LatexBorderCollieModel.LAYER_LOCATION)),
                 ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);

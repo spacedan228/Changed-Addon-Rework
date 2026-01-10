@@ -369,7 +369,7 @@ public class ModelUtils {
         EntityRenderer<?> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
 
         // Verifica se o renderizador é para uma entidade viva (LivingEntity)
-        if (renderer instanceof AdvancedHumanoidRenderer<?, ?, ?> advRenderer) {
+        if (renderer instanceof AdvancedHumanoidRenderer<?, ?> advRenderer) {
             // Retorna o modelo da entidade
             return advRenderer.getModel();
         }
@@ -386,10 +386,10 @@ public class ModelUtils {
         return null;
     }
 
-    public static @Nullable AdvancedHumanoidRenderer<ChangedEntity, AdvancedHumanoidModel<ChangedEntity>, LatexHumanoidArmorModel<ChangedEntity, ?>> getChangedEntityRenderNonRaw(ChangedEntity entity) {
+    public static @Nullable AdvancedHumanoidRenderer<ChangedEntity, AdvancedHumanoidModel<ChangedEntity>> getChangedEntityRenderNonRaw(ChangedEntity entity) {
         EntityRenderer<?> renderer = Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity);
-        if (renderer instanceof AdvancedHumanoidRenderer<?, ?, ?> advRenderer) {
-            return (AdvancedHumanoidRenderer<ChangedEntity, AdvancedHumanoidModel<ChangedEntity>, LatexHumanoidArmorModel<ChangedEntity, ?>>) advRenderer;
+        if (renderer instanceof AdvancedHumanoidRenderer<?, ?> advRenderer) {
+            return (AdvancedHumanoidRenderer<ChangedEntity, AdvancedHumanoidModel<ChangedEntity>>) advRenderer;
         }
         return null;
     }

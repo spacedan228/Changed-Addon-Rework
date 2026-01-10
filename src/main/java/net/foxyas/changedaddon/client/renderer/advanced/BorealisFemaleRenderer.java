@@ -17,7 +17,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class BorealisFemaleRenderer extends AdvancedHumanoidRenderer<BorealisFemaleEntity, BorealisFemaleModel, ArmorLatexFemaleWolfModel<BorealisFemaleEntity>> {
+public class BorealisFemaleRenderer extends AdvancedHumanoidRenderer<BorealisFemaleEntity, BorealisFemaleModel> {
     public BorealisFemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new BorealisFemaleModel(context.bakeLayer(BorealisFemaleModel.LAYER_LOCATION)), ArmorLatexFemaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new ProtogenDisplay<>(this, getModel(),

@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexWhiteSnowLeopardFemaleRenderer extends AdvancedHumanoidRenderer<LatexWhiteSnowLeopardFemale, LatexWhiteSnowLeopardFemaleModel, ArmorLatexFemaleCatModel<LatexWhiteSnowLeopardFemale>> {
+public class LatexWhiteSnowLeopardFemaleRenderer extends AdvancedHumanoidRenderer<LatexWhiteSnowLeopardFemale, LatexWhiteSnowLeopardFemaleModel> {
     public LatexWhiteSnowLeopardFemaleRenderer(EntityRendererProvider.Context context) {
         super(context, new LatexWhiteSnowLeopardFemaleModel(context.bakeLayer(LatexWhiteSnowLeopardFemaleModel.LAYER_LOCATION)), ArmorLatexFemaleCatModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel()));

@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexWindCatMaleRenderer extends AdvancedHumanoidRenderer<LatexWindCatMaleEntity, LatexWindCatMaleModel, ArmorLatexMaleCatModel<LatexWindCatMaleEntity>> {
+public class LatexWindCatMaleRenderer extends AdvancedHumanoidRenderer<LatexWindCatMaleEntity, LatexWindCatMaleModel> {
 
     private static final ResourceLocation TEXTURE = ChangedAddonMod.textureLoc("textures/entities/latex_wind_cat_male/latex_wind_cat_male");
 
