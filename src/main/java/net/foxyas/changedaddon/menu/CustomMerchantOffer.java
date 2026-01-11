@@ -6,7 +6,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.minecraftforge.common.crafting.NBTIngredient;
 
 public class CustomMerchantOffer {
 
@@ -124,7 +124,7 @@ public class CustomMerchantOffer {
     }
 
     private boolean testWithCount(Ingredient ingredient, ItemStack stack) {
-        if (ingredient instanceof StrictNBTIngredient strict) {
+        if (ingredient instanceof NBTIngredient strict) {
             return ingredient.test(stack) && strict.getItems()[0].getCount() <= stack.getCount();
         }
 
