@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.process;
 import com.google.errorprone.annotations.DoNotCall;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.client.particle.AgeableRibbonParticleOption;
 import net.foxyas.changedaddon.client.particle.MultiColorRibbonParticleOption;
 import net.foxyas.changedaddon.client.particle.RibbonParticleOption;
@@ -12,9 +13,13 @@ import net.foxyas.changedaddon.mixins.mods.changed.FacilitySinglePieceInstanceAc
 import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
 import net.foxyas.changedaddon.process.features.LatexLanguageTranslator;
 import net.foxyas.changedaddon.util.*;
+import net.ltxprogrammer.changed.ability.GrabEntityAbility;
+import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.GenderedEntity;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.world.features.structures.facility.FacilitySinglePiece;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -495,7 +500,7 @@ public class DEBUG {
 
 
 
-        //@SubscribeEvent
+        @SubscribeEvent
         @OnlyIn(Dist.CLIENT)
         public static void onClientTick(TickEvent.ClientTickEvent event) {
             if (!DEBUG) return;
@@ -507,7 +512,15 @@ public class DEBUG {
 
             if (level == null || player == null) return;
 
-            debugRenderArmorStandArms(level, player);
+            IAbstractChangedEntity grabber = GrabEntityAbility.getGrabber(player);
+            if (grabber != null) {
+                GrabEntityAbilityInstance abilityInstance = grabber.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
+                if (abilityInstance instanceof GrabEntityAbilityExtensor abilityExtensor) {
+                    player.displayClientMessage(Component.literal("Safe mode is -> " + abilityExtensor.isSafeMode()), true);
+                }
+            }
+
+            //debugRenderArmorStandArms(level, player);
         }
 
         private static void debugRenderArmorStandArms(Level level, Player player) {

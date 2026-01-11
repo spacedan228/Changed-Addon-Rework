@@ -44,7 +44,6 @@ public class ChangedAddonKeyMappings {
             super.setDown(isDown);
             if (isDownOld != isDown && isDown) {
                 ChangedAddonMod.PACKET_HANDLER.sendToServer(new TurnOffTransfurPacket(0, 0));
-                TurnOffTransfurPacket.pressAction(Minecraft.getInstance().player, 0);
             }
             isDownOld = isDown;
         }

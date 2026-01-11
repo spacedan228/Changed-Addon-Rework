@@ -1,13 +1,16 @@
 package net.foxyas.changedaddon.ability.api;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
+import net.foxyas.changedaddon.network.packet.SyncGrabSafeModePacket;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 public interface GrabEntityAbilityExtensor {
@@ -16,6 +19,7 @@ public interface GrabEntityAbilityExtensor {
     int getGrabCooldown();
 
     void setSafeMode(boolean safeMode);
+    void setSafeModeAuthoritative(boolean safeMode);
 
     boolean isSafeMode();
 
@@ -39,7 +43,6 @@ public interface GrabEntityAbilityExtensor {
             }
         }
     }
-
     boolean isAlreadySnuggled();
 
     void setSnuggled(boolean value);
