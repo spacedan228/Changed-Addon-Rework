@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbilityInstance;
 import net.ltxprogrammer.changed.entity.AttributePresets;
@@ -11,6 +10,7 @@ import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexEntity;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -60,7 +60,7 @@ public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity {
 
     @Override
     public TransfurVariant<?> getTransfurVariant() {
-        return ChangedAddonTransfurVariants.DARK_LATEX_YUFENG_QUEEN.get();
+        return ChangedTransfurVariants.DARK_LATEX_YUFENG.get();
     }
 
     @Override
