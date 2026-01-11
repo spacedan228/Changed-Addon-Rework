@@ -7,7 +7,9 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.network.packet.DynamicGrabEntityPacket;
+import net.foxyas.changedaddon.network.packet.SyncGrabSafeModePacket;
 import net.ltxprogrammer.changed.Changed;
+import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -44,7 +46,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Mixin(value = GrabEntityAbilityInstance.class, remap = false)
-public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor {
+public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInstance implements GrabEntityAbilityExtensor {
 
     @Shadow
     public boolean attackDown;
@@ -78,6 +80,10 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
     @Unique
     private boolean allowGrabTransfured = false;
 
+    public GrabEntityAbilityInstanceMixin(AbstractAbility<?> ability, IAbstractChangedEntity entity) {
+        super(ability, entity);
+    }
+
     @Override
     @Unique
     public void setAllowGrabTransfured(boolean canGrabTransfured) {
@@ -104,16 +110,6 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         if (tag.contains("allowGrabTransfured")) allowGrabTransfured = tag.getBoolean("allowGrabTransfured");
     }
 
-    @Override
-    public boolean isSafeMode() {
-        return safeMode;
-    }
-
-    @Override
-    public void setSafeMode(boolean safeMode) {
-        this.safeMode = safeMode;
-    }
-
     @Unique
     public GrabEntityAbilityInstance getSelf() {
         return (GrabEntityAbilityInstance) (Object) this;
@@ -124,29 +120,29 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
         return getSelf().entity.getEntity();
     }
 
-    @WrapOperation(
-            method = "tickIdle",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/ltxprogrammer/changed/entity/ChangedEntity;tryAbsorbTarget(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;FLjava/util/List;)Z"
-            )
-    )
-    private boolean changedaddon$modifyAbsorbDamage(ChangedEntity instance, LivingEntity target, IAbstractChangedEntity loserPlayer,
-                                                    float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions, Operation<Boolean> original) {
-        GrabEntityAbilityInstance selfThis = (GrabEntityAbilityInstance) (Object) this;
+    @Override
+    public boolean isSafeMode() {
+        return safeMode;
+    }
 
-        AttributeInstance attribute =
-                instance.maybeGetUnderlying()
-                        .getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get());
+    @Override
+    public void setSafeMode(boolean safeMode) {
+        this.safeMode = safeMode;
+    }
 
-        float finalAmount = amount;
+    @Override
+    public void setSafeModeAuthoritative(boolean safeMode) {
+        if (this.safeMode == safeMode)
+            return;
 
-        if (attribute != null) {
-            finalAmount = (float) attribute.getValue() * 1.5f;
+        this.safeMode = safeMode;
+
+        if (!entity.getLevel().isClientSide) {
+            ChangedAddonMod.PACKET_HANDLER.send(
+                    PacketDistributor.TRACKING_ENTITY.with(entity::getEntity),
+                    new SyncGrabSafeModePacket(entity.getUUID(), safeMode)
+            );
         }
-
-        // Original
-        return original.call(instance, target, loserPlayer, finalAmount, possibleMobFusions);
     }
 
     @Inject(method = "tickIdle", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F", remap = true, shift = At.Shift.AFTER), cancellable = true)
@@ -176,6 +172,31 @@ public class GrabEntityAbilityInstanceMixin implements GrabEntityAbilityExtensor
                 this.alreadySnuggledTight = false;
             }
         }
+    }
+
+    @WrapOperation(
+            method = "tickIdle",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/ltxprogrammer/changed/entity/ChangedEntity;tryAbsorbTarget(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;FLjava/util/List;)Z"
+            )
+    )
+    private boolean changedaddon$modifyAbsorbDamage(ChangedEntity instance, LivingEntity target, IAbstractChangedEntity loserPlayer,
+                                                    float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions, Operation<Boolean> original) {
+        GrabEntityAbilityInstance selfThis = (GrabEntityAbilityInstance) (Object) this;
+
+        AttributeInstance attribute =
+                instance.maybeGetUnderlying()
+                        .getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get());
+
+        float finalAmount = amount;
+
+        if (attribute != null) {
+            finalAmount = (float) attribute.getValue() * 1.5f;
+        }
+
+        // Original
+        return original.call(instance, target, loserPlayer, finalAmount, possibleMobFusions);
     }
 
     @ModifyExpressionValue(method = "tickIdle", at = @At(value = "INVOKE",
