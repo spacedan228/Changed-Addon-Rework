@@ -145,6 +145,12 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
     public void cancelSuit(CallbackInfo ci) {
         if (this.isSafeMode()) {
             ci.cancel();
+            if (!entity.getLevel().isClientSide) {
+                ChangedAddonMod.PACKET_HANDLER.send(
+                        PacketDistributor.TRACKING_ENTITY.with(entity::getEntity),
+                        new SyncGrabSafeModePacket(entity.getUUID(), safeMode)
+                );
+            }
 
             if (snuggleCooldown > 0) snuggleCooldown--;
 
