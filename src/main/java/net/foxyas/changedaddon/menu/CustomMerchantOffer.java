@@ -142,7 +142,7 @@ public class CustomMerchantOffer {
 
         if(!costB.isEmpty()){
             for(ItemStack stack : costB.getItems()){
-                if(isRequiredItem(playerOfferB, stack)) playerOfferA.shrink(stack.getCount());
+                if(isRequiredItem(playerOfferB, stack)) playerOfferB.shrink(stack.getCount());
             }
         }
 
