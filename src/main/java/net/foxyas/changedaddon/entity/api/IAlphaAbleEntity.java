@@ -2,7 +2,9 @@ package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -43,23 +45,22 @@ public interface IAlphaAbleEntity {
         }
 
         float normalized = alphaScale / 0.75f;
-        float softScale = (float) Math.pow(normalized, 0.65);
 
-        apply(entity, Attributes.MAX_HEALTH, MAX_HEALTH, "Alpha Max Health", 20.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.MAX_HEALTH, MAX_HEALTH, "Alpha Max Health", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE, "Alpha Attack Damage", 4.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE, "Alpha Attack Damage", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ARMOR, ARMOR, "Alpha Armor", 6.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ARMOR, ARMOR, "Alpha Armor", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS, "Alpha Armor Toughness", 2.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS, "Alpha Armor Toughness", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_HEIGHT, "Alpha Step Height", 0.6 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_HEIGHT, "Alpha Step Height", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE, "Alpha Transfur Damage", 3.0 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE, "Alpha Transfur Damage", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ATTACK_KNOCKBACK, ATTACK_KNOCKBACK, "Alpha Knockback", 0.8 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ATTACK_KNOCKBACK, ATTACK_KNOCKBACK, "Alpha Knockback", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
-        apply(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED, "Alpha Attack Speed", 0.2 * (softScale - 1.0), AttributeModifier.Operation.ADDITION);
+        apply(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED, "Alpha Attack Speed", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         entity.setHealth(entity.getMaxHealth());
     }
@@ -97,6 +98,12 @@ public interface IAlphaAbleEntity {
     boolean isAlpha();
 
     void setAlphaScale(float scale);
+
+    default void refreshAttributes(ChangedEntity self) {
+        SynchedEntityData entityData = self.getEntityData();
+        IAlphaAbleEntity.applyOrRemoveAlphaModifiers(self, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
+        IAbstractChangedEntity.forEitherSafe(self.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+    }
 
     default float chanceToSpawnAsAlpha() {
         if (this instanceof ChangedEntity changedEntity) {

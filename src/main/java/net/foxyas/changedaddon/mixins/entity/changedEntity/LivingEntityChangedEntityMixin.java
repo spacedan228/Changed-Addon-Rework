@@ -1,13 +1,16 @@
 package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,6 +38,26 @@ public abstract class LivingEntityChangedEntityMixin extends Entity {
                 IAbstractChangedEntity.forEitherSafe(changedEntity.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
             }
         }
+    }
+
+    @ModifyReturnValue(method = "getJumpPower", at = @At("RETURN"))
+    private float changedJumpPower(float original) {
+        var self = ChangedAddon$selfMixin();
+        Entity entity = resolveChangedEntity(self);
+        if (IAlphaAbleEntity.isEntityAlpha(entity)) {
+            return original * 1.25f;
+        }
+        return original;
+    }
+
+    private static Entity resolveChangedEntity(Entity entity) {
+        if (entity instanceof Player player) {
+            TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (transfur != null) {
+                return transfur.getChangedEntity();
+            }
+        }
+        return entity;
     }
 
 
