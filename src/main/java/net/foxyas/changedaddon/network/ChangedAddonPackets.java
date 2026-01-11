@@ -1,11 +1,7 @@
 package net.foxyas.changedaddon.network;
 
-import net.foxyas.changedaddon.network.packet.SyncGrabSafeModePacket;
-import net.foxyas.changedaddon.network.packet.VariantSecondAbilityActivate;
 import net.ltxprogrammer.changed.Changed;
-import net.ltxprogrammer.changed.block.CustomFallable;
-import net.ltxprogrammer.changed.entity.AccessoryEntities;
-import net.ltxprogrammer.changed.network.packet.*;
+import net.ltxprogrammer.changed.network.packet.ChangedPacket;
 import net.ltxprogrammer.changed.util.UniversalDist;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.common.util.LogicalSidedProvider;
@@ -26,7 +22,7 @@ public class ChangedAddonPackets {
     }
 
     public void registerPackets() {
-        addNetworkMessage(SyncGrabSafeModePacket.class, SyncGrabSafeModePacket::new);
+
     }
 
     private <T> BiConsumer<T, FriendlyByteBuf> wrapEncoder(Class<T> messageType, BiConsumer<T, FriendlyByteBuf> encoder) {
