@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.event;
 
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.eventbus.api.Event;
@@ -51,6 +52,25 @@ public class TransfurVariantEvents {
 
         public void setChangedEntity(ChangedEntity changedEntity) {
             this.changedEntity = changedEntity;
+        }
+
+        @Override
+        public boolean isCancelable() {
+            return true;
+        }
+    }
+
+    public static class KillAfterTransfurredSpecificEvent extends KillAfterTransfurredEvent {
+
+        protected IAbstractChangedEntity iAbstractChangedEntity;
+
+        public KillAfterTransfurredSpecificEvent(LivingEntity targetEntity, IAbstractChangedEntity iAbstractChangedEntity) {
+            super(targetEntity, iAbstractChangedEntity.getEntity());
+            this.iAbstractChangedEntity = iAbstractChangedEntity;
+        }
+
+        public IAbstractChangedEntity getiAbstractChangedEntity() {
+            return iAbstractChangedEntity;
         }
 
         @Override
