@@ -7,9 +7,11 @@ import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,6 +26,13 @@ public class TransfurEvents {
     public static void WhenTransfured(ProcessTransfur.EntityVariantAssigned changedVariantEvent) {
         TransfurVariant<?> variant = changedVariantEvent.originalVariant;
         if (variant == null) return;
+
+        if (variant.is(ChangedAddonTransfurVariants.DARK_LATEX_YUFENG_QUEEN)
+                && changedVariantEvent.cause != null
+                && changedVariantEvent.cause.equals(TransfurCause.GRAB_REPLICATE)) {
+            changedVariantEvent.variant = ChangedTransfurVariants.DARK_LATEX_YUFENG.get();
+            return;
+        }
 
         LivingEntity entity = changedVariantEvent.livingEntity;
         if (!entity.level.getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.NEED_PERMISSION_FOR_BOSS_TRANSFUR))
