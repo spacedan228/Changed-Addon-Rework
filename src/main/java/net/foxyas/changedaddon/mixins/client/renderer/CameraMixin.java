@@ -39,14 +39,14 @@ public abstract class CameraMixin {
             if (variant.getChangedEntity() instanceof IAlphaAbleEntity iAlphaAbleEntity) {
                 return iAlphaAbleEntity.alphaCameraOffset();
             }
-            return 1f;
+            return 0f;
         });
 
         if (entity instanceof LivingEntity living && living instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
             return iAlphaAbleEntity.alphaCameraOffset();
         }
 
-        return playerVariantOffset.orElse(1f);
+        return playerVariantOffset.orElse(0f);
 
     }
 
