@@ -3,8 +3,10 @@ package net.foxyas.changedaddon.mixins.abilities;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
+import net.foxyas.changedaddon.network.packet.SafeGrabSyncPacket;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
@@ -124,6 +126,7 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
             return;
 
         this.safeMode = safeMode;
+        if (!entity.getLevel().isClientSide) ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(entity::getEntity), new SafeGrabSyncPacket(entity.getEntity().getId(), safeMode));
     }
 
     @Inject(method = "tickIdle", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/ltxprogrammer/changed/ability/GrabEntityAbilityInstance;suitTransition:F"))
