@@ -145,16 +145,15 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
         if (!this.isSafeMode()) return;
         ci.cancel();
 
-        if (snuggleCooldown > 0) snuggleCooldown--;
+        if (getSelf().getController().getHoldTicks() >= 1) {
+            this.suitTransition -= 0.25f;
+        }
 
         if (this.suitTransition >= 3.0f) {
             this.suitTransition = 3.0F;
 
             if (getSelf().entity.getChangedEntity() instanceof ChangedEntityExtension changedEntityExtension && changedEntityExtension.shouldAlwaysHoldGrab(grabbedEntity)) {
                 this.grabStrength = 1;
-                if (getSelf().getController().getHoldTicks() >= 1) {
-                    this.suitTransition -= 0.25f;
-                }
             }
 
             if (grabbedEntity != null) {
