@@ -136,7 +136,7 @@ public interface IAlphaAbleEntity {
     }
 
     default float alphaCameraOffset() {
-        if (isAlpha()) return alphaAdditionalScale() / 2f;
+        if (isAlpha()) return alphaAdditionalScale() / 1.5f;
         return 0;
     }
 
