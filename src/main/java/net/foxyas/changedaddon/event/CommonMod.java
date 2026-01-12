@@ -46,6 +46,10 @@ public class CommonMod {
     private static void addPackets(){
         CHANGED_ADDON_PACKETS.registerPackets();
 
+        ChangedAddonMod.addNetworkMessage(SafeGrabSyncPacket.class, SafeGrabSyncPacket::write,
+                SafeGrabSyncPacket::new, ClientPacketHandler::handleSafeGrabSync,
+                NetworkDirection.PLAY_TO_CLIENT);
+
         ChangedAddonMod.addNetworkMessage(KeyPressPacket.class, KeyPressPacket::encode,
                 KeyPressPacket::new, KeyPressPacket::handle);
         ChangedAddonMod.addNetworkMessage(SyncTransfurVisionsPacket.class, SyncTransfurVisionsPacket::encode,

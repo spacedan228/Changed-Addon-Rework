@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.network.packet.DynamicGrabEntityPacket;
+import net.foxyas.changedaddon.network.packet.SafeGrabSyncPacket;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
@@ -132,6 +133,7 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
             return;
 
         this.safeMode = safeMode;
+        if (!entity.getLevel().isClientSide) ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(entity::getEntity), new SafeGrabSyncPacket(entity.getEntity().getId(), safeMode));
     }
 
     @Inject(method = "tickIdle", at = @At(value = "HEAD"), cancellable = true)
