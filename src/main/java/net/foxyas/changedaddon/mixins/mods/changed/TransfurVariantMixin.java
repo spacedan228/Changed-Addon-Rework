@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import javax.annotation.Nullable;
+
 @Mixin(value = TransfurVariant.class, remap = false)
 public abstract class TransfurVariantMixin {
 
@@ -21,6 +23,15 @@ public abstract class TransfurVariantMixin {
         if (ChangedAddonMod.postEvent(event)) {
             cir.cancel();
         }
+    }
+
+    @ModifyReturnValue(method = "replaceEntity(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;)Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;", at = @At("RETURN"))
+    private IAbstractChangedEntity injectReplaceEntity(IAbstractChangedEntity original, LivingEntity entity, @Nullable IAbstractChangedEntity cause) {
+        TransfurVariantEvents.KillAfterTransfurredSpecificEvent event = new TransfurVariantEvents.KillAfterTransfurredSpecificEvent(entity, cause);
+        if (ChangedAddonMod.postEvent(event)) {
+            return event.getiAbstractChangedEntity();
+        }
+        return original;
     }
 
     @ModifyReturnValue(method = "spawnAtEntity", at = @At("RETURN"))
