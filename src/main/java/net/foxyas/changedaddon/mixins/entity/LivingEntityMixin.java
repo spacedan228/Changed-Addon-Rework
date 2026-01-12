@@ -1,8 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.ability.ToggleClimbAbilityInstance;
 import net.foxyas.changedaddon.entity.api.ExtraConditions;
@@ -15,6 +14,7 @@ import net.ltxprogrammer.changed.data.AccessorySlotContext;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
+import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +22,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -30,6 +31,9 @@ import java.util.Map;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin {
+
+    @Shadow
+    public abstract Iterable<ItemStack> getArmorSlots();
 
     @Inject(method = "onClimbable", at = @At("HEAD"), cancellable = true)
     public void onClimbable(CallbackInfoReturnable<Boolean> callback) {
@@ -61,7 +65,7 @@ public abstract class LivingEntityMixin {
             )
     )
     private boolean changedaddon$canElytraFlyRedirect(boolean original) {
-        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull((LivingEntity)(Object)this))
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull((LivingEntity) (Object) this))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
                         return extra.getFlyType().canGlide();
@@ -80,7 +84,7 @@ public abstract class LivingEntityMixin {
             )
     )
     private boolean changedaddon$elytraFlightTickRedirect(boolean original) {
-        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull((LivingEntity)(Object)this))
+        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull((LivingEntity) (Object) this))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
                         return extra.getFlyType().canGlide() || original;
@@ -90,9 +94,13 @@ public abstract class LivingEntityMixin {
                 .orElse(original);
     }
 
-    @ModifyExpressionValue(method = "getDamageAfterMagicAbsorb",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getDamageProtection(Ljava/lang/Iterable;Lnet/minecraft/world/damagesource/DamageSource;)I"))
-    public int andAccessorySlots(int original, @Local(argsOnly = true) DamageSource damageSource) {
+    @ModifyReturnValue(method = "getDamageAfterMagicAbsorb",
+            at = @At(value = "RETURN"))
+    public float andAccessorySlots(float original, @Local(argsOnly = true) DamageSource damageSource, @Local(argsOnly = true) float pDamageAmount) {
+        if (damageSource.isBypassMagic()) return original;
+
+        int damageProtection = EnchantmentHelper.getDamageProtection(this.getArmorSlots(), damageSource);
+
         MutableInt total = new MutableInt();
 
         LivingEntity self = (LivingEntity) (Object) this;
@@ -106,7 +114,13 @@ public abstract class LivingEntityMixin {
             }
         })));
 
-        return total.intValue() + original;
+        float damageProtectionAmount = total.intValue() + damageProtection;
+
+        if (damageProtectionAmount > 0) {
+            pDamageAmount = CombatRules.getDamageAfterMagicAbsorb(pDamageAmount, damageProtectionAmount);
+        }
+
+        return pDamageAmount;
     }
 
     @Inject(method = "getScale", at = @At("RETURN"), cancellable = true)
