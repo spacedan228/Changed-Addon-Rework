@@ -8,6 +8,7 @@ import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
@@ -49,7 +50,7 @@ import java.util.stream.Collectors;
 public class ChangedAddonAdminCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("changed-addon-admin")
+        LiteralCommandNode<CommandSourceStack> mainCommand = dispatcher.register(Commands.literal("changed-addon-admin")
                 .requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("alphaGene")
                         .then(Commands.literal("setEntityAlphaGene")
@@ -66,7 +67,7 @@ public class ChangedAddonAdminCommand {
                         )
                         .then(Commands.literal("setEntityAlphaGeneScale")
                                 .then(Commands.argument("targets", EntityArgument.entities())
-                                        .then(Commands.argument("scale", FloatArgumentType.floatArg())
+                                        .then(Commands.argument("scale", FloatArgumentType.floatArg(-1, 30))
                                                 .executes(ChangedAddonAdminCommand::setEntityAlphaGeneScale)
                                         )
                                 )
@@ -243,6 +244,10 @@ public class ChangedAddonAdminCommand {
                         )
                 )
         );
+
+        dispatcher.register(Commands.literal("alphaGeneHandle")
+                .requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
+                .redirect(mainCommand.getChild("alphaGene")));
     }
 
     private static int setTFProgress(Player player, float amount, boolean add) {
