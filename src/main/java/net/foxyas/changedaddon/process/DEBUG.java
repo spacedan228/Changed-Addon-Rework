@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.process;
 
+import com.google.errorprone.annotations.DoNotCall;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.particle.AgeableRibbonParticleOption;
@@ -492,6 +493,22 @@ public class DEBUG {
         }
     }
 
+
+
+        //@SubscribeEvent
+        @OnlyIn(Dist.CLIENT)
+        public static void onClientTick(TickEvent.ClientTickEvent event) {
+            if (!DEBUG) return;
+            if (event.phase != TickEvent.Phase.END) return;
+
+            Minecraft mc = Minecraft.getInstance();
+            Level level = mc.level;
+            Player player = mc.player;
+
+            if (level == null || player == null) return;
+
+            debugRenderArmorStandArms(level, player);
+        }
 
         private static void debugRenderArmorStandArms(Level level, Player player) {
             double radius = 6.0;

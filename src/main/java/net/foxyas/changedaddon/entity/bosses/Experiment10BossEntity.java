@@ -312,6 +312,17 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     @Override
+    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType reason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag tag) {
+        SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata, tag);
+        this.getBasicPlayerInfo().setSize(1f);
+        this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
+        this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#880015"));
+        this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#880015"));
+        this.getBasicPlayerInfo().setScleraColor(Color3.getColor("#edd725"));
+        return retval;
+    }
+
+    @Override
     public boolean canChangeDimensions() {
         return false;
     }
@@ -366,15 +377,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     @Override
     public void baseTick() {
         super.baseTick();
-
-        if (firstTick) {
-            this.getBasicPlayerInfo().setSize(1f);
-            this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
-            this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#880015"));
-            this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#880015"));
-            this.getBasicPlayerInfo().setScleraColor(Color3.getColor("#edd725"));
-        }
-
         SetDefense(this);
         SetAttack(this);
         SetSpeed(this);

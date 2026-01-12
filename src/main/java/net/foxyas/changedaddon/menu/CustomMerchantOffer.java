@@ -6,7 +6,6 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 public class CustomMerchantOffer {
 
@@ -118,17 +117,9 @@ public class CustomMerchantOffer {
     }
 
     public boolean satisfiedBy(ItemStack playerOfferA, ItemStack playerOfferB) {
-        if(!testWithCount(costA, playerOfferA)) return false;
+        if(!costA.test(playerOfferA)) return false;
 
-        return costB.isEmpty() || testWithCount(costB, playerOfferB);
-    }
-
-    private boolean testWithCount(Ingredient ingredient, ItemStack stack) {
-        if (ingredient instanceof StrictNBTIngredient strict) {
-            return ingredient.test(stack) && strict.getItems()[0].getCount() <= stack.getCount();
-        }
-
-        return ingredient.test(stack);
+        return costB.isEmpty() || costB.test(playerOfferB);
     }
 
     private boolean isRequiredItem(ItemStack offer, ItemStack cost) {

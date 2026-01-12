@@ -55,7 +55,6 @@
     "mods.changed.FacilitySinglePieceInstanceAccessor",
     "mods.changed.LatexTypeMixin",
     "mods.changed.ProcessTransfurMixin",
-    "mods.changed.TransfurVariantMixin",
     "mods.nean.AvaliElytraAnimationMixin",
     "world.ConsumeItemTrigger",
     "world.DataFixTypesMixin",

@@ -16,7 +16,6 @@ public interface GrabEntityAbilityExtensor {
     int getGrabCooldown();
 
     void setSafeMode(boolean safeMode);
-    void setSafeModeAuthoritative(boolean safeMode);
 
     boolean isSafeMode();
 
@@ -40,6 +39,7 @@ public interface GrabEntityAbilityExtensor {
             }
         }
     }
+
     boolean isAlreadySnuggled();
 
     void setSnuggled(boolean value);

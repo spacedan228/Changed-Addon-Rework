@@ -105,8 +105,7 @@ public abstract class AbstractPlushyBlock extends HorizontalDirectionalBlock imp
     public @NotNull InteractionResult use(@NotNull BlockState blockstate, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player entity, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         InteractionResult retValue = super.use(blockstate, world, pos, entity, hand, hit);
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        InteractionResult result = squeezePlushy(world, hit, blockEntity);
-        if (result != null) return result;
+        squeezePlushy(world, hit, blockEntity);
         return retValue;
     }
 
