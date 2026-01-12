@@ -26,7 +26,6 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -58,6 +57,7 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
 
     @Shadow
     private int grabCooldown;
+
     @Unique
     private boolean safeMode = false;
     @Unique
@@ -129,20 +129,16 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
         if (!entity.getLevel().isClientSide) ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(entity::getEntity), new SafeGrabSyncPacket(entity.getEntity().getId(), safeMode));
     }
 
-    @Inject(method = "tickIdle", at = @At(value = "FIELD", opcode = Opcodes.GETFIELD, target = "Lnet/ltxprogrammer/changed/ability/GrabEntityAbilityInstance;suitTransition:F"))
+    @Inject(method = "tickIdle", at = @At(value = "HEAD"), cancellable = true)
     private void tickSnuggleCooldown(CallbackInfo ci) {
-        if (isSafeMode() && suitTransition <= 0) {
-            if (snuggleCooldown > 0) snuggleCooldown--;
-        }
+        if (!isSafeMode()) return;
+        if (snuggleCooldown > 0) snuggleCooldown--;
     }
 
     @Inject(method = "tickIdle", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F", remap = true, shift = At.Shift.BY), cancellable = true)
     private void cancelSuit(CallbackInfo ci) {
         if (!isSafeMode()) return;
-
         ci.cancel();
-
-        if (snuggleCooldown > 0) snuggleCooldown--;
 
         if (getSelf().getController().getHoldTicks() >= 2) {
             this.suitTransition -= 0.25f;
