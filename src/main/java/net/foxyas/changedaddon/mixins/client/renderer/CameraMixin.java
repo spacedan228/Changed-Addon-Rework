@@ -66,8 +66,7 @@ public abstract class CameraMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;getMaxZoom(D)D", ordinal = 0)
     )
     private double changedaddon$applyThirdPersonOffset(Camera instance, double f, Operation<Double> original) {
-        double scale = getEntityMaxZoomOffset(this.entity); // ajuste aqui
-        if (scale == 0) return original.call(instance, f);
+        double scale = 1 + getEntityMaxZoomOffset(this.entity); // ajuste aqui
         return original.call(instance, f * scale);
     }
 

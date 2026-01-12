@@ -105,6 +105,9 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab();
     }
 
+    private boolean appliedAlphaAttributes = false;
+    private boolean appliedAlphaAttributesForHost = false;
+
     @Override
     public void baseTick() {
         super.baseTick();
@@ -124,6 +127,16 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (self.getDimensions(self.getPose()).makeBoundingBox(self.position()) != self.getBoundingBox()) {
             this.refreshDimensions();
         }
+
+        if (self instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+            if (iAlphaAbleEntity.isAlpha() && !appliedAlphaAttributes) {
+                refreshAttributes(self);
+                appliedAlphaAttributes = true;
+            } else if (!iAlphaAbleEntity.isAlpha() && appliedAlphaAttributes) {
+                refreshAttributes(self);
+                appliedAlphaAttributes = false;
+            }
+        }
     }
 
     @Inject(method = "tick", at = @At("HEAD"), remap = true, cancellable = true)
@@ -141,11 +154,19 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         }
     }
 
-    @Inject(method = "variantTick", at = @At("HEAD"), remap = true, cancellable = true)
+
+    @Inject(method = "variantTick", at = @At("HEAD"), remap = false, cancellable = true)
     private void variantTickHook(CallbackInfo ci) {
         ChangedEntity self = (ChangedEntity) (Object) this;
+
         if (self instanceof IAlphaAbleEntity iAlphaAbleEntity) {
-            //Todo sync Alpha variant Attributes for the transfured player
+            if (iAlphaAbleEntity.isAlpha() && !appliedAlphaAttributesForHost) {
+                refreshAttributesForHost(self);
+                appliedAlphaAttributesForHost = true;
+            } else if (!iAlphaAbleEntity.isAlpha() && appliedAlphaAttributesForHost) {
+                refreshAttributesForHost(self);
+                appliedAlphaAttributesForHost = false;
+            }
         }
     }
 

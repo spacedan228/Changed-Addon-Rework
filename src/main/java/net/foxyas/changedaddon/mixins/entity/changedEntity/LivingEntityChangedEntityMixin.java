@@ -29,7 +29,7 @@ public abstract class LivingEntityChangedEntityMixin extends Entity {
 
 
     @Inject(method = "onSyncedDataUpdated", at = @At("TAIL"), cancellable = false)
-    private void changedEntityHook(EntityDataAccessor<?> pKey, CallbackInfo ci) {
+    private void changedEntityOnSyncedDataUpdatedHook(EntityDataAccessor<?> pKey, CallbackInfo ci) {
         LivingEntity self = ChangedAddon$selfMixin();
         if (self instanceof ChangedEntity changedEntity) {
             if (pKey == IS_ALPHA || pKey == ALPHA_SCALE) {

@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.mixins.entity;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.ability.ToggleClimbAbilityInstance;
 import net.foxyas.changedaddon.entity.api.ExtraConditions;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
@@ -89,9 +90,9 @@ public abstract class LivingEntityMixin {
                 .orElse(original);
     }
 
-    @WrapOperation(method = "getDamageAfterMagicAbsorb",
+    @ModifyExpressionValue(method = "getDamageAfterMagicAbsorb",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;getDamageProtection(Ljava/lang/Iterable;Lnet/minecraft/world/damagesource/DamageSource;)I"))
-    public int andAccessorySlots(Iterable<ItemStack> armorSlots, DamageSource damageSource, Operation<Integer> original) {
+    public int andAccessorySlots(int original, @Local(argsOnly = true) DamageSource damageSource) {
         MutableInt total = new MutableInt();
 
         LivingEntity self = (LivingEntity) (Object) this;
@@ -105,7 +106,7 @@ public abstract class LivingEntityMixin {
             }
         })));
 
-        return total.intValue() + original.call(armorSlots, damageSource);
+        return total.intValue() + original;
     }
 
     @Inject(method = "getScale", at = @At("RETURN"), cancellable = true)
