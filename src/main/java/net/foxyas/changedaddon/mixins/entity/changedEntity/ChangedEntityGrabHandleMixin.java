@@ -28,6 +28,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,6 +41,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mixin(value = ChangedEntity.class, remap = false)
 public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity, IAlphaAbleEntity {
@@ -103,6 +105,9 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         return type.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab();
     }
 
+    private boolean appliedAlphaAttributes = false;
+    private boolean appliedAlphaAttributesForHost = false;
+
     @Override
     public void baseTick() {
         super.baseTick();
@@ -121,6 +126,16 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (self.getDimensions(self.getPose()).makeBoundingBox(self.position()) != self.getBoundingBox()) {
             this.refreshDimensions();
         }
+
+        if (self instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+            if (iAlphaAbleEntity.isAlpha() && !appliedAlphaAttributes) {
+                refreshAttributes(self);
+                appliedAlphaAttributes = true;
+            } else if (!iAlphaAbleEntity.isAlpha() && appliedAlphaAttributes) {
+                refreshAttributes(self);
+                appliedAlphaAttributes = false;
+            }
+        }
     }
 
     @Inject(method = "tick", at = @At("HEAD"), remap = true, cancellable = true)
@@ -134,6 +149,22 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
                 if (behemothHead.leftHand instanceof IAlphaAbleEntity alphaAbleEntity) {
                     alphaAbleEntity.setAlpha(iAlphaAbleEntity.isAlpha());
                 }
+            }
+        }
+    }
+
+
+    @Inject(method = "variantTick", at = @At("HEAD"), remap = false, cancellable = true)
+    private void variantTickHook(CallbackInfo ci) {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+
+        if (self instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+            if (iAlphaAbleEntity.isAlpha() && !appliedAlphaAttributesForHost) {
+                refreshAttributesForHost(self);
+                appliedAlphaAttributesForHost = true;
+            } else if (!iAlphaAbleEntity.isAlpha() && appliedAlphaAttributesForHost) {
+                refreshAttributesForHost(self);
+                appliedAlphaAttributesForHost = false;
             }
         }
     }
@@ -199,7 +230,8 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     }
 
     @Override
-    public boolean isAbleToGrab() {EntityType<?> type = this.getType();
+    public boolean isAbleToGrab() {
+        EntityType<?> type = this.getType();
         if (type == ChangedEntities.BEHEMOTH_HEAD.get() || type == ChangedEntities.BEHEMOTH_HAND_LEFT.get() || type == ChangedEntities.BEHEMOTH_HAND_RIGHT.get()) {
             this.ableToGrab = level.getDifficulty().equals(Difficulty.HARD);
         }
