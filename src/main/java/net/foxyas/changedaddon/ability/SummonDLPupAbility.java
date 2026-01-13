@@ -21,12 +21,10 @@ public class SummonDLPupAbility extends SimpleAbility {
 
     protected Stream<BlockPos> findLandNearby(Level level, BlockPos near) {
         var referenceEntity = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
+        assert referenceEntity != null;
 
-        return BlockPos.betweenClosedStream(near.offset(-4, -2, -4), near.offset(4, 2, 4)).filter(
-                pos -> {
-                    assert referenceEntity != null;
-                    return level.getBlockState(pos).entityCanStandOnFace(level, pos, referenceEntity, Direction.UP);
-                }
+        return BlockPos.betweenClosedStream(near.offset(-4, -2, -4), near.offset(4, 2, 4)).map(BlockPos::immutable).filter(
+                pos -> level.getBlockState(pos.offset(0, -1, 0)).entityCanStandOnFace(level, pos, referenceEntity, Direction.UP) && level.getBlockState(pos).isAir()
         );
     }
 
@@ -46,14 +44,14 @@ public class SummonDLPupAbility extends SimpleAbility {
 
             var pup = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
             assert pup != null;
-            level.addFreshEntity(pup);
 
             if (entity.isPlayer()) {
                 pup.tame(entity.getChangedEntity().getUnderlyingPlayer());
             }
 
             pup.setTarget(entity.getEntity().getLastHurtByMob());
-            pup.moveTo(blockPos, 0.0f, 0.0f);
+            pup.moveTo(blockPos, 0.0F, 0.0F);
+            level.addFreshEntity(pup);
 
             attempts--;
         }
