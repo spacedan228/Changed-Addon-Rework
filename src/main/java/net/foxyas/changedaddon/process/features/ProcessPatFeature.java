@@ -24,23 +24,23 @@ import java.util.Random;
 
 public class ProcessPatFeature {
 
-    public static void SpawnEmote(Player player, LivingEntity target) {
+    public static void SpawnEmote(Player player, LivingEntity target, ServerLevel level) {
         if (target instanceof Player targetPl && !ProcessTransfur.isPlayerTransfurred(targetPl)) return;
 
         if (target instanceof ChangedEntity changedEntity){
             if (changedEntity.getTarget() == player) return;
 
             if (PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
-                player.getLevel().addParticle(ChangedParticles.emote(target, Emote.CONFUSED),
+                level.sendParticles(ChangedParticles.emote(target, Emote.CONFUSED),
                         target.getX(), target.getY() + (double) target.getDimensions(target.getPose()).height + 0.65, target.getZ(),
-                        0.0f, 0.0f, 0.0f);
+                        0, 0, 0, 0, 0);
                 return;
             }
         }
 
-        player.getLevel().addParticle(ChangedParticles.emote(target, Emote.HEART),
+        level.sendParticles(ChangedParticles.emote(target, Emote.HEART),
                 target.getX(), target.getY() + (double) target.getDimensions(target.getPose()).height + 0.65, target.getZ(),
-                0.0f, 0.0f, 0.0f);
+                0, 0, 0, 0, 0);
     }
 
     public static class GlobalPatReactionEvent extends Event {
@@ -77,28 +77,26 @@ public class ProcessPatFeature {
             Player player = event.player;
             LivingEntity target = event.target;
 
-            if (player.getLevel() instanceof ServerLevel serverLevel) {
-                if (target instanceof ChangedEntity changedEntity && !ProcessTransfur.isPlayerTransfurred(player)) {
-                    if (!PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
-                        Random random = changedEntity.getRandom();
-                        if (random.nextFloat() <= 0.0001f) {
-                            changedEntity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600, 0, true, false, true), player);
-                            if (player instanceof ServerPlayer serverPlayer) {
-                                ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, changedEntity, "paticifier");
-                            }
+            if (!(player.getLevel() instanceof ServerLevel level)) return;
+
+            if (target instanceof ChangedEntity changedEntity && !ProcessTransfur.isPlayerTransfurred(player)) {
+                if (!PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
+                    Random random = changedEntity.getRandom();
+                    if (random.nextFloat() <= 0.0001f) {
+                        changedEntity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600, 0, true, false, true), player);
+                        if (player instanceof ServerPlayer serverPlayer) {
+                            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, changedEntity, "paticifier");
                         }
                     }
                 }
             }
 
-            if (!player.level.isClientSide()) {
-                player.displayClientMessage(new TranslatableComponent("key.changed_addon.pat_message", target.getDisplayName().getString()), true);
-                if (target instanceof Player targetPlayer) {
-                    targetPlayer.displayClientMessage(new TranslatableComponent("key.changed_addon.pat_received", player.getDisplayName().getString()), true);
-                }
+            player.displayClientMessage(new TranslatableComponent("key.changed_addon.pat_message", target.getDisplayName().getString()), true);
+            if (target instanceof Player targetPlayer) {
+                targetPlayer.displayClientMessage(new TranslatableComponent("key.changed_addon.pat_received", player.getDisplayName().getString()), true);
             }
 
-            SpawnEmote(player, target);
+            SpawnEmote(player, target, level);
         }
     }
 
