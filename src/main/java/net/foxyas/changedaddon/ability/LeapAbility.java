@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.ability;
 
 import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -47,8 +48,8 @@ public class LeapAbility extends SimpleAbility {
             motionX = -Math.sin(Math.toRadians(player.getYRot())) * 0.15;
             motionY = targetY * 0.8F;
             motionZ = Math.cos(Math.toRadians(player.getYRot())) * 0.15;
-            float multiplier = iAbstractChangedEntity.getSelfVariant() == ChangedAddonTransfurVariants.LATEX_SNEP.get()
-                    || iAbstractChangedEntity.getSelfVariant() == ChangedAddonTransfurVariants.LATEX_SNEP_FERAL_FORM.get() ? 1.3F : 1;
+            float multiplier = (iAbstractChangedEntity.getSelfVariant() == ChangedAddonTransfurVariants.LATEX_SNEP.get()
+                    || iAbstractChangedEntity.getSelfVariant() == ChangedAddonTransfurVariants.LATEX_SNEP_FERAL_FORM.get() ? 1.3F : 1) + IAlphaAbleEntity.getEntityAlphaScale(iAbstractChangedEntity.getChangedEntity());
 
             player.setDeltaMovement(player.getDeltaMovement().add(motionX, motionY * multiplier, motionZ));
             playSound(player);
