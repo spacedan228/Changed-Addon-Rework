@@ -57,7 +57,8 @@ public class CommonMod {
         CHANGED_ADDON_PACKETS.registerPackets();
 
         ChangedAddonMod.addNetworkMessage(SafeGrabSyncPacket.class, SafeGrabSyncPacket::write,
-                SafeGrabSyncPacket::new, ClientPacketHandler::handleSafeGrabSync,
+                SafeGrabSyncPacket::new,
+                (packet, contextSupplier) -> ClientPacketHandler.handleSafeGrabSync(packet, contextSupplier),
                 NetworkDirection.PLAY_TO_CLIENT);
 
         ChangedAddonMod.addNetworkMessage(KeyPressPacket.class, KeyPressPacket::encode,
