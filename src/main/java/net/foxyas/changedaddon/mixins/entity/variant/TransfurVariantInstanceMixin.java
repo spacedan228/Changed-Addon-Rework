@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.mixins.entity.variant;
 
 import com.google.common.collect.ImmutableMap;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
@@ -247,12 +248,16 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @Inject(method = "unhookAll", at = @At("TAIL"), cancellable = true)
     private void injectUnHookALl(Player player, CallbackInfo ci) {
-        if (this.getChangedEntity() instanceof VariantExtraStats stats) {
+        ChangedEntity changedEntity = this.getChangedEntity();
+        if (changedEntity instanceof VariantExtraStats stats) {
             if (this.appliedFlySpeed) {
                 this.appliedFlySpeed = false;
                 this.host.getAbilities().setFlyingSpeed(AttributesHandle.DefaultPlayerFlySpeed);
                 this.host.onUpdateAbilities();
             }
+        }
+        if (changedEntity instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+            iAlphaAbleEntity.cleanAlphaAttributesFromHost(changedEntity);
         }
     }
 

@@ -113,6 +113,13 @@ public interface IAlphaAbleEntity {
         IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
+    default void cleanAlphaAttributesFromHost(ChangedEntity creature) {
+        if (!(creature.maybeGetUnderlying() instanceof Player host)) return;
+
+        IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, false, 0);
+        IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+    }
+
     default float chanceToSpawnAsAlpha() {
         if (this instanceof ChangedEntity changedEntity) {
             boolean cantSpawn = changedEntity.getType().is(ChangedAddonTags.EntityTypes.CANT_SPAWN_AS_ALPHA_ENTITY);
