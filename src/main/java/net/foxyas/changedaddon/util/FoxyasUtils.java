@@ -39,7 +39,7 @@ import static net.foxyas.changedaddon.util.DynamicClipContext.IGNORE_TRANSLUCENT
 public class FoxyasUtils {
 
     public static void sendPlayerLikeChat(Component chatComponent, LivingEntity talker, ServerPlayer player, boolean filtered) {
-        OutgoingChatMessage chatMessage = new OutgoingChatMessage.Player(PlayerChatMessage.unsigned(player.getUUID(), chatComponent.getString()));
+        OutgoingChatMessage chatMessage = new OutgoingChatMessage.Disguised(chatComponent);
         ChatType.Bound bound = ChatType.bind(ChatType.CHAT, talker);
         player.sendChatMessage(chatMessage, filtered, bound);
     }
