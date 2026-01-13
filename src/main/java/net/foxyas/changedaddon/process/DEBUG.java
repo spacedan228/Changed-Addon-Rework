@@ -1,8 +1,6 @@
 package net.foxyas.changedaddon.process;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.sun.jna.Structure;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
 import net.foxyas.changedaddon.mixins.mods.changed.FacilitySinglePieceInstanceAccessor;
@@ -14,30 +12,19 @@ import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.GenderedEntity;
 import net.ltxprogrammer.changed.world.features.structures.facility.FacilitySinglePiece;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.debug.PathfindingRenderer;
-import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.control.MoveControl;
-import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
-import net.minecraft.world.level.pathfinder.Node;
 import net.minecraft.world.level.pathfinder.Path;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
@@ -52,7 +39,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 import java.util.List;
 
 import static net.foxyas.changedaddon.util.RenderUtil.renderPathAsLine;
-import static net.minecraft.client.renderer.debug.PathfindingRenderer.renderPath;
 
 
 @Mod.EventBusSubscriber
@@ -98,13 +84,13 @@ public class DEBUG {
 
         if (event.getMessage().startsWith("translateThisTo:")) {
             String normalText = event.getMessage().replace("translateThisTo:", "");
-            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.TO);
+            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.TO_LATEX_LANGUAGE);
             event.setComponent(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
         }
 
         if (event.getMessage().startsWith("translateThisFrom:")) {
             String normalText = event.getMessage().replace("translateThisFrom:", "");
-            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.FROM);
+            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.FROM_LATEX_LANGUAGE);
             event.setComponent(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
         }
 

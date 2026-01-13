@@ -22,8 +22,8 @@ public class LatexLanguageTranslator {
     }
 
     public enum TranslationType {
-        TO(mapping),
-        FROM(reverseMapping);
+        TO_LATEX_LANGUAGE(mapping),
+        FROM_LATEX_LANGUAGE(reverseMapping);
 
         private final Map<Character, Character> translationMap;
 
