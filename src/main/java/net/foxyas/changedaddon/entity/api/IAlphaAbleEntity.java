@@ -94,6 +94,10 @@ public interface IAlphaAbleEntity {
         return entity instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha();
     }
 
+    static float getEntityAlphaScale(Entity entity) {
+        return entity instanceof IAlphaAbleEntity iAlphaAbleEntity ? iAlphaAbleEntity.alphaAdditionalScale() : 0;
+    }
+
     void setAlpha(boolean alphaGene);
 
     boolean isAlpha();
@@ -111,6 +115,13 @@ public interface IAlphaAbleEntity {
 
         SynchedEntityData entityData = creature.getEntityData();
         IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
+        IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+    }
+
+    default void cleanAlphaAttributesFromHost(ChangedEntity creature) {
+        if (!(creature.maybeGetUnderlying() instanceof Player host)) return;
+
+        IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, false, 0);
         IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 

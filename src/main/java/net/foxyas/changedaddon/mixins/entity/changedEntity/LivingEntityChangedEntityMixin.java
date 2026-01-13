@@ -46,7 +46,7 @@ public abstract class LivingEntityChangedEntityMixin extends Entity {
         var self = ChangedAddon$selfMixin();
         Entity entity = resolveChangedEntity(self);
         if (IAlphaAbleEntity.isEntityAlpha(entity)) {
-            return original * 1.25f;
+            return original * (1 + (0.25f * (IAlphaAbleEntity.getEntityAlphaScale(entity) / 0.75f)));
         }
         return original;
     }
