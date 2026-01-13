@@ -5,7 +5,9 @@ import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.TranslatorItem;
 import net.foxyas.changedaddon.process.features.LatexLanguageTranslator;
+import net.foxyas.changedaddon.util.ComponentUtil;
 import net.foxyas.changedaddon.util.FoxyasUtils;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,53 +28,61 @@ public class ServerEvent {
         Component messageComponent = event.getMessage();
         String message = messageComponent.getString();
 
-        for (Player receiver : sender.level.players()) {
+        if (!isLatex(sender)) {
+            return;
+        }
 
+        if (hasTranslator(sender)) {
+            return;
+        }
+
+        event.setCanceled(true);
+
+        for (Player receiver : sender.level.players()) {
             String finalMessage = message;
 
-            if (shouldTranslateTo(sender, receiver)) {
+            if (!receiverCanUnderstand(receiver)) {
                 finalMessage = LatexLanguageTranslator.translateText(
                         message,
-                        LatexLanguageTranslator.TranslationType.TO
-                );
-            }
-            else if (shouldTranslateFrom(sender, receiver)) {
-                finalMessage = LatexLanguageTranslator.translateText(
-                        message,
-                        LatexLanguageTranslator.TranslationType.FROM
+                        LatexLanguageTranslator.TranslationType.TO_LATEX_LANGUAGE
                 );
             }
 
             FoxyasUtils.sendPlayerLikeChat(Component.literal(finalMessage), sender, sender, true);
         }
-
-        // Cancels the vanilla broadcast
-        event.setCanceled(true);
     }
 
     /* ===== helpers ===== */
+
+    private static boolean receiverCanUnderstand(Player receiver) {
+        boolean receiverIsLatex = isLatex(receiver);
+        boolean receiverHasTranslator = hasTranslator(receiver);
+        return receiverIsLatex || receiverHasTranslator;
+    }
 
     private static boolean isLatex(Player player) {
         return ProcessTransfur.isPlayerTransfurred(player);
     }
 
     private static boolean hasTranslator(Player player) {
-        ItemStack pStack = new ItemStack(ChangedAddonItems.TRANSLATOR.get());
-        if (!player.getInventory().contains(pStack)) return false;
-
-        int itemSlot = player.getInventory().findSlotMatchingItem(pStack);
-        ItemStack itemStack = player.getInventory().getItem(itemSlot);
-        return TranslatorItem.isEnabled(itemStack);
+        for (ItemStack stack : player.getInventory().items) {
+            if (!stack.isEmpty()
+                    && stack.getItem() instanceof TranslatorItem
+                    && TranslatorItem.isEnabled(stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    private static boolean shouldTranslateTo(Player sender, Player receiver) {
+    private static boolean shouldTranslateToLatexLanguage(Player sender, Player receiver) {
         return isLatex(sender)
                 && !hasTranslator(sender)
                 && !isLatex(receiver)
                 && !hasTranslator(receiver);
     }
 
-    private static boolean shouldTranslateFrom(Player sender, Player receiver) {
+    private static boolean shouldTranslateFromLatexLanguage(Player sender, Player receiver) {
         return !isLatex(sender)
                 && !hasTranslator(sender)
                 && isLatex(receiver)
