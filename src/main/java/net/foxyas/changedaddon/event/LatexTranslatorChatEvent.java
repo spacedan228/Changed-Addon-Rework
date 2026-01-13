@@ -9,6 +9,7 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -32,27 +33,30 @@ public class LatexTranslatorChatEvent {
 
         if (level == null || localPlayer == null) return;
 
-        // UUID do sender (pode ser null em alguns tipos de chat)
         UUID senderUUID = event.getSender();
         if (senderUUID == null) return;
 
         Entity senderEntity = PlayerUtil.GlobalEntityUtil.getEntityByUUID(level, senderUUID);
         if (!(senderEntity instanceof Player sender)) return;
 
-        // Regra: sender é latex e não tem tradutor?
         if (!isLatex(sender) || hasTranslator(sender)) return;
 
-        // Regra: ESTE client consegue entender?
         if (canUnderstandLatex(localPlayer)) return;
 
         // Traduz apenas para ESTE client
         Component original = event.getMessage();
+        String namePart = "<" + sender.getName().getString() + ">";
+        String message = original.getString().replaceFirst(namePart, "");
+
+
         String translated = LatexLanguageTranslator.translateText(
-                original.getString(),
+                message,
                 LatexLanguageTranslator.TranslationType.TO_LATEX_LANGUAGE
         );
 
-        event.setMessage(Component.literal(translated));
+        MutableComponent finalMessage = Component.literal(namePart).append(Component.literal(translated)).withStyle(original.getStyle());
+
+        event.setMessage(finalMessage);
     }
 
     /* ===== helpers ===== */
