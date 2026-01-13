@@ -253,6 +253,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
             self.getEntityData().set(IS_ALPHA, alpha);
             this.refreshDimensions();
             refreshAttributes(self);
+            refreshAttributesForHost(self);
         }
     }
 
@@ -269,6 +270,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
             self.getEntityData().set(ALPHA_SCALE, scale);
             this.refreshDimensions();
             refreshAttributes(self);
+            refreshAttributesForHost(self);
         }
     }
 
