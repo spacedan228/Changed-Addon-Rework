@@ -108,13 +108,13 @@ public class DEBUG {
 
         if (event.getMessage().getString().startsWith("translateThisTo:")) {
             String normalText = event.getMessage().getString().replace("translateThisTo:", "");
-            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.TO);
+            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.TO_LATEX_LANGUAGE);
             event.setMessage(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
         }
 
         if (event.getMessage().getString().startsWith("translateThisFrom:")) {
             String normalText = event.getMessage().getString().replace("translateThisFrom:", "");
-            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.FROM);
+            String convertedText = LatexLanguageTranslator.translateText(normalText, LatexLanguageTranslator.TranslationType.FROM_LATEX_LANGUAGE);
             event.setMessage(ComponentUtil.literal("<" + event.getUsername() + "> " + convertedText));
         }
 

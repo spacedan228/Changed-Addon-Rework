@@ -10,6 +10,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,7 +30,7 @@ public abstract class LivingEntityChangedEntityMixin extends Entity {
 
 
     @Inject(method = "onSyncedDataUpdated", at = @At("TAIL"), cancellable = false)
-    private void changedEntityHook(EntityDataAccessor<?> pKey, CallbackInfo ci) {
+    private void changedEntityOnSyncedDataUpdatedHook(EntityDataAccessor<?> pKey, CallbackInfo ci) {
         LivingEntity self = ChangedAddon$selfMixin();
         if (self instanceof ChangedEntity changedEntity) {
             if (pKey == IS_ALPHA || pKey == ALPHA_SCALE) {
@@ -45,7 +46,7 @@ public abstract class LivingEntityChangedEntityMixin extends Entity {
         var self = ChangedAddon$selfMixin();
         Entity entity = resolveChangedEntity(self);
         if (IAlphaAbleEntity.isEntityAlpha(entity)) {
-            return original * 1.25f;
+            return original * (1 + (0.25f * (IAlphaAbleEntity.getEntityAlphaScale(entity) / 0.75f)));
         }
         return original;
     }

@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.item;
 
+import it.unimi.dsi.fastutil.Pair;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.util.RenderUtil;
@@ -20,11 +21,9 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -45,7 +44,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class SignalCatcherItem extends Item {
 
@@ -54,8 +53,7 @@ public class SignalCatcherItem extends Item {
     private static final int MAX_FOUND_BLOCKS = 10;
 
     public SignalCatcherItem() {
-        super(new Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
-                .stacksTo(64).rarity(Rarity.COMMON));
+        super(new Properties().stacksTo(64).rarity(Rarity.COMMON));
     }
 
     @Override
@@ -238,26 +236,45 @@ public class SignalCatcherItem extends Item {
             LocalPlayer player = mc.player;
             Vec3 camPos = mc.gameRenderer.getMainCamera().getPosition();
 
-            if (level == null || player == null)
+            if (level == null || player == null) {
+                clearCache();
                 return;
+            }
 
             ItemStack stack = getSignalCatcher(player);
-            if (stack == null)
+            if (stack == null) {
+                clearCache();
                 return;
+            }
 
             BlockPos target = getTargetFromItem(stack);
-            if (target == null)
+            if (target == null) {
+                clearCache();
                 return;
+            }
 
             // ================= Shadow Entity =================
-            PathfinderMob shadowMob = createShadowMob(player, level);
-            if (shadowMob == null)
-                return;
+            Path path = null;
+            if (cachedPair != null && cachedPair.first() != null && cachedPair.first().getTarget().equals(target) && cachedPair.second().equals(player.blockPosition())) {
+                path = cachedPair.first();
+            } else {
+                if (pathFuture == null) pathFuture = CompletableFuture.supplyAsync(() -> {
+                    PathfinderMob shadowMob = createShadowMob(player, level);
+                    if (shadowMob == null) return null;
 
-            shadowMob.setPos(player.getX(), player.getY(), player.getZ());
+                    shadowMob.setPos(player.getX(), player.getY(), player.getZ());
 
-            PathNavigation navigation = getNavigation(player, shadowMob, level);
-            Path path = navigation.createPath(target, 0);
+                    PathNavigation navigation = getNavigation(player, shadowMob, level);
+                    return Pair.of(navigation.createPath(target, 0), player.blockPosition());
+                });
+
+                if (pathFuture.isDone()) {
+                    if (!pathFuture.isCompletedExceptionally()) cachedPair = pathFuture.join();
+                    pathFuture = null;
+                }
+
+                if (cachedPair != null) path = cachedPair.first();
+            }
 
             if (path == null || path.getNodeCount() <= 1)
                 return;
@@ -265,6 +282,15 @@ public class SignalCatcherItem extends Item {
             // ================= Render Path =================
             RenderUtil.renderPathAsLine(event.getPoseStack(), camPos, path);
         }
+
+        private static void clearCache() {
+            cachedPair = null;
+            if (pathFuture != null) pathFuture.cancel(true);
+            pathFuture = null;
+        }
+
+        private static CompletableFuture<Pair<Path, BlockPos>> pathFuture;
+        private static Pair<Path, BlockPos> cachedPair;
 
         private static @NotNull PathNavigation getNavigation(LocalPlayer player, PathfinderMob shadowMob, ClientLevel level) {
             if (player.getAbilities().flying || player.isFallFlying() || !player.onGround()) {
@@ -303,7 +329,13 @@ public class SignalCatcherItem extends Item {
 
         private static PathfinderMob createShadowMob(LocalPlayer player, Level level) {
             ChangedEntity changedEntity = ProcessTransfur.getPlayerTransfurVariantSafe(player).map(TransfurVariantInstance::getChangedEntity).orElse(null);
-            return changedEntity == null ? ChangedEntities.GAS_WOLF_MALE.get().create(level) : changedEntity;
+
+            if (changedEntity == null) {
+                changedEntity = ChangedEntities.GAS_WOLF_MALE.get().create(level);
+                if (changedEntity != null) changedEntity.setOnGround(player.onGround());
+            }
+
+            return changedEntity;
         }
     }
 }

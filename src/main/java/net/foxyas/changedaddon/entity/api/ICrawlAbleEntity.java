@@ -19,26 +19,24 @@ public interface ICrawlAbleEntity {
         if (target != null) {
             setCrawlingPoseIfNeeded(livingEntity, target);
             crawlToTarget(livingEntity, target);
-        } else {
+        } else switchToSafePose(livingEntity);
+    }
 
-            Pose currentPose = livingEntity.getPose();
-            Pose safePose = currentPose;
+    private void switchToSafePose(ChangedEntity livingEntity) {
+        Pose currentPose = livingEntity.getPose();
+        Pose safePose = currentPose;
 
-            if (!canEnterPose(livingEntity, currentPose)) {
-                if (canEnterPose(livingEntity, Pose.STANDING)) {
-                    safePose = Pose.STANDING;
-                } else if (canEnterPose(livingEntity, Pose.CROUCHING)) {
-                    safePose = Pose.CROUCHING;
-                } else if (canEnterPose(livingEntity, Pose.SWIMMING)) {
-                    safePose = Pose.SWIMMING;
-                }
-            }
+        if (canEnterPose(livingEntity, Pose.STANDING)) {
+            safePose = Pose.STANDING;
+        } else if (canEnterPose(livingEntity, Pose.CROUCHING)) {
+            safePose = Pose.CROUCHING;
+        } else if (canEnterPose(livingEntity, Pose.SWIMMING)) {
+            safePose = Pose.SWIMMING;
+        }
 
-            if (safePose != currentPose) {
-                livingEntity.setPose(safePose);
-                //this.refreshDimensions();
-            }
-
+        if (safePose != currentPose) {
+            livingEntity.setPose(safePose);
+            //this.refreshDimensions();
         }
     }
 
@@ -66,17 +64,17 @@ public interface ICrawlAbleEntity {
 
     default void onlyCrawlingSystem() {
         if (this instanceof ChangedEntity changedEntity) {
-            OnlyCrawlingSystem(changedEntity, changedEntity.getTarget());
+            onlyCrawlingSystem(changedEntity, changedEntity.getTarget());
         }
     }
 
-    default void OnlyCrawlingSystem(LivingEntity target) {
+    default void onlyCrawlingSystem(LivingEntity target) {
         if (this instanceof ChangedEntity changedEntity) {
-            OnlyCrawlingSystem(changedEntity, target);
+            onlyCrawlingSystem(changedEntity, target);
         }
     }
 
-    default void OnlyCrawlingSystem(LivingEntity livingEntity, LivingEntity target) {
+    default void onlyCrawlingSystem(ChangedEntity livingEntity, LivingEntity target) {
         if (target != null) {
             setCrawlingPoseIfNeeded(livingEntity, target);
             crawlToTarget(livingEntity, target);
@@ -93,15 +91,13 @@ public interface ICrawlAbleEntity {
         }
     }
 
-    default void setCrawlingPoseIfNeeded(LivingEntity livingEntity, LivingEntity target) {
+    default void setCrawlingPoseIfNeeded(ChangedEntity livingEntity, LivingEntity target) {
         if (target.getPose() == Pose.SWIMMING && livingEntity.getPose() != Pose.SWIMMING) {
             if (target.getY() < livingEntity.getEyeY() && !target.level.getBlockState(new BlockPos((int) target.getX(), (int) target.getEyeY(), (int) target.getZ()).above()).isAir()) {
                 livingEntity.setPose(Pose.SWIMMING);
             }
         } else {
-            if (!livingEntity.isSwimming() && livingEntity.level.getBlockState(new BlockPos((int) livingEntity.getX(), (int) livingEntity.getEyeY(), (int) livingEntity.getZ()).above()).isAir()) {
-                livingEntity.setPose(Pose.STANDING);
-            }
+            switchToSafePose(livingEntity);
         }
     }
 

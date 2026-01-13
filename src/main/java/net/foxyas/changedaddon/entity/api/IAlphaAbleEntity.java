@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 
@@ -93,6 +94,10 @@ public interface IAlphaAbleEntity {
         return entity instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha();
     }
 
+    static float getEntityAlphaScale(Entity entity) {
+        return entity instanceof IAlphaAbleEntity iAlphaAbleEntity ? iAlphaAbleEntity.alphaAdditionalScale() : 0;
+    }
+
     void setAlpha(boolean alphaGene);
 
     boolean isAlpha();
@@ -103,6 +108,21 @@ public interface IAlphaAbleEntity {
         SynchedEntityData entityData = self.getEntityData();
         IAlphaAbleEntity.applyOrRemoveAlphaModifiers(self, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
         IAbstractChangedEntity.forEitherSafe(self.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+    }
+
+    default void refreshAttributesForHost(ChangedEntity creature) {
+        if (!(creature.maybeGetUnderlying() instanceof Player host)) return;
+
+        SynchedEntityData entityData = creature.getEntityData();
+        IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
+        IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+    }
+
+    default void cleanAlphaAttributesFromHost(ChangedEntity creature) {
+        if (!(creature.maybeGetUnderlying() instanceof Player host)) return;
+
+        IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, false, 0);
+        IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
     default float chanceToSpawnAsAlpha() {
@@ -127,7 +147,7 @@ public interface IAlphaAbleEntity {
     }
 
     default float alphaCameraOffset() {
-        if (isAlpha()) return alphaScaleForRender() / 2f;
+        if (isAlpha()) return alphaAdditionalScale() / 1.5f;
         return 0;
     }
 
