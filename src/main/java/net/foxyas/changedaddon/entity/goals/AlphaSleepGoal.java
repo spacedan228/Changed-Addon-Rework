@@ -142,7 +142,7 @@ public class AlphaSleepGoal extends Goal {
                 return false; // alguém chegou muito perto
             }
 
-            if (movement.lengthSqr() > 1.0D) {
+            if (movement.lengthSqr() >= 0.05D) {
                 return false; // alguém correndo
             }
 
