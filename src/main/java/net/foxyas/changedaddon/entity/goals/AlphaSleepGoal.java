@@ -112,7 +112,10 @@ public class AlphaSleepGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (--sleepDuration <= 0) return false;
+        if (sleepCooldown > 0) {
+            sleepCooldown--;
+            return false;
+        }
 
         Level level = holder.level;
         List<LivingEntity> entities = level.getEntitiesOfClass(
@@ -133,7 +136,7 @@ public class AlphaSleepGoal extends Goal {
                 boolean flag = syncTrackMotion.getLastKnownMotion() != null && syncTrackMotion.getLastKnownMotion().length() > movement.length();
                 if (flag) movement = syncTrackMotion.getLastKnownMotion();
             }
-            
+
             if (movement.lengthSqr() < 0.05D) continue;
 
             if (entity.distanceToSqr(holder) < noWalkingRangeSqr * 0.25D) {
