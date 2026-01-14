@@ -37,12 +37,18 @@ public class ChangedAddonFacilityPieces {
     public static void registerAddonRooms(FacilityPieceCollectionBuilder builder) {
         builder.register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON + 40,
                         new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/exp009room"),
-                                ResourceLocation.parse("changed_addon:chests/experiment_009_loot_dna")))
+                                null))
                 .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON + 40,
                         new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/exp10room"),
                                 ResourceLocation.parse("changed_addon:chests/experiment_10_loot_op")))
                 .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON + 40,
                         new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/luminar_crystal_room"),
+                                ResourceLocation.parse("changed:chests/high_tier_lab")))
+                .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON + 40,
+                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/alpha_cave_snow_leopard"),
+                                ResourceLocation.parse("changed:chests/high_tier_lab")))
+                .register(FacilityPieceCollectionBuilder.WEIGHT_UNCOMMON + 40,
+                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/alpha_cave_tiger_shark"),
                                 ResourceLocation.parse("changed:chests/high_tier_lab")));
 //                .register(FacilityPieceCollectionBuilder.WEIGHT_COMMON,
 //                        new FacilityRoomPiece(ResourceLocation.parse("changed_addon:facilities/facility_rooms/closed_meteor"),
