@@ -37,6 +37,7 @@ public interface IAlphaAbleEntity {
     UUID ATTACK_SPEED = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a008");
 
     static void applyOrRemoveAlphaModifiers(LivingEntity entity, boolean isAlpha, float alphaScale) {
+        if (entity.isDeadOrDying()) return;
         if (entity.level.isClientSide) return;
         removeAlphaModifiers(entity);
 
@@ -104,6 +105,7 @@ public interface IAlphaAbleEntity {
     void setAlphaScale(float scale);
 
     default void refreshAttributes(ChangedEntity self) {
+        if (self.isDeadOrDying()) return;
         SynchedEntityData entityData = self.getEntityData();
         IAlphaAbleEntity.applyOrRemoveAlphaModifiers(self, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
         IAbstractChangedEntity.forEitherSafe(self.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
@@ -111,6 +113,7 @@ public interface IAlphaAbleEntity {
 
     default void refreshAttributesForHost(ChangedEntity creature) {
         if (!(creature.maybeGetUnderlying() instanceof Player host)) return;
+        if (host.isDeadOrDying()) return;
 
         SynchedEntityData entityData = creature.getEntityData();
         IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
@@ -119,6 +122,7 @@ public interface IAlphaAbleEntity {
 
     default void cleanAlphaAttributesFromHost(ChangedEntity creature) {
         if (!(creature.maybeGetUnderlying() instanceof Player host)) return;
+        if (host.isDeadOrDying()) return;
 
         IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, false, 0);
         IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);

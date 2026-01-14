@@ -1,5 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
@@ -93,6 +95,19 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         if (isNeutralTo(livingEntity)) cir.setReturnValue(false);
     }
 
+    @ModifyReturnValue(method = "getDripRate", at = @At("RETURN"))
+    private float modify(float original, @Local(argsOnly = true) float damage) {
+        LivingEntity selfOrPlayer = getSelf().maybeGetUnderlying();
+        if (selfOrPlayer.hasEffect(ChangedAddonMobEffects.PACIFIED.get())) {
+            return 0f; // Never going to drip.
+        }
+        if (selfOrPlayer.hasEffect(ChangedAddonMobEffects.LATEX_SOLVENT.get()) || selfOrPlayer.hasEffect(ChangedAddonMobEffects.UNTRANSFUR.get())) {
+            return 1f; // Always going to drip.
+        }
+
+        return original;
+    }
+
     @Inject(at = @At("HEAD"), method = "tryAbsorbTarget", cancellable = true)
     private void tryAbsorbTargetInjector(LivingEntity target, IAbstractChangedEntity source, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions, CallbackInfoReturnable<Boolean> cir) {
         Optional<AccessorySlots> forEntity = AccessorySlots.getForEntity(maybeGetUnderlying());
@@ -112,10 +127,15 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
 
     @Inject(at = @At("TAIL"), method = "registerGoals", remap = true, cancellable = true)
     private void goalsHook(CallbackInfo ci) {
-        var self = (ChangedEntity) (Object) this;
+        var self = getSelf();
         if (!(self instanceof WolfyEntity)) {
             this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, ChangedEntity.class, true, this::targetSelectorTest));
         }
+    }
+
+    private ChangedEntity getSelf() {
+        var self = (ChangedEntity) (Object) this;
+        return self;
     }
 
     @Inject(at = @At("HEAD"), method = "addAdditionalSaveData", remap = true)

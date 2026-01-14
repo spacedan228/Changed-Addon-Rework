@@ -1,7 +1,10 @@
 package net.foxyas.changedaddon.entity.api;
 
+import net.foxyas.changedaddon.event.TransfurEvents;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.clothes.DyeableClothingItem;
+import net.foxyas.changedaddon.util.FoxyasUtils;
+import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -11,12 +14,19 @@ import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.item.AccessoryItem;
 import net.minecraft.Util;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,6 +34,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static net.foxyas.changedaddon.util.DynamicClipContext.IGNORE_TRANSLUCENT;
 
 @ParametersAreNonnullByDefault
 public interface ChangedEntityExtension {
@@ -131,5 +143,33 @@ public interface ChangedEntityExtension {
 
     private @NotNull ItemStack getRandomItemFromList(ChangedEntity changedEntity, List<Item> itemList) {
         return new ItemStack(Util.getRandom(itemList, changedEntity.getRandom()));
+    }
+
+
+    default int getDripParticleMultiplier() {
+        if (!(this instanceof ChangedEntity changedEntity)) return 0;
+        if (!IAlphaAbleEntity.isEntityAlpha(changedEntity)) return 0;
+
+        Entity underlying = TransfurEvents.resolveChangedEntity(changedEntity.maybeGetUnderlying());
+        if (!(underlying instanceof LivingEntity living)) return 0;
+
+        double reach = living instanceof Player player
+                ? player.getReachDistance()
+                : 4.0D;
+
+        EntityHitResult hit = PlayerUtil.getEntityHitLookingAt(
+                living,
+                (float) reach,
+                IGNORE_TRANSLUCENT
+        );
+
+        if (hit == null || hit.getType() != HitResult.Type.ENTITY) return 0;
+
+        Entity target = hit.getEntity();
+        if (target.getType().is(ChangedTags.EntityTypes.HUMANOIDS)) {
+            return 4;
+        }
+
+        return 0;
     }
 }
