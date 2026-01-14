@@ -28,6 +28,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -37,9 +39,13 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import static net.foxyas.changedaddon.entity.goals.AlphaSleepGoal.hasValidAlphaSleepGoal;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
 public class CommonEvent {
@@ -59,6 +65,16 @@ public class CommonEvent {
         int experience = experienceDropEvent.getDroppedExperience();
         if (experienceDropEvent.getEntity() instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
             experienceDropEvent.setDroppedExperience((int) (experience * iAlphaAbleEntity.alphaAdditionalScale()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void allowAlphasSleepOnFluffyBlocksInFloor(SleepingLocationCheckEvent event) {
+        LivingEntity entity = event.getEntity();
+        if (entity instanceof PathfinderMob mob) {
+            if (hasValidAlphaSleepGoal(mob)) {
+                event.setResult(Event.Result.ALLOW);
+            }
         }
     }
 
