@@ -1,0 +1,21 @@
+package net.foxyas.changedaddon.entity.api.alphas;
+
+import net.minecraft.world.level.gameevent.vibrations.VibrationListener;
+import org.jetbrains.annotations.Nullable;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
+public interface IHearingSystem {
+
+    default @Nullable VibrationListener getGameEventListener() {
+        return null;
+    }
+
+    default boolean heardSomethingRecently() {
+        return getHeardCooldown() > 0;
+    }
+
+    int getHeardCooldown();
+    void setHeardCooldown(int value);
+}

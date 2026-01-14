@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.goals;
 
+import net.foxyas.changedaddon.entity.api.alphas.IHearingSystem;
 import net.ltxprogrammer.changed.block.Pillow;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -110,30 +111,35 @@ public class AlphaSleepGoal extends Goal {
     public boolean canContinueToUse() {
         if (--sleepDuration <= 0) return false;
 
-        Level level = holder.level;
-        List<LivingEntity> entities = level.getEntitiesOfClass(
-                LivingEntity.class,
-                holder.getBoundingBox().inflate(noWalkingRange),
-                EntitySelector.NO_SPECTATORS.and(e -> e != holder)
-        );
-
-        for (LivingEntity entity : entities) {
-            if (entity.isSleeping() || entity.isCrouching()) continue;
-
-            if (entity.isSprinting()) return false;
-
-            Vec3 movement = entity.getDeltaMovement();
-            if (movement.lengthSqr() < 0.05D) continue;
-
-            if (entity.distanceToSqr(holder) < noWalkingRangeSqr * 0.25D) {
-                return false; // alguém chegou muito perto
-            }
-
-            if (movement.lengthSqr() > 1.0D) {
-                return false; // alguém correndo
-            }
-
+        if (holder instanceof IHearingSystem iHearingSystem) {
+            boolean heardSomethingRecently = iHearingSystem.heardSomethingRecently();
+            if (heardSomethingRecently) return false;
         }
+
+//        Level level = holder.level;
+//        List<LivingEntity> entities = level.getEntitiesOfClass(
+//                LivingEntity.class,
+//                holder.getBoundingBox().inflate(noWalkingRange),
+//                EntitySelector.NO_SPECTATORS.and(e -> e != holder)
+//        );
+//
+//        for (LivingEntity entity : entities) {
+//            if (entity.isSleeping() || entity.isCrouching()) continue;
+//
+//            if (entity.isSprinting()) return false;
+//
+//            Vec3 movement = entity.getDeltaMovement();
+//            if (movement.lengthSqr() < 0.05D) continue;
+//
+//            if (entity.distanceToSqr(holder) < noWalkingRangeSqr * 0.25D) {
+//                return false; // alguém chegou muito perto
+//            }
+//
+//            if (movement.lengthSqr() > 1.0D) {
+//                return false; // alguém correndo
+//            }
+//
+//        }
 
         return true;
     }
