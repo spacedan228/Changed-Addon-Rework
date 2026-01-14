@@ -12,7 +12,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -133,7 +132,7 @@ public class AlphaSleepGoal extends Goal {
 
             Vec3 movement = entity.getDeltaMovement();
             if (entity instanceof SyncTrackMotion syncTrackMotion) {
-                boolean flag = syncTrackMotion.getLastKnownMotion() != null && syncTrackMotion.getLastKnownMotion().length() > movement.length();
+                boolean flag = syncTrackMotion.getLastKnownMotion() != null;
                 if (flag) movement = syncTrackMotion.getLastKnownMotion();
             }
 
