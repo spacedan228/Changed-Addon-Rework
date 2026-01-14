@@ -1,5 +1,7 @@
 package net.foxyas.changedaddon.entity.goals;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
 import net.ltxprogrammer.changed.block.Pillow;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -13,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -121,6 +124,8 @@ public class AlphaSleepGoal extends Goal {
             if (entity.isSleeping() || entity.isCrouching()) continue;
 
             if (entity.isSprinting()) return false;
+
+            ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RequestMovementCheckPacket(true));
 
             Vec3 movement = entity.getDeltaMovement();
             if (movement.lengthSqr() < 0.05D) continue;
