@@ -131,7 +131,7 @@ public class AlphaSleepGoal extends Goal {
             ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RequestMovementCheckPacket(true));
             Vec3 movement = entity.getDeltaMovement();
             if (entity instanceof SyncTrackMotion syncTrackMotion) {
-                boolean flag = syncTrackMotion.getLastKnownMotion() != null && syncTrackMotion.getLastKnownMotion().length() > movement.length();
+                boolean flag = syncTrackMotion.getLastKnownMotion() != null;
                 if (flag) movement = syncTrackMotion.getLastKnownMotion();
             }
 
