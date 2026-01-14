@@ -120,7 +120,7 @@ public class AlphaSleepGoal extends Goal {
         List<LivingEntity> entities = level.getEntitiesOfClass(
                 LivingEntity.class,
                 holder.getBoundingBox().inflate(noWalkingRange),
-                EntitySelector.NO_SPECTATORS.and(e -> e != holder)
+                EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(e -> e != holder)
         );
 
         for (LivingEntity entity : entities) {
@@ -141,8 +141,8 @@ public class AlphaSleepGoal extends Goal {
                 return false; // alguém chegou muito perto
             }
 
-            if (movement.lengthSqr() > 1.0D) {
-                return false; // alguém correndo
+            if (movement.lengthSqr() >= 0.05D) {
+                return false;
             }
 
         }
