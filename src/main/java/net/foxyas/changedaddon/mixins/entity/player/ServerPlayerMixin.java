@@ -20,6 +20,8 @@ public class ServerPlayerMixin implements SyncTrackMotion, LivingEntityDataExten
     @Unique
     public Vec3 lastKnownMotion = null;
 
+    private int ticksWithLastKnowMotion = 0;
+
     @Override
     public boolean isMoving() {
         return isMoving;
@@ -28,6 +30,7 @@ public class ServerPlayerMixin implements SyncTrackMotion, LivingEntityDataExten
     @Override
     public void setIsMoving(boolean isMoving) {
         this.isMoving = isMoving;
+        this.ticksWithLastKnowMotion = 0;
     }
 
     @Unique
@@ -38,6 +41,7 @@ public class ServerPlayerMixin implements SyncTrackMotion, LivingEntityDataExten
     @Override
     public void setLastKnownMotion(@Nullable Vec3 vec3) {
         this.lastKnownMotion = vec3;
+        this.ticksWithLastKnowMotion = 0;
     }
 
     @Unique
@@ -47,12 +51,15 @@ public class ServerPlayerMixin implements SyncTrackMotion, LivingEntityDataExten
 
     @Inject(method = "tick", at = @At("TAIL"), cancellable = true)
     private void cleanKnownMotion(CallbackInfo ci) {
-        if (getSelf().tickCount % 40 == 0) {
-            if (getLastKnownMotion() != null) {
-                setLastKnownMotion(null);
-            }
-            if (isMoving) {
-                this.isMoving = false;
+        if (getLastKnownMotion() != null || isMoving()) {
+            ticksWithLastKnowMotion++;
+            if (ticksWithLastKnowMotion % 40 == 0) {
+                if (getLastKnownMotion() != null) {
+                    setLastKnownMotion(null);
+                }
+                if (isMoving) {
+                    this.isMoving = false;
+                }
             }
         }
     }
