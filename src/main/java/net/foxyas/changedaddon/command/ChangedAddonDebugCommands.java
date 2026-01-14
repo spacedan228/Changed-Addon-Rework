@@ -73,6 +73,8 @@ public class ChangedAddonDebugCommands {
                     BlockPos genPos = accessor.getGenerationPosition();
                     BlockPos center = facilityPieceInstance.getBoundingBox().getCenter();
 
+                    MutableComponent lineBreak = Component.literal("\n");
+
                     MutableComponent pMessage = Component.literal("Facility HAS piece: ").withStyle(style -> style
                             .withColor((TextColor) null)
                     ).append(Component.literal(resourceId.toString()).withStyle(style -> style
@@ -98,17 +100,8 @@ public class ChangedAddonDebugCommands {
                             )
                     );
 
-                    //Facility HAS piece: changed_addon:facilities/facility_rooms/alpha_cave_snow_leopard\nGeneration Pos: BlockPos{x=-2133, y=38, z=43549}\nCenter: BlockPos{x=-2150, y=52, z=43571}
                     source.sendSuccess(
-                            () -> pMessage,
-                            false
-                    );
-                    source.sendSuccess(
-                            () -> generationPos,
-                            false
-                    );
-                    source.sendSuccess(
-                            () -> generationCenterPos,
+                            () -> pMessage.append(lineBreak).append(generationPos).append(lineBreak).append(generationCenterPos),
                             false
                     );
                     return 1;
