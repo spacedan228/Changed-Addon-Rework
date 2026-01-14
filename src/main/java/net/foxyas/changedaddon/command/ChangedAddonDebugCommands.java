@@ -6,11 +6,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.foxyas.changedaddon.mixins.mods.changed.FacilitySinglePieceInstanceAccessor;
 import net.foxyas.changedaddon.util.StructureUtil;
 import net.ltxprogrammer.changed.world.features.structures.facility.FacilitySinglePiece;
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
@@ -72,12 +73,42 @@ public class ChangedAddonDebugCommands {
                     BlockPos genPos = accessor.getGenerationPosition();
                     BlockPos center = facilityPieceInstance.getBoundingBox().getCenter();
 
-                    source.sendSuccess(() ->
-                                    Component.literal(
-                                            "Facility HAS piece: " + resourceId + "\n" +
-                                                    "Generation Pos: " + genPos + "\n" +
-                                                    "Center: " + center
-                                    ),
+                    MutableComponent pMessage = Component.literal("Facility HAS piece: ").withStyle(style -> style
+                            .withColor((TextColor) null)
+                    ).append(Component.literal(resourceId.toString()).withStyle(style -> style
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/changed-addon-admin debug facility hasPiece %s", resourceId)))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to copy the facility piece id")))
+                                    .withColor(ChatFormatting.GREEN)
+                            )
+                    );
+                    MutableComponent generationPos = Component.literal("Generation Pos: ").withStyle(style -> style
+                            .withColor((TextColor) null)
+                    ).append(Component.literal(genPos.toString())
+                            .withStyle(style -> style
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/tp %d %d %d", genPos.getX(), genPos.getY(), genPos.getZ())))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to copy the teleport command")))
+                                    .withColor(ChatFormatting.GREEN)
+                            )
+                    );
+                    MutableComponent generationCenterPos = Component.literal("Center: ").append(Component.literal(center.toString())
+                            .withStyle(style -> style
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, String.format("/tp %d %d %d", center.getX(), center.getY(), center.getZ())))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to copy the teleport command")))
+                                    .withColor(ChatFormatting.GREEN)
+                            )
+                    );
+
+                    //Facility HAS piece: changed_addon:facilities/facility_rooms/alpha_cave_snow_leopard\nGeneration Pos: BlockPos{x=-2133, y=38, z=43549}\nCenter: BlockPos{x=-2150, y=52, z=43571}
+                    source.sendSuccess(
+                            () -> pMessage,
+                            false
+                    );
+                    source.sendSuccess(
+                            () -> generationPos,
+                            false
+                    );
+                    source.sendSuccess(
+                            () -> generationCenterPos,
                             false
                     );
                     return 1;
