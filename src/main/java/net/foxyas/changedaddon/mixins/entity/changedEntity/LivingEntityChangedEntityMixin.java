@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
-import net.foxyas.changedaddon.entity.api.alphas.IHearingSystem;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -13,7 +12,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.vibrations.VibrationListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -46,12 +44,6 @@ public abstract class LivingEntityChangedEntityMixin extends Entity {
     @Inject(method = "baseTick", at = @At("TAIL"))
     private void baseTickHook(CallbackInfo ci) {
         LivingEntity self = ChangedAddon$selfMixin();
-        if (self instanceof IHearingSystem iHearingSystem) {
-            VibrationListener gameEventListener = iHearingSystem.getGameEventListener();
-            if (gameEventListener != null) {
-                gameEventListener.tick(self.level);
-            }
-        }
     }
 
     @ModifyReturnValue(method = "getJumpPower", at = @At("RETURN"))

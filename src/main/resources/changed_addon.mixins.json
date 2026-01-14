@@ -31,7 +31,6 @@
     "entity.attributes.AttributeMapAccessor",
     "entity.changedEntity.ChangedEntityGrabHandleMixin",
     "entity.changedEntity.ChangedEntityMixin",
-    "entity.changedEntity.HearSystemChangedEntityMixin",
     "entity.changedEntity.LivingEntityChangedEntityMixin",
     "entity.changedEntity.MobChangedEntityMixin",
     "entity.goals.AvoidEntityGoalMixin",
