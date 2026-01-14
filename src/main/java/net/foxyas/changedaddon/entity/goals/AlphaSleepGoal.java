@@ -82,7 +82,10 @@ public class AlphaSleepGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (sleepCooldown > 0) return false;
+        if (sleepCooldown > 0) {
+            sleepCooldown--;
+            return false;
+        }
         if (holder.getTarget() != null) return false;
 
         scanForFluffyBlocks();
