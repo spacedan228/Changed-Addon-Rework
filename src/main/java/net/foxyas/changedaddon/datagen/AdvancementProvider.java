@@ -51,7 +51,8 @@ public class AdvancementProvider extends net.minecraft.data.advancements.Advance
             "form_lynx",
             "form_mirror_white_tiger",
             "form_puro_kind",
-            "form_wolfy"
+            "form_wolfy",
+            "form_dark_latex_yufeng_queen"
     };
 
     public static final String[] ADDON_FORM_RECIPES_JSON = Arrays.stream(ADDON_FORM_RECIPES).map(id -> id.endsWith(".json") ? id : id + ".json").toArray(String[]::new);

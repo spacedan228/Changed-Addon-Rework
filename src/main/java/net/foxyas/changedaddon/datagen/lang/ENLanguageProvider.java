@@ -242,6 +242,8 @@ public class ENLanguageProvider extends LanguageProvider {
         addAbility("grab_entity.extender.hugged", "%s gave you a warm hug");
         addAbility("grab_entity.extender.hugger.tight", "You squeezed %s tight");
         addAbility("grab_entity.extender.hugged.tight", "%s squeezes you tight");
+        addAbility("summon_dl_pup", "Summon Pup");
+        addAbility("summon_dl_pup.desc", "Summon a Dark Latex Wolf Pup near by to assist you");
 
         add(modid + ".compact_disc.title.experiment_009", "§n§4Demoleculated §r§n§b Experiment");
         add(modid + ".compact_disc.content.experiment_009", "Experiment 009 Had to be Demoleculated!! he's powerful very powerful never let him fall into the wrong hands he apparently can't infect but he shows he doesn't want to §n§4 He Wants to Kill Everyone who gets in his way§r");
@@ -386,6 +388,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityFromId(VOID_FOX);
         addEntityFromId(WOLFY);
         addEntityFromId(MONGOOSE);
+        addEntityType(DARK_LATEX_YUFENG_QUEEN, "Dark Latex Yufeng Queen");
 
         addEntityType(LUMINAR_CRYSTAL_SPEAR, "Luminar Crystal Spear");
         addEntityType(PARTICLE_PROJECTILE, "Light Particle");
@@ -608,6 +611,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addItem(ORGANIC_SNOW_LEOPARD_MALE_SPAWN_EGG, "Male BioSynth Snow Leopard Spawn Egg");
         addItemFromId(VOID_FOX_SPAWN_EGG);
         addItemFromId(WOLFY_SPAWN_EGG);
+        addItem(DARK_LATEX_YUFENG_QUEEN_SPAWN_EGG, "Dark Latex Yufeng Queen Spawn Egg");
 
         add("key.categories." + modid, "Changed Addon Keybinds");
         addKey(ChangedAddonKeyMappings.OPEN_EXTRA_DETAILS, "Open Transfur Extra");

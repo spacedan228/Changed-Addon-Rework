@@ -75,6 +75,7 @@ public class ChangedAddonEntityRenderers {
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_KAYLA_SHARK.get(), LatexKaylaSharkRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS.get(), LatexSnowFoxFoxyasRenderer::new);
         event.registerEntityRenderer(ChangedAddonEntities.LATEX_BORDER_COLLIE.get(), LatexBorderCollieRenderer::new);
+        event.registerEntityRenderer(ChangedAddonEntities.DARK_LATEX_YUFENG_QUEEN.get(), DarkLatexYufengQueenRenderer::new);
 
         // --- MONSTER/MOB ENTITIES ---
         event.registerEntityRenderer(ChangedAddonEntities.PROTOTYPE.get(), PrototypeRenderer::new);

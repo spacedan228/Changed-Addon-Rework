@@ -1,0 +1,87 @@
+package net.foxyas.changedaddon.ability;
+
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.ltxprogrammer.changed.ability.SimpleAbility;
+import net.ltxprogrammer.changed.init.ChangedEntities;
+import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.level.Level;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Stream;
+
+public class SummonDLPupAbility extends SimpleAbility {
+    @Override
+    public boolean canUse(IAbstractChangedEntity entity) {
+        return !entity.isInWaterOrBubble();
+    }
+
+    protected Stream<BlockPos> findLandNearby(Level level, BlockPos near) {
+        var referenceEntity = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
+        assert referenceEntity != null;
+
+        return BlockPos.betweenClosedStream(near.offset(-4, -2, -4), near.offset(4, 2, 4)).map(BlockPos::immutable).filter(
+                pos -> level.getBlockState(pos.offset(0, -1, 0)).entityCanStandOnFace(level, pos, referenceEntity, Direction.UP) && level.getBlockState(pos).isAir()
+        );
+    }
+
+    @Override
+    public void startUsing(IAbstractChangedEntity entity) {
+        var level = entity.getLevel();
+        if (level.isClientSide)
+            return;
+
+        ChangedSounds.broadcastSound(entity.getEntity(), ChangedSounds.POISON, 1.0f, 1.0f);
+
+        var list = findLandNearby(level, entity.getBlockPosition()).toList();
+        int attempts = Math.min(list.size(), 1);
+
+        while (attempts > 0) {
+            var blockPos = list.get(level.random.nextInt(list.size()));
+
+            var pup = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
+            assert pup != null;
+
+            if (entity.isPlayer()) {
+                pup.tame(entity.getChangedEntity().getUnderlyingPlayer());
+            }
+
+            pup.setTarget(entity.getEntity().getLastHurtByMob());
+            pup.moveTo(blockPos, 0.0F, 0.0F);
+            level.addFreshEntity(pup);
+
+            attempts--;
+        }
+    }
+
+    @Override
+    public UseType getUseType(IAbstractChangedEntity entity) {
+        return UseType.CHARGE_TIME;
+    }
+
+    @Override
+    public int getChargeTime(IAbstractChangedEntity entity) {
+        return 40;
+    }
+
+    @Override
+    public int getCoolDown(IAbstractChangedEntity entity) {
+        return 5 * 60 * 20; // 5 Minutes
+    }
+
+    @Override
+    public Component getAbilityName(IAbstractChangedEntity entity) {
+        return new TranslatableComponent("ability.changed_addon.summon_dl_pup");
+    }
+
+    @Override
+    public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
+        Collection<Component> description = new ArrayList<>(super.getAbilityDescription(entity));
+        description.add(new TranslatableComponent("ability.changed_addon.summon_dl_pup.desc"));
+        return description;
+    }
+}
