@@ -35,6 +35,7 @@ public class GatherData {
         generator.addProvider(true, new CAPaintingVariantTagsProvider(packOutput, lookupProvider, helper));
         generator.addProvider(true, new AccessoryEntityProvider(generator));
         generator.addProvider(true, new AbilityTreeProviderImpl(packOutput));
+        generator.addProvider(true, new GameEventTagsProvider(packOutput, lookupProvider, existingFileHelper));
 
         CompletableFuture<HolderLookup.Provider> lookup0 =
                 generator.addProvider(event.includeServer(), new DatapackEntriesProvider(packOutput, lookupProvider)).getRegistryProvider();
