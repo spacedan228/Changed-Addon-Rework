@@ -50,6 +50,7 @@
     "mods.changed.ChangedMixin",
     "mods.changed.CommandTransfurMixin",
     "mods.changed.EmoteParticleOptionMixin",
+    "mods.changed.FacilitySinglePieceAccessor",
     "mods.changed.FacilitySinglePieceInstanceAccessor",
     "mods.changed.ProcessTransfurMixin",
     "mods.changed.TransfurVariantMixin",
