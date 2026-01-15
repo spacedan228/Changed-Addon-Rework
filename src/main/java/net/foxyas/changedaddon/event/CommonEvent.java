@@ -83,14 +83,14 @@ public class CommonEvent {
         Level level = event.getLevel();
         BlockPos eventPosition = event.getEventPosition();
         if (level.isClientSide()) return;
-        if (!(cause instanceof LivingEntity living)) return;
+        if (cause == null) return;
 
         if (event.getVanillaEvent().is(ChangedAddonTags.GameEvents.CAN_WAKE_UP_ALPHAS)) {
             List<PathfinderMob> entitiesOfClass = level.getEntitiesOfClass(PathfinderMob.class,
                     new AABB(eventPosition).inflate(32),
-                    EntitySelector.NO_CREATIVE_OR_SPECTATOR.and((target) -> target instanceof PathfinderMob mob && mob.isSleeping() && hasAlphaSleepGoal(mob)));
+                    EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(target -> !target.is(cause)).and(target -> target instanceof PathfinderMob mob && mob.isSleeping() && hasAlphaSleepGoal(mob)));
 
-            if (living.isSteppingCarefully()) {
+            if (cause instanceof LivingEntity living && living.isSteppingCarefully()) {
                 return;
             }
 
@@ -100,7 +100,9 @@ public class CommonEvent {
                 if (allSleepGoalsFromEntity.isEmpty()) continue;
 
                 for (AlphaSleepGoal alphaSleepGoal : allSleepGoalsFromEntity) {
-                    alphaSleepGoal.sleepDuration -= (int) (alphaSleepGoal.sleepDuration / distance);
+                    int sleepDuration = (int) (alphaSleepGoal.sleepDuration / distance);
+                    alphaSleepGoal.sleepDuration -= sleepDuration;
+                    alphaSleepGoal.sleepDuration = Math.max(0, alphaSleepGoal.sleepDuration);
                 }
 
                 VibrationParticleOption vibrationParticleOption = new VibrationParticleOption(new VibrationPath(eventPosition, new EntityPositionSource(target.getId()), 20));
@@ -318,7 +320,7 @@ public class CommonEvent {
         if (vars.untransfurProgress < 0) {
             vars.untransfurProgress = 0;
         } else {
-            vars.untransfurProgress += (ProcessTransfur.isPlayerNotLatex(player) ? 0.1 : 0.2);
+            vars.untransfurProgress += ProcessTransfur.isPlayerNotLatex(player) ? 0.1 : 0.2;
 
             if (player.isSleeping()) vars.untransfurProgress += .5f;
         }
