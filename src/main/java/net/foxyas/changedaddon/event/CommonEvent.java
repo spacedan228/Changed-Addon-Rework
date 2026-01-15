@@ -32,6 +32,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
@@ -82,25 +83,28 @@ public class CommonEvent {
         Level level = event.getLevel();
         BlockPos eventPosition = event.getEventPosition();
         if (level.isClientSide()) return;
+        if (!(cause instanceof LivingEntity living)) return;
 
-        if (cause != null) {
-            if (event.getVanillaEvent().is(ChangedAddonTags.GameEvents.CAN_WAKE_UP_ALPHAS)) {
-                List<PathfinderMob> entitiesOfClass = level.getEntitiesOfClass(PathfinderMob.class,
-                        new AABB(eventPosition).inflate(32),
-                        EntitySelector.NO_CREATIVE_OR_SPECTATOR.and((target) -> target instanceof PathfinderMob mob && mob.isSleeping() && hasAlphaSleepGoal(mob)));
+        if (event.getVanillaEvent().is(ChangedAddonTags.GameEvents.CAN_WAKE_UP_ALPHAS)) {
+            List<PathfinderMob> entitiesOfClass = level.getEntitiesOfClass(PathfinderMob.class,
+                    new AABB(eventPosition).inflate(32),
+                    EntitySelector.NO_CREATIVE_OR_SPECTATOR.and((target) -> target instanceof PathfinderMob mob && mob.isSleeping() && hasAlphaSleepGoal(mob)));
 
-                for (PathfinderMob target : entitiesOfClass) {
-                    float distance = cause.distanceTo(target);
-                    List<AlphaSleepGoal> allSleepGoalsFromEntity = AlphaSleepGoal.getAllSleepGoalsFromEntity(target);
-                    if (allSleepGoalsFromEntity.isEmpty()) continue;
+            if (living.isSteppingCarefully()) {
+                return;
+            }
 
-                    for (AlphaSleepGoal alphaSleepGoal : allSleepGoalsFromEntity) {
-                        alphaSleepGoal.sleepDuration -= (int) (alphaSleepGoal.sleepDuration / distance);
-                    }
+            for (PathfinderMob target : entitiesOfClass) {
+                float distance = cause.distanceTo(target);
+                List<AlphaSleepGoal> allSleepGoalsFromEntity = AlphaSleepGoal.getAllSleepGoalsFromEntity(target);
+                if (allSleepGoalsFromEntity.isEmpty()) continue;
 
-                    VibrationParticleOption vibrationParticleOption = new VibrationParticleOption(new VibrationPath(eventPosition, new EntityPositionSource(target.getId()), 20));
-                    ParticlesUtil.sendParticles(level, vibrationParticleOption, eventPosition, 0, 0, 0, 1, 0);
+                for (AlphaSleepGoal alphaSleepGoal : allSleepGoalsFromEntity) {
+                    alphaSleepGoal.sleepDuration -= (int) (alphaSleepGoal.sleepDuration / distance);
                 }
+
+                VibrationParticleOption vibrationParticleOption = new VibrationParticleOption(new VibrationPath(eventPosition, new EntityPositionSource(target.getId()), 20));
+                ParticlesUtil.sendParticles(level, vibrationParticleOption, eventPosition, 0, 0, 0, 1, 0);
             }
         }
     }
