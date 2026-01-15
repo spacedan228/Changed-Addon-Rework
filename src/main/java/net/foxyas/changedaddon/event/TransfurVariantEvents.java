@@ -4,6 +4,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.eventbus.api.Event;
+import org.jetbrains.annotations.Nullable;
 
 public class TransfurVariantEvents {
 
@@ -35,9 +36,10 @@ public class TransfurVariantEvents {
     public static class SpawnAtTransfurredEntityEvent extends Event {
 
         public final LivingEntity spawnAt;
+        @Nullable
         public ChangedEntity changedEntity;
 
-        public SpawnAtTransfurredEntityEvent(LivingEntity spawnAt, ChangedEntity changedEntity) {
+        public SpawnAtTransfurredEntityEvent(LivingEntity spawnAt, @Nullable ChangedEntity changedEntity) {
             this.spawnAt = spawnAt;
             this.changedEntity = changedEntity;
         }
@@ -46,11 +48,11 @@ public class TransfurVariantEvents {
             return spawnAt;
         }
 
-        public ChangedEntity getChangedEntity() {
+        public @Nullable ChangedEntity getChangedEntity() {
             return changedEntity;
         }
 
-        public void setChangedEntity(ChangedEntity changedEntity) {
+        public void setChangedEntity(@Nullable ChangedEntity changedEntity) {
             this.changedEntity = changedEntity;
         }
 
@@ -60,17 +62,22 @@ public class TransfurVariantEvents {
         }
     }
 
-    public static class KillAfterTransfurredSpecificEvent extends KillAfterTransfurredEvent {
+    public static class KillAfterTransfurredSpecificEvent extends Event {
 
+        private final LivingEntity targetEntity;
         protected IAbstractChangedEntity iAbstractChangedEntity;
 
-        public KillAfterTransfurredSpecificEvent(LivingEntity targetEntity, IAbstractChangedEntity iAbstractChangedEntity) {
-            super(targetEntity, iAbstractChangedEntity.getEntity());
+        public KillAfterTransfurredSpecificEvent(LivingEntity targetEntity, @Nullable IAbstractChangedEntity iAbstractChangedEntity) {
+            this.targetEntity = targetEntity;
             this.iAbstractChangedEntity = iAbstractChangedEntity;
         }
 
         public IAbstractChangedEntity getiAbstractChangedEntity() {
             return iAbstractChangedEntity;
+        }
+
+        public LivingEntity getTargetEntity() {
+            return targetEntity;
         }
 
         @Override
