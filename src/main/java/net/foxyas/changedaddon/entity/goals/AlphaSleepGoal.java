@@ -94,6 +94,7 @@ public class AlphaSleepGoal extends Goal {
     public void start() {
         holder.startSleeping(holder.blockPosition());
         sleepDuration = sleepDurationProvider.sample(holder.getRandom());
+        holder.noCulling = true;
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -377,7 +378,7 @@ public class TransfurTotemItem extends Item {
     }
 
     private static boolean isNotBenign(TransfurVariantInstance<?> instance) {
-        return !instance.is(ChangedTransfurVariants.LATEX_BENIGN_WOLF) && !instance.is(ChangedTransfurVariants.LATEX_BENIGN_ORCA);
+        return !instance.getParent().getEntityType().is(ChangedTags.EntityTypes.BENIGN_LATEXES) || !instance.is(ChangedTransfurVariants.LATEX_BENIGN_WOLF) && !instance.is(ChangedTransfurVariants.LATEX_BENIGN_ORCA);
     }
 
     @Mod.EventBusSubscriber
