@@ -347,7 +347,7 @@ public class TransfurTotemItem extends Item {
 
 
         if (player.getCooldowns().isOnCooldown(itemstack.getItem()) || !ProcessTransfur.isPlayerTransfurred(player)
-                || !ProcessTransfur.getPlayerTransfurVariant(player).is(ChangedTransfurVariants.LATEX_BENIGN_WOLF.get()))
+                || isNotBenign(ProcessTransfur.getPlayerTransfurVariant(player)))
             return;
 
         SummonDripParticlesProcedure.execute(entity);
@@ -371,9 +371,13 @@ public class TransfurTotemItem extends Item {
         if (!(entity instanceof Player player)) return 0;
 
         var instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (instance == null || !instance.is(ChangedTransfurVariants.LATEX_BENIGN_WOLF)) return 0;
+        if (instance == null || isNotBenign(instance)) return 0;
 
         return 0.5f;
+    }
+
+    private static boolean isNotBenign(TransfurVariantInstance<?> instance) {
+        return !instance.is(ChangedTransfurVariants.LATEX_BENIGN_WOLF) && !instance.is(ChangedTransfurVariants.LATEX_BENIGN_ORCA);
     }
 
     @Mod.EventBusSubscriber
