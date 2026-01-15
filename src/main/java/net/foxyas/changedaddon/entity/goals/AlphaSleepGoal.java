@@ -1,5 +1,8 @@
 package net.foxyas.changedaddon.entity.goals;
 
+import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.entity.api.SyncTrackMotion;
+import net.foxyas.changedaddon.network.packet.RequestMovementCheckPacket;
 import net.ltxprogrammer.changed.block.Pillow;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
@@ -8,9 +11,11 @@ import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -26,6 +31,8 @@ public class AlphaSleepGoal extends Goal {
     protected final float noWalkingRange;
     protected final float noWalkingRangeSqr;
     protected final IntProvider sleepDurationProvider;
+    protected int sleepCooldown;
+    protected static final int MAX_SLEEP_COOLDOWN = 20 * 60;
 
     protected int lastScan;
     protected boolean enoughFluffyBlocks;
@@ -53,20 +60,31 @@ public class AlphaSleepGoal extends Goal {
     }
 
     protected void scanForFluffyBlocks() {
-        if (holder.tickCount - lastScan >= 20) {
-            lastScan = holder.tickCount;
-            Level level = holder.level;
-            enoughFluffyBlocks = fluffyBlocksRequired.test((int) BlockPos.betweenClosedStream(holder.getBoundingBox().inflate(scanRange))
-                    .filter(pos -> {
-                        BlockState state = level.getBlockState(pos);
-                        return state.is(BlockTags.BEDS) || state.is(BlockTags.WOOL) || state.getBlock() instanceof Pillow;
-                    })
-                    .count());
+        if (holder.tickCount - lastScan < 20) return;
+
+        lastScan = holder.tickCount;
+        Level level = holder.level;
+
+        int count = 0;
+        for (BlockPos pos : BlockPos.betweenClosed(
+                holder.blockPosition().offset((int) -scanRange, -1, (int) -scanRange),
+                holder.blockPosition().offset((int) scanRange, 1, (int) scanRange))) {
+
+            BlockState state = level.getBlockState(pos);
+            if (state.is(BlockTags.BEDS) || state.is(BlockTags.WOOL) || state.getBlock() instanceof Pillow) {
+                count++;
+                if (fluffyBlocksRequired.test(count)) break;
+            }
         }
+
+        enoughFluffyBlocks = fluffyBlocksRequired.test(count);
     }
 
     @Override
     public boolean canUse() {
+        if (sleepCooldown > 0) return false;
+        if (holder.getTarget() != null) return false;
+
         scanForFluffyBlocks();
         return enoughFluffyBlocks;
     }
@@ -78,25 +96,56 @@ public class AlphaSleepGoal extends Goal {
     }
 
     @Override
+    public void tick() {
+        if (sleepCooldown > 0) {
+            sleepCooldown--;
+        }
+    }
+
+    public static boolean hasValidAlphaSleepGoal(PathfinderMob mob) {
+        return mob.goalSelector.getAvailableGoals().stream()
+                .map(WrappedGoal::getGoal)
+                .map(goal -> goal instanceof AlphaSleepGoal sleepGoal ? sleepGoal : null)
+                .anyMatch(sleepGoal -> sleepGoal != null && sleepGoal.enoughFluffyBlocks && sleepGoal.sleepCooldown <= 0);
+    }
+
+    @Override
     public boolean canContinueToUse() {
-        if (sleepDuration-- <= 0 || !canUse()) return false;
+        if (sleepCooldown > 0) {
+            sleepCooldown--;
+            return false;
+        }
 
         Level level = holder.level;
-        List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, holder.getBoundingBox().inflate(noWalkingRange),
-                EntitySelector.NO_SPECTATORS.and(e -> e != holder && e.distanceToSqr(holder) <= noWalkingRangeSqr));
+        List<LivingEntity> entities = level.getEntitiesOfClass(
+                LivingEntity.class,
+                holder.getBoundingBox().inflate(noWalkingRange),
+                EntitySelector.NO_SPECTATORS.and(e -> e != holder)
+        );
 
-        Vec3 movement;
         for (LivingEntity entity : entities) {
-            if (entity.isSleeping()) continue;
+            if (entity.isSleeping() || entity.isCrouching()) continue;
 
-            movement = entity.getDeltaMovement();//Will not work on players tho
-            if (movement.x == 0 && movement.z == 0) continue;
+            if (entity.isSprinting()) return false;
 
-            if (entity.isCrouching()) continue;
+            ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RequestMovementCheckPacket(true));
 
-            if (movement.x >= 1 || movement.z >= 1) return false;//just some random speed threshold
+            Vec3 movement = entity.getDeltaMovement();
+            if (entity instanceof SyncTrackMotion syncTrackMotion) {
+                boolean flag = syncTrackMotion.getLastKnownMotion() != null;
+                if (flag) movement = syncTrackMotion.getLastKnownMotion();
+            }
 
-            if (entity.getRandom().nextFloat() > 0.2f + (0.4f * (1 - entity.distanceToSqr(holder) / noWalkingRangeSqr))) return false;
+            if (movement.lengthSqr() < 0.05D) continue;
+
+            if (entity.distanceToSqr(holder) < noWalkingRangeSqr * 0.25D) {
+                return false; // alguém chegou muito perto
+            }
+
+            if (movement.lengthSqr() >= 0.05D) {
+                return false; // alguém correndo
+            }
+
         }
 
         return true;
@@ -105,5 +154,6 @@ public class AlphaSleepGoal extends Goal {
     @Override
     public void stop() {
         holder.stopSleeping();
+        sleepCooldown = MAX_SLEEP_COOLDOWN;
     }
 }

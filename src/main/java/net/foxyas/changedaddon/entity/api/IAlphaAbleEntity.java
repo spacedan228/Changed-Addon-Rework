@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.entity.goals.AlphaSleepGoal;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -9,17 +10,21 @@ import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 
+import java.util.Set;
 import java.util.UUID;
 
 public interface IAlphaAbleEntity {
@@ -37,8 +42,20 @@ public interface IAlphaAbleEntity {
     UUID ATTACK_SPEED = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a008");
 
     static void applyOrRemoveAlphaModifiers(LivingEntity entity, boolean isAlpha, float alphaScale) {
+        if (entity.isDeadOrDying()) return;
         if (entity.level().isClientSide) return;
         removeAlphaModifiers(entity);
+
+
+        if (entity instanceof PathfinderMob mob) {
+            Set<WrappedGoal> availableGoals = mob.goalSelector.getAvailableGoals();
+            boolean flag = availableGoals.stream().map(WrappedGoal::getGoal).anyMatch(goal -> goal instanceof AlphaSleepGoal);
+            if (flag && !isAlpha) {
+                mob.goalSelector.removeAllGoals(goal -> goal instanceof AlphaSleepGoal);
+            } else if (!flag && isAlpha) {
+                mob.goalSelector.addGoal(10, new AlphaSleepGoal(mob, 6, (inter) -> inter >= 6, 1.5f, UniformInt.of(400, 800)));
+            }
+        }
 
         if (!isAlpha) {
             entity.setHealth(entity.getMaxHealth());
@@ -105,6 +122,7 @@ public interface IAlphaAbleEntity {
     void setAlphaScale(float scale);
 
     default void refreshAttributes(ChangedEntity self) {
+        if (self.isDeadOrDying()) return;
         SynchedEntityData entityData = self.getEntityData();
         IAlphaAbleEntity.applyOrRemoveAlphaModifiers(self, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
         IAbstractChangedEntity.forEitherSafe(self.maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
@@ -112,6 +130,7 @@ public interface IAlphaAbleEntity {
 
     default void refreshAttributesForHost(ChangedEntity creature) {
         if (!(creature.maybeGetUnderlying() instanceof Player host)) return;
+        if (host.isDeadOrDying()) return;
 
         SynchedEntityData entityData = creature.getEntityData();
         IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
@@ -120,6 +139,7 @@ public interface IAlphaAbleEntity {
 
     default void cleanAlphaAttributesFromHost(ChangedEntity creature) {
         if (!(creature.maybeGetUnderlying() instanceof Player host)) return;
+        if (host.isDeadOrDying()) return;
 
         IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, false, 0);
         IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);

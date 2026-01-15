@@ -672,16 +672,17 @@ public class Exp9AttacksHandle {
 
         @Override
         public boolean canUse() {
+            if (cooldown > 0) {
+                cooldown--;
+                return false;
+            }
+
             LivingEntity target = this.getTarget();
             if (target != null) {
                 double distance = this.boss.distanceTo(target);
-                if (cooldown > 0) {
-                    cooldown--;
-                    return false;
-                }
                 return distance <= 6;
             }
-            return boss.level().random.nextFloat() >= 0.6f;
+            return boss.level.random.nextFloat() >= 0.6f;
         }
 
 
