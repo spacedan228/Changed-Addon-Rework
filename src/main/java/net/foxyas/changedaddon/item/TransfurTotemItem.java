@@ -12,6 +12,7 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -349,7 +350,7 @@ public class TransfurTotemItem extends Item {
 
 
         if (player.getCooldowns().isOnCooldown(itemstack.getItem()) || !ProcessTransfur.isPlayerTransfurred(player)
-                || !ProcessTransfur.getPlayerTransfurVariant(player).is(ChangedTransfurVariants.LATEX_BENIGN_WOLF.get()))
+                || !ProcessTransfur.getPlayerTransfurVariant(player).getParent().getEntityType().is(ChangedTags.EntityTypes.BENIGN_LATEXES))
             return;
 
         SummonDripParticlesProcedure.execute(entity);
@@ -373,7 +374,7 @@ public class TransfurTotemItem extends Item {
         if (!(entity instanceof Player player)) return 0;
 
         var instance = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (instance == null || !instance.is(ChangedTransfurVariants.LATEX_BENIGN_WOLF)) return 0;
+        if (instance == null || !instance.getParent().getEntityType().is(ChangedTags.EntityTypes.BENIGN_LATEXES)) return 0;
 
         return 0.5f;
     }
