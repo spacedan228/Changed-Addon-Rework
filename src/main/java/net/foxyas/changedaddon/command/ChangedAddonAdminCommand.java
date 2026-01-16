@@ -243,6 +243,7 @@ public class ChangedAddonAdminCommand {
                                 )
                         )
                 ).then(Commands.literal("setLatexLanguage")
+                        .executes(ChangedAddonAdminCommand::getLatexLanguage)
                         .then(Commands.argument("value", BoolArgumentType.bool())
                                 .executes(ChangedAddonAdminCommand::setLatexLanguage)
                         )
@@ -262,12 +263,20 @@ public class ChangedAddonAdminCommand {
         return Command.SINGLE_SUCCESS;
     }
 
+    private static int getLatexLanguage(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        Boolean value = ChangedAddonServerConfiguration.TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE.get();
+        source.sendSuccess(ComponentUtil.literal(String.format("The latex Language is set to %b", value)), true);
+        return Command.SINGLE_SUCCESS;
+    }
+
     private static int setLatexLanguage(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
         boolean value = BoolArgumentType.getBool(context, "value");
 
         ChangedAddonServerConfiguration.TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE.set(value);
         //ChangedAddonServerConfiguration.TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE.save();
+        source.sendSuccess(ComponentUtil.literal(String.format("The latex Language was been set to %b", value)), true);
         return Command.SINGLE_SUCCESS;
 
     }
