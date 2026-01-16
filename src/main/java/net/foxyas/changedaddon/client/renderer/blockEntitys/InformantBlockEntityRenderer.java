@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.client.renderer.blockEntitys;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.entity.InformantBlockEntity;
 import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
 import net.foxyas.changedaddon.mixins.client.renderer.LivingEntityRendererAccessor;
@@ -9,10 +10,12 @@ import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -21,7 +24,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,6 +33,7 @@ import java.util.Map;
 
 public class InformantBlockEntityRenderer implements BlockEntityRenderer<InformantBlockEntity> {
 
+    private static final ResourceLocation TEX = ChangedAddonMod.textureLoc("textures/entities/dummy");
     private static final Map<TransfurVariant<?>, ChangedEntity> entityCache = new HashMap<>();
 
     public InformantBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -61,7 +64,9 @@ public class InformantBlockEntityRenderer implements BlockEntityRenderer<Informa
         TransfurVariant<?> tfVariant = informantBlockEntity.getDisplayTf();
         ChangedEntity entity = getDisplayEntity(tfVariant);
 
-        if (entity == null) return;
+        boolean dummy = entity == null;
+        if (dummy) entity = getDisplayEntity(ChangedTransfurVariants.CRYSTAL_WOLF_HORNED.get());
+
         if (!(Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(entity) instanceof AdvancedHumanoidRenderer<?, ?> renderer))
             return;
 
@@ -79,7 +84,7 @@ public class InformantBlockEntityRenderer implements BlockEntityRenderer<Informa
 
         AdvancedHumanoidModel model = renderer.getModel();
         ResourceLocation texture = ((LivingEntityRenderer) renderer).getTextureLocation(entity);
-        var vertexConsumer = bufferSource.getBuffer(ChangedAddonRenderTypes.hologramCull(texture, true));
+        var vertexConsumer = bufferSource.getBuffer(dummy ? RenderType.entitySolid(TEX) : ChangedAddonRenderTypes.hologramCull(texture, true));
 
         float ageInTicks = entity.tickCount + partialTick;
         model.prepareMobModel(entity, 0, 0, partialTick);
@@ -88,8 +93,9 @@ public class InformantBlockEntityRenderer implements BlockEntityRenderer<Informa
         if (renderer instanceof LivingEntityRendererAccessor livingEntityRendererAccessor) {
             List<RenderLayer<LivingEntity, EntityModel<LivingEntity>>> layers = livingEntityRendererAccessor.getLayers();
             if (layers != null && !layers.isEmpty()) {
-                layers.forEach((renderlayer) ->
-                        renderlayer.render(poseStack, bufferSource, LightTexture.FULL_BRIGHT, entity, 0, 0, partialTick, ageInTicks, 0, 0));
+                for (RenderLayer layer : layers) {
+                    layer.render(poseStack, bufferSource, LightTexture.FULL_BRIGHT, entity, 0, 0, partialTick, ageInTicks, 0, 0);
+                }
             }
         }
 
@@ -99,11 +105,5 @@ public class InformantBlockEntityRenderer implements BlockEntityRenderer<Informa
     @Override
     public boolean shouldRenderOffScreen(@NotNull InformantBlockEntity p_112306_) {
         return true;
-    }
-
-    @Override
-    public boolean shouldRender(@NotNull InformantBlockEntity informantBlockEntity, @NotNull Vec3 vec3) {
-        return informantBlockEntity.getDisplayTf() != null
-                && BlockEntityRenderer.super.shouldRender(informantBlockEntity, vec3);
     }
 }
