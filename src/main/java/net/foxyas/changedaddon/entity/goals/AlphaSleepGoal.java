@@ -123,6 +123,7 @@ public class AlphaSleepGoal extends Goal {
         if (takingDamage) {
             return false;
         }
+
         if (sleepCooldown > 0) {
             sleepCooldown--;
             return false;
