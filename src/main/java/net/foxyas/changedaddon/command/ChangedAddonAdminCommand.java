@@ -14,6 +14,7 @@ import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
+import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -243,6 +244,7 @@ public class ChangedAddonAdminCommand {
                                 )
                         )
                 ).then(Commands.literal("setLatexLanguage")
+                        .executes(ChangedAddonAdminCommand::getLatexLanguage)
                         .then(Commands.argument("value", BoolArgumentType.bool())
                                 .executes(ChangedAddonAdminCommand::setLatexLanguage)
                         )
@@ -262,6 +264,12 @@ public class ChangedAddonAdminCommand {
         return Command.SINGLE_SUCCESS;
     }
 
+    private static int getLatexLanguage(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        Boolean value = ChangedAddonServerConfiguration.TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE.get();
+        source.sendSuccess(() -> Component.literal(String.format("The latex Language is set to %b", value)), true);
+        return Command.SINGLE_SUCCESS;
+    }
 
     private static int setLatexLanguage(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         CommandSourceStack source = context.getSource();
