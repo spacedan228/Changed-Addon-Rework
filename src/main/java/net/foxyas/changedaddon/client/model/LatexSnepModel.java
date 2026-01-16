@@ -313,8 +313,8 @@ public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> imple
                     && !entity.isSleeping()
                     && entity.getPose() != Pose.SWIMMING
                     && entity.getPose() != Pose.FALL_FLYING) {
-                this.Head.y += f;
-                this.Head.z = Mth.lerp(f, head.z, -7.2f);
+                this.Head.y += f * 0.5f;
+                this.Head.z -= f * 0.25f;
 
 
                 float huntTilt = 3.5f * Mth.DEG_TO_RAD;
