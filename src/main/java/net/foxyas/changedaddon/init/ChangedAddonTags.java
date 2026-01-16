@@ -10,6 +10,7 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public final class ChangedAddonTags {
@@ -23,6 +24,15 @@ public final class ChangedAddonTags {
 
         private static TagKey<Block> key(String path) {
             return TagKey.create(ForgeRegistries.BLOCKS.getRegistryKey(), ChangedAddonMod.resourceLoc(path));
+        }
+    }
+
+    public static final class GameEvents {
+
+        public static final TagKey<GameEvent> CAN_WAKE_UP_ALPHAS = key("can_wake_up_alphas");
+
+        private static TagKey<GameEvent> key(String path) {
+            return TagKey.create(Registries.GAME_EVENT, ChangedAddonMod.resourceLoc(path));
         }
     }
 

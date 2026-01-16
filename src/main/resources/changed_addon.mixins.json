@@ -53,6 +53,7 @@
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedEntityMixin",
     "mods.changed.ChangedMixin",
+    "mods.changed.FacilitySinglePieceAccessor",
     "mods.changed.FacilitySinglePieceInstanceAccessor",
     "mods.changed.LatexTypeMixin",
     "mods.changed.ProcessTransfurMixin",

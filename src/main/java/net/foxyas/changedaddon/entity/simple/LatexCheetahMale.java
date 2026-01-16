@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -28,18 +29,10 @@ public class LatexCheetahMale extends AbstractCheetahEntity {
         super(entityType, level);
     }
 
-    /*@SubscribeEvent
-    public static void addLivingEntityToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
-        if (SPAWN_BIOMES.contains(event.getName())) {
-            event.getBuilder().getMobSpawnSettings().getSpawner(ChangedMobCategories.CHANGED)
-                    .add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), 20, 1, 4));
-        }
-    }*/
-
     @SubscribeEvent
     public static void addSpawnConfiguration(SpawnPlacementRegisterEvent event) {
         event.register(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)),
+                ChangedEntity::checkEntitySpawnRules,
                 SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 

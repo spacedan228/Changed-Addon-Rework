@@ -3,12 +3,20 @@ package net.foxyas.changedaddon.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.foxyas.changedaddon.mixins.mods.changed.FacilitySinglePieceAccessor;
 import net.foxyas.changedaddon.mixins.mods.changed.FacilitySinglePieceInstanceAccessor;
 import net.foxyas.changedaddon.util.StructureUtil;
+import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.world.features.structures.FacilityPieces;
+import net.ltxprogrammer.changed.world.features.structures.facility.ConfiguredFacilityPiece;
+import net.ltxprogrammer.changed.world.features.structures.facility.FacilityPieceCollection;
 import net.ltxprogrammer.changed.world.features.structures.facility.FacilitySinglePiece;
+import net.ltxprogrammer.changed.world.features.structures.facility.types.PieceType;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.*;
@@ -17,7 +25,38 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
 public class ChangedAddonDebugCommands {
+
+    public static final class FacilityPieceSuggestions {
+
+        public static final List<String> ALL_IDS = build();
+
+        private static List<String> build() {
+            return ChangedRegistry.FACILITY_PIECE_TYPES.get().getValues().stream()
+                    .map(FacilityPieces::getPiecesOfType)
+                    .filter(Objects::nonNull)
+                    .flatMap(FacilityPieceCollection::stream)
+                    .map(ConfiguredFacilityPiece::facilityPiece)
+                    .filter(piece -> piece instanceof FacilitySinglePieceAccessor)
+                    .map(piece -> ((FacilitySinglePieceAccessor) piece).getTemplateName())
+                    .filter(Objects::nonNull)
+                    .map(ResourceLocation::toString)
+                    .distinct()
+                    .sorted()
+                    .toList();
+        }
+    }
+
+    public static final SuggestionProvider<CommandSourceStack> SUGGEST_FACILITY_PIECES_IDS =
+            (context, builder) -> SharedSuggestionProvider.suggest(
+                    FacilityPieceSuggestions.ALL_IDS,
+                    builder
+            );
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(
@@ -29,7 +68,7 @@ public class ChangedAddonDebugCommands {
                                                 .then(
                                                         Commands.literal("hasPiece")
                                                                 .then(
-                                                                        Commands.argument("template", ResourceLocationArgument.id())
+                                                                        Commands.argument("template", ResourceLocationArgument.id()).suggests(SUGGEST_FACILITY_PIECES_IDS)
                                                                                 .executes(ChangedAddonDebugCommands::hasFacilityPiece)
                                                                 )
                                                 )

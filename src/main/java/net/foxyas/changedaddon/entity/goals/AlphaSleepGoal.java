@@ -20,6 +20,7 @@ import net.minecraftforge.network.PacketDistributor;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.function.IntPredicate;
+import java.util.stream.Stream;
 
 public class AlphaSleepGoal extends Goal {
 
@@ -36,7 +37,7 @@ public class AlphaSleepGoal extends Goal {
 
     protected int lastScan;
     protected boolean enoughFluffyBlocks;
-    protected int sleepDuration;
+    public int sleepDuration;
 
     public AlphaSleepGoal(PathfinderMob holder, float scanRange, IntPredicate fluffyBlocksRequired, float noWalkingRange, IntProvider sleepDurationProvider) {
         this.holder = holder;
@@ -93,6 +94,7 @@ public class AlphaSleepGoal extends Goal {
     public void start() {
         holder.startSleeping(holder.blockPosition());
         sleepDuration = sleepDurationProvider.sample(holder.getRandom());
+        holder.noCulling = true;
     }
 
     @Override
@@ -155,5 +157,10 @@ public class AlphaSleepGoal extends Goal {
     public void stop() {
         holder.stopSleeping();
         sleepCooldown = MAX_SLEEP_COOLDOWN;
+    }
+
+    public static List<AlphaSleepGoal> getAllSleepGoalsFromEntity(PathfinderMob living) {
+        Stream<AlphaSleepGoal> goalStream = living.goalSelector.getAvailableGoals().stream().map(WrappedGoal::getGoal).filter(goal -> goal instanceof AlphaSleepGoal).map(goal -> goal instanceof AlphaSleepGoal alphaSleepGoal ? alphaSleepGoal : null);
+        return goalStream.toList();
     }
 }

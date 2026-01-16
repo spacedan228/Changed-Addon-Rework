@@ -5,10 +5,13 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock;
 import net.foxyas.changedaddon.command.*;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
+import net.foxyas.changedaddon.entity.goals.AlphaSleepGoal;
 import net.foxyas.changedaddon.init.ChangedAddonAttributes;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.TransfurCause;
@@ -24,19 +27,27 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.VibrationParticleOption;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.EntityPositionSource;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
@@ -44,6 +55,8 @@ import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.List;
 
 import static net.foxyas.changedaddon.entity.goals.AlphaSleepGoal.hasValidAlphaSleepGoal;
 
@@ -76,6 +89,47 @@ public class CommonEvent {
                 event.setResult(Event.Result.ALLOW);
             }
         }
+    }
+
+
+    @SubscribeEvent
+    public static void sendAlphasAlert(VanillaGameEvent event) {
+        Entity cause = event.getCause();
+        Level level = event.getLevel();
+        Vec3 eventPosition = event.getEventPosition();
+        if (level.isClientSide()) return;
+        if (cause == null) return;
+
+        if (event.getVanillaEvent().is(ChangedAddonTags.GameEvents.CAN_WAKE_UP_ALPHAS)) {
+            List<PathfinderMob> entitiesOfClass = level.getEntitiesOfClass(PathfinderMob.class,
+                    new AABB(eventPosition, eventPosition).inflate(32),
+                    EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(target -> !target.is(cause)).and(target -> target instanceof PathfinderMob mob && mob.isSleeping() && hasAlphaSleepGoal(mob)));
+
+            if (cause instanceof LivingEntity living && living.isSteppingCarefully()) {
+                return;
+            }
+
+            for (PathfinderMob target : entitiesOfClass) {
+                float distance = cause.distanceTo(target);
+                List<AlphaSleepGoal> allSleepGoalsFromEntity = AlphaSleepGoal.getAllSleepGoalsFromEntity(target);
+                if (allSleepGoalsFromEntity.isEmpty()) continue;
+
+                for (AlphaSleepGoal alphaSleepGoal : allSleepGoalsFromEntity) {
+                    int sleepDuration = (int) (alphaSleepGoal.sleepDuration / distance);
+                    alphaSleepGoal.sleepDuration -= sleepDuration;
+                    alphaSleepGoal.sleepDuration = Math.max(0, alphaSleepGoal.sleepDuration);
+                }
+
+                VibrationParticleOption vibrationParticleOption = new VibrationParticleOption(new EntityPositionSource(target, target.getEyeHeight()), 20);
+                ParticlesUtil.sendParticles(level, vibrationParticleOption, eventPosition, 0, 0, 0, 1, 0);
+            }
+        }
+    }
+
+    private static boolean hasAlphaSleepGoal(PathfinderMob mob) {
+        return mob.goalSelector.getAvailableGoals().stream()
+                .map(WrappedGoal::getGoal)
+                .anyMatch(goal -> goal instanceof AlphaSleepGoal);
     }
 
     @SubscribeEvent

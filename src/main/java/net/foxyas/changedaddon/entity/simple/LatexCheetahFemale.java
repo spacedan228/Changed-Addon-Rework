@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -31,10 +32,9 @@ public class LatexCheetahFemale extends AbstractCheetahEntity {
     @SubscribeEvent
     public static void addSpawnConfiguration(SpawnPlacementRegisterEvent event) {
         event.register(ChangedAddonEntities.LATEX_CHEETAH_FEMALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)),
+                ChangedEntity::checkEntitySpawnRules,
                 SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
-
 
     @Override
     protected @NotNull InteractionResult mobInteract(Player player, @NotNull InteractionHand hand) {
