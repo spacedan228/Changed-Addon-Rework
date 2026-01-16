@@ -255,6 +255,8 @@ public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> imple
 
     @Override
     public void prepareMobModel(@NotNull LatexSnepEntity entity, float limbSwing, float limbSwingAmount, float partialTicks) {
+        int entityTickCount = entity.tickCount;
+
         this.prepareMobModel(animator, entity, limbSwing, limbSwingAmount, partialTicks);
 
         this.Torso.xRot = 0.0F;
@@ -291,6 +293,7 @@ public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> imple
 
         //this.Head.setPos(DEBUG.HeadPosT, DEBUG.HeadPosV, DEBUG.HeadPosB);
         this.Head.setPos(0.0F, 14.0F, -7.2F);
+        this.Torso.setPos(0.0F, 15.0F, 0.0F);
         this.Head.yRot = 0.0F;
         this.LegBackRight.visible = true;
         this.LegBackLeft.visible = true;
@@ -304,10 +307,28 @@ public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> imple
 
 
         if (entity.isCrouching()) {
-            //this.Body.xRot = 3.246312F;
             float f = entity.getCrouchAmount(partialTicks);
-            this.Torso.setPos(0.0F, 15.0F + entity.getCrouchAmount(partialTicks) - (entity.WantToLoaf() ? 0 : 2f), 0.0F);
-            this.Head.setPos(0.0F, 14.0F + f - (entity.WantToLoaf() ? 0F : 2f), -7.2F);
+            // Hunt stage (predatory crouch)
+            if (!entity.WantToLoaf()
+                    && !entity.isSleeping()
+                    && entity.getPose() != Pose.SWIMMING
+                    && entity.getPose() != Pose.FALL_FLYING) {
+                this.Head.y += f * 0.5f;
+                this.Head.z -= f * 0.25f;
+
+
+                float huntTilt = 3.5f * Mth.DEG_TO_RAD;
+
+                this.Torso.xRot += f * huntTilt;
+
+                this.Head.xRot += f * (huntTilt * 0.4F);
+
+                this.Head.zRot += Mth.sin(entityTickCount * 0.15F) * 0.01F;
+            } else {
+                this.Torso.setPos(0.0F, 15.0F + f - (entity.WantToLoaf() ? 0f : 2f), 0.0F);
+                this.Head.setPos(0.0F, 14.0F + f - (entity.WantToLoaf() ? 0F : 2f), -7.2F);
+            }
+
         } else if (entity.isSleeping()) {
             this.LegBackRight.visible = false;
             this.LegBackLeft.visible = false;
@@ -319,19 +340,6 @@ public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> imple
             this.Head.setPos(0, 14F, -1.75F);
             this.Head.xRot = -90 * Mth.DEG_TO_RAD;
             this.Head.yRot = 180F * Mth.DEG_TO_RAD;
-        } else if (!entity.isShiftKeyDown()) {
-            this.Torso.setPos(0.0F, 15.0F, 0.0F);
-        }
-
-
-        if (!entity.isSleeping()) {
-            float breathingOffset = Mth.sin(entity.tickCount * 0.1f) * 0.15f;
-            this.Torso.y += breathingOffset;
-            this.Head.y += breathingOffset;
-        } else {
-            float breathingOffset = Mth.sin(entity.tickCount * 0.1f) * 0.15f;
-            this.Torso.z += breathingOffset;
-            this.Head.z += breathingOffset;
         }
 
 
@@ -371,6 +379,16 @@ public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> imple
                 this.LegFrontLeft.zRot = f / 2.0F;
             }
         }
+
+        float breathingOffset = Mth.sin(entity.tickCount * 0.1f) * 0.15f;
+        if (!entity.isSleeping()) {
+            this.Torso.y += breathingOffset;
+            this.Head.y += breathingOffset;
+        } else {
+            this.Torso.z += breathingOffset;
+            this.Head.z += breathingOffset;
+        }
+
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 
         if (entity.isCrouching()) {
@@ -383,6 +401,7 @@ public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> imple
         if (entity.getPose() == Pose.SWIMMING || entity.getPose() == Pose.FALL_FLYING) {
             this.Tail.xRot = 0 * Mth.DEG_TO_RAD;
         }
+
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
 
