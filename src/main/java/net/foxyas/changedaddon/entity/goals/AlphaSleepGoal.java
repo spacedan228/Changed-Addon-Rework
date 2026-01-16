@@ -98,10 +98,15 @@ public class AlphaSleepGoal extends Goal {
         holder.startSleeping(holder.blockPosition());
         sleepDuration = sleepDurationProvider.sample(holder.getRandom());
         holder.noCulling = true;
+        holder.goalSelector.getRunningGoals().filter(wrappedGoal -> wrappedGoal.getGoal() != this).forEach(WrappedGoal::stop);
+        holder.targetSelector.getRunningGoals().filter(wrappedGoal -> wrappedGoal.getGoal() != this).forEach(WrappedGoal::stop);
+        holder.setTarget(null);
     }
 
     @Override
     public void tick() {
+        holder.goalSelector.getRunningGoals().filter(wrappedGoal -> wrappedGoal.getGoal() != this).forEach(WrappedGoal::stop);
+        holder.targetSelector.getRunningGoals().filter(wrappedGoal -> wrappedGoal.getGoal() != this).forEach(WrappedGoal::stop);
         if (sleepCooldown > 0) {
             sleepCooldown--;
         }
@@ -116,6 +121,11 @@ public class AlphaSleepGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
+        boolean takingDamage = holder.getCombatTracker().isTakingDamage();
+        if (takingDamage) {
+            return false;
+        }
+
         if (--sleepDuration <= 0) return false;
 
         Level level = holder.level;
