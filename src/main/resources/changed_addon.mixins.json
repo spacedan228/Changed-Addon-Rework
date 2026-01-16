@@ -48,6 +48,7 @@
     "entity.variant.ServerTransfurVariantInstanceMixin",
     "entity.variant.TransfurVariantInstanceMixin",
     "fluids.TransfurGasMixin",
+    "items.DarkLatexMaskMixin",
     "items.ItemStackMixin",
     "items.LatexSyringeMixin",
     "level.storage.loot.LootTableAccessor",
