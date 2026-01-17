@@ -9,6 +9,7 @@ import net.foxyas.changedaddon.entity.goals.exp10.ThrowWitherProjectileGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.WitherWave;
 import net.foxyas.changedaddon.entity.goals.generic.BreakBlocksAroundGoal;
 import net.foxyas.changedaddon.entity.goals.generic.BurstAttack;
+import net.foxyas.changedaddon.entity.goals.generic.LatexPullEntityGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.DashPunchGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.LeapSmashGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAttack;
@@ -251,6 +252,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         this.goalSelector.addGoal(15, new DashPunchGoal(this));
         this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
         this.goalSelector.addGoal(10, new ThrowWitherProjectileGoal(this, UniformInt.of(60, 120), UniformInt.of(1, 8), 36));
+        this.goalSelector.addGoal(10, new LatexPullEntityGoal(this, 16, 1));
     }
 
     @Override
