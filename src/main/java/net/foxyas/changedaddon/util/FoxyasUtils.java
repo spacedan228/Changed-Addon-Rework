@@ -441,6 +441,62 @@ public class FoxyasUtils {
         return false;
     }
 
+    public static boolean isConnectedByLatex(
+            ServerLevel level,
+            BlockPos start,
+            BlockPos target,
+            LatexType latexType,
+            int maxDepth
+    ) {
+        if (start.equals(target))
+            return true;
+
+        BlockState startState = level.getBlockState(start);
+        BlockState targetState = level.getBlockState(target);
+
+        // ambos precisam ser latex do tipo correto
+        if (!AbstractLatexBlock.isLatexed(startState)
+                || AbstractLatexBlock.getLatexed(startState) != latexType)
+            return false;
+
+        if (!AbstractLatexBlock.isLatexed(targetState)
+                || AbstractLatexBlock.getLatexed(targetState) != latexType)
+            return false;
+
+        Set<BlockPos> visited = new HashSet<>();
+        Queue<Pair<BlockPos, Integer>> queue = new ArrayDeque<>();
+
+        queue.add(Pair.of(start, 0));
+        visited.add(start);
+
+        while (!queue.isEmpty()) {
+            Pair<BlockPos, Integer> entry = queue.poll();
+            BlockPos current = entry.getFirst();
+            int depth = entry.getSecond();
+
+            if (depth >= maxDepth)
+                continue;
+
+            for (Direction dir : Direction.values()) {
+                BlockPos next = current.relative(dir);
+
+                if (!visited.add(next))
+                    continue;
+
+                if (next.equals(target))
+                    return true;
+
+                BlockState nextState = level.getBlockState(next);
+                if (AbstractLatexBlock.isLatexed(nextState)
+                        && AbstractLatexBlock.getLatexed(nextState) == latexType) {
+                    queue.add(Pair.of(next, depth + 1));
+                }
+            }
+        }
+
+        return false;
+    }
+
     public static boolean isConnectedToSource(ServerLevel level, BlockPos start, Block targetBlock, int maxDepth) {
         Set<BlockPos> visited = new HashSet<>();
         Queue<Pair<BlockPos, Integer>> toVisit = new ArrayDeque<>();

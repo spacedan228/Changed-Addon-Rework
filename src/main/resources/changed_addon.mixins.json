@@ -25,6 +25,7 @@
     "entity.EntityMixin",
     "entity.IronGolemMixin",
     "entity.ItemEntityMixin",
+    "entity.LightingBoltMixin",
     "entity.LivingEntityMixin",
     "entity.MobAccessor",
     "entity.PhantomAccessor",
