@@ -172,11 +172,10 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
 
         Component miningStrengthInfo = Component.translatable("text.changed_addon.miningStrength", miningStrength);
 
-        MutableComponent jumpStrengthInfo = Component.translatable("text.changed_addon.jumpStrength")
-                .append("")
-                .append(jumpStrengthPct == 0
-                        ? Component.literal("§7None§r")
-                        : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
+        MutableComponent jumpStrengthInfo = Component.translatable("text.changed_addon.jumpStrength",
+                jumpStrengthPct == 0
+                ? Component.literal("§7None§r")
+                : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
 
         MutableComponent canGlideInfo = Component.translatable("text.changed_addon.canGlide/Fly")
                 .append("")
