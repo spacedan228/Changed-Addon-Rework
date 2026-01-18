@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -109,8 +110,9 @@ public class InductionCoilGoal extends Goal {
         }
 
         float metalPercentage = Math.max((float) metal / slots, 0.1f);
-        target.hurt(target.level().damageSources().inFire(), damageProvider.sample(random) * metalPercentage);
-        target.setSecondsOnFire(5);
+        if (target.hurt(target.level().damageSources().inFire(), damageProvider.sample(random) * metalPercentage)) {
+            target.setSecondsOnFire(5);
+        }
     }
 
     protected void spawnParticles() {
@@ -132,6 +134,7 @@ public class InductionCoilGoal extends Goal {
     }
 
     protected void hurtAndBreak(ItemStack stack, int damage, RandomSource random) {
+        if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)) return;
         if (!stack.isDamageableItem() || !stack.hurt(damage, random, null)) return;
 
         stack.shrink(1);

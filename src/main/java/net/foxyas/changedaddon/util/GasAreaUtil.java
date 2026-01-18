@@ -9,17 +9,21 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GasAreaUtil {
 
     public record GasHit(BlockPos pos, Direction face, LatexCoverState state) {}
+    public record GasHitBlock(BlockPos pos, Direction face, BlockState state) {}
 
     public static List<Vec3> sampleGasCone(
             Player player,
@@ -101,6 +105,57 @@ public class GasAreaUtil {
         }
 
         return hits;
+    }
+
+    public static List<GasHitBlock> getGasConeHitsNormalBlocks(
+            Level level,
+            Entity entity,
+            double range,
+            double spread,
+            int density
+    ) {
+
+        Vec3 from = entity.getEyePosition(1.0F);
+        Vec3 look = entity.getLookAngle().normalize();
+
+        Vec3 right = look.cross(new Vec3(0, 1, 0)).normalize();
+        if (right.lengthSqr() < 1e-4) {
+            right = new Vec3(1, 0, 0); // fallback
+        }
+        Vec3 up = right.cross(look).normalize();
+
+        Set<GasHitBlock> hits = new HashSet<>();
+
+        for (int x = -density; x <= density; x++) {
+            for (int y = -density; y <= density; y++) {
+                Vec3 offset = right.scale(x * spread)
+                        .add(up.scale(y * spread));
+
+                Vec3 to = from.add(look.scale(range)).add(offset);
+
+                ClipContext context = new ClipContext(
+                        from,
+                        to,
+                        ClipContext.Block.OUTLINE,
+                        ClipContext.Fluid.NONE,
+                        entity
+                );
+
+                BlockHitResult hit = level.clip(context);
+                if (hit.getType() != BlockHitResult.Type.BLOCK)
+                    continue;
+
+                BlockPos pos = hit.getBlockPos();
+                Direction face = hit.getDirection();
+                BlockState state = level.getBlockState(pos);
+
+                if (!state.isAir()) {
+                    hits.add(new GasHitBlock(pos, face, state));
+                }
+            }
+        }
+
+        return hits.stream().toList();
     }
 
     public static List<GasHit> getGasVolumeHits(
