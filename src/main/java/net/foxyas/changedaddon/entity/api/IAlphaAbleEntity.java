@@ -40,6 +40,7 @@ public interface IAlphaAbleEntity {
     UUID TRANSFUR_DAMAGE = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a006");
     UUID ATTACK_KNOCKBACK = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a007");
     UUID ATTACK_SPEED = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a008");
+    UUID ATTACK_REACH = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a009");
 
     static void applyOrRemoveAlphaModifiers(LivingEntity entity, boolean isAlpha, float alphaScale) {
         if (entity.isDeadOrDying()) return;
@@ -79,6 +80,8 @@ public interface IAlphaAbleEntity {
 
         apply(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED, "Alpha Attack Speed", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
+        apply(entity, ForgeMod.ATTACK_RANGE.get(), ATTACK_REACH, "Alpha Attack Rang", normalized * 0.5f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
         entity.setHealth(entity.getMaxHealth());
     }
 
@@ -98,6 +101,7 @@ public interface IAlphaAbleEntity {
         remove(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE);
         remove(entity, Attributes.ATTACK_KNOCKBACK, ATTACK_KNOCKBACK);
         remove(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED);
+        remove(entity, ForgeMod.ATTACK_RANGE.get(), ATTACK_REACH);
     }
 
     private static void remove(LivingEntity entity, Attribute attr, UUID uuid) {
