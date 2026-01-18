@@ -98,11 +98,11 @@ public class ChangedAddonBlocks {
         }
     });
 
-    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(ChangedAddonMaterials.LATEX_COVER)
+    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new WhiteLatexCoverBlock(BlockBehaviour.Properties.of(ChangedAddonMaterials.LATEX_COVER)
             .noOcclusion()
             .dynamicShape()
             .color(MaterialColor.TERRACOTTA_WHITE)
-            .sound(SoundType.SLIME_BLOCK), LatexType.WHITE_LATEX) {
+            .sound(SoundType.SLIME_BLOCK)) {
         @OnlyIn(Dist.CLIENT)
         @Override
         public void registerRenderLayer() {

@@ -54,7 +54,7 @@ public class LatexPullEntityGoal extends Goal {
         for (LivingEntity target : entities) {
             pullEntity(target);
 
-            if (target.distanceTo(holder) <= 2.0F || canHolderSeeOther(target, holder, 360)) {
+            if (target.distanceTo(holder) <= 2.0F || (canHolderSeeOther(target, holder, 360) && target.distanceTo(holder) <= 8)) {
                 onSuccessfulPull(target);
             }
         }
@@ -91,7 +91,7 @@ public class LatexPullEntityGoal extends Goal {
 
         // Then, raycast from eyeEntity to targetToSee to check if the view is blocked
         HitResult result = level.clip(new DynamicClipContext(
-                from, to, DynamicClipContext.IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, eyeEntity, CollisionContext.of(eyeEntity)
+                from, to, DynamicClipContext.IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, targetToSee, CollisionContext.of(targetToSee)
         ));
 
         // If result is MISS or hit point is very close to target, it's considered visible
