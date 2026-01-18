@@ -293,7 +293,7 @@ public class TransfurTotemItem extends Item {
                 return InteractionResult.SUCCESS;
             }
         } else if (targetEntity instanceof ChangedEntity changedEntity) {
-            String string = changedEntity.getSelfVariant() != null ? changedEntity.getSelfVariant().getFormId().toString() : "";
+            String string = changedEntity.getSelfVariant() != null ? changedEntity.getSelfVariant().getFormId().toString() : changedEntity.getTransfurVariant() != null ? changedEntity.getTransfurVariant().getFormId().toString() : "";
 
             cooldown(player, totem, 20);
 

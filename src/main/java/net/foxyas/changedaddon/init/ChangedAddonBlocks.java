@@ -82,11 +82,11 @@ public class ChangedAddonBlocks {
             .sound(SoundType.SLIME_BLOCK), ChangedLatexTypes.DARK_LATEX::get) {
     });
 
-    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of()
+    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new WhiteLatexCoverBlock(BlockBehaviour.Properties.of()
             .noOcclusion()
             .dynamicShape()
             .mapColor(MapColor.TERRACOTTA_WHITE)
-            .sound(SoundType.SLIME_BLOCK), ChangedLatexTypes.WHITE_LATEX::get) {
+            .sound(SoundType.SLIME_BLOCK)) {
     });
 
     public static final RegistryObject<WolfCrystalPillar> WOLF_CRYSTAL_PILLAR = REGISTRY.register("wolf_crystal_pillar", WolfCrystalPillar::new);
