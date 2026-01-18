@@ -8,6 +8,7 @@ import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.Exp9AttacksHandle;
 import net.foxyas.changedaddon.entity.goals.exp9.*;
 import net.foxyas.changedaddon.entity.goals.generic.BreakBlocksAroundGoal;
+import net.foxyas.changedaddon.entity.goals.generic.LatexPullEntityGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.util.ColorUtil;
@@ -257,6 +258,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 UniformFloat.of(6, 8))); //FloatProvider -> damage)
 
         this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
+        this.goalSelector.addGoal(10, new LatexPullEntityGoal(this, 32, 1));
     }
 
     //private void addOldAI() {

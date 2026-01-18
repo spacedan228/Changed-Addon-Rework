@@ -33,17 +33,22 @@ public class TransfurVariantEvents {
         }
     }
 
-    public static class KillAfterTransfurredSpecificEvent extends KillAfterTransfurredEvent {
+    public static class KillAfterTransfurredSpecificEvent extends Event {
 
+        private final LivingEntity targetEntity;
         protected IAbstractChangedEntity iAbstractChangedEntity;
 
-        public KillAfterTransfurredSpecificEvent(LivingEntity targetEntity, IAbstractChangedEntity iAbstractChangedEntity) {
-            super(targetEntity, iAbstractChangedEntity.getEntity());
+        public KillAfterTransfurredSpecificEvent(LivingEntity targetEntity, @Nullable IAbstractChangedEntity iAbstractChangedEntity) {
+            this.targetEntity = targetEntity;
             this.iAbstractChangedEntity = iAbstractChangedEntity;
         }
 
         public IAbstractChangedEntity getiAbstractChangedEntity() {
             return iAbstractChangedEntity;
+        }
+
+        public LivingEntity getTargetEntity() {
+            return targetEntity;
         }
 
         @Override

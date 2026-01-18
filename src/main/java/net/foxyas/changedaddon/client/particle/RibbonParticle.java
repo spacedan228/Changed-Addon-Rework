@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.client.particle;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import it.unimi.dsi.fastutil.Pair;
+import net.foxyas.changedaddon.util.Matrix4f;
 import net.foxyas.changedaddon.util.Vector3f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -106,7 +107,7 @@ public class RibbonParticle extends Particle {
     protected static final Vector3f segmentUp = new Vector3f();
     protected static final Vector3f tmp = new Vector3f(), tmp1 = new Vector3f();
     protected static final Vector3f lerpSegment = new Vector3f(), lerpPrev = new Vector3f();
-    //protected static final Matrix4f mat = new Matrix4f();
+    protected static final Matrix4f mat = new Matrix4f();
 
     @Override
     public void render(@NotNull VertexConsumer pBuffer, @NotNull Camera pRenderInfo, float pPartialTicks) {
@@ -133,11 +134,11 @@ public class RibbonParticle extends Particle {
 
             segmentUp.normalize().mul(scaleY * outQuadratic(1 - (float) (i + 1) / length));
 
-            /*if (hasRotation()) {//TODO make/find alternative for joml.Matrix4f
+            if (hasRotation()) {
                 if (lerpSegment.equals(lerpPrev)) lerpPrev.sub(segments[1].first(), tmp);
                 mat.identity().rotate(rotationRad, tmp.normalize());
                 segmentUp.mulPosition(mat);
-            }*/
+            }
 
             lerpSegment.sub((float) camPos.x, (float) camPos.y, (float) camPos.z);
 

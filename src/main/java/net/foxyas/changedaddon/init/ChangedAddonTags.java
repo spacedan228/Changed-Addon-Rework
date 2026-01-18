@@ -4,10 +4,12 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.minecraft.core.Registry;
+import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.gameevent.GameEvent;
 
 public final class ChangedAddonTags {
 
@@ -20,6 +22,15 @@ public final class ChangedAddonTags {
 
         private static TagKey<Block> key(String path) {
             return TagKey.create(Registry.BLOCK_REGISTRY, ChangedAddonMod.resourceLoc(path));
+        }
+    }
+
+    public static final class GameEvents {
+
+        public static final TagKey<GameEvent> CAN_WAKE_UP_ALPHAS = key("can_wake_up_alphas");
+
+        private static TagKey<GameEvent> key(String path) {
+            return TagKey.create(Registry.GAME_EVENT.key(), ChangedAddonMod.resourceLoc(path));
         }
     }
 

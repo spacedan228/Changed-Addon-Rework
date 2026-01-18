@@ -8,66 +8,55 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.pathfinder.Path;
 
 import java.util.EnumSet;
 
 public class BreakBlocksAroundGoal extends Goal {
-    private final Mob mob;
+    private static final int FRUSTRATION_THRESHOLD = 40;
+    private final Mob holder;
     private int breakCooldown = 0;
+    protected int frustrationTicks;
 
-    public BreakBlocksAroundGoal(Mob mob) {
-        this.mob = mob;
+    public BreakBlocksAroundGoal(Mob holder) {
+        this.holder = holder;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK));
     }
 
     @Override
     public boolean canUse() {
-        if (!mob.getLevel().getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
+        if (!holder.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             return false;
         }
 
-        if (mob.getTarget() == null) {
+        boolean takingDamage = holder.getCombatTracker().isTakingDamage();
+
+        if (takingDamage && holder.getTarget() == null) {
+            frustrationTicks++;
+        } else if (frustrationTicks > 0) {
+            frustrationTicks--;
+        }
+
+        if (frustrationTicks >= FRUSTRATION_THRESHOLD) {
+            frustrationTicks = FRUSTRATION_THRESHOLD / 2;
+            return true;
+        }
+
+        if (holder.getTarget() == null) {
             return false;
         }
 
+        PathNavigation pathNavigation = holder.getNavigation();
 
-        if (mob instanceof Experiment009BossEntity experiment009BossEntity) {
-            if (experiment009BossEntity.isPhase2()) {
-                if (!mob.isAlive() || breakCooldown > 0) {
-                    if (breakCooldown > 0) {
-                        tickCooldown();
-                    }
-
-                    return false;
-                }
-
-                if (mob.getDeltaMovement().length() > 0.05) {
-                    if (mob.horizontalCollision || mob.verticalCollision) {
-                        return true;
-                    }
-                }
-            } else return false;
-        } else if (mob instanceof Experiment10BossEntity experiment10BossEntity) {
-            if (experiment10BossEntity.isPhase2()) {
-                if (!mob.isAlive() || breakCooldown > 0) {
-                    if (breakCooldown > 0) {
-                        tickCooldown();
-                    }
-
-                    return false;
-                }
-
-                if (mob.getDeltaMovement().length() > 0.05) {
-                    if (mob.horizontalCollision || mob.verticalCollision) {
-                        return true;
-                    }
-                }
-            } else return false;
+        Path holderPath = pathNavigation.getPath();
+        if (holderPath != null && holderPath.getEndNode() != null && holderPath.getEndNode().asVec3().distanceTo(holder.getTarget().position()) <= 1.5 && !holderPath.canReach()) {
+            return true;
         }
 
-        if (!mob.isAlive() || breakCooldown > 0) {
+        if (!holder.isAlive() || breakCooldown > 0) {
             if (breakCooldown > 0) {
                 tickCooldown();
             }
@@ -75,37 +64,56 @@ public class BreakBlocksAroundGoal extends Goal {
             return false;
         }
 
-        if (mob.getDeltaMovement().length() > 0.05) {
-            if (mob.horizontalCollision || mob.verticalCollision) return true;
+        if (holder instanceof Experiment009BossEntity experiment009BossEntity) {
+            if (experiment009BossEntity.isPhase2()) {
+                if (holder.getDeltaMovement().length() < 0.05) {
+                    if (holder.horizontalCollision || holder.verticalCollision) {
+                        return true;
+                    }
+                }
+            } else return false;
+        } else if (holder instanceof Experiment10BossEntity experiment10BossEntity) {
+            if (experiment10BossEntity.isPhase2()) {
+                if (holder.getDeltaMovement().length() < 0.05) {
+                    if (holder.horizontalCollision || holder.verticalCollision) {
+                        return true;
+                    }
+                }
+            } else return false;
         }
 
-        if (mob.getTarget() != null) {
-            BlockPos eyePos = mob.blockPosition().above(Mth.floor(mob.getEyeHeight()));
-            return !mob.level.getBlockState(eyePos).isAir();
+        if (holder.getDeltaMovement().length() < 0.05) {
+            if (holder.horizontalCollision || holder.verticalCollision) return true;
         }
+
+        if (holder.getTarget() != null) {
+            BlockPos eyePos = holder.blockPosition().above(Mth.floor(holder.getEyeHeight()));
+            return !holder.level.getBlockState(eyePos).isAir();
+        }
+
         return false;
     }
 
     @Override
     public void tick() {
-        if (!(mob.level instanceof ServerLevel serverLevel)) return;
+        if (!(holder.level instanceof ServerLevel serverLevel)) return;
         if (breakCooldown > 0) {
             tickCooldown();
             return;
         }
 
-        BlockPos mobPos = mob.blockPosition();
+        BlockPos mobPos = holder.blockPosition();
         int suppedCooldown = 0;
-        for (BlockPos pos : BlockPos.betweenClosed(
-                mobPos.offset(-1, 0, -1),
-                mobPos.offset(1, 1, 1))) {
+        for (BlockPos pos : BlockPos.betweenClosedStream(
+                mobPos.offset(-3, 0, -3),
+                mobPos.offset(3, 3, 3)).map(BlockPos::immutable).toList()) {
 
             if (pos.equals(mobPos.below())) continue;
 
             var state = serverLevel.getBlockState(pos);
             if (!state.isAir() && state.getDestroySpeed(serverLevel, pos) >= 0) {
                 if (!state.is(Blocks.BEDROCK) || !state.is(BlockTags.WITHER_IMMUNE)) {
-                    serverLevel.destroyBlock(pos, true, mob);
+                    serverLevel.destroyBlock(pos, true, holder);
                     suppedCooldown += 5;
                 }
             }

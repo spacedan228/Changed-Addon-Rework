@@ -89,4 +89,12 @@ public class Vector3f {
     public boolean isFinite(){
         return Math.abs(x) <= Float.MAX_VALUE && Math.abs(y) <= Float.MAX_VALUE && Math.abs(z) <= Float.MAX_VALUE;
     }
+
+    public Vector3f mulPosition(Matrix4f mat) {
+        float x = this.x, y = this.y, z = this.z;
+        this.x = Math.fma(mat.m00(), x, Math.fma(mat.m10(), y, Math.fma(mat.m20(), z, mat.m30())));
+        this.y = Math.fma(mat.m01(), x, Math.fma(mat.m11(), y, Math.fma(mat.m21(), z, mat.m31())));
+        this.z = Math.fma(mat.m02(), x, Math.fma(mat.m12(), y, Math.fma(mat.m22(), z, mat.m32())));
+        return this;
+    }
 }
