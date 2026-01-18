@@ -25,6 +25,8 @@ public class LatexPullEntityGoal extends Goal {
     private final Mob holder;
     private final double range;
     private final double strength;
+
+    protected List<LivingEntity> entities;
     protected int blockBreakCooldown;
 
     public LatexPullEntityGoal(Mob holder, double range, double strength) {
@@ -36,33 +38,31 @@ public class LatexPullEntityGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return !holder.level.getEntitiesOfClass(
-                LivingEntity.class,
-                holder.getBoundingBox().inflate(range),
-                e -> e != holder && e.isAlive() && (WhiteLatexTransportInterface.isEntityInWhiteLatex(e) || WhiteLatexTransportInterface.isBoundingBoxInWhiteLatex(e).isPresent())
-        ).isEmpty();
-    }
-
-    @Override
-    public void tick() {
-        if (!holder.level.isClientSide) {
-            if (blockBreakCooldown > 0)
-                blockBreakCooldown--;
-        }
-
-        List<LivingEntity> targets = holder.level.getEntitiesOfClass(
+        entities = holder.level.getEntitiesOfClass(
                 LivingEntity.class,
                 holder.getBoundingBox().inflate(range),
                 e -> e != holder && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(e) && e.isAlive() && (WhiteLatexTransportInterface.isEntityInWhiteLatex(e) || WhiteLatexTransportInterface.isBoundingBoxInWhiteLatex(e).isPresent())
         );
+        return !entities.isEmpty();
+    }
 
-        for (LivingEntity target : targets) {
+    @Override
+    public void tick() {
+        if (blockBreakCooldown > 0)
+            blockBreakCooldown--;
+
+        for (LivingEntity target : entities) {
             pullEntity(target);
 
             if (target.distanceTo(holder) <= 2.0F || canHolderSeeOther(target, holder, 360)) {
                 onSuccessfulPull(target);
             }
         }
+    }
+
+    @Override
+    public void stop() {
+        entities = null;
     }
 
     /**
@@ -100,9 +100,6 @@ public class LatexPullEntityGoal extends Goal {
     }
 
     private void onSuccessfulPull(LivingEntity target) {
-        if (holder.level.isClientSide)
-            return;
-
         if (blockBreakCooldown <= 0) {
             breakSurroundingBlocks();
             blockBreakCooldown = 20; // 1 segundo
