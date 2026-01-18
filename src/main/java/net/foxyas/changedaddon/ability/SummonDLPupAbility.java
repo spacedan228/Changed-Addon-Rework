@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.ability;
 
+import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.ltxprogrammer.changed.init.ChangedEntities;
@@ -23,7 +24,7 @@ public class SummonDLPupAbility extends SimpleAbility {
         var referenceEntity = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
         assert referenceEntity != null;
 
-        return BlockPos.betweenClosedStream(near.offset(-4, -2, -4), near.offset(4, 2, 4)).map(BlockPos::immutable).filter(
+        return BlockPos.betweenClosedStream(near.offset(-4, -2, -4), near.offset(4, 2, 4)).filter(
                 pos -> level.getBlockState(pos.offset(0, -1, 0)).entityCanStandOnFace(level, pos, referenceEntity, Direction.UP) && level.getBlockState(pos).isAir()
         );
     }
@@ -31,13 +32,20 @@ public class SummonDLPupAbility extends SimpleAbility {
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
         var level = entity.getLevel();
+
+        var list = findLandNearby(level, entity.getBlockPosition())
+                .map(BlockPos::immutable).toList();
+        int attempts = Math.min(list.size(), 1);
+
+        if (attempts == 0) { // Spawn failed, grant reduced cooldown
+            entity.getAbilityInstanceSafe(this)
+                    .map(AbstractAbilityInstance::getController)
+                    .ifPresent(controller -> controller.forceCooldown(60));
+            return;
+        }
+
         if (level.isClientSide)
             return;
-
-        ChangedSounds.broadcastSound(entity.getEntity(), ChangedSounds.DARK_LATEX_PUP_FORM_PUDDLE, 1.0f, 1.0f);
-
-        var list = findLandNearby(level, entity.getBlockPosition()).toList();
-        int attempts = Math.min(list.size(), 1);
 
         while (attempts > 0) {
             var blockPos = list.get(level.random.nextInt(list.size()));
@@ -55,6 +63,8 @@ public class SummonDLPupAbility extends SimpleAbility {
 
             attempts--;
         }
+
+        ChangedSounds.broadcastSound(entity.getEntity(), ChangedSounds.DARK_LATEX_PUP_FORM_PUDDLE, 1.0f, 1.0f);
     }
 
     @Override
