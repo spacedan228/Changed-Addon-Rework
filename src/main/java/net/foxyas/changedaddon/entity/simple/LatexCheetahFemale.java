@@ -17,19 +17,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class LatexCheetahFemale extends AbstractCheetahEntity {
 
     public LatexCheetahFemale(EntityType<? extends LatexCheetahFemale> entityType, Level level) {
         super(entityType, level);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void addSpawnConfiguration(SpawnPlacementRegisterEvent event) {
         event.register(ChangedAddonEntities.LATEX_CHEETAH_FEMALE.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 ChangedEntity::checkEntitySpawnRules,

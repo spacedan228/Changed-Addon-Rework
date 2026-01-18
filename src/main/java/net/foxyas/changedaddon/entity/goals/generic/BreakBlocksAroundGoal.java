@@ -32,9 +32,9 @@ public class BreakBlocksAroundGoal extends Goal {
             return false;
         }
 
-        boolean wasHurt = holder.getLastHurtByMobTimestamp() > holder.getLastHurtMobTimestamp();
+        boolean takingDamage = holder.getCombatTracker().takingDamage;
 
-        if (wasHurt) {
+        if (takingDamage && holder.getTarget() == null) {
             frustrationTicks++;
         } else if (frustrationTicks > 0) {
             frustrationTicks--;
