@@ -32,6 +32,7 @@ public class AlphaSleepGoal extends Goal {
     protected final float noWalkingRange;
     protected final float noWalkingRangeSqr;
     protected final IntProvider sleepDurationProvider;
+
     protected int sleepCooldown;
     protected static final int MAX_SLEEP_COOLDOWN = 20 * 60;
 
@@ -83,7 +84,10 @@ public class AlphaSleepGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (sleepCooldown > 0) return false;
+        if (sleepCooldown > 0) {
+            sleepCooldown--;
+            return false;
+        }
         if (holder.getTarget() != null) return false;
 
         scanForFluffyBlocks();
@@ -105,8 +109,8 @@ public class AlphaSleepGoal extends Goal {
         holder.goalSelector.getRunningGoals().filter(wrappedGoal -> wrappedGoal.getGoal() != this).forEach(WrappedGoal::stop);
         holder.targetSelector.getRunningGoals().filter(wrappedGoal -> wrappedGoal.getGoal() != this).forEach(WrappedGoal::stop);
         holder.setTarget(null);
-        if (sleepCooldown > 0) {
-            sleepCooldown--;
+        if (sleepDuration > 0) {
+            sleepDuration--;
         }
     }
 
@@ -119,13 +123,12 @@ public class AlphaSleepGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        boolean takingDamage = holder.getCombatTracker().takingDamage;
-        if (takingDamage) {
+        if (sleepDuration <= 0) {
             return false;
         }
 
-        if (sleepCooldown > 0) {
-            sleepCooldown--;
+        boolean takingDamage = holder.getCombatTracker().takingDamage;
+        if (takingDamage) {
             return false;
         }
 
