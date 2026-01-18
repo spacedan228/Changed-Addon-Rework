@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class LatexCheetahMale extends AbstractCheetahEntity {
 
     public LatexCheetahMale(EntityType<? extends LatexCheetahMale> entityType, Level level) {
