@@ -60,12 +60,14 @@ public class InformantBlock extends HorizontalDirectionalBlock implements Entity
         super.use(blockstate, level, pos, entity, hand, hit);
         BlockEntity blockEntity = level.getBlockEntity(pos);
 
-        if (!(entity instanceof ServerPlayer sPlayer) || !(blockEntity instanceof InformantBlockEntity info))
+        if (!(blockEntity instanceof InformantBlockEntity info))
             return InteractionResult.PASS;
 
-        NetworkHooks.openScreen(sPlayer, info, pos);
+        if (entity instanceof ServerPlayer serverPlayer) {
+            NetworkHooks.openScreen(serverPlayer, info, pos);
+        }
 
-        return InteractionResult.SUCCESS;
+        return InteractionResult.sidedSuccess(level.isClientSide());
     }
 
     @Override
