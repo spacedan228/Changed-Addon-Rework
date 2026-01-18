@@ -5,11 +5,13 @@ import net.foxyas.changedaddon.block.MultifaceBlock;
 import net.foxyas.changedaddon.block.StackableCanBlock;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.PipeBlock;
@@ -112,8 +114,8 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
         add(WOLF_CRYSTAL_PILLAR.get(), createSilkTouchOnlyTable(WOLF_CRYSTAL_PILLAR.get()));
 
         coverBlockDrop(COVER_BLOCK.get());
-        coverBlockDrop(DARK_LATEX_COVER_BLOCK.get());
-        coverBlockDrop(WHITE_LATEX_COVER_BLOCK.get());
+        coverBlockDropSelfOrOther(DARK_LATEX_COVER_BLOCK.get(), ChangedItems.DARK_LATEX_GOO.get());
+        coverBlockDropSelfOrOther(WHITE_LATEX_COVER_BLOCK.get(), ChangedItems.WHITE_LATEX_GOO.get());
     }
 
     private void dropStackableCan(RegistryObject<? extends StackableCanBlock> canBlock, RegistryObject<? extends Item> canItem) {
@@ -140,6 +142,68 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLoot {
 
         add(cover, table);
     }
+
+    private void coverBlockDropOther(MultifaceBlock cover, ItemLike other){
+        LootTable.Builder table = LootTable.lootTable();
+        for(Direction direction : Direction.values()){
+            table.withPool(LootPool.lootPool().add(LootItem.lootTableItem(other))
+                    .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(cover)
+                            .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(PipeBlock.PROPERTY_BY_DIRECTION.get(direction), true))));
+        }
+
+        add(cover, table);
+    }
+
+    private void coverBlockDropSelfOrOther(
+            MultifaceBlock cover,
+            ItemLike other
+    ) {
+        LootTable.Builder table = LootTable.lootTable();
+
+        for (Direction direction : Direction.values()) {
+            table.withPool(
+                    faceDropPool(cover, cover.asItem(), direction, true)
+            );
+
+            table.withPool(
+                    faceDropPool(cover, other, direction, false)
+            );
+        }
+
+        add(cover, table);
+    }
+
+    private LootPool.Builder faceDropPool(
+            MultifaceBlock cover,
+            ItemLike drop,
+            Direction direction,
+            boolean silkTouch
+    ) {
+        LootPool.Builder pool = LootPool.lootPool()
+                .add(LootItem.lootTableItem(drop))
+                .when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(cover)
+                        .setProperties(StatePropertiesPredicate.Builder.properties()
+                                .hasProperty(PipeBlock.PROPERTY_BY_DIRECTION.get(direction), true)));
+
+        if (silkTouch) {
+            pool.when(MatchTool.toolMatches(
+                    ItemPredicate.Builder.item()
+                            .hasEnchantment(
+                                    new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))
+                            )
+            ));
+        } else {
+            pool.when(MatchTool.toolMatches(
+                    ItemPredicate.Builder.item()
+                            .hasEnchantment(
+                                    new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))
+                            )
+            ).invert());
+        }
+
+        return pool;
+    }
+
 
     @Override
     protected @NotNull Iterable<Block> getKnownBlocks() {
