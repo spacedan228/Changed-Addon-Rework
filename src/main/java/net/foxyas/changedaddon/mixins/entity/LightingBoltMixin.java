@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package net.foxyas.changedaddon.mixins.entity;
 
 import net.foxyas.changedaddon.event.TransfurEvents;
@@ -10,7 +5,6 @@ import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.LatexType;
-import net.ltxprogrammer.changed.entity.beast.WhiteLatexEntity;
 import net.ltxprogrammer.changed.entity.beast.WhiteLatexWolfMale;
 import net.ltxprogrammer.changed.entity.beast.boss.Behemoth;
 import net.ltxprogrammer.changed.init.ChangedEffects;
