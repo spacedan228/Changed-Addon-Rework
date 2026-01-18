@@ -3,7 +3,9 @@ package net.foxyas.changedaddon.entity.goals.generic;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.ltxprogrammer.changed.block.WhiteLatexTransportInterface;
 import net.ltxprogrammer.changed.entity.PlayerDataExtension;
+import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -50,7 +52,7 @@ public class LatexPullEntityGoal extends Goal {
         List<LivingEntity> targets = holder.level.getEntitiesOfClass(
                 LivingEntity.class,
                 holder.getBoundingBox().inflate(range),
-                e -> e != holder && e.isAlive() && (WhiteLatexTransportInterface.isEntityInWhiteLatex(e) || WhiteLatexTransportInterface.isBoundingBoxInWhiteLatex(e))
+                e -> e != holder && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(e) && e.isAlive() && (WhiteLatexTransportInterface.isEntityInWhiteLatex(e) || WhiteLatexTransportInterface.isBoundingBoxInWhiteLatex(e))
         );
 
         for (LivingEntity target : targets) {

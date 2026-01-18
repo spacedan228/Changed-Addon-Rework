@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.util;
 
 import com.mojang.math.Vector3f;
+import net.foxyas.changedaddon.block.LatexCoverBlock;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -15,6 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -151,6 +153,17 @@ public class ChangedAddonLaethinminatorUtil {
         if (!world.getBlockState(pos).isAir()) {
             // Substituir bloco por vidro como exemplo
             BlockState stage = world.getBlockState(pos);
+            if (stage.getBlock() instanceof LatexCoverBlock) {
+                world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                Color StartColor = new Color(255, 255, 255, 255);
+                Color EndColor = new Color(93, 93, 93, 255);
+                ParticleOptions particleOptions = getParticleOptions(StartColor, EndColor);
+
+                // Adicionar partículas no bloco afetado
+                ParticlesUtil.sendParticles(world, particleOptions, pos, 0.25f, 0.25f, 0.25f, 1, 0f);
+                return;
+            }
+
             if (!stage.hasProperty(AbstractLatexBlock.COVERED)) {
                 return;
             }
