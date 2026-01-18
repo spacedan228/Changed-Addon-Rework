@@ -49,6 +49,7 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.VanillaGameEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -78,6 +79,15 @@ public class CommonEvent {
         int experience = experienceDropEvent.getDroppedExperience();
         if (experienceDropEvent.getEntity() instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
             experienceDropEvent.setDroppedExperience((int) (experience * iAlphaAbleEntity.alphaAdditionalScale()));
+        }
+    }
+
+    @SubscribeEvent
+    public static void modifyFallDamage(LivingFallEvent event) {
+        LivingEntity livingEntity = event.getEntity();
+        Entity entity = TransfurEvents.resolveChangedEntity(livingEntity);
+        if (entity instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
+            event.setDamageMultiplier(event.getDamageMultiplier() * (1 - (0.25f * (IAlphaAbleEntity.getEntityAlphaScale(entity) / 0.75f))));
         }
     }
 
