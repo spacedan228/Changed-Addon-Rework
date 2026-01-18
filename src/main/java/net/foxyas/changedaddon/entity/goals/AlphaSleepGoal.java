@@ -32,6 +32,7 @@ public class AlphaSleepGoal extends Goal {
     protected final float noWalkingRange;
     protected final float noWalkingRangeSqr;
     protected final IntProvider sleepDurationProvider;
+
     protected int sleepCooldown;
     protected static final int MAX_SLEEP_COOLDOWN = 20 * 60;
 
@@ -107,8 +108,9 @@ public class AlphaSleepGoal extends Goal {
     public void tick() {
         holder.goalSelector.getRunningGoals().filter(wrappedGoal -> wrappedGoal.getGoal() != this).forEach(WrappedGoal::stop);
         holder.targetSelector.getRunningGoals().filter(wrappedGoal -> wrappedGoal.getGoal() != this).forEach(WrappedGoal::stop);
-        if (sleepCooldown > 0) {
-            sleepCooldown--;
+        holder.setTarget(null);
+        if (sleepDuration > 0) {
+            sleepDuration--;
         }
     }
 
@@ -121,18 +123,20 @@ public class AlphaSleepGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
+        if (sleepDuration <= 0) {
+            return false;
+        }
+
         boolean takingDamage = holder.getCombatTracker().isTakingDamage();
         if (takingDamage) {
             return false;
         }
 
-        if (--sleepDuration <= 0) return false;
-
         Level level = holder.level;
         List<LivingEntity> entities = level.getEntitiesOfClass(
                 LivingEntity.class,
                 holder.getBoundingBox().inflate(noWalkingRange),
-                EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(e -> e != holder)
+                EntitySelector.NO_SPECTATORS.and(e -> e != holder)
         );
 
         for (LivingEntity entity : entities) {
@@ -141,6 +145,7 @@ public class AlphaSleepGoal extends Goal {
             if (entity.isSprinting()) return false;
 
             ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> entity), new RequestMovementCheckPacket(true));
+
             Vec3 movement = entity.getDeltaMovement();
             if (entity instanceof SyncTrackMotion syncTrackMotion) {
                 boolean flag = syncTrackMotion.getLastKnownMotion() != null;
@@ -154,7 +159,7 @@ public class AlphaSleepGoal extends Goal {
             }
 
             if (movement.lengthSqr() >= 0.05D) {
-                return false;
+                return false; // alguém correndo
             }
 
         }
