@@ -12,10 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -82,6 +79,8 @@ public abstract class LightingBoltMixin extends Entity {
         );
 
         for (LivingEntity entity : entities) {
+            if (!EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(entity)) continue;
+
             if (isWhiteLatexEntityConnected(level, strikePos, entity)) {
                 entity.addEffect(new MobEffectInstance(
                         ChangedEffects.SHOCK,
