@@ -258,8 +258,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 UniformFloat.of(6, 8))); //FloatProvider -> damage)
 
         this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
-
-        this.goalSelector.addGoal(10, new LatexPullEntityGoal(this, 16, 1));
+        this.goalSelector.addGoal(10, new LatexPullEntityGoal(this, 32, 1));
     }
 
     //private void addOldAI() {
