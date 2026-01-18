@@ -7,7 +7,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,7 +78,7 @@ public class LatexPullEntityGoal extends Goal {
         if (level != targetToSee.level) return false;
 
         Vec3 from = eyeEntity.getEyePosition(1.0F);
-        Vec3 to = targetToSee.getEyePosition(1.0F);
+        Vec3 to = targetToSee.getPosition(1.0F);
 
         // First, check field of view using dot product
         Vec3 lookVec = eyeEntity.getLookAngle().normalize();
@@ -152,9 +154,11 @@ public class LatexPullEntityGoal extends Goal {
 
         Vec3 motion = normalized.scale(pull);
 
-        target.setDeltaMovement(
-                target.getDeltaMovement().add(motion)
-        );
+        if (target instanceof Player player) {
+            player.move(MoverType.SELF, motion);
+        } else {
+            target.setDeltaMovement(target.getDeltaMovement().add(motion));
+        }
 
         target.hurtMarked = true;
     }
