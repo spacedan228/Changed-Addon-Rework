@@ -1,7 +1,9 @@
 package net.foxyas.changedaddon.util;
 
+import net.foxyas.changedaddon.block.LatexCoverBlock;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.util.GasAreaUtil.GasHit;
+import net.foxyas.changedaddon.util.GasAreaUtil.GasHitBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
@@ -20,6 +22,8 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -27,7 +31,6 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -56,6 +59,15 @@ public class ChangedAddonLaethinminatorUtil {
         hits = GasAreaUtil.dedupe(hits);
 
         applyGasToLatex(level, hits);
+
+        List<GasHitBlock> blockHits = GasAreaUtil.getGasConeHitsNormalBlocks(level,
+                player,
+                range,
+                0.35,  // spread
+                2   // density
+        );
+
+        applyGasToBlocks(level, blockHits);
 
         List<Vec3> gasVolume = GasAreaUtil.sampleGasCone(
                 player,
@@ -116,6 +128,39 @@ public class ChangedAddonLaethinminatorUtil {
             if (newState != state) {
                 LatexCoverState.setAtAndUpdate(level, pos, newState);
 
+
+                // partículas no impacto
+                ParticleOptions particle = ChangedParticles.gas(
+                        Color3.fromInt(new Color(93, 93, 93).getRGB())
+                );
+
+                ParticlesUtil.sendParticles(
+                        level,
+                        particle,
+                        pos,
+                        0.25f, 0.25f, 0.25f,
+                        1,
+                        0f
+                );
+            }
+        }
+    }
+
+    private static void applyGasToBlocks(ServerLevel level, List<GasHitBlock> hits) {
+        for (GasHitBlock hit : hits) {
+            BlockPos pos = hit.pos();
+            BlockState state = hit.state();
+
+            if (state.isAir())
+                continue;
+
+            if (!(state.getBlock() instanceof LatexCoverBlock coverBlock))
+                continue;
+
+            BlockState newState = Blocks.AIR.defaultBlockState();
+
+            if (newState != state) {
+                level.setBlockAndUpdate(pos, newState);
 
                 // partículas no impacto
                 ParticleOptions particle = ChangedParticles.gas(
@@ -301,6 +346,18 @@ public class ChangedAddonLaethinminatorUtil {
     private static void affectBlock(Level world, BlockPos pos) {
         // Exemplo de lógica personalizada para afetar blocos
         if (!world.getBlockState(pos).isAir()) {
+            BlockState stage = world.getBlockState(pos);
+
+            if (stage.getBlock() instanceof LatexCoverBlock) {
+                world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                Color StartColor = new Color(255, 255, 255, 255);
+                Color EndColor = new Color(93, 93, 93, 255);
+                ParticleOptions particleOptions = getParticleOptions(StartColor, EndColor);
+
+                // Adicionar partículas no bloco afetado
+                ParticlesUtil.sendParticles(world, particleOptions, pos, 0.25f, 0.25f, 0.25f, 1, 0f);
+            }
+
             // Substituir bloco por vidro como exemplo
             LatexCoverState latexCoverState = LatexCoverState.getAt(world, pos);
 
