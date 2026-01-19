@@ -52,6 +52,16 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
                 .collect(Collectors.joining(" ")));
     }
 
+    protected void addStat(RegistryObject<ResourceLocation> stat, String value) {
+        String id = stat.get().toString().replace(":", ".");
+        add("stat." + id, value);
+    }
+
+    protected void addStat(ResourceLocation stat, String value) {
+        String id = stat.toString().replace(":", ".");
+        add("stat." + id, value);
+    }
+
     protected void addCommand(String key, String value) {
         add("command." + modid + "." + key, value);
     }

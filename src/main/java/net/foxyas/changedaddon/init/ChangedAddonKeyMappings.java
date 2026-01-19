@@ -52,16 +52,29 @@ public class ChangedAddonKeyMappings {
     };
 
     public static final KeyMapping PAT_KEY = new KeyMapping("key.changed_addon.pat_key", GLFW.GLFW_KEY_UNKNOWN, "key.categories.changed_addon") {
-        //private boolean isDownOld = false;
-        // Foxyas here.. i'm going to allow the player to hold the key to Spam Pats, the packet is too small to cause any harm
+        private boolean isDownOld = false;
+        private int cooldownTick = 0;
+
+        @Override
+        public boolean consumeClick() {
+            if (cooldownTick > 0) cooldownTick--;
+            return super.consumeClick();
+        }
+
         @Override
         public void setDown(boolean isDown) {
             super.setDown(isDown);
-            if (isDown) {
+
+            if (isDown != isDownOld) {
+                this.cooldownTick = 0;
+            }
+
+            if (isDown && cooldownTick <= 0) {
                 ChangedAddonMod.PACKET_HANDLER.sendToServer(new PatKeyPacket(0, 0));
                 PatKeyPacket.pressAction(Minecraft.getInstance().player, 0);
+                this.cooldownTick = 5;
             }
-            //isDownOld = isDown;
+            isDownOld = isDown;
         }
     };
 
