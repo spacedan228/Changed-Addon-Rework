@@ -62,6 +62,7 @@
     "mods.changed.LatexTypeMixin",
     "mods.changed.ProcessTransfurMixin",
     "mods.changed.TransfurVariantMixin",
+    "mods.changed.WhiteLatexTransportInterfaceMixin",
     "mods.nean.AvaliElytraAnimationMixin",
     "world.ConsumeItemTrigger",
     "world.DataFixTypesMixin",

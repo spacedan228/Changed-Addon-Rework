@@ -5,9 +5,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.entity.InformantBlockEntity;
 import net.foxyas.changedaddon.client.renderer.blockEntitys.InformantBlockEntityRenderer;
+import net.foxyas.changedaddon.menu.InformantGuiMenu;
 import net.foxyas.changedaddon.network.packet.InformantBlockGuiKeyPacket;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
-import net.foxyas.changedaddon.menu.InformantGuiMenu;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.client.Minecraft;
@@ -17,7 +17,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -155,32 +154,28 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         float swimSpeedPct = swimSpeed == 0 ? 0 : (swimSpeed - 1) * 100;
         float jumpStrengthPct = jumpStrength == 0 ? 0 : (jumpStrength - 1) * 100;
 
-        MutableComponent landSpeedInfo = Component.translatable("text.changed_addon.land_speed")
-                .append("")
-                .append(landSpeedPct == 0
+        MutableComponent landSpeedInfo = Component.translatable("text.changed_addon.land_speed",
+                landSpeedPct == 0
                         ? Component.literal("§7None§r")
                         : Component.literal((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%"));
 
-        MutableComponent swimSpeedInfo = Component.translatable("text.changed_addon.swim_speed")
-                .append("")
-                .append(swimSpeedPct == 0
+        MutableComponent swimSpeedInfo = Component.translatable("text.changed_addon.swim_speed",
+                swimSpeedPct == 0
                         ? Component.literal("§7None§r")
                         : Component.literal((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%"));
 
-        MutableComponent additionalHealthInfo = Component.translatable("text.changed_addon.additionalHealth")
-                .append("")
-                .append(extraHp == 0
-                        ? Component.literal("§7None§r")
-                        : Component.literal((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
+        MutableComponent additionalHealthInfo = Component.translatable("text.changed_addon.additionalHealth",
+                        extraHp == 0
+                                ? Component.literal("§7None§r")
+                                : Component.literal((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
                 .append(Component.translatable("text.changed_addon.additionalHealth.Hearts"));
 
         Component miningStrengthInfo = Component.translatable("text.changed_addon.miningStrength", miningStrength);
 
-        MutableComponent jumpStrengthInfo = Component.translatable("text.changed_addon.jumpStrength")
-                .append("")
-                .append(jumpStrengthPct == 0
-                        ? Component.literal("§7None§r")
-                        : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
+        MutableComponent jumpStrengthInfo = Component.translatable("text.changed_addon.jumpStrength",
+                jumpStrengthPct == 0
+                ? Component.literal("§7None§r")
+                : Component.literal((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
 
         MutableComponent canGlideInfo = Component.translatable("text.changed_addon.canGlide/Fly")
                 .append("")

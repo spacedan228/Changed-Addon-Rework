@@ -40,12 +40,13 @@ public interface IAlphaAbleEntity {
     UUID TRANSFUR_DAMAGE = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a006");
     UUID ATTACK_KNOCKBACK = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a007");
     UUID ATTACK_SPEED = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a008");
+    UUID ENTITY_REACH = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a009");
+    UUID BLOCK_REACH = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a010");
 
     static void applyOrRemoveAlphaModifiers(LivingEntity entity, boolean isAlpha, float alphaScale) {
         if (entity.isDeadOrDying()) return;
         if (entity.level().isClientSide) return;
         removeAlphaModifiers(entity);
-
 
         if (entity instanceof PathfinderMob mob) {
             Set<WrappedGoal> availableGoals = mob.goalSelector.getAvailableGoals();
@@ -80,6 +81,10 @@ public interface IAlphaAbleEntity {
 
         apply(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED, "Alpha Attack Speed", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
+        apply(entity, ForgeMod.ENTITY_REACH.get(), ENTITY_REACH, "Alpha Attack Reach", normalized * 0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        apply(entity, ForgeMod.BLOCK_REACH.get(), BLOCK_REACH, "Alpha Block Reach", normalized * 0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
         entity.setHealth(entity.getMaxHealth());
     }
 
@@ -99,6 +104,8 @@ public interface IAlphaAbleEntity {
         remove(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), TRANSFUR_DAMAGE);
         remove(entity, Attributes.ATTACK_KNOCKBACK, ATTACK_KNOCKBACK);
         remove(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED);
+        remove(entity, ForgeMod.ENTITY_REACH.get(), ENTITY_REACH);
+        remove(entity, ForgeMod.BLOCK_REACH.get(), BLOCK_REACH);
     }
 
     private static void remove(LivingEntity entity, Attribute attr, UUID uuid) {
