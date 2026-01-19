@@ -281,6 +281,7 @@
   "changedaddon.untransfur.Immune": "I'm not affected",
   "changedaddon.untransfur.Immune.fluid": "I'm not affected by this fluid",
   "changedaddon.untransfur.diffusion": "You unfuse with the latex creature that was attached to you. Maybe it wants to fuse back so better RUN",
+  "changedaddon.untransfur.fail": "the untransfur fail for some reason",
   "changedaddon.untransfur.no_effect": "The syringe doesn't seem to have worked",
   "changedaddon.untransfur.slow_effect": "For some reason this seems to have slowed effect",
   "changedaddon.warn.cant_carry": "You try to lift %1$s, but it's far too heavy.",

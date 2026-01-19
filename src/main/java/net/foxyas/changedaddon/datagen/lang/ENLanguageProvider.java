@@ -301,6 +301,7 @@ public class ENLanguageProvider extends LanguageProvider {
         add("changedaddon.fight_conscience.success", "You §2Maintained!!! §rYour Conscience Good Job");
         add("changedaddon.fight_conscience.fail", "You §4Lose §rYour Conscience");
 
+        add("changedaddon.untransfur.fail", "the untransfur fail for some reason");
         add("changedaddon.untransfur.Immune", "I'm not affected");
         add("changedaddon.untransfur.Immune.fluid", "I'm not affected by this fluid");
         add("changedaddon.untransfur.diffusion", "You unfuse with the latex creature that was attached to you. Maybe it wants to fuse back so better RUN");
