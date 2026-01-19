@@ -667,7 +667,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addCommand("alpha_scale.set.success", "Alpha scale set to %s for %s entities");
         addCommand("alpha_scale.get.success", "Alpha scale: %s");
 
-        addStat(StatRegistry.PATS_GIVEN, "Pats given");
-        addStat(StatRegistry.PATS_RECEIVED, "Pats received");
+        addStat(ChangedAddonStatRegistry.PATS_GIVEN, "Pats given");
+        addStat(ChangedAddonStatRegistry.PATS_RECEIVED, "Pats received");
     }
 }

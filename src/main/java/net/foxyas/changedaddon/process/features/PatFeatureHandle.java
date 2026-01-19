@@ -6,7 +6,7 @@ import net.foxyas.changedaddon.entity.api.SpecialPatLatex;
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.init.StatRegistry;
+import net.foxyas.changedaddon.init.ChangedAddonStatRegistry;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.PlayerUtil;
@@ -152,7 +152,7 @@ public class PatFeatureHandle {
         }
 
         if (player instanceof ServerPlayer sPlayer) onPat(sPlayer);
-        if (target instanceof ServerPlayer sPlayer) sPlayer.awardStat(StatRegistry.PATS_RECEIVED.get());
+        if (target instanceof ServerPlayer sPlayer) sPlayer.awardStat(ChangedAddonStatRegistry.PATS_RECEIVED.get());
 
         if(targetTF == null || !(level instanceof ServerLevel)) return;
 
@@ -196,7 +196,7 @@ public class PatFeatureHandle {
     }
 
     private static void onPat(ServerPlayer player) {
-        player.awardStat(StatRegistry.PATS_GIVEN.get());
+        player.awardStat(ChangedAddonStatRegistry.PATS_GIVEN.get());
 
         ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.nonNullOf(player);
         vars.patCooldown = true;
