@@ -82,7 +82,7 @@ public class ProcessPatFeature {
             if (target instanceof ChangedEntity changedEntity && !ProcessTransfur.isPlayerTransfurred(player)) {
                 if (!PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
                     RandomSource random = changedEntity.getRandom();
-                    if (random.nextFloat() <= 0.0001f) {
+                    if (random.nextFloat() <= 0.0005f) {
                         changedEntity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600, 0, true, false, true), player);
                         if (player instanceof ServerPlayer serverPlayer) {
                             ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, changedEntity, "paticifier");

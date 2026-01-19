@@ -64,7 +64,7 @@ public class ChangedAddonVariables {
 
         @Override
         public CompoundTag serializeNBT() {
-            return playerVariables.writeNBT();
+            return playerVariables.writeNBT(false);
         }
 
         @Override
@@ -85,6 +85,7 @@ public class ChangedAddonVariables {
         public boolean showWarns = true;
         public boolean resetTransfurAdvancements = false;
         public boolean actCooldown = false;
+        public boolean patCooldown = false;
         public boolean areDarkLatex = false;
         public boolean Exp009TransfurAllowed = false;
         public boolean Exp10TransfurAllowed = false;
@@ -103,18 +104,20 @@ public class ChangedAddonVariables {
             if (!wasDeath) {
                 other.consciousnessFightProgress = consciousnessFightProgress;
                 other.FTKCminigameType = FTKCminigameType;
-                other.actCooldown = actCooldown;
                 other.LatexInfectionCooldown = LatexInfectionCooldown;
             }
         }
 
-        public CompoundTag writeNBT() {
+        public CompoundTag writeNBT(boolean forSync) {
             CompoundTag nbt = new CompoundTag();
             nbt.putBoolean("showWarns", showWarns);
             nbt.putFloat("consciousnessFightProgress", consciousnessFightProgress);
             nbt.putByte("FTKCminigameType", FTKCminigameType != null ? (byte) FTKCminigameType.ordinal() : -1);
             nbt.putBoolean("resetTransfurAdvancements", resetTransfurAdvancements);
-            nbt.putBoolean("actCooldown", actCooldown);
+            if (forSync) {
+                nbt.putBoolean("actCooldown", actCooldown);
+                nbt.putBoolean("patCooldown", patCooldown);
+            }
             nbt.putBoolean("areDarkLatex", areDarkLatex);
             nbt.putDouble("LatexInfectionCooldown", LatexInfectionCooldown);
             nbt.putDouble("UntransfurProgress", untransfurProgress);
@@ -136,6 +139,7 @@ public class ChangedAddonVariables {
 
             resetTransfurAdvancements = nbt.getBoolean("resetTransfurAdvancements");
             actCooldown = nbt.getBoolean("actCooldown");
+            patCooldown = nbt.getBoolean("patCooldown");
             areDarkLatex = nbt.getBoolean("areDarkLatex");
             LatexInfectionCooldown = nbt.getDouble("LatexInfectionCooldown");
             untransfurProgress = nbt.getDouble("UntransfurProgress");
@@ -158,27 +162,31 @@ public class ChangedAddonVariables {
         }
 
         public void encode(FriendlyByteBuf buffer) {
-            buffer.writeNbt(data.writeNBT());
+            buffer.writeNbt(data.writeNBT(true));
         }
 
         public static void handler(SyncPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
             NetworkEvent.Context context = contextSupplier.get();
             context.setPacketHandled(true);
-            if (context.getDirection().getReceptionSide().isServer()) return;
 
             context.enqueueWork(() -> {
-                assert Minecraft.getInstance().player != null;
-                PlayerVariables variables = Minecraft.getInstance().player.getCapability(PLAYER_VARIABLES_CAPABILITY, null).orElse(new PlayerVariables());
-                variables.showWarns = message.data.showWarns;
-                variables.consciousnessFightProgress = message.data.consciousnessFightProgress;
-                variables.FTKCminigameType = message.data.FTKCminigameType;
-                variables.resetTransfurAdvancements = message.data.resetTransfurAdvancements;
-                variables.actCooldown = message.data.actCooldown;
-                variables.areDarkLatex = message.data.areDarkLatex;
-                variables.LatexInfectionCooldown = message.data.LatexInfectionCooldown;
-                variables.untransfurProgress = message.data.untransfurProgress;
-                variables.Exp009TransfurAllowed = message.data.Exp009TransfurAllowed;
-                variables.Exp10TransfurAllowed = message.data.Exp10TransfurAllowed;
+                Player player = Minecraft.getInstance().player;
+                assert player != null;
+                if (player.isDeadOrDying()) return;
+
+                PlayerVariables variables = nonNullOf(player);
+                PlayerVariables syncedVars = message.data;
+                variables.showWarns = syncedVars.showWarns;
+                variables.consciousnessFightProgress = syncedVars.consciousnessFightProgress;
+                variables.FTKCminigameType = syncedVars.FTKCminigameType;
+                variables.resetTransfurAdvancements = syncedVars.resetTransfurAdvancements;
+                variables.actCooldown = syncedVars.actCooldown;
+                variables.patCooldown = syncedVars.patCooldown;
+                variables.areDarkLatex = syncedVars.areDarkLatex;
+                variables.LatexInfectionCooldown = syncedVars.LatexInfectionCooldown;
+                variables.untransfurProgress = syncedVars.untransfurProgress;
+                variables.Exp009TransfurAllowed = syncedVars.Exp009TransfurAllowed;
+                variables.Exp10TransfurAllowed = syncedVars.Exp10TransfurAllowed;
             });
         }
     }

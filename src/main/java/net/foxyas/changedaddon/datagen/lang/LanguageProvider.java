@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.datagen.lang;
 
-import net.foxyas.changedaddon.init.ChangedAddonPaintingVariants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -77,7 +76,7 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
     }
 
     protected void addCommand(String key, String value) {
-        add("command." + modid + "." + key, value);
+        add("commands." + modid + "." + key, value);
     }
 
     protected void addCommandO(String key, String value) {//TODO move to command.modid.key instead
@@ -183,6 +182,10 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
         add(key, value);
         if (description != null) add(key + ".desc", description);
         if (jeiDescription != null) add(key + ".jei_desc", jeiDescription);
+    }
+
+    protected void addStat(RegistryObject<ResourceLocation> stat, String value) {
+        add(stat.get().toLanguageKey("stat"), value);
     }
 
     protected String toLanguageKey(ResourceLocation loc, String type) {
