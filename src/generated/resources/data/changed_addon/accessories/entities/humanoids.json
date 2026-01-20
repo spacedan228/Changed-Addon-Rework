@@ -6,6 +6,9 @@
     "changed:body",
     "changed:full_body",
     "changed:legs",
-    "changed:hands"
+    "changed:hands",
+    "changed:head",
+    "changed:face",
+    "changed:neck"
   ]
 }
