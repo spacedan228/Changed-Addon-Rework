@@ -362,11 +362,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         if (source == DamageSource.LIGHTNING_BOLT)
             return false;
         if (source.getMsgId().equals("trident")) {
-            if (this.getLevel().random.nextFloat() <= 0.25f) {
-                if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
-                }
-            }
+            maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
         }
         if (source == DamageSource.ANVIL)
@@ -379,16 +375,12 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             return false;
         if (source == DamageSource.IN_WALL) {
             Exp9AttacksHandle.TeleportAttack.Teleport(this, this.getTarget() == null
-                    ? this.getLevel().getNearestPlayer(this.getX(), this.getY(), this.getZ(), 32d, true)
+                    ? this.getLevel().getNearestPlayer(this.getX(), this.getY(), this.getZ(), 32d, false)
                     : this.getTarget());
             return false;
         }
         if (source.isProjectile()) {
-            if (this.getLevel().random.nextFloat() <= 0.25f) {
-                if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
-                }
-            }
+            maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
         }
 
@@ -398,6 +390,18 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             }
         }
         return super.hurt(source, amount);
+    }
+
+    private void maybeSendReactionToPlayer(DamageSource source) {
+        if (source.getEntity() instanceof Player player) {
+            if (this.getLevel().random.nextFloat() <= 0.25f) {
+                if (source.isProjectile()) {
+                    player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
+                } else if (source.isFire()) {
+                    player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp9.reaction.fire_damage"), true);
+                }
+            }
+        }
     }
 
     @Override

@@ -297,6 +297,11 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             }
         }
 
+        if (source.isFire()) {
+            maybeSendReactionToPlayer(source);
+            return false;
+        }
+
         if (source.isProjectile()) {
             maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
@@ -306,8 +311,14 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     private void maybeSendReactionToPlayer(DamageSource source) {
-        if (this.getLevel().random.nextFloat() <= 0.25f && source.getEntity() instanceof Player player) {
-            player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
+        if (source.getEntity() instanceof Player player) {
+            if (this.getLevel().random.nextFloat() <= 0.25f) {
+                if (source.isProjectile()) {
+                    player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
+                } else if (source.isFire()) {
+                    player.displayClientMessage(new TranslatableComponent("changed_addon.entity_dialogues.exp10.reaction.fire_damage"), true);
+                }
+            }
         }
     }
 

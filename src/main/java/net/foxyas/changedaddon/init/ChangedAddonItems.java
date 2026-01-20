@@ -72,12 +72,12 @@ public class ChangedAddonItems {
 
     public static final RegistryObject<Item> EXPERIMENT_009_DNA = REGISTRY.register("experiment_009_dna", Experiment009dnaItem::new);
     public static final RegistryObject<Item> EXP_9_LATEX_BASE = REGISTRY.register("exp_9_latex_base", Exp9LatexBaseItem::new);
-    public static final RegistryObject<Item> EXP_9_CONTAINMENT_VIAL = REGISTRY.register("exp_9_containment_vial", Experiment009SpawneggItem::new);
+    public static final RegistryObject<Item> EXP_9_CONTAINMENT_VIAL = REGISTRY.register("exp_9_containment_vial", Experiment009SpawnerItem::new);
     public static final RegistryObject<TransfurTotemItem> TRANSFUR_TOTEM = REGISTRY.register("transfur_totem", TransfurTotemItem::new);
 
     public static final RegistryObject<Item> EXPERIMENT_10_DNA = REGISTRY.register("experiment_10_dna", Experiment10DnaItem::new);
     public static final RegistryObject<Item> EXP_10_LATEX_BASE = REGISTRY.register("exp_10_latex_base", Exp10LatexBaseItem::new);
-    public static final RegistryObject<Item> EXP_10_CONTAINMENT_VIAL = REGISTRY.register("exp_10_containment_vial", BossExperiment10SpawnEggItem::new);
+    public static final RegistryObject<Item> EXP_10_CONTAINMENT_VIAL = REGISTRY.register("exp_10_containment_vial", Experiment10SpawnerItem::new);
     public static final RegistryObject<Item> RED_LATEX_GOO = REGISTRY.register("red_latex_goo", RedLatexGooItem::new);
 
     // Foods and Drinks
