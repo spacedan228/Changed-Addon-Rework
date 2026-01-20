@@ -384,6 +384,11 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
             return super.hurt(source, amount * 0.5f);
         }
 
+        if (source.isFire()) {
+            maybeSendReactionToPlayer(source);
+            return super.hurt(source, amount * 0f);
+        }
+
         if (source instanceof EntityDamageSource entityDamageSource) {
             if (entityDamageSource.isThorns()) {
                 return super.hurt(source, 0);

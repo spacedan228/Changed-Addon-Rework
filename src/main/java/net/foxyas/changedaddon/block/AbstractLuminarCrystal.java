@@ -163,7 +163,12 @@ public class AbstractLuminarCrystal {
                         if (player.getLevel() instanceof ServerLevel) {
                             player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 60, 0, false, false, false));
                         }
-                        boss.setTarget(player); // Define o jogador como alvo
+
+                        if (player.isInvisible()) {
+                            boss.getNavigation().moveTo(player, 0.5f);
+                        } else {
+                            boss.setTarget(player); // Define o jogador como alvo
+                        }
                     }
                 }
             }
@@ -444,7 +449,11 @@ public class AbstractLuminarCrystal {
                     if (closestEntity != null) {
                         for (AbstractLuminarcticLeopard leopard : nearbyLeopards) {
                             if (leopard.canAttack(closestEntity) && leopard.hasLineOfSight(closestEntity)) {
-                                leopard.setTarget(closestEntity);
+                                if (closestEntity.isInvisible()) {
+                                    leopard.getNavigation().moveTo(closestEntity, 0.5f);
+                                } else {
+                                    leopard.setTarget(closestEntity);
+                                }
                                 level.playSound(null, pos, SoundEvents.ENDERMAN_SCREAM, SoundSource.MASTER, 1, 0);
                             }
                         }
@@ -465,7 +474,11 @@ public class AbstractLuminarCrystal {
                         newLeopard.setPos(spawnVec.x, spawnVec.y, spawnVec.z);
                         newLeopard.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(pos), MobSpawnType.MOB_SUMMONED, null, null);
                         if (closestEntity != null) {
-                            newLeopard.setTarget(closestEntity);
+                            if (closestEntity.isInvisible()) {
+                                newLeopard.getNavigation().moveTo(closestEntity, 0.5f);
+                            } else {
+                                newLeopard.setTarget(closestEntity);
+                            }
 
                             boolean placed = false;
 

@@ -48,6 +48,7 @@ public class DodgeAbilityHandle {
             attacker = Objects.requireNonNullElse(owner, self);
             if (pTarget instanceof ChangedEntity changedEntity) {
                 List<AbstractAbility<?>> dodgeAbilities = ChangedRegistry.ABILITY.get().getValues().stream().filter((abstractAbility -> abstractAbility instanceof DodgeAbility)).toList();
+                if (dodgeAbilities.isEmpty()) return;
                 for (AbstractAbility<?> ability : dodgeAbilities) {
                     if (!(ability instanceof DodgeAbility dodgeAbility)) continue;
                     DodgeAbilityInstance dodgeAbilityInstance = changedEntity.getAbilityInstance(dodgeAbility);

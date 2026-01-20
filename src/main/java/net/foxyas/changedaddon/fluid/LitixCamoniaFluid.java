@@ -8,6 +8,7 @@ import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.entity.LatexType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -20,9 +21,16 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class LitixCamoniaFluid extends ForgeFlowingFluid {
 
+
+    private static final ResourceLocation FLUID_STILL = ChangedAddonMod.resourceLoc("block/litix_camonia_fluid/litix_camonia_fluid_still");
+    private static final ResourceLocation FLUID_FLOWING = ChangedAddonMod.resourceLoc("block/litix_camonia_fluid/litix_camonia_fluid_flowing");
+
     public static final ForgeFlowingFluid.Properties PROPERTIES = new ForgeFlowingFluid.Properties(ChangedAddonFluids.LITIX_CAMONIA_FLUID,
             ChangedAddonFluids.FLOWING_LITIX_CAMONIA_FLUID,
-            FluidAttributes.builder(ChangedAddonMod.resourceLoc("block/ammoniafluid"), ChangedAddonMod.resourceLoc("block/ammoniafluid"))
+            FluidAttributes.builder(
+                            FLUID_STILL,
+                            FLUID_FLOWING
+                    )
                     .sound(SoundEvents.BUCKET_EMPTY))
             .explosionResistance(100f)
             .slopeFindDistance(2)
