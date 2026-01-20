@@ -329,40 +329,48 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         if (source.is(DamageTypes.LIGHTNING_BOLT))
             return false;
         if (source.getMsgId().equals("trident")) {
-            if (this.level().random.nextFloat() <= 0.25f) {
-                if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
-                }
-            }
+            maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
         }
-       if (source.is(DamageTypes.FALLING_ANVIL))
+        if (source.is(DamageTypes.FALLING_ANVIL))
             return false;
-       if (source.is(DamageTypes.DRAGON_BREATH))
+        if (source.is(DamageTypes.DRAGON_BREATH))
             return false;
-       if (source.is(DamageTypes.WITHER))
+        if (source.is(DamageTypes.WITHER))
             return false;
         if (source.getMsgId().equals("witherSkull"))
             return false;
-       if (source.is(DamageTypes.IN_WALL)) {
+        if (source.is(DamageTypes.IN_WALL)) {
             Exp9AttacksHandle.TeleportAttack.Teleport(this, this.getTarget() == null
-                    ? this.level().getNearestPlayer(this.getX(), this.getY(), this.getZ(), 32d, true)
+                    ? this.level().getNearestPlayer(this.getX(), this.getY(), this.getZ(), 32d, false)
                     : this.getTarget());
             return false;
         }
         if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-            if (this.level().random.nextFloat() <= 0.25f) {
-                if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
-                }
-            }
+            maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
         }
+        if (source.is(DamageTypeTags.IS_FIRE)) {
+            maybeSendReactionToPlayer(source);
+            return super.hurt(source, amount * 0f);
+        }
         if (source.is(DamageTypes.THORNS)) {
-                return super.hurt(source, 0);
+            return super.hurt(source, 0);
         }
 
         return super.hurt(source, amount);
+    }
+
+    private void maybeSendReactionToPlayer(DamageSource source) {
+        if (source.getEntity() instanceof Player player) {
+            if (this.level().random.nextFloat() <= 0.25f) {
+                if (source.is(DamageTypeTags.IS_PROJECTILE)) {
+                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp9.reaction.range_attacks"), true);
+                } else if (source.is(DamageTypeTags.IS_FIRE)) {
+                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp9.reaction.fire_damage"), true);
+                }
+            }
+        }
     }
 
     @Override

@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.bosses;
 
-import net.foxyas.changedaddon.entity.api.ICrawlAbleEntity;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.ICrawlAbleEntity;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
@@ -45,7 +45,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -61,7 +60,6 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
@@ -290,6 +288,11 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             }
         }
 
+        if (source.is(DamageTypeTags.IS_FIRE)) {
+            maybeSendReactionToPlayer(source);
+            return super.hurt(source, amount * 0f);
+        }
+
         if (source.is(DamageTypeTags.IS_PROJECTILE)) {
             maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
@@ -299,8 +302,14 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     private void maybeSendReactionToPlayer(DamageSource source) {
-        if (this.level().random.nextFloat() <= 0.25f && source.getEntity() instanceof Player player) {
-            player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
+        if (source.getEntity() instanceof Player player) {
+            if (this.level().random.nextFloat() <= 0.25f) {
+                if (source.is(DamageTypeTags.IS_PROJECTILE)) {
+                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
+                } else if (source.is(DamageTypeTags.IS_FIRE)) {
+                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp10.reaction.fire_damage"), true);
+                }
+            }
         }
     }
 
