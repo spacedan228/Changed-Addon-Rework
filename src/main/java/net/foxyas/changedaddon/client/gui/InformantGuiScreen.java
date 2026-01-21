@@ -146,7 +146,7 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         float hp = TransfurVariantUtils.GetExtraHp(tf, player);
         float swimSpeed = TransfurVariantUtils.GetSwimSpeed(tf, player);
         float landSpeed = TransfurVariantUtils.GetLandSpeed(tf, player);
-        float jumpStrength = TransfurVariantUtils.GetJumpStrength(tf);
+        float jumpStrength = TransfurVariantUtils.GetJumpStrength(tf, player);
         boolean canFlyOrGlide = TransfurVariantUtils.CanGlideAndFly(tf);
         String miningStrength = TransfurVariantUtils.getMiningStrength(tf);
         float extraHp = hp / 2f;

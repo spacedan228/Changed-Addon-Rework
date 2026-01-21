@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.util;
 
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.util.Cacheable;
 import net.minecraft.Util;
@@ -169,7 +170,11 @@ public class TransfurVariantUtils {
         return variant != null && variant.canClimb;
     }
 
-    public static float GetJumpStrength(TransfurVariant<?> variant) {
-        return variant == null ? 0 : variant.jumpStrength;
+    public static float GetJumpStrength(TransfurVariant<?> variant, Player player) {
+        ChangedEntity entity = entity(variant, player.level);
+        if (entity == null) return 0;
+
+        entity.setUnderlyingPlayer(player);
+        return (float) (entity.getAttributes().hasAttribute(ChangedAttributes.JUMP_STRENGTH.get()) ? entity.getAttributeValue(ChangedAttributes.JUMP_STRENGTH.get()) : 0);
     }
 }
