@@ -38,9 +38,9 @@ public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsP
 
         tag(Tags.Blocks.STORAGE_BLOCKS).add(IRIDIUM_BLOCK.get());
         tag(forgeStorageBlocksIridium).add(IRIDIUM_BLOCK.get());
-        tag(ChangedTags.Blocks.CRYSTALLINE).add(LUMINAR_CRYSTAL_LARGE.get(),
+        tag(ChangedTags.Blocks.CRYSTALLINE).add(
+                LUMINAR_CRYSTAL_LARGE.get(),
                 LUMINAR_CRYSTAL_SMALL.get(),
-                LUMINAR_CRYSTAL_BLOCK.get(),
                 WOLF_CRYSTAL_BLOCK.get(),
                 BLUE_WOLF_CRYSTAL_BLOCK.get(),
                 WHITE_WOLF_CRYSTAL_BLOCK.get(),
