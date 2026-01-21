@@ -16,7 +16,7 @@ public class DissolveAbility extends AbstractAbility<DissolveAbilityInstance> {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.dissolve");
+        return Component.translatable("ability.changed_addon.dissolve");
     }
 
     @Override

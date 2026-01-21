@@ -47,7 +47,7 @@ public class ClawsAbility extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.claws");
+        return Component.translatable("ability.changed_addon.claws");
     }
 
     public static Optional<Integer> getColor(AbstractAbilityInstance abilityInstance, int layer) {
@@ -96,7 +96,7 @@ public class ClawsAbility extends SimpleAbility {
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         Collection<Component> description = new ArrayList<>(super.getAbilityDescription(entity));
-        description.add(Component.translatable("changed_addon.ability.claws.desc"));
+        description.add(Component.translatable("ability.changed_addon.claws.desc"));
         return description;
     }
 

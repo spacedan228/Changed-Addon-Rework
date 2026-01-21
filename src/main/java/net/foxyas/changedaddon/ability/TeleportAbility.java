@@ -32,7 +32,7 @@ public class TeleportAbility extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.teleport");
+        return Component.translatable("ability.changed_addon.teleport");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

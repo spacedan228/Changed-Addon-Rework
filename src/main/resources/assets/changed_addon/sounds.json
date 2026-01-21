@@ -1,6 +1,6 @@
 {
   "armor_equip": {
-    "subtitle": "subtitles.armor_equip",
+    "subtitle": "subtitles.changed_addon.armor_equip",
     "sounds": [
       {
         "name": "changed_addon:equip3",
@@ -13,7 +13,7 @@
     ]
   },
   "warn": {
-    "subtitle": "subtitles.warn",
+    "subtitle": "subtitles.changed_addon.warn",
     "sounds": [
       {
         "name": "changed_addon:warn",
@@ -22,7 +22,7 @@
     ]
   },
   "untransfur.sound": {
-    "subtitle": "subtitles.untransfur.sound",
+    "subtitle": "subtitles.changed_addon.untransfur.sound",
     "sounds": [
       {
         "name": "changed_addon:healing",
@@ -31,7 +31,7 @@
     ]
   },
   "spray.sound": {
-    "subtitle": "subtitles.spray.sound",
+    "subtitle": "subtitles.changed_addon.spray.sound",
     "sounds": [
       {
         "name": "changed_addon:spraysound",
@@ -40,7 +40,7 @@
     ]
   },
   "experiment10_theme": {
-    "subtitle": "subtitles.experiment10_theme",
+    "subtitle": "subtitles.changed_addon.experiment10_theme",
     "sounds": [
       {
         "name": "changed_addon:exp10_theme",
@@ -49,7 +49,7 @@
     ]
   },
   "block.plushes.sfx": {
-    "subtitle": "subtitles.block.plushes.sfx",
+    "subtitle": "subtitles.changed_addon.block.plushes.sfx",
     "sounds": [
       {
         "name": "changed_addon:plushy_sfx",
@@ -58,7 +58,7 @@
     ]
   },
   "hammer_swing": {
-    "subtitle": "subtitles.hammer_swing",
+    "subtitle": "subtitles.changed_addon.hammer_swing",
     "sounds": [
       {
         "name": "changed_addon:woosh1",
@@ -79,7 +79,7 @@
     ]
   },
   "hammer_gun_shot": {
-    "subtitle": "subtitles.hammer_gun_shot",
+    "subtitle": "subtitles.changed_addon.hammer_gun_shot",
     "sounds": [
       {
         "name": "changed_addon:heavy1",
@@ -88,7 +88,7 @@
     ]
   },
   "music.boss.luminarctic_leopard": {
-    "subtitle": "subtitles.music.boss.luminarctic_leopard",
+    "subtitle": "subtitles.changed_addon.music.boss.luminarctic_leopard",
     "sounds": [
       {
         "name": "changed_addon:misstake",
@@ -97,7 +97,7 @@
     ]
   },
   "music.boss.exp9": {
-    "subtitle": "subtitles.music.boss.exp9",
+    "subtitle": "subtitles.changed_addon.music.boss.exp9",
     "sounds": [
       {
         "name": "changed_addon:meaningless_strafe",
@@ -106,7 +106,7 @@
     ]
   },
   "gecko_sound": {
-    "subtitle": "subtitles.gecko_sound",
+    "subtitle": "subtitles.changed_addon.gecko_sound",
     "sounds": [
       {
         "name": "changed_addon:gecko_sound",
@@ -115,7 +115,7 @@
     ]
   },
   "entity.prototype.idea_sfx": {
-    "subtitle": "subtitles.entity.prototype.idea_sfx",
+    "subtitle": "subtitles.changed_addon.entity.prototype.idea_sfx",
     "sounds": [
       {
         "name": "changed_addon:prototype_idea",

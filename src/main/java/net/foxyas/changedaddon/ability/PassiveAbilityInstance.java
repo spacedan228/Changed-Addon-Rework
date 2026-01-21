@@ -28,8 +28,8 @@ public class PassiveAbilityInstance extends AbstractAbilityInstance {
     public void startUsing() {
         isActivated = !isActivated;
         entity.displayClientMessage(this.isActivated ?
-                        Component.translatable("changed_addon.ability.passive.toggle.on") :
-                        Component.translatable("changed_addon.ability.passive.toggle.off")
+                        Component.translatable("ability.changed_addon.passive.toggle.on") :
+                        Component.translatable("ability.changed_addon.passive.toggle.off")
                 , true);
     }
 

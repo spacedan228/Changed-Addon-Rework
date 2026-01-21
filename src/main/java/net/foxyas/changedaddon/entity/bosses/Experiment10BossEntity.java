@@ -305,9 +305,9 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         if (source.getEntity() instanceof Player player) {
             if (this.level().random.nextFloat() <= 0.25f) {
                 if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
+                    player.displayClientMessage(Component.translatable("entity_dialogues.changed_addon.exp10.reaction.range_attacks"), true);
                 } else if (source.is(DamageTypeTags.IS_FIRE)) {
-                    player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp10.reaction.fire_damage"), true);
+                    player.displayClientMessage(Component.translatable("entity_dialogues.changed_addon.exp10.reaction.fire_damage"), true);
                 }
             }
         }
@@ -492,10 +492,10 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         }
 
         List<Component> translatableComponentList = new ArrayList<>();
-        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_0"));
-        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_1"));
-        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_2"));
-        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_3"));
+        translatableComponentList.add(Component.translatable("entity_dialogues.changed_addon.exp10.pat.type_0"));
+        translatableComponentList.add(Component.translatable("entity_dialogues.changed_addon.exp10.pat.type_1"));
+        translatableComponentList.add(Component.translatable("entity_dialogues.changed_addon.exp10.pat.type_2"));
+        translatableComponentList.add(Component.translatable("entity_dialogues.changed_addon.exp10.pat.type_3"));
         player.level().addParticle(
                 ChangedParticles.emote(this, Emote.ANGRY),
                 this.getX(),

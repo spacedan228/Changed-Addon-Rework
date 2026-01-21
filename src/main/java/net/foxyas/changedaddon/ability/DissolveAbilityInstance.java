@@ -144,7 +144,7 @@ public class DissolveAbilityInstance extends AbstractAbilityInstance {
         }
 
         if (!dimensionName.equals(currentDim)) {
-            player.displayClientMessage(Component.translatable("changed_addon.ability.dissolve.warn.wrong_dimension"), true);
+            player.displayClientMessage(Component.translatable("ability.changed_addon.dissolve.warn.wrong_dimension"), true);
             return;
         }
 
@@ -172,7 +172,7 @@ public class DissolveAbilityInstance extends AbstractAbilityInstance {
                 serverLevel.sendParticles(ChangedParticles.drippingLatex(Instance.getParent().getColors().getSecond()), getLocationX(), getLocationY() + 1, getLocationZ(), 5, 0.2, 0.3, 0.2, 0);
             }
         } else if (Distance(player.position(), new Vec3(this.LocationX, this.LocationY, this.LocationZ)) > 1000) {
-            player.displayClientMessage(Component.translatable("changed_addon.ability.dissolve.warn.too_far"), true);
+            player.displayClientMessage(Component.translatable("ability.changed_addon.dissolve.warn.too_far"), true);
         }
     }
 }

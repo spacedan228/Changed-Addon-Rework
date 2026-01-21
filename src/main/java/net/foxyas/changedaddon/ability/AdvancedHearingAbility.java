@@ -28,7 +28,7 @@ public class AdvancedHearingAbility extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.advanced_hearing");
+        return Component.translatable("ability.changed_addon.advanced_hearing");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

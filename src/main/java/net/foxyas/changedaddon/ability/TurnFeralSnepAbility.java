@@ -15,7 +15,7 @@ public class TurnFeralSnepAbility extends AbstractAbility<TurnFeralSnepAbilityIn
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.turn_feral");
+        return Component.translatable("ability.changed_addon.turn_feral");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
@@ -26,7 +26,7 @@ public class TurnFeralSnepAbility extends AbstractAbility<TurnFeralSnepAbilityIn
     @Override
     public Component getSelectedDisplayText(IAbstractChangedEntity entity) {
         if (entity.getChangedEntity() instanceof LatexSnepEntity) {
-            return Component.translatable("changed_addon.ability.turn_feral.can");
+            return Component.translatable("ability.changed_addon.turn_feral.can");
         }
         return super.getSelectedDisplayText(entity);
     }

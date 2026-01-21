@@ -18,7 +18,7 @@ public class PsychicHoldAbility extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.psychic_hold");
+        return Component.translatable("ability.changed_addon.psychic_hold");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

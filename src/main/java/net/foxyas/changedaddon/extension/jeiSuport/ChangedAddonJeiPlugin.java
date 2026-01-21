@@ -133,19 +133,19 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
     public static class ChangedAddonJeiDescriptionHandler {
         public static void registerDescriptions(IRecipeRegistration registration) {
             // Item Information
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.TRANSFUR_TOTEM.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.latex_totem"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.EXPERIMENT_009_DNA.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.exp9_dna"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.SYRINGE_WITH_LITIX_CAMMONIA.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.litix_cammonia_syringe"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LAETHIN_SYRINGE.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.laethin_syringe"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.POT_WITH_CAMONIA.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.pot_with_cammonia"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.DIFFUSION_SYRINGE.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.diffusion_syringe"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.IRIDIUM.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.iridium_use"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.INFORMANT_BLOCK.get()), VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.informant_block"));
-            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LUNAR_ROSE.get()), VanillaTypes.ITEM_STACK, Component.literal(Component.translatable("changed_addon.jei_descriptions.lunar_rose").getString().replace("#", "\n")));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.TRANSFUR_TOTEM.get()), VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.latex_totem"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.EXPERIMENT_009_DNA.get()), VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.exp9_dna"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.SYRINGE_WITH_LITIX_CAMMONIA.get()), VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.litix_cammonia_syringe"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LAETHIN_SYRINGE.get()), VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.laethin_syringe"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.POT_WITH_CAMONIA.get()), VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.pot_with_cammonia"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.DIFFUSION_SYRINGE.get()), VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.diffusion_syringe"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.IRIDIUM.get()), VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.iridium_use"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.INFORMANT_BLOCK.get()), VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.informant_block"));
+            registration.addIngredientInfo(new ItemStack(ChangedAddonItems.LUNAR_ROSE.get()), VanillaTypes.ITEM_STACK, Component.literal(Component.translatable("jei_descriptions.changed_addon.lunar_rose").getString().replace("#", "\n")));
 
             ItemStack stack = new ItemStack(ChangedItems.LATEX_SYRINGE.get());
             Syringe.setVariant(stack, ChangedAddonTransfurVariants.LUMINARA_FLOWER_BEAST.get().getFormId());
-            registration.addIngredientInfo(stack, VanillaTypes.ITEM_STACK, Component.translatable("changed_addon.jei_descriptions.luminara.riddle"));
+            registration.addIngredientInfo(stack, VanillaTypes.ITEM_STACK, Component.translatable("jei_descriptions.changed_addon.luminara.riddle"));
 
             addSharedDescriptions(registration, List.of(
                     ChangedAddonItems.BLUE_WOLF_CRYSTAL_FRAGMENT.get(),
