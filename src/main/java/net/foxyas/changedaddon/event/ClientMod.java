@@ -40,7 +40,7 @@ public class ClientMod {
 
     @SubscribeEvent
     public static void showWarningScreen(FMLClientSetupEvent event) {
-        if (ModList.get().isLoaded("changed_additions") || true) {
+        if (ModList.get().isLoaded("changed_additions")) {
             changedAdditionsLoaded = true;
             changedAdditionsWarningScreenShowed = false;
         }
