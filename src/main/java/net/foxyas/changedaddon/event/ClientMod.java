@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterNamedRenderTypesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
@@ -34,6 +35,17 @@ public class ClientMod {
             MenuScreens.register(ChangedAddonMenus.FOXYAS_INVENTORY_MENU.get(), FoxyasInventoryMenuScreen::new);
             MenuScreens.register(ChangedAddonMenus.TIMED_KEYPAD_TIMER.get(), TimedKeypadTimerScreen::new);
         });
+    }
+
+    public static boolean changedAdditionsLoaded = false;
+    public static boolean changedAdditionsWarningScreenShowed = false;
+
+    @SubscribeEvent
+    public static void showWarningScreen(FMLClientSetupEvent event) {
+        if (ModList.get().isLoaded("changed_additions")) {
+            changedAdditionsLoaded = true;
+            changedAdditionsWarningScreenShowed = false;
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
