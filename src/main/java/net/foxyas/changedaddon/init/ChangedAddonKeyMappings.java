@@ -110,9 +110,8 @@ public class ChangedAddonKeyMappings {
                 }
 
                 boolean newState = event.getAction() != GLFW.GLFW_RELEASE;
-                if (newState != transfurVariantInstanceExtensor.getSecondAbilityKeyDown()) {
+                if (transfurVariantInstanceExtensor.getSecondAbilityKey().queueKeyState(newState)) {
                     ChangedTutorial.triggerOnUseAbility(transfurVariantInstanceExtensor.getSecondSelectedAbilityInstance());
-                    transfurVariantInstanceExtensor.addSecondAbilityKeyStateFlips(1);
                     ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
                 }
             });

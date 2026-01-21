@@ -84,9 +84,8 @@ public class VariantSecondAbilityActivate {
                             if (!sender.isUsingItem())
                                 sender.openMenu(new SimpleMenuProvider((id, inventory, givenPlayer) ->
                                         new AbilityRadialMenu(id, inventory, null), AbilityRadialMenu.CONTAINER_TITLE));
-                        } else if (transfurVariantInstanceExtensor.getSecondAbilityKeyStateFlips() < 6) {
-                            if (transfurVariantInstanceExtensor.isSecondAbilityKeyEffectivelyDown() != keyDown)
-                                transfurVariantInstanceExtensor.addSecondAbilityKeyStateFlips(1);
+                        } else if (transfurVariantInstanceExtensor.getSecondAbilityKey().getFlipCount() < 6) {
+                            transfurVariantInstanceExtensor.getSecondAbilityKey().queueKeyState(keyDown);
                         }
 
                         ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> sender), this);
@@ -96,18 +95,18 @@ public class VariantSecondAbilityActivate {
                 ProcessTransfur.ifPlayerTransfurred(UniversalDist.getLevel().getPlayerByUUID(this.uuid), (player, variant) -> {
                     context.setPacketHandled(true);
                     if (variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor) {
-                        if (!variant.isTemporaryFromSuit()) {
-                            if (this.ability != null) {
-                                transfurVariantInstanceExtensor.setSecondSelectedAbility(this.ability);
-                            }
-
-                            if ((this.keyDown || this.ability != null) && transfurVariantInstanceExtensor.getSecondAbilityKeyStateFlips() < 6) {
-                                if (transfurVariantInstanceExtensor.isSecondAbilityKeyEffectivelyDown() != keyDown) {
-                                    transfurVariantInstanceExtensor.addSecondAbilityKeyStateFlips(1);
-                                }
-                            }
-
+                        if (variant.isTemporaryFromSuit()) {
+                            return;
                         }
+
+                        if (this.ability != null) {
+                            transfurVariantInstanceExtensor.setSecondSelectedAbility(this.ability);
+                        }
+
+                        if ((this.keyDown || this.ability != null) && transfurVariantInstanceExtensor.getSecondAbilityKey().getFlipCount() < 6) {
+                            transfurVariantInstanceExtensor.getSecondAbilityKey().queueKeyState(keyDown);
+                        }
+
                     }
                 });
             }

@@ -14,6 +14,7 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.util.KeyStateTracker;
 import net.ltxprogrammer.changed.util.TagUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -64,11 +65,7 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Unique
     public int ticksSinceSecondAbilityActivity;
 
-    @Unique
-    public boolean secondAbilityKeyDown;
-
-    @Unique
-    public int secondAbilityKeyStateFlips = 0;
+    public KeyStateTracker secondAbilityKey = new KeyStateTracker();
 
     @Unique
     public boolean untransfurImmunity = false;
@@ -88,33 +85,13 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     }
 
     @Override
-    public boolean getSecondAbilityKeyDown() {
-        return secondAbilityKeyDown;
+    public void setSecondAbilityKey(KeyStateTracker secondAbilityKey) {
+        this.secondAbilityKey = secondAbilityKey;
     }
 
     @Override
-    public void setSecondAbilityKeyDown(boolean secondAbilityKeyDown) {
-        this.secondAbilityKeyDown = secondAbilityKeyDown;
-    }
-
-    @Override
-    public int getSecondAbilityKeyStateFlips() {
-        return secondAbilityKeyStateFlips;
-    }
-
-    @Override
-    public void setSecondAbilityKeyStateFlips(int secondAbilityKeyStateFlips) {
-        this.secondAbilityKeyStateFlips = secondAbilityKeyStateFlips;
-    }
-
-    @Override
-    public void addSecondAbilityKeyStateFlips(int value) {
-        this.secondAbilityKeyStateFlips += value;
-    }
-
-    @Override
-    public boolean isSecondAbilityKeyEffectivelyDown() {
-        return (this.secondAbilityKeyStateFlips + (this.secondAbilityKeyDown ? 1 : 0)) % 2 == 1;
+    public KeyStateTracker getSecondAbilityKey() {
+        return secondAbilityKey;
     }
 
     @Unique
@@ -168,21 +145,13 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
                     AbstractAbilityInstance instance = this.abilityInstances.get(this.secondSelectedAbility);
                     if (instance != null) {
                         AbstractAbility.Controller controller = instance.getController();
-                        boolean uniqueTick = true;
-                        do {
-                            if (secondAbilityKeyStateFlips > 0) {
-                                secondAbilityKeyStateFlips--;
-                                secondAbilityKeyDown = !secondAbilityKeyDown;
-                            }
-
-                            boolean oldState = controller.exchangeKeyState(secondAbilityKeyDown);
-                            if (secondAbilityKeyDown || instance.getController().isCoolingDown())
-                                resetTicksSinceSecondAbilityActivity();
+                        secondAbilityKey.handleStateUpdates((isDown, wasDown, unique) -> {
+                            boolean oldState = controller.exchangeKeyState(isDown);
+                            if (isDown || instance.getController().isCoolingDown())
+                                this.resetTicksSinceSecondAbilityActivity();
                             if (host.containerMenu == host.inventoryMenu && !host.isUsingItem() && !instance.getController().isCoolingDown())
-                                instance.getUseType().check(secondAbilityKeyDown, oldState, uniqueTick, controller);
-
-                            uniqueTick = false;
-                        } while (secondAbilityKeyStateFlips > 0);
+                                instance.getUseType().check(isDown, oldState, unique, controller);
+                        });
                     }
                 }
             }

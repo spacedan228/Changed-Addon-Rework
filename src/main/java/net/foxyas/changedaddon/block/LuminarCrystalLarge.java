@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.block;
 
+import net.foxyas.changedaddon.block.interfaces.DirectionalVoxelShapes;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
@@ -40,14 +41,22 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 import static net.foxyas.changedaddon.block.LuminarCrystalBlock.moveOrTarget;
 import static net.foxyas.changedaddon.block.LuminarCrystalBlock.spawnParticleOnFace;
 
 public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedBlock {
 
-    public static final VoxelShape SHAPE = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 16.0F, 15.0F);
+    public static final VoxelShape SHAPE_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 16.0F, 15.0F);
+    public static final VoxelShape SHAPE_DOWN = SHAPE_UP;
+    public static final VoxelShape SHAPE_NORTH = Block.box(1, 1, 0, 15, 15, 16);
+    public static final VoxelShape SHAPE_SOUTH = Block.box(1, 1, 0, 15, 15, 16);
+    public static final VoxelShape SHAPE_WEST = Block.box(0, 1, 1, 16, 15, 15);
+    public static final VoxelShape SHAPE_EAST = Block.box(0, 1, 1, 16, 15, 15);
+
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -75,9 +84,20 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
-        return SHAPE;
+    public @NotNull VoxelShape getShape(@NotNull BlockState state,
+                                        @NotNull BlockGetter level,
+                                        @NotNull BlockPos pos,
+                                        @NotNull CollisionContext context) {
+        return switch (state.getValue(FACING)) {
+            case DOWN -> SHAPE_DOWN;
+            case NORTH -> SHAPE_NORTH;
+            case SOUTH -> SHAPE_SOUTH;
+            case WEST -> SHAPE_WEST;
+            case EAST -> SHAPE_EAST;
+            default -> SHAPE_UP;
+        };
     }
+
 
     @Override
     public @NotNull FluidState getFluidState(BlockState state) {
@@ -204,7 +224,8 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
         if (oldState.getValue(HALF) == Half.TOP) {
             BlockPos below = pos.relative(oldState.getValue(FACING), -1);
             BlockState bottom = level.getBlockState(below);
-            if (bottom.is(this)) level.setBlockAndUpdate(below, bottom.getValue(WATERLOGGED) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState());
+            if (bottom.is(this))
+                level.setBlockAndUpdate(below, bottom.getValue(WATERLOGGED) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState());
             return;
         }
 
@@ -212,12 +233,12 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
 
         // Procura a entidade viva mais próxima (excluindo leopardos)
         LivingEntity closestEntity = level.getEntitiesOfClass(LivingEntity.class, new AABB(pos).inflate(8),
-                entity -> {
-                    if (entity instanceof Player player) {
-                        return !player.isSpectator() && !player.isCreative();
-                    }
-                    return !(entity instanceof AbstractLuminarcticLeopard);
-                }).stream()
+                        entity -> {
+                            if (entity instanceof Player player) {
+                                return !player.isSpectator() && !player.isCreative();
+                            }
+                            return !(entity instanceof AbstractLuminarcticLeopard);
+                        }).stream()
                 .min(Comparator.comparingDouble(entity -> entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())))
                 .orElse(null);
 
