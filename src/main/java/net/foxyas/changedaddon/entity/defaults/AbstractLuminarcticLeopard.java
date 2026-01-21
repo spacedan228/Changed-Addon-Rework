@@ -2,7 +2,7 @@ package net.foxyas.changedaddon.entity.defaults;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
-import net.foxyas.changedaddon.block.AbstractLuminarCrystal;
+import net.foxyas.changedaddon.block.LuminarCrystalSmall;
 import net.foxyas.changedaddon.entity.api.ICrawlAbleEntity;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
@@ -111,7 +111,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         // Verifica se há um Luminar Crystal Small (hearted) por perto
         boolean nearLuminarCrystal = world.getBlockStatesIfLoaded(checkArea)
                 .anyMatch((state) -> state.is(ChangedAddonBlocks.LUMINAR_CRYSTAL_SMALL.get()) &&
-                        state.getValue(AbstractLuminarCrystal.CrystalSmall.HEARTED));
+                        state.getValue(LuminarCrystalSmall.HEARTED));
 
         if (!nearLuminarCrystal) {
             return false;

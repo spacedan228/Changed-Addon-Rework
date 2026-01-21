@@ -19,7 +19,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ColorHandlerEvent;
@@ -120,6 +123,7 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> LUMINAR_CRYSTAL_SHARD = REGISTRY.register("luminar_crystal_shard", LuminarCrystalShardItem::new);
     public static final RegistryObject<Item> LUMINAR_CRYSTAL_SHARD_HEARTED = REGISTRY.register("luminar_crystal_shard_hearted", LuminarCrystalShardHeartedItem::new);
     public static final RegistryObject<BlockItem> LUMINAR_CRYSTAL_SMALL = block(ChangedAddonBlocks.LUMINAR_CRYSTAL_SMALL, ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB);
+    public static final RegistryObject<BlockItem> LUMINAR_CRYSTAL_LARGE = block(ChangedAddonBlocks.LUMINAR_CRYSTAL_LARGE, ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB);
     public static final RegistryObject<BlockItem> LUMINAR_CRYSTAL_BLOCK = block(ChangedAddonBlocks.LUMINAR_CRYSTAL_BLOCK, ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB);
 
     public static final RegistryObject<Item> YELLOW_WOLF_CRYSTAL_FRAGMENT = REGISTRY.register("yellow_wolf_crystal_fragment", YellowWolfCrystalFragmentItem::new);

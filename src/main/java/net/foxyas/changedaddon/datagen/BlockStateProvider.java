@@ -1,8 +1,10 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.block.LuminarCrystalLarge;
 import net.foxyas.changedaddon.block.StackableCanBlock;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
@@ -14,6 +16,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -83,6 +86,8 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         createMultiface(COVER_BLOCK, false);
         createMultiface(DARK_LATEX_COVER_BLOCK, false);
         createMultiface(WHITE_LATEX_COVER_BLOCK, false);
+
+        largeLuminarCrystalWithItem();
     }
 
     private final Property<?>[] IGNORE_LATEX = new Property[]{AbstractLatexBlock.COVERED};
@@ -231,6 +236,31 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         }
 
         itemModels().getBuilder(block.get().asItem().getRegistryName().getPath()).parent(model);
+    }
+
+    private void largeLuminarCrystalWithItem() {
+        ResourceLocation loc = blockLoc(LUMINAR_CRYSTAL_LARGE.getId());
+
+        ModelFile top = models().cross(loc + "_top", withSuffix(loc, "_top"));
+        ModelFile bottom = models().cross(loc + "_bottom", withSuffix(loc, "_bottom"));
+        getVariantBuilder(LUMINAR_CRYSTAL_LARGE.get()).forAllStatesExcept(state ->
+                        new ConfiguredModel[]{rotatedModel(state.getValue(LuminarCrystalLarge.HALF) == Half.TOP ? top : bottom, state.getValue(LuminarCrystalLarge.FACING))}
+                , LuminarCrystalLarge.WATERLOGGED);
+
+        itemModels().getBuilder(ChangedAddonItems.LUMINAR_CRYSTAL_LARGE.getId().toString())
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", withSuffix(loc, "_top"));
+    }
+
+    private ConfiguredModel rotatedModel(ModelFile file, Direction direction){
+        return switch (direction){
+            case UP -> new ConfiguredModel(file, 0, 0, false);
+            case DOWN -> new ConfiguredModel(file, 180, 0, false);
+            case NORTH -> new ConfiguredModel(file, 90, 0, false);
+            case EAST -> new ConfiguredModel(file, 90, 90, false);
+            case SOUTH -> new ConfiguredModel(file, 90, 180, false);
+            case WEST -> new ConfiguredModel(file, 90, 270, false);
+        };
     }
 
     private void createMultiface(RegistryObject<? extends Block> block, boolean generatedItem) {

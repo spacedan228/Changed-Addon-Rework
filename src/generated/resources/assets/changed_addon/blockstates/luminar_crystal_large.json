@@ -1,0 +1,160 @@
+{
+  "variants": {
+    "covered_with=neutral,facing=down,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 180
+    },
+    "covered_with=dark_latex,facing=down,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 180
+    },
+    "covered_with=white_latex,facing=down,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 180
+    },
+    "covered_with=neutral,facing=up,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top"
+    },
+    "covered_with=dark_latex,facing=up,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top"
+    },
+    "covered_with=white_latex,facing=up,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top"
+    },
+    "covered_with=neutral,facing=north,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90
+    },
+    "covered_with=dark_latex,facing=north,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90
+    },
+    "covered_with=white_latex,facing=north,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90
+    },
+    "covered_with=neutral,facing=south,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 180
+    },
+    "covered_with=dark_latex,facing=south,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 180
+    },
+    "covered_with=white_latex,facing=south,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 180
+    },
+    "covered_with=neutral,facing=west,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 270
+    },
+    "covered_with=dark_latex,facing=west,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 270
+    },
+    "covered_with=white_latex,facing=west,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 270
+    },
+    "covered_with=neutral,facing=east,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 90
+    },
+    "covered_with=dark_latex,facing=east,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 90
+    },
+    "covered_with=white_latex,facing=east,half=top": {
+      "model": "changed_addon:block/luminar_crystal_large_top",
+      "x": 90,
+      "y": 90
+    },
+    "covered_with=neutral,facing=down,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 180
+    },
+    "covered_with=dark_latex,facing=down,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 180
+    },
+    "covered_with=white_latex,facing=down,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 180
+    },
+    "covered_with=neutral,facing=up,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom"
+    },
+    "covered_with=dark_latex,facing=up,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom"
+    },
+    "covered_with=white_latex,facing=up,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom"
+    },
+    "covered_with=neutral,facing=north,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90
+    },
+    "covered_with=dark_latex,facing=north,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90
+    },
+    "covered_with=white_latex,facing=north,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90
+    },
+    "covered_with=neutral,facing=south,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 180
+    },
+    "covered_with=dark_latex,facing=south,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 180
+    },
+    "covered_with=white_latex,facing=south,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 180
+    },
+    "covered_with=neutral,facing=west,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 270
+    },
+    "covered_with=dark_latex,facing=west,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 270
+    },
+    "covered_with=white_latex,facing=west,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 270
+    },
+    "covered_with=neutral,facing=east,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 90
+    },
+    "covered_with=dark_latex,facing=east,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 90
+    },
+    "covered_with=white_latex,facing=east,half=bottom": {
+      "model": "changed_addon:block/luminar_crystal_large_bottom",
+      "x": 90,
+      "y": 90
+    }
+  }
+}
