@@ -65,7 +65,10 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     public int ticksSinceSecondAbilityActivity;
 
     @Unique
-    public boolean secondAbilityKeyState;
+    public boolean secondAbilityKeyDown;
+
+    @Unique
+    public int secondAbilityKeyStateFlips = 0;
 
     @Unique
     public boolean untransfurImmunity = false;
@@ -85,13 +88,33 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     }
 
     @Override
-    public boolean getSecondAbilityKeyState() {
-        return secondAbilityKeyState;
+    public boolean getSecondAbilityKeyDown() {
+        return secondAbilityKeyDown;
     }
 
     @Override
-    public void setSecondAbilityKeyState(boolean secondAbilityKeyState) {
-        this.secondAbilityKeyState = secondAbilityKeyState;
+    public void setSecondAbilityKeyDown(boolean secondAbilityKeyDown) {
+        this.secondAbilityKeyDown = secondAbilityKeyDown;
+    }
+
+    @Override
+    public int getSecondAbilityKeyStateFlips() {
+        return secondAbilityKeyStateFlips;
+    }
+
+    @Override
+    public void setSecondAbilityKeyStateFlips(int secondAbilityKeyStateFlips) {
+        this.secondAbilityKeyStateFlips = secondAbilityKeyStateFlips;
+    }
+
+    @Override
+    public void addSecondAbilityKeyStateFlips(int value) {
+        this.secondAbilityKeyStateFlips += value;
+    }
+
+    @Override
+    public boolean isSecondAbilityKeyEffectivelyDown() {
+        return (this.secondAbilityKeyStateFlips + (this.secondAbilityKeyDown ? 1 : 0)) % 2 == 1;
     }
 
     @Unique
@@ -145,11 +168,21 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
                     AbstractAbilityInstance instance = this.abilityInstances.get(this.secondSelectedAbility);
                     if (instance != null) {
                         AbstractAbility.Controller controller = instance.getController();
-                        boolean oldState = controller.exchangeKeyState(this.secondAbilityKeyState);
-                        if (this.secondAbilityKeyState || instance.getController().isCoolingDown())
-                            this.resetTicksSinceSecondAbilityActivity();
-                        if (this.host.containerMenu == this.host.inventoryMenu && !this.host.isUsingItem() && !instance.getController().isCoolingDown())
-                            instance.getUseType().check(this.secondAbilityKeyState, oldState, controller);
+                        boolean uniqueTick = true;
+                        do {
+                            if (secondAbilityKeyStateFlips > 0) {
+                                secondAbilityKeyStateFlips--;
+                                secondAbilityKeyDown = !secondAbilityKeyDown;
+                            }
+
+                            boolean oldState = controller.exchangeKeyState(secondAbilityKeyDown);
+                            if (secondAbilityKeyDown || instance.getController().isCoolingDown())
+                                resetTicksSinceSecondAbilityActivity();
+                            if (host.containerMenu == host.inventoryMenu && !host.isUsingItem() && !instance.getController().isCoolingDown())
+                                instance.getUseType().check(secondAbilityKeyDown, oldState, uniqueTick, controller);
+
+                            uniqueTick = false;
+                        } while (secondAbilityKeyStateFlips > 0);
                     }
                 }
             }

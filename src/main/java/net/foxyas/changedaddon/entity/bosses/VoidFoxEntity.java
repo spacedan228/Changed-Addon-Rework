@@ -1022,6 +1022,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAbleEntity, IH
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((7.5));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((60f));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(64.0);
@@ -1032,6 +1033,8 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAbleEntity, IH
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0.5);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
         attributes.getInstance(Attributes.ATTACK_KNOCKBACK).setBaseValue(3);
+        attributes.getInstance(ChangedAttributes.AIR_CAPACITY.get()).setBaseValue(15);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.1);
     }
 
     @Override

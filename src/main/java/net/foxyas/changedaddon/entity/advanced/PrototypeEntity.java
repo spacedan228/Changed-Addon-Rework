@@ -157,6 +157,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
     // Entity overrides
     @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
     }
 
     @Override

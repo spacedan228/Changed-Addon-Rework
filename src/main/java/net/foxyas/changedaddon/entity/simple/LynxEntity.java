@@ -36,8 +36,6 @@ public class LynxEntity extends ChangedEntity implements PowderSnowWalkable, Var
         setAttributes(this.getAttributes());
     }
 
-
-
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 0);
@@ -58,6 +56,7 @@ public class LynxEntity extends ChangedEntity implements PowderSnowWalkable, Var
     protected void setAttributes(AttributeMap attributes) {
         super.setAttributes(attributes);
         AttributePresets.catLike(attributes);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.35);
     }
 
     @Override

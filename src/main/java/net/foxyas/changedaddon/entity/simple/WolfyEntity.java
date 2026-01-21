@@ -90,6 +90,8 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
 
     @SuppressWarnings("DataFlowIssue")
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((1));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((14));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(25.0f);

@@ -74,6 +74,8 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((AttributesHandle.DefaultPlayerAttributes().getBaseValue(Attributes.MAX_HEALTH) + 16));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(64.0);
@@ -84,6 +86,8 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(AttributesHandle.DefaultPlayerAttributes().getBaseValue(Attributes.ARMOR_TOUGHNESS));
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(AttributesHandle.DefaultPlayerAttributes().getBaseValue(Attributes.KNOCKBACK_RESISTANCE));
         attributes.getInstance(Attributes.ATTACK_KNOCKBACK).setBaseValue(AttributesHandle.DefaultPlayerAttributes().getBaseValue(Attributes.ATTACK_KNOCKBACK));
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.4f);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5F);
     }
 
     @Override

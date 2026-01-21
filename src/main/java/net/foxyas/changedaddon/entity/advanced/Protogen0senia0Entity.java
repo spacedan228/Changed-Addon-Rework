@@ -38,8 +38,6 @@ public class Protogen0senia0Entity extends AbstractProtogenEntity implements IDy
         return builder;
     }
 
-
-
     public boolean isOrganic() {
         return true;
     }
@@ -51,6 +49,9 @@ public class Protogen0senia0Entity extends AbstractProtogenEntity implements IDy
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.25);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5F);
     }
 
     @Override

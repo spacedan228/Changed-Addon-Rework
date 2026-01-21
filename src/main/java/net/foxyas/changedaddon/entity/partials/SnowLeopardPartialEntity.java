@@ -40,7 +40,6 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
     }
 
 
-
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 0);
@@ -53,6 +52,7 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((2));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((24));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0F);
@@ -62,6 +62,8 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
         attributes.getInstance(Attributes.ARMOR).setBaseValue(4);
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
+        attributes.getInstance(ChangedAttributes.AIR_CAPACITY.get()).setBaseValue(15);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.3F);
     }
 
     @Override

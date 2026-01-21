@@ -22,6 +22,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
@@ -34,7 +35,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class MirrorWhiteTigerEntity extends ChangedEntity implements PowderSnowWalkable, GenderedEntity {
 
     private static final Set<ResourceLocation> SPAWN_BIOMES = Set.of(ResourceLocation.parse("taiga")/*, ResourceLocation.parse("icy") */);
@@ -45,20 +46,12 @@ public class MirrorWhiteTigerEntity extends ChangedEntity implements PowderSnowW
 
     public MirrorWhiteTigerEntity(EntityType<MirrorWhiteTigerEntity> type, Level world) {
         super(type, world);
-        //this.setAttributes(getAttributes());
         xpReward = ChangedEntity.XP_REWARD_MEDIUM;
         this.setAttributes(this.getAttributes());
         setNoAi(false);
     }
 
-    /*
-    @SubscribeEvent
-    public static void addLivingEntityToBiomes(DynamicBiomeModifier.BiomeLoadingEvent event) {
-        if (SPAWN_BIOMES.contains(event.getName()))
-            event.getBuilder().getMobSpawnSettings().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.MIRROR_WHITE_TIGER.get(), 20, 1, 4));
-    }*/
-
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {
         event.register(ChangedAddonEntities.MIRROR_WHITE_TIGER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
                 (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)),SpawnPlacementRegisterEvent.Operation.OR);
@@ -76,6 +69,7 @@ public class MirrorWhiteTigerEntity extends ChangedEntity implements PowderSnowW
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((0));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((24));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0f);
@@ -83,8 +77,7 @@ public class MirrorWhiteTigerEntity extends ChangedEntity implements PowderSnowW
         attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(0.95f);
         attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(3.0f);
         attributes.getInstance(Attributes.ARMOR).setBaseValue(4.0);
-        //attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
-        //attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5);
     }
 
     public boolean causeFallDamage(float p_148859_, float p_148860_, @NotNull DamageSource p_148861_) {

@@ -38,8 +38,6 @@ public class FoxtaFoxyEntity extends ChangedEntity implements GenderedEntity, Po
         setPersistenceRequired();
     }
 
-
-
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 0);
@@ -52,6 +50,7 @@ public class FoxtaFoxyEntity extends ChangedEntity implements GenderedEntity, Po
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((24));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0f);

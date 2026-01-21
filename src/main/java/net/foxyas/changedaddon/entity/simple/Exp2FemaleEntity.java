@@ -62,6 +62,8 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntity {
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
         Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((30));
         Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((24));
@@ -72,6 +74,8 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntity {
         Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR)).setBaseValue(0);
         Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR_TOUGHNESS)).setBaseValue(0);
         Objects.requireNonNull(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE)).setBaseValue(0);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.3f);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5F);
     }
 
     @Override

@@ -6,6 +6,7 @@ import net.ltxprogrammer.changed.entity.ai.LatexFollowOwnerGoal;
 import net.ltxprogrammer.changed.entity.ai.LatexOwnerHurtByTargetGoal;
 import net.ltxprogrammer.changed.entity.ai.LatexOwnerHurtTargetGoal;
 import net.ltxprogrammer.changed.entity.beast.AbstractSnowLeopard;
+import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedCriteriaTriggers;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -27,6 +28,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -61,6 +63,14 @@ public abstract class AbstractCanTameSnepChangedEntity extends AbstractSnowLeopa
         this.goalSelector.addGoal(6, new LatexFollowOwnerGoal<>(this, 0.35D, 10.0F, 2.0F, false));
         this.targetSelector.addGoal(1, new LatexOwnerHurtByTargetGoal<>(this));
         this.targetSelector.addGoal(2, new LatexOwnerHurtTargetGoal<>(this));
+    }
+
+    @Override
+    protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+        attributes.getInstance(ChangedAttributes.AIR_CAPACITY.get()).setBaseValue(7.5);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.25);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5);
     }
 
     @Override

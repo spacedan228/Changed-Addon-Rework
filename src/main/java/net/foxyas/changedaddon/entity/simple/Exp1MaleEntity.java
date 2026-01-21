@@ -59,6 +59,8 @@ public class Exp1MaleEntity extends ChangedEntity implements GenderedEntity, Pow
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((24));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0f);

@@ -165,6 +165,8 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()), 1.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH), 22.0f);
         safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE), 40.0f);

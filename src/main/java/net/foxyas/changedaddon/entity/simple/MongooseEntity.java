@@ -32,6 +32,7 @@ public class MongooseEntity extends AbstractBasicChangedEntity implements Custom
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
         AttributePresets.wolfLike(attributes);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0.7f);
     }

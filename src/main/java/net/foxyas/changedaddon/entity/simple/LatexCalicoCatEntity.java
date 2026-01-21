@@ -7,6 +7,7 @@ import net.ltxprogrammer.changed.entity.AttributePresets;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -31,7 +32,9 @@ public class LatexCalicoCatEntity extends AbstractBasicChangedEntity {
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
         AttributePresets.catLike(attributes);
+        attributes.getInstance(ChangedAttributes.AIR_CAPACITY.get()).setBaseValue(15.0);
     }
 
     @Override

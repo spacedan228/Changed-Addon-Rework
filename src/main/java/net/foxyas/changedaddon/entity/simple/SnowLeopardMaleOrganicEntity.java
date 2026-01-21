@@ -46,8 +46,6 @@ public class SnowLeopardMaleOrganicEntity extends AbstractCanTameSnepChangedEnti
         setPersistenceRequired();
     }
 
-
-
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = Mob.createMobAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 0);
@@ -59,7 +57,9 @@ public class SnowLeopardMaleOrganicEntity extends AbstractCanTameSnepChangedEnti
         return builder;
     }
 
+    @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((0));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((24));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0F);
@@ -69,6 +69,7 @@ public class SnowLeopardMaleOrganicEntity extends AbstractCanTameSnepChangedEnti
         attributes.getInstance(Attributes.ARMOR).setBaseValue(0);
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.3F);
     }
 
     public InteractionResult SnowLeopard(Player player, InteractionHand hand, Player Host) {

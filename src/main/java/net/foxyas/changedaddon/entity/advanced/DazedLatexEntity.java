@@ -169,6 +169,8 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()), 3);
         safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH), 26);
         safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE), 40.0f);

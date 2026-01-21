@@ -8,11 +8,11 @@ public interface TransfurVariantInstanceExtensor {
 
     AbstractAbility<?> getSecondSelectedAbility();
 
-    boolean getSecondAbilityKeyState();
+    boolean getSecondAbilityKeyDown();
 
     void setSecondSelectedAbility(AbstractAbility<?> ability);
 
-    void setSecondAbilityKeyState(boolean value);
+    void setSecondAbilityKeyDown(boolean value);
 
     int getTicksSinceSecondAbilityActivity();
 
@@ -21,6 +21,13 @@ public interface TransfurVariantInstanceExtensor {
     AbstractAbilityInstance getSecondSelectedAbilityInstance();
 
     boolean getUntransfurImmunity(UntransfurEvent.UntransfurType type);
+
+    boolean isSecondAbilityKeyEffectivelyDown();
+
+    int getSecondAbilityKeyStateFlips();
+
+    void setSecondAbilityKeyStateFlips(int value);
+    void addSecondAbilityKeyStateFlips(int value);
 
     void setUntransfurImmunity(UntransfurEvent.UntransfurType type, boolean value);
 

@@ -51,7 +51,10 @@ public class LuminarcticLeopardFemaleEntity extends AbstractLuminarcticLeopard {
         return builder;
     }
 
+    @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         //Attack stats
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((6));
         attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(6.0f);

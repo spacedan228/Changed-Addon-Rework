@@ -16,41 +16,40 @@ import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.registries.ForgeRegistry;
 
 import java.util.UUID;
 import java.util.function.Supplier;
 
 public class VariantSecondAbilityActivate {
     final UUID uuid;
-    final boolean keyState;
+    final boolean keyDown;
     final AbstractAbility<?> ability;
 
     public static VariantSecondAbilityActivate openRadial(Player player) {
         return new VariantSecondAbilityActivate(player, false);
     }
 
-    public VariantSecondAbilityActivate(Player player, boolean keyState, AbstractAbility<?> ability) {
+    public VariantSecondAbilityActivate(Player player, boolean keyDown, AbstractAbility<?> ability) {
         this.uuid = player.getUUID();
-        this.keyState = keyState;
+        this.keyDown = keyDown;
         this.ability = ability;
     }
 
-    public VariantSecondAbilityActivate(Player player, boolean keyState) {
+    public VariantSecondAbilityActivate(Player player, boolean keyDown) {
         this.uuid = player.getUUID();
-        this.keyState = keyState;
+        this.keyDown = keyDown;
         this.ability = null;
     }
 
     public VariantSecondAbilityActivate(FriendlyByteBuf buffer) {
         this.uuid = buffer.readUUID();
-        this.keyState = buffer.readBoolean();
+        this.keyDown = buffer.readBoolean();
         this.ability = ChangedRegistry.ABILITY.readRegistryObject(buffer);
     }
 
     public void write(FriendlyByteBuf buffer) {
         buffer.writeUUID(uuid);
-        buffer.writeBoolean(keyState);
+        buffer.writeBoolean(keyDown);
         ChangedRegistry.ABILITY.writeRegistryObject(buffer, ability);
     }
 
@@ -74,21 +73,23 @@ public class VariantSecondAbilityActivate {
                             }
                         });
 
-                        if (!variant.isTemporaryFromSuit()) {
-                            if (this.ability != null) {
-                                transfurVariantInstanceExtensor.setSecondSelectedAbility(this.ability);
-                            }
-
-                            if (!this.keyState && this.ability == null) {
-                                if (!sender.isUsingItem()) {
-                                    sender.openMenu(new SimpleMenuProvider((id, inventory, givenPlayer) -> new AbilityRadialMenu(id, inventory, null), AbilityRadialMenu.CONTAINER_TITLE));
-                                }
-                            } else {
-                                transfurVariantInstanceExtensor.setSecondAbilityKeyState(this.keyState);
-                            }
-
-                            ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> sender), this);
+                        if (variant.isTemporaryFromSuit()) {
+                            return;
                         }
+
+                        if (this.ability != null)
+                            transfurVariantInstanceExtensor.setSecondSelectedAbility(this.ability);
+
+                        if (!this.keyDown && this.ability == null) {
+                            if (!sender.isUsingItem())
+                                sender.openMenu(new SimpleMenuProvider((id, inventory, givenPlayer) ->
+                                        new AbilityRadialMenu(id, inventory, null), AbilityRadialMenu.CONTAINER_TITLE));
+                        } else if (transfurVariantInstanceExtensor.getSecondAbilityKeyStateFlips() < 6) {
+                            if (transfurVariantInstanceExtensor.isSecondAbilityKeyEffectivelyDown() != keyDown)
+                                transfurVariantInstanceExtensor.addSecondAbilityKeyStateFlips(1);
+                        }
+
+                        ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(() -> sender), this);
                     }
                 });
             } else {
@@ -100,8 +101,10 @@ public class VariantSecondAbilityActivate {
                                 transfurVariantInstanceExtensor.setSecondSelectedAbility(this.ability);
                             }
 
-                            if (this.keyState || this.ability != null) {
-                                transfurVariantInstanceExtensor.setSecondAbilityKeyState(this.keyState);
+                            if ((this.keyDown || this.ability != null) && transfurVariantInstanceExtensor.getSecondAbilityKeyStateFlips() < 6) {
+                                if (transfurVariantInstanceExtensor.isSecondAbilityKeyEffectivelyDown() != keyDown) {
+                                    transfurVariantInstanceExtensor.addSecondAbilityKeyStateFlips(1);
+                                }
                             }
 
                         }

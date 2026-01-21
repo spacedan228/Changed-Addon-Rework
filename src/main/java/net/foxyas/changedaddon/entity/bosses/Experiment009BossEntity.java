@@ -123,6 +123,8 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((6));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((425));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(64.0);
@@ -133,6 +135,8 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(6);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0.25);
         attributes.getInstance(Attributes.ATTACK_KNOCKBACK).setBaseValue(0.85);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.5f);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5F);
     }
 
     @Override

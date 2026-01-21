@@ -105,13 +105,15 @@ public class ChangedAddonKeyMappings {
 
             USE_SECOND_ABILITY.consumeClick();
             ProcessTransfur.ifPlayerTransfurred(local, (variant) -> {
-                if (!variant.isTemporaryFromSuit() && variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor) {
-                    boolean newState = event.getAction() != 0;
-                    if (newState != transfurVariantInstanceExtensor.getSecondAbilityKeyState()) {
-                        ChangedTutorial.triggerOnUseAbility(variant.getSelectedAbility());
-                        transfurVariantInstanceExtensor.setSecondAbilityKeyState(newState);
-                        ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
-                    }
+                if (variant.isTemporaryFromSuit() || !(variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor)) {
+                    return;
+                }
+
+                boolean newState = event.getAction() != GLFW.GLFW_RELEASE;
+                if (newState != transfurVariantInstanceExtensor.getSecondAbilityKeyDown()) {
+                    ChangedTutorial.triggerOnUseAbility(transfurVariantInstanceExtensor.getSecondSelectedAbilityInstance());
+                    transfurVariantInstanceExtensor.addSecondAbilityKeyStateFlips(1);
+                    ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
                 }
             });
         }
