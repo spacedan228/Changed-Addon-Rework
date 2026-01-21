@@ -8,6 +8,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
+import org.jetbrains.annotations.NotNull;
 
 public class ChangedAdditionsModConflictWarningScreen extends Screen {
 
@@ -50,7 +51,7 @@ public class ChangedAdditionsModConflictWarningScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(poseStack);
 
         MutableComponent warningText = new TextComponent(
