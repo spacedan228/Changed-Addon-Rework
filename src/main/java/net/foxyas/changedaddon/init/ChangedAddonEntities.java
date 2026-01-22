@@ -519,6 +519,11 @@ public class ChangedAddonEntities {
                     .clientTrackingRange(10)
                     .sized(0.7F, 1.93F));
 
+    public static final RegistryObject<EntityType<DarkLatexYufengQueenEntity>> DARK_LATEX_YUFENG_QUEEN = registerChangedEntity("dark_latex_yufeng_queen",
+            EntityType.Builder.of(DarkLatexYufengQueenEntity::new, ChangedMobCategories.CHANGED)
+                    .setTrackingRange(64)
+                    .sized(0.91F, 2.6F)); // 0.7F *1.3F, 2F *1.3F
+
     /// OCs
 
     public static final RegistryObject<EntityType<BorealisMaleEntity>> BOREALIS_MALE = registerOrganicChangedEntity("borealis_male",
@@ -627,11 +632,6 @@ public class ChangedAddonEntities {
                     .setUpdateInterval(3)
                     .setCustomClientFactory(LatexBorderCollieEntity::new)
                     .sized(0.7f, 1.93f));
-
-    public static final RegistryObject<EntityType<DarkLatexYufengQueenEntity>> DARK_LATEX_YUFENG_QUEEN = registerChangedEntity("dark_latex_yufeng_queen",
-            EntityType.Builder.of(DarkLatexYufengQueenEntity::new, ChangedMobCategories.CHANGED)
-                    .setTrackingRange(64)
-                    .sized(0.7f *1.3F, 2f *1.3F));
 
     // --- MONSTER/MOB ENTITIES ---
     public static final RegistryObject<EntityType<ErikEntity>> ERIK = registerMob("erik",
