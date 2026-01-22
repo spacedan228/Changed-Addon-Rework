@@ -19,6 +19,5 @@ run/
 .classpath
 .project
 Versions/README
-/libs/net
 src/generated/resources/.cache/cache
 /src/generated/resources/.cache/
