@@ -45,6 +45,7 @@ public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity {
         Objects.requireNonNull(attributes.getInstance(ForgeMod.BLOCK_REACH.get())).setBaseValue(5F);
         Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_DAMAGE)).setBaseValue(5F);
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue(4.5F);
+        Objects.requireNonNull(attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get())).setBaseValue(1.5F);
         Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_KNOCKBACK)).setBaseValue(1.5F);
         Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue(40F);
         Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR)).setBaseValue(8F);

@@ -628,7 +628,7 @@ public class ChangedAddonEntities {
                     .sized(0.7f, 1.93f));
 
     public static final RegistryObject<EntityType<DarkLatexYufengQueenEntity>> DARK_LATEX_YUFENG_QUEEN = registerChangedEntity("dark_latex_yufeng_queen",
-            EntityType.Builder.of(DarkLatexYufengQueenEntity::new, ChangedMobCategories.CHANGED)
+            EntityType.Builder.of(DarkLatexYufengQueenEntity::new, MobCategory.MONSTER)
                     .setTrackingRange(64)
                     .sized(0.91F, 2.6F)); // 0.7F *1.3F, 2F *1.3F
 
