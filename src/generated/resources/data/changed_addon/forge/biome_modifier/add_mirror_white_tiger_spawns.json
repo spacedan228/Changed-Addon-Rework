@@ -1,8 +1,8 @@
 {
   "type": "forge:add_spawns",
-  "biomes": "minecraft:plains",
+  "biomes": "minecraft:taiga",
   "spawners": {
-    "type": "changed_addon:latex_dazed",
+    "type": "changed_addon:mirror_white_tiger",
     "maxCount": 2,
     "minCount": 1,
     "weight": 4
