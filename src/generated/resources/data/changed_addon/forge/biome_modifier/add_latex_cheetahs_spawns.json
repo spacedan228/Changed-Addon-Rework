@@ -10,15 +10,15 @@
   "spawners": [
     {
       "type": "changed_addon:latex_cheetah_male",
-      "maxCount": 4,
+      "maxCount": 2,
       "minCount": 1,
-      "weight": 20
+      "weight": 4
     },
     {
       "type": "changed_addon:latex_cheetah_female",
-      "maxCount": 4,
+      "maxCount": 2,
       "minCount": 1,
-      "weight": 20
+      "weight": 4
     }
   ]
 }

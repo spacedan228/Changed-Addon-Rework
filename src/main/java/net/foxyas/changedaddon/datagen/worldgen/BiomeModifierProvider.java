@@ -76,8 +76,8 @@ public class BiomeModifierProvider {
         context.register(ADD_LATEX_CHEETAHS_SPAWNS, new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
                 HolderSet.direct(shortedCheetahSpawnBiomes),
                 List.of(
-                        new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), 20, 1, 4),
-                        new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_FEMALE.get(), 20, 1, 4)
+                        new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_MALE.get(), 4, 1, 2),
+                        new MobSpawnSettings.SpawnerData(ChangedAddonEntities.LATEX_CHEETAH_FEMALE.get(), 4, 1, 2)
                 ))
         );
 
