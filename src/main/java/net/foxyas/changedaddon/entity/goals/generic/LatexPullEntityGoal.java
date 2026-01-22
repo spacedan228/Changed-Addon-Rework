@@ -3,12 +3,13 @@ package net.foxyas.changedaddon.entity.goals.generic;
 import net.foxyas.changedaddon.util.DynamicClipContext;
 import net.ltxprogrammer.changed.block.WhiteLatexTransportInterface;
 import net.ltxprogrammer.changed.entity.PlayerDataExtension;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,6 +25,8 @@ public class LatexPullEntityGoal extends Goal {
     private final Mob holder;
     private final double range;
     private final double strength;
+
+    protected List<LivingEntity> entities;
     protected int blockBreakCooldown;
 
     public LatexPullEntityGoal(Mob holder, double range, double strength) {
@@ -35,33 +38,31 @@ public class LatexPullEntityGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        return !holder.level.getEntitiesOfClass(
-                LivingEntity.class,
-                holder.getBoundingBox().inflate(range),
-                e -> e != holder && e.isAlive() && (WhiteLatexTransportInterface.isEntityInWhiteLatex(e) || WhiteLatexTransportInterface.isBoundingBoxInWhiteLatex(e))
-        ).isEmpty();
-    }
-
-    @Override
-    public void tick() {
-        if (!holder.level.isClientSide) {
-            if (blockBreakCooldown > 0)
-                blockBreakCooldown--;
-        }
-
-        List<LivingEntity> targets = holder.level.getEntitiesOfClass(
+        entities = holder.level.getEntitiesOfClass(
                 LivingEntity.class,
                 holder.getBoundingBox().inflate(range),
                 e -> e != holder && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(e) && e.isAlive() && (WhiteLatexTransportInterface.isEntityInWhiteLatex(e) || WhiteLatexTransportInterface.isBoundingBoxInWhiteLatex(e))
         );
+        return !entities.isEmpty();
+    }
 
-        for (LivingEntity target : targets) {
+    @Override
+    public void tick() {
+        if (blockBreakCooldown > 0)
+            blockBreakCooldown--;
+
+        for (LivingEntity target : entities) {
             pullEntity(target);
 
-            if (target.distanceTo(holder) <= 2.0F || canHolderSeeOther(target, holder, 360)) {
+            if (target.distanceTo(holder) <= 2.0F || (canHolderSeeOther(target, holder, 360) && target.distanceTo(holder) <= 8)) {
                 onSuccessfulPull(target);
             }
         }
+    }
+
+    @Override
+    public void stop() {
+        entities = null;
     }
 
     /**
@@ -77,7 +78,7 @@ public class LatexPullEntityGoal extends Goal {
         if (level != targetToSee.level) return false;
 
         Vec3 from = eyeEntity.getEyePosition(1.0F);
-        Vec3 to = targetToSee.getEyePosition(1.0F);
+        Vec3 to = targetToSee.getPosition(1.0F);
 
         // First, check field of view using dot product
         Vec3 lookVec = eyeEntity.getLookAngle().normalize();
@@ -90,7 +91,7 @@ public class LatexPullEntityGoal extends Goal {
 
         // Then, raycast from eyeEntity to targetToSee to check if the view is blocked
         HitResult result = level.clip(new DynamicClipContext(
-                from, to, DynamicClipContext.IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, eyeEntity, CollisionContext.of(eyeEntity)
+                from, to, DynamicClipContext.IGNORE_TRANSLUCENT, ClipContext.Fluid.NONE::canPick, targetToSee, CollisionContext.of(targetToSee)
         ));
 
         // If result is MISS or hit point is very close to target, it's considered visible
@@ -99,9 +100,6 @@ public class LatexPullEntityGoal extends Goal {
     }
 
     private void onSuccessfulPull(LivingEntity target) {
-        if (holder.level.isClientSide)
-            return;
-
         if (blockBreakCooldown <= 0) {
             breakSurroundingBlocks();
             blockBreakCooldown = 20; // 1 segundo
@@ -153,9 +151,11 @@ public class LatexPullEntityGoal extends Goal {
 
         Vec3 motion = normalized.scale(pull);
 
-        target.setDeltaMovement(
-                target.getDeltaMovement().add(motion)
-        );
+        if (target instanceof Player player) {
+            player.move(MoverType.SELF, motion);
+        } else {
+            target.setDeltaMovement(target.getDeltaMovement().add(motion));
+        }
 
         target.hurtMarked = true;
     }

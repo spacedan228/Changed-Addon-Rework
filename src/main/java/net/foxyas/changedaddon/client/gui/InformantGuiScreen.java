@@ -156,30 +156,26 @@ public class InformantGuiScreen extends AbstractContainerScreen<InformantGuiMenu
         float swimSpeedPct = swimSpeed == 0 ? 0 : (swimSpeed - 1) * 100;
         float jumpStrengthPct = jumpStrength == 0 ? 0 : (jumpStrength - 1) * 100;
 
-        MutableComponent landSpeedInfo = new TranslatableComponent("text.changed_addon.land_speed")
-                .append("")
-                .append(landSpeedPct == 0
+        MutableComponent landSpeedInfo = new TranslatableComponent("text.changed_addon.land_speed",
+                landSpeedPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((landSpeedPct > 0 ? "§a+" : "§c") + (int) landSpeedPct + "%"));
 
-        MutableComponent swimSpeedInfo = new TranslatableComponent("text.changed_addon.swim_speed")
-                .append("")
-                .append(swimSpeedPct == 0
+        MutableComponent swimSpeedInfo = new TranslatableComponent("text.changed_addon.swim_speed",
+                swimSpeedPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((swimSpeedPct > 0 ? "§a+" : "§c") + (int) swimSpeedPct + "%"));
 
-        MutableComponent additionalHealthInfo = new TranslatableComponent("text.changed_addon.additionalHealth")
-                .append("")
-                .append(extraHp == 0
-                        ? new TextComponent("§7None§r")
-                        : new TextComponent((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
+        MutableComponent additionalHealthInfo = new TranslatableComponent("text.changed_addon.additionalHealth",
+                        extraHp == 0
+                                ? new TextComponent("§7None§r")
+                                : new TextComponent((extraHp > 0 ? "§a+" : "§c") + extraHp + "§r"))
                 .append(new TranslatableComponent("text.changed_addon.additionalHealth.Hearts"));
 
-        TranslatableComponent miningStrengthInfo = new TranslatableComponent("text.changed_addon.miningStrength", miningStrength);
+        Component miningStrengthInfo = new TranslatableComponent("text.changed_addon.miningStrength", miningStrength);
 
-        MutableComponent jumpStrengthInfo = new TranslatableComponent("text.changed_addon.jumpStrength")
-                .append("")
-                .append(jumpStrengthPct == 0
+        MutableComponent jumpStrengthInfo = new TranslatableComponent("text.changed_addon.jumpStrength",
+                jumpStrengthPct == 0
                         ? new TextComponent("§7None§r")
                         : new TextComponent((jumpStrengthPct > 0 ? "§a+" : "§c") + (int) jumpStrengthPct + "%"));
 

@@ -59,8 +59,9 @@ public class ChangedAddonBlocks {
     public static final RegistryObject<Block> ORANGE_WOLF_CRYSTAL_BLOCK = REGISTRY.register("orange_wolf_crystal_block", OrangeWolfCrystalBlockBlock::new);
     public static final RegistryObject<Block> YELLOW_WOLF_CRYSTAL_BLOCK = REGISTRY.register("yellow_wolf_crystal_block", YellowWolfCrystalBlockBlock::new);
     public static final RegistryObject<Block> WHITE_WOLF_CRYSTAL_BLOCK = REGISTRY.register("white_wolf_crystal_block", WhiteWolfCrystalBlockBlock::new);
-    public static final RegistryObject<Block> LUMINAR_CRYSTAL_BLOCK = REGISTRY.register("luminar_crystal_block", LuminarCrystalBlock::new);
-    public static final RegistryObject<Block> LUMINAR_CRYSTAL_SMALL = REGISTRY.register("luminar_crystal_small", LuminarCrystalSmallBlock::new);
+    public static final RegistryObject<LuminarCrystalBlock> LUMINAR_CRYSTAL_BLOCK = REGISTRY.register("luminar_crystal_block", LuminarCrystalBlock::new);
+    public static final RegistryObject<LuminarCrystalSmall> LUMINAR_CRYSTAL_SMALL = REGISTRY.register("luminar_crystal_small", LuminarCrystalSmall::new);
+    public static final RegistryObject<LuminarCrystalLarge> LUMINAR_CRYSTAL_LARGE = REGISTRY.register("luminar_crystal_large", () -> new LuminarCrystalLarge(BlockBehaviour.Properties.copy(LUMINAR_CRYSTAL_SMALL.get())));
     public static final RegistryObject<Block> YELLOW_WOLF_CRYSTAL_SMALL = REGISTRY.register("yellow_wolf_crystal_small", YellowWolfCrystalSmallBlock::new);
     public static final RegistryObject<Block> ORANGE_WOLF_CRYSTAL_SMALL = REGISTRY.register("orange_wolf_crystal_small", OrangeWolfCrystalSmallBlock::new);
     public static final RegistryObject<Block> BLUE_WOLF_CRYSTAL_SMALL = REGISTRY.register("blue_wolf_crystal_small", BlueWolfCrystalSmallBlock::new);
@@ -98,11 +99,11 @@ public class ChangedAddonBlocks {
         }
     });
 
-    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new LatexCoverBlock(BlockBehaviour.Properties.of(ChangedAddonMaterials.LATEX_COVER)
+    public static final RegistryObject<LatexCoverBlock> WHITE_LATEX_COVER_BLOCK = REGISTRY.register("white_latex_cover_block", () -> new WhiteLatexCoverBlock(BlockBehaviour.Properties.of(ChangedAddonMaterials.LATEX_COVER)
             .noOcclusion()
             .dynamicShape()
             .color(MaterialColor.TERRACOTTA_WHITE)
-            .sound(SoundType.SLIME_BLOCK), LatexType.WHITE_LATEX) {
+            .sound(SoundType.SLIME_BLOCK)) {
         @OnlyIn(Dist.CLIENT)
         @Override
         public void registerRenderLayer() {
@@ -124,7 +125,7 @@ public class ChangedAddonBlocks {
             WolfPlushyBlock.registerRenderLayer();
             DarkLatexWolfPlushyBlock.registerRenderLayer();
             ContainmentContainerBlock.registerRenderLayer();
-            LuminarCrystalSmallBlock.registerRenderLayer();
+            LuminarCrystalSmall.registerRenderLayer();
             YellowWolfCrystalSmallBlock.registerRenderLayer();
             OrangeWolfCrystalSmallBlock.registerRenderLayer();
             BlueWolfCrystalSmallBlock.registerRenderLayer();

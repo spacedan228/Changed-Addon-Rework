@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "changed_addon:block/luminar_crystal_large_bottom"
+  }
+}

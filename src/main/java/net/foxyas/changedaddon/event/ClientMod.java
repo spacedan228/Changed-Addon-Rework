@@ -6,10 +6,13 @@ import net.foxyas.changedaddon.init.ChangedAddonMenus;
 import net.foxyas.changedaddon.item.tooltip.ClientTransfurTotemTooltipComponent;
 import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.event.ScreenOpenEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -31,6 +34,18 @@ public class ClientMod {
             MenuScreens.register(ChangedAddonMenus.TIMED_KEYPAD_TIMER.get(), TimedKeypadTimerScreen::new);
         });
     }
+
+    public static boolean changedAdditionsLoaded = false;
+    public static boolean changedAdditionsWarningScreenShowed = false;
+
+    @SubscribeEvent
+    public static void showWarningScreen(FMLClientSetupEvent event) {
+        if (ModList.get().isLoaded("changed_additions")) {
+            changedAdditionsLoaded = true;
+            changedAdditionsWarningScreenShowed = false;
+        }
+    }
+
 
     @OnlyIn(Dist.CLIENT)
     @SubscribeEvent

@@ -5,6 +5,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -12,9 +13,11 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
+import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.ComponentUtil;
+import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.block.AbstractLatexBlock;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -42,7 +45,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.registries.ForgeRegistryEntry;
+import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,6 +53,14 @@ import java.util.stream.Collectors;
 public class ChangedAddonAdminCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+        ArgumentBuilder<CommandSourceStack, ?> untfImmunity = Commands.argument("target", EntityArgument.players())
+                .then(Commands.argument("value", BoolArgumentType.bool())
+                        .executes(context -> untfImmunity(context.getSource(), EntityArgument.getPlayers(context, "target"), BoolArgumentType.getBool(context, "value"), UntransfurEvent.UntransfurType.SURVIVAL))
+                        .then(Commands.argument("type", EnumArgument.enumArgument(UntransfurEvent.UntransfurType.class))
+                                .executes(context -> untfImmunity(context.getSource(), EntityArgument.getPlayers(context, "target"), BoolArgumentType.getBool(context, "value"), context.getArgument("type", UntransfurEvent.UntransfurType.class)))
+                        )
+                );
+
         LiteralCommandNode<CommandSourceStack> mainCommand = dispatcher.register(Commands.literal("changed-addon-admin")
                 .requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.literal("alphaGene")
@@ -88,7 +99,7 @@ public class ChangedAddonAdminCommand {
                         .then(Commands.argument("NamespaceFormId", StringArgumentType.greedyString())
                                 .suggests((context, builder) -> {
                                     String namespaceFormId = StringArgumentType.getString(context, "NamespaceFormId").toLowerCase();
-                                    ArrayList<ResourceLocation> list = TransfurVariant.getPublicTransfurVariants().map(ForgeRegistryEntry::getRegistryName).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
+                                    ArrayList<ResourceLocation> list = TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getFormId).filter(Objects::nonNull).collect(Collectors.toCollection(ArrayList::new));
                                     list.add(TransfurVariant.SPECIAL_LATEX);
                                     TreeSet<String> set = list.stream().map(ResourceLocation::getNamespace).collect(Collectors.toCollection(TreeSet::new));
                                     if (namespaceFormId.isBlank()) {
@@ -248,11 +259,28 @@ public class ChangedAddonAdminCommand {
                                 .executes(ChangedAddonAdminCommand::setLatexLanguage)
                         )
                 )
+                .then(Commands.literal("untransfurImmunity")
+                        .then(untfImmunity)
+                )
+                .then(Commands.literal("untfImmunity")
+                        .then(untfImmunity)
+                )
         );
 
         dispatcher.register(Commands.literal("alphaGeneHandle")
                 .requires(s -> s.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .redirect(mainCommand.getChild("alphaGene")));
+    }
+
+    private static int untfImmunity(CommandSourceStack stack, Collection<ServerPlayer> targets, boolean value, UntransfurEvent.UntransfurType type) {
+        for (ServerPlayer player : targets) {
+            TransfurVariantInstance<?> inst = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (inst instanceof TransfurVariantInstanceExtensor ext) {
+                ext.setUntransfurImmunity(type, value);
+            }
+        }
+        if (!targets.isEmpty()) stack.sendSuccess(ComponentUtil.literal(String.format("Untransfur immunity of selected players is set to %s, type %s", value, type)), true);
+        return 1;
     }
 
     private static int setTFProgress(Player player, float amount, boolean add) {
@@ -270,7 +298,7 @@ public class ChangedAddonAdminCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private static int setLatexLanguage(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    private static int setLatexLanguage(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         boolean value = BoolArgumentType.getBool(context, "set");
 
@@ -347,7 +375,6 @@ public class ChangedAddonAdminCommand {
         );
         return 0;
     }
-
 
     private static int setEntityAlphaGeneScale(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
         Collection<? extends Entity> entities = EntityArgument.getEntities(context, "targets");
@@ -549,8 +576,8 @@ public class ChangedAddonAdminCommand {
             if (optionalSlots.isPresent()) {
                 AccessorySlots slots = optionalSlots.get();
                 List<String> slotNames = slots.getSlotTypes()
-                        .filter(s -> s.getRegistryName() != null)
-                        .map(s -> s.getRegistryName().toString())
+                        .filter(s -> ChangedRegistry.ACCESSORY_SLOTS.get().getKey(s) != null)
+                        .map(s -> ChangedRegistry.ACCESSORY_SLOTS.get().getKey(s).toString())
                         .toList();
 
                 if (!slotNames.isEmpty() && (filter.contains("with_slots") || filter.isBlank())) {

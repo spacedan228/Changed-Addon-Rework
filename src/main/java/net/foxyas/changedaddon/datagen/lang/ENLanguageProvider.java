@@ -24,6 +24,7 @@ import static net.foxyas.changedaddon.init.ChangedAddonBlocks.IRIDIUM_ORE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.LATEX_INSULATOR;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.LUMINARA_BLOOM;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.LUMINAR_CRYSTAL_BLOCK;
+import static net.foxyas.changedaddon.init.ChangedAddonBlocks.LUMINAR_CRYSTAL_LARGE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.LUMINAR_CRYSTAL_SMALL;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.ORANGE_WOLF_CRYSTAL_BLOCK;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.ORANGE_WOLF_CRYSTAL_SMALL;
@@ -150,6 +151,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addBlock(POTTED_LUMINARA_BLOOM, "Flower Pot with Luminara Bloom");
         addBlockFromId(LUMINAR_CRYSTAL_BLOCK);
         addBlock(LUMINAR_CRYSTAL_SMALL, "Small Luminar Crystal");
+        addBlock(LUMINAR_CRYSTAL_LARGE, "Large Luminar Crystal");
         addBlockFromId(ORANGE_WOLF_CRYSTAL_BLOCK);
         addBlock(ORANGE_WOLF_CRYSTAL_SMALL, "Small Orange Wolf Crystal");
         addBlockFromId(PAINITE_BLOCK);
@@ -268,11 +270,13 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityDialoguesO("exp9.pat.type_2", "§l§3Get your filthy hands off me!");
         addEntityDialoguesO("exp9.pat.type_3", "§l§3Pat me again, and I'll crush you until nothing's left!");
         addEntityDialoguesO("exp9.reaction.range_attacks", "§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!");
+        addEntityDialoguesO("exp9.reaction.fire_damage", "You’re fighting a storm with a match.... You didn’t miscalculate — you misunderstood.");
         addEntityDialoguesO("exp10.pat.type_0", "§l§4Yeah i will END YOUR FUCKING LIFE");
         addEntityDialoguesO("exp10.pat.type_1", "§l§4You won't live to regret that — you'll die for it.");
         addEntityDialoguesO("exp10.pat.type_2", "§l§4Touch me again and I'll make it quick... for you.");
         addEntityDialoguesO("exp10.pat.type_3", "§l§4You dare toy with me? This was your last mistake.");
         addEntityDialoguesO("exp10.reaction.range_attacks", "§l§o§4What's that peashooter going to do, hurt me? I don't think so, weakling.");
+        addEntityDialoguesO("exp10.reaction.fire_damage", "§4Did you truly believe fire could harm me? In §lthis form§r§4, I am beyond such flaws.§r");
         addEntityDialoguesO("exp10.death.text1", "§4§l§oSo much potential, wasted in a single breath... pathetic.§r");
         addEntityDialoguesO("exp10.death.text2", "§4§l§oAnd even with all this power, you found a way to die...§r");
 
@@ -300,6 +304,7 @@ public class ENLanguageProvider extends LanguageProvider {
         add("changedaddon.fight_conscience.success", "You §2Maintained!!! §rYour Conscience Good Job");
         add("changedaddon.fight_conscience.fail", "You §4Lose §rYour Conscience");
 
+        add("changedaddon.untransfur.fail", "the untransfur fail for some reason");
         add("changedaddon.untransfur.Immune", "I'm not affected");
         add("changedaddon.untransfur.Immune.fluid", "I'm not affected by this fluid");
         add("changedaddon.untransfur.diffusion", "You unfuse with the latex creature that was attached to you. Maybe it wants to fuse back so better RUN");
@@ -663,5 +668,7 @@ public class ENLanguageProvider extends LanguageProvider {
         add("commands.changed_addon.alpha_scale.set.success", "Alpha scale set to %s for %s entities");
         add("commands.changed_addon.alpha_scale.get.success", "Alpha scale: %s");
 
+        addStat(ChangedAddonStatRegistry.PATS_GIVEN, "Pats given");
+        addStat(ChangedAddonStatRegistry.PATS_RECEIVED, "Pats received");
     }
 }

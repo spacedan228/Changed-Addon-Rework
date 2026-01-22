@@ -57,6 +57,7 @@
     "mods.changed.FacilitySinglePieceInstanceAccessor",
     "mods.changed.ProcessTransfurMixin",
     "mods.changed.TransfurVariantMixin",
+    "mods.changed.WhiteLatexTransportInterfaceMixin",
     "mods.firstPerson.LogicHandleMixin",
     "mods.nean.AvaliElytraAnimationMixin",
     "world.LevelStorageAccessMixin",

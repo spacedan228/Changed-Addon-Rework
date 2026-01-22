@@ -16,6 +16,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -75,6 +76,8 @@ public class PlayerUtil {
                     ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
                     return;
                 }
+
+                player.displayClientMessage(new TranslatableComponent("changedaddon.untransfur.fail"), true);
                 return;
             }
 
@@ -98,6 +101,8 @@ public class PlayerUtil {
                     ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
                     return;
                 }
+
+                player.displayClientMessage(new TranslatableComponent("changedaddon.untransfur.fail"), true);
                 return;
             }
 
@@ -125,6 +130,8 @@ public class PlayerUtil {
                     ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
                     return;
                 }
+
+                player.displayClientMessage(new TranslatableComponent("changedaddon.untransfur.fail"), true);
                 return;
             }
 

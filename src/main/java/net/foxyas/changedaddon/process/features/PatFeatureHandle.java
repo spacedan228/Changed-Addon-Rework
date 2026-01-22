@@ -5,6 +5,7 @@ import net.foxyas.changedaddon.entity.api.CustomPatReaction;
 import net.foxyas.changedaddon.entity.api.SpecialPatLatex;
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.init.ChangedAddonStatRegistry;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
@@ -90,6 +91,8 @@ public class PatFeatureHandle {
         pat.WhenPattedReactionSpecific(player, emptyHand, entityHitResult.getLocation());
         pat.WhenPattedReaction(player, emptyHand);
         pat.WhenPattedReactionSimple();
+
+        if (player instanceof ServerPlayer sPlayer) sPlayer.awardStat(ChangedAddonStatRegistry.PATS_GIVEN);
     }
 
     private static void handleLatexEntity(Player player, InteractionHand emptyHand, ChangedEntity target, EntityHitResult entityHitResult, Level level) {
@@ -112,7 +115,10 @@ public class PatFeatureHandle {
             e.WhenPattedReactionSimple();
         }
 
-        if (player instanceof ServerPlayer sp) GiveStealthPatAdvancement(sp, target);
+        if (player instanceof ServerPlayer sp) {
+            GiveStealthPatAdvancement(sp, target);
+            sp.awardStat(ChangedAddonStatRegistry.PATS_GIVEN);
+        }
     }
 
     private static void handlePlayerEntity(Player player, InteractionHand emptyHand, Player target, EntityHitResult entityHitResult, Level level) {
@@ -141,10 +147,13 @@ public class PatFeatureHandle {
             return;
         }
 
+        if (player instanceof ServerPlayer sPlayer) sPlayer.awardStat(ChangedAddonStatRegistry.PATS_GIVEN);
+
+        if (target instanceof ServerPlayer sPlayer) sPlayer.awardStat(ChangedAddonStatRegistry.PATS_RECEIVED);
+
         if(targetTF == null || !(level instanceof ServerLevel)) return;
 
-        //serverLevel.sendParticles(ParticleTypes.HEART, target.getX(), target.getY() + 1, target.getZ(), 7, 0.3, 0.3, 0.3, 1);
-        if(player.getRandom().nextFloat() > 0.025f + player.getLuck() * 0.01f) return;
+        if(player.getRandom().nextFloat() > 0.1f + player.getLuck() * 0.05f) return;
 
         target.heal(6f);
         if(player instanceof ServerPlayer sPlayer) GivePatAdvancement(sPlayer, target);
