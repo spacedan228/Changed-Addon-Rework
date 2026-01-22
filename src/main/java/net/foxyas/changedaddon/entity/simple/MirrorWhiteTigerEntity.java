@@ -51,10 +51,11 @@ public class MirrorWhiteTigerEntity extends ChangedEntity implements PowderSnowW
         setNoAi(false);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {
         event.register(ChangedAddonEntities.MIRROR_WHITE_TIGER.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                (entityType, world, reason, pos, random) -> (world.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(world, pos, random) && Mob.checkMobSpawnRules(entityType, world, reason, pos, random)),SpawnPlacementRegisterEvent.Operation.OR);
+                ChangedEntity::checkEntitySpawnRules,
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
