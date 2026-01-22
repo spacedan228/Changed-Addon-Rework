@@ -42,6 +42,9 @@ public class BiomeModifierProvider {
     public static final ResourceKey<BiomeModifier> ADD_LATEX_DAZED_SPAWNS =
             ChangedAddonMod.resourceKey(ForgeRegistries.Keys.BIOME_MODIFIERS, "add_latex_dazed_spawns");
 
+    public static final ResourceKey<BiomeModifier> ADD_MIRROR_WHITE_TIGER_SPAWNS =
+            ChangedAddonMod.resourceKey(ForgeRegistries.Keys.BIOME_MODIFIERS, "add_mirror_white_tiger_spawns");
+
     public static final ResourceKey<BiomeModifier> ADD_IRIDIUM_GEN =
             create("add_iridium");
 
@@ -84,11 +87,18 @@ public class BiomeModifierProvider {
         addEntitySpawns(context,
                 ADD_LATEX_DAZED_SPAWNS,
                 biomes,
-                Set.of(Biomes.PLAINS),
+                null,
                 Set.of(BiomeTags.IS_OVERWORLD),
                 List.of(
                         new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 4, 1, 2)
-                ));
+                )
+        );
+
+        addEntitySpawns(context, ADD_MIRROR_WHITE_TIGER_SPAWNS, biomes, Set.of(Biomes.TAIGA),
+                List.of(
+                        new MobSpawnSettings.SpawnerData(ChangedAddonEntities.MIRROR_WHITE_TIGER.get(), 4, 1, 2)
+                )
+        );
     }
 
     private static void addSnowFoxesSpawns(BootstapContext<BiomeModifier> context, HolderGetter<Biome> biomes) {
@@ -154,16 +164,14 @@ public class BiomeModifierProvider {
 
     private static void addEntitySpawns(
             BootstapContext<BiomeModifier> context,
-            ResourceKey<BiomeModifier> modifierKey,
+            ResourceKey<BiomeModifier> baseModifierKey,
             HolderGetter<Biome> biomeLookup,
             @Nullable Set<ResourceKey<Biome>> biomes,
             @Nullable Set<TagKey<Biome>> biomeTags,
             List<MobSpawnSettings.SpawnerData> spawns
     ) {
-
-        List<Holder<Biome>> biomesList = new ArrayList<>();
-
         if (biomes != null) {
+            ResourceKey<BiomeModifier> biomeModifierResourceKey = ChangedAddonMod.resourceKey(ForgeRegistries.Keys.BIOME_MODIFIERS, baseModifierKey.location().getPath() + "_for_biomes");
             List<Holder.Reference<Biome>> biomeHolders = biomes.stream()
                     .map(biomeLookup::getOrThrow)
                     .sorted(Comparator.comparing(
@@ -173,29 +181,27 @@ public class BiomeModifierProvider {
                                     .getPath()
                     )).toList();
 
-            biomesList.addAll(biomeHolders);
+            context.register(
+                    biomeModifierResourceKey,
+                    new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
+                            HolderSet.direct(biomeHolders),
+                            spawns
+                    )
+            );
         }
 
         if (biomeTags != null) {
+            ResourceKey<BiomeModifier> biomeModifierTagsResourceKey = ChangedAddonMod.resourceKey(ForgeRegistries.Keys.BIOME_MODIFIERS, baseModifierKey.location().getPath() + "_for_tags");
             biomeTags.stream().map(biomeLookup::getOrThrow).forEach((biomeNamed) -> {
-//                context.register(
-//                        modifierKey,
-//                        new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
-//                                biomeNamed,
-//                                spawns
-//                        )
-//                );
+                context.register(
+                        biomeModifierTagsResourceKey,
+                        new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
+                                biomeNamed,
+                                spawns
+                        )
+                );
             });
-            return;
         }
-
-        context.register(
-                modifierKey,
-                new ForgeBiomeModifiers.AddSpawnsBiomeModifier(
-                        HolderSet.direct(biomesList),
-                        spawns
-                )
-        );
     }
 
     private static void addCheetahSpawns(BootstapContext<BiomeModifier> context, HolderGetter<Biome> biomes) {
