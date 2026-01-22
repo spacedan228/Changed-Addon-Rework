@@ -63,7 +63,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.wing_flap");
+        return Component.translatable("ability.changed_addon.wing_flap");
     }
 
     @Override

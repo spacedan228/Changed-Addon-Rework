@@ -64,11 +64,11 @@ public class CustomInteractionInstance extends AbstractAbilityInstance {
         } else if (entity.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
             if (!luminaraFlowerBeast.isHyperAwakened()) return;
             luminaraFlowerBeast.spawnParticles = !luminaraFlowerBeast.spawnParticles;
-            entity.displayClientMessage(Component.translatable("changed_addon.ability.custom_interaction.have_interaction.luminara_beast.action", luminaraFlowerBeast.spawnParticles), true);
+            entity.displayClientMessage(Component.translatable("ability.changed_addon.custom_interaction.have_interaction.luminara_beast.action", luminaraFlowerBeast.spawnParticles), true);
         } else if (entity.getChangedEntity() instanceof LatexKaylaSharkEntity latexKaylaSharkEntity) {
             boolean value = !latexKaylaSharkEntity.getGlowingState();
             latexKaylaSharkEntity.setGlowingState(value);
-            entity.displayClientMessage(Component.translatable("changed_addon.ability.custom_interaction.have_interaction.latex_kayla_shark.action", value), true);
+            entity.displayClientMessage(Component.translatable("ability.changed_addon.custom_interaction.have_interaction.latex_kayla_shark.action", value), true);
         }
     }
 

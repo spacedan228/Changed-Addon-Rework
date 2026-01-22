@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.HairStyle;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.beast.AbstractAquaticEntity;
@@ -9,7 +10,6 @@ import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -36,7 +36,7 @@ public class LatexSquidTigerSharkEntity extends AbstractAquaticEntity {
 
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
+        AttributeSupplier.Builder builder =  ChangedEntity.createLatexAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 3);
         builder.add(ForgeMod.SWIM_SPEED.get(), 1.0);
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.975);

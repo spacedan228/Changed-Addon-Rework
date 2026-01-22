@@ -573,12 +573,12 @@ public class ChangedAddonAdminCommand {
             if (dodgeAbilityInstance != null) {
                 dodgeAbilityInstance.setUltraInstinct(value);
                 if (value) {
-                    successMessages.add(Component.translatable("changed_addon.command.ultra_instinct.enabled", entity.getName()));
+                    successMessages.add(Component.translatable("commands.changed_addon.ultra_instinct.enabled", entity.getName()));
                 } else {
-                    successMessages.add(Component.translatable("changed_addon.command.ultra_instinct.disabled", entity.getName()));
+                    successMessages.add(Component.translatable("commands.changed_addon.ultra_instinct.disabled", entity.getName()));
                 }
             } else {
-                failureMessages.add(Component.translatable("changed_addon.command.ultra_instinct.fail", entity.getName()));
+                failureMessages.add(Component.translatable("commands.changed_addon.ultra_instinct.fail", entity.getName()));
             }
         }
 
@@ -689,7 +689,7 @@ public class ChangedAddonAdminCommand {
         } else {
             List<Component> trimmed = messages.subList(0, maxLines);
             int remaining = messages.size() - maxLines;
-            trimmed.add(Component.translatable("changed_addon.command.ultra_instinct.more", remaining));
+            trimmed.add(Component.translatable("commands.changed_addon.ultra_instinct.more", remaining));
             Component full = ComponentUtils.formatList(trimmed, Component.literal("\n"));
             if (success)
                 source.sendSuccess(() -> full, true);

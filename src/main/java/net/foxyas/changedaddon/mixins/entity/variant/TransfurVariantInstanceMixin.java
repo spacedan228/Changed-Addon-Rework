@@ -14,6 +14,7 @@ import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.util.KeyStateTracker;
 import net.ltxprogrammer.changed.util.TagUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -64,8 +65,7 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Unique
     public int ticksSinceSecondAbilityActivity;
 
-    @Unique
-    public boolean secondAbilityKeyState;
+    public KeyStateTracker secondAbilityKey = new KeyStateTracker();
 
     @Unique
     public boolean untransfurImmunity = false;
@@ -85,13 +85,13 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     }
 
     @Override
-    public boolean getSecondAbilityKeyState() {
-        return secondAbilityKeyState;
+    public void setSecondAbilityKey(KeyStateTracker secondAbilityKey) {
+        this.secondAbilityKey = secondAbilityKey;
     }
 
     @Override
-    public void setSecondAbilityKeyState(boolean secondAbilityKeyState) {
-        this.secondAbilityKeyState = secondAbilityKeyState;
+    public KeyStateTracker getSecondAbilityKey() {
+        return secondAbilityKey;
     }
 
     @Unique
@@ -145,11 +145,13 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
                     AbstractAbilityInstance instance = this.abilityInstances.get(this.secondSelectedAbility);
                     if (instance != null) {
                         AbstractAbility.Controller controller = instance.getController();
-                        boolean oldState = controller.exchangeKeyState(this.secondAbilityKeyState);
-                        if (this.secondAbilityKeyState || instance.getController().isCoolingDown())
-                            this.resetTicksSinceSecondAbilityActivity();
-                        if (this.host.containerMenu == this.host.inventoryMenu && !this.host.isUsingItem() && !instance.getController().isCoolingDown())
-                            instance.getUseType().check(this.secondAbilityKeyState, oldState, controller);
+                        secondAbilityKey.handleStateUpdates((isDown, wasDown, unique) -> {
+                            boolean oldState = controller.exchangeKeyState(isDown);
+                            if (isDown || instance.getController().isCoolingDown())
+                                this.resetTicksSinceSecondAbilityActivity();
+                            if (host.containerMenu == host.inventoryMenu && !host.isUsingItem() && !instance.getController().isCoolingDown())
+                                instance.getUseType().check(isDown, oldState, unique, controller);
+                        });
                     }
                 }
             }

@@ -33,8 +33,6 @@ public class LatexDragonSnowLeopardSharkEntity extends AbstractLatexShark {
         setPersistenceRequired();
     }
 
-
-
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
         builder = builder.add(Attributes.MOVEMENT_SPEED, 1.10f);

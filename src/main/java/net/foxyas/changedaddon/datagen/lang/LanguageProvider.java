@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.datagen.lang;
 
-import net.foxyas.changedaddon.init.ChangedAddonPaintingVariants;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -77,11 +76,7 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
     }
 
     protected void addCommand(String key, String value) {
-        add("command." + modid + "." + key, value);
-    }
-
-    protected void addCommandO(String key, String value) {//TODO move to command.modid.key instead
-        add(modid + ".command." + key, value);
+        add("commands." + modid + "." + key, value);
     }
 
     protected void addContainer(String key, String value) {
@@ -127,10 +122,6 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
         add(toLanguageKey(sound.getId(), "subtitles"), value);
     }
 
-    protected void addSoundO(RegistryObject<SoundEvent> sound, String value) {
-        add("subtitles." + sound.getId().getPath(), value);
-    }
-
     protected void addTooltip(String key, String value) {
         add("tooltip." + modid + "." + key, value);
     }
@@ -144,32 +135,16 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
         add("ability." + modid + "." + key, value);
     }
 
-    protected void addAbilityO(String key, String value) {//TODO move to ability.modid.key instead
-        add(modid + ".ability." + key, value);
-    }
-
     protected void addEntityDialogues(String key, String value) {
         add("entity_dialogues." + modid + "." + key, value);
-    }
-
-    protected void addEntityDialoguesO(String key, String value) {//TODO move to entity_dialogues.modid.key instead
-        add(modid + ".entity_dialogues." + key, value);
     }
 
     protected void addGui(String key, String value) {
         add("gui." + modid + "." + key, value);
     }
 
-    protected void addGuiO(String key, String value) {//TODO move to gui.modid.key instead
-        add(modid + ".gui." + key, value);
-    }
-
     protected void addJeiDescriptions(String key, String value) {
         add("jei_descriptions." + modid + "." + key, value);
-    }
-
-    protected void addJeiDescriptionsO(String key, String value) {//TODO move to jei_descriptions.modid.key instead
-        add(modid + ".jei_descriptions." + key, value);
     }
 
     protected void addEffect(RegistryObject<? extends MobEffect> effect, String value, @Nullable String description) {
@@ -183,6 +158,10 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
         add(key, value);
         if (description != null) add(key + ".desc", description);
         if (jeiDescription != null) add(key + ".jei_desc", jeiDescription);
+    }
+
+    protected void addStat(RegistryObject<ResourceLocation> stat, String value) {
+        add(stat.get().toLanguageKey("stat"), value);
     }
 
     protected String toLanguageKey(ResourceLocation loc, String type) {

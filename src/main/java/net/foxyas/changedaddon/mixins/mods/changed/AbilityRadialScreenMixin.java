@@ -38,21 +38,21 @@ public abstract class AbilityRadialScreenMixin {
                     if (abilityInstance != null) {
                         ResourceLocation registryName = ChangedRegistry.ABILITY.getKey(abilityInstance.getAbility());
                         if (registryName == null) {
-                            list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
+                            list.add(Component.translatable("gui.changed_addon.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
                             break;
                         }
                         
                         boolean contains = component.toString().contains(registryName.toString());
                         if (contains) {
                             // BEFORE ID
-                            list.add(i, Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
+                            list.add(i, Component.translatable("gui.changed_addon.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
                             itAdded = true;
                             break;
                         }
                     }
                 }
 
-                if (!itAdded) list.add(Component.translatable("changed_addon.gui.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
+                if (!itAdded) list.add(Component.translatable("gui.changed_addon.abilities_radial_screen.mouse.right_click").withStyle((s) -> s.withItalic(true).withColor(ChatFormatting.BLUE)));
 
                 cir.setReturnValue(list);
             }

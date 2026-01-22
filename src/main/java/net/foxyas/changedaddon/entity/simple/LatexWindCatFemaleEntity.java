@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.simple;
 
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -23,6 +24,8 @@ public class LatexWindCatFemaleEntity extends ChangedEntity implements GenderedE
         attributes.getInstance(Attributes.MOVEMENT_SPEED).setBaseValue(1.2f);
         attributes.getInstance(ForgeMod.SWIM_SPEED.get()).setBaseValue(0.9f);
         attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(1.0F);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.3f);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5F);
     }
 
     @Override

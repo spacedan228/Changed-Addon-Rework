@@ -65,7 +65,7 @@ public class PsychicGrab extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.psychic_grab");
+        return Component.translatable("ability.changed_addon.psychic_grab");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {
@@ -75,7 +75,7 @@ public class PsychicGrab extends SimpleAbility {
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         Collection<Component> descriptions = new ArrayList<>(super.getAbilityDescription(entity));
-        descriptions.add(Component.translatable("changed_addon.ability.psychic_grab.description"));
+        descriptions.add(Component.translatable("ability.changed_addon.psychic_grab.description"));
         return descriptions;
     }
 

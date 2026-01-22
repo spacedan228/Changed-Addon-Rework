@@ -3,20 +3,21 @@ package net.foxyas.changedaddon.variant;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.util.KeyStateTracker;
 
 public interface TransfurVariantInstanceExtensor {
 
     AbstractAbility<?> getSecondSelectedAbility();
 
-    boolean getSecondAbilityKeyState();
-
     void setSecondSelectedAbility(AbstractAbility<?> ability);
-
-    void setSecondAbilityKeyState(boolean value);
 
     int getTicksSinceSecondAbilityActivity();
 
     void resetTicksSinceSecondAbilityActivity();
+
+    void setSecondAbilityKey(KeyStateTracker secondAbilityKey);
+
+    KeyStateTracker getSecondAbilityKey();
 
     AbstractAbilityInstance getSecondSelectedAbilityInstance();
 

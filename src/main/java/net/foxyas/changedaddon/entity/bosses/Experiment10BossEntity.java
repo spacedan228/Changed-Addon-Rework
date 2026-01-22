@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.bosses;
 
-import net.foxyas.changedaddon.entity.api.ICrawlAbleEntity;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
+import net.foxyas.changedaddon.entity.api.ICrawlAbleEntity;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
@@ -45,7 +45,6 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -61,7 +60,6 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
@@ -96,7 +94,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
+        AttributeSupplier.Builder builder =  ChangedEntity.createLatexAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 0);
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.3);
         builder = builder.add(Attributes.MAX_HEALTH, 300);
@@ -146,6 +144,8 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((325));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(64.0);
@@ -156,6 +156,8 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(6);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0.25);
         attributes.getInstance(Attributes.ATTACK_KNOCKBACK).setBaseValue(0.8);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.5f);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5F);
     }
 
     @Override
@@ -290,6 +292,11 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             }
         }
 
+        if (source.is(DamageTypeTags.IS_FIRE)) {
+            maybeSendReactionToPlayer(source);
+            return super.hurt(source, amount * 0f);
+        }
+
         if (source.is(DamageTypeTags.IS_PROJECTILE)) {
             maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
@@ -299,8 +306,14 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     private void maybeSendReactionToPlayer(DamageSource source) {
-        if (this.level().random.nextFloat() <= 0.25f && source.getEntity() instanceof Player player) {
-            player.displayClientMessage(Component.translatable("changed_addon.entity_dialogues.exp10.reaction.range_attacks"), true);
+        if (source.getEntity() instanceof Player player) {
+            if (this.level().random.nextFloat() <= 0.25f) {
+                if (source.is(DamageTypeTags.IS_PROJECTILE)) {
+                    player.displayClientMessage(Component.translatable("entity_dialogues.changed_addon.exp10.reaction.range_attacks"), true);
+                } else if (source.is(DamageTypeTags.IS_FIRE)) {
+                    player.displayClientMessage(Component.translatable("entity_dialogues.changed_addon.exp10.reaction.fire_damage"), true);
+                }
+            }
         }
     }
 
@@ -483,10 +496,10 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         }
 
         List<Component> translatableComponentList = new ArrayList<>();
-        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_0"));
-        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_1"));
-        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_2"));
-        translatableComponentList.add(Component.translatable("changed_addon.entity_dialogues.exp10.pat.type_3"));
+        translatableComponentList.add(Component.translatable("entity_dialogues.changed_addon.exp10.pat.type_0"));
+        translatableComponentList.add(Component.translatable("entity_dialogues.changed_addon.exp10.pat.type_1"));
+        translatableComponentList.add(Component.translatable("entity_dialogues.changed_addon.exp10.pat.type_2"));
+        translatableComponentList.add(Component.translatable("entity_dialogues.changed_addon.exp10.pat.type_3"));
         player.level().addParticle(
                 ChangedParticles.emote(this, Emote.ANGRY),
                 this.getX(),

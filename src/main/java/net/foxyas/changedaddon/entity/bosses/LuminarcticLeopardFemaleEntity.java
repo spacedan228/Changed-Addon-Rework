@@ -41,7 +41,7 @@ public class LuminarcticLeopardFemaleEntity extends AbstractLuminarcticLeopard {
 
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
+        AttributeSupplier.Builder builder =  ChangedEntity.createLatexAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 6);
         builder = builder.add(Attributes.MOVEMENT_SPEED, 1.25f);
         builder = builder.add(Attributes.MAX_HEALTH, 60F);
@@ -51,7 +51,10 @@ public class LuminarcticLeopardFemaleEntity extends AbstractLuminarcticLeopard {
         return builder;
     }
 
+    @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         //Attack stats
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((6));
         attributes.getInstance(Attributes.ATTACK_DAMAGE).setBaseValue(6.0f);

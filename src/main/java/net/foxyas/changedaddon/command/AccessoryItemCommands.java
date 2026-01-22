@@ -158,8 +158,8 @@ public class AccessoryItemCommands {
                 ctx.getSource().sendFailure(
                         Component.translatable(
                                 multiple
-                                        ? "commands.accessory.no_slots.multiple"
-                                        : "commands.accessory.no_slots.single",
+                                        ? "commands.changed_addon.accessory.no_slots.multiple"
+                                        : "commands.changed_addon.accessory.no_slots.single",
                                 entity.getDisplayName()
                         )
                 );
@@ -183,8 +183,8 @@ public class AccessoryItemCommands {
                 ctx.getSource().sendFailure(
                         Component.translatable(
                                 multiple
-                                        ? "commands.accessory.invalid_slot.multiple"
-                                        : "commands.accessory.invalid_slot.single",
+                                        ? "commands.changed_addon.accessory.invalid_slot.multiple"
+                                        : "commands.changed_addon.accessory.invalid_slot.single",
                                 entity.getDisplayName(),
                                 slotName.toString()
                         )
@@ -209,7 +209,7 @@ public class AccessoryItemCommands {
 
                 ctx.getSource().sendSuccess(() ->
                                 Component.translatable(
-                                        "commands.accessory.set.success",
+                                        "commands.changed_addon.accessory.set.success",
                                         entity.getDisplayName(),
                                         copy.getDisplayName(),
                                         slotName.toString()
@@ -230,7 +230,7 @@ public class AccessoryItemCommands {
 
                 ctx.getSource().sendFailure(
                         Component.translatable(
-                                "commands.accessory.set.invalid_item",
+                                "commands.changed_addon.accessory.set.invalid_item",
                                 entity.getDisplayName(),
                                 copy.getDisplayName(),
                                 slotName.toString()
@@ -254,7 +254,7 @@ public class AccessoryItemCommands {
 
                 ctx.getSource().sendFailure(
                         Component.translatable(
-                                "commands.accessory.set.slot_locked",
+                                "commands.changed_addon.accessory.set.slot_locked",
                                 entity.getDisplayName(),
                                 copy.getDisplayName(),
                                 slotName.toString()
@@ -276,7 +276,7 @@ public class AccessoryItemCommands {
 
                 ctx.getSource().sendFailure(
                         Component.translatable(
-                                "commands.accessory.set.locked",
+                                "commands.changed_addon.accessory.set.locked",
                                 entity.getDisplayName(),
                                 copy.getDisplayName(),
                                 slotName.toString()
@@ -299,7 +299,7 @@ public class AccessoryItemCommands {
 
             ctx.getSource().sendSuccess(() ->
                             Component.translatable(
-                                    "commands.accessory.set.success",
+                                    "commands.changed_addon.accessory.set.success",
                                     entity.getDisplayName(),
                                     copy.getDisplayName(),
                                     slotName.toString()
@@ -312,7 +312,7 @@ public class AccessoryItemCommands {
         if (truncated) {
             ctx.getSource().sendSuccess(() ->
                             Component.translatable(
-                                    "commands.accessory.too_many",
+                                    "commands.changed_addon.accessory.too_many",
                                     MAX_FEEDBACK
                             ),
                     false
@@ -356,8 +356,8 @@ public class AccessoryItemCommands {
                 ctx.getSource().sendFailure(
                         Component.translatable(
                                 multiple
-                                        ? "commands.accessory.no_slots.multiple"
-                                        : "commands.accessory.no_slots.single",
+                                        ? "commands.changed_addon.accessory.no_slots.multiple"
+                                        : "commands.changed_addon.accessory.no_slots.single",
                                 entity.getDisplayName()
                         )
                 );
@@ -380,8 +380,8 @@ public class AccessoryItemCommands {
                 ctx.getSource().sendFailure(
                         Component.translatable(
                                 multiple
-                                        ? "commands.accessory.invalid_slot.multiple"
-                                        : "commands.accessory.invalid_slot.single",
+                                        ? "commands.changed_addon.accessory.invalid_slot.multiple"
+                                        : "commands.changed_addon.accessory.invalid_slot.single",
                                 entity.getDisplayName(),
                                 slotName.toString()
                         )
@@ -403,7 +403,7 @@ public class AccessoryItemCommands {
 
             ctx.getSource().sendSuccess(() ->
                             Component.translatable(
-                                    "commands.accessory.get.success",
+                                    "commands.changed_addon.accessory.get.success",
                                     entity.getDisplayName(),
                                     stack.orElse(ItemStack.EMPTY).getDisplayName(),
                                     slotName.toString()
@@ -417,7 +417,7 @@ public class AccessoryItemCommands {
         if (truncated) {
             ctx.getSource().sendSuccess(() ->
                             Component.translatable(
-                                    "commands.accessory.too_many",
+                                    "commands.changed_addon.accessory.too_many",
                                     MAX_FEEDBACK
                             ),
                     false

@@ -59,8 +59,6 @@ public class ChangedAddonTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
-                    .reducedFall()
-                    .jumpStrength(1.3F)
                     .addAbility(ChangedAddonAbilities.CARRY)
                     .addAbility(ChangedAddonAbilities.TURN_FERAL_SNEP)
                     .addAbility(ChangedAddonAbilities.CLAWS)
@@ -72,8 +70,6 @@ public class ChangedAddonTransfurVariants {
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
-                    .reducedFall()
-                    .jumpStrength(1.3F)
                     .addAbility(ChangedAddonAbilities.CARRY)
                     .addAbility(ChangedAddonAbilities.TURN_FERAL_SNEP)
                     .addAbility(ChangedAddonAbilities.CLAWS)
@@ -101,7 +97,6 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<MirrorWhiteTigerEntity>> MIRROR_WHITE_TIGER = register("form_mirror_white_tiger_female",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.MIRROR_WHITE_TIGER)
-                    .reducedFall()
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
                     .addAbility(ChangedAddonAbilities.CLAWS)
                     .scares(List.of(Creeper.class))
@@ -110,8 +105,6 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<SnepsiLeopardEntity>> SNEPSI_LEOPARD = register("form_snepsi_leopard",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.SNEPSI_LEOPARD)
-                    .jumpStrength(1.3F)
-                    .reducedFall()
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
                     .addAbility(ChangedAddonAbilities.CLAWS)
                     .scares(List.of(Creeper.class))
@@ -168,8 +161,6 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAddonAbilities.DODGE)
                     .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
                     .itemUseMode(UseItemMode.MOUTH)
-                    .reducedFall()
-                    .jumpStrength(1.5F)
                     .scares(List.of(Creeper.class))
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
@@ -184,8 +175,6 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
                     .addAbility(ChangedAddonAbilities.TURN_FERAL_SNEP)
                     .itemUseMode(UseItemMode.MOUTH)
-                    .reducedFall()
-                    .jumpStrength(1.3F)
                     .scares(List.of(Creeper.class))
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
@@ -194,8 +183,6 @@ public class ChangedAddonTransfurVariants {
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.LUMINARCTIC_LEOPARD_MALE)
                     .transfurMode(TransfurMode.ABSORPTION)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
-                    .reducedFall()
-                    .jumpStrength(1.35F)
                     .abilities(List.of(entityType -> ChangedAddonAbilities.CLAWS.get(), entityType -> ChangedAbilities.GRAB_ENTITY_ABILITY.get(), entityType -> ChangedAddonAbilities.DODGE.get(), entityType -> ChangedAddonAbilities.LEAP.get(), entityType -> ChangedAbilities.HYPNOSIS.get(), entityType -> ChangedAddonAbilities.CUSTOM_INTERACTION.get()))
                     .scares(List.of(Creeper.class))
                     .nightVision()
@@ -205,8 +192,6 @@ public class ChangedAddonTransfurVariants {
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.LUMINARCTIC_LEOPARD_FEMALE)
                     .transfurMode(TransfurMode.ABSORPTION)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
-                    .reducedFall()
-                    .jumpStrength(1.35F)
                     .abilities(List.of(entityType -> ChangedAddonAbilities.CLAWS.get(), entityType -> ChangedAbilities.GRAB_ENTITY_ABILITY.get(), entityType -> ChangedAddonAbilities.DODGE.get(), entityType -> ChangedAddonAbilities.LEAP.get(), entityType -> ChangedAbilities.HYPNOSIS.get(), entityType -> ChangedAddonAbilities.CUSTOM_INTERACTION.get()))
                     .scares(List.of(Creeper.class))
                     .nightVision()
@@ -230,40 +215,30 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<LatexWhiteSnowLeopardMale>> LATEX_WHITE_SNOW_LEOPARD_MALE = register("form_latex_white_snow_leopard/male",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WHITE_SNOW_LEOPARD_MALE)
-                    .breatheMode(TransfurVariant.BreatheMode.WEAK)
-                    .reducedFall()
                     .scares(Creeper.class)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                    .jumpStrength(1.25f));
+    );
 
     public static final RegistryObject<TransfurVariant<LatexWhiteSnowLeopardFemale>> LATEX_WHITE_SNOW_LEOPARD_FEMALE = register("form_latex_white_snow_leopard/female",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WHITE_SNOW_LEOPARD_FEMALE)
-                    .breatheMode(TransfurVariant.BreatheMode.WEAK)
-                    .reducedFall()
                     .scares(Creeper.class)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                    .jumpStrength(1.25f)
                     .absorbing());
 
     public static final RegistryObject<TransfurVariant<LatexCheetahMale>> LATEX_CHEETAH_MALE = register("form_latex_cheetah/male",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_CHEETAH_MALE)
-                    .breatheMode(TransfurVariant.BreatheMode.WEAK)
-                    .reducedFall()
                     .scares(Creeper.class)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                    .jumpStrength(1.25f));
+    );
 
     public static final RegistryObject<TransfurVariant<LatexCheetahFemale>> LATEX_CHEETAH_FEMALE = register("form_latex_cheetah/female",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_CHEETAH_FEMALE)
-                    .breatheMode(TransfurVariant.BreatheMode.WEAK)
-                    .reducedFall()
                     .scares(Creeper.class)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
-                    .jumpStrength(1.25f)
                     .absorbing());
 
     public static final RegistryObject<TransfurVariant<DarkLatexYufengQueenEntity>> DARK_LATEX_YUFENG_QUEEN = register("form_dark_latex_yufeng_queen",
@@ -277,8 +252,6 @@ public class ChangedAddonTransfurVariants {
     //Partials
     public static final RegistryObject<TransfurVariant<SnowLeopardPartialEntity>> SNOW_LEOPARD_PARTIAL = register("form_latex_snow_leopard_partial",
             TransfurVariant.Builder.of(ChangedAddonEntities.SNOW_LEOPARD_PARTIAL)
-                    .jumpStrength(1.3F)
-                    .reducedFall()
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
                     .addAbility(ChangedAddonAbilities.CLAWS)
                     .scares(List.of(Creeper.class))
@@ -289,7 +262,6 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<VoidFoxEntity>> VOID_FOX = register("form_void_fox",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.VOID_FOX)
                     .addAbility(ChangedAddonAbilities.SONAR)
-                    .jumpStrength(1.1f)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .scares(List.of(Creeper.class, Rabbit.class)));
@@ -334,9 +306,7 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .nightVision()
                     .transfurMode(TransfurMode.NONE)
-                    .jumpStrength(1.25f)
                     .scares(List.of(Creeper.class))
-                    .reducedFall()
                     .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<Protogen0senia0Entity>> PROTOGEN_0SENIA0 = register("form_protogen_0senia0",
@@ -348,9 +318,7 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAddonAbilities.SONAR)
                     .nightVision()
                     .transfurMode(TransfurMode.NONE)
-                    .jumpStrength(1.25f)
                     .scares(List.of(Creeper.class))
-                    .reducedFall()
                     .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<LatexKaylaSharkEntity>> LATEX_KAYLA_SHARK = register("form_latex_kayla_shark",
@@ -360,10 +328,8 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAddonAbilities.CLAWS)
                     .addAbility(ChangedAddonAbilities.LEAP)
                     .addAbility(ChangedAbilities.HYPNOSIS)
-                    .jumpStrength(1.35f)
                     .nightVision()
                     .gills()
-                    .reducedFall()
     );
 
     public static final RegistryObject<TransfurVariant<WolfyEntity>> WOLFY = register("form_wolfy",
@@ -378,15 +344,11 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<ReynEntity>> REYN = register("form_reyn",
             TransfurVariant.Builder.of(ChangedAddonEntities.REYN)
-                    .jumpStrength(1.0f)
-                    .reducedFall()
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
                     .scares(List.of()));
 
     public static final RegistryObject<TransfurVariant<LynxEntity>> LYNX = register("form_lynx",
             TransfurVariant.Builder.of(ChangedAddonEntities.LYNX)
-                    .jumpStrength(1.35f)
-                    .reducedFall()
                     .addAbility(ChangedAddonAbilities.LEAP)
                     .addAbility(ChangedAddonAbilities.CLAWS)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
@@ -406,8 +368,6 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<BunyEntity>> BUNY = register("form_buny",
             TransfurVariant.Builder.of(ChangedAddonEntities.BUNY)
-                    .jumpStrength(1.5F)
-                    .reducedFall()
                     .transfurMode(TransfurMode.ABSORPTION)
                     .scares(List.of()));
 
@@ -420,25 +380,20 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<HaydenFennecFoxEntity>> HAYDEN_FENNEC_FOX = register("form_hayden_fennec_fox",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.HAYDEN_FENNEC_FOX)
                     .addAbility(ChangedAddonAbilities.ADVANCED_HEARING)
-                    .reducedFall()
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .scares(Rabbit.class));
 
     public static final RegistryObject<TransfurVariant<CrystalGasCatMaleEntity>> HIMALAYAN_CRYSTAL_GAS_CAT_MALE = register("form_himalayan_crystal_gas_cat/male",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.CRYSTAL_GAS_CAT_MALE)
-                    .reducedFall()
                     .addAbility(ChangedAddonAbilities.CLAWS)
-                    .jumpStrength(1.1f)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .scares(List.of(Creeper.class, Rabbit.class)));
 
     public static final RegistryObject<TransfurVariant<CrystalGasCatFemaleEntity>> HIMALAYAN_CRYSTAL_GAS_CAT_FEMALE = register("form_himalayan_crystal_gas_cat/female",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.CRYSTAL_GAS_CAT_FEMALE)
-                    .reducedFall()
                     .addAbility(ChangedAddonAbilities.CLAWS)
-                    .jumpStrength(1.1f)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .scares(List.of(Creeper.class, Rabbit.class)));
@@ -464,8 +419,6 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<LatexWindCatMaleEntity>> LATEX_WIND_CAT_MALE = register("form_latex_wind_cat/male",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_MALE)
                     .scares(Creeper.class)
-                    .reducedFall()
-                    .jumpStrength(1.3f)
                     .extraJumps(2)
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .nightVision()
@@ -476,8 +429,6 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<LatexWindCatFemaleEntity>> LATEX_WIND_CAT_FEMALE = register("form_latex_wind_cat/female",
             TransfurVariant.Builder.of(ChangedAddonEntities.LATEX_WIND_CAT_FEMALE)
                     .scares(Creeper.class)
-                    .reducedFall()
-                    .jumpStrength(1.3f)
                     .extraJumps(2)
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .nightVision()
@@ -495,9 +446,7 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .nightVision()
                     .addAbility(ChangedAbilities.SWITCH_GENDER)
-                    .jumpStrength(1.25f)
                     .scares(List.of(Creeper.class))
-                    .reducedFall()
                     .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     public static final RegistryObject<TransfurVariant<BorealisFemaleEntity>> BOREALIS_FEMALE = register("form_borealis/female",
@@ -510,9 +459,7 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .nightVision()
                     .addAbility(ChangedAbilities.SWITCH_GENDER)
-                    .jumpStrength(1.25f)
                     .scares(List.of(Creeper.class))
-                    .reducedFall()
                     .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
     // ======================================================== Experiments ======================================================== //
@@ -542,8 +489,6 @@ public class ChangedAddonTransfurVariants {
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_2_MALE)
                     .transfurMode(TransfurMode.REPLICATION)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
-                    .reducedFall()
-                    .jumpStrength(1.3F)
                     .addAbility(ChangedAbilities.SWITCH_GENDER)
                     .addAbility(ChangedAddonAbilities.DODGE)
                     .addAbility(ChangedAddonAbilities.CARRY)
@@ -557,8 +502,6 @@ public class ChangedAddonTransfurVariants {
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.EXP_2_FEMALE)
                     .transfurMode(TransfurMode.ABSORPTION)
                     .breatheMode(TransfurVariant.BreatheMode.NORMAL)
-                    .reducedFall()
-                    .jumpStrength(1.3F)
                     .addAbility(ChangedAbilities.SWITCH_GENDER)
                     .addAbility(ChangedAddonAbilities.DODGE)
                     .addAbility(ChangedAddonAbilities.CARRY)
@@ -570,8 +513,6 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<Exp6Entity>> EXP6 = register("form_exp6",
             TransfurVariant.Builder.of(ChangedAddonEntities.EXP_6)
-                    .reducedFall()
-                    .jumpStrength(1.05F)
                     .abilities(List.of(entityType -> ChangedAddonAbilities.CARRY.get(), entityType -> ChangedAddonAbilities.DISSOLVE.get(), entityType -> ChangedAddonAbilities.CLAWS.get(), entityType -> ChangedAbilities.GRAB_ENTITY_ABILITY.get()))
                     .scares(List.of(Creeper.class))
                     .transfurMode(TransfurMode.ABSORPTION)
@@ -580,8 +521,6 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<Experiment009Entity>> EXPERIMENT_009 = register("form_experiment009",
             TransfurVariant.Builder.of(ChangedAddonEntities.EXPERIMENT_009)
-                    .reducedFall()
-                    .jumpStrength(1.35F)
                     .abilities(List.of(
                                     entityType -> ChangedAddonAbilities.THUNDERBOLT.get(),
                                     entityType -> ChangedAddonAbilities.THUNDER_PATH.get(),
@@ -594,8 +533,6 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<Experiment10Entity>> EXPERIMENT_10 = register("form_experiment_10",
             TransfurVariant.Builder.of(ChangedAddonEntities.EXPERIMENT_10)
-                    .reducedFall()
-                    .jumpStrength(1.4F)
                     .abilities(List.of(
                                     entityType -> ChangedAddonAbilities.WITHER_WAVE.get(),
                                     entityType -> ChangedAddonAbilities.WITHER_GRENADE.get(),
@@ -617,8 +554,6 @@ public class ChangedAddonTransfurVariants {
     // ======================================================= Boss Transfurs ======================================================= //
     public static final RegistryObject<TransfurVariant<Experiment009BossEntity>> EXPERIMENT_009_BOSS = register("form_experiment009_boss",
             TransfurVariant.Builder.of(ChangedAddonEntities.EXPERIMENT_009_BOSS)
-                    .reducedFall()
-                    .jumpStrength(1.5F)
                     .abilities(List.of(
                                     entityType -> ChangedAddonAbilities.THUNDERBOLT.get(),
                                     entityType -> ChangedAddonAbilities.THUNDER_PATH.get(),
@@ -640,8 +575,6 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<Experiment10BossEntity>> EXPERIMENT_10_BOSS = register("form_experiment_10_boss",
             TransfurVariant.Builder.of(ChangedAddonEntities.EXPERIMENT_10_BOSS)
-                    .reducedFall()
-                    .jumpStrength(1.5F)
                     .abilities(List.of(
                                     entityType -> ChangedAddonAbilities.WITHER_WAVE.get(),
                                     entityType -> ChangedAddonAbilities.WITHER_GRENADE.get(),

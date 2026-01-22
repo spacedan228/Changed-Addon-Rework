@@ -11,23 +11,15 @@ import net.foxyas.changedaddon.network.packet.*;
 import net.foxyas.changedaddon.procedure.blocksHandle.LatexBonemealAndDispenserHandler;
 import net.foxyas.changedaddon.recipe.brewing.TransfurSicknessRecipeBrewingRecipe;
 import net.foxyas.changedaddon.recipe.brewing.UntransfurPotionRecipeBrewingRecipe;
-import net.ltxprogrammer.changed.Changed;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedItems;
-import net.ltxprogrammer.changed.init.ChangedTabs;
 import net.ltxprogrammer.changed.item.AbstractLatexItem;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Predicate;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class CommonMod {
@@ -101,7 +93,8 @@ public class CommonMod {
                 VariantSecondAbilityActivate::new, VariantSecondAbilityActivate::handle);
 
         ChangedAddonMod.addNetworkMessage(ChangedAddonVariables.SyncPacket.class, ChangedAddonVariables.SyncPacket::encode,
-                ChangedAddonVariables.SyncPacket::new, ChangedAddonVariables.SyncPacket::handler);
+                ChangedAddonVariables.SyncPacket::new, ChangedAddonVariables.SyncPacket::handler,
+                NetworkDirection.PLAY_TO_CLIENT);
 
         ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonPacket.class, GeneratorGuiButtonPacket::encode,
                 GeneratorGuiButtonPacket::new, GeneratorGuiButtonPacket::handler);

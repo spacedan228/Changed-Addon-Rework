@@ -62,7 +62,7 @@ public abstract class AbstractRadialScreenMixin<T extends AbstractContainerMenu>
             AbstractAbility<?> ability = abilityRadialScreen.abilities.get(section);
             if (abilityRadialScreen.variant instanceof TransfurVariantInstanceExtensor variantInstanceExtensor) {
                 variantInstanceExtensor.setSecondSelectedAbility(ability);
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(minecraft.player, variantInstanceExtensor.getSecondAbilityKeyState(), ability));
+                ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(minecraft.player, variantInstanceExtensor.getSecondAbilityKey().isEffectivelyDown(), ability));
                 return true;
             }
         }

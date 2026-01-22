@@ -17,13 +17,13 @@ public class SoftenAbility extends AbstractAbility<SoftenAbilityInstance> {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.soften");
+        return Component.translatable("ability.changed_addon.soften");
     }
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         Collection<Component> Description = new ArrayList<>(super.getAbilityDescription(entity));
-        Description.add(Component.translatable("changed_addon.ability.soften.description"));
+        Description.add(Component.translatable("ability.changed_addon.soften.description"));
         return Description;
     }
 

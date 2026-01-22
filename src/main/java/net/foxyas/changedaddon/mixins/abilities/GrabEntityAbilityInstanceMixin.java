@@ -289,7 +289,7 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
      * @return The modified keyStrength
      */
     @ModifyVariable(
-            method = "handleEscape",
+            method = "lambda$handleEscape$7",
             at = @At(
                     value = "STORE",
                     ordinal = 0 // ordinal 0 = first float stored in that method
@@ -298,8 +298,6 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
     )
     private float changedaddon$modifyKeyStrength(float original) {
         if (this.grabbedEntity != null) {
-            //Todo New GrabResistance Enchantment or attribute
-
             float analogicPercent = 0;
 
             List<EquipmentSlot> armorSlots = Arrays.stream(EquipmentSlot.values()).filter((equipmentSlot -> equipmentSlot.getType() == EquipmentSlot.Type.ARMOR)).toList();

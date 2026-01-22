@@ -86,7 +86,7 @@ public class UnifuserRecipeCategory implements IRecipeCategory<UnifuserRecipe> {
         builder.addSlot(RecipeIngredientRole.RENDER_ONLY, 64, 36).addItemStack(new ItemStack(ChangedAddonItems.UNIFUSER_BLOCK_ILLUSTRATIVE_ITEM.get())) // Substitua por um item adequado
                 .addRichTooltipCallback((recipeSlotView, tooltip) -> {
                     // Adiciona uma nova linha ao tooltip com o progresso da receita
-                    tooltip.add(Component.translatable("changed_addon.gui.recipe_progress", progressSpeed));
+                    tooltip.add(Component.translatable("gui.changed_addon.recipe_progress", progressSpeed));
                 });
     }
 }

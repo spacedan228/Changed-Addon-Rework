@@ -22,7 +22,7 @@ public class CarryAbility extends AbstractAbility<CarryAbilityInstance> {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.carry");
+        return Component.translatable("ability.changed_addon.carry");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

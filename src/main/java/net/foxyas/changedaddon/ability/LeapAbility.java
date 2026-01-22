@@ -102,7 +102,7 @@ public class LeapAbility extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.leap");
+        return Component.translatable("ability.changed_addon.leap");
     }
 
     public ResourceLocation getTexture(IAbstractChangedEntity entity) {

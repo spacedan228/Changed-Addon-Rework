@@ -35,6 +35,8 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
 
     @Override
     public void applyEffectsAfterUse(@NotNull ItemStack pStack, Level level, LivingEntity entity) {
+        super.applyEffectsAfterUse(pStack, level, entity);
+
         if (!(entity instanceof Player player)) return;
 
         var playerVars = ChangedAddonVariables.ofOrDefault(player);

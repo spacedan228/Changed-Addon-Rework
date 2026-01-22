@@ -50,9 +50,9 @@ public class PollenCarryAbilityInstance extends AbstractAbilityInstance {
             if (itemStack.is(ItemTags.FLOWERS) || blockState.is(BlockTags.FLOWER_POTS)) {
                 withPollenTicks = 120;
                 livingEntity.swing(InteractionHand.MAIN_HAND);
-                entity.displayClientMessage(Component.translatable("changed_addon.ability.pollen_carry.display.can"), true);
+                entity.displayClientMessage(Component.translatable("ability.changed_addon.pollen_carry.display.can"), true);
             } else {
-                entity.displayClientMessage(Component.translatable("changed_addon.ability.pollen_carry.display.cant"), true);
+                entity.displayClientMessage(Component.translatable("ability.changed_addon.pollen_carry.display.cant"), true);
             }
         }
     }

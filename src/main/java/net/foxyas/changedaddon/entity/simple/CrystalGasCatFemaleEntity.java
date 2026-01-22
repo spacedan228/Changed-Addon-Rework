@@ -35,8 +35,6 @@ public class CrystalGasCatFemaleEntity extends LatexWatermelonCat implements Gen
         setNoAi(false);
     }
 
-
-
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
         builder = builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 3f);
@@ -50,6 +48,8 @@ public class CrystalGasCatFemaleEntity extends LatexWatermelonCat implements Gen
 
     @Override
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((25));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0f);
@@ -59,6 +59,8 @@ public class CrystalGasCatFemaleEntity extends LatexWatermelonCat implements Gen
         attributes.getInstance(Attributes.ARMOR).setBaseValue(4);
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.1);
+        attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5F);
     }
 
     @Override

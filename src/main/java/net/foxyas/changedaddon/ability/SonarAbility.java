@@ -25,13 +25,13 @@ public class SonarAbility extends SimpleAbility {
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.sonar");
+        return Component.translatable("ability.changed_addon.sonar");
     }
 
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         Collection<Component> description = new ArrayList<>(super.getAbilityDescription(entity));
-        description.add(Component.translatable("changed_addon.ability.sonar.desc"));
+        description.add(Component.translatable("ability.changed_addon.sonar.desc"));
         return description;
     }
 

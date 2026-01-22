@@ -40,7 +40,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
     public void applyEffectsAfterUse(@NotNull ItemStack pStack, Level level, LivingEntity entity) {
         super.applyEffectsAfterUse(pStack, level, entity);
 
-        if (!(entity instanceof Player player)) return;
+        if (!(entity instanceof ServerPlayer player)) return;
 
         if (ProcessTransfur.isPlayerTransfurred(player)) {
             if (player.getRandom().nextFloat() >= 0.35) {

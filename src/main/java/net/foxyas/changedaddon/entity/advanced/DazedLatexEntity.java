@@ -18,7 +18,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.RandomSource;
@@ -31,7 +30,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -39,6 +37,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
@@ -47,18 +46,15 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DazedLatexEntity extends ChangedEntity {
 
     // Definindo a chave de sincronização no seu código
     private static final EntityDataAccessor<Boolean> DATA_PUDDLE_MORPHED = SynchedEntityData.defineId(DazedLatexEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Integer> DATA_REPLICATION_TIMES = SynchedEntityData.defineId(DazedLatexEntity.class, EntityDataSerializers.INT);
-    private static final Set<ResourceLocation> SPAWN_BIOMES = Set.of(ResourceLocation.parse("plains"));
     public static final UseItemMode PuddleForm = UseItemMode.create("PuddleForm", false, false, false, true, false);
 
     public boolean willTransfurTarget = false;
@@ -77,20 +73,13 @@ public class DazedLatexEntity extends ChangedEntity {
         setPersistenceRequired();
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOW)
     public static void addLivingEntityToBiomes(SpawnPlacementRegisterEvent event) {
-        event.register(ChangedAddonEntities.DAZED_LATEX.get(), SpawnPlacements.Type.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, DazedLatexEntity::canSpawnNear, SpawnPlacementRegisterEvent.Operation.OR);
-    }
-
-    public static boolean isDarkEnoughToSpawn(ServerLevelAccessor p_33009_, BlockPos p_33010_, Random p_33011_) {
-        if (p_33009_.getBrightness(LightLayer.SKY, p_33010_) > p_33011_.nextInt(32)) {
-            return false;
-        } else if (p_33009_.getBrightness(LightLayer.BLOCK, p_33010_) > 5) {
-            return false;
-        } else {
-            int i = p_33009_.getLevel().isThundering() ? p_33009_.getMaxLocalRawBrightness(p_33010_, 10) : p_33009_.getMaxLocalRawBrightness(p_33010_);
-            return i <= p_33011_.nextInt(8);
-        }
+        event.register(ChangedAddonEntities.DAZED_LATEX.get(),
+                SpawnPlacements.Type.ON_GROUND,
+                Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
+                DazedLatexEntity::canSpawnNear,
+                SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 
     private static boolean canSpawnNear(EntityType<DazedLatexEntity> entityType, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
@@ -99,33 +88,28 @@ public class DazedLatexEntity extends ChangedEntity {
         }
 
         if (!isDarkEnoughToSpawn(world, pos, random)) {
-            //ChangedAddonMod.LOGGER.info("A Try To Spawn A Dazed Entity in " + pos + "\n isn't dark enough");
             return false;
         }
 
         if (!world.getBiome(pos).is(Tags.Biomes.IS_PLAINS)) {
-            //ChangedAddonMod.LOGGER.info("A Try To Spawn A Dazed Entity in " + pos + "\n isn't plains");
             return false;
         }
 
         // Certifica-se de que o bloco abaixo não é ar e é sólido
         BlockState blockBelow = world.getBlockState(pos.below());
         if (!blockBelow.isSolidRender(world, pos.below()) || !blockBelow.isFaceSturdy(world, pos.below(), Direction.UP)) {
-            //ChangedAddonMod.LOGGER.info("A Try To Spawn A Dazed Entity in " + pos + "\n isn't a good block");
             return false;
         }
 
         // Defina uma AABB (Área de Checagem) ao redor do spawn para verificar se há Oak Log por perto.
         AABB checkArea = new AABB(pos).inflate(32); // Raio de 32 blocos ao redor
 
-        //ChangedAddonMod.LOGGER.info("A Try To Spawn A Dazed Entity in " + pos + "\n" + nearSpawnBlock);
-
         return world.getBlockStatesIfLoaded(checkArea)
                 .anyMatch(state -> state.is(ChangedAddonBlocks.GOO_CORE.get()));
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
+        AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 0);
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.3);
         builder = builder.add(Attributes.MAX_HEALTH, 24);
@@ -169,6 +153,8 @@ public class DazedLatexEntity extends ChangedEntity {
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
+
         safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()), 3);
         safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH), 26);
         safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE), 40.0f);

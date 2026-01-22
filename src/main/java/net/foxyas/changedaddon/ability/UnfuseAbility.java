@@ -56,14 +56,14 @@ public class UnfuseAbility extends SimpleAbility {
     @Override
     public Collection<Component> getAbilityDescription(IAbstractChangedEntity entity) {
         List<Component> descriptions = new ArrayList<>(super.getAbilityDescription(entity));
-        descriptions.add(Component.translatable("changed_addon.ability.unfuse.description.line1"));
-        descriptions.add(Component.translatable("changed_addon.ability.unfuse.description.line2"));
+        descriptions.add(Component.translatable("ability.changed_addon.unfuse.description.line1"));
+        descriptions.add(Component.translatable("ability.changed_addon.unfuse.description.line2"));
         return descriptions;
     }
 
     @Override
     public Component getAbilityName(IAbstractChangedEntity entity) {
-        return Component.translatable("changed_addon.ability.unfuse");
+        return Component.translatable("ability.changed_addon.unfuse");
     }
 
     @Override

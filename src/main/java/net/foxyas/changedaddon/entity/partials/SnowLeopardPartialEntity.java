@@ -1,10 +1,7 @@
 package net.foxyas.changedaddon.entity.partials;
 
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.ltxprogrammer.changed.entity.ComplexRenderer;
-import net.ltxprogrammer.changed.entity.Gender;
-import net.ltxprogrammer.changed.entity.PowderSnowWalkable;
-import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.beast.AbstractSnowLeopard;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
@@ -14,7 +11,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -40,9 +36,8 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
     }
 
 
-
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
+        AttributeSupplier.Builder builder =  ChangedEntity.createLatexAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 0);
         builder.add(Attributes.MOVEMENT_SPEED, 0.3);
         builder.add(Attributes.MAX_HEALTH, 24);
@@ -53,6 +48,7 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
     }
 
     protected void setAttributes(AttributeMap attributes) {
+        super.setAttributes(attributes);
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((2));
         attributes.getInstance(Attributes.MAX_HEALTH).setBaseValue((24));
         attributes.getInstance(Attributes.FOLLOW_RANGE).setBaseValue(40.0F);
@@ -62,6 +58,8 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
         attributes.getInstance(Attributes.ARMOR).setBaseValue(4);
         attributes.getInstance(Attributes.ARMOR_TOUGHNESS).setBaseValue(0);
         attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
+        attributes.getInstance(ChangedAttributes.AIR_CAPACITY.get()).setBaseValue(15);
+        attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.3F);
     }
 
     @Override
