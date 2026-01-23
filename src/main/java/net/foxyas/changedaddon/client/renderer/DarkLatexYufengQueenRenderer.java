@@ -38,6 +38,7 @@ public class DarkLatexYufengQueenRenderer extends AdvancedHumanoidRenderer<DarkL
 
     @Override
     public void scale(@NotNull DarkLatexYufengQueenEntity entity, @NotNull PoseStack pose, float partialTick) {
+        super.scale(entity, pose, partialTick);
         float scaleFactor = 1.3F;
         pose.scale(scaleFactor, scaleFactor, scaleFactor);
     }

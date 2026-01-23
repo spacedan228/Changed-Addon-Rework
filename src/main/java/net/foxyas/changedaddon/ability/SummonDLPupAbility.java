@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.ability;
 
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
+import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexEntity;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
@@ -12,11 +13,17 @@ import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class SummonDLPupAbility extends SimpleAbility {
     @Override
     public boolean canUse(IAbstractChangedEntity entity) {
+        if (entity.isPlayer() && Objects.requireNonNull(entity.getChangedEntity().getUnderlyingPlayer()).getFoodData().getFoodLevel() < 8.0) {
+            return false;
+        }
+
         return !entity.isInWaterOrBubble();
     }
 
@@ -35,27 +42,47 @@ public class SummonDLPupAbility extends SimpleAbility {
         if (level.isClientSide)
             return;
 
-        ChangedSounds.broadcastSound(entity.getEntity(), ChangedSounds.POISON, 1.0f, 1.0f);
+        var player = entity.getChangedEntity().getUnderlyingPlayer();
+        var livingEntity = entity.getEntity();
 
-        var list = findLandNearby(level, entity.getBlockPosition()).toList();
-        int attempts = Math.min(list.size(), 1);
+        if (entity.isPlayer() && Objects.requireNonNull(entity.getChangedEntity().getUnderlyingPlayer()).getFoodData().getFoodLevel() < 8.0) {
+            return;
+        }
+
+        List<AbstractDarkLatexEntity> nearbyDarkLatexEntities = level.getEntitiesOfClass(
+                AbstractDarkLatexEntity.class,
+                livingEntity.getBoundingBox().inflate(70.0),
+                e -> e != livingEntity
+        );
+
+        if (nearbyDarkLatexEntities.size() > 3)
+            return; // no army for you
+
+        var possibleSpawnPositions = findLandNearby(level, entity.getBlockPosition()).toList();
+        int attempts = Math.min(possibleSpawnPositions.size(), 1);
 
         while (attempts > 0) {
-            var blockPos = list.get(level.random.nextInt(list.size()));
+            var blockPos = possibleSpawnPositions.get(level.random.nextInt(possibleSpawnPositions.size()));
 
             var pup = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
             assert pup != null;
 
             if (entity.isPlayer()) {
-                pup.tame(entity.getChangedEntity().getUnderlyingPlayer());
+                pup.tame(player);
             }
 
-            pup.setTarget(entity.getEntity().getLastHurtByMob());
+            pup.setTarget(livingEntity.getLastHurtByMob());
             pup.moveTo(blockPos, 0.0F, 0.0F);
             level.addFreshEntity(pup);
 
             attempts--;
         }
+
+        if (entity.isPlayer()) {
+            Objects.requireNonNull(player).causeFoodExhaustion((float)30.0);
+        }
+
+        ChangedSounds.broadcastSound(livingEntity, ChangedSounds.POISON, 1.0f, 1.0f);
     }
 
     @Override
@@ -70,7 +97,7 @@ public class SummonDLPupAbility extends SimpleAbility {
 
     @Override
     public int getCoolDown(IAbstractChangedEntity entity) {
-        return 5 * 60 * 20; // 5 Minutes
+        return 4 * 60 * 20; // 4 Minutes
     }
 
     @Override

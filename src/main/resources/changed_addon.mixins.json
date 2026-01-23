@@ -50,7 +50,6 @@
     "fluids.TransfurGasMixin",
     "items.ItemStackMixin",
     "level.storage.loot.LootTableAccessor",
-    "mods.changed.ChangedEntityMixin",
     "mods.changed.ChangedMixin",
     "mods.changed.CommandTransfurMixin",
     "mods.changed.EmoteParticleOptionMixin",

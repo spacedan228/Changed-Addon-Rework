@@ -2,8 +2,8 @@ package net.foxyas.changedaddon.client.model.armors;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.ltxprogrammer.changed.Changed;
-import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
+import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModelSet;
@@ -26,7 +26,7 @@ import java.util.List;
 
 public class ArmorLatexFemaleDragonAltTailModel<T extends ChangedEntity> extends LatexHumanoidArmorModel<T, ArmorLatexFemaleDragonAltTailModel<T>> {
     public static final ArmorModelSet<ChangedEntity, ArmorLatexFemaleDragonAltTailModel<ChangedEntity>> MODEL_SET =
-            ArmorModelSet.of(Changed.modResource("armor_latex_winged_dragon_female_unified"), ArmorLatexFemaleDragonAltTailModel::createArmorLayer, ArmorLatexFemaleDragonAltTailModel::new);
+            ArmorModelSet.of(ChangedAddonMod.resourceLoc("armor_latex_female_dragon_alt_tail"), ArmorLatexFemaleDragonAltTailModel::createArmorLayer, ArmorLatexFemaleDragonAltTailModel::new);
 
     private final ModelPart Head;
     private final ModelPart Torso;
@@ -63,7 +63,7 @@ public class ArmorLatexFemaleDragonAltTailModel<T extends ChangedEntity> extends
         var rightWingRoot = RightWing.getChild("rightWingRoot");
 
         animator = HumanoidAnimator.of(this).hipOffset(-1.5f)
-                .addPreset(AnimatorPresets.wingedDragonLike(Head, Torso, LeftArm, RightArm,
+                .addPreset(ChangedAddonAnimationsPresets.bigWingedDragonLike(Head, Torso, LeftArm, RightArm,
                         Tail, List.of(tailPrimary, tailSecondary),
                         LeftLeg, leftLowerLeg, leftFoot, leftFoot.getChild("LeftPad"), RightLeg, rightLowerLeg, rightFoot, rightFoot.getChild("RightPad"),
 
@@ -85,33 +85,37 @@ public class ArmorLatexFemaleDragonAltTailModel<T extends ChangedEntity> extends
 
         PartDefinition rightWingRoot = RightWing.addOrReplaceChild("rightWingRoot", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
+        rightWingRoot.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(25, 23).addBox(-12.775F, -19.75F, 1.2F, 5.0F, 2.0F, 1.0F, layer.deformation.extend(-0.5F)), PartPose.offsetAndRotation(2.0F, 20.0F, -2.0F, 0.0F, 0.0F, 0.3491F));
+
         PartDefinition rightSecondaries = rightWingRoot.addOrReplaceChild("rightSecondaries", CubeListBuilder.create(), PartPose.offsetAndRotation(-7.3F, -7.0F, -0.5F, 0.0F, 0.0F, 0.5236F));
 
-        PartDefinition rightTertiaries = rightSecondaries.addOrReplaceChild("rightTertiaries", CubeListBuilder.create(), PartPose.offsetAndRotation(0.3F, 0.0F, 0.0F, 0.0F, 0.0F, 0.9599F));
+        rightSecondaries.addOrReplaceChild("rightTertiaries", CubeListBuilder.create(), PartPose.offsetAndRotation(0.3F, 0.0F, 0.0F, 0.0F, 0.0F, 0.9599F));
 
         PartDefinition LeftWing = Torso.addOrReplaceChild("LeftWing", CubeListBuilder.create(), PartPose.offsetAndRotation(2.0F, 5.0F, 2.0F, 0.0F, -0.48F, 0.0F));
 
         PartDefinition leftWingRoot = LeftWing.addOrReplaceChild("leftWingRoot", CubeListBuilder.create(), PartPose.offset(0.0F, 0.0F, 0.0F));
 
+        leftWingRoot.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(25, 23).mirror().addBox(7.775F, -19.75F, 1.2F, 5.0F, 2.0F, 1.0F, layer.deformation.extend(-0.5F)).mirror(false), PartPose.offsetAndRotation(-2.0F, 20.0F, -2.0F, 0.0F, 0.0F, -0.3491F));
+
         PartDefinition leftSecondaries = leftWingRoot.addOrReplaceChild("leftSecondaries", CubeListBuilder.create(), PartPose.offsetAndRotation(7.3F, -7.0F, -0.5F, 0.0F, 0.0F, -0.5236F));
 
-        PartDefinition leftTertiaries = leftSecondaries.addOrReplaceChild("leftTertiaries", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.3F, 0.0F, 0.0F, 0.0F, 0.0F, -0.9599F));
+        leftSecondaries.addOrReplaceChild("leftTertiaries", CubeListBuilder.create(), PartPose.offsetAndRotation(-0.3F, 0.0F, 0.0F, 0.0F, 0.0F, -0.9599F));
         // offset Y was decreased by 0.5 to get it to actually line up. dunno why it didn't do that when it was exported directly from blockbench
         PartDefinition Tail = Torso.addOrReplaceChild("Tail", CubeListBuilder.create(), PartPose.offset(0.0F, 10.5F, 0.0F));
 
         PartDefinition TailPrimary = Tail.addOrReplaceChild("TailPrimary", CubeListBuilder.create(), PartPose.offset(0.0F, -0.3F, 0.0F));
 
-        PartDefinition Base_r1 = TailPrimary.addOrReplaceChild("Base_r1", CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, -3.1F, -0.7F, 4.0F, 4.0F, 4.0F, layer.altDeformation.extend(0F)), PartPose.offsetAndRotation(0.0F, -0.35F, 2.5F, -2.3126F, 0.0F, 0.0F));
+        TailPrimary.addOrReplaceChild("Base_r1", CubeListBuilder.create().texOffs(0, 16).addBox(-2.0F, -3.1F, -0.7F, 4.0F, 4.0F, 4.0F, layer.altDeformation.extend(0F)), PartPose.offsetAndRotation(0.0F, -0.35F, 2.5F, -2.3126F, 0.0F, 0.0F));
 
         PartDefinition TailSecondary = TailPrimary.addOrReplaceChild("TailSecondary", CubeListBuilder.create(), PartPose.offset(0.0F, 2.1F, 3.3F));
 
-        PartDefinition Base_r2 = TailSecondary.addOrReplaceChild("Base_r2", CubeListBuilder.create().texOffs(0, 20).addBox(-1.5F, -0.0178F, -2.7611F, 3.0F, 3.0F, 6.0F, layer.altDeformation.extend(0.25F)), PartPose.offsetAndRotation(0.0F, 3.35F, 2.35F, 2.5744F, 0.0F, 0.0F));
+        TailSecondary.addOrReplaceChild("Base_r2", CubeListBuilder.create().texOffs(0, 20).addBox(-1.5F, -0.0178F, -2.7611F, 3.0F, 3.0F, 6.0F, layer.altDeformation.extend(0.25F)), PartPose.offsetAndRotation(0.0F, 3.35F, 2.35F, 2.5744F, 0.0F, 0.0F));
 
-        PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, layer.dualDeformation), PartPose.offset(0.0F, -0.5F, 0.0F));
+        partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, layer.dualDeformation), PartPose.offset(0.0F, -0.5F, 0.0F));
 
-        PartDefinition RightArm = partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(40, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, layer.dualDeformation), PartPose.offset(-5.0F, 1.5F, 0.0F));
+        partdefinition.addOrReplaceChild("RightArm", CubeListBuilder.create().texOffs(40, 16).addBox(-3.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, layer.dualDeformation), PartPose.offset(-5.0F, 1.5F, 0.0F));
 
-        PartDefinition LeftArm = partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(40, 16).mirror().addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, layer.dualDeformation).mirror(false), PartPose.offset(5.0F, 1.5F, 0.0F));
+        partdefinition.addOrReplaceChild("LeftArm", CubeListBuilder.create().texOffs(40, 16).mirror().addBox(-1.0F, -2.0F, -2.0F, 4.0F, 12.0F, 4.0F, layer.dualDeformation).mirror(false), PartPose.offset(5.0F, 1.5F, 0.0F));
 
         return LayerDefinition.create(meshdefinition, 64, 32);
     }
@@ -140,7 +144,12 @@ public class ArmorLatexFemaleDragonAltTailModel<T extends ChangedEntity> extends
         switch (slot) {
             case HEAD -> Head.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
             case CHEST -> {
+                setWingsVisibility(false);
                 Torso.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+                setWingsVisibility(true);
+
+                renderBigWings(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+
                 LeftArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
                 RightArm.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
             }
@@ -156,6 +165,27 @@ public class ArmorLatexFemaleDragonAltTailModel<T extends ChangedEntity> extends
         }
 
         poseStack.popPose();
+    }
+
+    private void renderBigWings(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
+        poseStack.pushPose();
+        poseStack.scale(1.5f, 1.5f, 1.5f);
+        poseStack.translate(0f, 0.05f, 0f); // wings are a little too high up normally
+
+        poseStack.pushPose();
+        LeftWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        poseStack.popPose();
+
+        poseStack.pushPose();
+        RightWing.render(poseStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        poseStack.popPose();
+
+        poseStack.popPose();
+    }
+
+    private void setWingsVisibility(boolean wingsVisibility) {
+        LeftWing.visible = wingsVisibility;
+        RightWing.visible = wingsVisibility;
     }
 
     @Override
