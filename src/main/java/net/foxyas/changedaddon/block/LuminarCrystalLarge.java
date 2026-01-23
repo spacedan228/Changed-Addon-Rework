@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.block;
 
-import net.foxyas.changedaddon.block.interfaces.DirectionalVoxelShapes;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
@@ -41,9 +40,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 
 import static net.foxyas.changedaddon.block.LuminarCrystalBlock.moveOrTarget;
 import static net.foxyas.changedaddon.block.LuminarCrystalBlock.spawnParticleOnFace;
@@ -57,6 +54,7 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
     public static final VoxelShape SHAPE_WEST = Block.box(0, 1, 1, 16, 15, 15);
     public static final VoxelShape SHAPE_EAST = Block.box(0, 1, 1, 16, 15, 15);
 
+    public static final BooleanProperty HEARTED = LuminarCrystalSmall.HEARTED;
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -70,7 +68,7 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
                 .hasPostProcess((blockState, blockGetter, blockPos) -> true)
                 .emissiveRendering((blockState, blockGetter, blockPos) -> true)
                 .noOcclusion());
-        registerDefaultState(getStateDefinition().any().setValue(HALF, Half.BOTTOM).setValue(FACING, Direction.UP).setValue(WATERLOGGED, false));
+        registerDefaultState(getStateDefinition().any().setValue(HEARTED, false).setValue(HALF, Half.BOTTOM).setValue(FACING, Direction.UP).setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -268,6 +266,10 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
             return;
         }
 
+        if (oldState.getValue(HEARTED)) {
+            newLeopard.setBoss(true);
+        }
+
         BlockPos.MutableBlockPos spawnPos = pos.mutable();
         Vec3 spawnVec = Vec3.atCenterOf(spawnPos);
         newLeopard.setPos(spawnVec.x, spawnVec.y, spawnVec.z);
@@ -320,7 +322,7 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder.add(HALF, FACING, WATERLOGGED));
+        super.createBlockStateDefinition(pBuilder.add(HEARTED, HALF, FACING, WATERLOGGED));
     }
 
     @Override
