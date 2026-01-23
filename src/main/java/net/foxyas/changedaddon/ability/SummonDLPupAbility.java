@@ -15,7 +15,6 @@ import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
 public class SummonDLPupAbility extends SimpleAbility {
@@ -75,7 +74,7 @@ public class SummonDLPupAbility extends SimpleAbility {
         }
 
         if (entity.getEntity() instanceof Player player) {
-            Objects.requireNonNull(player).causeFoodExhaustion((float)30.0);
+            player.causeFoodExhaustion((float)30.0);
         }
 
         ChangedSounds.broadcastSound(livingEntity, ChangedSounds.POISON, 1.0f, 1.0f);
