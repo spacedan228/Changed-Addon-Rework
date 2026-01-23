@@ -351,7 +351,8 @@ public class PrototypeEntity extends AbstractCanTameChangedEntity implements Men
             return true;
         }
 
-        return super.canTakeItem(pItemstack);
+        EquipmentSlot equipmentslot = getEquipmentSlotForItem(pItemstack);
+        return equipmentslot.getType() != EquipmentSlot.Type.HAND && this.getItemBySlot(equipmentslot).isEmpty() && this.canPickUpLoot();
     }
 
     public boolean canTakeItemNoArmor(@NotNull ItemStack stack) {
