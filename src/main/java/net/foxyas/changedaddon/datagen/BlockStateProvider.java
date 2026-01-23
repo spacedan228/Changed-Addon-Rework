@@ -223,8 +223,10 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
 
         ModelFile top = models().cross(loc + "_top", withSuffix(loc, "_top")).renderType("cutout");
         ModelFile bottom = models().cross(loc + "_bottom", withSuffix(loc, "_bottom")).renderType("cutout");
+        ModelFile bottomHearted = models().cross(loc + "_bottom_hearted", withSuffix(loc, "_bottom_hearted")).renderType("cutout");
         getVariantBuilder(LUMINAR_CRYSTAL_LARGE.get()).forAllStatesExcept(state ->
-                new ConfiguredModel[]{rotatedModel(state.getValue(LuminarCrystalLarge.HALF) == Half.TOP ? top : bottom, state.getValue(LuminarCrystalLarge.FACING))}
+                new ConfiguredModel[]{rotatedModel(state.getValue(LuminarCrystalLarge.HALF) == Half.TOP ? top :
+                        state.getValue(LuminarCrystalLarge.HEARTED) ? bottomHearted : bottom, state.getValue(LuminarCrystalLarge.FACING))}
                 , LuminarCrystalLarge.WATERLOGGED);
 
         itemModels().getBuilder(ChangedAddonItems.LUMINAR_CRYSTAL_LARGE.getId().toString())
