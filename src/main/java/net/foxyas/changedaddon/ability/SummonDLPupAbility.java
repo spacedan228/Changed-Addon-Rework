@@ -3,20 +3,27 @@ package net.foxyas.changedaddon.ability;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
+import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexEntity;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class SummonDLPupAbility extends SimpleAbility {
     @Override
     public boolean canUse(IAbstractChangedEntity entity) {
+        if (entity.getEntity() instanceof Player player && player.getFoodData().getFoodLevel() < 8.0) {
+            return false;
+        }
+
         return !entity.isInWaterOrBubble();
     }
 
@@ -33,11 +40,19 @@ public class SummonDLPupAbility extends SimpleAbility {
     public void startUsing(IAbstractChangedEntity entity) {
         var level = entity.getLevel();
 
-        var list = findLandNearby(level, entity.getBlockPosition())
-                .map(BlockPos::immutable).toList();
-        int attempts = Math.min(list.size(), 1);
+        var livingEntity = entity.getEntity();
 
-        if (attempts == 0) { // Spawn failed, grant reduced cooldown
+        List<AbstractDarkLatexEntity> nearbyDarkLatexEntities = level.getEntitiesOfClass(
+                AbstractDarkLatexEntity.class,
+                livingEntity.getBoundingBox().inflate(70.0),
+                e -> e != livingEntity
+        );
+
+        var possibleSpawnPositions = findLandNearby(level, entity.getBlockPosition())
+                .map(BlockPos::immutable).toList();
+        int attempts = Math.min(possibleSpawnPositions.size(), 1);
+
+        if (attempts == 0 || nearbyDarkLatexEntities.size() > 3) { // Spawn failed, grant reduced cooldown
             entity.getAbilityInstanceSafe(this)
                     .map(AbstractAbilityInstance::getController)
                     .ifPresent(controller -> controller.forceCooldown(60));
@@ -48,13 +63,13 @@ public class SummonDLPupAbility extends SimpleAbility {
             return;
 
         while (attempts > 0) {
-            var blockPos = list.get(level.random.nextInt(list.size()));
+            var blockPos = possibleSpawnPositions.get(level.random.nextInt(possibleSpawnPositions.size()));
 
             var pup = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
             assert pup != null;
 
-            if (entity.isPlayer()) {
-                pup.tame(entity.getChangedEntity().getUnderlyingPlayer());
+            if (entity.getEntity() instanceof Player player) {
+                pup.tame(player);
             }
 
             pup.setTarget(entity.getEntity().getLastHurtByMob());
@@ -62,6 +77,10 @@ public class SummonDLPupAbility extends SimpleAbility {
             level.addFreshEntity(pup);
 
             attempts--;
+        }
+
+        if (entity.getEntity() instanceof Player player) {
+            player.causeFoodExhaustion((float)30.0);
         }
 
         ChangedSounds.broadcastSound(entity.getEntity(), ChangedSounds.DARK_LATEX_PUP_FORM_PUDDLE, 1.0f, 1.0f);
@@ -79,7 +98,7 @@ public class SummonDLPupAbility extends SimpleAbility {
 
     @Override
     public int getCoolDown(IAbstractChangedEntity entity) {
-        return 5 * 60 * 20; // 5 Minutes
+        return 4 * 60 * 20; // 4 Minutes
     }
 
     @Override
