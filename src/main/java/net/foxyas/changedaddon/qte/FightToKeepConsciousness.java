@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.qte;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.ClientboundOpenFTKCScreenPacket;
@@ -116,7 +117,7 @@ public class FightToKeepConsciousness {
         SummonEntityProcedure.execute(player.level, player);
         PlayerUtil.UnTransfurPlayer(player);
 
-        player.hurt(new DamageSource("conscience_lose").bypassArmor(), Float.MAX_VALUE);
+        player.hurt(ChangedAddonDamageSources.CONSCIENCE_LOSE, Float.MAX_VALUE);
         updatePlayerVariables(vars, null, 0, player);
     }
 
