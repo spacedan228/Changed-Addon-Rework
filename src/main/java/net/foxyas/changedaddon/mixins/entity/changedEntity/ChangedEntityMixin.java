@@ -10,10 +10,12 @@ import net.foxyas.changedaddon.entity.simple.WolfyEntity;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.LatexType;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
@@ -47,6 +49,9 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     public abstract LivingEntity maybeGetUnderlying();
 
     @Shadow protected abstract boolean targetSelectorTest(LivingEntity livingEntity);
+
+    @Shadow
+    public abstract LatexType getLatexType();
 
     @Unique
     protected boolean pacified = false;
@@ -93,6 +98,13 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         }
 
         if (isNeutralTo(livingEntity)) cir.setReturnValue(false);
+
+        var entityVariant = ProcessTransfur.getEntityVariant(livingEntity);
+        if (getLatexType() == LatexType.WHITE_LATEX
+                && entityVariant.isPresent()
+                && entityVariant.get() == ChangedAddonTransfurVariants.DARK_LATEX_YUFENG_QUEEN.get()) {
+            cir.setReturnValue(false);
+        }
     }
 
     @ModifyReturnValue(method = "getDripRate", at = @At("RETURN"))
