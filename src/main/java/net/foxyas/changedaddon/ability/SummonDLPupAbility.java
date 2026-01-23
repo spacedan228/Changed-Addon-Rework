@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import java.util.stream.Stream;
 public class SummonDLPupAbility extends SimpleAbility {
     @Override
     public boolean canUse(IAbstractChangedEntity entity) {
-        if (entity.isPlayer() && Objects.requireNonNull(entity.getChangedEntity().getUnderlyingPlayer()).getFoodData().getFoodLevel() < 8.0) {
+        if (entity.getEntity() instanceof Player player && player.getFoodData().getFoodLevel() < 8.0) {
             return false;
         }
 
@@ -42,12 +43,7 @@ public class SummonDLPupAbility extends SimpleAbility {
         if (level.isClientSide)
             return;
 
-        var player = entity.getChangedEntity().getUnderlyingPlayer();
         var livingEntity = entity.getEntity();
-
-        if (entity.isPlayer() && Objects.requireNonNull(entity.getChangedEntity().getUnderlyingPlayer()).getFoodData().getFoodLevel() < 8.0) {
-            return;
-        }
 
         List<AbstractDarkLatexEntity> nearbyDarkLatexEntities = level.getEntitiesOfClass(
                 AbstractDarkLatexEntity.class,
@@ -67,7 +63,7 @@ public class SummonDLPupAbility extends SimpleAbility {
             var pup = ChangedEntities.DARK_LATEX_WOLF_PUP.get().create(level);
             assert pup != null;
 
-            if (entity.isPlayer()) {
+            if (entity.getEntity() instanceof Player player) {
                 pup.tame(player);
             }
 
@@ -78,7 +74,7 @@ public class SummonDLPupAbility extends SimpleAbility {
             attempts--;
         }
 
-        if (entity.isPlayer()) {
+        if (entity.getEntity() instanceof Player player) {
             Objects.requireNonNull(player).causeFoodExhaustion((float)30.0);
         }
 
