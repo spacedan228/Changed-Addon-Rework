@@ -50,7 +50,14 @@ import static net.foxyas.changedaddon.block.LuminarCrystalBlock.spawnParticleOnF
 
 public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedBlock, RenderLayerProvider {
 
-    public static final VoxelShape SHAPE = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 16.0F, 15.0F);
+    public static final VoxelShape SHAPE_UP = Block.box(1.0F, 0.0F, 1.0F, 15.0F, 16.0F, 15.0F);
+    public static final VoxelShape SHAPE_DOWN = SHAPE_UP;
+    public static final VoxelShape SHAPE_NORTH = Block.box(1, 1, 0, 15, 15, 16);
+    public static final VoxelShape SHAPE_SOUTH = Block.box(1, 1, 0, 15, 15, 16);
+    public static final VoxelShape SHAPE_WEST = Block.box(0, 1, 1, 16, 15, 15);
+    public static final VoxelShape SHAPE_EAST = Block.box(0, 1, 1, 16, 15, 15);
+
+    public static final BooleanProperty HEARTED = LuminarCrystalSmall.HEARTED;
     public static final EnumProperty<Half> HALF = BlockStateProperties.HALF;
     public static final EnumProperty<Direction> FACING = BlockStateProperties.FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
@@ -64,7 +71,7 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
                 .hasPostProcess((blockState, blockGetter, blockPos) -> true)
                 .emissiveRendering((blockState, blockGetter, blockPos) -> true)
                 .noOcclusion());
-        registerDefaultState(getStateDefinition().any().setValue(HALF, Half.BOTTOM).setValue(FACING, Direction.UP).setValue(WATERLOGGED, false));
+        registerDefaultState(getStateDefinition().any().setValue(HEARTED, false).setValue(HALF, Half.BOTTOM).setValue(FACING, Direction.UP).setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -83,8 +90,18 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
-        return SHAPE;
+    public @NotNull VoxelShape getShape(@NotNull BlockState state,
+                                        @NotNull BlockGetter level,
+                                        @NotNull BlockPos pos,
+                                        @NotNull CollisionContext context) {
+        return switch (state.getValue(FACING)) {
+            case DOWN -> SHAPE_DOWN;
+            case NORTH -> SHAPE_NORTH;
+            case SOUTH -> SHAPE_SOUTH;
+            case WEST -> SHAPE_WEST;
+            case EAST -> SHAPE_EAST;
+            default -> SHAPE_UP;
+        };
     }
 
     @Override
@@ -212,7 +229,8 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
         if (oldState.getValue(HALF) == Half.TOP) {
             BlockPos below = pos.relative(oldState.getValue(FACING), -1);
             BlockState bottom = level.getBlockState(below);
-            if (bottom.is(this)) level.setBlockAndUpdate(below, bottom.getValue(WATERLOGGED) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState());
+            if (bottom.is(this))
+                level.setBlockAndUpdate(below, bottom.getValue(WATERLOGGED) ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState());
             return;
         }
 
@@ -220,12 +238,12 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
 
         // Procura a entidade viva mais próxima (excluindo leopardos)
         LivingEntity closestEntity = level.getEntitiesOfClass(LivingEntity.class, new AABB(pos).inflate(8),
-                entity -> {
-                    if (entity instanceof Player player) {
-                        return !player.isSpectator() && !player.isCreative();
-                    }
-                    return !(entity instanceof AbstractLuminarcticLeopard);
-                }).stream()
+                        entity -> {
+                            if (entity instanceof Player player) {
+                                return !player.isSpectator() && !player.isCreative();
+                            }
+                            return !(entity instanceof AbstractLuminarcticLeopard);
+                        }).stream()
                 .min(Comparator.comparingDouble(entity -> entity.distanceToSqr(pos.getX(), pos.getY(), pos.getZ())))
                 .orElse(null);
 
@@ -253,6 +271,10 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
         if (newLeopard == null) {
             super.onRemove(oldState, level, pos, newState, isMoving);
             return;
+        }
+
+        if (oldState.getValue(HEARTED)) {
+            newLeopard.setBoss(true);
         }
 
         BlockPos.MutableBlockPos spawnPos = pos.mutable();
@@ -307,7 +329,7 @@ public class LuminarCrystalLarge extends BushBlock implements SimpleWaterloggedB
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
-        super.createBlockStateDefinition(pBuilder.add(HALF, FACING, WATERLOGGED));
+        super.createBlockStateDefinition(pBuilder.add(HEARTED, HALF, FACING, WATERLOGGED));
     }
 
     @Override

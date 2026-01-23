@@ -51,6 +51,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         simpleBlock(DEEPSLATE_PAINITE_ORE);
         simpleBlock(DORMANT_DARK_LATEX);
         simpleBlock(DORMANT_WHITE_LATEX);
+        stackableCan(FOXTA_CAN);
         simpleBlock(GENERATOR);
         simpleBlock(GOO_CORE);
         horizontalBlock(INFORMANT_BLOCK);
@@ -66,8 +67,7 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         simpleBlock(REINFORCED_WALL_CAUTION);
         simpleBlock(REINFORCED_WALL_SILVER_STRIPED);
         simpleBlock(REINFORCED_WALL_SILVER_TILED);
-        //horizontalBlock(FOXTA_CAN, BlockStateProperties.WATERLOGGED);
-        //horizontalBlock(SNEPSI_CAN, BlockStateProperties.WATERLOGGED);
+        stackableCan(SNEPSI_CAN);
         simpleBlock(WALL_WHITE_CRACKED);
         simpleBlock(WHITE_WOLF_CRYSTAL_BLOCK);
         simpleBlock(WHITE_WOLF_CRYSTAL_SMALL);
@@ -76,9 +76,6 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
         simpleBlock(YELLOW_WOLF_CRYSTAL_BLOCK);
         simpleBlock(YELLOW_WOLF_CRYSTAL_SMALL);
         simpleBlock(POTTED_LUMINARA_BLOOM);
-
-        stackableCan(FOXTA_CAN);
-        stackableCan(SNEPSI_CAN);
 
         timedKeypad();
 
@@ -243,8 +240,10 @@ public class BlockStateProvider extends net.minecraftforge.client.model.generato
 
         ModelFile top = models().cross(loc + "_top", withSuffix(loc, "_top"));
         ModelFile bottom = models().cross(loc + "_bottom", withSuffix(loc, "_bottom"));
+        ModelFile bottomHearted = models().cross(loc + "_bottom_hearted", withSuffix(loc, "_bottom_hearted"));
         getVariantBuilder(LUMINAR_CRYSTAL_LARGE.get()).forAllStatesExcept(state ->
-                        new ConfiguredModel[]{rotatedModel(state.getValue(LuminarCrystalLarge.HALF) == Half.TOP ? top : bottom, state.getValue(LuminarCrystalLarge.FACING))}
+                new ConfiguredModel[]{rotatedModel(state.getValue(LuminarCrystalLarge.HALF) == Half.TOP ? top :
+                        state.getValue(LuminarCrystalLarge.HEARTED) ? bottomHearted : bottom, state.getValue(LuminarCrystalLarge.FACING))}
                 , LuminarCrystalLarge.WATERLOGGED);
 
         itemModels().getBuilder(ChangedAddonItems.LUMINAR_CRYSTAL_LARGE.getId().toString())
