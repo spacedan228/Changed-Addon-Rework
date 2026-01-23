@@ -1,37 +1,29 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonFluids;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.init.ChangedParticles;
-import net.ltxprogrammer.changed.init.ChangedTags;
-import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+public class FlamethrowerItem extends FlamethrowerLike {
 
-public class LaethinminatorItem extends FlamethrowerLike {
-
-    public LaethinminatorItem() {
-        super(new Item.Properties()//.tab(ChangedAddonTabs.CHANGED_ADDON_MAIN_TAB)
-                .durability(320).rarity(Rarity.UNCOMMON));
+    public FlamethrowerItem() {
+        super(new Properties().durability(320).rarity(Rarity.UNCOMMON));
     }
 
     @Override
@@ -67,26 +59,17 @@ public class LaethinminatorItem extends FlamethrowerLike {
             livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND);
         });
 
-        shoot(player.level(), player, 16, 5, 5);
+        shoot(player.level(), player, 16, 2, 2);
     }
 
     @Override
     protected ParticleOptions particle() {
-        return ChangedParticles.gas(Color3.fromInt(-1));
-    }
-
-    protected void affectSurroundingEntities(ServerLevel level, Player player, Vec3 targetPos, double area) {
-        List<ChangedEntity> entityList = level.getEntitiesOfClass(ChangedEntity.class, new AABB(targetPos, targetPos).inflate(area), (changedEntity) -> changedEntity.getType().is(ChangedTags.EntityTypes.LATEX));
-        for (ChangedEntity en : entityList) {
-            boolean isAllied = player.isAlliedTo(en);
-            if (player.canAttack(en) && !isAllied) {
-                affectEntity(player, en);
-            }
-        }
+        return ParticleTypes.FLAME;
     }
 
     @Override
-    protected void affectEntity(Player shooter, LivingEntity entity) {
-        entity.hurt(ChangedAddonDamageSources.LATEX_SOLVENT.source(shooter), 6);
+    protected void affectEntity(Player shooter, LivingEntity entity) {//needs a new damage type to be ranged
+        entity.hurt(new DamageSource(shooter.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.ON_FIRE), shooter), 6);
+        entity.setSecondsOnFire(5);
     }
 }
