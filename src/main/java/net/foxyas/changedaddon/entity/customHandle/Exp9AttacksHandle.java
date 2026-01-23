@@ -677,6 +677,10 @@ public class Exp9AttacksHandle {
                 return false;
             }
 
+            if (!boss.getCombatTracker().takingDamage) {
+                return boss.level.random.nextFloat() <= 0.05f;
+            }
+
             LivingEntity target = this.getTarget();
             if (target != null) {
                 double distance = this.boss.distanceTo(target);
