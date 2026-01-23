@@ -241,6 +241,13 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .absorbing());
 
+    public static final RegistryObject<TransfurVariant<DarkLatexYufengQueenEntity>> DARK_LATEX_YUFENG_QUEEN = register("form_dark_latex_yufeng_queen",
+            TransfurVariant.Builder.of(ChangedAddonEntities.DARK_LATEX_YUFENG_QUEEN)
+                    .glide()
+                    .absorbing()
+                    .addAbility(ChangedAbilities.TOGGLE_WAVE_VISION)
+                    .addAbility(ChangedAddonAbilities.SUMMON_DL_PUP));
+
     //Partials
     public static final RegistryObject<TransfurVariant<SnowLeopardPartialEntity>> SNOW_LEOPARD_PARTIAL = register("form_latex_snow_leopard_partial",
             TransfurVariant.Builder.of(ChangedAddonEntities.SNOW_LEOPARD_PARTIAL)

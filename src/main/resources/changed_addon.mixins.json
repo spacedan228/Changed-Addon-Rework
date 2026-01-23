@@ -51,6 +51,7 @@
     "entity.variant.TransfurVariantInstanceMixin",
     "entity.variant.TransfurVariantMixin",
     "fluids.TransfurGasMixin",
+    "items.DarkLatexMaskMixin",
     "items.ItemStackMixin",
     "items.LatexFlaskMixin",
     "items.LatexSyringeMixin",
