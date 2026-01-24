@@ -2,7 +2,6 @@ package net.foxyas.changedaddon.network;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.qte.FightToKeepConsciousness;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -19,12 +18,9 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Supplier;
 
 public class ChangedAddonVariables {
 
@@ -165,9 +161,14 @@ public class ChangedAddonVariables {
             buffer.writeNbt(data.writeNBT(true));
         }
 
+        /*
         public static void handler(SyncPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
             NetworkEvent.Context context = contextSupplier.get();
             context.setPacketHandled(true);
+
+            if (context.getDirection() == NetworkDirection.PLAY_TO_SERVER || context.getDirection() == NetworkDirection.LOGIN_TO_SERVER) {
+                return;
+            }
 
             context.enqueueWork(() -> {
                 Player player = Minecraft.getInstance().player;
@@ -188,6 +189,6 @@ public class ChangedAddonVariables {
                 variables.Exp009TransfurAllowed = syncedVars.Exp009TransfurAllowed;
                 variables.Exp10TransfurAllowed = syncedVars.Exp10TransfurAllowed;
             });
-        }
+        }*/
     }
 }

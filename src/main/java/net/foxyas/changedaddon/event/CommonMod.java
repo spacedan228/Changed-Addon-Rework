@@ -3,10 +3,7 @@ package net.foxyas.changedaddon.event;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.menu.CustomMerchantMenu;
-import net.foxyas.changedaddon.network.ChangedAddonPackets;
-import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.network.ClientPacketHandler;
-import net.foxyas.changedaddon.network.ServerPacketHandler;
+import net.foxyas.changedaddon.network.*;
 import net.foxyas.changedaddon.network.packet.*;
 import net.foxyas.changedaddon.procedure.blocksHandle.LatexBonemealAndDispenserHandler;
 import net.foxyas.changedaddon.recipe.brewing.TransfurSicknessRecipeBrewingRecipe;
@@ -93,7 +90,7 @@ public class CommonMod {
                 VariantSecondAbilityActivate::new, VariantSecondAbilityActivate::handle);
 
         ChangedAddonMod.addNetworkMessage(ChangedAddonVariables.SyncPacket.class, ChangedAddonVariables.SyncPacket::encode,
-                ChangedAddonVariables.SyncPacket::new, ChangedAddonVariables.SyncPacket::handler,
+                ChangedAddonVariables.SyncPacket::new, SafeClientPacketHandler::handlerVariableSync,
                 NetworkDirection.PLAY_TO_CLIENT);
 
         ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonPacket.class, GeneratorGuiButtonPacket::encode,
