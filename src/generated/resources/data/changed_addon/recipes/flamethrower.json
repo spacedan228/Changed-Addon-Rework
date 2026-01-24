@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "B": {
+      "item": "minecraft:blaze_rod"
+    },
+    "F": {
+      "item": "minecraft:flint_and_steel"
+    },
+    "I": {
+      "tag": "forge:ingots/iridium"
+    },
+    "R": {
+      "tag": "forge:dusts/redstone"
+    },
+    "T": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    " IB",
+    "RFI",
+    " IT"
+  ],
+  "result": {
+    "item": "changed_addon:flamethrower"
+  },
+  "show_notification": true
+}
