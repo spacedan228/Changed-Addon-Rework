@@ -27,7 +27,7 @@ public class GasAreaUtil {
 
     public static List<Vec3> sampleGasCone(
             Player player,
-            int range,
+            double range,
             double spread,
             double step
     ) {

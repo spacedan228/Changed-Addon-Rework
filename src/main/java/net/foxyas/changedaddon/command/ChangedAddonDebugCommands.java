@@ -41,7 +41,7 @@ public class ChangedAddonDebugCommands {
                     .map(FacilityPieces::getPiecesOfType)
                     .filter(Objects::nonNull)
                     .flatMap(FacilityPieceCollection::stream)
-                    .map(ConfiguredFacilityPiece::facilityPiece)
+                    .map(ConfiguredFacilityPiece::getFacilityPiece)
                     .filter(piece -> piece instanceof FacilitySinglePieceAccessor)
                     .map(piece -> ((FacilitySinglePieceAccessor) piece).getTemplateName())
                     .filter(Objects::nonNull)

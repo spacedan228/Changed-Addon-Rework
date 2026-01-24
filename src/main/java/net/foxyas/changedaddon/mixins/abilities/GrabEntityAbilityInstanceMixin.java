@@ -38,7 +38,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
 
 @Mixin(value = GrabEntityAbilityInstance.class, remap = false)
 public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInstance implements GrabEntityAbilityExtensor {
@@ -126,7 +125,8 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
             return;
 
         this.safeMode = safeMode;
-        if (!entity.getLevel().isClientSide) ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(entity::getEntity), new SafeGrabSyncPacket(entity.getEntity().getId(), safeMode));
+        if (!entity.getLevel().isClientSide)
+            ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(entity::getEntity), new SafeGrabSyncPacket(entity.getEntity().getId(), safeMode));
     }
 
     @Inject(method = "tickIdle", at = @At(value = "HEAD"), cancellable = true)
@@ -170,32 +170,13 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
         }
     }
 
-    @ModifyExpressionValue(method = "tickIdle", at = @At(value = "INVOKE",
+    @ModifyExpressionValue(method = "wantsToRelease", at = @At(value = "INVOKE",
             target = "Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;isTemporaryFromSuit()Z"))
     private boolean allowGrabTransfuredPlayers(boolean original) {
         if (this.allowGrabTransfured()) {
             return true;
         }
         return original;
-    }
-
-    @WrapOperation(
-            method = "tickIdle",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;ifPlayerTransfurred(Lnet/minecraft/world/entity/player/Player;Ljava/util/function/Consumer;)Z"
-            )
-    )
-    private boolean wrapIfPlayerTransfurred(
-            Player player,
-            Consumer<TransfurVariantInstance<?>> consumer,
-            Operation<Boolean> original
-    ) {
-        if (this.allowGrabTransfured()) {
-            return false; // finge que nunca foi transfured
-        }
-
-        return original.call(player, consumer);
     }
 
     @Inject(
@@ -289,7 +270,7 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
      * @return The modified keyStrength
      */
     @ModifyVariable(
-            method = "lambda$handleEscape$7",
+            method = "lambda$handleEscape$10",
             at = @At(
                     value = "STORE",
                     ordinal = 0 // ordinal 0 = first float stored in that method

@@ -16,6 +16,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +44,7 @@ public class FlamethrowerItem extends FlamethrowerLike {
             if (hitResult.getType() == HitResult.Type.BLOCK) {
                 BlockPos pos = hitResult.getBlockPos();
                 BlockState state = level.getBlockState(pos);
-                if (state.getFluidState().is(ChangedAddonFluids.LITIX_CAMONIA_FLUID.get()) || state.getFluidState().is(ChangedAddonFluids.FLOWING_LITIX_CAMONIA_FLUID.get())) {
+                if (state.getFluidState().is(Fluids.LAVA) || state.getFluidState().is(Fluids.FLOWING_LAVA)) {
                     stack.setDamageValue(0);
                     entity.playSound(SoundEvents.BUCKET_FILL, 1f, 1f);
                 }
@@ -55,9 +56,7 @@ public class FlamethrowerItem extends FlamethrowerLike {
         if (level.isClientSide)
             return;
 
-        stack.hurtAndBreak(1, entity, (livingEntity) -> {
-            livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND);
-        });
+        stack.hurtAndBreak(1, entity, (livingEntity) -> livingEntity.broadcastBreakEvent(EquipmentSlot.MAINHAND));
 
         shoot(player.level(), player, 16, 2, 2);
     }
@@ -69,7 +68,7 @@ public class FlamethrowerItem extends FlamethrowerLike {
 
     @Override
     protected void affectEntity(Player shooter, LivingEntity entity) {//needs a new damage type to be ranged
-        entity.hurt(new DamageSource(shooter.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DamageTypes.ON_FIRE), shooter), 6);
+        entity.hurt(new DamageSource(shooter.damageSources().onFire().typeHolder(), shooter), 6);
         entity.setSecondsOnFire(5);
     }
 }

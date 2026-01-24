@@ -1,9 +1,15 @@
 package net.foxyas.changedaddon.item;
 
 import net.foxyas.changedaddon.block.LatexCoverBlock;
+import net.foxyas.changedaddon.util.FoxyasUtils;
+import net.foxyas.changedaddon.util.GasAreaUtil;
 import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.ltxprogrammer.changed.init.ChangedLatexTypes;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
+import net.ltxprogrammer.changed.init.ChangedParticles;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.item.SpecializedAnimations;
+import net.ltxprogrammer.changed.util.Color3;
 import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -20,14 +26,16 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.awt.*;
+import java.util.HashSet;
 import java.util.List;
-
-import static net.foxyas.changedaddon.util.FoxyasUtils.getRelativePosition;
+import java.util.Set;
 
 public abstract class FlamethrowerLike extends Item implements SpecializedAnimations {
 
@@ -47,13 +55,24 @@ public abstract class FlamethrowerLike extends Item implements SpecializedAnimat
     }
 
     @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Player player = context.getPlayer();
+        InteractionHand hand = context.getHand();
+        if (player != null) {
+            player.startUsingItem(hand);
+            return InteractionResult.CONSUME;
+        }
+        return super.onItemUseFirst(stack, context);
+    }
+
+    @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         player.startUsingItem(hand);
         return InteractionResultHolder.pass(itemstack);
     }
 
-    public void shoot(Level level, Player player, int maxRange, int horizontalRadius, int verticalRadius) {
+    public void shoot(Level level, Player player, double maxRange, int horizontalRadius, int verticalRadius) {
         if (level instanceof ServerLevel serverLevel) {
             shoot(serverLevel, player, maxRange, horizontalRadius, verticalRadius);
         }
@@ -61,97 +80,176 @@ public abstract class FlamethrowerLike extends Item implements SpecializedAnimat
 
     protected abstract ParticleOptions particle();
 
-    protected void shoot(ServerLevel level, Player player, int maxRange, int horizontalRadius, int verticalRadius) {
-        Vec3 eyePosition = player.getEyePosition(1.0F); // Posição dos olhos do jogador
-        //Vec3 lookDirection = player.getLookAngle().normalize();    // Direção para onde o jogador está olhando
-        //aplicar um efeito de particulas de "gas"
+    protected void shoot(ServerLevel level, Player player, double range, int horizontalRadius, int verticalRadius) {
+        spawnParticles(level, player, range);
+
+        List<GasAreaUtil.GasHit> hits = GasAreaUtil.getGasConeHits(
+                level,
+                player,
+                range,
+                0.35,   // spread
+                2       // density
+        );
+
+        hits = GasAreaUtil.dedupe(hits);
+
+        applyEffectToLatexCovers(level, hits);
+
+        List<GasAreaUtil.GasHitBlock> blockHits = GasAreaUtil.getGasConeHitsNormalBlocks(level,
+                player,
+                range,
+                0.35,  // spread
+                2   // density
+        );
+
+        applyEffectToBlocks(level, blockHits);
+
+        List<Vec3> gasVolume = GasAreaUtil.sampleGasCone(
+                player,
+                range * 1.5,
+                0.35,
+                0.6
+        );
+
+        applyEffectToEntities(level, player, gasVolume);
+    }
+
+    protected void spawnParticles(ServerLevel level, Player player, double range) {
+        Vec3 eye = player.getEyePosition(1.0F);
+        Vec3 look = player.getLookAngle().normalize();
         InteractionHand hand = player.getUsedItemHand();
 
-        ParticleOptions particle = particle();
-        for (int i = 1; i <= maxRange; i++) {
-            // Calcula a posição do bloco na trajetória do laser
-            Vec3 targetVec = eyePosition.add(getRelativePosition(player, 0, 0, i, true));
-            BlockPos targetPos = BlockPos.containing(targetVec);
 
+        for (int i = 1; i <= range; i++) {
             double deltaX = hand == InteractionHand.MAIN_HAND ? 0.25 : -0.25;
             if (player.getMainArm() == HumanoidArm.LEFT) deltaX = -deltaX;
 
-            Vec3 relativePosition = getRelativePosition(player, deltaX, 0, i * 0.5 + 1f, true);
-            Vec3 maxRelativePosition = getRelativePosition(player, deltaX, 0, maxRange * 0.5, true);
+            Vec3 relativePosition = FoxyasUtils.getRelativePosition(player, deltaX, 0, i * 0.5 + 1f, true);
+            Vec3 maxRelativePosition = FoxyasUtils.getRelativePosition(player, deltaX, 0, range * 0.5, true);
             Vec3 particlePos = relativePosition.add(0, 1.5f, 0);
-            ParticlesUtil.sendParticlesWithMotionAndOffset(player, particle, player.position().add(particlePos), new Vec3(0.15f, 0.15f, 0.15f), maxRelativePosition, new Vec3(0.25f, 0.25f, 0.25f), 2, 0.10f);
+            ParticlesUtil.sendParticlesWithMotionAndOffset(player, this.particle(), player.position().add(particlePos), new Vec3(0.15f, 0.15f, 0.15f), maxRelativePosition, new Vec3(0.25f, 0.25f, 0.25f), 2, 0.10f);
 
-            // Verifica se o bloco é ar; se for, ignora essa fileira
-            if (level.getBlockState(targetPos).isAir()) {
-                // Afeta os blocos ao redor do ponto atual
-                affectSurroundingEntities(level, player, targetVec, 4 * ((double) i / maxRange));
-                continue;
-            } else {
-                affectSurroundingEntities(level, player, targetVec, 4 * ((double) i / maxRange));
-            }
-            affectSurroundingBlocks(level, targetPos, horizontalRadius, verticalRadius, particle);
+
+            //            FoxyasUtils.getRelativePosition(player, 0, 0, i, true);
+//            Vec3 pos = eye.add(look.scale(i * 0.6));
+//            ParticlesUtil.sendParticlesWithMotion(
+//                    level,
+//                    this.particle(),
+//                    pos,
+//                    new Vec3(0.15f, 0.15f, 0.15f),
+//                    look.scale(i * 0.5d),
+//                    2,
+//                    0.10f
+//            );
         }
     }
 
-    protected void affectSurroundingEntities(ServerLevel level, Player player, Vec3 targetPos, double area) {
-        List<LivingEntity> entityList = level.getEntitiesOfClass(LivingEntity.class, new AABB(targetPos, targetPos).inflate(area));
-        for (LivingEntity en : entityList) {
-            boolean isAllied = player.isAlliedTo(en);
-            if (player.canAttack(en) && !isAllied) {
-                affectEntity(player, en);
+    protected void applyEffectToLatexCovers(ServerLevel level, List<GasAreaUtil.GasHit> hits) {
+        for (GasAreaUtil.GasHit hit : hits) {
+            BlockPos pos = hit.pos();
+
+            LatexCoverState state = LatexCoverState.getAt(level, pos);
+            if (state.isAir())
+                continue;
+
+            if (!(state.getType() instanceof SpreadingLatexType spreading))
+                continue;
+
+            Integer saturationValue = hit.state().getValue(SpreadingLatexType.SATURATION);
+            BooleanProperty faceProp = SpreadingLatexType.FACES.get(hit.face().getOpposite());
+            if (faceProp == null)
+                continue;
+
+            if (!state.hasProperty(faceProp))
+                continue;
+
+            if (!state.getValue(faceProp))
+                continue; // já limpo
+
+            LatexCoverState newState = state.setValue(faceProp, false).setValue(SpreadingLatexType.SATURATION, saturationValue);
+
+            if (newState != state) {
+                LatexCoverState.setAtAndUpdate(level, pos, newState);
+
+
+                // partículas no impacto
+                ParticleOptions particle = ChangedParticles.gas(
+                        Color3.fromInt(new Color(93, 93, 93).getRGB())
+                );
+
+                ParticlesUtil.sendParticles(
+                        level,
+                        particle,
+                        pos,
+                        0.25f, 0.25f, 0.25f,
+                        1,
+                        0f
+                );
+            }
+        }
+    }
+
+    protected void applyEffectToBlocks(ServerLevel level, List<GasAreaUtil.GasHitBlock> hits) {
+        for (GasAreaUtil.GasHitBlock hit : hits) {
+            BlockPos pos = hit.pos();
+            BlockState state = hit.state();
+
+            if (state.isAir())
+                continue;
+
+            if (!(state.getBlock() instanceof LatexCoverBlock coverBlock))
+                continue;
+
+            BlockState newState = Blocks.AIR.defaultBlockState();
+
+            if (newState != state) {
+                level.setBlockAndUpdate(pos, newState);
+
+                // partículas no impacto
+                ParticleOptions particle = ChangedParticles.gas(
+                        Color3.fromInt(new Color(93, 93, 93).getRGB())
+                );
+
+                ParticlesUtil.sendParticles(
+                        level,
+                        particle,
+                        pos,
+                        0.25f, 0.25f, 0.25f,
+                        1,
+                        0f
+                );
+            }
+        }
+    }
+
+    protected void applyEffectToEntities(
+            ServerLevel level,
+            Player player,
+            List<Vec3> gasVolume
+    ) {
+        Set<ChangedEntity> affected = new HashSet<>();
+
+        for (Vec3 pos : gasVolume) {
+            AABB area = new AABB(pos, pos).inflate(1);
+
+            List<ChangedEntity> entities = level.getEntitiesOfClass(
+                    ChangedEntity.class,
+                    area,
+                    e -> e.getType().is(ChangedTags.EntityTypes.LATEX)
+            );
+
+            for (ChangedEntity entity : entities) {
+                if (!player.canAttack(entity)) continue;
+                if (player.isAlliedTo(entity)) continue;
+
+                // evita dano duplicado exagerado
+                if (!affected.add(entity)) continue;
+                affectEntity(player, entity);
             }
         }
     }
 
     protected abstract void affectEntity(Player shooter, LivingEntity entity);
-
-    protected void affectSurroundingBlocks(Level level, BlockPos center, int horizontalRadius, int verticalRadius, ParticleOptions particle) {
-        int horizontalRadiusSphere = horizontalRadius - 1;
-        int verticalRadiusSphere = verticalRadius - 1;
-
-        for (int y = -verticalRadiusSphere; y <= verticalRadiusSphere; y++) {
-            for (int x = -horizontalRadiusSphere; x <= horizontalRadiusSphere; x++) {
-                for (int z = -horizontalRadiusSphere; z <= horizontalRadiusSphere; z++) {
-                    // Calcula a distância ao centro para uma forma esférica
-                    double distanceSq = (x * x) / (double) (horizontalRadiusSphere * horizontalRadiusSphere) +
-                            (y * y) / (double) (verticalRadiusSphere * verticalRadiusSphere) +
-                            (z * z) / (double) (horizontalRadiusSphere * horizontalRadiusSphere);
-
-                    if (distanceSq <= 1.0) { // Dentro da área de efeito
-                        BlockPos affectedPos = center.offset(x, y, z);
-                        if (level.getBlockState(affectedPos).isAir()) {
-                            break;
-                        }
-                        // Insira a lógica para afetar os blocos
-                        affectBlock(level, affectedPos);
-                    }
-                }
-            }
-        }
-    }
-
-    protected void affectBlock(Level level, BlockPos pos) {
-        if (!level.getBlockState(pos).isAir()) {
-            // Substituir bloco por vidro como exemplo
-            BlockState stage = level.getBlockState(pos);
-            if (stage.getBlock() instanceof LatexCoverBlock) {
-                level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-
-                // Adicionar partículas no bloco afetado
-                ParticlesUtil.sendParticles(level, particle(), pos, 0.25f, 0.25f, 0.25f, 1, 0f);
-                return;
-            }
-
-            LatexCoverState latexCoverState = LatexCoverState.getAt(level, pos);
-
-            if (!latexCoverState.is(ChangedLatexTypes.NONE.get())) {
-                LatexCoverState.setAtAndUpdate(level, pos, ChangedLatexTypes.NONE.get().defaultCoverState());
-
-                // Adicionar partículas no bloco afetado
-                ParticlesUtil.sendParticles(level, particle(), pos, 0.25f, 0.25f, 0.25f, 1, 0f);
-            }
-        }
-    }
 
     @Nullable
     @Override
