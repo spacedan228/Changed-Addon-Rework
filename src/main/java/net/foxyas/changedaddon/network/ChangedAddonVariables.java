@@ -160,35 +160,5 @@ public class ChangedAddonVariables {
         public void encode(FriendlyByteBuf buffer) {
             buffer.writeNbt(data.writeNBT(true));
         }
-
-        /*
-        public static void handler(SyncPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
-            NetworkEvent.Context context = contextSupplier.get();
-            context.setPacketHandled(true);
-
-            if (context.getDirection() == NetworkDirection.PLAY_TO_SERVER || context.getDirection() == NetworkDirection.LOGIN_TO_SERVER) {
-                return;
-            }
-
-            context.enqueueWork(() -> {
-                Player player = Minecraft.getInstance().player;
-                assert player != null;
-                if (player.isDeadOrDying()) return;
-
-                PlayerVariables variables = nonNullOf(player);
-                PlayerVariables syncedVars = message.data;
-                variables.showWarns = syncedVars.showWarns;
-                variables.consciousnessFightProgress = syncedVars.consciousnessFightProgress;
-                variables.FTKCminigameType = syncedVars.FTKCminigameType;
-                variables.resetTransfurAdvancements = syncedVars.resetTransfurAdvancements;
-                variables.actCooldown = syncedVars.actCooldown;
-                variables.patCooldown = syncedVars.patCooldown;
-                variables.areDarkLatex = syncedVars.areDarkLatex;
-                variables.LatexInfectionCooldown = syncedVars.LatexInfectionCooldown;
-                variables.untransfurProgress = syncedVars.untransfurProgress;
-                variables.Exp009TransfurAllowed = syncedVars.Exp009TransfurAllowed;
-                variables.Exp10TransfurAllowed = syncedVars.Exp10TransfurAllowed;
-            });
-        }*/
     }
 }

@@ -49,10 +49,6 @@ public class ClientPacketHandler {
 
     public static void handlerVariableSync(ChangedAddonVariables.SyncPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
         NetworkEvent.Context context = contextSupplier.get();
-        context.setPacketHandled(true);
-
-        if (context.getSender() != null) return;
-
         context.enqueueWork(() -> {
             Player player = Minecraft.getInstance().player;
             assert player != null;
@@ -72,5 +68,6 @@ public class ClientPacketHandler {
             variables.Exp009TransfurAllowed = syncedVars.Exp009TransfurAllowed;
             variables.Exp10TransfurAllowed = syncedVars.Exp10TransfurAllowed;
         });
+        context.setPacketHandled(true);
     }
 }

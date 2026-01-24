@@ -90,7 +90,8 @@ public class CommonMod {
                 VariantSecondAbilityActivate::new, VariantSecondAbilityActivate::handle);
 
         ChangedAddonMod.addNetworkMessage(ChangedAddonVariables.SyncPacket.class, ChangedAddonVariables.SyncPacket::encode,
-                ChangedAddonVariables.SyncPacket::new, SafeClientPacketHandler::handlerVariableSync,
+                ChangedAddonVariables.SyncPacket::new,
+                (packet, contextSupplier) -> ClientPacketHandler.handlerVariableSync(packet, contextSupplier),
                 NetworkDirection.PLAY_TO_CLIENT);
 
         ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonPacket.class, GeneratorGuiButtonPacket::encode,
