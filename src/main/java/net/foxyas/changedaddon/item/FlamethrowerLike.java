@@ -107,7 +107,7 @@ public abstract class FlamethrowerLike extends Item implements SpecializedAnimat
         List<Vec3> gasVolume = GasAreaUtil.sampleGasCone(
                 player,
                 range * 1.5,
-                0.35,
+                0.01f,
                 0.6
         );
 

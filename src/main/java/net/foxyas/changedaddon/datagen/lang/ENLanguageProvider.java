@@ -273,7 +273,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityDialogues("exp9.pat.type_2", "§l§3Get your filthy hands off me!");
         addEntityDialogues("exp9.pat.type_3", "§l§3Pat me again, and I'll crush you until nothing's left!");
         addEntityDialogues("exp9.reaction.range_attacks", "§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!");
-        addEntityDialogues("exp9.reaction.fire_damage", "You’re fighting a storm with a match.... You didn’t miscalculate — you misunderstood.");
+        addEntityDialogues("exp9.reaction.fire_damage", "§l§o§3You’re fighting a storm with a match.... You didn’t miscalculate — you misunderstood.");
         addEntityDialogues("exp10.pat.type_0", "§l§4Yeah i will END YOUR FUCKING LIFE");
         addEntityDialogues("exp10.pat.type_1", "§l§4You won't live to regret that — you'll die for it.");
         addEntityDialogues("exp10.pat.type_2", "§l§4Touch me again and I'll make it quick... for you.");

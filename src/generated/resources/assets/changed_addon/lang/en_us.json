@@ -396,7 +396,7 @@
   "entity_dialogues.changed_addon.exp9.pat.type_1": "§l§3...You dare mock me like this?! I'll tear you apart!",
   "entity_dialogues.changed_addon.exp9.pat.type_2": "§l§3Get your filthy hands off me!",
   "entity_dialogues.changed_addon.exp9.pat.type_3": "§l§3Pat me again, and I'll crush you until nothing's left!",
-  "entity_dialogues.changed_addon.exp9.reaction.fire_damage": "You’re fighting a storm with a match.... You didn’t miscalculate — you misunderstood.",
+  "entity_dialogues.changed_addon.exp9.reaction.fire_damage": "§l§o§3You’re fighting a storm with a match.... You didn’t miscalculate — you misunderstood.",
   "entity_dialogues.changed_addon.exp9.reaction.range_attacks": "§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!",
   "entity_dialogues.changed_addon.exp9.transfur.text.secret": "§b§l§oHey You look familiar, maybe i know you from §csomewhere?§r",
   "fluid.changed_addon.litix_camonia_fluid": "Litix Camonia Fluid",
