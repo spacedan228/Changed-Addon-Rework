@@ -714,7 +714,7 @@ public class Exp9AttacksHandle {
                         double offsetX = boss.getRandom().nextGaussian() * 20;
                         double offsetZ = boss.getRandom().nextGaussian() * 20;
                         BlockPos pos = new BlockPos((int) (this.boss.getX() + offsetX), (int) this.boss.getY(), (int) (this.boss.getZ() + offsetZ));
-                        if (level.getBlockState(pos.below()).isAir() || level.getBlockState(pos).isAir()) return;
+                        if (level.getBlockState(pos.below()).isAir()) return;
                         this.boss.SpawnThunderBolt(pos);
                     }
                 } else {
@@ -722,7 +722,7 @@ public class Exp9AttacksHandle {
                         double offsetX = boss.getRandom().nextGaussian() * 10;
                         double offsetZ = boss.getRandom().nextGaussian() * 10;
                         BlockPos pos = new BlockPos((int) (this.boss.getX() + offsetX), (int) this.boss.getY(), (int) (this.boss.getZ() + offsetZ));
-                        if (level.getBlockState(pos.below()).isAir() || level.getBlockState(pos).isAir()) return;
+                        if (level.getBlockState(pos.below()).isAir()) return;
                         this.boss.SpawnThunderBolt(pos);
                     }
                 }
