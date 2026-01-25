@@ -94,8 +94,10 @@ public interface IAlphaAbleEntity {
     private static void apply(LivingEntity entity, Attribute attribute, UUID uuid, String name, double value, AttributeModifier.Operation op) {
         AttributeInstance inst = entity.getAttribute(attribute);
         if (inst == null || value == 0) return;
+        AttributeModifier pModifier = new AttributeModifier(uuid, name, value, op);
+        if (inst.hasModifier(pModifier)) return;
 
-        inst.addPermanentModifier(new AttributeModifier(uuid, name, value, op));
+        inst.addPermanentModifier(pModifier);
     }
 
     static void removeAlphaModifiers(LivingEntity entity) {
@@ -109,6 +111,7 @@ public interface IAlphaAbleEntity {
         remove(entity, Attributes.ATTACK_SPEED, ATTACK_SPEED);
         remove(entity, ForgeMod.ENTITY_REACH.get(), ENTITY_REACH);
         remove(entity, ForgeMod.BLOCK_REACH.get(), BLOCK_REACH);
+        remove(entity, ChangedAttributes.JUMP_STRENGTH.get(), JUMP_STRENGTH);
     }
 
     private static void remove(LivingEntity entity, Attribute attr, UUID uuid) {
@@ -143,8 +146,8 @@ public interface IAlphaAbleEntity {
         if (host.isDeadOrDying()) return;
 
         SynchedEntityData entityData = creature.getEntityData();
-        IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
         IAbstractChangedEntity.forEitherSafe(host).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+        IAlphaAbleEntity.applyOrRemoveAlphaModifiers(host, entityData.get(IS_ALPHA), entityData.get(ALPHA_SCALE));
     }
 
     default void cleanAlphaAttributesFromHost(ChangedEntity creature) {

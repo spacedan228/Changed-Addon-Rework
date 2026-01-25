@@ -126,8 +126,7 @@ public abstract class FlamethrowerLike extends Item implements SpecializedAnimat
 
             Vec3 relativePosition = FoxyasUtils.getRelativePosition(player, deltaX, 0, i * 0.5 + 1f, true);
             Vec3 maxRelativePosition = FoxyasUtils.getRelativePosition(player, deltaX, 0, range * 0.5, true);
-            Vec3 particlePos = relativePosition.add(0, 1.5f, 0);
-            ParticlesUtil.sendParticlesWithMotionAndOffset(player, this.particle(), player.position().add(particlePos), new Vec3(0.15f, 0.15f, 0.15f), maxRelativePosition, new Vec3(0.25f, 0.25f, 0.25f), 2, 0.10f);
+            ParticlesUtil.sendParticlesWithMotionAndOffset(player, this.particle(), player.getEyePosition().add(relativePosition), new Vec3(0.15f, 0.15f, 0.15f), maxRelativePosition, new Vec3(0.25f, 0.25f, 0.25f), 2, 0.10f);
 
 
             //            FoxyasUtils.getRelativePosition(player, 0, 0, i, true);
