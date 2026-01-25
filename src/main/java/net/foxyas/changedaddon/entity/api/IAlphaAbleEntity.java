@@ -42,6 +42,7 @@ public interface IAlphaAbleEntity {
     UUID ATTACK_SPEED = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a008");
     UUID ENTITY_REACH = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a009");
     UUID BLOCK_REACH = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a010");
+    UUID JUMP_STRENGTH = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a011");
 
     static void applyOrRemoveAlphaModifiers(LivingEntity entity, boolean isAlpha, float alphaScale) {
         if (entity.isDeadOrDying()) return;
@@ -84,6 +85,8 @@ public interface IAlphaAbleEntity {
         apply(entity, ForgeMod.ENTITY_REACH.get(), ENTITY_REACH, "Alpha Attack Reach", normalized * 0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         apply(entity, ForgeMod.BLOCK_REACH.get(), BLOCK_REACH, "Alpha Block Reach", normalized * 0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        apply(entity, ChangedAttributes.JUMP_STRENGTH.get(), JUMP_STRENGTH, "Alpha Jump Strength", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         entity.setHealth(entity.getMaxHealth());
     }

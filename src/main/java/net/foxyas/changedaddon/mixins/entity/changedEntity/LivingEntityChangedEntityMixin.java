@@ -42,15 +42,15 @@ public abstract class LivingEntityChangedEntityMixin extends Entity {
         }
     }
 
-    @ModifyReturnValue(method = "getJumpPower", at = @At("RETURN"))
-    private float changedJumpPower(float original) {
-        var self = ChangedAddon$selfMixin();
-        Entity entity = resolveChangedEntity(self);
-        if (IAlphaAbleEntity.isEntityAlpha(entity)) {
-            return original * (1 + (0.25f * (IAlphaAbleEntity.getEntityAlphaScale(entity) / 0.75f)));
-        }
-        return original;
-    }
+//    @ModifyReturnValue(method = "getJumpPower", at = @At("RETURN"))
+//    private float changedJumpPower(float original) {
+//        var self = ChangedAddon$selfMixin();
+//        Entity entity = resolveChangedEntity(self);
+//        if (IAlphaAbleEntity.isEntityAlpha(entity)) {
+//            return original * (1 + (0.25f * (IAlphaAbleEntity.getEntityAlphaScale(entity) / 0.75f)));
+//        }
+//        return original;
+//    }
 
     private static Entity resolveChangedEntity(Entity entity) {
         if (entity instanceof Player player) {
