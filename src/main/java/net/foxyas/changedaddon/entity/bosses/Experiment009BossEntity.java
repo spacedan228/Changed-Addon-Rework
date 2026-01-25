@@ -3,7 +3,7 @@ package net.foxyas.changedaddon.entity.bosses;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
-import net.foxyas.changedaddon.entity.api.ICrawlAbleEntity;
+import net.foxyas.changedaddon.entity.api.ICrawlAndSwimAbleEntity;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.Exp9AttacksHandle;
 import net.foxyas.changedaddon.entity.goals.exp9.*;
@@ -75,7 +75,7 @@ import java.util.*;
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment009BossEntity extends ChangedEntity implements CustomPatReaction, PowderSnowWalkable, IHasBossMusic, ICrawlAbleEntity {
+public class Experiment009BossEntity extends ChangedEntity implements CustomPatReaction, PowderSnowWalkable, IHasBossMusic, ICrawlAndSwimAbleEntity {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.BOOLEAN);
@@ -549,7 +549,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 removeStatModifiers();
             }
             setSpeed(this);
-            crawlingSystem(this.getTarget());
+            this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.6f);
         }
     }
 

@@ -8,18 +8,19 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-public interface ICrawlAbleEntity {
+public interface ICrawlAndSwimAbleEntity {
 
     static boolean canEnterPose(ChangedEntity entity, Pose pose) {
         return (entity.overridePose == null || entity.overridePose == pose) && entity.level.noCollision(entity, entity.getBoundingBoxForPose(pose).deflate(1.0E-7D));
     }
 
     default void crawlingSystem(ChangedEntity livingEntity, LivingEntity target, float swimSpeed) {
-        updateSwimmingMovement(livingEntity, swimSpeed);
-        if (target != null) {
-            setCrawlingPoseIfNeeded(livingEntity, target);
-            crawlToTarget(livingEntity, target);
-        } else switchToSafePose(livingEntity);
+        if (!updateSwimmingMovement(livingEntity, swimSpeed)) {
+            if (target != null) {
+                setCrawlingPoseIfNeeded(livingEntity, target);
+                crawlToTarget(livingEntity, target);
+            } else switchToSafePose(livingEntity);
+        }
     }
 
     private void switchToSafePose(ChangedEntity livingEntity) {
@@ -41,12 +42,12 @@ public interface ICrawlAbleEntity {
     }
 
     default void crawlingSystem(ChangedEntity livingEntity, LivingEntity target) {
-        crawlingSystem(livingEntity, target, 0.015f);
+        crawlingSystem(livingEntity, target, 0.05f);
     }
 
     default void crawlingSystem(LivingEntity target) {
         if (this instanceof ChangedEntity changedEntity) {
-            crawlingSystem(changedEntity, target, 0.015f);
+            crawlingSystem(changedEntity, target, 0.05f);
         }
     }
 
@@ -78,17 +79,7 @@ public interface ICrawlAbleEntity {
         if (target != null) {
             setCrawlingPoseIfNeeded(livingEntity, target);
             crawlToTarget(livingEntity, target);
-        } else {
-            BlockPos above = new BlockPos((int) livingEntity.getX(), (int) livingEntity.getEyeY(), (int) livingEntity.getZ()).above();
-            BlockState blockState = livingEntity.level.getBlockState(above);
-            if (livingEntity.getPose() == Pose.SWIMMING && !livingEntity.isInWater() && (blockState.isAir() || !blockState.isSuffocating(livingEntity.level, above) || !blockState.isSolidRender(livingEntity.level, above))) {
-                livingEntity.setPose(Pose.STANDING);
-            }
-
-            if (!livingEntity.isSwimming() && (!blockState.isAir() || blockState.isSuffocating(livingEntity.level, above) || blockState.isSolidRender(livingEntity.level, above))) {
-                livingEntity.setPose(Pose.SWIMMING);
-            }
-        }
+        } else switchToSafePose(livingEntity);
     }
 
     default void setCrawlingPoseIfNeeded(ChangedEntity livingEntity, LivingEntity target) {
@@ -108,30 +99,33 @@ public interface ICrawlAbleEntity {
         }
     }
 
-    default void updateSwimmingMovement(ChangedEntity livingEntity, float speed) {
+    default boolean updateSwimmingMovement(ChangedEntity livingEntity, float speed) {
         if (livingEntity.isInWater()) {
             if (livingEntity.getTarget() != null) {
                 Vec3 direction = livingEntity.getTarget().position().subtract(livingEntity.position()).normalize();
                 if (livingEntity.isEyeInFluid(FluidTags.WATER)) {
-                    livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(direction.scale(speed)));
+                    livingEntity.setDeltaMovement(direction.scale(speed));
                 } else {
-                    livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(direction.scale(speed / 4)));
+                    livingEntity.setDeltaMovement(direction.scale(speed / 4));
                 }
                 livingEntity.getLookControl().setLookAt(livingEntity.getTarget(), 30, 30);
             }
             if (livingEntity.isEyeInFluid(FluidTags.WATER)) {
                 livingEntity.setPose(Pose.SWIMMING);
                 livingEntity.setSwimming(true);
+                return true;
             } else {
                 livingEntity.setPose(Pose.STANDING);
                 livingEntity.setSwimming(false);
+                return false;
             }
         } else {
-            BlockPos above = new BlockPos((int) livingEntity.getX(), (int) livingEntity.getEyeY(), (int) livingEntity.getZ()).above();
+            BlockPos above = BlockPos.containing(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ()).above();
             BlockState blockState = livingEntity.level.getBlockState(above);
             if (livingEntity.getPose() == Pose.SWIMMING && !livingEntity.isInWater() && (blockState.isAir() || !blockState.isSuffocating(livingEntity.level, above) || !blockState.isSolidRender(livingEntity.level, above))) {
                 livingEntity.setPose(Pose.STANDING);
             }
+            return false;
         }
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.pathfinder.Path;
 
 import java.util.EnumSet;
@@ -112,7 +113,7 @@ public class BreakBlocksAroundGoal extends Goal {
 
             var state = serverLevel.getBlockState(pos);
             if (!state.isAir() && state.getDestroySpeed(serverLevel, pos) >= 0) {
-                if (!state.is(Blocks.BEDROCK) || !state.is(BlockTags.WITHER_IMMUNE)) {
+                if ((!state.is(Blocks.BEDROCK) || !state.is(BlockTags.WITHER_IMMUNE)) && !(state.getBlock() instanceof LiquidBlock)) {
                     serverLevel.destroyBlock(pos, true, holder);
                     suppedCooldown += 5;
                 }

@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.entity.defaults.AbstractSemiAquaticEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
@@ -37,8 +38,6 @@ public class FengQIWolfEntity extends ChangedEntity implements GenderedEntity, P
         this.setAttributes(this.getAttributes());
         setNoAi(false);
     }
-
-
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder =  ChangedEntity.createLatexAttributes();

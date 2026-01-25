@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
-import net.foxyas.changedaddon.entity.api.ICrawlAbleEntity;
+import net.foxyas.changedaddon.entity.api.ICrawlAndSwimAbleEntity;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
 import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
@@ -74,7 +74,7 @@ import java.util.UUID;
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, CustomPatReaction, PowderSnowWalkable, IHasBossMusic, ICrawlAbleEntity {
+public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, CustomPatReaction, PowderSnowWalkable, IHasBossMusic, ICrawlAndSwimAbleEntity {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment10BossEntity.class, EntityDataSerializers.BOOLEAN);
@@ -394,7 +394,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         SetAttack(this);
         SetSpeed(this);
         TpEntity(this);
-        this.crawlingSystem(this.getTarget());
+        this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.6f);
         thisBurstAttack();
     }
 
