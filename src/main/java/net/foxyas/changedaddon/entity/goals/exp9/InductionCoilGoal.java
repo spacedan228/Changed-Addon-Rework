@@ -109,7 +109,9 @@ public class InductionCoilGoal extends Goal {
             }
         }
 
-        float metalPercentage = Math.max((float) metal / slots, 0.1f);
+        float metalPercentage = (float) metal / slots;
+        if (metalPercentage <= 0.01f) return;
+
         if (target.hurt(DamageSource.IN_FIRE, damageProvider.sample(random) * metalPercentage)) {
             target.setSecondsOnFire(5);
         }

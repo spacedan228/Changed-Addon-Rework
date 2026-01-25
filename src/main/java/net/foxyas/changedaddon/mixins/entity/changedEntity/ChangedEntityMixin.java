@@ -1,11 +1,15 @@
 package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
+import net.foxyas.changedaddon.entity.api.ICrawlAndSwimAbleEntity;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
+import net.foxyas.changedaddon.entity.defaults.AbstractSemiAquaticEntity;
 import net.foxyas.changedaddon.entity.simple.WolfyEntity;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
@@ -24,6 +28,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
@@ -143,6 +150,27 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         if (!(self instanceof WolfyEntity)) {
             this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, ChangedEntity.class, true, this::targetSelectorTest));
         }
+    }
+
+    @WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/goal/GoalSelector;addGoal(ILnet/minecraft/world/entity/ai/goal/Goal;)V", ordinal = 15), method = "registerGoals", remap = true)
+    private void floatGoalHook(GoalSelector instance, int pPriority, Goal pGoal, Operation<Void> original) {
+        ChangedEntity self = getSelf();
+        if (self instanceof ICrawlAndSwimAbleEntity) {
+            var FloatGoal = new FloatGoal(self) {
+                @Override
+                public boolean canUse() {
+                    if (self.isInWater() || self.getTarget() != null) return false;
+                    return super.canUse();
+                }
+            };
+
+            original.call(instance, pPriority, FloatGoal);
+            return;
+        } else if (self instanceof AbstractSemiAquaticEntity) {
+            return;
+        }
+
+        original.call(instance, pPriority, pGoal);
     }
 
     private ChangedEntity getSelf() {

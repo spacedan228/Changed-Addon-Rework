@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.goals.generic;
 
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
+import net.ltxprogrammer.changed.block.DarkLatexFluidBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -11,6 +12,7 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.pathfinder.Path;
 
 import java.util.EnumSet;
@@ -112,7 +114,7 @@ public class BreakBlocksAroundGoal extends Goal {
 
             var state = serverLevel.getBlockState(pos);
             if (!state.isAir() && state.getDestroySpeed(serverLevel, pos) >= 0) {
-                if (!state.is(Blocks.BEDROCK) || !state.is(BlockTags.WITHER_IMMUNE)) {
+                if ((!state.is(Blocks.BEDROCK) || !state.is(BlockTags.WITHER_IMMUNE)) && !(state.getBlock() instanceof LiquidBlock)) {
                     serverLevel.destroyBlock(pos, true, holder);
                     suppedCooldown += 5;
                 }
