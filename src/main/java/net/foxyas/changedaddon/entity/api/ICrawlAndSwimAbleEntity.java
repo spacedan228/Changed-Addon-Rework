@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.entity.api;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.level.block.state.BlockState;
@@ -100,31 +101,39 @@ public interface ICrawlAndSwimAbleEntity {
     }
 
     default boolean updateSwimmingMovement(ChangedEntity livingEntity, float speed) {
-        if (livingEntity.isInWater()) {
-            if (livingEntity.getTarget() != null) {
-                Vec3 direction = livingEntity.getTarget().position().subtract(livingEntity.position()).normalize();
-                if (livingEntity.isEyeInFluid(FluidTags.WATER)) {
-                    livingEntity.setDeltaMovement(direction.scale(speed));
-                } else {
-                    livingEntity.setDeltaMovement(direction.scale(speed / 4));
-                }
-                livingEntity.getLookControl().setLookAt(livingEntity.getTarget(), 30, 30);
-            }
-            if (livingEntity.isEyeInFluid(FluidTags.WATER)) {
-                livingEntity.setPose(Pose.SWIMMING);
-                livingEntity.setSwimming(true);
-                return true;
-            } else {
-                livingEntity.setPose(Pose.STANDING);
-                livingEntity.setSwimming(false);
-                return false;
-            }
+        if (!livingEntity.isInWater())
+            return false;
+
+        Vec3 movementDir = null;
+
+        if (livingEntity.getTarget() != null) {
+            movementDir = livingEntity.getTarget()
+                    .position()
+                    .subtract(livingEntity.position())
+                    .normalize();
+        } else if (livingEntity.getDeltaMovement().lengthSqr() > 0.0001) {
+            movementDir = livingEntity.getDeltaMovement().normalize();
+        }
+
+        if (movementDir != null) {
+            float appliedSpeed = livingEntity.isEyeInFluid(FluidTags.WATER)
+                    ? speed
+                    : speed * 0.25F;
+
+            livingEntity.setDeltaMovement(movementDir.scale(appliedSpeed));
+
+            float yaw = (float)(Mth.atan2(movementDir.z, movementDir.x) * (180F / Math.PI)) - 90.0F;
+            livingEntity.setYRot(Mth.rotLerp(0.2F, livingEntity.getYRot(), yaw));
+            livingEntity.yBodyRot = livingEntity.getYRot();
+        }
+
+        if (livingEntity.isEyeInFluid(FluidTags.WATER)) {
+            livingEntity.setPose(Pose.SWIMMING);
+            livingEntity.setSwimming(true);
+            return true;
         } else {
-            BlockPos above = BlockPos.containing(livingEntity.getX(), livingEntity.getEyeY(), livingEntity.getZ()).above();
-            BlockState blockState = livingEntity.level.getBlockState(above);
-            if (livingEntity.getPose() == Pose.SWIMMING && !livingEntity.isInWater() && (blockState.isAir() || !blockState.isSuffocating(livingEntity.level, above) || !blockState.isSolidRender(livingEntity.level, above))) {
-                livingEntity.setPose(Pose.STANDING);
-            }
+            livingEntity.setPose(Pose.STANDING);
+            livingEntity.setSwimming(false);
             return false;
         }
     }

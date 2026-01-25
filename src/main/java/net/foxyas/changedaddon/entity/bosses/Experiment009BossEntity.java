@@ -549,7 +549,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 removeStatModifiers();
             }
             setSpeed(this);
-            this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.6f);
+            this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.35f);
         }
     }
 

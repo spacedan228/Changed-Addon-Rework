@@ -394,7 +394,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         SetAttack(this);
         SetSpeed(this);
         TpEntity(this);
-        this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.6f);
+        this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.35f);
         thisBurstAttack();
     }
 
