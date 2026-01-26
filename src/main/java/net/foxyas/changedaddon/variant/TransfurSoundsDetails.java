@@ -1,7 +1,10 @@
 package net.foxyas.changedaddon.variant;
 
+import com.google.common.collect.Sets;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.ComponentUtil;
+import net.foxyas.changedaddon.util.DelayedTask;
+import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.Util;
 import net.minecraft.sounds.SoundEvent;
@@ -13,14 +16,14 @@ import net.minecraft.world.entity.player.Player;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
-import static net.foxyas.changedaddon.util.PlayerUtil.*;
-import static net.foxyas.changedaddon.variant.TransfurSoundsDetails.TransfurSoundType.*;
+import static net.foxyas.changedaddon.variant.TransfurSoundsDetails.TransfurSoundType.getSoundTypes;
 
 public class TransfurSoundsDetails {
 
     public static void tryPlay(Player player, TransfurSoundAction action, boolean warnPlayer) {
-
 
         if (!action.canUse(player)) {
             if (warnPlayer) {
@@ -31,7 +34,6 @@ public class TransfurSoundsDetails {
             return;
         }
 
-
         if (ChangedAddonVariables.nonNullOf(player).actCooldown) {
             if (warnPlayer) {
                 player.sendMessage(
@@ -41,22 +43,7 @@ public class TransfurSoundsDetails {
             return;
         }
 
-
-        SoundEvent sound = getSoundFor(player, action);
-        if (sound == null) return;
-
-
-        player.level.playSound(
-                null,
-                player.blockPosition(),
-                sound,
-                SoundSource.PLAYERS,
-                1.0f,
-                getPitch(player, action)
-        );
-
-
-        ChangedAddonVariables.nonNullOf(player).actCooldown = true;
+        action.playAndApplyCooldown(player);
     }
 
     private static float getPitch(Player player, TransfurSoundAction action) {
@@ -67,113 +54,111 @@ public class TransfurSoundsDetails {
         };
     }
 
-    public static SoundEvent getSoundFor(Player player, TransfurSoundAction action) {
-        return switch (action) {
-
-
-            // 🐶 Wolf/Dogs
-            case BARK -> SoundEvents.WOLF_AMBIENT;
-            case GROWL -> SoundEvents.WOLF_GROWL;
-            case WHINE -> SoundEvents.WOLF_WHINE;
-            case HOWL -> SoundEvents.WOLF_HOWL;
-
-
-            // 🐱 Cats
-            case MEOW -> SoundEvents.CAT_AMBIENT;
-            case HISS -> SoundEvents.CAT_HISS;
-            case PURREOW -> SoundEvents.CAT_PURREOW;
-
-
-            // 🦁 Big cats
-            case ROAR -> ChangedSounds.MONSTER2;
-
-
-            // 🦊 Fox
-            case YIP -> SoundEvents.FOX_AMBIENT;
-            case CHATTER -> SoundEvents.FOX_AGGRO;
-            case FOX_SCREAM -> SoundEvents.FOX_SCREECH;
-        };
-    }
-
     public enum TransfurSoundType {
-        CAT,
-        DOG,
-        WOLF,
-        FOX,
-        BIG_CAT;
 
+        CAT(PlayerUtil::isCatTransfur, TransfurSoundAction.MEOW, TransfurSoundAction.PURREOW, TransfurSoundAction.PURR, TransfurSoundAction.HISS),
+        DOG(PlayerUtil::isWolfTransfur, TransfurSoundAction.BARK, TransfurSoundAction.GROWL, TransfurSoundAction.HOWL, TransfurSoundAction.WHINE),
+        //WOLF(PlayerUtil::isWolfTransfur, TransfurSoundAction.BARK, TransfurSoundAction.GROWL, TransfurSoundAction.HOWL),//same tfs as dog
+        FOX(PlayerUtil::isFoxTransfur, TransfurSoundAction.YIP, TransfurSoundAction.CHATTER, TransfurSoundAction.FOX_SCREAM),
+        BIG_CAT(PlayerUtil::canRoar, TransfurSoundAction.ROAR),
+        DRAGON(PlayerUtil::isDragonTransfur, TransfurSoundAction.DRAGON_ROAR, TransfurSoundAction.DRAGON_GROWL),
+        AQUATIC(PlayerUtil::isAquaticTransfur, TransfurSoundAction.SWIM, TransfurSoundAction.FLOP);
+
+        public final Predicate<Player> predicate;
+        public final Set<TransfurSoundAction> actions;
+
+        TransfurSoundType(Predicate<Player> predicate, TransfurSoundAction... actions) {
+            this.predicate = predicate;
+            this.actions = Sets.immutableEnumSet(List.of(actions));
+        }
 
         public static Set<TransfurSoundType> getSoundTypes(Player player) {
             Set<TransfurSoundType> types = EnumSet.noneOf(TransfurSoundType.class);
 
-
-            if (isCatTransfur(player)) types.add(CAT);
-            if (isWolfTransfur(player)) {
-                types.add(WOLF);
-                types.add(DOG);
+            for (TransfurSoundType type : values()) {
+                if (type.predicate.test(player)) types.add(type);
             }
-            if (isFoxTransfur(player)) types.add(FOX);
-            if (canRoar(player)) types.add(BIG_CAT);
-
 
             return types;
         }
-
     }
 
     public enum TransfurSoundAction {
 
-        MEOW(20, CAT, "meow", "miau"),
-        HISS(40, CAT, "hiss"),
-        PURREOW(40, CAT, "purreow"),
+        MEOW(20, SoundEvents.CAT_AMBIENT, 1, "meow", "miau"),
+        PURREOW(40, SoundEvents.CAT_PURREOW, 1, "purreow"),
+        PURR(40, SoundEvents.CAT_PURR, 1, "purr"),
+        HISS(40, SoundEvents.CAT_HISS, 1, "hiss"),
 
-        BARK(10, DOG, WOLF, "bark"),
-        GROWL(60, DOG, WOLF, "growl", "grr"),
-        HOWL(60, DOG, WOLF, "howl", "awoo"),
-        WHINE(30, DOG, "whine"),
+        BARK(10, SoundEvents.WOLF_AMBIENT, 1, "bark"),
+        GROWL(60, SoundEvents.WOLF_GROWL, 1, "growl", "grr"),
+        HOWL(60, SoundEvents.WOLF_HOWL, 1, "howl", "awoo"),
+        WHINE(30, SoundEvents.WOLF_WHINE, 1, "whine"),
 
-        YIP(15, FOX, "yip"),
-        CHATTER(25, FOX, "chatter"),
-        FOX_SCREAM(40, FOX, "scream"),
+        YIP(15, SoundEvents.FOX_AMBIENT, 1, "yip"),
+        CHATTER(25, SoundEvents.FOX_AGGRO, 1, "chatter"),
+        FOX_SCREAM("Scream", 40, SoundEvents.FOX_SCREECH, 1, "scream"),
 
-        ROAR(80, BIG_CAT, "roar", "rawr");
+        ROAR(80, ChangedSounds.MONSTER2, 2, "roar", "rawr"),
 
+        DRAGON_ROAR("Roar", 60, SoundEvents.ENDER_DRAGON_AMBIENT, 1.5f, "roar", "rawr"),//might conflict
+        DRAGON_GROWL("Growl", 60, SoundEvents.ENDER_DRAGON_GROWL, 1.5f, "growl", "grr"),
+
+        SWIM(20, SoundEvents.FISH_SWIM, 1, "swim"),
+        FLOP(15, SoundEvents.TROPICAL_FISH_FLOP, 1, "flop");
+
+        private final String formattedName;
         private final int cooldown;
-        private final Set<TransfurSoundType> allowed;
+        private final Supplier<SoundEvent> sound;
+        private final float volume;
         private final Set<String> chatMatches;
 
         TransfurSoundAction(
-                int cooldown,
-                TransfurSoundType[] types,
+                String name,
+                int cooldown, Supplier<SoundEvent> sound, float volume,
                 String... chatMatches
         ) {
+            this.formattedName = name;
             this.cooldown = cooldown;
-            this.allowed = EnumSet.copyOf(List.of(types));
+            this.sound = sound;
+            this.volume = volume;
             this.chatMatches = Set.of(chatMatches);
         }
 
-        // 🔹 compatível com seu construtor atual
         TransfurSoundAction(
-                int cooldown,
-                TransfurSoundType type,
+                String name,
+                int cooldown, SoundEvent sound, float volume,
                 String... chatMatches
         ) {
-            this(cooldown, new TransfurSoundType[]{type}, chatMatches);
+            this(name, cooldown, () -> sound, volume, chatMatches);
         }
 
         TransfurSoundAction(
-                int cooldown,
-                TransfurSoundType type1,
-                TransfurSoundType type2,
+                int cooldown, Supplier<SoundEvent> sound, float volume,
                 String... chatMatches
         ) {
-            this(cooldown, new TransfurSoundType[]{type1, type2}, chatMatches);
+            formattedName = null;
+            this.cooldown = cooldown;
+            this.sound = sound;
+            this.volume = volume;
+            this.chatMatches = Set.of(chatMatches);
+        }
+
+        TransfurSoundAction(
+                int cooldown, SoundEvent sound, float volume,
+                String... chatMatches
+        ) {
+            this(cooldown, () -> sound, volume, chatMatches);
+        }
+
+        public SoundEvent sound() {
+            return sound.get();
         }
 
         public boolean canUse(Player player) {
             return getSoundTypes(player)
                     .stream()
-                    .anyMatch(allowed::contains);
+                    .anyMatch(type -> type.actions.contains(this));
         }
 
         public boolean matchesChat(String text) {
@@ -186,11 +171,33 @@ public class TransfurSoundsDetails {
             return false;
         }
 
+        public void playAndApplyCooldown(Player player) {
+            player.level.playSound(
+                    null,
+                    player,
+                    sound(),
+                    SoundSource.PLAYERS,
+                    volume,
+                    getPitch(player, this)
+            );
+
+            ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.ofOrDefault(player);
+            vars.actCooldown = true;
+            vars.syncPlayerVariables(player);
+
+            DelayedTask.schedule(getCooldown(), () -> {
+                vars.actCooldown = false;
+                vars.syncPlayerVariables(player);
+            });
+        }
+
         public int getCooldown() {
             return cooldown;
         }
 
         public String getFormatedName() {
+            if (formattedName != null) return formattedName;
+
             String[] parts = this.name().toLowerCase().split("_");
             StringBuilder result = new StringBuilder();
 

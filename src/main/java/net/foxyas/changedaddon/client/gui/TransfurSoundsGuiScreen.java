@@ -4,30 +4,27 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.event.TransfurEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.menu.TransfurSoundsGuiMenu;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.TransfurSoundsGuiButtonPacket;
 import net.foxyas.changedaddon.util.ComponentUtil;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.foxyas.changedaddon.variant.TransfurSoundsDetails;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class TransfurSoundsGuiScreen
-        extends AbstractContainerScreen<TransfurSoundsGuiMenu> {
+public class TransfurSoundsGuiScreen extends Screen {
 
     /* ------------------------------------------------------------
      * Player
@@ -42,24 +39,20 @@ public class TransfurSoundsGuiScreen
     private static final int START_X = 4;
     private static final int START_Y = 6;
     private static final int GAP_Y = 22;
+    private static final int imageWidth = 176;
+    private static final int imageHeight = 150;
 
-    /* ------------------------------------------------------------
-     * Action order (visual chain)
-     * ------------------------------------------------------------ */
-    private static final TransfurSoundsDetails.TransfurSoundAction[] ACTION_CHAIN = Arrays.stream(TransfurSoundsDetails.TransfurSoundAction.values()).toArray(TransfurSoundsDetails.TransfurSoundAction[]::new);
+    protected int topPos;
+    protected int leftPos;
+
+    List<Button> buttons = new ArrayList<>();
 
     /* ------------------------------------------------------------
      * Constructor
      * ------------------------------------------------------------ */
-    public TransfurSoundsGuiScreen(
-            TransfurSoundsGuiMenu menu,
-            Inventory inventory,
-            Component title
-    ) {
-        super(menu, inventory, title);
-        this.player = menu.player;
-        this.imageWidth = 176;
-        this.imageHeight = 150;
+    public TransfurSoundsGuiScreen() {
+        super(ComponentUtil.literal("TransfurSoundsGui"));
+        this.player = Minecraft.getInstance().player;
     }
 
     /* ------------------------------------------------------------
@@ -69,23 +62,33 @@ public class TransfurSoundsGuiScreen
     public void init() {
         super.init();
 
+        leftPos = (this.width - imageWidth) / 2;
+        topPos = (this.height - imageHeight) / 2;
+
         int y = topPos + START_Y;
 
-        for (TransfurSoundsDetails.TransfurSoundAction action : ACTION_CHAIN) {
-            if (!action.canUse(player))
-                continue;
+        buttons.clear();
+        Button button;
+        for (TransfurSoundsDetails.TransfurSoundType type : TransfurSoundsDetails.TransfurSoundType.values()) {
+            if (!type.predicate.test(player)) continue;
 
-            addRenderableWidget(
-                    createSoundButton(leftPos + START_X, y, action)
-            );
+            for (TransfurSoundsDetails.TransfurSoundAction action : type.actions) {
+                button = createSoundButton(leftPos + START_X, y, action);
 
-            y += GAP_Y;
+                buttons.add(button);
+                addRenderableWidget(button);
+
+                y += GAP_Y;
+            }
         }
+    }
 
-        if (this.player != null) {
-            ChangedAddonVariables.PlayerVariables playerVariables = ChangedAddonVariables.nonNullOf(player);
-            playerVariables.actCooldown = false;
-            playerVariables.syncPlayerVariables(player);
+
+    @Override
+    public void tick() {
+        boolean active = isNotOnCooldown();
+        for (Button button : buttons) {
+            button.active = active;
         }
     }
 
@@ -111,25 +114,16 @@ public class TransfurSoundsGuiScreen
                 player
         );
 
-        renderTooltip(stack, mouseX, mouseY);
+        renderLabels(stack, mouseX, mouseY);
     }
 
-    @Override
-    protected void renderBg(
-            @NotNull PoseStack graphics,
-            float partialTicks,
-            int x,
-            int y
-    ) {
-        // background handled elsewhere
-    }
-
-    @Override
     protected void renderLabels(
             @NotNull PoseStack stack,
             int mouseX,
             int mouseY
     ) {
+        stack.pushPose();
+        stack.translate(leftPos, topPos, 0);
         // -------------------------------
         // Title
         // -------------------------------
@@ -160,6 +154,7 @@ public class TransfurSoundsGuiScreen
                     0x3A3A3A
             );
         }
+        stack.popPose();
     }
 
     /* ------------------------------------------------------------
@@ -174,7 +169,9 @@ public class TransfurSoundsGuiScreen
                 ComponentUtil.translatable(
                 "gui.changed_addon.transfur_sounds_gui." +
                         action.name().toLowerCase()
-        ), b -> sendSoundPacket(action));
+        ), b -> {
+                    if (isNotOnCooldown()) sendSoundPacket(action);
+                });
     }
 
     protected void sendSoundPacket(
@@ -217,6 +214,14 @@ public class TransfurSoundsGuiScreen
             species.add(ComponentUtil.literal("§fCanine"));
         }
 
+        if (PlayerUtil.isDragonTransfur(player)) {
+            species.add(ComponentUtil.literal("§fDragon"));
+        }
+
+        if (PlayerUtil.isAquaticTransfur(player)) {
+            species.add(ComponentUtil.literal("§fFish"));
+        }
+
         if (species.isEmpty()) {
             species.add(ComponentUtil.literal("§7Unknown"));
         }
@@ -227,7 +232,7 @@ public class TransfurSoundsGuiScreen
         // Special traits
         // ===============================
 
-        if (canRoar()) {
+        if (isApexPredator()) {
             subtitles.add(ComponentUtil.literal("§6Apex Predator"));
         }
 
@@ -246,11 +251,11 @@ public class TransfurSoundsGuiScreen
         return result;
     }
 
-    protected boolean isOnCooldown() {
-        return ChangedAddonVariables.ofOrDefault(player).actCooldown;
+    protected boolean isNotOnCooldown() {
+        return !ChangedAddonVariables.ofOrDefault(player).actCooldown;
     }
 
-    protected boolean canRoar() {
+    protected boolean isApexPredator() {
         if (!ProcessTransfur.isPlayerTransfurred(player))
             return false;
 
@@ -265,5 +270,10 @@ public class TransfurSoundsGuiScreen
         return path.contains("lion")
                 || path.contains("tiger")
                 || path.startsWith("changed_addon:form_experiment009") || TransfurEvents.resolveChangedEntity(player).getType().is(ChangedAddonTags.EntityTypes.CAN_ROAR);
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }

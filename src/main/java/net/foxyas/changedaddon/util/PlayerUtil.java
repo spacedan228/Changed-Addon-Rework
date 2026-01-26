@@ -8,6 +8,7 @@ import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
+import net.ltxprogrammer.changed.entity.beast.AbstractAquaticEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
@@ -172,6 +173,22 @@ public class PlayerUtil {
 
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return entity.getType().getRegistryName().toString().contains("fox");
+    }
+
+    public static boolean isDragonTransfur(Player player) {
+        TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
+        if (variant.is(ChangedAddonTags.TransfurTypes.DRAGON_LIKE)) return true;
+
+        ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
+        return entity.getType().getRegistryName().toString().contains("dragon");
+    }
+
+    public static boolean isAquaticTransfur(Player player) {
+        TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
+        if (variant.is(ChangedAddonTags.TransfurTypes.AQUATIC_LIKE)) return true;
+
+        ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
+        return entity instanceof AbstractAquaticEntity;
     }
 
     public static boolean canRoar(Player player) {
