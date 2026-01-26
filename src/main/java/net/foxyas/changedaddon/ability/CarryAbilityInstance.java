@@ -191,7 +191,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
             return;
 
         // Selecionar alvo para carregar
-        Entity target = this.carryTarget(player);
+        Entity target = carryTarget(player);
         setCarriedEntity(target);
 
         if (target == null)
