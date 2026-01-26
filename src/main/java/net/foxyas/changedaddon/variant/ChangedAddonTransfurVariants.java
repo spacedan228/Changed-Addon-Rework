@@ -210,6 +210,7 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAddonAbilities.TELEPORT)
                     .addAbility(ChangedAddonAbilities.TELEPORT_DODGE)
                     .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
+                    .addAbility(ChangedAddonAbilities.CARRY)
                     .glide()
                     .sound(ChangedSounds.TRANSFUR_BY_LATEX.get().getLocation()));
 
