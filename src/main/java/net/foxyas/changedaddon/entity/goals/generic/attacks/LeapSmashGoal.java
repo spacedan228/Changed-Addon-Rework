@@ -98,7 +98,7 @@ public class LeapSmashGoal extends Goal {
         BlockPos center = mob.blockPosition();
         int radius = 4;
 
-        for (BlockPos pos : BlockPos.betweenClosedStream(new AABB(center.below()).inflate(radius, 0, radius)).toList()) {
+        for (BlockPos pos : BlockPos.betweenClosedStream(new AABB(center.below()).inflate(radius, 0, radius)).map(BlockPos::immutable).toList()) {
             double dx = (center.getX() - pos.getX()) / (double) radius;
             double dy = (center.getY() - pos.getY());
             double dz = (center.getZ() - pos.getZ()) / (double) radius;
