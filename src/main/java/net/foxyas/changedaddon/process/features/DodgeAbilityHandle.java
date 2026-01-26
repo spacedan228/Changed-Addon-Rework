@@ -38,15 +38,12 @@ public class DodgeAbilityHandle {
             return;
         }
 
-        /*if (entity.invulnerableTime <= 0) {
-        }*/
-
         Entity pTarget = entityHitResult.getEntity();
         if (!pTarget.getLevel().isClientSide()) {
             Entity owner = self.getOwner();
             Entity attacker;
             attacker = Objects.requireNonNullElse(owner, self);
-            if (pTarget instanceof ChangedEntity changedEntity) {
+            if (pTarget instanceof ChangedEntity changedEntity && changedEntity.getUnderlyingPlayer() == null) {
                 List<AbstractAbility<?>> dodgeAbilities = ChangedRegistry.ABILITY.get().getValues().stream().filter((abstractAbility -> abstractAbility instanceof DodgeAbility)).toList();
                 if (dodgeAbilities.isEmpty()) return;
                 for (AbstractAbility<?> ability : dodgeAbilities) {
@@ -66,23 +63,6 @@ public class DodgeAbilityHandle {
                     return;
                 }
 
-//                DodgeAbilityInstance dodgeAbilityInstance = changedEntity.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
-//                DodgeAbilityInstance teleportDodgeAbilityInstance = changedEntity.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
-//                if (dodgeAbilityInstance != null
-//                        && dodgeAbilityInstance.canUse()
-//                        && dodgeAbilityInstance.canKeepUsing()
-//                        && dodgeAbilityInstance.isDodgeActive()) {
-//                    event.setCanceled(false);
-//                    dodgeAbilityInstance.executeDodgeEffects(changedEntity, attacker);
-//                    dodgeAbilityInstance.executeDodgeHandle(changedEntity, attacker);
-//                } else if (teleportDodgeAbilityInstance != null
-//                        && teleportDodgeAbilityInstance.canUse()
-//                        && teleportDodgeAbilityInstance.canKeepUsing()
-//                        && teleportDodgeAbilityInstance.isDodgeActive()) {
-//                    event.setCanceled(false);
-//                    teleportDodgeAbilityInstance.executeDodgeEffects(changedEntity, attacker);
-//                    teleportDodgeAbilityInstance.executeDodgeHandle(changedEntity, attacker);
-//                }
             }
 
             if (pTarget instanceof Player player) {
@@ -108,28 +88,6 @@ public class DodgeAbilityHandle {
                         }
                         return;
                     }
-
-//                    DodgeAbilityInstance dodgeAbilityInstance = instance.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
-//                    DodgeAbilityInstance teleportDodgeAbilityInstance = instance.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
-//                    if (dodgeAbilityInstance != null
-//                            && dodgeAbilityInstance.canUse()
-//                            && dodgeAbilityInstance.canKeepUsing()
-//                            && dodgeAbilityInstance.isDodgeActive()) {
-//                        if (dodgeAbilityInstance.getDodgeType() == DodgeAbilityInstance.DodgeType.WEAVE) {
-//                            event.setCanceled(false);
-//                            dodgeAbilityInstance.executeDodgeEffects(player, attacker);
-//                            dodgeAbilityInstance.executeDodgeHandle(player, attacker);
-//                        }
-//                    } else if (teleportDodgeAbilityInstance != null
-//                            && teleportDodgeAbilityInstance.canUse()
-//                            && teleportDodgeAbilityInstance.canKeepUsing()
-//                            && teleportDodgeAbilityInstance.isDodgeActive()) {
-//                        if (teleportDodgeAbilityInstance.getDodgeType() == DodgeAbilityInstance.DodgeType.TELEPORT) {
-//                            event.setCanceled(false);
-//                            teleportDodgeAbilityInstance.executeDodgeEffects(player, attacker);
-//                            teleportDodgeAbilityInstance.executeDodgeHandle(player, attacker);
-//                        }
-//                    }
                 }
             }
         }
@@ -140,69 +98,64 @@ public class DodgeAbilityHandle {
         LivingEntity target = event.getEntityLiving();
         Entity attacker = event.getSource().getEntity();
 
-        if (!(target instanceof Player player) || attacker == null)
-            return;
-
-        Level world = target.level;
-
-        TransfurVariantInstance<?> variant = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (variant == null)
-            return;
-
-        DodgeAbilityInstance dodge = variant.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
-        if (dodge == null) {
-            AbstractAbilityInstance teleportDodge = variant.abilityInstances.get(ChangedAddonAbilities.TELEPORT_DODGE.get());
-            if (teleportDodge == null) {
-                DodgeAbilityInstance counterDodge = variant.getAbilityInstance(ChangedAddonAbilities.COUNTER_DODGE.get());
-                if (counterDodge != null) {
-                    dodge = counterDodge;
-                }
-            } else {
-                dodge = variant.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
-            }
-        }
-
-        if (dodge == null) {
-            List<Map.Entry<AbstractAbility<?>, AbstractAbilityInstance>> dodgeAbilityInstances = variant.abilityInstances.entrySet().stream().filter((entrySet) -> (entrySet.getKey() instanceof DodgeAbility && entrySet.getValue() instanceof DodgeAbilityInstance)).toList();
-            if (!dodgeAbilityInstances.isEmpty()) {
-                for (Map.Entry<AbstractAbility<?>, AbstractAbilityInstance> dodgeAbilities : dodgeAbilityInstances) {
-                    AbstractAbility<?> key = dodgeAbilities.getKey();
-                    AbstractAbilityInstance value = dodgeAbilities.getValue();
-                    if (key instanceof DodgeAbility && value instanceof DodgeAbilityInstance dodgeInstance) {
-                        if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
-                            dodge = dodgeInstance;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (dodge == null) {
-                return;
-            }
-        }
-
-        if (!dodge.isDodgeActive())
-            return;
-
-        if (dodge.getDodgeAmount() <= 0) {
-            dodge.getController().deactivateAbility();
-            return;
-        }
-
-        if (!dodge.canUse() && !dodge.canKeepUsing()) {
-            return;
-        }
+        if (attacker == null) return;
 
         if (attacker instanceof Projectile projectile) {
             return;
         }
-        if (event.getSource().getDirectEntity() instanceof Projectile projectile) {
-            return;
-        }
 
-        if (attacker instanceof LivingEntity livingAttacker) {
-            applyDodgeEffects(player, livingAttacker, dodge, world, event);
-            applyDodgeHandle(player, livingAttacker, dodge, world, event);
+        if (!target.getLevel().isClientSide()) {
+            if (target instanceof ChangedEntity dodger && dodger.getUnderlyingPlayer() == null) {
+                List<AbstractAbility<?>> dodgeAbilities = ChangedRegistry.ABILITY.get().getValues().stream().filter((abstractAbility -> abstractAbility instanceof DodgeAbility)).toList();
+                if (dodgeAbilities.isEmpty()) return;
+                for (AbstractAbility<?> ability : dodgeAbilities) {
+                    if (!(ability instanceof DodgeAbility dodgeAbility)) continue;
+                    DodgeAbilityInstance dodgeInstance = dodger.getAbilityInstance(dodgeAbility);
+                    if (dodgeInstance == null) continue;
+
+                    if (dodgeInstance.getDodgeAmount() <= 0) {
+                        dodgeInstance.getController().deactivateAbility();
+                        continue;
+                    }
+
+                    if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
+                        event.setCanceled(true);
+                        dodgeInstance.executeDodgeEffects(dodger.level, attacker, dodger, event);
+                        dodgeInstance.executeDodgeHandle(dodger.level, attacker, dodger, event, true);
+                        break;
+                    }
+                    return;
+                }
+
+            }
+
+            if (target instanceof Player dodger) {
+                TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(dodger);
+                if (instance != null) {
+                    List<Map.Entry<AbstractAbility<?>, AbstractAbilityInstance>> dodgeAbilityInstances = instance.abilityInstances.entrySet().stream().filter((entrySet) -> (entrySet.getKey() instanceof DodgeAbility && entrySet.getValue() instanceof DodgeAbilityInstance)).toList();
+                    if (!dodgeAbilityInstances.isEmpty()) {
+                        for (Map.Entry<AbstractAbility<?>, AbstractAbilityInstance> dodgeAbilities : dodgeAbilityInstances) {
+                            AbstractAbility<?> key = dodgeAbilities.getKey();
+                            AbstractAbilityInstance value = dodgeAbilities.getValue();
+                            if (key instanceof DodgeAbility && value instanceof DodgeAbilityInstance dodgeInstance) {
+
+                                if (dodgeInstance.getDodgeAmount() <= 0) {
+                                    dodgeInstance.getController().deactivateAbility();
+                                    continue;
+                                }
+
+                                if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
+                                    event.setCanceled(true);
+                                    dodgeInstance.executeDodgeEffects(dodger.level, attacker, dodger, event);
+                                    dodgeInstance.executeDodgeHandle(dodger.level, attacker, dodger, event, true);
+                                    break;
+                                }
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
         }
     }
 

@@ -118,9 +118,9 @@ public interface ICrawlAndSwimAbleEntity {
                     .position()
                     .subtract(livingEntity.position())
                     .normalize();
-        } else if (livingEntity.getDeltaMovement().lengthSqr() > 0.0001) {
+        } /* else if (livingEntity.getDeltaMovement().lengthSqr() > 0.0001) {
             movementDir = livingEntity.getDeltaMovement().normalize();
-        }
+        }*/
 
         if (movementDir != null) {
             float appliedSpeed = livingEntity.isEyeInFluid(FluidTags.WATER)

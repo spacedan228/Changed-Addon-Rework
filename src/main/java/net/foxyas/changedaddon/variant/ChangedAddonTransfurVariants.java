@@ -235,6 +235,7 @@ public class ChangedAddonTransfurVariants {
                     .addAbility(ChangedAddonAbilities.TELEPORT)
                     .addAbility(ChangedAddonAbilities.TELEPORT_DODGE)
                     .addAbility(ChangedAddonAbilities.CUSTOM_INTERACTION)
+                    .addAbility(ChangedAddonAbilities.CARRY)
                     .glide()
                     .stepSize(0.7F)
                     .sound(ChangedSounds.SOUND3.getLocation()));

@@ -10,6 +10,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -117,7 +119,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     }
 
     public boolean isDodgeActive() {
-        return this.getCanDodgeTicks() > 0 || dodgeActive || this.getController().getHoldTicks() > 0;
+        return this.ultraInstinct || this.getCanDodgeTicks() > 0 || dodgeActive || this.getController().getHoldTicks() > 0;
     }
 
     public void setDodgeActivate(boolean active) {
@@ -243,41 +245,24 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         }
 
         if (this.getDodgeType() == DodgeType.TELEPORT) {
-            if (event != null) {
-                event.setCanceled(true);
+            boolean success = false;
+
+
+            for (int i = 0; i < 8 && !success; i++) {
+                double dx = (dodger.getRandom().nextDouble() - 0.5) * 16;
+                double dz = (dodger.getRandom().nextDouble() - 0.5) * 16;
+                success = safeTeleport(dodger, levelAccessor,
+                        dodger.getX() + dx,
+                        dodger.getZ() + dz);
             }
 
-            if (distance > 2f) {
-                // Random offset values
-                double maxDistance = 16.0; // maximum distance for teleport
-                double dx = (dodger.getRandom().nextDouble() - 0.5) * 2 * maxDistance;
-                double dz = (dodger.getRandom().nextDouble() - 0.5) * 2 * maxDistance;
-                double dy = (dodger.getRandom().nextInt(16) - 8); // vertical offset -8 to +7
 
-                // Calculate target position
-                BlockPos targetPos = new BlockPos(dodger.getX() + dx, dodger.getY() + dy, dodger.getZ() + dz);
-                if (dodger.randomTeleport(targetPos.getX(), targetPos.getY(), targetPos.getZ(), true)) {
-                    // Optional: play sound & particles like Enderman
-                    levelAccessor.playSound(null, dodger.blockPosition(),
-                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    if (levelAccessor instanceof ServerLevel serverLevel) {
-                        serverLevel.sendParticles(ParticleTypes.PORTAL,
-                                dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
-                                20, 0.5, 1.0, 0.5, 0.1);
-                    }
-                }
-            } else {
-                if (dodger.randomTeleport(dodgePosBehind.x, dodgePosBehind.y, dodgePosBehind.z, true)) {
-                    // Optional: play sound & particles like Enderman
-                    levelAccessor.playSound(null, dodger.blockPosition(),
-                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    if (levelAccessor instanceof ServerLevel serverLevel) {
-                        serverLevel.sendParticles(ParticleTypes.PORTAL,
-                                dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
-                                20, 0.5, 1.0, 0.5, 0.1);
-                    }
-                }
+            if (!success) {
+                dodgeAwayFromAttacker(dodger, attacker);
             }
+
+            if (event != null) event.setCanceled(true);
+            levelAccessor.playSound(null, dodger.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
         } else if (this.dodgeType == DodgeType.WEAVE) {
             dodgeAwayFromAttacker(dodger, attacker);
             if (event != null) {
@@ -290,6 +275,33 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                 this.dodgeType.runDodge(this, levelAccessor, dodger, attacker, event, distance, dodgePosBehind, causeExhaustion);
             }
         }
+    }
+
+    private boolean safeTeleport(LivingEntity entity, LevelAccessor level, double x, double z) {
+        if (!(level instanceof ServerLevel server)) return false;
+
+
+        int baseY = Mth.floor(entity.getY());
+
+
+        for (int dy = 16; dy >= -16; dy--) {
+            BlockPos pos = new BlockPos(
+                    Mth.floor(x),
+                    baseY + dy,
+                    Mth.floor(z)
+            );
+
+
+            if (server.getBlockState(pos).isSolidRender(server, pos)) {
+                return entity.randomTeleport(
+                        pos.getX() + 0.5,
+                        pos.getY() + 1,
+                        pos.getZ() + 0.5,
+                        true
+                );
+            }
+        }
+        return false;
     }
 
     public void executeDodgeHandle(LivingEntity dodger, Entity attacker) {
@@ -355,6 +367,8 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                             true
                     );
                 }
+
+                this.ability.setDirty(entity);
             }
         }
     }
@@ -374,6 +388,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
             }
         }
         setDodgeActivate(canUse());
+        this.ability.setDirty(entity);
     }
 
     @Override
@@ -387,6 +402,9 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         if (ultraInstinct) {
             this.setDodgeActivate(true);
         }
+
+        if (this.getController().getHoldTicks() > 0) this.dodgeRegenCooldown = 5;
+
         if (this.getDodgeType() instanceof CounterDodgeType) {
             this.setDodgeActivate(this.getCanDodgeTicks() > 0);
             if (this.getCanDodgeTicks() > 0) {
