@@ -80,6 +80,7 @@ public class TransfurSoundsDetails {
             // 🐱 Cats
             case MEOW -> SoundEvents.CAT_AMBIENT;
             case HISS -> SoundEvents.CAT_HISS;
+            case PURREOW -> SoundEvents.CAT_PURREOW;
 
 
             // 🦁 Big cats
@@ -123,6 +124,7 @@ public class TransfurSoundsDetails {
 
         MEOW(20, CAT, "meow", "miau"),
         HISS(40, CAT, "hiss"),
+        PURREOW(40, CAT, "purreow"),
 
         BARK(10, DOG, WOLF, "bark"),
         GROWL(60, DOG, WOLF, "growl", "grr"),
@@ -172,7 +174,7 @@ public class TransfurSoundsDetails {
                     .stream()
                     .anyMatch(allowed::contains);
         }
-        
+
         public boolean matchesChat(String text) {
             text = text.toLowerCase();
             for (String match : chatMatches) {

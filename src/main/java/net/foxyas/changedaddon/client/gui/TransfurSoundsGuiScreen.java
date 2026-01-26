@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.client.gui;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.event.TransfurEvents;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.menu.TransfurSoundsGuiMenu;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.TransfurSoundsGuiButtonPacket;
@@ -264,6 +266,6 @@ public class TransfurSoundsGuiScreen
 
         return path.contains("lion")
                 || path.contains("tiger")
-                || path.startsWith("changed_addon:form_experiment009");
+                || path.startsWith("changed_addon:form_experiment009") || TransfurEvents.resolveChangedEntity(player).getType().is(ChangedAddonTags.EntityTypes.CAN_ROAR);
     }
 }
