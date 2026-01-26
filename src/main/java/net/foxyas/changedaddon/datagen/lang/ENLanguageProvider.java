@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.datagen.lang;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.*;
+import net.foxyas.changedaddon.variant.TransfurSoundsDetails;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.PaintingVariant;
@@ -426,15 +427,11 @@ public class ENLanguageProvider extends LanguageProvider {
         addGui("informant_gui.label_empty", "?");
         addGui("informant_gui.tooltip_put_a_syringe_with_a_form", "Put A syringe With a Form");
         addGui("informant_gui.tooltip_type_the_form", "Type The Form ID");
-        addGui("transfur_sounds_gui.button_1", "Purr");
-        addGui("transfur_sounds_gui.button_2", "Meow");
-        addGui("transfur_sounds_gui.button_3", "Growl");
-        addGui("transfur_sounds_gui.button_4", "Bark");
-        addGui("transfur_sounds_gui.button_5", "Howl");
-        addGui("transfur_sounds_gui.button_6", "Hiss");
-        addGui("transfur_sounds_gui.button_61", "Roar");
-        addGui("transfur_sounds_gui.button_7", "Purreow");
-        addGui("transfur_sounds_gui.button_cooldown", "Cooldown Reset");
+
+        for (TransfurSoundsDetails.TransfurSoundAction transfurSoundAction :TransfurSoundsDetails.TransfurSoundAction.values()) {
+            addGui("transfur_sounds_gui." + transfurSoundAction.name().toLowerCase(), transfurSoundAction.getFormatedName());
+        }
+
         addGui("transfur_sounds_gui.label_transfur_sounds", "TransfurSounds");
         addGui("unifuser_gui.label_full", "Full");
         addGui("unifuser_gui.tooltip_place_a_syringe_with_dna", "Place a Syringe with DNA");

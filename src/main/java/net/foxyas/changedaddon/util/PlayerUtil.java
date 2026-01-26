@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.util;
 
 import com.google.common.base.Predicates;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.entity.simple.AbstractSnowFoxEntity;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
@@ -166,6 +167,20 @@ public class PlayerUtil {
                 entity instanceof AbstractLatexWolf;
     }
 
+    public static boolean isFoxTransfur(Player player) {
+        TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
+        if (variant.is(ChangedAddonTags.TransfurTypes.FOX_LIKE)) return true;
+
+        ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
+        return ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString().contains("fox") ||
+                entity instanceof AbstractSnowFoxEntity;
+    }
+
+    public static boolean canRoar(Player player) {
+        ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
+        return entity.getType().is(ChangedAddonTags.EntityTypes.CAN_ROAR);
+    }
+
     //=================================================== LookingAt ==================================================//
 
     public static final ClipContext.ShapeGetter BLOCK_COLLISION = ClipContext.Block.COLLIDER;
@@ -198,7 +213,8 @@ public class PlayerUtil {
     /**
      * @deprecated Use {@link PlayerUtil#getEntityHitLookingAt(Entity, float, ClipContext.ShapeGetter)}
      */
-    @Nullable @Deprecated(forRemoval = true)
+    @Nullable
+    @Deprecated(forRemoval = true)
     public static EntityHitResult getEntityHitLookingAt(Entity entity, float reach, boolean testLineOfSight) {
         return getEntityHitLookingAt(entity, reach, testLineOfSight ? ClipContext.Block.OUTLINE : null);
     }
