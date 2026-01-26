@@ -76,6 +76,7 @@ public final class ChangedAddonTags {
         public static final TagKey<EntityType<?>> IGNORE_GRABBED_TARGETS = key("ignore_grabber_targets");
         public static final TagKey<EntityType<?>> CANT_SPAWN_AS_ALPHA_ENTITY = key("cant_spawn_as_alpha_entity");
         public static final TagKey<EntityType<?>> CANT_USE_GRAB = key("cant_use_grab");
+        public static final TagKey<EntityType<?>> CAN_ROAR = key("can_roar");
 
         private static TagKey<EntityType<?>> key(String path) {
             return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ChangedAddonMod.resourceLoc(path));

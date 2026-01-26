@@ -2,96 +2,87 @@ package net.foxyas.changedaddon.network.packet;
 
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.DelayedTask;
-import net.foxyas.changedaddon.util.PlayerUtil;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.init.ChangedSounds;
+import net.foxyas.changedaddon.variant.TransfurSoundsDetails;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.Triple;
 
-import java.util.List;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public record TransfurSoundsGuiButtonPacket(int buttonId) {
+import static net.foxyas.changedaddon.variant.TransfurSoundsDetails.getSoundFor;
 
-    private static final List<Triple<ResourceLocation, Predicate<Player>, Integer>> sounds = List.of(
-            Triple.of(ResourceLocation.parse("entity.cat.purr"), PlayerUtil::isCatTransfur, 60),
-            Triple.of(ResourceLocation.parse("entity.cat.ambient"), PlayerUtil::isCatTransfur, 10),
-            Triple.of(ResourceLocation.parse("entity.wolf.growl"), PlayerUtil::isWolfTransfur, 60),
-            Triple.of(ResourceLocation.parse("entity.wolf.ambient"), PlayerUtil::isWolfTransfur, 10),
-            Triple.of(ResourceLocation.parse("entity.wolf.howl"), PlayerUtil::isWolfTransfur, 80),
-            Triple.of(ResourceLocation.parse("entity.cat.hiss"), PlayerUtil::isCatTransfur, 40),
-            Triple.of(ResourceLocation.parse("entity.cat.purreow"), PlayerUtil::isCatTransfur, 20)
-    );
+public record TransfurSoundsGuiButtonPacket(int actionId) {
 
     public TransfurSoundsGuiButtonPacket(FriendlyByteBuf buf) {
         this(buf.readVarInt());
     }
 
     public void encode(FriendlyByteBuf buf) {
-        buf.writeVarInt(buttonId);
+        buf.writeVarInt(actionId);
     }
 
-    public static void handler(TransfurSoundsGuiButtonPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
-        NetworkEvent.Context context = contextSupplier.get();
-        context.enqueueWork(() -> handleButtonAction(context.getSender(), message.buttonId));
-        context.setPacketHandled(true);
+    public static void handler(TransfurSoundsGuiButtonPacket msg, Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() ->
+                handleButtonAction(ctx.get().getSender(), msg.actionId)
+        );
+        ctx.get().setPacketHandled(true);
     }
 
-    public static void handleButtonAction(Player player, int buttonID) {
+    // ===============================
+    // Core logic
+    // ===============================
+
+    public static void handleButtonAction(Player player, int actionId) {
         if (player == null) return;
-
         if (!ProcessTransfur.isPlayerTransfurred(player)) return;
 
-        ChangedAddonVariables.PlayerVariables vars = player.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
-        if (vars == null) return;
+        ChangedAddonVariables.PlayerVariables vars =
+                ChangedAddonVariables.ofOrDefault(player);
 
-        switch (buttonID) {
-            case 0, 1, 2, 3, 4, 5, 6 -> {
-                if (vars.actCooldown) break;
-                Triple<ResourceLocation, Predicate<Player>, Integer> triple = sounds.get(buttonID);
-                if (triple.getMiddle().test(player))
-                    playSound(player.level, player, ForgeRegistries.SOUND_EVENTS.getValue(triple.getLeft()), vars, triple.getRight());
-            }
-            case 7 -> {
-                if (!vars.actCooldown) break;
+        if (vars.actCooldown) return;
 
-                vars.actCooldown = false;
-                vars.syncPlayerVariables(player);
-            }
-            case 8 -> {
-                if (vars.actCooldown) return;
-                TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
-                if (tf == null) break;
+        TransfurSoundsDetails.TransfurSoundAction action = getAction(actionId);
+        if (action == null) return;
 
-                if (tf.getFormId().toString().contains("changed_addon:form_experiment009")) {
-                    player.getLevel().playSound(null, player.position().x, player.position().y, player.position().z, ChangedSounds.MONSTER2, SoundSource.HOSTILE, 35, 0);
-                } else {
-                    player.getLevel().playSound(null, player.position().x, player.position().y, player.position().z, ChangedSounds.MONSTER2, SoundSource.HOSTILE, 5, 1);
-                }
+        if (!action.canUse(player)) return;
 
-                vars.actCooldown = true;
-                vars.syncPlayerVariables(player);
+        SoundEvent sound = getSoundFor(player, action);
+        if (sound == null) return;
 
-                new DelayedTask(60, () -> {
-                    vars.actCooldown = false;
-                    vars.syncPlayerVariables(player);
-                });
-            }
-        }
+        playSound(player.level, player, sound, vars, action.getCooldown());
     }
 
-    private static void playSound(Level level, Entity entity, SoundEvent sound, ChangedAddonVariables.PlayerVariables vars, int cooldown) {
-        level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), sound, SoundSource.PLAYERS, 2, 1);
+    private static TransfurSoundsDetails.TransfurSoundAction getAction(int id) {
+        TransfurSoundsDetails.TransfurSoundAction[] values = TransfurSoundsDetails.TransfurSoundAction.values();
+        return id >= 0 && id < values.length ? values[id] : null;
+    }
+
+    // ===============================
+    // Sound + cooldown
+    // ===============================
+
+    private static void playSound(
+            Level level,
+            Entity entity,
+            SoundEvent sound,
+            ChangedAddonVariables.PlayerVariables vars,
+            int cooldown
+    ) {
+        level.playSound(
+                null,
+                entity.getX(),
+                entity.getY(),
+                entity.getZ(),
+                sound,
+                SoundSource.PLAYERS,
+                2f,
+                1f
+        );
 
         vars.actCooldown = true;
         vars.syncPlayerVariables(entity);
