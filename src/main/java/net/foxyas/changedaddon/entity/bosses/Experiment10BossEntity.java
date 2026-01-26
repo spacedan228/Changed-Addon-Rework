@@ -245,7 +245,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         this.goalSelector.addGoal(20, new SimpleAntiFlyingAttack(this,
                 UniformInt.of(60, 100),
                 3,
-                8,
+                32,
                 8f,
                 10));
         this.goalSelector.addGoal(10, new LeapSmashGoal(this));
