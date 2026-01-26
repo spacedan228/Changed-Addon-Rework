@@ -55,12 +55,12 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
     }
 
     public double getPreferredSurfaceDepth() {
-        return 0;
+        return super.getFluidJumpThreshold();
     }
 
     @Override
     public double getFluidJumpThreshold() {
-        return super.getFluidJumpThreshold() - getPreferredSurfaceDepth();
+        return super.getFluidJumpThreshold();
     }
 
     @Override
@@ -226,7 +226,7 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
 //                        )
 //                ); // Too Stable for my taste but is a good code soo just let this here
 
-                boolean eyeFlag = this.mob.isInWater() && this.mob.getFluidHeight(FluidTags.WATER) > this.mob.getFluidJumpThreshold() || this.mob.isInLava();
+                boolean eyeFlag = this.mob.isInWater() && this.mob.getFluidHeight(FluidTags.WATER) > this.mob.getPreferredSurfaceDepth() || this.mob.isInLava();
                 if (eyeFlag) {
                     if (this.mob.getRandom().nextFloat() < 0.8F) {
                         this.mob.getJumpControl().jump();
@@ -240,7 +240,7 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
                     Vec3 dir = target.getEyePosition().subtract(mob.getEyePosition()).normalize();
                     mob.getLookControl().setLookAt(target, 30, 30);
                     if (!target.isUnderWater()) {
-                        boolean eyeFlag = this.mob.isInWater() && this.mob.getFluidHeight(FluidTags.WATER) > this.mob.getFluidJumpThreshold() || this.mob.isInLava();
+                        boolean eyeFlag = this.mob.isInWater() && this.mob.getFluidHeight(FluidTags.WATER) > this.mob.getPreferredSurfaceDepth() || this.mob.isInLava();
                         if (eyeFlag) {
                             if (this.mob.getRandom().nextFloat() < 0.8F) {
                                 this.mob.getJumpControl().jump();
