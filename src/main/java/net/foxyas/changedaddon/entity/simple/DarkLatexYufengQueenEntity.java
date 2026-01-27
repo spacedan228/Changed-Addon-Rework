@@ -41,8 +41,8 @@ public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity implemen
         Objects.requireNonNull(attributes.getInstance(Attributes.MOVEMENT_SPEED)).setBaseValue(1.15f);
         Objects.requireNonNull(attributes.getInstance(ForgeMod.ATTACK_RANGE.get())).setBaseValue(3.5F); // oh my LARD!!! it was a pain in the ass to figure out how to modify that attribute
         Objects.requireNonNull(attributes.getInstance(ForgeMod.REACH_DISTANCE.get())).setBaseValue(5F);
-        Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_DAMAGE)).setBaseValue(5F);
-        Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue(4.5F);
+        Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_DAMAGE)).setBaseValue(4F);
+        Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue(5f);
         Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_KNOCKBACK)).setBaseValue(1.5F);
         Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue(40F);
         Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR)).setBaseValue(8F);
