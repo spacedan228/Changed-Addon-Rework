@@ -15,7 +15,6 @@ import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.tail.DragonTailCreativeFlyAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -29,7 +28,7 @@ import java.util.List;
 
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.dragonTail;
 
-public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlowerBeastEntity> implements AdvancedHumanoidModelInterface<LuminaraFlowerBeastEntity, LuminaraFlowerBeastModel> {
+public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlowerBeastEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("luminara_flower_beast", "main");
     private final ModelPart Head;
     private final ModelPart LeftEar;
@@ -171,7 +170,6 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
                         rightWingRoot,
                         rightSecondaries,
                         rightTertiaries));
-
 
 
     }
@@ -469,7 +467,7 @@ public class LuminaraFlowerBeastModel extends AdvancedHumanoidModel<LuminaraFlow
 
     @Override
     public void prepareMobModel(@NotNull LuminaraFlowerBeastEntity entity, float limbSwing, float limbSwingAmount, float partialTicks) {
-        this.prepareMobModel(this.getAnimator(entity), entity, limbSwing, limbSwingAmount, partialTicks);
+        super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
         this.handleVisibility(entity);
     }
 

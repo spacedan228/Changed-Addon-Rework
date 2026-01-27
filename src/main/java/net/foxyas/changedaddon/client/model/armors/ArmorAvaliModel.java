@@ -5,13 +5,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.advanced.AvaliModel;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
-import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleDragonModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModelSet;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -58,16 +56,9 @@ public class ArmorAvaliModel<T extends AvaliEntity> extends LatexHumanoidArmorMo
                         LeftLeg, leftLowerLeg, leftFoot, leftPad, RightLeg, rightLowerLeg, rightFoot, rightPad));
     }
 
+    @Override
     public void prepareVisibility(EquipmentSlot armorSlot, ItemStack item) {
         super.prepareVisibility(armorSlot, item);
-        if (armorSlot == EquipmentSlot.LEGS) {
-            prepareUnifiedLegsForArmor(item, this.LeftLeg, this.RightLeg, this.Tail);
-        }
-
-    }
-
-    public void unprepareVisibility(EquipmentSlot armorSlot, ItemStack item) {
-        super.unprepareVisibility(armorSlot, item);
         if (armorSlot == EquipmentSlot.LEGS) {
             prepareUnifiedLegsForArmor(item, this.LeftLeg, this.RightLeg, this.Tail);
         }

@@ -11,7 +11,6 @@ import net.foxyas.changedaddon.entity.simple.BagelEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -21,9 +20,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BagelModel extends AdvancedHumanoidModel<BagelEntity> implements AdvancedHumanoidModelInterface<BagelEntity, BagelModel> {
+public class BagelModel extends AdvancedHumanoidModel<BagelEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION =  ChangedAddonMod.layerLocation( "bagel", "main");
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("bagel", "main");
 
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
@@ -147,7 +146,7 @@ public class BagelModel extends AdvancedHumanoidModel<BagelEntity> implements Ad
 
     @Override
     public void prepareMobModel(@NotNull BagelEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     @Override

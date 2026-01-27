@@ -12,7 +12,6 @@ import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmRideAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmSwimAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.*;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -27,7 +26,7 @@ import java.util.function.Consumer;
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.dragonBipedal;
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.dragonTail;
 
-public class AvaliModel<T extends AvaliEntity> extends AdvancedHumanoidModel<T> implements AdvancedHumanoidModelInterface<T, AvaliModel<T>> {
+public class AvaliModel<T extends AvaliEntity> extends AdvancedHumanoidModel<T> {
 
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("avali_model", "main");
     private final ModelPart Head;
@@ -295,7 +294,7 @@ public class AvaliModel<T extends AvaliEntity> extends AdvancedHumanoidModel<T> 
 
     @Override
     public void prepareMobModel(@NotNull T p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     @Override

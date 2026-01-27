@@ -12,7 +12,6 @@ import net.ltxprogrammer.changed.client.renderer.accessory.AccessoryRenderer;
 import net.ltxprogrammer.changed.client.renderer.accessory.TransitionalAccessory;
 import net.ltxprogrammer.changed.client.renderer.layers.LatexHumanoidArmorLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.client.renderer.model.LatexHumanModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorHumanModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
@@ -291,16 +290,12 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
 
                 for (ModelComponent component : this.components) {
                     LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
-                    AdvancedHumanoidModel var24 = advancedHumanoidRenderer.getModel(changedEntity);
-                    if (var24 instanceof AdvancedHumanoidModelInterface advancedModel) {
-                        model.getAnimator(changedEntity).copyProperties(advancedModel.getAnimator(changedEntity));
-                    }
-
+                    AdvancedHumanoidModel other = advancedHumanoidRenderer.getModel(changedEntity);
+                    model.getAnimator(changedEntity).copyProperties(other.getAnimator(changedEntity));
                     model.prepareMobModel(changedEntity, limbSwing, limbSwingAmount, partialTicks);
                     model.setupAnim(changedEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
                     model.prepareVisibility(component.renderAs, stack);
                     model.renderForSlot(changedEntity, advancedHumanoidRenderer, stack, component.renderAs, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                    model.unprepareVisibility(component.renderAs, stack);
                 }
 
                 return true;
@@ -327,7 +322,7 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTicks) {
+    public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, float partialTicks) {
         ItemStack stack = slotContext.stack();
         Item var11 = stack.getItem();
         if (var11 instanceof Clothing clothing) {
@@ -341,15 +336,15 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
                 return;
             }
 
-            if (mayRenderTransfuredArmModel(poseStack, renderLayerParent, renderTypeBuffer, light, arm, armPose, stackCorrector, partialTicks, entity, texture, stack, color))
+            if (mayRenderTransfuredArmModel(poseStack, renderLayerParent, renderTypeBuffer, light, arm, armPose, partialTicks, entity, texture, stack, color))
                 return;
 
-            renderNonTransfuredArmModel(poseStack, renderLayerParent, renderTypeBuffer, light, arm, armPose, stackCorrector, entity, texture, stack, color);
+            renderNonTransfuredArmModel(poseStack, renderLayerParent, renderTypeBuffer, light, arm, armPose, entity, texture, stack, color);
         }
 
     }
 
-    private <T extends LivingEntity, M extends EntityModel<T>> void renderNonTransfuredArmModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, T entity, ResourceLocation texture, ItemStack stack, Color color) {
+    private <T extends LivingEntity, M extends EntityModel<T>> void renderNonTransfuredArmModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, T entity, ResourceLocation texture, ItemStack stack, Color color) {
         EntityModel layer = renderLayerParent.getModel();
         if (layer instanceof HumanoidModel<?> baseModel) {
             this.playerClothingModel = getPlayerModelForFirstPerson(entity);
@@ -357,16 +352,16 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
             baseModel.copyPropertiesTo(this.playerClothingModel);
             ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
             armPart.loadPose(armPose);
-            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             if (this.playerClothingModel instanceof PlayerModel<?> playerModel) {
                 ModelPart sleevePart = arm == HumanoidArm.RIGHT ? playerModel.rightSleeve : playerModel.leftSleeve;
                 sleevePart.loadPose(armPose);
-                FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             }
         }
     }
 
-    private <T extends LivingEntity, M extends EntityModel<T>> boolean mayRenderTransfuredArmModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTicks, T entity, ResourceLocation texture, ItemStack stack, Color color) {
+    private <T extends LivingEntity, M extends EntityModel<T>> boolean mayRenderTransfuredArmModel(PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, float partialTicks, T entity, ResourceLocation texture, ItemStack stack, Color color) {
         if (entity instanceof ChangedEntity changedEntity) {
             if (renderLayerParent instanceof AdvancedHumanoidRenderer advancedHumanoidRenderer) {
                 LatexHumanoidArmorLayer layer = advancedHumanoidRenderer.getArmorLayer();
@@ -381,12 +376,12 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
 
                             ModelPart armPart = advancedHumanoidModel.getArm(arm);
                             armPart.loadPose(armPose);
-                            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
 
                             if (advancedHumanoidModel instanceof LatexHumanHazardBodySuitModel latexHumanHazardBodySuitModel) {
                                 ModelPart sleevePart = latexHumanHazardBodySuitModel.getSleeve(arm);
                                 sleevePart.loadPose(armPose);
-                                FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                                FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                             }
 
                         } else if (this.playerClothingModel instanceof PlayerModel) {
@@ -394,10 +389,10 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
 
                             ModelPart armPart = arm == HumanoidArm.RIGHT ? this.playerClothingModel.rightArm : this.playerClothingModel.leftArm;
                             armPart.loadPose(armPose);
-                            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                            FormRenderHandler.renderVanillaModelPartWithTexture(armPart, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
 
                             ModelPart sleevePart = arm == HumanoidArm.RIGHT ? playerModel.rightSleeve : playerModel.leftSleeve;
-                            FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                            FormRenderHandler.renderVanillaModelPartWithTexture(sleevePart, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                         }
                         return true;
                     }
@@ -410,8 +405,7 @@ public class HazardBodySuitClothingRenderer implements AccessoryRenderer, Transi
                         model.prepareVisibility(component.renderAs, stack);
                         ModelPart armPart = model.getArm(arm);
                         armPart.loadPose(armPose);
-                        FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                        model.unprepareVisibility(component.renderAs, stack);
+                        FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                     }
                 }
 

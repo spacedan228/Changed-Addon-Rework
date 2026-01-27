@@ -7,7 +7,6 @@ import net.foxyas.changedaddon.entity.simple.FoxtaFoxyEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FoxtaFoxyModel extends AdvancedHumanoidModel<FoxtaFoxyEntity> implements AdvancedHumanoidModelInterface<FoxtaFoxyEntity, FoxtaFoxyModel> {
+public class FoxtaFoxyModel extends AdvancedHumanoidModel<FoxtaFoxyEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("foxta_fox", "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
@@ -131,7 +130,7 @@ public class FoxtaFoxyModel extends AdvancedHumanoidModel<FoxtaFoxyEntity> imple
     }
 
     public void prepareMobModel(@NotNull FoxtaFoxyEntity p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(this.animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
     public void setupHand(FoxtaFoxyEntity entity) {

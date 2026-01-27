@@ -8,7 +8,6 @@ import net.ltxprogrammer.changed.client.animations.Limb;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.client.tfanimations.HelperModel;
 import net.ltxprogrammer.changed.client.tfanimations.TransfurHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LatexKaylaSharkModel extends AdvancedHumanoidModel<LatexKaylaSharkEntity> implements AdvancedHumanoidModelInterface<LatexKaylaSharkEntity, LatexKaylaSharkModel> {
+public class LatexKaylaSharkModel extends AdvancedHumanoidModel<LatexKaylaSharkEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("latex_kayla_shark", "main");
     private final ModelPart Head;
@@ -217,7 +216,7 @@ public class LatexKaylaSharkModel extends AdvancedHumanoidModel<LatexKaylaSharkE
 
     @Override
     public void prepareMobModel(@NotNull LatexKaylaSharkEntity p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
     public void setupHand(LatexKaylaSharkEntity entity) {

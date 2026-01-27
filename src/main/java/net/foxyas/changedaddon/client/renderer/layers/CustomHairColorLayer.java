@@ -60,8 +60,8 @@ public class CustomHairColorLayer<M extends AdvancedHumanoidModel<T>, T extends 
     }
 
     @Override
-    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-        FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, float partialTick) {
+        FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, partialTick);
         if (!ChangedAddonClientConfiguration.FEMALE_SNEPS_HAIR.get() && IsFemaleOrNot) {
             return;
         } else if (!ChangedAddonClientConfiguration.MALE_SNEPS_HAIR.get() && !IsFemaleOrNot) {
@@ -71,7 +71,7 @@ public class CustomHairColorLayer<M extends AdvancedHumanoidModel<T>, T extends 
         Color3 coatColor = info.getHairColor();
         stack.pushPose();
         stack.scale(1.0002F, 1.0002F, 1.0002F);
-        FormRenderHandler.renderModelPartWithTexture(this.model.getArm(arm), stackCorrector, stack, bufferSource.getBuffer(this.getRenderTypeForColor(coatColor)), packedLight, coatColor.red(), coatColor.green(), coatColor.blue(), 1.0F);
+        FormRenderHandler.renderModelPartWithTexture(this.model.getArm(arm), stack, bufferSource.getBuffer(this.getRenderTypeForColor(coatColor)), packedLight, coatColor.red(), coatColor.green(), coatColor.blue(), 1.0F);
         stack.popPose();
     }
 }

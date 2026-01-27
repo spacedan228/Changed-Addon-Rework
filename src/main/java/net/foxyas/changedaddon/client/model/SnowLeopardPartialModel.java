@@ -12,7 +12,6 @@ import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmRideAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmSwimAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.WolfHeadInitAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -31,7 +30,7 @@ import java.util.function.Consumer;
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.*;
 
 
-public class SnowLeopardPartialModel extends AdvancedHumanoidModel<SnowLeopardPartialEntity> implements AdvancedHumanoidModelInterface<SnowLeopardPartialEntity, SnowLeopardPartialModel> {
+public class SnowLeopardPartialModel extends AdvancedHumanoidModel<SnowLeopardPartialEntity> {
 
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION_HUMAN = ChangedAddonMod.layerLocation(("snow_leopard_partial"), "main");
@@ -58,6 +57,7 @@ public class SnowLeopardPartialModel extends AdvancedHumanoidModel<SnowLeopardPa
     private final ModelPart LeftEar;
     private final boolean latexLayer;
     private final HumanoidAnimator<SnowLeopardPartialEntity, SnowLeopardPartialModel> animator;
+
     public SnowLeopardPartialModel(ModelPart root, boolean latexLayer) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
@@ -331,7 +331,7 @@ public class SnowLeopardPartialModel extends AdvancedHumanoidModel<SnowLeopardPa
 
     @Override
     public void prepareMobModel(@NotNull SnowLeopardPartialEntity p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
 
         if (!this.latexLayer) {
             Tail.visible = false;

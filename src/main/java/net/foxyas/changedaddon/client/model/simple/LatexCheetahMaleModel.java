@@ -7,7 +7,6 @@ import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LatexCheetahMaleModel extends AdvancedHumanoidModel<LatexCheetahMale> implements AdvancedHumanoidModelInterface<LatexCheetahMale, LatexCheetahMaleModel> {
+public class LatexCheetahMaleModel extends AdvancedHumanoidModel<LatexCheetahMale> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Changed.modResource("latex_cheetah_male"), "main");
     private final ModelPart RightLeg;
@@ -131,10 +130,10 @@ public class LatexCheetahMaleModel extends AdvancedHumanoidModel<LatexCheetahMal
 
         return LayerDefinition.create(meshdefinition, 96, 96);
     }
-    
+
     @Override
     public void prepareMobModel(@NotNull LatexCheetahMale p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
     public void setupHand(LatexCheetahMale entity) {

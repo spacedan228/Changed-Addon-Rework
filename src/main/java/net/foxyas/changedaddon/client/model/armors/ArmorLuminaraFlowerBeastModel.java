@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.client.model.armors;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.model.advanced.LuminaraFlowerBeastModel;
 import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
 import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
@@ -14,7 +13,6 @@ import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorM
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -108,13 +106,6 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
 
     }
 
-    public void unprepareVisibility(EquipmentSlot armorSlot, ItemStack item) {
-        super.unprepareVisibility(armorSlot, item);
-        if (armorSlot == EquipmentSlot.LEGS) {
-            prepareUnifiedLegsForArmor(item, this.LeftLeg, this.RightLeg, this.Tail);
-        }
-    }
-
     public void renderForSlot(T entity, RenderLayerParent<? super T, ?> parent, ItemStack stack, EquipmentSlot slot, PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
         poseStack.pushPose();
         this.scaleForSlot(parent, slot, poseStack);
@@ -191,17 +182,6 @@ public class ArmorLuminaraFlowerBeastModel<T extends ChangedEntity> extends Late
     @Override
     public void prepareMobModel(@NotNull T entity, float p_102862_, float p_102863_, float partialTicks) {
         super.prepareMobModel(entity, p_102862_, p_102863_, partialTicks);
-        if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
-            LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
-            RightWing.visible = luminaraFlowerBeastEntity.isAwakened();
-            Tail.visible = luminaraFlowerBeastEntity.isAwakened();
-            this.shouldHaveBigWings = luminaraFlowerBeastEntity.isHyperAwakened();
-        }
-    }
-
-    @Override
-    public void prepareMobModel(HumanoidAnimator<T, ? extends EntityModel<T>> animator, T entity, float p_102862_, float p_102863_, float partialTicks) {
-        super.prepareMobModel(animator, entity, p_102862_, p_102863_, partialTicks);
         if (entity instanceof LuminaraFlowerBeastEntity luminaraFlowerBeastEntity) {
             LeftWing.visible = luminaraFlowerBeastEntity.isAwakened();
             RightWing.visible = luminaraFlowerBeastEntity.isAwakened();

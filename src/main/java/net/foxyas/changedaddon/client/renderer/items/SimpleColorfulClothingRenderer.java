@@ -7,7 +7,6 @@ import net.ltxprogrammer.changed.client.renderer.accessory.AccessoryRenderer;
 import net.ltxprogrammer.changed.client.renderer.accessory.TransitionalAccessory;
 import net.ltxprogrammer.changed.client.renderer.layers.LatexHumanoidArmorLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorHumanModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
@@ -104,16 +103,13 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
 
                     for (ModelComponent component : this.components) {
                         LatexHumanoidArmorModel model = (LatexHumanoidArmorModel) layer.modelPicker.getModelSetForSlot(changedEntity, component.renderAs).get(component.armorModel);
-                        AdvancedHumanoidModel var24 = advancedHumanoidRenderer.getModel(changedEntity);
-                        if (var24 instanceof AdvancedHumanoidModelInterface advancedModel) {
-                            model.getAnimator(changedEntity).copyProperties(advancedModel.getAnimator(changedEntity));
-                        }
+                        AdvancedHumanoidModel other = advancedHumanoidRenderer.getModel(changedEntity);
+                        model.getAnimator(changedEntity).copyProperties(other.getAnimator(changedEntity));
 
                         model.prepareMobModel(changedEntity, limbSwing, limbSwingAmount, partialTicks);
                         model.setupAnim(changedEntity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
                         model.prepareVisibility(component.renderAs, stack);
                         model.renderForSlot(changedEntity, advancedHumanoidRenderer, stack, component.renderAs, matrixStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, OverlayTexture.NO_OVERLAY, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                        model.unprepareVisibility(component.renderAs, stack);
                     }
 
                     return;
@@ -132,7 +128,7 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTicks) {
+    public <T extends LivingEntity, M extends EntityModel<T>> void renderFirstPersonOnArms(AccessorySlotContext<T> slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, HumanoidArm arm, PartPose armPose, float partialTicks) {
         ItemStack stack = slotContext.stack();
         Item var11 = stack.getItem();
         if (var11 instanceof Clothing clothing) {
@@ -158,8 +154,7 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
                             model.prepareVisibility(component.renderAs, stack);
                             ModelPart armPart = model.getArm(arm);
                             armPart.loadPose(armPose);
-                            FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
-                            model.unprepareVisibility(component.renderAs, stack);
+                            FormRenderHandler.renderModelPartWithTexture(model.getArm(arm), poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
                         }
                     }
 
@@ -172,7 +167,7 @@ public class SimpleColorfulClothingRenderer implements AccessoryRenderer, Transi
                 baseModel.copyPropertiesTo(this.clothingModel);
                 ModelPart armPart = arm == HumanoidArm.RIGHT ? this.clothingModel.rightArm : this.clothingModel.leftArm;
                 armPart.loadPose(armPose);
-                FormRenderHandler.renderVanillaModelPartWithTexture(armPart, stackCorrector, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
+                FormRenderHandler.renderVanillaModelPartWithTexture(armPart, poseStack, ItemRenderer.getArmorFoilBuffer(renderTypeBuffer, RenderType.armorCutoutNoCull(texture), false, stack.hasFoil()), light, color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1);
             }
 
         }

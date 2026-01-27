@@ -1,8 +1,6 @@
 package net.foxyas.changedaddon.client.model.api;
 
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
@@ -10,10 +8,11 @@ import net.minecraft.world.entity.AnimationState;
 import org.joml.Vector3f;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 public interface IHierModel {
+
+    Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
 
     default HashMap<String, ModelPart> getDefaultPlayerParts(PlayerModel<?> playerModel) {
         HashMap<String, ModelPart> partMap = new HashMap<>();
@@ -36,8 +35,6 @@ public interface IHierModel {
     ModelPart getRootPart();
 
     Optional<ModelPart> getAnyChild(String name);
-
-    Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
 
     default void animate(AnimationState pAnimationState, AnimationDefinition pAnimationDefinition, float pAgeInTicks) {
         this.animate(pAnimationState, pAnimationDefinition, pAgeInTicks, 1.0F);

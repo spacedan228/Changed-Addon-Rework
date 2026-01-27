@@ -9,7 +9,6 @@ import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModelSet;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
@@ -64,19 +63,6 @@ public class ArmorLatexDazedModel<T extends ChangedEntity> extends LatexHumanoid
             prepareUnifiedLegsForArmor(item, this.LeftLeg, this.RightLeg);
         }
 
-    }
-
-    public void unprepareVisibility(EquipmentSlot armorSlot, ItemStack item) {
-        super.unprepareVisibility(armorSlot, item);
-        if (armorSlot == EquipmentSlot.LEGS) {
-            prepareUnifiedLegsForArmor(item, this.LeftLeg, this.RightLeg);
-        }
-
-    }
-
-    @Override
-    public void prepareMobModel(HumanoidAnimator<T, ? extends EntityModel<T>> animator, T entity, float p_102862_, float p_102863_, float partialTicks) {
-        super.prepareMobModel(animator, entity, p_102862_, p_102863_, partialTicks);
     }
 
     @Override

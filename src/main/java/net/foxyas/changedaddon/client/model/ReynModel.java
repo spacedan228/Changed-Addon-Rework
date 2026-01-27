@@ -7,7 +7,6 @@ import net.foxyas.changedaddon.entity.simple.ReynEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ReynModel extends AdvancedHumanoidModel<ReynEntity> implements AdvancedHumanoidModelInterface<ReynEntity, ReynModel> {
+public class ReynModel extends AdvancedHumanoidModel<ReynEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("reyn_model", "main");
 
@@ -200,7 +199,7 @@ public class ReynModel extends AdvancedHumanoidModel<ReynEntity> implements Adva
 
     @Override
     public void prepareMobModel(@NotNull ReynEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     @Override

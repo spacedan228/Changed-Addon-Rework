@@ -7,7 +7,6 @@ import net.foxyas.changedaddon.entity.simple.LatexWindCatMaleEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LatexWindCatMaleModel extends AdvancedHumanoidModel<LatexWindCatMaleEntity> implements AdvancedHumanoidModelInterface<LatexWindCatMaleEntity, LatexWindCatMaleModel> {
+public class LatexWindCatMaleModel extends AdvancedHumanoidModel<LatexWindCatMaleEntity> {
 
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("latex_wind_cat_male", "main");
 
@@ -49,12 +48,6 @@ public class LatexWindCatMaleModel extends AdvancedHumanoidModel<LatexWindCatMal
         ModelPart rightLowerLeg = this.RightLeg.getChild("RightLowerLeg");
         ModelPart rightFoot = rightLowerLeg.getChild("RightFoot");
         this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).addPreset(AnimatorPresets.catLike(this.Head, this.Head.getChild("LeftEar"), this.Head.getChild("RightEar"), this.Torso, this.LeftArm, this.RightArm, this.Tail, List.of(tailPrimary, tailSecondary, tailTertiary, tailQuaternary), this.LeftLeg, leftLowerLeg, leftFoot, leftFoot.getChild("LeftPad"), this.RightLeg, rightLowerLeg, rightFoot, rightFoot.getChild("RightPad")));
-    }
-
-    @Override
-    public void setupAnim(@NotNull LatexWindCatMaleEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        this.animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -152,8 +145,14 @@ public class LatexWindCatMaleModel extends AdvancedHumanoidModel<LatexWindCatMal
     }
 
     @Override
+    public void setupAnim(@NotNull LatexWindCatMaleEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        this.animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    }
+
+    @Override
     public void prepareMobModel(@NotNull LatexWindCatMaleEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
-        prepareMobModel(this.animator, pEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
+        super.prepareMobModel(pEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
     }
 
     @Override

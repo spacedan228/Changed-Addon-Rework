@@ -10,7 +10,6 @@ import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmRideAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmSwimAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.WolfHeadInitAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -25,7 +24,7 @@ import java.util.function.Consumer;
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.*;
 
 
-public class WolfyModel extends AdvancedHumanoidModel<WolfyEntity> implements AdvancedHumanoidModelInterface<WolfyEntity, WolfyModel> {
+public class WolfyModel extends AdvancedHumanoidModel<WolfyEntity> {
 
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("wolfy_model"), "main");
@@ -353,7 +352,7 @@ public class WolfyModel extends AdvancedHumanoidModel<WolfyEntity> implements Ad
 
     @Override
     public void prepareMobModel(@NotNull WolfyEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     /* public PoseStack getPlacementCorrectors(CorrectorType type) {

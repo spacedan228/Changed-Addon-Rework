@@ -8,7 +8,6 @@ import net.ltxprogrammer.changed.client.animations.Limb;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.client.tfanimations.HelperModel;
 import net.ltxprogrammer.changed.client.tfanimations.TransfurHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LatexCheetahFemaleModel extends AdvancedHumanoidModel<LatexCheetahFemale> implements AdvancedHumanoidModelInterface<LatexCheetahFemale, LatexCheetahFemaleModel> {
+public class LatexCheetahFemaleModel extends AdvancedHumanoidModel<LatexCheetahFemale> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Changed.modResource("latex_cheetah_female"), "main");
     private final ModelPart RightLeg;
@@ -57,13 +56,6 @@ public class LatexCheetahFemaleModel extends AdvancedHumanoidModel<LatexCheetahF
                         Torso, LeftArm, RightArm,
                         Tail, List.of(tailPrimary, tailSecondary, tailTertiary, tailTertiary.getChild("TailQuaternary")),
                         LeftLeg, leftLowerLeg, leftFoot, leftFoot.getChild("LeftPad"), RightLeg, rightLowerLeg, rightFoot, rightFoot.getChild("RightPad")));
-    }
-
-    @Override
-    public HelperModel getTransfurHelperModel(Limb limb) {
-        if (limb == Limb.TORSO)
-            return TransfurHelper.getFeminineTorsoAlt();
-        return super.getTransfurHelperModel(limb);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -152,8 +144,15 @@ public class LatexCheetahFemaleModel extends AdvancedHumanoidModel<LatexCheetahF
     }
 
     @Override
+    public HelperModel getTransfurHelperModel(Limb limb) {
+        if (limb == Limb.TORSO)
+            return TransfurHelper.getFeminineTorsoAlt();
+        return super.getTransfurHelperModel(limb);
+    }
+
+    @Override
     public void prepareMobModel(@NotNull LatexCheetahFemale p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
     public void setupHand(LatexCheetahFemale entity) {

@@ -10,7 +10,6 @@ import net.foxyas.changedaddon.entity.bosses.VoidFoxEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implements AdvancedHumanoidModelInterface<VoidFoxEntity, VoidFoxModel> {
+public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("void_fox", "main");
     private final ModelPart RightLeg;
@@ -270,7 +269,7 @@ public class VoidFoxModel extends AdvancedHumanoidModel<VoidFoxEntity> implement
     }
 
     public void prepareMobModel(@NotNull VoidFoxEntity p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(this.animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
 
         // Cabeça
         this.Head.x = 0;

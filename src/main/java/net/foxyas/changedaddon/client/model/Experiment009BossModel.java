@@ -7,7 +7,6 @@ import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class Experiment009BossModel extends AdvancedHumanoidModel<Experiment009BossEntity> implements AdvancedHumanoidModelInterface<Experiment009BossEntity, Experiment009BossModel> {
+public class Experiment009BossModel extends AdvancedHumanoidModel<Experiment009BossEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("exp_009_boss"), "main");
 
@@ -235,7 +234,7 @@ public class Experiment009BossModel extends AdvancedHumanoidModel<Experiment009B
 
     @Override
     public void prepareMobModel(@NotNull Experiment009BossEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     @Override

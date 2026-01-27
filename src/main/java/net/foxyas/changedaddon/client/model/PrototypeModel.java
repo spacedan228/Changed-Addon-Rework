@@ -7,7 +7,6 @@ import net.foxyas.changedaddon.entity.advanced.PrototypeEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class PrototypeModel extends AdvancedHumanoidModel<PrototypeEntity> implements AdvancedHumanoidModelInterface<PrototypeEntity, PrototypeModel> {
+public class PrototypeModel extends AdvancedHumanoidModel<PrototypeEntity> {
 
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("prototype", "main");
     public final ModelPart RightLeg;
@@ -180,7 +179,7 @@ public class PrototypeModel extends AdvancedHumanoidModel<PrototypeEntity> imple
     }
 
     public void prepareMobModel(@NotNull PrototypeEntity prototypeEntity, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(this.animator, prototypeEntity, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(prototypeEntity, p_102862_, p_102863_, p_102864_);
     }
 
     public void setupHand(PrototypeEntity entity) {

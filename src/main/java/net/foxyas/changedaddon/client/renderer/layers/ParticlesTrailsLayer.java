@@ -124,11 +124,6 @@ public class ParticlesTrailsLayer<M extends AdvancedHumanoidModel<T>, T extends 
         FirstPersonLayer.super.renderFirstPersonOnFace(stack, bufferSource, packedLight, entity, camera);
     }
 
-    @Override
-    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-        FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
-    }
-
     public PoseStack getPoseStack() {
         return poseStack;
     }

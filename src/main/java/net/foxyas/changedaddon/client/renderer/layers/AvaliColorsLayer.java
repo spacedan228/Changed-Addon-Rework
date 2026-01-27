@@ -50,8 +50,8 @@ public class AvaliColorsLayer<M extends AdvancedHumanoidModel<T>, T extends Chan
     }
 
     @Override
-    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-        FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, float partialTick) {
+        FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, partialTick);
         if (entity instanceof AvaliEntity avaliEntity) {
             if (!avaliEntity.isColorful()) return;
             ResourceLocation texture = getTextureStyle(avaliEntity);
@@ -59,7 +59,7 @@ public class AvaliColorsLayer<M extends AdvancedHumanoidModel<T>, T extends Chan
             if (bodyColor == null) return;
             stack.pushPose();
             stack.scale(1.0002F, 1.0002F, 1.0002F);
-            FormRenderHandler.renderModelPartWithTexture(this.model.getArm(arm), stackCorrector, stack, bufferSource.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, bodyColor.red(), bodyColor.green(), bodyColor.blue(), 1.0F);
+            FormRenderHandler.renderModelPartWithTexture(this.model.getArm(arm), stack, bufferSource.getBuffer(RenderType.entityCutoutNoCull(texture)), packedLight, bodyColor.red(), bodyColor.green(), bodyColor.blue(), 1.0F);
             stack.popPose();
         }
     }

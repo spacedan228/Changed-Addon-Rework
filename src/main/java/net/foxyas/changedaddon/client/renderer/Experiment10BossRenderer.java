@@ -11,6 +11,7 @@ import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexFemaleCatModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -61,13 +62,15 @@ public class Experiment10BossRenderer extends AdvancedHumanoidRenderer<Experimen
         }
 
 
-        public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PoseStack stackCorrector, float partialTick) {
+        @Override
+        public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, float partialTick) {
+            FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, partialTick);
             if (entity instanceof Experiment10BossEntity experiment10BossEntity && experiment10BossEntity.isPhase2()) {
                 stack.pushPose();
                 stack.scale(1.0002F, 1.0002F, 1.0002F);
                 EntityModel<T> var9 = this.getParentModel();
                 if (var9 instanceof AdvancedHumanoidModel<?> armedModel) {
-                    FormRenderHandler.renderModelPartWithTexture(armedModel.getArm(arm), stackCorrector, stack, bufferSource.getBuffer(this.renderType()), 15728880, 1.0F);
+                    FormRenderHandler.renderModelPartWithTexture(armedModel.getArm(arm),  stack, bufferSource.getBuffer(this.renderType()), 15728880, 1.0F);
                 }
 
                 stack.popPose();

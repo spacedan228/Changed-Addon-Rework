@@ -5,6 +5,8 @@ import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,8 +18,8 @@ import java.util.NoSuchElementException;
 @Mixin(value = LatexHumanoidArmorModel.class)
 public class LatexHumanoidArmorModelMixin {
 
-    @Inject(method = "prepareMobModel(Lnet/ltxprogrammer/changed/entity/ChangedEntity;FFF)V", at = @At("RETURN"), remap = false)
-    private void TurnOffPlantoids(@NotNull ChangedEntity entity, float limbSwing, float limbSwingAmount, float partialTicks, CallbackInfo ci) {
+    @Inject(method = "prepareVisibility", at = @At("RETURN"), remap = false)
+    private void TurnOffPlantoids(EquipmentSlot armorSlot, ItemStack item, CallbackInfo ci) {
         var self = (AdvancedHumanoidModel<?>) (Object) this;
         var torso = self.getTorso();
         try {

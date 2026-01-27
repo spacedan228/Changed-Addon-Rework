@@ -13,7 +13,6 @@ import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmRideAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.arm.ArmSwimAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.WolfHeadInitAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.client.tfanimations.HelperModel;
 import net.ltxprogrammer.changed.client.tfanimations.TransfurHelper;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -29,7 +28,7 @@ import java.util.function.Consumer;
 
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.*;
 
-public class PuroKindFemaleModel extends AdvancedHumanoidModel<PuroKindFemaleEntity> implements AdvancedHumanoidModelInterface<PuroKindFemaleEntity, PuroKindFemaleModel> {
+public class PuroKindFemaleModel extends AdvancedHumanoidModel<PuroKindFemaleEntity> {
 
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("female_puro_kind"), "main");
     private final ModelPart RightLeg;
@@ -41,6 +40,7 @@ public class PuroKindFemaleModel extends AdvancedHumanoidModel<PuroKindFemaleEnt
     private final ModelPart Tail;
     private final ModelPart Mask;
     private final HumanoidAnimator<PuroKindFemaleEntity, PuroKindFemaleModel> animator;
+
     public PuroKindFemaleModel(ModelPart root) {
         super(root);
         this.RightLeg = root.getChild("RightLeg");
@@ -255,7 +255,7 @@ public class PuroKindFemaleModel extends AdvancedHumanoidModel<PuroKindFemaleEnt
 
     @Override
     public void prepareMobModel(@NotNull PuroKindFemaleEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     /* public PoseStack getPlacementCorrectors(CorrectorType type) {
