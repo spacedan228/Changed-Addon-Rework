@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
+import net.foxyas.changedaddon.entity.simple.DarkLatexYufengQueenEntity;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
@@ -16,6 +17,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.List;
 
 @Mod.EventBusSubscriber
 public class TransfurEvents {
@@ -62,6 +65,27 @@ public class TransfurEvents {
         if (resolveChangedEntity(toReplace) instanceof IAlphaAbleEntity toReplaceAlpha) {
             if (source instanceof IAlphaAbleEntity alphaSource) {
                 alphaSource.setAlpha(toReplaceAlpha.isAlpha());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void ModifyAbsorptionVariant(TransfurVariantEvents.OverrideSourceTransfurVariantEvent event) {
+        TransfurVariant<?> original = event.getOriginal();
+        ChangedEntity changedEntity = event.getChangedEntity();
+        IAbstractChangedEntity source = event.getSource();
+
+        if (!source.wantAbsorption()) return;
+
+        if (source.getChangedEntity() instanceof DarkLatexYufengQueenEntity latexYufengQueenEntity) {
+            TransfurVariant<?> selfVariant = latexYufengQueenEntity.getSelfVariant();
+            if (original != selfVariant) {
+                event.setVariant(selfVariant);
+            }
+        } else if (changedEntity instanceof DarkLatexYufengQueenEntity latexYufengQueenEntity) {
+            TransfurVariant<?> selfVariant = latexYufengQueenEntity.getSelfVariant();
+            if (original != selfVariant) {
+                event.setVariant(selfVariant);
             }
         }
     }

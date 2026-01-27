@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.mixins.mods.changed;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.event.TransfurVariantEvents;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -11,8 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import javax.annotation.Nullable;
 
 @Mixin(value = TransfurVariant.class, remap = false)
 public abstract class TransfurVariantMixin {
@@ -25,6 +25,15 @@ public abstract class TransfurVariantMixin {
         }
     }
 
+    @WrapMethod(method = "replaceEntity(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/entity/LivingEntity;)Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;")
+    private IAbstractChangedEntity injectReplaceEntity(LivingEntity entity, LivingEntity cause, Operation<IAbstractChangedEntity> original) {
+        TransfurVariantEvents.KillAfterTransfurredFinalEvent event = new TransfurVariantEvents.KillAfterTransfurredFinalEvent(entity, cause);
+        if (ChangedAddonMod.postEvent(event)) {
+            return original.call(entity, event.getSource());
+        }
+        return original.call(entity, cause);
+    }
+
     @ModifyReturnValue(method = "spawnAtEntity", at = @At("RETURN"))
     private ChangedEntity injectSpawnAtEntity(ChangedEntity original, LivingEntity spawnAt) {
         TransfurVariantEvents.SpawnAtTransfurredEntityEvent event = new TransfurVariantEvents.SpawnAtTransfurredEntityEvent(spawnAt, original);
@@ -34,13 +43,22 @@ public abstract class TransfurVariantMixin {
         return original;
     }
 
-    @ModifyReturnValue(method = "replaceEntity(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;)Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;", at = @At("RETURN"))
-    private IAbstractChangedEntity injectReplaceEntity(IAbstractChangedEntity original, LivingEntity entity, @Nullable IAbstractChangedEntity cause) {
+//    @ModifyReturnValue(method = "replaceEntity(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;)Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;", at = @At("RETURN"))
+//    private IAbstractChangedEntity injectReplaceEntity(IAbstractChangedEntity original, LivingEntity entity, @Nullable IAbstractChangedEntity cause) {
+//        TransfurVariantEvents.KillAfterTransfurredSpecificEvent event = new TransfurVariantEvents.KillAfterTransfurredSpecificEvent(entity, cause);
+//        if (ChangedAddonMod.postEvent(event)) {
+//            if (event.getNewReplacement() == original) return original;
+//
+//            return event.getNewReplacement();
+//        }
+//        return original;
+//    }
+
+    @WrapMethod(method = "replaceEntity(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;)Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;")
+    private IAbstractChangedEntity injectReplaceEntity(LivingEntity entity, IAbstractChangedEntity cause, Operation<IAbstractChangedEntity> originalCall) {
         TransfurVariantEvents.KillAfterTransfurredSpecificEvent event = new TransfurVariantEvents.KillAfterTransfurredSpecificEvent(entity, cause);
-        if (ChangedAddonMod.postEvent(event)) {
-            return event.getiAbstractChangedEntity();
-        }
-        return original;
+        if (ChangedAddonMod.postEvent(event)) return null;
+        return originalCall.call(entity, event.getNewReplacement());
     }
 
 }

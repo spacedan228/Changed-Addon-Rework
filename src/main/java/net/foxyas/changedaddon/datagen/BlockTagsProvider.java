@@ -49,7 +49,9 @@ public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsP
                 YELLOW_WOLF_CRYSTAL_SMALL.get(),
                 ORANGE_WOLF_CRYSTAL_SMALL.get(),
                 BLUE_WOLF_CRYSTAL_SMALL.get(),
-                WHITE_WOLF_CRYSTAL_SMALL.get()
+                WHITE_WOLF_CRYSTAL_SMALL.get(),
+                LUMINARA_BLOOM.get(),
+                POTTED_LUMINARA_BLOOM.get()
         );
 
 
