@@ -29,7 +29,9 @@ public abstract class TransfurVariantMixin {
     private IAbstractChangedEntity injectReplaceEntity(IAbstractChangedEntity original, LivingEntity entity, @Nullable IAbstractChangedEntity cause) {
         TransfurVariantEvents.KillAfterTransfurredSpecificEvent event = new TransfurVariantEvents.KillAfterTransfurredSpecificEvent(entity, cause);
         if (ChangedAddonMod.postEvent(event)) {
-            return event.getiAbstractChangedEntity();
+            if (event.getNewReplacement() == original) return original;
+
+            return event.getNewReplacement();
         }
         return original;
     }

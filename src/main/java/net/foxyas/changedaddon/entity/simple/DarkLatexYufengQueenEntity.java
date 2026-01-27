@@ -1,10 +1,12 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.entity.api.IConditionalFuseEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbilityInstance;
 import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.entity.beast.DarkLatexYufeng;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexEntity;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
@@ -20,7 +22,7 @@ import net.minecraftforge.common.ForgeMod;
 
 import java.util.Objects;
 
-public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity {
+public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity implements IConditionalFuseEntity {
     protected final SimpleAbilityInstance summonPups;
 
     public DarkLatexYufengQueenEntity(EntityType<? extends DarkLatexYufengQueenEntity> p_19870_, Level p_19871_) {
@@ -76,12 +78,22 @@ public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity {
         return ChangedTransfurVariants.DARK_LATEX_YUFENG.get();
     }
 
+    // Can the Queen fuse with X entity
     @Override
     public boolean tryFuseWithTarget(LivingEntity entity, IAbstractChangedEntity source, float amount) {
         if (TransfurVariant.getEntityVariant(entity) == ChangedTransfurVariants.DARK_LATEX_YUFENG.get())
             return false;
 
         return super.tryFuseWithTarget(entity, source, amount);
+    }
+
+    // Can the Queen be fused by X entity
+    @Override
+    public boolean canBeFusedBy(LivingEntity targetToFuse, IAbstractChangedEntity source, float amount) {
+        if (targetToFuse instanceof DarkLatexYufengQueenEntity latexYufengQueenEntity && source.getChangedEntity() instanceof DarkLatexYufeng) {
+            return false;
+        }
+        return IConditionalFuseEntity.super.canBeFusedBy(targetToFuse, source, amount);
     }
 
     @Override

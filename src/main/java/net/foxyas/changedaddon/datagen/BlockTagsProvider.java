@@ -46,7 +46,9 @@ public class BlockTagsProvider extends net.minecraft.data.tags.BlockTagsProvider
                 YELLOW_WOLF_CRYSTAL_SMALL.get(),
                 ORANGE_WOLF_CRYSTAL_SMALL.get(),
                 BLUE_WOLF_CRYSTAL_SMALL.get(),
-                WHITE_WOLF_CRYSTAL_SMALL.get()
+                WHITE_WOLF_CRYSTAL_SMALL.get(),
+                LUMINARA_BLOOM.get(),
+                POTTED_LUMINARA_BLOOM.get()
         );
 
         tag(ChangedTags.Blocks.GROWS_LATEX_CRYSTALS).add(WHITE_WOLF_CRYSTAL_BLOCK.get(), ORANGE_WOLF_CRYSTAL_BLOCK.get(), YELLOW_WOLF_CRYSTAL_BLOCK.get(), BLUE_WOLF_CRYSTAL_BLOCK.get());
