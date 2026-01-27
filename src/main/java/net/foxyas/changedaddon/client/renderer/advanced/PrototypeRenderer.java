@@ -46,7 +46,8 @@ public class PrototypeRenderer extends AdvancedHumanoidRenderer<PrototypeEntity,
                 this.getParentModel().renderToBuffer(pMatrixStack, vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, hairColor.red(), hairColor.green(), hairColor.blue(), 0.5F);
             }
 
-            public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, PrototypeEntity changedEntity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
+            @Override
+            public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, PrototypeEntity changedEntity, HumanoidArm arm, PartPose armPose, float partialTick) {
                 stack.pushPose();
                 stack.scale(1.0002F, 1.0002F, 1.0002F);
                 AdvancedHumanoidModel<PrototypeEntity> parentModel = this.getParentModel();
@@ -54,7 +55,7 @@ public class PrototypeRenderer extends AdvancedHumanoidRenderer<PrototypeEntity,
                 Color3 hairColor = basicPlayerInfo.getHairColor();
                 ModelPart armPart = parentModel.getArm(arm);
                 armPart.loadPose(armPose);
-                FormRenderHandler.renderModelPartWithTexture(parentModel.getArm(arm), stackCorrector, stack, bufferSource.getBuffer(this.renderType()), 15728880, hairColor.red(), hairColor.green(), hairColor.blue(), 0.5F);
+                FormRenderHandler.renderModelPartWithTexture(parentModel.getArm(arm),  stack, bufferSource.getBuffer(this.renderType()), 15728880, hairColor.red(), hairColor.green(), hairColor.blue(), 0.5F);
                 stack.popPose();
             }
         };

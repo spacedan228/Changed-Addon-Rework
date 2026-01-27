@@ -2,19 +2,16 @@ package net.foxyas.changedaddon.process.features;
 
 import net.foxyas.changedaddon.ability.DodgeAbility;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
-import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -40,21 +37,19 @@ public class DodgeAbilityHandle {
         }
 
         Entity pTarget = entityHitResult.getEntity();
-        if (!pTarget.level().isClientSide()) {
+        if (!pTarget.level.isClientSide()) {
             Entity owner = self.getOwner();
             Entity attacker;
             attacker = Objects.requireNonNullElse(owner, self);
-            if (attacker.isAlliedTo(pTarget) || attacker.skipAttackInteraction(pTarget)) return;
-
-            if (pTarget instanceof ChangedEntity changedEntity) {
+            if (pTarget instanceof ChangedEntity changedEntity && changedEntity.getUnderlyingPlayer() == null) {
                 List<AbstractAbility<?>> dodgeAbilities = ChangedRegistry.ABILITY.get().getValues().stream().filter((abstractAbility -> abstractAbility instanceof DodgeAbility)).toList();
+                if (dodgeAbilities.isEmpty()) return;
                 for (AbstractAbility<?> ability : dodgeAbilities) {
                     if (!(ability instanceof DodgeAbility dodgeAbility)) continue;
                     DodgeAbilityInstance dodgeAbilityInstance = changedEntity.getAbilityInstance(dodgeAbility);
                     if (dodgeAbilityInstance == null) continue;
-                    if (dodgeAbilityInstance.projectilesImmuneTicks > 0) {
+                    if (dodgeAbilityInstance.projectilesImmuneTicks > 0)
                         event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
-                    }
 
                     if (dodgeAbilityInstance.canUse() && dodgeAbilityInstance.canKeepUsing() && dodgeAbilityInstance.isDodgeActive()) {
                         event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
@@ -64,6 +59,7 @@ public class DodgeAbilityHandle {
                     }
                     return;
                 }
+
             }
 
             if (pTarget instanceof Player player) {
@@ -87,6 +83,7 @@ public class DodgeAbilityHandle {
                                 }
                             }
                         }
+                        return;
                     }
                 }
             }
@@ -96,76 +93,66 @@ public class DodgeAbilityHandle {
     @SubscribeEvent
     public static void onEntityAttacked(LivingAttackEvent event) {
         LivingEntity target = event.getEntity();
-        DamageSource source = event.getSource();
-        Entity attacker = source.getEntity();
+        Entity attacker = event.getSource().getEntity();
 
-
-        if (!(target instanceof Player player) || attacker == null)
-            return;
-
-        if (target.isInvulnerableTo(source) || target.isDamageSourceBlocked(source) || attacker.isAlliedTo(target))
-            return;
-
-        Level world = target.level();
-
-        TransfurVariantInstance<?> variant = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (variant == null)
-            return;
-
-        DodgeAbilityInstance dodge = variant.getAbilityInstance(ChangedAddonAbilities.DODGE.get());
-        if (dodge == null) {
-            AbstractAbilityInstance teleportDodge = variant.abilityInstances.get(ChangedAddonAbilities.TELEPORT_DODGE.get());
-            if (teleportDodge == null) {
-                DodgeAbilityInstance counterDodge = variant.getAbilityInstance(ChangedAddonAbilities.COUNTER_DODGE.get());
-                if (counterDodge != null) {
-                    dodge = counterDodge;
-                }
-            } else {
-                dodge = variant.getAbilityInstance(ChangedAddonAbilities.TELEPORT_DODGE.get());
-            }
-        }
-
-        if (dodge == null) {
-            List<Map.Entry<AbstractAbility<?>, AbstractAbilityInstance>> dodgeAbilityInstances = variant.abilityInstances.entrySet().stream().filter((entrySet) -> (entrySet.getKey() instanceof DodgeAbility && entrySet.getValue() instanceof DodgeAbilityInstance)).toList();
-            if (!dodgeAbilityInstances.isEmpty()) {
-                for (Map.Entry<AbstractAbility<?>, AbstractAbilityInstance> dodgeAbilities : dodgeAbilityInstances) {
-                    AbstractAbility<?> key = dodgeAbilities.getKey();
-                    AbstractAbilityInstance value = dodgeAbilities.getValue();
-                    if (key instanceof DodgeAbility && value instanceof DodgeAbilityInstance dodgeInstance) {
-                        if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
-                            dodge = dodgeInstance;
-                            break;
-                        }
-                    }
-                }
-            }
-            if (dodge == null) {
-                return;
-            }
-        }
-
-        if (!dodge.isDodgeActive())
-            return;
-
-        if (dodge.getDodgeAmount() <= 0) {
-            dodge.getController().deactivateAbility();
-            return;
-        }
-
-        if (!dodge.canUse() && !dodge.canKeepUsing()) {
-            return;
-        }
+        if (attacker == null) return;
 
         if (attacker instanceof Projectile projectile) {
             return;
         }
-        if (source.getDirectEntity() instanceof Projectile projectile) {
-            return;
-        }
 
-        if (attacker instanceof LivingEntity livingAttacker) {
-            applyDodgeEffects(player, livingAttacker, dodge, world, event);
-            applyDodgeHandle(player, livingAttacker, dodge, world, event);
+        if (!target.level.isClientSide()) {
+            if (target instanceof ChangedEntity dodger && dodger.getUnderlyingPlayer() == null) {
+                List<AbstractAbility<?>> dodgeAbilities = ChangedRegistry.ABILITY.get().getValues().stream().filter((abstractAbility -> abstractAbility instanceof DodgeAbility)).toList();
+                if (dodgeAbilities.isEmpty()) return;
+                for (AbstractAbility<?> ability : dodgeAbilities) {
+                    if (!(ability instanceof DodgeAbility dodgeAbility)) continue;
+                    DodgeAbilityInstance dodgeInstance = dodger.getAbilityInstance(dodgeAbility);
+                    if (dodgeInstance == null) continue;
+
+                    if (dodgeInstance.getDodgeAmount() <= 0) {
+                        dodgeInstance.getController().deactivateAbility();
+                        continue;
+                    }
+
+                    if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
+                        event.setCanceled(true);
+                        dodgeInstance.executeDodgeEffects(dodger.level, attacker, dodger, event);
+                        dodgeInstance.executeDodgeHandle(dodger.level, attacker, dodger, event, true);
+                        break;
+                    }
+                    return;
+                }
+
+            }
+
+            if (target instanceof Player dodger) {
+                TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(dodger);
+                if (instance != null) {
+                    List<Map.Entry<AbstractAbility<?>, AbstractAbilityInstance>> dodgeAbilityInstances = instance.abilityInstances.entrySet().stream().filter((entrySet) -> (entrySet.getKey() instanceof DodgeAbility && entrySet.getValue() instanceof DodgeAbilityInstance)).toList();
+                    if (!dodgeAbilityInstances.isEmpty()) {
+                        for (Map.Entry<AbstractAbility<?>, AbstractAbilityInstance> dodgeAbilities : dodgeAbilityInstances) {
+                            AbstractAbility<?> key = dodgeAbilities.getKey();
+                            AbstractAbilityInstance value = dodgeAbilities.getValue();
+                            if (key instanceof DodgeAbility && value instanceof DodgeAbilityInstance dodgeInstance) {
+
+                                if (dodgeInstance.getDodgeAmount() <= 0) {
+                                    dodgeInstance.getController().deactivateAbility();
+                                    continue;
+                                }
+
+                                if (dodgeInstance.canUse() && dodgeInstance.canKeepUsing() && dodgeInstance.isDodgeActive()) {
+                                    event.setCanceled(true);
+                                    dodgeInstance.executeDodgeEffects(dodger.level, attacker, dodger, event);
+                                    dodgeInstance.executeDodgeHandle(dodger.level, attacker, dodger, event, true);
+                                    break;
+                                }
+                            }
+                        }
+                        return;
+                    }
+                }
+            }
         }
     }
 

@@ -80,8 +80,8 @@ public class CustomClothesLayer<E extends ChangedEntity, M extends AdvancedHuman
     }
 
     @Override
-    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, E entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-        FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, E entity, HumanoidArm arm, PartPose armPose, float partialTick) {
+        FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, partialTick);
         stack.pushPose();
         stack.scale(1.0002F, 1.0002F, 1.0002F);
         ResourceLocation accessoryTexture = getClothTexture();
@@ -94,7 +94,7 @@ public class CustomClothesLayer<E extends ChangedEntity, M extends AdvancedHuman
             color = Color3.WHITE;
         }
         float alpha = getClothAlpha(entity);
-        FormRenderHandler.renderModelPartWithTexture(this.model.getArm(arm), stackCorrector, stack, vertexConsumer, packedLight, color.red(), color.green(), color.blue(), alpha);
+        FormRenderHandler.renderModelPartWithTexture(this.model.getArm(arm), stack, vertexConsumer, packedLight, color.red(), color.green(), color.blue(), alpha);
         stack.popPose();
     }
 

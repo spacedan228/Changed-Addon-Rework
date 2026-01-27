@@ -15,7 +15,6 @@ import net.ltxprogrammer.changed.client.renderer.animate.upperbody.DragonHeadIni
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.DragonUpperBodyCreativeFlyAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.DragonUpperBodyCrouchAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -30,7 +29,7 @@ import java.util.function.Consumer;
 
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.dragonWinged;
 
-public class LatexDragonSnowLeopardSharkModel extends AdvancedHumanoidModel<LatexDragonSnowLeopardSharkEntity> implements AdvancedHumanoidModelInterface<LatexDragonSnowLeopardSharkEntity, LatexDragonSnowLeopardSharkModel> {
+public class LatexDragonSnowLeopardSharkModel extends AdvancedHumanoidModel<LatexDragonSnowLeopardSharkEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("latex_dragon_snep_shark"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
@@ -230,7 +229,7 @@ public class LatexDragonSnowLeopardSharkModel extends AdvancedHumanoidModel<Late
     }
 
     public void prepareMobModel(@NotNull LatexDragonSnowLeopardSharkEntity p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(this.animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
     @Override

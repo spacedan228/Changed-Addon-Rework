@@ -43,14 +43,14 @@ public class PatFeatureHandle {
             return false;
         }
 
-        if (GrabEntityAbility.getGrabber(player) != null) return false;
-
-        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
-        return vars == null || !vars.patCooldown;
+        return GrabEntityAbility.getGrabber(player) == null;
     }
 
     public static void run(Level level, Player player) {
         if (player == null || player.isSpectator() || !canPlayerPat(player)) return;
+
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
+        if (vars != null && vars.patCooldown) return;
 
         InteractionHand emptyHand = getEmptyHand(player);
         if(emptyHand == null) return;

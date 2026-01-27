@@ -86,9 +86,4 @@ public class ProtogenDisplay<M extends AdvancedHumanoidModel<T>, T extends Chang
     public RenderType getNormalEyeRender() {
         return NormalEyeRender;
     }
-
-    @Override
-    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-        FirstPersonLayer.super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
-    }
 }

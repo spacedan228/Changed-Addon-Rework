@@ -9,7 +9,6 @@ import net.ltxprogrammer.changed.client.animations.Limb;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.client.tfanimations.HelperModel;
 import net.ltxprogrammer.changed.client.tfanimations.TransfurHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BorealisFemaleModel extends AdvancedHumanoidModel<BorealisFemaleEntity> implements AdvancedHumanoidModelInterface<BorealisFemaleEntity, BorealisFemaleModel> {
+public class BorealisFemaleModel extends AdvancedHumanoidModel<BorealisFemaleEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("borealis_female", "main");
 
     private final ModelPart Head;
@@ -226,7 +225,7 @@ public class BorealisFemaleModel extends AdvancedHumanoidModel<BorealisFemaleEnt
 
     @Override
     public void prepareMobModel(@NotNull BorealisFemaleEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     @Override

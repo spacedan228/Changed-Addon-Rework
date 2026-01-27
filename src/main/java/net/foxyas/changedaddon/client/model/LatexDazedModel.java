@@ -11,7 +11,6 @@ import net.foxyas.changedaddon.entity.advanced.DazedLatexEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -22,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LatexDazedModel extends AdvancedHumanoidModel<DazedLatexEntity> implements AdvancedHumanoidModelInterface<DazedLatexEntity, LatexDazedModel> {
+public class LatexDazedModel extends AdvancedHumanoidModel<DazedLatexEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("dazed_latex"), "main");
 
@@ -171,6 +170,7 @@ public class LatexDazedModel extends AdvancedHumanoidModel<DazedLatexEntity> imp
 
     @Override
     public void prepareMobModel(DazedLatexEntity entity, float p_102862, float p_102863, float p_102864_) {
+        super.prepareMobModel(entity, p_102862, p_102863, p_102864_);
         if (entity.isMorphed()) {
             RightArm.visible = false;
             LeftArm.visible = false;
@@ -188,7 +188,6 @@ public class LatexDazedModel extends AdvancedHumanoidModel<DazedLatexEntity> imp
             LeftLeg.visible = true;
             Puddle.visible = false;
         }
-        this.prepareMobModel(animator, entity, p_102862, p_102863, p_102864_);
     }
 
     @Override

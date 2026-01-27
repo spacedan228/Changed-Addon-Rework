@@ -120,7 +120,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     }
 
     public boolean isDodgeActive() {
-        return this.getCanDodgeTicks() > 0 || dodgeActive || this.getController().getHoldTicks() > 0;
+        return this.ultraInstinct || this.getCanDodgeTicks() > 0 || dodgeActive || this.getController().getHoldTicks() > 0;
     }
 
     public void setDodgeActivate(boolean active) {
@@ -246,10 +246,6 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         }
 
         if (this.getDodgeType() == DodgeType.TELEPORT) {
-            if (event != null) {
-                event.setCanceled(true);
-            }
-
             if (distance > 2f) {
                 // Random offset values
                 double maxDistance = 16.0; // maximum distance for teleport
@@ -280,6 +276,10 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                                 20, 0.5, 1.0, 0.5, 0.1);
                     }
                 }
+            }
+
+            if (event != null) {
+                event.setCanceled(true);
             }
         } else if (this.dodgeType == DodgeType.WEAVE) {
             dodgeAwayFromAttacker(dodger, attacker);
@@ -358,6 +358,8 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                             true
                     );
                 }
+
+                this.ability.setDirty(entity);
             }
         }
     }
@@ -377,6 +379,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
             }
         }
         setDodgeActivate(canUse());
+        this.ability.setDirty(entity);
     }
 
     @Override
@@ -390,6 +393,9 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         if (ultraInstinct) {
             this.setDodgeActivate(true);
         }
+
+        if (this.getController().getHoldTicks() > 0) this.dodgeRegenCooldown = 5;
+
         if (this.getDodgeType() instanceof CounterDodgeType) {
             this.setDodgeActivate(this.getCanDodgeTicks() > 0);
             if (this.getCanDodgeTicks() > 0) {

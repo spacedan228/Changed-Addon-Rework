@@ -8,7 +8,6 @@ import net.foxyas.changedaddon.entity.advanced.ProtogenEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -18,8 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ProtogenModel extends AdvancedHumanoidModel<ProtogenEntity> implements AdvancedHumanoidModelInterface<ProtogenEntity, ProtogenModel> {
-    public static final ModelLayerLocation LAYER_LOCATION =  ChangedAddonMod.layerLocation("protogen", "main");
+public class ProtogenModel extends AdvancedHumanoidModel<ProtogenEntity> {
+    public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("protogen", "main");
 
     private final ModelPart Head;
     private final ModelPart RightEar;
@@ -199,7 +198,7 @@ public class ProtogenModel extends AdvancedHumanoidModel<ProtogenEntity> impleme
 
     @Override
     public void prepareMobModel(@NotNull ProtogenEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     @Override

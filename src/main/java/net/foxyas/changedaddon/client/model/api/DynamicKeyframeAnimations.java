@@ -4,7 +4,6 @@ import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.util.Mth;
 import org.joml.Vector3f;
@@ -19,7 +18,7 @@ public class DynamicKeyframeAnimations {
         if (!(entityModel instanceof IHierModel pModel)) return;
         float f = getElapsedSeconds(pAnimationDefinition, pAccumulatedTime);
 
-        for(Map.Entry<String, List<AnimationChannel>> entry : pAnimationDefinition.boneAnimations().entrySet()) {
+        for (Map.Entry<String, List<AnimationChannel>> entry : pAnimationDefinition.boneAnimations().entrySet()) {
             Optional<ModelPart> optional = pModel.getAnyChild(entry.getKey());
             List<AnimationChannel> list = entry.getValue();
             optional.ifPresent((p_232330_) -> {
@@ -48,7 +47,7 @@ public class DynamicKeyframeAnimations {
     }
 
     private static float getElapsedSeconds(AnimationDefinition pAnimationDefinition, long pAccumulatedTime) {
-        float f = (float)pAccumulatedTime / 1000.0F;
+        float f = (float) pAccumulatedTime / 1000.0F;
         return pAnimationDefinition.looping() ? f % pAnimationDefinition.lengthInSeconds() : f;
     }
 }

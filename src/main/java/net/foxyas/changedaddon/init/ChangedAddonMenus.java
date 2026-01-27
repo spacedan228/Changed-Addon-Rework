@@ -20,7 +20,6 @@ public class ChangedAddonMenus {
     public static final RegistryObject<MenuType<GeneratorGuiMenu>> GENERATORGUI = register("generator_gui", GeneratorGuiMenu::new);
     public static final RegistryObject<MenuType<CatalyzerGuiMenu>> CATALYZER_GUI = register("catalyzer_gui", CatalyzerGuiMenu::new);
     public static final RegistryObject<MenuType<UnifuserGuiMenu>> UNIFUSER_GUI = register("unifuser_gui", UnifuserGuiMenu::new);
-    public static final RegistryObject<MenuType<TransfurSoundsGuiMenu>> TRANSFUR_SOUNDS_GUI = register("transfur_sounds_gui", TransfurSoundsGuiMenu::new);
     public static final RegistryObject<MenuType<InformantGuiMenu>> INFORMANT_MENU = register("informant_gui", InformantGuiMenu::new);
     public static final RegistryObject<MenuType<PrototypeMenu>> PROTOTYPE_MENU = register("prototype_menu", PrototypeMenu::new);
     public static final RegistryObject<MenuType<CustomMerchantMenu>> MERCHANT_MENU = register("merchant_menu", CustomMerchantMenu::new);

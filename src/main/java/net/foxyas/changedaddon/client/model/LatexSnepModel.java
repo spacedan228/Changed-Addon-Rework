@@ -8,7 +8,6 @@ import net.foxyas.changedaddon.entity.advanced.LatexSnepEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> implements AdvancedHumanoidModelInterface<LatexSnepEntity, LatexSnepModel> {
+public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("latex_snep", "main");
     // Grupo principal: Animal e corpo
 
@@ -257,7 +256,7 @@ public class LatexSnepModel extends AdvancedHumanoidModel<LatexSnepEntity> imple
     public void prepareMobModel(@NotNull LatexSnepEntity entity, float limbSwing, float limbSwingAmount, float partialTicks) {
         int entityTickCount = entity.tickCount;
 
-        this.prepareMobModel(animator, entity, limbSwing, limbSwingAmount, partialTicks);
+        super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTicks);
 
         this.Torso.xRot = 0.0F;
         this.Torso.yRot = 0.0F;

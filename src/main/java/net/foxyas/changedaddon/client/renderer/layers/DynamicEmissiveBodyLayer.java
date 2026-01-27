@@ -57,7 +57,7 @@ public class DynamicEmissiveBodyLayer<M extends EntityModel<T>, T extends Change
     }
 
     @Override
-    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T changedEntity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
+    public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T changedEntity, HumanoidArm arm, PartPose armPose, float partialTick) {
         stack.pushPose();
         stack.scale(1.0002F, 1.0002F, 1.0002F);
         EntityModel<T> var10 = this.getParentModel();
@@ -66,7 +66,7 @@ public class DynamicEmissiveBodyLayer<M extends EntityModel<T>, T extends Change
         if (var10 instanceof AdvancedHumanoidModel<?> armedModel) {
             ModelPart armPart = armedModel.getArm(arm);
             armPart.loadPose(armPose);
-            FormRenderHandler.renderModelPartWithTexture(armedModel.getArm(arm), stackCorrector, stack, bufferSource.getBuffer(this.renderType()), 15728880, hairColor.red(), hairColor.green(), hairColor.blue(), 1.0F);
+            FormRenderHandler.renderModelPartWithTexture(armedModel.getArm(arm),  stack, bufferSource.getBuffer(this.renderType()), 15728880, hairColor.red(), hairColor.green(), hairColor.blue(), 1.0F);
         }
 
         stack.popPose();

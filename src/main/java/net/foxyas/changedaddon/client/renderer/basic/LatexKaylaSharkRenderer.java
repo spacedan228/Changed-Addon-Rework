@@ -34,8 +34,8 @@ public class LatexKaylaSharkRenderer extends AdvancedHumanoidRenderer<LatexKayla
         this.addLayer(GasMaskLayer.forSnouted(this, context.getModelSet()));
         this.addLayer(new EmissiveBodyLayer<>(this, EMISSIVE_TEXTURE) {
             @Override
-            public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, LatexKaylaSharkEntity entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-                if (entity.getGlowingState()) super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+            public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, LatexKaylaSharkEntity entity, HumanoidArm arm, PartPose armPose, float partialTick) {
+                if (entity.getGlowingState()) super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, partialTick);
             }
 
             @Override

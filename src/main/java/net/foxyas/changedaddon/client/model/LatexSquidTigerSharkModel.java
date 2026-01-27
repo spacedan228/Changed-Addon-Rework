@@ -11,8 +11,6 @@ import net.ltxprogrammer.changed.client.renderer.animate.camera.SharkCameraSwimA
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.SharkHeadInitAnimator;
 import net.ltxprogrammer.changed.client.renderer.animate.upperbody.SharkHeadSwimAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
-import net.ltxprogrammer.changed.client.renderer.model.CorrectorType;
 import net.ltxprogrammer.changed.client.renderer.model.DoubleArmedModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -28,7 +26,7 @@ import java.util.function.Consumer;
 
 import static net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets.*;
 
-public class LatexSquidTigerSharkModel extends AdvancedHumanoidModel<LatexSquidTigerSharkEntity> implements AdvancedHumanoidModelInterface<LatexSquidTigerSharkEntity, LatexSquidTigerSharkModel>, DoubleArmedModel<LatexSquidTigerSharkEntity> {
+public class LatexSquidTigerSharkModel extends AdvancedHumanoidModel<LatexSquidTigerSharkEntity> implements DoubleArmedModel<LatexSquidTigerSharkEntity> {
 
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("squid_tiger_shark", "main");
     private final ModelPart Head;
@@ -303,22 +301,13 @@ public class LatexSquidTigerSharkModel extends AdvancedHumanoidModel<LatexSquidT
 
     @Override
     public void prepareMobModel(@NotNull LatexSquidTigerSharkEntity p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
     @Override
     public void setupAnim(@NotNull LatexSquidTigerSharkEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-    }
-
-    public PoseStack getPlacementCorrectors(CorrectorType type) {
-        PoseStack corrector = AdvancedHumanoidModelInterface.super.getPlacementCorrectors(type);
-        /*if (type.isArm())
-            corrector.translate(0.0f, -6f / 16.0f, 0.0f);*/
-        if (type == CorrectorType.HAIR)
-            corrector.translate(0.0f, -1f / 16.0f, 0.0f);
-        return corrector;
     }
 
     @Override

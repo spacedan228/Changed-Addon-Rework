@@ -34,8 +34,8 @@ private static class DEVRENDER<T extends ChangedEntity, M extends EntityModel<T>
         }
 
         @Override
-        public void renderFirstPersonOnArms(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PoseStack stackCorrector, float partialTick) {
-            FirstPersonLayer.super.renderFirstPersonOnArms(poseStack, bufferSource, packedLight, entity, arm, stackCorrector, partialTick);
+        public void renderFirstPersonOnArms(PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, float partialTick) {
+            FirstPersonLayer.super.renderFirstPersonOnArms(poseStack, bufferSource, packedLight, entity, arm, partialTick);
              // Aplica o scale
             poseStack.pushPose();
             poseStack.scale(DEBUG.HeadPosX, DEBUG.HeadPosY, DEBUG.HeadPosZ);

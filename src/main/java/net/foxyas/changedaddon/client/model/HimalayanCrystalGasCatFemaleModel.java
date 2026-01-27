@@ -11,7 +11,6 @@ import net.ltxprogrammer.changed.client.animations.Limb;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.client.tfanimations.HelperModel;
 import net.ltxprogrammer.changed.client.tfanimations.TransfurHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -23,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class HimalayanCrystalGasCatFemaleModel extends AdvancedHumanoidModel<CrystalGasCatFemaleEntity> implements AdvancedHumanoidModelInterface<CrystalGasCatFemaleEntity, HimalayanCrystalGasCatFemaleModel> {
+public class HimalayanCrystalGasCatFemaleModel extends AdvancedHumanoidModel<CrystalGasCatFemaleEntity> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Changed.modResource("himalayan_crystal_gas_cat_female"), "main");
     private final ModelPart RightLeg;
     private final ModelPart LeftLeg;
@@ -209,7 +208,7 @@ public class HimalayanCrystalGasCatFemaleModel extends AdvancedHumanoidModel<Cry
     }
 
     public void prepareMobModel(@NotNull CrystalGasCatFemaleEntity p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(this.animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
     public void setupHand(CrystalGasCatFemaleEntity entity) {

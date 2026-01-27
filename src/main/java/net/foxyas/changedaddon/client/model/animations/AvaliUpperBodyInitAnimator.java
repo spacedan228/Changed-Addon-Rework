@@ -14,8 +14,6 @@ import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 
 import static net.foxyas.changedaddon.ability.WingFlapAbility.*;
-import static net.foxyas.changedaddon.ability.WingFlapAbility.AVALI_WING_FLAP_TARGET_Y;
-import static net.foxyas.changedaddon.ability.WingFlapAbility.AVALI_WING_FLAP_TARGET_Z;
 
 public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends AdvancedHumanoidModel<T>> extends AbstractUpperBodyAnimator<T, M> {
 
@@ -23,6 +21,25 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
 
     public AvaliUpperBodyInitAnimator(ModelPart head, ModelPart torso, ModelPart leftArm, ModelPart rightArm) {
         super(head, torso, leftArm, rightArm);
+    }
+
+    // Função de suavização
+    public static float easeInOut(float t) {
+        return t * t * (3 - 2 * t);
+    }
+
+    public static float easeOutCubic(float t) {
+        return 1 - (float) Math.pow(1 - t, 3);
+    }
+
+    // Method para limitar o valor entre min e max
+    public static float capLevel(float value, float min, float max) {
+        if (value < min) {
+            return min;
+        } else if (value > max) {
+            return max;
+        }
+        return value;
     }
 
     public HumanoidAnimator.AnimateStage preferredStage() {
@@ -92,25 +109,5 @@ public class AvaliUpperBodyInitAnimator<T extends ChangedEntity, M extends Advan
         // aplica em Z (mais natural pra "tensão")
         rightArm.zRot = capLevel(rightArm.zRot + bob, AVALI_WING_FLAP_TARGET_Z - BOB_AMPLITUDE, AVALI_WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
         leftArm.zRot = capLevel(leftArm.zRot - bob, -AVALI_WING_FLAP_TARGET_Z - BOB_AMPLITUDE, -AVALI_WING_FLAP_TARGET_Z + BOB_AMPLITUDE);
-    }
-
-
-    // Função de suavização
-    public static float easeInOut(float t) {
-        return t * t * (3 - 2 * t);
-    }
-
-    public static float easeOutCubic(float t) {
-        return 1 - (float) Math.pow(1 - t, 3);
-    }
-
-    // Method para limitar o valor entre min e max
-    public static float capLevel(float value, float min, float max) {
-        if (value < min) {
-            return min;
-        } else if (value > max) {
-            return max;
-        }
-        return value;
     }
 }

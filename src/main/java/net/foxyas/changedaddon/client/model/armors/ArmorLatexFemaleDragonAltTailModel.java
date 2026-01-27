@@ -4,17 +4,20 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
+import net.ltxprogrammer.changed.client.animations.Limb;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModel;
 import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorModelSet;
 import net.ltxprogrammer.changed.client.renderer.model.armor.LatexHumanoidArmorModel;
 import net.ltxprogrammer.changed.client.tfanimations.HelperModel;
-import net.ltxprogrammer.changed.client.animations.Limb;
 import net.ltxprogrammer.changed.client.tfanimations.TransfurHelper;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -123,14 +126,6 @@ public class ArmorLatexFemaleDragonAltTailModel<T extends ChangedEntity> extends
     @Override
     public void prepareVisibility(EquipmentSlot armorSlot, ItemStack item) {
         super.prepareVisibility(armorSlot, item);
-        if (armorSlot == EquipmentSlot.LEGS) {
-            prepareUnifiedLegsForArmor(item, LeftLeg, RightLeg, Tail);
-        }
-    }
-
-    @Override
-    public void unprepareVisibility(EquipmentSlot armorSlot, ItemStack item) {
-        super.unprepareVisibility(armorSlot, item);
         if (armorSlot == EquipmentSlot.LEGS) {
             prepareUnifiedLegsForArmor(item, LeftLeg, RightLeg, Tail);
         }

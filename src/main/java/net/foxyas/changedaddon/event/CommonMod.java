@@ -97,9 +97,6 @@ public class CommonMod {
         ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonPacket.class, GeneratorGuiButtonPacket::encode,
                 GeneratorGuiButtonPacket::new, GeneratorGuiButtonPacket::handler);
 
-        ChangedAddonMod.addNetworkMessage(OpenExtraDetailsPacket.class, OpenExtraDetailsPacket::encode,
-                OpenExtraDetailsPacket::new, OpenExtraDetailsPacket::handler);
-
         ChangedAddonMod.addNetworkMessage(PatKeyPacket.class, PatKeyPacket::encode, PatKeyPacket::new, PatKeyPacket::handler);
 
         ChangedAddonMod.addNetworkMessage(TransfurSoundsGuiButtonPacket.class, TransfurSoundsGuiButtonPacket::encode,

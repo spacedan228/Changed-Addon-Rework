@@ -92,21 +92,21 @@ public class LuminarcticLeopardsConditionalLayers {
         }
 
         @Override
-        public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, PoseStack stackCorrector, float partialTick) {
-            //super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+        public void renderFirstPersonOnArms(PoseStack stack, MultiBufferSource bufferSource, int packedLight, T entity, HumanoidArm arm, PartPose armPose, float partialTick) {
+            //super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose,  partialTick);
             if (entity.getUnderlyingPlayer() != null) {
                 Player player = entity.getUnderlyingPlayer();
                 var instance = ProcessTransfur.getPlayerTransfurVariant(player).getSelectedAbility();
                 if (entity instanceof AbstractLuminarcticLeopard LUMI && LUMI.isActivatedAbility()) {
-                    super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+                    super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose,  partialTick);
                 } else if (instance != null && instance.ability instanceof HypnosisAbility) {
                     if (instance.getController().getHoldTicks() > 0) {
-                        super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+                        super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose,  partialTick);
                     }
                 }
             } else {
                 if (entity instanceof AbstractLuminarcticLeopard WILD_LUMI && WILD_LUMI.getTarget() != null) {
-                    super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose, stackCorrector, partialTick);
+                    super.renderFirstPersonOnArms(stack, bufferSource, packedLight, entity, arm, armPose,  partialTick);
                 }
             }
 

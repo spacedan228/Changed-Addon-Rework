@@ -6,7 +6,6 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.entity.beast.LatexHuman;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -17,7 +16,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexHumanHazardBodySuitModel extends AdvancedHumanoidModel<LatexHuman> implements AdvancedHumanoidModelInterface<LatexHuman, LatexHumanHazardBodySuitModel> {
+public class LatexHumanHazardBodySuitModel extends AdvancedHumanoidModel<LatexHuman> {
     public static final ModelLayerLocation LATEX_PLAYER = ChangedAddonMod.layerLocation("latex_human_hazard_body_suit", "main");
     public static final ModelLayerLocation LATEX_PLAYER_SLIM = ChangedAddonMod.layerLocation("latex_human_hazard_body_suit_slim", "main");
 
@@ -53,28 +52,6 @@ public class LatexHumanHazardBodySuitModel extends AdvancedHumanoidModel<LatexHu
         this.animator = HumanoidAnimator.of(this).hipOffset(-1.5F).legLength(10.5F).addPreset(AnimatorPresets.humanLike(this.Head, this.Torso, this.LeftArm, this.RightArm, this.LeftLeg, this.RightLeg));
     }
 
-    public void defaultModelProperties() {
-        this.Hat.visible = true;
-        this.Jacket.visible = true;
-        this.LeftPants.visible = true;
-        this.RightPants.visible = true;
-        this.LeftSleeve.visible = true;
-        this.RightSleeve.visible = true;
-    }
-
-    public void setModelProperties(AbstractClientPlayer player) {
-        this.Hat.visible = player.isModelPartShown(PlayerModelPart.HAT);
-        this.Jacket.visible = player.isModelPartShown(PlayerModelPart.JACKET);
-        this.LeftPants.visible = player.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);
-        this.RightPants.visible = player.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
-        this.LeftSleeve.visible = player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
-        this.RightSleeve.visible = player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
-    }
-
-    public ModelPart getHat() {
-        return Hat;
-    }
-
     public static LayerDefinition createBodyLayer(CubeDeformation pCubeDeformation, boolean slim) {
         float armWidth = slim ? 3.0F : 4.0F;
         float rightArmOffset = slim ? 1.0F : 0.0F;
@@ -99,8 +76,30 @@ public class LatexHumanHazardBodySuitModel extends AdvancedHumanoidModel<LatexHu
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
+    public void defaultModelProperties() {
+        this.Hat.visible = true;
+        this.Jacket.visible = true;
+        this.LeftPants.visible = true;
+        this.RightPants.visible = true;
+        this.LeftSleeve.visible = true;
+        this.RightSleeve.visible = true;
+    }
+
+    public void setModelProperties(AbstractClientPlayer player) {
+        this.Hat.visible = player.isModelPartShown(PlayerModelPart.HAT);
+        this.Jacket.visible = player.isModelPartShown(PlayerModelPart.JACKET);
+        this.LeftPants.visible = player.isModelPartShown(PlayerModelPart.LEFT_PANTS_LEG);
+        this.RightPants.visible = player.isModelPartShown(PlayerModelPart.RIGHT_PANTS_LEG);
+        this.LeftSleeve.visible = player.isModelPartShown(PlayerModelPart.LEFT_SLEEVE);
+        this.RightSleeve.visible = player.isModelPartShown(PlayerModelPart.RIGHT_SLEEVE);
+    }
+
+    public ModelPart getHat() {
+        return Hat;
+    }
+
     public void prepareMobModel(@NotNull LatexHuman p_102861_, float p_102862_, float p_102863_, float p_102864_) {
-        this.prepareMobModel(this.animator, p_102861_, p_102862_, p_102863_, p_102864_);
+        super.prepareMobModel(p_102861_, p_102862_, p_102863_, p_102864_);
     }
 
     public void setupHand(LatexHuman entity) {

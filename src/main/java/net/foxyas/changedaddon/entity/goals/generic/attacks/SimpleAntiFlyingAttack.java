@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.entity.goals.generic.attacks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,6 +12,7 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -189,14 +191,19 @@ public class SimpleAntiFlyingAttack extends Goal {
 
     private void slam() {
         if (target == null) return;
+        attacker.teleportTo(target.getX(), target.getY(), target.getZ());
+
         if (target instanceof Player player) {
             if (player.getAbilities().flying) {
                 player.getAbilities().flying = false;
                 player.onUpdateAbilities();
             }
         }
-        attacker.teleportTo(target.getX(), target.getY(), target.getZ());
+
         target.setDeltaMovement(0, -8, 0);
+        target.hasImpulse = true;
+        broadcastMotion(target);
+
         attacker.swing(InteractionHand.MAIN_HAND);
         removeIframesFromTarget();
         if (!target.isBlocking()) {
@@ -207,6 +214,13 @@ public class SimpleAntiFlyingAttack extends Goal {
         spawnImpactSoundEffect();
         spawnImpactParticleEffect(target.position());
         removeSlowFalling();
+    }
+
+    private static void broadcastMotion(Entity entity) {
+        if (!entity.level.isClientSide) {
+            ServerLevel sl = (ServerLevel) entity.level;
+            sl.getChunkSource().broadcastAndSend(entity, new ClientboundSetEntityMotionPacket(entity));
+        }
     }
 
     private void removeSlowFalling() {

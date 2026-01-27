@@ -8,7 +8,6 @@ import net.foxyas.changedaddon.entity.simple.SnowLeopardMaleOrganicEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -18,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class BioSynthSnowLeopardMaleModel extends AdvancedHumanoidModel<SnowLeopardMaleOrganicEntity> implements AdvancedHumanoidModelInterface<SnowLeopardMaleOrganicEntity, BioSynthSnowLeopardMaleModel> {
+public class BioSynthSnowLeopardMaleModel extends AdvancedHumanoidModel<SnowLeopardMaleOrganicEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("biosynth_snow_leopard_male", "main");
     private final ModelPart RightLeg;
@@ -190,7 +189,7 @@ public class BioSynthSnowLeopardMaleModel extends AdvancedHumanoidModel<SnowLeop
 
     @Override
     public void prepareMobModel(@NotNull SnowLeopardMaleOrganicEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     @Override

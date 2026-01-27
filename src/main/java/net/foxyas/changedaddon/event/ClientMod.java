@@ -2,13 +2,11 @@ package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.gui.*;
-import net.foxyas.changedaddon.client.renderer.renderTypes.ChangedAddonRenderTypes;
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
 import net.foxyas.changedaddon.item.tooltip.ClientTransfurTotemTooltipComponent;
 import net.foxyas.changedaddon.item.tooltip.TransfurTotemTooltipComponent;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +26,6 @@ public class ClientMod {
             MenuScreens.register(ChangedAddonMenus.GENERATORGUI.get(), GeneratorguiScreen::new);
             MenuScreens.register(ChangedAddonMenus.CATALYZER_GUI.get(), CatalyzerGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.UNIFUSER_GUI.get(), UnifuserGuiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.TRANSFUR_SOUNDS_GUI.get(), TransfurSoundsGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.INFORMANT_MENU.get(), InformantGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.PROTOTYPE_MENU.get(), PrototypeMenuScreen::new);
             MenuScreens.register(ChangedAddonMenus.MERCHANT_MENU.get(), CustomMerchantScreen::new);

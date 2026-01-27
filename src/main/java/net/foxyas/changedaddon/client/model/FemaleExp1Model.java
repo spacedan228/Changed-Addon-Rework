@@ -9,7 +9,6 @@ import net.ltxprogrammer.changed.client.animations.Limb;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.ltxprogrammer.changed.client.tfanimations.HelperModel;
 import net.ltxprogrammer.changed.client.tfanimations.TransfurHelper;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class FemaleExp1Model extends AdvancedHumanoidModel<Exp1FemaleEntity> implements AdvancedHumanoidModelInterface<Exp1FemaleEntity, FemaleExp1Model> {
+public class FemaleExp1Model extends AdvancedHumanoidModel<Exp1FemaleEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("female_exp1", "main");
 
@@ -105,7 +104,7 @@ public class FemaleExp1Model extends AdvancedHumanoidModel<Exp1FemaleEntity> imp
                 .texOffs(11, 87).addBox(0.5F, 9.475F, -1.875F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F))
                 .texOffs(11, 91).addBox(-0.775F, 9.475F, -1.625F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.075F)), PartPose.offset(-1.0F, -8.5F, -0.05F));
 
-        PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.5F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
+        PartDefinition Head = partdefinition.addOrReplaceChild("Head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F))
                 .texOffs(32, 8).addBox(-2.0F, -3.5F, -6.0F, 4.0F, 2.0F, 2.0F, new CubeDeformation(0.0F))
                 .texOffs(24, 6).addBox(-1.5F, -1.5F, -5.0F, 3.0F, 1.0F, 1.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
@@ -209,7 +208,7 @@ public class FemaleExp1Model extends AdvancedHumanoidModel<Exp1FemaleEntity> imp
 
     @Override
     public void prepareMobModel(@NotNull Exp1FemaleEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     @Override

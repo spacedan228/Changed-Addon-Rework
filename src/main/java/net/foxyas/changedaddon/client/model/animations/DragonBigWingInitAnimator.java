@@ -19,6 +19,25 @@ public class DragonBigWingInitAnimator<T extends ChangedEntity, M extends Advanc
         super(leftWingRoot, leftWingBone1, leftWingBone2, rightWingRoot, rightWingBone1, rightWingBone2);
     }
 
+    // Função de suavização
+    private static float easeInOut(float t) {
+        return t * t * (3 - 2 * t);
+    }
+
+    private static float easeOutCubic(float t) {
+        return 1 - (float) Math.pow(1 - t, 3);
+    }
+
+    // Method para limitar o valor entre min e max
+    private static float capLevel(float value, float min, float max) {
+        if (value < min) {
+            return min;
+        } else if (value > max) {
+            return max;
+        }
+        return value;
+    }
+
     public HumanoidAnimator.AnimateStage preferredStage() {
         return AnimateStage.INIT;
     }
@@ -30,11 +49,11 @@ public class DragonBigWingInitAnimator<T extends ChangedEntity, M extends Advanc
         if (!entity.isFallFlying()) {
             if (entity.isFlying()) {
                 this.rightWingRoot.z = //0.85f;
-                Mth.lerp(
-                        this.core.flyAmount,
-                        this.rightWingRoot.z,
-                        0.85f
-                );
+                        Mth.lerp(
+                                this.core.flyAmount,
+                                this.rightWingRoot.z,
+                                0.85f
+                        );
                 this.leftWingRoot.z = //0.85f;
                         Mth.lerp(
                                 this.core.flyAmount,
@@ -116,25 +135,5 @@ public class DragonBigWingInitAnimator<T extends ChangedEntity, M extends Advanc
                 this.rightWingRoot.zRot = maxRotation * Mth.DEG_TO_RAD;
             }
         }
-    }
-
-
-    // Função de suavização
-    private static float easeInOut(float t) {
-        return t * t * (3 - 2 * t);
-    }
-
-    private static float easeOutCubic(float t) {
-        return 1 - (float) Math.pow(1 - t, 3);
-    }
-
-    // Method para limitar o valor entre min e max
-    private static float capLevel(float value, float min, float max) {
-        if (value < min) {
-            return min;
-        } else if (value > max) {
-            return max;
-        }
-        return value;
     }
 }

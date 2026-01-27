@@ -3,11 +3,10 @@ package net.foxyas.changedaddon.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.entity.simple.DarkLatexYufengQueenEntity;
 import net.foxyas.changedaddon.client.model.animations.ChangedAddonAnimationsPresets;
+import net.foxyas.changedaddon.entity.simple.DarkLatexYufengQueenEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class DarkLatexYufengQueenModel extends AdvancedHumanoidModel<DarkLatexYufengQueenEntity> implements AdvancedHumanoidModelInterface<DarkLatexYufengQueenEntity, DarkLatexYufengQueenModel> {
+public class DarkLatexYufengQueenModel extends AdvancedHumanoidModel<DarkLatexYufengQueenEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation("dark_latex_yufeng_queen", "main");
     private final ModelPart RightLeg;
@@ -306,7 +305,7 @@ public class DarkLatexYufengQueenModel extends AdvancedHumanoidModel<DarkLatexYu
 
     @Override
     public void prepareMobModel(@NotNull DarkLatexYufengQueenEntity pEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick) {
-        prepareMobModel(this.animator, pEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
+        super.prepareMobModel(pEntity, pLimbSwing, pLimbSwingAmount, pPartialTick);
     }
 
     @Override

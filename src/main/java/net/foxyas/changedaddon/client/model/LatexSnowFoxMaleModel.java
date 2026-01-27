@@ -11,7 +11,6 @@ import net.foxyas.changedaddon.entity.simple.LatexSnowFoxMaleEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
-import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModelInterface;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LatexSnowFoxMaleModel extends AdvancedHumanoidModel<LatexSnowFoxMaleEntity> implements AdvancedHumanoidModelInterface<LatexSnowFoxMaleEntity, LatexSnowFoxMaleModel> {
+public class LatexSnowFoxMaleModel extends AdvancedHumanoidModel<LatexSnowFoxMaleEntity> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
     public static final ModelLayerLocation LAYER_LOCATION = ChangedAddonMod.layerLocation(("snow_fox"), "main");
 
@@ -193,7 +192,7 @@ public class LatexSnowFoxMaleModel extends AdvancedHumanoidModel<LatexSnowFoxMal
 
     @Override
     public void prepareMobModel(@NotNull LatexSnowFoxMaleEntity p_162861, float p_102862, float p_102863, float p_102864_) {
-        this.prepareMobModel(animator, p_162861, p_102862, p_102863, p_102864_);
+        super.prepareMobModel(p_162861, p_102862, p_102863, p_102864_);
     }
 
     /* public PoseStack getPlacementCorrectors(CorrectorType type) {
