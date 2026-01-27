@@ -78,7 +78,10 @@ public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity {
 
     @Override
     public boolean tryFuseWithTarget(LivingEntity entity, IAbstractChangedEntity source, float amount) {
-        return false;
+        if (TransfurVariant.getEntityVariant(entity) == ChangedTransfurVariants.DARK_LATEX_YUFENG.get())
+            return false;
+
+        return super.tryFuseWithTarget(entity, source, amount);
     }
 
     @Override
