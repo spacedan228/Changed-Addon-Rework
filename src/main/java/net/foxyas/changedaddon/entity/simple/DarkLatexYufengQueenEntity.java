@@ -8,6 +8,7 @@ import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexEntity;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -66,8 +67,21 @@ public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity {
     }
 
     @Override
-    public TransfurVariant<?> getTransfurVariant() {
+    public TransfurVariant<?> getSelfVariant() {
         return ChangedAddonTransfurVariants.DARK_LATEX_YUFENG_QUEEN.get();
+    }
+
+    @Override
+    public TransfurVariant<?> getTransfurVariant() {
+        return ChangedTransfurVariants.DARK_LATEX_YUFENG.get();
+    }
+
+    @Override
+    public boolean tryFuseWithTarget(LivingEntity entity, IAbstractChangedEntity source, float amount) {
+        if (TransfurVariant.getEntityVariant(entity) == ChangedTransfurVariants.DARK_LATEX_YUFENG.get())
+            return false;
+
+        return super.tryFuseWithTarget(entity, source, amount);
     }
 
     @Override
