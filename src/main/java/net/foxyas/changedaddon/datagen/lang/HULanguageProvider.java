@@ -430,13 +430,18 @@ public class HULanguageProvider extends LanguageProvider {
 
         addGui("transfur_sounds_gui.bark", "Ugat");
         addGui("transfur_sounds_gui.chatter", "Nyeffeg");
-        addGui("transfur_sounds_gui.fox_scream", "Róka sikoly");
+        addGui("transfur_sounds_gui.dragon_growl", "Morog");
+        addGui("transfur_sounds_gui.dragon_roar", "Ordít");
+        addGui("transfur_sounds_gui.flop", "Csap");
+        addGui("transfur_sounds_gui.fox_scream", "Sikít");
         addGui("transfur_sounds_gui.growl", "Morog");
         addGui("transfur_sounds_gui.hiss", "Sziszeg");
         addGui("transfur_sounds_gui.howl", "Vonyít");
         addGui("transfur_sounds_gui.meow", "Nyávog");
+        addGui("transfur_sounds_gui.purr", "Dorombol");
         addGui("transfur_sounds_gui.purreow", "Dorombolva nyávog");
         addGui("transfur_sounds_gui.roar", "Ordít");
+        addGui("transfur_sounds_gui.swim", "Úszik");
         addGui("transfur_sounds_gui.whine", "Vinnyog");
         addGui("transfur_sounds_gui.yip", "Csahol");
         
