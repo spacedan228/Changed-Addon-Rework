@@ -10,25 +10,21 @@ import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
-import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.boss.Behemoth;
 import net.ltxprogrammer.changed.entity.beast.boss.BehemothHand;
 import net.ltxprogrammer.changed.entity.beast.boss.BehemothHead;
 import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.monster.Monster;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +37,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
-import java.util.Optional;
 
 @Mixin(value = ChangedEntity.class, remap = false)
 public abstract class ChangedEntityGrabHandleMixin extends Monster implements IGrabberEntity, IAlphaAbleEntity {
@@ -51,10 +46,6 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Unique
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
-    @Unique
-    protected int grabCooldown = 0;
-    @Unique
-    protected boolean ableToGrab;
 
     protected ChangedEntityGrabHandleMixin(EntityType<? extends Monster> type, Level pLevel) {
         super(type, pLevel);
@@ -65,12 +56,22 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (this.getSelfVariant() != null) {
             List<? extends AbstractAbility<?>> listOfAbilities = this.getSelfVariant().abilities.stream().map((entityTypeFunction -> entityTypeFunction.apply(type))).toList();
             if (listOfAbilities.contains(ChangedAbilities.GRAB_ENTITY_ABILITY.get())) {
-                this.ableToGrab = level.getRandom().nextFloat() <= 0.15f; // Just for fail-safe
+                this.setCanUseGrab(level.getRandom().nextFloat() <= 0.15f); // Just for fail-safe
             }
         }
         if (canEntityGrab(type, level)) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
         }
+    }
+
+    @Override
+    public void setCanUseGrab(boolean value) {
+        this.entityData.set(CAN_USE_GRAB, value);
+    }
+
+    @Override
+    public boolean canUseGrab() {
+        return this.entityData.get(CAN_USE_GRAB);
     }
 
     @Override
@@ -117,7 +118,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
                 return;
             }
             if (grabEntityAbilityInstance.grabbedEntity == null) {
-                if (grabCooldown > 0) this.grabCooldown--;
+                if (this.getGrabCooldown() > 0) this.setGrabCooldown(this.getGrabCooldown() - 1);
             }
             this.mayTickGrabAbility();
         }
@@ -171,12 +172,12 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public int getGrabCooldown() {
-        return grabCooldown;
+        return this.entityData.get(GRAB_COOLDOWN);
     }
 
     @Override
     public void setGrabCooldown(int grabCooldown) {
-        this.grabCooldown = grabCooldown;
+        this.entityData.set(GRAB_COOLDOWN, grabCooldown);
     }
 
     @Override
@@ -233,10 +234,10 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     public boolean isAbleToGrab() {
         EntityType<?> type = this.getType();
         if (type == ChangedEntities.BEHEMOTH_HEAD.get() || type == ChangedEntities.BEHEMOTH_HAND_LEFT.get() || type == ChangedEntities.BEHEMOTH_HAND_RIGHT.get()) {
-            this.ableToGrab = level.getDifficulty().equals(Difficulty.HARD);
+            this.setCanUseGrab(level.getDifficulty().equals(Difficulty.HARD));
         }
 
-        return ableToGrab || isAlpha();
+        return this.canUseGrab() || isAlpha();
     }
 
     @ModifyReturnValue(method = "getAbilityInstance", at = @At("RETURN"))
@@ -294,6 +295,8 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Inject(method = "defineSynchedData", at = @At("HEAD"), remap = true, cancellable = true)
     private void defineSynchedDataHook(CallbackInfo ci) {
         ChangedEntity self = (ChangedEntity) (Object) this;
+        self.getEntityData().define(CAN_USE_GRAB, false);
+        self.getEntityData().define(GRAB_COOLDOWN, 0);
         self.getEntityData().define(IS_ALPHA, false);
         self.getEntityData().define(ALPHA_SCALE, 0.75f);
     }
