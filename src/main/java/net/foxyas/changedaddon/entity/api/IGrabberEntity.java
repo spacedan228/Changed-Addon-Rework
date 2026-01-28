@@ -78,7 +78,7 @@ public interface IGrabberEntity {
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
             grabAbilityInstance.saveData(grabInstanceTag);
-            grabInstanceTag.putInt("grabCooldown", this.getGrabCooldown());
+            tag.putInt("grabCooldown", this.getGrabCooldown());
             tag.put("grabAbility", grabInstanceTag);
         }
     }
@@ -90,7 +90,7 @@ public interface IGrabberEntity {
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
             grabAbilityInstance.readData(grabAbilityTag);
-            if (grabAbilityTag.contains("grabCooldown")) this.setGrabCooldown(grabAbilityTag.getInt("grabCooldown"));
+            if (tag.contains("grabCooldown")) this.setGrabCooldown(tag.getInt("grabCooldown"));
         }
     }
 

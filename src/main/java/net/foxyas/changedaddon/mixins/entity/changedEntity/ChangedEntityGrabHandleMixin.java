@@ -7,6 +7,7 @@ import net.foxyas.changedaddon.entity.goals.abilities.MayCauseGrabDamageGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.mixins.abilities.AbilityControllerAccessor;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
@@ -177,7 +178,14 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public void setGrabCooldown(int grabCooldown) {
-        this.entityData.set(GRAB_COOLDOWN, grabCooldown);
+        GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
+        if (grabAbilityInstance != null) {
+            AbstractAbility.Controller controller = grabAbilityInstance.getController();
+            controller.forceCooldown(grabCooldown);
+            if (controller instanceof AbilityControllerAccessor abilityControllerAccessor) {
+                this.entityData.set(GRAB_COOLDOWN, abilityControllerAccessor.getCooldownTicksRemaining());
+            }
+        }
     }
 
     @Override

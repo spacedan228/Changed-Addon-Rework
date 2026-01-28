@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.goals.abilities.MayCauseGrabDamageGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
@@ -8,6 +9,7 @@ import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.mixins.abilities.AbilityControllerAccessor;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
@@ -256,7 +258,14 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
 
     @Override
     public void setGrabCooldown(int grabCooldown) {
-        this.entityData.set(GRAB_COOLDOWN, grabCooldown);
+        GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
+        if (grabAbilityInstance != null) {
+            AbstractAbility.Controller controller = grabAbilityInstance.getController();
+            controller.forceCooldown(grabCooldown);
+            if (controller instanceof AbilityControllerAccessor abilityControllerAccessor) {
+                this.entityData.set(GRAB_COOLDOWN, abilityControllerAccessor.getCooldownTicksRemaining());
+            }
+        }
     }
 
     @Override
