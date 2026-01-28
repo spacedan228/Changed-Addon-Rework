@@ -72,6 +72,7 @@ public interface IGrabberEntity {
 
     default void saveGrabAbilityInTag(CompoundTag tag) {
         CompoundTag grabInstanceTag = new CompoundTag();
+        tag.putBoolean("canUseGrab", canUseGrab());
 
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
@@ -81,12 +82,14 @@ public interface IGrabberEntity {
         }
     }
 
-    default void readGrabAbilityInTag(CompoundTag grabInstanceTag) {
+    default void readGrabAbilityInTag(CompoundTag tag) {
+        if (tag.contains("canUseGrab")) this.setCanUseGrab(tag.getBoolean("canUseGrab"));
 
+        CompoundTag grabAbilityTag = tag.getCompound("grabAbility");
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
-            grabAbilityInstance.readData(grabInstanceTag);
-            if (grabInstanceTag.contains("grabCooldown")) this.setGrabCooldown(grabInstanceTag.getInt("grabCooldown"));
+            grabAbilityInstance.readData(grabAbilityTag);
+            if (grabAbilityTag.contains("grabCooldown")) this.setGrabCooldown(grabAbilityTag.getInt("grabCooldown"));
         }
     }
 

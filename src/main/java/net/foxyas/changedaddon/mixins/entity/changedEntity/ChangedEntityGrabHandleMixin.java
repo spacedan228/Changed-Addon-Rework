@@ -301,6 +301,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Inject(method = "defineSynchedData", at = @At("HEAD"), remap = true, cancellable = true)
     private void defineSynchedDataHook(CallbackInfo ci) {
         ChangedEntity self = (ChangedEntity) (Object) this;
+        self.getEntityData().define(CAN_USE_GRAB, false);
         self.getEntityData().define(GRAB_COOLDOWN, 0);
         self.getEntityData().define(IS_ALPHA, false);
         self.getEntityData().define(ALPHA_SCALE, 0.75f);
