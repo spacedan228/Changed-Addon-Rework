@@ -11,16 +11,12 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.advanced.TimedKeypadBlock;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.util.ModelUtils;
 import net.foxyas.changedaddon.variant.IDynamicCoatColors;
 import net.ltxprogrammer.changed.Changed;
-import net.ltxprogrammer.changed.client.ClientLivingEntityExtender;
 import net.ltxprogrammer.changed.entity.BasicPlayerInfo;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
-import net.ltxprogrammer.changed.util.EntityUtil;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.commands.CommandRuntimeException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -28,29 +24,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 
 public class ChangedAddonCommandRootCommand {
-
-    public static void registerClientCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("changed-addon")
-                .requires(stack -> stack.getEntity() instanceof Player)
-                .then(Commands.literal("resetRenderedModels").executes((context) -> {
-                    Entity entity = context.getSource().getEntity();
-                    if (!(entity instanceof Player player)) return 0;
-                    ((ClientLivingEntityExtender) EntityUtil.maybeGetUnderlying(player)).getOrderedAnimations().forEach(instance -> {
-                        EntityModel<?> modelOf = ModelUtils.getModelOf(player);
-                        if (modelOf == null) return;
-
-                        instance.resetToBaseline(modelOf, player, identifier -> true);
-                    });
-                    return 1;
-                })));
-    }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("changed-addon")
