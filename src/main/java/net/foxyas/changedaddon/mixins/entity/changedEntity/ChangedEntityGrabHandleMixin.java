@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
@@ -184,7 +185,10 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public void setGrabCooldown(int grabCooldown) {
-        this.entityData.set(GRAB_COOLDOWN, grabCooldown);
+        if (this.getGrabAbilityInstance() instanceof GrabEntityAbilityExtensor abilityExtensor) {
+            abilityExtensor.setGrabCooldown(grabCooldown);
+            this.entityData.set(GRAB_COOLDOWN, abilityExtensor.getGrabCooldown());
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.network.packet.DynamicGrabEntityPacket;
 import net.foxyas.changedaddon.network.packet.S2CCheckGrabberEntity;
@@ -77,7 +78,7 @@ public interface IGrabberEntity {
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
             grabAbilityInstance.saveData(grabInstanceTag);
-            grabInstanceTag.putInt("grabCooldown", this.getGrabCooldown());
+            tag.putInt("grabCooldown", this.getGrabCooldown());
             tag.put("grabAbility", grabInstanceTag);
         }
     }
@@ -89,7 +90,7 @@ public interface IGrabberEntity {
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
             grabAbilityInstance.readData(grabAbilityTag);
-            if (grabAbilityTag.contains("grabCooldown")) this.setGrabCooldown(grabAbilityTag.getInt("grabCooldown"));
+            if (tag.contains("grabCooldown")) this.setGrabCooldown(tag.getInt("grabCooldown"));
         }
     }
 

@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.simple;
 
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
@@ -68,6 +69,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         setPersistenceRequired();
 
         this.grabEntityAbilityInstance = this.createGrabAbility();
+        this.setCanUseGrab(true);
     }
 
     public static void init() {
@@ -289,7 +291,10 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
 
     @Override
     public void setGrabCooldown(int grabCooldown) {
-        this.entityData.set(GRAB_COOLDOWN, grabCooldown);
+        if (this.getGrabAbilityInstance() instanceof GrabEntityAbilityExtensor abilityExtensor) {
+            abilityExtensor.setGrabCooldown(grabCooldown);
+            this.entityData.set(GRAB_COOLDOWN, abilityExtensor.getGrabCooldown());
+        }
     }
 
     @Override
