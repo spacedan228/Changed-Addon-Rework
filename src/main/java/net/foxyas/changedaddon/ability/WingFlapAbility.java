@@ -109,7 +109,15 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
         return 15;
     }
 
-    public static class AbilityInstance extends AbstractAbilityInstance implements AbilityExtension {
+    @Override
+    public boolean shouldApplyCoolDown(IAbstractChangedEntity entity) {
+        WingFlapAbility.AbilityInstance abilityInstance = entity.getAbilityInstance(this);
+        if (abilityInstance != null) return abilityInstance.shouldApplyCooldown();
+
+        return super.shouldApplyCoolDown(entity);
+    }
+
+    public static class AbilityInstance extends AbstractAbilityInstance {
 
         public boolean readyToDash = false;
         public float dashPower = 0;
@@ -237,7 +245,6 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
             }
         }
 
-        @Override
         public boolean shouldApplyCooldown() {
             return this.lastDashPower > 0;
         }

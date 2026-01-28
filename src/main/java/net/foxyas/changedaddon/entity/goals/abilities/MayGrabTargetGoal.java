@@ -1,9 +1,6 @@
 package net.foxyas.changedaddon.entity.goals.abilities;
 
-import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
-import net.foxyas.changedaddon.mixins.abilities.GrabEntityAbilityInstanceAccessor;
-import net.foxyas.changedaddon.mixins.entity.CombatTrackerAccessor;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;

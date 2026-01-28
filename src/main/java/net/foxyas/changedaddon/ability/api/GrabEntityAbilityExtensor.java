@@ -12,9 +12,6 @@ import org.jetbrains.annotations.NotNull;
 
 public interface GrabEntityAbilityExtensor {
 
-    void setGrabCooldown(int cooldown);
-    int getGrabCooldown();
-
     void setSafeMode(boolean safeMode);
     void setSafeModeAuthoritative(boolean safeMode);
 

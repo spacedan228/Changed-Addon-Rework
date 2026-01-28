@@ -5,8 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "changed_addon.refmap.json",
   "mixins": [
+    "abilities.AbilityControllerAccessor",
     "abilities.AbilityControllerMixin",
-    "abilities.GrabEntityAbilityInstanceAccessor",
     "abilities.GrabEntityAbilityInstanceMixin",
     "abilities.GrabEntityPacketMixin",
     "blocks.BlockMixin",

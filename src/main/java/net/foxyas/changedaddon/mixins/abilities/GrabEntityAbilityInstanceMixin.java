@@ -54,9 +54,6 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
     @Shadow
     int instructionTicks;
 
-    @Shadow
-    private int grabCooldown;
-
     @Unique
     private boolean safeMode = false;
     @Unique
@@ -300,15 +297,5 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
 
 
         return original;
-    }
-
-    @Override
-    public int getGrabCooldown() {
-        return this.grabCooldown;
-    }
-
-    @Override
-    public void setGrabCooldown(int cooldown) {
-        this.grabCooldown = cooldown;
     }
 }
