@@ -52,10 +52,6 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Unique
     protected GrabEntityAbilityInstance grabEntityAbilityInstance = null;
-    @Unique
-    protected int grabCooldown = 0;
-    @Unique
-    protected boolean ableToGrab;
 
     protected ChangedEntityGrabHandleMixin(EntityType<? extends Monster> type, Level pLevel) {
         super(type, pLevel);
@@ -66,12 +62,22 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         if (this.getSelfVariant() != null) {
             List<? extends AbstractAbility<?>> listOfAbilities = this.getSelfVariant().abilities.stream().map((entityTypeFunction -> entityTypeFunction.apply(type))).toList();
             if (listOfAbilities.contains(ChangedAbilities.GRAB_ENTITY_ABILITY.get())) {
-                this.ableToGrab = level.getRandom().nextFloat() <= 0.15f; // Just for fail-safe
+                this.setCanUseGrab(level.getRandom().nextFloat() <= 0.15f); // Just for fail-safe
             }
         }
         if (canEntityGrab(type, level)) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
         }
+    }
+
+    @Override
+    public void setCanUseGrab(boolean value) {
+        this.entityData.set(CAN_USE_GRAB, value);
+    }
+
+    @Override
+    public boolean canUseGrab() {
+        return this.entityData.get(CAN_USE_GRAB);
     }
 
     @Override
@@ -119,7 +125,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
                 return;
             }
             if (grabEntityAbilityInstance.grabbedEntity == null) {
-                if (grabCooldown > 0) this.grabCooldown--;
+                if (this.getGrabCooldown() > 0) this.setGrabCooldown(this.getGrabCooldown() - 1);
             }
             this.mayTickGrabAbility();
         }
@@ -173,12 +179,12 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Override
     public int getGrabCooldown() {
-        return grabCooldown;
+        return this.entityData.get(GRAB_COOLDOWN);
     }
 
     @Override
     public void setGrabCooldown(int grabCooldown) {
-        this.grabCooldown = grabCooldown;
+        this.entityData.set(GRAB_COOLDOWN, grabCooldown);
     }
 
     @Override
@@ -235,10 +241,10 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     public boolean isAbleToGrab() {
         EntityType<?> type = this.getType();
         if (type == ChangedEntities.BEHEMOTH_HEAD.get() || type == ChangedEntities.BEHEMOTH_HAND_LEFT.get() || type == ChangedEntities.BEHEMOTH_HAND_RIGHT.get()) {
-            this.ableToGrab = level.getDifficulty().equals(Difficulty.HARD);
+            this.setCanUseGrab(level.getDifficulty().equals(Difficulty.HARD));
         }
 
-        return ableToGrab || isAlpha();
+        return this.canUseGrab() || isAlpha();
     }
 
     @ModifyReturnValue(method = "getAbilityInstance", at = @At("RETURN"))
@@ -295,6 +301,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Inject(method = "defineSynchedData", at = @At("HEAD"), remap = true, cancellable = true)
     private void defineSynchedDataHook(CallbackInfo ci) {
         ChangedEntity self = (ChangedEntity) (Object) this;
+        self.getEntityData().define(GRAB_COOLDOWN, 0);
         self.getEntityData().define(IS_ALPHA, false);
         self.getEntityData().define(ALPHA_SCALE, 0.75f);
     }

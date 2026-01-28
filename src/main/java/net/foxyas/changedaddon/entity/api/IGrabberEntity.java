@@ -9,6 +9,9 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -20,6 +23,10 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
 
 public interface IGrabberEntity {
+
+    EntityDataAccessor<Boolean> CAN_USE_GRAB = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.BOOLEAN);
+    EntityDataAccessor<Integer> GRAB_COOLDOWN = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.INT);
+
     PathfinderMob asMob();
 
     LivingEntity getGrabbedEntity();
@@ -30,6 +37,13 @@ public interface IGrabberEntity {
         if (this instanceof ChangedEntity changedEntity) {
             return new GrabEntityAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get(), IAbstractChangedEntity.forEntity(changedEntity));
         } else return null;
+    }
+
+    default boolean canUseGrab() {
+        return isAbleToGrab();
+    }
+
+    default void setCanUseGrab(boolean value) {
     }
 
     default void mayTickGrabAbility() {

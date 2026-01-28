@@ -55,7 +55,6 @@ import static net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure.Die
 public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats, IGrabberEntity {
 
     protected GrabEntityAbilityInstance grabEntityAbilityInstance;
-    protected int grabCooldown = 0;
 
     public WolfyEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.WOLFY.get(), world);
@@ -245,7 +244,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     public void baseTick() {
         super.baseTick();
         if (grabEntityAbilityInstance != null && grabEntityAbilityInstance.grabbedEntity == null) {
-            if (grabCooldown > 0) this.grabCooldown--;
+            if (this.getGrabCooldown() > 0) this.setGrabCooldown(this.getGrabCooldown() - 1);
         }
         this.mayTickGrabAbility();
     }
@@ -274,13 +273,33 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        try {
+            entityData.define(GRAB_COOLDOWN, 0);
+            entityData.define(CAN_USE_GRAB, true);
+        } catch (IllegalArgumentException ignored) {
+        }
+    }
+
+    @Override
     public int getGrabCooldown() {
-        return this.grabCooldown;
+        return this.entityData.get(GRAB_COOLDOWN);
     }
 
     @Override
     public void setGrabCooldown(int grabCooldown) {
-        this.grabCooldown = grabCooldown;
+        this.entityData.set(GRAB_COOLDOWN, grabCooldown);
+    }
+
+    @Override
+    public boolean canUseGrab() {
+        return this.entityData.get(CAN_USE_GRAB);
+    }
+
+    @Override
+    public void setCanUseGrab(boolean value) {
+        this.entityData.set(CAN_USE_GRAB, value);
     }
 
     public Color3 getDripColor() {
