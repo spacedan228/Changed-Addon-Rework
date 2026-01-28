@@ -245,8 +245,10 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     @Override
     public void baseTick() {
         super.baseTick();
-        if (grabEntityAbilityInstance != null && grabEntityAbilityInstance.grabbedEntity == null) {
-            if (this.getGrabCooldown() > 0) this.setGrabCooldown(this.getGrabCooldown() - 1);
+        if (!this.getLevel().isClientSide()) {
+            if (this.getGrabbedEntity() == null) {
+                if (this.getGrabCooldown() > 0) this.setGrabCooldown(this.getGrabCooldown() - 1);
+            }
         }
         this.mayTickGrabAbility();
     }
@@ -291,9 +293,9 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
 
     @Override
     public void setGrabCooldown(int grabCooldown) {
+        this.entityData.set(GRAB_COOLDOWN, grabCooldown);
         if (this.getGrabAbilityInstance() instanceof GrabEntityAbilityExtensor abilityExtensor) {
             abilityExtensor.setGrabCooldown(grabCooldown);
-            this.entityData.set(GRAB_COOLDOWN, abilityExtensor.getGrabCooldown());
         }
     }
 
