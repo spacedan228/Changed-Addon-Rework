@@ -72,6 +72,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         if (this.grabEntityAbilityInstance == null) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
         }
+        this.setCanUseGrab(true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

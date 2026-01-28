@@ -118,8 +118,10 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
                 this.grabEntityAbilityInstance = createGrabAbility(); // fail-safe
                 return;
             }
-            if (grabEntityAbilityInstance.grabbedEntity == null) {
-                if (this.getGrabCooldown() > 0) this.setGrabCooldown(this.getGrabCooldown() - 1);
+            if (!this.level.isClientSide()) {
+                if (this.getGrabbedEntity() == null) {
+                    if (this.getGrabCooldown() > 0) this.setGrabCooldown(this.getGrabCooldown() - 1);
+                }
             }
             this.mayTickGrabAbility();
         }
