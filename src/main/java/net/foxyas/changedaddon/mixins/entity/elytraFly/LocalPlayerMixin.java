@@ -23,7 +23,7 @@ public class LocalPlayerMixin {
     private boolean changedaddon$canElytraFlyRedirect(
             boolean original
     ) {
-        LivingEntity self = (LivingEntity) (Object) this;
+        LocalPlayer self = (LocalPlayer) (Object) this;
         return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(self))
                 .map(latexVariant -> {
                     if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
