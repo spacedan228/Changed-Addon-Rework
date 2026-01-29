@@ -173,7 +173,7 @@ public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverable
         return super.canAttachTo(level, attachToPos, attachTo, attachToFace);
     }
 
-    protected boolean canSpreadTo(LevelAccessor level,
+    public boolean canSpreadTo(LevelAccessor level,
                                   @NotNull BlockState currentState, @NotNull BlockPos currentPos, BlockPos attachToPos,
                                   BlockState attachTo,
                                   Direction attachToFace) {
