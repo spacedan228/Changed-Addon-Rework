@@ -77,7 +77,7 @@ public abstract class BlockStateBaseMixin {
 
         iAbstractChangedEntity.ifPresent((iAbstractChanged) -> {
             if (iAbstractChanged.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
-                if (luminaraFlowerBeast.isHyperAwakened() && !luminaraFlowerBeast.isShiftKeyDown() && (!luminaraFlowerBeast.isFlying() || !luminaraFlowerBeast.isFallFlying())) {
+                if (luminaraFlowerBeast.isHyperAwakened() && !luminaraFlowerBeast.isShiftKeyDown() && (!luminaraFlowerBeast.isFlying() && !luminaraFlowerBeast.isFallFlying())) {
                     if (pLevel.getBlockState(pPos).is(Blocks.VOID_AIR)) {
                         cir.setReturnValue(true);
                     }
