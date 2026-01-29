@@ -98,6 +98,7 @@ public final class ChangedAddonTags {
         public static final TagKey<TransfurVariant<?>> LEOPARD_LIKE = key("leopard_like");
         public static final TagKey<TransfurVariant<?>> SHARK_LIKE = key("shark_like");
         public static final TagKey<TransfurVariant<?>> WOLF_LIKE = key("wolf_like");
+        public static final TagKey<TransfurVariant<?>> SPIDER_LIKE = key("spider_like");
 
         // Transfur Diets
         public static final TagKey<TransfurVariant<?>> AQUATIC_DIET = key("aquatic_diet");

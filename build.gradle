@@ -123,7 +123,7 @@ dependencies {
     }//Changed
 
     implementation fg.deobf("dev.tr7zw:notenoughanimations-forge-1.11.1-mc1.18.2:1.11.1")
-    implementation fg.deobf("dev.tr7zw:firstperson-forge-2.6.2-mc1.18.2:2.6.2")
+    compileOnly fg.deobf("dev.tr7zw:firstperson-forge-2.6.2-mc1.18.2:2.6.2")
     runtimeOnly fg.deobf("dev.tr7zw:TRender-1.0.10-1.18.2-forge-SNAPSHOT:1.0.10")
     runtimeOnly fg.deobf("dev.tr7zw:TRansition-1.0.11-1.18.2-forge-SNAPSHOT:1.0.11")
     implementation fg.deobf("curse.maven:playeranimator-658587:4418152") // Forge 1.18.2 v1.0.2

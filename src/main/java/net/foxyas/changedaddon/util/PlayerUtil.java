@@ -191,6 +191,11 @@ public class PlayerUtil {
         return entity instanceof AbstractAquaticEntity;
     }
 
+    public static boolean isSpiderTransfur(Player player) {
+        TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
+        return variant.is(ChangedAddonTags.TransfurTypes.SPIDER_LIKE);
+    }
+
     public static boolean canRoar(Player player) {
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return entity.getType().is(ChangedAddonTags.EntityTypes.CAN_ROAR);

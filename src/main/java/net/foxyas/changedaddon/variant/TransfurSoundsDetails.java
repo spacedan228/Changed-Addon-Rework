@@ -62,7 +62,8 @@ public class TransfurSoundsDetails {
         FOX(PlayerUtil::isFoxTransfur, TransfurSoundAction.YIP, TransfurSoundAction.CHATTER, TransfurSoundAction.FOX_SCREAM),
         BIG_CAT(PlayerUtil::canRoar, TransfurSoundAction.ROAR),
         DRAGON(PlayerUtil::isDragonTransfur, TransfurSoundAction.DRAGON_ROAR, TransfurSoundAction.DRAGON_GROWL),
-        AQUATIC(PlayerUtil::isAquaticTransfur, TransfurSoundAction.SWIM, TransfurSoundAction.FLOP);
+        AQUATIC(PlayerUtil::isAquaticTransfur, TransfurSoundAction.SWIM, TransfurSoundAction.FLOP),
+        SPIDER(PlayerUtil::isSpiderTransfur, TransfurSoundAction.SPIDER_AMBIENT, TransfurSoundAction.SPIDER_CRAWL);
 
         public final Predicate<Player> predicate;
         public final Set<TransfurSoundAction> actions;
@@ -86,7 +87,7 @@ public class TransfurSoundsDetails {
     public enum TransfurSoundAction {
 
         MEOW(20, SoundEvents.CAT_AMBIENT, 1, "meow", "miau"),
-        PURREOW(40, SoundEvents.CAT_PURREOW, 1, "purreow"),
+        PURREOW(30, SoundEvents.CAT_PURREOW, 1, "purreow"),
         PURR(40, SoundEvents.CAT_PURR, 1, "purr"),
         HISS(40, SoundEvents.CAT_HISS, 1, "hiss"),
 
@@ -99,13 +100,16 @@ public class TransfurSoundsDetails {
         CHATTER(25, SoundEvents.FOX_AGGRO, 1, "chatter"),
         FOX_SCREAM("Scream", 40, SoundEvents.FOX_SCREECH, 1, "scream"),
 
-        ROAR(80, ChangedSounds.MONSTER2, 2, "roar", "rawr"),
-
         DRAGON_ROAR("Roar", 60, SoundEvents.ENDER_DRAGON_AMBIENT, 1.5f, "roar", "rawr"),//might conflict
         DRAGON_GROWL("Growl", 60, SoundEvents.ENDER_DRAGON_GROWL, 1.5f, "growl", "grr"),
 
         SWIM(20, SoundEvents.FISH_SWIM, 1, "swim"),
-        FLOP(15, SoundEvents.TROPICAL_FISH_FLOP, 1, "flop");
+        FLOP(15, SoundEvents.TROPICAL_FISH_FLOP, 1, "flop"),
+
+        SPIDER_AMBIENT("Ambient", 20, SoundEvents.SPIDER_AMBIENT, 1),//idk how to name this better / chat keyword
+        SPIDER_CRAWL("Crawl", 20, SoundEvents.SPIDER_STEP, 1, "crawl"),
+
+        ROAR(80, ChangedSounds.MONSTER2, 2, "roar", "rawr");
 
         private final String formattedName;
         private final int cooldown;

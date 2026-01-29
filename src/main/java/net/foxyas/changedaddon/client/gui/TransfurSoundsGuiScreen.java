@@ -222,6 +222,10 @@ public class TransfurSoundsGuiScreen extends Screen {
             species.add(ComponentUtil.literal("§fFish"));
         }
 
+        if (PlayerUtil.isSpiderTransfur(player)) {
+            species.add(ComponentUtil.literal("§fSpider"));
+        }
+
         if (species.isEmpty()) {
             species.add(ComponentUtil.literal("§7Unknown"));
         }
