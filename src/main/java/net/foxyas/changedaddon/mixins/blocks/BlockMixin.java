@@ -1,62 +1,57 @@
 package net.foxyas.changedaddon.mixins.blocks;
 
-import net.foxyas.changedaddon.init.ChangedAddonAbilities;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.init.ChangedAbilities;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import net.foxyas.changedaddon.entity.advanced.LuminaraFlowerBeastEntity;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AirBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.EntityCollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Optional;
 
-@Mixin(BlockBehaviour.class)
-public abstract class BlockMixin {
+@Mixin(Block.class)
+public class BlockMixin {
 
-    @Inject(method = "getCollisionShape", at = @At("HEAD"), cancellable = true)
-    private void getCollisionModShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context, CallbackInfoReturnable<VoxelShape> cir) {
-        if (context instanceof EntityCollisionContext entityContext) {
-            Entity collidingEntity = entityContext.getEntity();
+    @WrapOperation(method = "fallOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;causeFallDamage(FFLnet/minecraft/world/damagesource/DamageSource;)Z"))
+    private boolean cancelFallDamageForLuminara(Entity instance, float pFallDistance, float multiplier, DamageSource damageSource, Operation<Boolean> original,
+                                                @Local(argsOnly = true) Level level,
+                                                @Local(argsOnly = true) BlockState state,
+                                                @Local(argsOnly = true) BlockPos pos) {
+        Block self = (Block) (Object) this;
 
-            if (collidingEntity != null && state.is(BlockTags.create(ResourceLocation.parse("changed_addon:passable_blocks")))) {
-                // Verifica se a entidade é um jogador
-                if (collidingEntity instanceof Player player) {
-                    // Verifica uma condição específica do jogador (no caso, ProcessTransfur)
-                    if (ProcessTransfur.isPlayerLatex(player)) {
-                        TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
-                        if ((transfurVariantInstance.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get()) == null) || (transfurVariantInstance.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get()) != null
-                                && transfurVariantInstance.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get()).grabbedEntity == null)) {
+        if (!(self instanceof AirBlock airBlock)) {
+            return original.call(instance, pFallDistance, multiplier, damageSource);
+        }
 
-                            //Ability
-                            transfurVariantInstance.ifHasAbility(ChangedAddonAbilities.SOFTEN_ABILITY.get(), Instance -> {
-                                if (player.getItemBySlot(EquipmentSlot.HEAD).isEmpty()
-                                        && player.getItemBySlot(EquipmentSlot.CHEST).isEmpty()
-                                        && player.getItemBySlot(EquipmentSlot.LEGS).isEmpty()
-                                        && player.getItemBySlot(EquipmentSlot.FEET).isEmpty()) {
-                                    if (Instance.isActivate()) {
-                                        // Se for um jogador Latex, permite que ele atravesse a barra de ferro (forma vazia)
-                                        cir.setReturnValue(Shapes.empty()); // Colisão desativada para jogadores Latex
-                                    }
-                                }
-                            });
-                            //SoftenAbilityInstance ability = ProcessTransfur.getPlayerTransfurVariant(player).getAbilityInstance(ChangedAddonAbilitys.SOFTEN_ABILITY.get());
-                        }
-                    }
-                }
+        if (!(instance instanceof LivingEntity livingEntity))
+            return original.call(instance, pFallDistance, multiplier, damageSource);
+
+        Optional<IAbstractChangedEntity> iAbstractChangedEntity = IAbstractChangedEntity.forEitherSafe(livingEntity);
+        if (iAbstractChangedEntity.isPresent()) {
+            IAbstractChangedEntity iAbstractChanged = iAbstractChangedEntity.get();
+            if (!(iAbstractChanged.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast)) {
+                return original.call(instance, pFallDistance, multiplier, damageSource);
+            }
+
+            if (!luminaraFlowerBeast.isHyperAwakened() || luminaraFlowerBeast.isShiftKeyDown() || (luminaraFlowerBeast.isFlying() && luminaraFlowerBeast.isFallFlying())) {
+                return original.call(instance, pFallDistance, multiplier, damageSource);
+            }
+
+            if (level.getBlockState(pos).is(Blocks.VOID_AIR)) {
+                return false;
             }
         }
+        return original.call(instance, pFallDistance, multiplier, damageSource);
     }
+
 }

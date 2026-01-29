@@ -35,7 +35,7 @@ public abstract class BlockStateBaseMixin {
     public abstract boolean is(Block pBlock);
 
     @Inject(method = "getCollisionShape(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/phys/shapes/CollisionContext;)Lnet/minecraft/world/phys/shapes/VoxelShape;", at = @At("RETURN"), cancellable = true)
-    private void getCollisionShape(BlockGetter pLevel, BlockPos pPos, CollisionContext pContext, CallbackInfoReturnable<VoxelShape> cir) {
+    private void getCollisionShapeHook(BlockGetter pLevel, BlockPos pPos, CollisionContext pContext, CallbackInfoReturnable<VoxelShape> cir) {
         if (!(pContext instanceof EntityCollisionContext collisionContext)) {
             return;
         }
@@ -57,6 +57,29 @@ public abstract class BlockStateBaseMixin {
                 if (luminaraFlowerBeast.isHyperAwakened() && !luminaraFlowerBeast.isShiftKeyDown() && (!luminaraFlowerBeast.isFlying() || !luminaraFlowerBeast.isFallFlying())) {
                     if (pLevel.getBlockState(pPos).is(Blocks.VOID_AIR)) {
                         cir.setReturnValue(Shapes.block());
+                    }
+                }
+            }
+        });
+
+    }
+
+    @Inject(method = "entityCanStandOn", at = @At("RETURN"), cancellable = true)
+    private void canEntityStandOnHook(BlockGetter pLevel, BlockPos pPos, Entity pEntity, CallbackInfoReturnable<Boolean> cir) {
+
+        if (!(this.getBlock() instanceof AirBlock airBlock)) {
+            return;
+        }
+
+        if (!(pEntity instanceof LivingEntity livingEntity)) return;
+
+        Optional<IAbstractChangedEntity> iAbstractChangedEntity = IAbstractChangedEntity.forEitherSafe(livingEntity);
+
+        iAbstractChangedEntity.ifPresent((iAbstractChanged) -> {
+            if (iAbstractChanged.getChangedEntity() instanceof LuminaraFlowerBeastEntity luminaraFlowerBeast) {
+                if (luminaraFlowerBeast.isHyperAwakened() && !luminaraFlowerBeast.isShiftKeyDown() && (!luminaraFlowerBeast.isFlying() || !luminaraFlowerBeast.isFallFlying())) {
+                    if (pLevel.getBlockState(pPos).is(Blocks.VOID_AIR)) {
+                        cir.setReturnValue(true);
                     }
                 }
             }

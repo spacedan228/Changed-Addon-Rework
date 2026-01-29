@@ -1,18 +1,24 @@
 package net.foxyas.changedaddon.mixins.entity.elytraFly;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = LocalPlayer.class, priority = 1001)
 public class LocalPlayerMixin {
 
-    @ModifyExpressionValue(
+    @WrapOperation(
             method = "aiStep",
             at = @At(
                     value = "INVOKE",
@@ -20,17 +26,18 @@ public class LocalPlayerMixin {
                     remap = false
             )
     )
-    private boolean changedaddon$canElytraFlyRedirect(
-            boolean original
-    ) {
-        LocalPlayer self = (LocalPlayer) (Object) this;
-        return ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(self))
-                .map(latexVariant -> {
-                    if (latexVariant.getChangedEntity() instanceof VariantExtraStats extra) {
-                        return extra.getFlyType().canGlide() || original;
-                    }
-                    return latexVariant.getParent().canGlide || original;
-                })
-                .orElse(original);
+    private boolean changedaddon$canElytraFlyRedirect(ItemStack instance, LivingEntity living, Operation<Boolean> original) {
+        Player self = (Player) (Object) this;
+        TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(EntityUtil.playerOrNull(self));
+        if (transfurVariant == null) return original.call(instance, living);
+        if (instance.getItem() instanceof ElytraItem) {
+            return original.call(instance, living);
+        }
+
+        if (transfurVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+            return variantExtraStats.getFlyType().canGlide();
+        }
+
+        return original.call(instance, living);
     }
 }

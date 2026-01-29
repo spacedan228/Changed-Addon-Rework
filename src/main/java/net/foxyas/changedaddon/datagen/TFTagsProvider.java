@@ -29,7 +29,7 @@ public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
-        tag(ChangedAddonTags.TransfurTypes.ABLE_TO_CARRY).add(cast(EXP6));
+        tag(ChangedAddonTags.TransfurTypes.ABLE_TO_CARRY).add(cast(EXP6), cast(LUMINARA_FLOWER_BEAST));
         tag(ChangedAddonTags.TransfurTypes.CAUSE_FREEZING).add(cast(LUMINARCTIC_LEOPARD_MALE), cast(LUMINARCTIC_LEOPARD_FEMALE));
         tag(ChangedAddonTags.TransfurTypes.GLOWING_VARIANTS).add(cast(EXPERIMENT_009), cast(EXPERIMENT_009_BOSS), cast(EXPERIMENT_10), cast(EXPERIMENT_10_BOSS));
         tag(ChangedAddonTags.TransfurTypes.HAS_CLAWS).add(

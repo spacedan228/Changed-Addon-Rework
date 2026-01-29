@@ -9,6 +9,7 @@
     "abilities.AbilityControllerMixin",
     "abilities.GrabEntityAbilityInstanceMixin",
     "abilities.GrabEntityPacketMixin",
+    "blocks.BlockBehaviourMixin",
     "blocks.BlockMixin",
     "blocks.BlockStateBaseMixin",
     "blocks.CrossCollisionBlockMixin",
