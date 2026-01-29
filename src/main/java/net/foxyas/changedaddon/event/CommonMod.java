@@ -43,7 +43,7 @@ public class CommonMod {
         });
     }
 
-    private static void addPackets(){
+    private static void addPackets() {
         CHANGED_ADDON_PACKETS.registerPackets();
 
         ChangedAddonMod.addNetworkMessage(SafeGrabSyncPacket.class, SafeGrabSyncPacket::write,
@@ -64,7 +64,9 @@ public class CommonMod {
                 VariantSecondAbilityActivate::new, VariantSecondAbilityActivate::handle);
 
         ChangedAddonMod.addNetworkMessage(ChangedAddonVariables.SyncPacket.class, ChangedAddonVariables.SyncPacket::encode,
-                ChangedAddonVariables.SyncPacket::new, ChangedAddonVariables.SyncPacket::handler);
+                ChangedAddonVariables.SyncPacket::new,
+                (packet, contextSupplier) -> ClientPacketHandler.handlerVariableSync(packet, contextSupplier),
+                NetworkDirection.PLAY_TO_CLIENT);
 
         ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonPacket.class, GeneratorGuiButtonPacket::encode,
                 GeneratorGuiButtonPacket::new, GeneratorGuiButtonPacket::handler);
@@ -101,8 +103,8 @@ public class CommonMod {
                 ServerboundCustomSelectTradePacket::new,
                 (packet, context) -> {
                     NetworkEvent.Context ctx = context.get();
-                    if(ctx.getSender() == null) return;
-                    ctx.enqueueWork(()-> {
+                    if (ctx.getSender() == null) return;
+                    ctx.enqueueWork(() -> {
                         if (ctx.getSender().containerMenu instanceof CustomMerchantMenu menu) {
                             int i = packet.shopItem();
                             menu.setSelectionHint(i);

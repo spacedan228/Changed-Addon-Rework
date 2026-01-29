@@ -7,6 +7,8 @@ import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonStatRegistry;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
+import net.foxyas.changedaddon.util.DelayedTask;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -35,6 +37,9 @@ public class PatFeatureHandle {
 
     public static void run(Level level, Player player) {
         if (player == null || player.isSpectator() || !canPlayerPat(player)) return;
+
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
+        if (vars != null && vars.patCooldown) return;
 
         InteractionHand emptyHand = getEmptyHand(player);
         if(emptyHand == null) return;
@@ -81,7 +86,7 @@ public class PatFeatureHandle {
         pat.WhenPattedReaction(player, emptyHand);
         pat.WhenPattedReactionSimple();
 
-        if (player instanceof ServerPlayer sPlayer) sPlayer.awardStat(ChangedAddonStatRegistry.PATS_GIVEN);
+        if (player instanceof ServerPlayer sPlayer) onPat(sPlayer);
     }
 
     private static void handleLatexEntity(Player player, InteractionHand emptyHand, ChangedEntity target, EntityHitResult entityHitResult, Level level) {
@@ -106,7 +111,7 @@ public class PatFeatureHandle {
 
         if (player instanceof ServerPlayer sp) {
             GiveStealthPatAdvancement(sp, target);
-            sp.awardStat(ChangedAddonStatRegistry.PATS_GIVEN);
+            onPat(sp);
         }
     }
 
@@ -135,8 +140,7 @@ public class PatFeatureHandle {
             return;
         }
 
-        if (player instanceof ServerPlayer sPlayer) sPlayer.awardStat(ChangedAddonStatRegistry.PATS_GIVEN);
-
+        if (player instanceof ServerPlayer sPlayer) onPat(sPlayer);
         if (target instanceof ServerPlayer sPlayer) sPlayer.awardStat(ChangedAddonStatRegistry.PATS_RECEIVED);
 
         if(targetTF == null || !(level instanceof ServerLevel)) return;
@@ -178,5 +182,17 @@ public class PatFeatureHandle {
 
     public static void GiveStealthPatAdvancement(ServerPlayer player, Entity target) {
         ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(player, target, "stealth");
+    }
+
+    private static void onPat(ServerPlayer player) {
+        player.awardStat(ChangedAddonStatRegistry.PATS_GIVEN);
+
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.nonNullOf(player);
+        vars.patCooldown = true;
+        vars.syncPlayerVariables(player);
+        DelayedTask.schedule(5, () -> {
+            vars.patCooldown = false;
+            vars.syncPlayerVariables(player);
+        });
     }
 }
