@@ -222,6 +222,7 @@ public class LatexSnowFoxFemaleModel extends AdvancedHumanoidModel<LatexSnowFoxF
          return corrector;
      }
   */
+
     @Override
     public void setupHand(LatexSnowFoxFemaleEntity entity) {
         animator.setupHand();
