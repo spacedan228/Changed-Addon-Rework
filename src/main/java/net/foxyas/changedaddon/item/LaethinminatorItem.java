@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.item;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonFluids;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
+import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedTags;
@@ -11,7 +12,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -27,6 +30,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import static net.foxyas.changedaddon.util.FoxyasUtils.getRelativePosition;
 
 public class LaethinminatorItem extends FlamethrowerLike {
 
@@ -73,6 +78,37 @@ public class LaethinminatorItem extends FlamethrowerLike {
     @Override
     protected ParticleOptions particle() {
         return ChangedParticles.gas(Color3.fromInt(-1));
+    }
+
+    protected void shoot(ServerLevel level, Player player, int maxRange, int horizontalRadius, int verticalRadius) {
+        Vec3 eyePosition = player.getEyePosition(1.0F); // Posição dos olhos do jogador
+        //Vec3 lookDirection = player.getLookAngle().normalize();    // Direção para onde o jogador está olhando
+        //aplicar um efeito de particulas de "gas"
+        InteractionHand hand = player.getUsedItemHand();
+
+        ParticleOptions particle = particle();
+        for (int i = 1; i <= maxRange; i++) {
+            // Calcula a posição do bloco na trajetória do laser
+            Vec3 targetVec = eyePosition.add(getRelativePosition(player, 0, 0, i, true));
+            BlockPos targetPos = new BlockPos(targetVec);
+
+            double deltaX = hand == InteractionHand.MAIN_HAND ? 0.25 : -0.25;
+            if (player.getMainArm() == HumanoidArm.LEFT) deltaX = -deltaX;
+
+            Vec3 relativePosition = getRelativePosition(player, deltaX, 0, i * 0.5 + 1f, true);
+            Vec3 maxRelativePosition = getRelativePosition(player, deltaX, 0, maxRange * 0.5, true);
+            ParticlesUtil.sendParticlesWithMotionAndOffset(player, particle, player.getEyePosition().add(relativePosition), new Vec3(0.15f, 0.15f, 0.15f), maxRelativePosition, new Vec3(0.25f, 0.25f, 0.25f), 2, 0.10f);
+
+            affectSurroundingEntities(level, player, targetVec, 4 * ((double) i / maxRange));
+
+            // Verifica se o bloco é ar; se for, ignora essa fileira
+            if (level.getBlockState(targetPos).isAir()) {
+                // Afeta os blocos ao redor do ponto atual
+                continue;
+            }
+
+            affectSurroundingBlocks(level, targetPos, horizontalRadius, verticalRadius, particle);
+        }
     }
 
     protected void affectSurroundingEntities(ServerLevel level, Player player, Vec3 targetPos, double area) {
