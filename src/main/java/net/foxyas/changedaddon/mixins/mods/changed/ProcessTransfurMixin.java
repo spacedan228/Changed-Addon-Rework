@@ -1,16 +1,16 @@
 package net.foxyas.changedaddon.mixins.mods.changed;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.simple.WolfyEntity;
 import net.foxyas.changedaddon.event.ProgressTransfurEvents;
-import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.entity.TransfurCause;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -19,6 +19,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import java.util.function.Consumer;
 
 @Mixin(value = ProcessTransfur.class, remap = false)
 public class ProcessTransfurMixin {
@@ -63,6 +65,17 @@ public class ProcessTransfurMixin {
         if (sourceEntity instanceof WolfyEntity) {
             ci.cancel();
         }
+    }
+
+
+    @WrapMethod(method = "setPlayerTransfurVariant(Lnet/minecraft/world/entity/player/Player;Lnet/ltxprogrammer/changed/entity/variant/TransfurVariant;Lnet/ltxprogrammer/changed/entity/TransfurContext;FZLjava/util/function/Consumer;)Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;")
+    private static TransfurVariantInstance<?> setPlayerTransfurVariantHook(Player player, TransfurVariant<?> ogVariant, TransfurContext context, float progress, boolean temporaryFromSuit, Consumer<? super ChangedEntity> postProcess, Operation<TransfurVariantInstance<?>> original) {
+        TransfurVariantInstance<?> call = original.call(player, ogVariant, context, progress, temporaryFromSuit, postProcess);
+        ProgressTransfurEvents.OnSetPlayerTransfur event = new ProgressTransfurEvents.OnSetPlayerTransfur(player, call);
+        if (ChangedAddonMod.postEvent(event)) {
+            return null;
+        }
+        return call;
     }
 
 //

@@ -7,6 +7,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.Event;
+import org.jetbrains.annotations.Nullable;
 
 public class ProgressTransfurEvents {
 
@@ -99,6 +100,32 @@ public class ProgressTransfurEvents {
 
         public IAbstractChangedEntity getiAbstractChangedEntity() {
             return iAbstractChangedEntity;
+        }
+
+        @Override
+        public boolean isCancelable() {
+            return true;
+        }
+    }
+
+    public static class OnSetPlayerTransfur extends Event {
+
+        private final Player player;
+
+        @Nullable
+        private final TransfurVariantInstance<?> transfurVariantInstance;
+
+        public OnSetPlayerTransfur(Player player, @Nullable TransfurVariantInstance<?> transfurVariantInstance) {
+            this.player = player;
+            this.transfurVariantInstance = transfurVariantInstance;
+        }
+
+        public Player getPlayer() {
+            return player;
+        }
+
+        public @Nullable TransfurVariantInstance<?> getTransfurVariantInstance() {
+            return transfurVariantInstance;
         }
 
         @Override

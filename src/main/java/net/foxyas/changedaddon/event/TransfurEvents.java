@@ -18,8 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.List;
-
 @Mod.EventBusSubscriber
 public class TransfurEvents {
 
@@ -64,6 +62,23 @@ public class TransfurEvents {
         if (resolveChangedEntity(toReplace) instanceof IAlphaAbleEntity toReplaceAlpha) {
             if (source instanceof IAlphaAbleEntity alphaSource) {
                 alphaSource.setAlpha(toReplaceAlpha.isAlpha());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void WhenSuitedByAlpha(ProgressTransfurEvents.OnSetPlayerTransfur onSetPlayerTransfur) {
+        TransfurVariantInstance<?> transfurVariantInstance = onSetPlayerTransfur.getTransfurVariantInstance();
+        if (transfurVariantInstance != null) {
+            TransfurContext transfurContext = transfurVariantInstance.transfurContext;
+            IAbstractChangedEntity source = transfurContext.source;
+            if (source != null) {
+                boolean temporaryFromSuit = transfurVariantInstance.isTemporaryFromSuit();
+                if (temporaryFromSuit) {
+                    if (source.getEntity() instanceof IAlphaAbleEntity alphaAbleEntity && transfurVariantInstance.getChangedEntity() instanceof IAlphaAbleEntity iAlphaAble) {
+                        iAlphaAble.setAlpha(alphaAbleEntity.isAlpha());
+                    }
+                }
             }
         }
     }
