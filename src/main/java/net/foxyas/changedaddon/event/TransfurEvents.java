@@ -66,23 +66,6 @@ public class TransfurEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void WhenSuitedByAlpha(ProgressTransfurEvents.OnSetPlayerTransfur onSetPlayerTransfur) {
-        TransfurVariantInstance<?> transfurVariantInstance = onSetPlayerTransfur.getTransfurVariantInstance();
-        if (transfurVariantInstance != null) {
-            TransfurContext transfurContext = transfurVariantInstance.transfurContext;
-            IAbstractChangedEntity source = transfurContext.source;
-            if (source != null) {
-                boolean temporaryFromSuit = transfurVariantInstance.isTemporaryFromSuit();
-                if (temporaryFromSuit) {
-                    if (source.getEntity() instanceof IAlphaAbleEntity alphaAbleEntity && transfurVariantInstance.getChangedEntity() instanceof IAlphaAbleEntity iAlphaAble) {
-                        iAlphaAble.setAlpha(alphaAbleEntity.isAlpha());
-                    }
-                }
-            }
-        }
-    }
-
     public static Entity resolveChangedEntity(Entity entity) {
         if (entity instanceof Player player) {
             TransfurVariantInstance<?> transfur = ProcessTransfur.getPlayerTransfurVariant(player);
@@ -101,6 +84,17 @@ public class TransfurEvents {
             untransfurEvent.setCanceled(transfurVariantInstanceExtensor.getUntransfurImmunity(untransfurEvent.untransfurType));
         }
     }
+
+//    @SubscribeEvent
+//    public static void AfterPlayerTransfur(ProgressTransfurEvents.onPostProcessPlayerTransfur onPostProcessPlayerTransfur) {
+//        onPostProcessPlayerTransfur.setCanceled(true);
+//        onPostProcessPlayerTransfur.callDefault();
+//        ChangedEntity changedEntity = onPostProcessPlayerTransfur.getChangedEntity();
+//        if (changedEntity instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+//            iAlphaAbleEntity.setAlpha(true);
+//            iAlphaAbleEntity.setAlphaScale(2);
+//        }
+//    }
 
 
     @SubscribeEvent
