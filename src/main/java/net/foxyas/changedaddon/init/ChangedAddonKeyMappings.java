@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.OpenExtraDetailsPacket;
 import net.foxyas.changedaddon.network.packet.PatKeyPacket;
 import net.foxyas.changedaddon.network.packet.TurnOffTransfurPacket;
@@ -12,6 +13,7 @@ import net.ltxprogrammer.changed.tutorial.ChangedTutorial;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ClientRegistry;
 import net.minecraftforge.client.event.InputEvent;
@@ -52,29 +54,20 @@ public class ChangedAddonKeyMappings {
     };
 
     public static final KeyMapping PAT_KEY = new KeyMapping("key.changed_addon.pat_key", GLFW.GLFW_KEY_UNKNOWN, "key.categories.changed_addon") {
-        private boolean isDownOld = false;
-        private int cooldownTick = 0;
-
-        @Override
-        public boolean consumeClick() {
-            if (cooldownTick > 0) cooldownTick--;
-            return super.consumeClick();
-        }
 
         @Override
         public void setDown(boolean isDown) {
             super.setDown(isDown);
+            if (isDown) {
+                Player player = Minecraft.getInstance().player;
+                if (player == null || player.isDeadOrDying()) return;
 
-            if (isDown != isDownOld) {
-                this.cooldownTick = 0;
-            }
+                ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.nonNullOf(Minecraft.getInstance().player);
+                if (vars.patCooldown) return;
 
-            if (isDown && cooldownTick <= 0) {
                 ChangedAddonMod.PACKET_HANDLER.sendToServer(new PatKeyPacket(0, 0));
                 PatKeyPacket.pressAction(Minecraft.getInstance().player, 0);
-                this.cooldownTick = 5;
             }
-            isDownOld = isDown;
         }
     };
 
