@@ -39,7 +39,7 @@ public abstract class CameraMixin {
     private float getEntityMaxZoomOffset(Entity entity) {
         Optional<Float> playerVariantOffset = ProcessTransfur.getPlayerTransfurVariantSafe(EntityUtil.playerOrNull(entity)).map(variant -> {
             if (variant.getChangedEntity() instanceof IAlphaAbleEntity iAlphaAbleEntity) {
-                return iAlphaAbleEntity.alphaCameraOffset();
+                return iAlphaAbleEntity.alphaCameraOffset() * variant.getTransfurProgression(0);
             }
             return 0f;
         });

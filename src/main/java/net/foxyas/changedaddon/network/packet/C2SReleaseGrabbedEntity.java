@@ -44,7 +44,7 @@ public record C2SReleaseGrabbedEntity(int grabbedId) {
                 IAbstractChangedEntity latexSource = IAbstractChangedEntity.forEither(grabbedBy);
                 if (latexSource != null) {
                     latexSource.getAbilityInstanceSafe(ChangedAbilities.GRAB_ENTITY_ABILITY.get()).ifPresent((ability) -> {
-                        ability.releaseEntity();
+                        ability.releaseEntity(false);
                         // manda packet de GRAB (tipo ARMS)
                         Changed.PACKET_HANDLER.send(
                                 PacketDistributor.TRACKING_ENTITY.with(() -> grabbedBy),

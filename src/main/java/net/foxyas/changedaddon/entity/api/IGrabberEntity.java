@@ -100,7 +100,7 @@ public interface IGrabberEntity {
             if (grabAbilityInstance != null) {
                 LivingEntity grabbedEntity = grabAbilityInstance.grabbedEntity;
                 if (grabbedEntity != null) {
-                    grabAbilityInstance.releaseEntity();
+                    grabAbilityInstance.releaseEntity(false);
                     // manda packet de GRAB (tipo ARMS)
                     Changed.PACKET_HANDLER.send(
                             PacketDistributor.TRACKING_ENTITY.with(this::asMob),

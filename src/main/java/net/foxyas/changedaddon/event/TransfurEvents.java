@@ -18,8 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.List;
-
 @Mod.EventBusSubscriber
 public class TransfurEvents {
 
@@ -68,6 +66,18 @@ public class TransfurEvents {
             }
         }
     }
+//
+//    @SubscribeEvent
+//    public static void AfterPlayerTransfur(ProgressTransfurEvents.onPostProcessPlayerTransfur onPostProcessPlayerTransfur) {
+//        onPostProcessPlayerTransfur.setCanceled(true);
+//        onPostProcessPlayerTransfur.callDefault();
+//        ChangedEntity changedEntity = onPostProcessPlayerTransfur.getTransfurVariantInstance().getChangedEntity();
+//        if (changedEntity instanceof IAlphaAbleEntity iAlphaAbleEntity) {
+//            iAlphaAbleEntity.setAlpha(true);
+//            iAlphaAbleEntity.setAlphaScale(2);
+//        }
+//    }
+
 
     @SubscribeEvent
     public static void ModifyAbsorptionVariant(TransfurVariantEvents.OverrideSourceTransfurVariantEvent event) {
