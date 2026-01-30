@@ -38,6 +38,8 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
         tag(ChangedTags.EntityTypes.HUMANOIDS).add(
                 ERIK.get());
 
+        tag(ChangedAddonTags.EntityTypes.CAN_GRAB);
+
         tag(ChangedTags.EntityTypes.LATEX).add(LatexEntities.stream().map(Supplier::get)
                 .sorted(Comparator.comparing(entityType -> ForgeRegistries.ENTITY_TYPES.getKey(entityType).getPath()))
                 .toList().toArray(new EntityType[0]));
