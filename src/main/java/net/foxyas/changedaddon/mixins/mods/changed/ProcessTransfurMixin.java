@@ -2,6 +2,8 @@ package net.foxyas.changedaddon.mixins.mods.changed;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.simple.WolfyEntity;
 import net.foxyas.changedaddon.event.ProgressTransfurEvents;
@@ -20,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
 @Mixin(value = ProcessTransfur.class, remap = false)
@@ -67,7 +70,6 @@ public class ProcessTransfurMixin {
         }
     }
 
-
     @WrapMethod(method = "setPlayerTransfurVariant(Lnet/minecraft/world/entity/player/Player;Lnet/ltxprogrammer/changed/entity/variant/TransfurVariant;Lnet/ltxprogrammer/changed/entity/TransfurContext;FZLjava/util/function/Consumer;)Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;")
     private static TransfurVariantInstance<?> setPlayerTransfurVariantHook(Player player, TransfurVariant<?> ogVariant, TransfurContext context, float progress, boolean temporaryFromSuit, Consumer<? super ChangedEntity> postProcess, Operation<TransfurVariantInstance<?>> original) {
         TransfurVariantInstance<?> call = original.call(player, ogVariant, context, progress, temporaryFromSuit, postProcess);
@@ -77,6 +79,31 @@ public class ProcessTransfurMixin {
         }
         return call;
     }
+
+    @WrapOperation(
+            method = "setPlayerTransfurVariant(Lnet/minecraft/world/entity/player/Player;Lnet/ltxprogrammer/changed/entity/variant/TransfurVariant;Lnet/ltxprogrammer/changed/entity/TransfurContext;FZLjava/util/function/Consumer;)Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V"
+            )
+    )
+    private static void setPlayerTransfurVariantHook(Consumer<? super ChangedEntity> instance,
+                                                     Object objectChangedEntity,
+                                                     Operation<Void> original,
+                                                     @Local(argsOnly = true) Player player,
+                                                     @Local(argsOnly = true) @Nullable TransfurVariant<?> ogVariant,
+                                                     @Local(argsOnly = true) @Nullable TransfurContext context,
+                                                     @Local(argsOnly = true) float progress,
+                                                     @Local(argsOnly = true) boolean temporaryFromSuit,
+                                                     @Local(argsOnly = true) Consumer<? super ChangedEntity> postProcess) {
+        if (objectChangedEntity instanceof ChangedEntity changedEntity) {
+            ProgressTransfurEvents.onPostProcessPlayerTransfur event = new ProgressTransfurEvents.onPostProcessPlayerTransfur(player, ogVariant, context, progress, temporaryFromSuit, postProcess, changedEntity);
+            if (!ChangedAddonMod.postEvent(event)) {
+                original.call(instance, objectChangedEntity);
+            }
+        }
+    }
+
 
 //
 //    @Inject(method = "removePlayerTransfurVariant", at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;setPlayerTransfurVariant(Lnet/minecraft/world/entity/player/Player;Lnet/ltxprogrammer/changed/entity/variant/TransfurVariant;Lnet/ltxprogrammer/changed/entity/TransfurContext;F)Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;"), cancellable = true)

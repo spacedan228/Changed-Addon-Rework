@@ -6,6 +6,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.network.packet.DynamicGrabEntityPacket;
 import net.foxyas.changedaddon.network.packet.SafeGrabSyncPacket;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
@@ -167,6 +168,19 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
         } else {
             this.alreadySnuggledTight = false;
         }
+    }
+
+    @WrapOperation(method = "tickIdle", at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;setPlayerTransfurVariant(Lnet/minecraft/world/entity/player/Player;Lnet/ltxprogrammer/changed/entity/variant/TransfurVariant;Lnet/ltxprogrammer/changed/entity/TransfurContext;FZ)Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;"))
+    private TransfurVariantInstance<?> syncAlphaGene(Player player, TransfurVariant<?> ogVariant, TransfurContext context, float progress, boolean temporaryFromSuit, Operation<TransfurVariantInstance<?>> original) {
+        if (this.entity.getChangedEntity() instanceof IAlphaAbleEntity alphaSource) {
+            return ProcessTransfur.setPlayerTransfurVariant(player, ogVariant, context, progress, temporaryFromSuit,(changedEntity) -> {
+                if (changedEntity instanceof IAlphaAbleEntity alphaTarget) {
+                    alphaTarget.setAlpha(alphaSource.isAlpha());
+                    alphaTarget.setAlphaScale(alphaSource.alphaAdditionalScale());
+                }
+            });
+        }
+        return original.call(player, ogVariant, context, progress, temporaryFromSuit);
     }
 
     @WrapOperation(
