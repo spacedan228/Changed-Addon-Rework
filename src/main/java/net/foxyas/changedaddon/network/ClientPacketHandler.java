@@ -10,6 +10,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -42,6 +43,30 @@ public class ClientPacketHandler {
             if (ability.isEmpty()) return;
 
             ((GrabEntityAbilityExtensor)ability.get()).setSafeMode(packet.safeMode());
+        });
+        context.setPacketHandled(true);
+    }
+
+    public static void handlerVariableSync(ChangedAddonVariables.SyncPacket message, Supplier<NetworkEvent.Context> contextSupplier) {
+        NetworkEvent.Context context = contextSupplier.get();
+        context.enqueueWork(() -> {
+            Player player = Minecraft.getInstance().player;
+            assert player != null;
+            if (player.isDeadOrDying()) return;
+
+            ChangedAddonVariables.PlayerVariables variables = ChangedAddonVariables.nonNullOf(player);
+            ChangedAddonVariables.PlayerVariables syncedVars = message.data;
+            variables.showWarns = syncedVars.showWarns;
+            variables.consciousnessFightProgress = syncedVars.consciousnessFightProgress;
+            variables.FTKCminigameType = syncedVars.FTKCminigameType;
+            variables.resetTransfurAdvancements = syncedVars.resetTransfurAdvancements;
+            variables.actCooldown = syncedVars.actCooldown;
+            variables.patCooldown = syncedVars.patCooldown;
+            variables.areDarkLatex = syncedVars.areDarkLatex;
+            variables.LatexInfectionCooldown = syncedVars.LatexInfectionCooldown;
+            variables.untransfurProgress = syncedVars.untransfurProgress;
+            variables.Exp009TransfurAllowed = syncedVars.Exp009TransfurAllowed;
+            variables.Exp10TransfurAllowed = syncedVars.Exp10TransfurAllowed;
         });
         context.setPacketHandled(true);
     }

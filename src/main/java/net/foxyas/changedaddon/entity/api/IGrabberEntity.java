@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.network.packet.DynamicGrabEntityPacket;
 import net.foxyas.changedaddon.network.packet.S2CCheckGrabberEntity;
@@ -9,6 +10,9 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
@@ -20,6 +24,10 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
 
 public interface IGrabberEntity {
+
+    EntityDataAccessor<Boolean> CAN_USE_GRAB = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.BOOLEAN);
+    EntityDataAccessor<Integer> GRAB_COOLDOWN = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.INT);
+
     PathfinderMob asMob();
 
     LivingEntity getGrabbedEntity();
@@ -30,6 +38,13 @@ public interface IGrabberEntity {
         if (this instanceof ChangedEntity changedEntity) {
             return new GrabEntityAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get(), IAbstractChangedEntity.forEntity(changedEntity));
         } else return null;
+    }
+
+    default boolean canUseGrab() {
+        return isAbleToGrab();
+    }
+
+    default void setCanUseGrab(boolean value) {
     }
 
     default void mayTickGrabAbility() {
@@ -58,21 +73,24 @@ public interface IGrabberEntity {
 
     default void saveGrabAbilityInTag(CompoundTag tag) {
         CompoundTag grabInstanceTag = new CompoundTag();
+        tag.putBoolean("canUseGrab", canUseGrab());
 
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
             grabAbilityInstance.saveData(grabInstanceTag);
-            grabInstanceTag.putInt("grabCooldown", this.getGrabCooldown());
+            tag.putInt("grabCooldown", this.getGrabCooldown());
             tag.put("grabAbility", grabInstanceTag);
         }
     }
 
-    default void readGrabAbilityInTag(CompoundTag grabInstanceTag) {
+    default void readGrabAbilityInTag(CompoundTag tag) {
+        if (tag.contains("canUseGrab")) this.setCanUseGrab(tag.getBoolean("canUseGrab"));
 
+        CompoundTag grabAbilityTag = tag.getCompound("grabAbility");
         GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
         if (grabAbilityInstance != null) {
-            grabAbilityInstance.readData(grabInstanceTag);
-            if (grabInstanceTag.contains("grabCooldown")) this.setGrabCooldown(grabInstanceTag.getInt("grabCooldown"));
+            grabAbilityInstance.readData(grabAbilityTag);
+            if (tag.contains("grabCooldown")) this.setGrabCooldown(tag.getInt("grabCooldown"));
         }
     }
 

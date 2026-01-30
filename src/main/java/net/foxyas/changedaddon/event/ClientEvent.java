@@ -58,7 +58,6 @@ public class ClientEvent {
 
     @SubscribeEvent
     public static void registerCommands(RegisterClientCommandsEvent clientCommandsEvent) {
-        ChangedAddonCommandRootCommand.registerClientCommands(clientCommandsEvent.getDispatcher());
     }
 
     @SubscribeEvent
