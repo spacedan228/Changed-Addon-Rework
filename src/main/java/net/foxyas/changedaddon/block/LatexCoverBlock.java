@@ -92,6 +92,15 @@ public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverable
 
     @Override
     public void randomTick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull Random random) {
+        int growthRate = level.getGameRules()
+                .getInt(ChangedGameRules.RULE_LATEX_GROWTH_RATE);
+
+        if (growthRate <= 0) return;
+
+        spread(state, level, pos);
+    }
+
+    public void spread(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos) {
         BooleanProperty prop, propRelative;
         BlockPos posRelative, attachToPos;
         BlockState stateRelative, attachToState, old, toPlace;
@@ -205,6 +214,6 @@ public class LatexCoverBlock extends MultifaceBlock implements NonLatexCoverable
 
 
     protected boolean cantReplace(BlockState state) {
-        return !state.getMaterial().isReplaceable();
+        return !state.getMaterial().isReplaceable();// || state.is(Blocks.REDSTONE_WIRE);
     }
 }
