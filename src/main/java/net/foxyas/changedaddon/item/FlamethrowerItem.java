@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.item;
 
-import net.foxyas.changedaddon.init.ChangedAddonFluids;
 import net.foxyas.changedaddon.init.ChangedAddonTabs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
@@ -67,11 +66,9 @@ public class FlamethrowerItem extends FlamethrowerLike {
         return ParticleTypes.FLAME;
     }
 
-    private static final DamageSource FIRE = new DamageSource("onFire").setIsFire().bypassArmor().setProjectile();
-
     @Override
     protected void affectEntity(Player shooter, LivingEntity entity) {
-        entity.hurt(FIRE, 6);
+        entity.hurt(DamageSource.ON_FIRE, 6);
         entity.setSecondsOnFire(5);
     }
 }
