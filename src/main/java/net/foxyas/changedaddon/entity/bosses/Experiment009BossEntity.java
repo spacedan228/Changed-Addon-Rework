@@ -531,6 +531,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                     );
                 }
             }
+
             this.playSound(SoundEvents.GENERIC_EXPLODE, 1, 1);
             for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(blockPosition(), 16, 16, 1).toList()) {
                 BlockState state = level.getBlockState(pos);
@@ -539,6 +540,10 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                     level.removeBlock(pos, false);
                     level.levelEvent(1009, pos, 0); // Partículas e som de "extinguir fogo"
                 }
+            }
+
+            if (entityDamageSource.getEntity() instanceof LivingEntity living) {
+                FoxyasUtils.repairAllItems(living, 1000);
             }
         }
 

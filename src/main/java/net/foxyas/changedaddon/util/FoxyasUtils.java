@@ -577,6 +577,23 @@ public class FoxyasUtils {
         }
     }
 
+    public static void repairHandItem(LivingEntity entity, int amountPerPiece) {
+        for (ItemStack handItem : entity.getHandSlots()) {
+            if (!handItem.isEmpty() && handItem.isDamageableItem()) {
+                int damage = handItem.getDamageValue();
+                if (damage > 0) {
+                    int repaired = Math.min(damage, amountPerPiece);
+                    handItem.setDamageValue(damage - repaired);
+                }
+            }
+        }
+    }
+
+    public static void repairAllItems(LivingEntity entity, int amountPerPiece) {
+        repairArmor(entity, amountPerPiece);
+        repairHandItem(entity, amountPerPiece);
+    }
+
 
     public static ClipContext createClipContext(Player player, double distance, ClipContext.Block blockMode, ClipContext.Fluid fluidMode) {
         Vec3 start = player.getEyePosition(1.0F);
