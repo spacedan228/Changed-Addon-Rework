@@ -500,6 +500,10 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                     level.levelEvent(1009, pos, 0); // Partículas e som de "extinguir fogo"
                 }
             }
+
+            if (damageSource.getEntity() instanceof LivingEntity living) {
+                FoxyasUtils.repairAllItems(living, 1000);
+            }
         }
 
         super.die(damageSource);

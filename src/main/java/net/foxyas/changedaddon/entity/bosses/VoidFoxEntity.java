@@ -773,6 +773,15 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         super.actuallyHurt(pDamageSource, pDamageAmount);
     }
 
+    @Override
+    public void die(@NotNull DamageSource pDamageSource) {
+        if (pDamageSource.getEntity() instanceof LivingEntity living) {
+            FoxyasUtils.repairAllItems(living, 1000);
+        }
+
+        super.die(pDamageSource);
+    }
+
     public boolean hurtDodgeHealth(@NotNull DamageSource damageSource, float damageAmount) {
         if (!damageSource.is(DamageTypeTags.IS_FIRE)) {
 

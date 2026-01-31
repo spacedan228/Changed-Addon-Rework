@@ -514,6 +514,23 @@ public class FoxyasUtils {
         }
     }
 
+    public static void repairHandItem(LivingEntity entity, int amountPerPiece) {
+        for (ItemStack handItem : entity.getHandSlots()) {
+            if (!handItem.isEmpty() && handItem.isDamageableItem()) {
+                int damage = handItem.getDamageValue();
+                if (damage > 0) {
+                    int repaired = Math.min(damage, amountPerPiece);
+                    handItem.setDamageValue(damage - repaired);
+                }
+            }
+        }
+    }
+
+    public static void repairAllItems(LivingEntity entity, int amountPerPiece) {
+        repairArmor(entity, amountPerPiece);
+        repairHandItem(entity, amountPerPiece);
+    }
+
     // Utilitário para aplicar deslocamento da face atingida
     public static Vec3 applyOffset(Vec3 hitPos, Direction face, double offset) {
         return hitPos.subtract(

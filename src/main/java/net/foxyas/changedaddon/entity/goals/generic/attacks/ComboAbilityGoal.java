@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -93,28 +94,51 @@ public class ComboAbilityGoal extends Goal {
         if (shouldEnd && phase < 22) {
             slam();
         }
-        if (!attacker.onGround()) {
-            BlockPos pos = attacker.blockPosition();
-            int groundY = attacker.level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, pos.getX(), pos.getZ());
 
+        if (!attacker.onGround()) {
             Level world = attacker.level;
-            if (world.dimensionType().hasCeiling()) {
-                // Começa do teto e desce até achar espaço
-                int maxY = world.getHeight() - 1;
-                for (int y = maxY; y > 0; y--) {
-                    BlockPos checkPos = new BlockPos(pos.getX(), y, pos.getZ());
-                    // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
-                    if (world.isEmptyBlock(checkPos) && world.isEmptyBlock(checkPos.above())) {
-                        groundY = y;
+            BlockPos startPos = attacker.blockPosition();
+
+            int entityHeight = Mth.ceil(attacker.getBbHeight());
+
+            int y = startPos.getY();
+            int minY = world.getMinBuildHeight() + 1;
+
+            BlockPos validPos = null;
+
+            while (y > minY) {
+                BlockPos feetPos = new BlockPos(startPos.getX(), y, startPos.getZ());
+                BlockPos belowPos = feetPos.below();
+
+                boolean hasSpace = true;
+
+                for (int i = 0; i < entityHeight; i++) {
+                    if (!world.isEmptyBlock(feetPos.above(i))) {
+                        hasSpace = false;
                         break;
                     }
                 }
+
+                if (hasSpace && !world.isEmptyBlock(belowPos)) {
+                    validPos = feetPos;
+                    break;
+                }
+
+                y--;
             }
 
-            attacker.teleportTo(pos.getX() + 0.5, groundY + 0.5, pos.getZ() + 0.5);
-            spawnImpactEffect(attacker.position(), 3);
-            spawnImpactParticleEffect(target.position(), 2);
+            if (validPos != null) {
+                attacker.teleportTo(
+                        validPos.getX() + 0.5,
+                        validPos.getY(),
+                        validPos.getZ() + 0.5
+                );
+
+                spawnImpactEffect(attacker.position(), 3);
+                spawnImpactParticleEffect(target.position(), 2);
+            }
         }
+
 
         shouldEnd = false;
     }
