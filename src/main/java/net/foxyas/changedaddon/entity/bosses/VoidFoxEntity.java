@@ -938,7 +938,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     @Override
     public void baseTick() {
         super.baseTick();
-        crawlingSystem(this, this.getTarget());
+        crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.35f);
         tickDodgeTicks();
         tickAttackTicks();
 
