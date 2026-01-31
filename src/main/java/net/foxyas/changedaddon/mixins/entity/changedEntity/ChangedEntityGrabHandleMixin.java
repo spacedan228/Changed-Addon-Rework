@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.goals.abilities.MayCauseGrabDamageGoal;
@@ -8,6 +9,7 @@ import net.foxyas.changedaddon.entity.goals.abilities.MayDropGrabbedEntityGoal;
 import net.foxyas.changedaddon.entity.goals.abilities.MayGrabTargetGoal;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.mixins.abilities.AbilityControllerAccessor;
+import net.foxyas.changedaddon.world.gamerules.WorldDifficulty;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
@@ -54,12 +56,15 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
 
     @Inject(at = @At("TAIL"), method = "<init>", cancellable = true)
     private void initHook(EntityType<? extends Monster> type, Level level, CallbackInfo ci) {
-        if (this.getSelfVariant() != null) {
-            List<? extends AbstractAbility<?>> listOfAbilities = this.getSelfVariant().abilities.stream().map((entityTypeFunction -> entityTypeFunction.apply(type))).toList();
-            if (listOfAbilities.contains(ChangedAbilities.GRAB_ENTITY_ABILITY.get())) {
-                this.setCanUseGrab(level.getRandom().nextFloat() <= 0.15f); // Just for fail-safe
+        if (ChangedAddonServerConfiguration.CAN_GRABBY_ENTITIES_SPAWN.get()) {
+            if (this.getSelfVariant() != null) {
+                List<? extends AbstractAbility<?>> listOfAbilities = this.getSelfVariant().abilities.stream().map((entityTypeFunction -> entityTypeFunction.apply(type))).toList();
+                if (listOfAbilities.contains(ChangedAbilities.GRAB_ENTITY_ABILITY.get())) {
+                    this.setCanUseGrab(level.getRandom().nextFloat() <= 0.005f); // Just for fail-safe
+                }
             }
         }
+
         if (canEntityGrab(type, level)) {
             this.grabEntityAbilityInstance = this.createGrabAbility();
         }
@@ -244,7 +249,16 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     public boolean isAbleToGrab() {
         EntityType<?> type = this.getType();
         if (type == ChangedEntities.BEHEMOTH_HEAD.get() || type == ChangedEntities.BEHEMOTH_HAND_LEFT.get() || type == ChangedEntities.BEHEMOTH_HAND_RIGHT.get()) {
-            this.setCanUseGrab(level.getDifficulty().equals(Difficulty.HARD));
+            WorldDifficulty worldDifficulty = ChangedAddonServerConfiguration.BEHEMOTH_CAN_USE_GRAB_IN_DIFFICULTY.get();
+            Difficulty levelDifficulty = level.getDifficulty();
+
+            if (worldDifficulty == WorldDifficulty.NONE) {
+                return this.canUseGrab() || isAlpha();
+            } else if (worldDifficulty == WorldDifficulty.HARDCORE) {
+                this.setCanUseGrab(level.getLevelData().isHardcore());
+            }
+
+            this.setCanUseGrab(levelDifficulty.getId() >= worldDifficulty.getAsLevel());
         }
 
         return this.canUseGrab() || isAlpha();

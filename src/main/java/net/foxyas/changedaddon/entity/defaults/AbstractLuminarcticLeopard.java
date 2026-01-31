@@ -69,6 +69,8 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
             SynchedEntityData.defineId(AbstractLuminarcticLeopard.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> ACTIVATED_ABILITY =
             SynchedEntityData.defineId(AbstractLuminarcticLeopard.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_BOSS =
+            SynchedEntityData.defineId(AbstractLuminarcticLeopard.class, EntityDataSerializers.BOOLEAN);
     public final ServerBossEvent bossBar = new ServerBossEvent(
             this.getDisplayName(), // Nome exibido na boss bar
             BossEvent.BossBarColor.WHITE, // Cor da barra
@@ -80,8 +82,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     public int SuperAbilitiesTicksCooldown = 0;
     public int PassivesTicksCooldown = 0;
     public int DashingTicks = 0;
-    public DodgeAbilityInstance dodgeAbilityInstance = null;
-    private boolean isBoss = false;
+    public DodgeAbilityInstance dodgeAbilityInstance = null;;
     private boolean Aggro = false;
     private boolean attributesApplied = false;
 
@@ -145,11 +146,11 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     }
 
     public boolean isBoss() {
-        return isBoss;
+        return this.entityData.get(IS_BOSS);
     }
 
     public void setBoss(boolean boss) {
-        isBoss = boss;
+        this.entityData.set(IS_BOSS, boss);
     }
 
     public boolean isAggro() {
@@ -344,9 +345,8 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         if (tag.contains("GlowStage")) {
             this.setGlowStage(tag.getInt("GlowStage"));
         }
-        if (tag.contains("isBoss")) {
-            this.isBoss = tag.getBoolean("isBoss");
-        }
+
+        setBoss(tag.getBoolean("isBoss"));
     }
 
     @Override
@@ -358,7 +358,7 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
         tag.putInt("PassivesTicksCooldown", PassivesTicksCooldown);
         tag.putInt("DashingTicks", DashingTicks);
         tag.putInt("GlowStage", this.getGlowStage());
-        tag.putBoolean("isBoss", this.isBoss);
+        tag.putBoolean("isBoss", this.isBoss());
         //tag.putInt("DEVATTACKTESTTICK", DEVATTACKTESTTICK);
     }
 
