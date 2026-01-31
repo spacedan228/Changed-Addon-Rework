@@ -189,6 +189,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         super.defineSynchedData();
         this.entityData.define(MAX_DODGE_HEALTH, 200f);
         this.entityData.define(DODGE_HEALTH, getMaxDodgeHealth());
+        this.entityData.define(IS_BOSS, false);
     }
 
 
