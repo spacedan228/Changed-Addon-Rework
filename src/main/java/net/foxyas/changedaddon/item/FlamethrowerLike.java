@@ -80,15 +80,16 @@ public abstract class FlamethrowerLike extends Item implements SpecializedAnimat
             Vec3 maxRelativePosition = getRelativePosition(player, deltaX, 0, maxRange * 0.5, true);
             ParticlesUtil.sendParticlesWithMotionAndOffset(player, particle, player.getEyePosition().add(relativePosition), new Vec3(0.15f, 0.15f, 0.15f), maxRelativePosition, new Vec3(0.25f, 0.25f, 0.25f), 2, 0.10f);
 
+            affectSurroundingEntities(level, player, targetVec, 4 * ((double) i / maxRange));
+            
             // Verifica se o bloco é ar; se for, ignora essa fileira
             if (level.getBlockState(targetPos).isAir()) {
                 // Afeta os blocos ao redor do ponto atual
-                affectSurroundingEntities(level, player, targetVec, 4 * ((double) i / maxRange));
                 continue;
-            } else {
-                affectSurroundingEntities(level, player, targetVec, 4 * ((double) i / maxRange));
             }
+
             affectSurroundingBlocks(level, targetPos, horizontalRadius, verticalRadius, particle);
+            return;
         }
     }
 

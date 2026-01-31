@@ -30,7 +30,7 @@ public abstract class LogicHandleMixin {
             method = "updatePositionOffset",
             at = @At("TAIL")
     )
-    private void changedaddon$reuseBodyOffset(Entity entity, Vec3 defValue, CallbackInfo ci) {
+    private void changedaddon$reuseBodyOffset(Entity entity, float delta, CallbackInfo ci) {
         if (entity != client.getCameraEntity()) return;
         if (!isSnep(client.player)) return;
         this.offset = this.offset.multiply(1.8f, 1f, 1.8f);

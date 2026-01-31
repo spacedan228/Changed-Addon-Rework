@@ -73,7 +73,7 @@ public class CommonEvent {
         Entity livingEntity = event.getEntity();
         Entity entity = TransfurEvents.resolveChangedEntity(livingEntity);
         if (entity instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
-            event.setDamageMultiplier(event.getDamageMultiplier() * (1 - (0.25f * (IAlphaAbleEntity.getEntityAlphaScale(entity) / 0.75f))));
+            event.setDistance(event.getDamageMultiplier() * (1 - (0.25f * (IAlphaAbleEntity.getEntityAlphaScale(entity) / 0.75f))));
         }
     }
 
