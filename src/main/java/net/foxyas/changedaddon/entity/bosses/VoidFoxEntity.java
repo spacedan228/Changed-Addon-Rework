@@ -22,6 +22,7 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.EyeStyle;
 import net.ltxprogrammer.changed.entity.TransfurMode;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.ChatFormatting;
@@ -36,6 +37,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -76,16 +79,19 @@ import org.jetbrains.annotations.Nullable;
 
 import java.awt.*;
 import java.util.Objects;
-import java.util.Random;
 
 public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEntity, IHasBossMusic, SonarOutlineLayer.CustomSonarRenderable, IDynamicPawColor {
-    public static final int MAX_1_COOLDOWN = 120;
-    public static final int MAX_2_COOLDOWN = 120;
+
+    private static final int MAX_1_COOLDOWN = 120;
+    private static final int MAX_2_COOLDOWN = 120;
     private static final int MAX_COOLDOWN = 120;
+
     private static final EntityDataAccessor<Float> DODGE_HEALTH = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> MAX_DODGE_HEALTH = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.FLOAT);
+
     public final ServerBossEvent bossBar = getBossBar();
     public final ServerBossEvent dodgeHealthBossBar = getDodgeHealthBossBar();
+
     public int timesUsedAttack1, timesUsedAttack2, timesUsedAttack3, timesUsedAttack4/*, timesUsedAttack5*/ = 0;
     public int stunTicks = 0;
     public DodgeAbilityInstance dodgeAbilityInstance = null;
@@ -94,8 +100,32 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     private int ticksInUse;
     private int ticksTakeDmgFromFire = 0;
 
+    private boolean isBoss;
+
     public VoidFoxEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.VOID_FOX.get(), world);
+    }
+
+    public VoidFoxEntity(EntityType<VoidFoxEntity> type, Level world) {
+        super(type, world);
+        xpReward = 1000;
+        setNoAi(false);
+        setPersistenceRequired();
+        this.dodgeAbilityInstance = this.registerAbility((abilityInstance -> true), new DodgeAbilityInstance(ChangedAddonAbilities.DODGE.get(), IAbstractChangedEntity.forEntity(this)));
+    }
+
+    public boolean isBoss() {
+        return isBoss;
+    }
+
+    public void setBoss(boolean boss) {
+        if (boss && !isBoss) {
+            handleBoss();
+        } else if (!boss && isBoss) {
+            handleNonBoss();
+        }
+
+        isBoss = boss;
     }
 
     @Override
@@ -111,14 +141,6 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     @Override
     public Color getPawColor() {
         return Color.BLACK;
-    }
-
-    public VoidFoxEntity(EntityType<VoidFoxEntity> type, Level world) {
-        super(type, world);
-        xpReward = 1000;
-        setNoAi(false);
-        setPersistenceRequired();
-        this.dodgeAbilityInstance = this.registerAbility((abilityInstance -> true), new DodgeAbilityInstance(ChangedAddonAbilities.DODGE.get(), IAbstractChangedEntity.forEntity(this)));
     }
 
     public static int getMaxCooldown() {
@@ -609,6 +631,8 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
             if (attackTag.contains("timeUsedAttack4")) this.timesUsedAttack4 = attackTag.getInt("timeUsedAttack4");
             //if (attackTag.contains("timeUsedAttack5")) this.timesUsedAttack5 = attackTag.getInt("timeUsedAttack5");
         }
+
+        setBoss(tag.getBoolean("isBoss"));
     }
 
     @Override
@@ -633,6 +657,21 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         //attackTag.putInt("timeUsedAttack5", this.timesUsedAttack5);
 
         tag.put("AttacksHandle", attackTag);
+
+        if (isBoss()) tag.putBoolean("isBoss", true);
+    }
+
+    @Override
+    public void readPlayerVariantData(CompoundTag tag) {
+        super.readPlayerVariantData(tag);
+        setBoss(tag.getBoolean("isBoss"));
+    }
+
+    @Override
+    public CompoundTag savePlayerVariantData() {
+        CompoundTag tag = super.savePlayerVariantData();
+        if (isBoss()) tag.putBoolean("isBoss", true);
+        return tag;
     }
 
     public float getDodgeHealth() {
@@ -730,7 +769,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     }
 
     @Override
-    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
+    protected void actuallyHurt(@NotNull DamageSource pDamageSource, float pDamageAmount) {
         super.actuallyHurt(pDamageSource, pDamageAmount);
     }
 
@@ -901,72 +940,72 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
 
         handleChanges();
 
-        if (!this.level.isClientSide) {
-            if (ticksTakeDmgFromFire > 5) {
-                ticksTakeDmgFromFire = 0;
-                this.level().playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, SoundSource.HOSTILE, 1.0F, 1.0F);
-                if (this.level instanceof ServerLevel server) {
-                    server.sendParticles(
-                            ParticleTypes.EXPLOSION_EMITTER,
-                            this.getX(), this.getEyeY(), this.getZ(),
-                            1, 0, 0, 0, 0
-                    );
-                }
-                for (LivingEntity living : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(8), (livingEntity -> !livingEntity.isSpectator() && !livingEntity.is(this)))) {
-                    Vec3 knock = living.position().subtract(this.position()).normalize().scale(1.2);
-                    living.push(knock.x, knock.y * 1.25f, knock.z);
-                    if (living instanceof Player player) {
-                        player.displayClientMessage(Component.literal("ENOUGH OF THIS").withStyle((style -> {
-                            Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
-                            returnStyle = returnStyle.withItalic(true);
-                            return returnStyle;
-                        })), true);
-                    }
-                }
-                this.level().playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 1.0F, 1.0F);
-                this.setRemainingFireTicks(0);
-                // int totalProjectiles = 12; // número de projéteis
-                double radius = 1.5;
+        if (level.isClientSide) return;
 
-                for (int theta = 0; theta < 360; theta += 45) { // Ângulo horizontal (longitude)
-                    double angleTheta = Math.toRadians(theta);
-                    for (int phi = 0; phi <= 180; phi += 45) { // Ângulo vertical (latitude)
-                        double anglePhi = Math.toRadians(phi);
-
-                        // Direção do disparo (coordenadas cartesianas de uma esfera)
-                        double dx = Math.sin(anglePhi) * Math.cos(angleTheta);
-                        double dy = Math.cos(anglePhi);
-                        double dz = Math.sin(anglePhi) * Math.sin(angleTheta);
-
-                        // Posição inicial (esfera ao redor da entidade)
-                        double px = this.getX() + dx * radius;
-                        double py = this.getY() + dy * radius + 1.0; // leve ajuste de altura
-                        double pz = this.getZ() + dz * radius;
-
-                        VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(ChangedAddonEntities.PARTICLE_PROJECTILE.get(), this.level);
-                        projectile.setSmoothMotion(true);
-                        projectile.setPos(px, py, pz);
-                        projectile.shoot(dx, dy, dz, 1.0f, 0.0f); // dispara na direção da esfera
-                        projectile.setOwner(this);
-                        projectile.setTarget(this.getTarget());
-                        projectile.setParryAble(true);
-
-                        this.level.addFreshEntity(projectile);
-                    }
-                }
-
+        if (ticksTakeDmgFromFire > 5) {
+            ticksTakeDmgFromFire = 0;
+            this.level().playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_KNOCKBACK, SoundSource.HOSTILE, 1.0F, 1.0F);
+            if (this.level instanceof ServerLevel server) {
+                server.sendParticles(
+                        ParticleTypes.EXPLOSION_EMITTER,
+                        this.getX(), this.getEyeY(), this.getZ(),
+                        1, 0, 0, 0, 0
+                );
             }
-            if (this.getDodgeHealth() > 0) {
-                this.dodgeHealthBossBar.setVisible(true);
-                this.bossBar.setVisible(false);
-                this.dodgeHealthBossBar.setProgress(this.getDodgeHealth() / this.getMaxDodgeHealth());
-                this.dodgeHealthBossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_12);
-            } else {
-                this.bossBar.setVisible(true);
-                this.dodgeHealthBossBar.setVisible(false);
-                this.bossBar.setProgress(this.getHealth() / this.getMaxHealth());
-                this.bossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
+            for (LivingEntity living : this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(8), (livingEntity -> !livingEntity.isSpectator() && !livingEntity.is(this)))) {
+                Vec3 knock = living.position().subtract(this.position()).normalize().scale(1.2);
+                living.push(knock.x, knock.y * 1.25f, knock.z);
+                if (living instanceof Player player) {
+                    player.displayClientMessage(Component.literal("ENOUGH OF THIS").withStyle((style -> {
+                        Style returnStyle = style.withColor(ChatFormatting.DARK_GRAY);
+                        returnStyle = returnStyle.withItalic(true);
+                        return returnStyle;
+                    })), true);
+                }
             }
+            this.level().playSound(null, this.blockPosition(), SoundEvents.FIRE_EXTINGUISH, SoundSource.HOSTILE, 1.0F, 1.0F);
+            this.setRemainingFireTicks(0);
+            // int totalProjectiles = 12; // número de projéteis
+            double radius = 1.5;
+
+            for (int theta = 0; theta < 360; theta += 45) { // Ângulo horizontal (longitude)
+                double angleTheta = Math.toRadians(theta);
+                for (int phi = 0; phi <= 180; phi += 45) { // Ângulo vertical (latitude)
+                    double anglePhi = Math.toRadians(phi);
+
+                    // Direção do disparo (coordenadas cartesianas de uma esfera)
+                    double dx = Math.sin(anglePhi) * Math.cos(angleTheta);
+                    double dy = Math.cos(anglePhi);
+                    double dz = Math.sin(anglePhi) * Math.sin(angleTheta);
+
+                    // Posição inicial (esfera ao redor da entidade)
+                    double px = this.getX() + dx * radius;
+                    double py = this.getY() + dy * radius + 1.0; // leve ajuste de altura
+                    double pz = this.getZ() + dz * radius;
+
+                    VoidFoxParticleProjectile projectile = new VoidFoxParticleProjectile(ChangedAddonEntities.PARTICLE_PROJECTILE.get(), this.level);
+                    projectile.setSmoothMotion(true);
+                    projectile.setPos(px, py, pz);
+                    projectile.shoot(dx, dy, dz, 1.0f, 0.0f); // dispara na direção da esfera
+                    projectile.setOwner(this);
+                    projectile.setTarget(this.getTarget());
+                    projectile.setParryAble(true);
+
+                    this.level.addFreshEntity(projectile);
+                }
+            }
+
+        }
+        if (this.getDodgeHealth() > 0) {
+            this.dodgeHealthBossBar.setVisible(true);
+            this.bossBar.setVisible(false);
+            this.dodgeHealthBossBar.setProgress(this.getDodgeHealth() / this.getMaxDodgeHealth());
+            this.dodgeHealthBossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_12);
+        } else {
+            this.bossBar.setVisible(true);
+            this.dodgeHealthBossBar.setVisible(false);
+            this.bossBar.setProgress(this.getHealth() / this.getMaxHealth());
+            this.bossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
         }
     }
 
@@ -982,7 +1021,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         }));
 
         if (this.isMoreOp()) {
-            float value = new Random().nextFloat(0.25f, 1.25f);
+            float value = getRandom().nextFloat() + 0.25f;
             if (!((value + getHealth()) / this.getMaxHealth() > 0.5f)) {
                 if ((this.hurtTime <= 0) && this.tickCount % 10 == 0) {
                     this.heal(value);
@@ -995,6 +1034,8 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     @Override
     public void startSeenByPlayer(@NotNull ServerPlayer player) {
         super.startSeenByPlayer(player);
+        if (!isBoss()) return;
+
         this.dodgeHealthBossBar.addPlayer(player);
         this.bossBar.addPlayer(player);
 
@@ -1016,6 +1057,8 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     @Override
     public void stopSeenByPlayer(@NotNull ServerPlayer player) {
         super.stopSeenByPlayer(player);
+        if (!isBoss()) return;
+
         this.bossBar.removePlayer(player);
         this.dodgeHealthBossBar.removePlayer(player);
     }
@@ -1038,11 +1081,11 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     }
 
     @Override
-    public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor p_21434_, @NotNull DifficultyInstance p_21435_, @NotNull MobSpawnType p_21436_, @Nullable SpawnGroupData p_21437_, @Nullable CompoundTag p_21438_) {
-        if (this.getUnderlyingPlayer() == null) {
-            handleBoss();
+    public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor p_21434_, @NotNull DifficultyInstance p_21435_, @NotNull MobSpawnType p_21436_, @Nullable SpawnGroupData p_21437_, @Nullable CompoundTag tag) {
+        if ((tag != null && tag.getBoolean("isBoss"))) {
+            setBoss(true);
         }
-        return super.finalizeSpawn(p_21434_, p_21435_, p_21436_, p_21437_, p_21438_);
+        return super.finalizeSpawn(p_21434_, p_21435_, p_21436_, p_21437_, tag);
     }
 
     public void handleBoss() {
@@ -1059,6 +1102,12 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         this.getAttribute(Attributes.ATTACK_KNOCKBACK).setBaseValue(2);
         this.setHealth(500f);
         this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
+        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+    }
+
+    public void handleNonBoss() {
+        this.setAttributes(this.getAttributes());
+        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
     @Override
@@ -1069,16 +1118,13 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     // Don't know why but getId do not work fine with the BossMusicHandler
     @Override
     public ResourceLocation getBossMusic() {
+        if (!isBoss()) return null;
+
         if (this.isMoreOp()) {
             return ChangedAddonSoundEvents.EXP10_THEME.get().getLocation();
         }
 
         return ChangedAddonSoundEvents.EXP9_THEME.get().getLocation();
-    }
-
-    @Override
-    public int getMusicRange() {
-        return IHasBossMusic.super.getMusicRange();
     }
 
     @Override
