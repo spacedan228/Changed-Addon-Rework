@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.entity.goals.exp9;
+package net.foxyas.changedaddon.entity.goals.generic.attacks;
 
 import net.foxyas.changedaddon.util.DelayedTask;
 import net.ltxprogrammer.changed.init.ChangedSounds;
@@ -11,21 +11,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
-public class ThunderDiveGoal extends Goal {
+public class LeapDiveGoal extends Goal {
     private enum Phase {ASCEND, DIVE}
 
     private final PathfinderMob mob;
@@ -42,13 +40,13 @@ public class ThunderDiveGoal extends Goal {
     private Vec3 lateral = Vec3.ZERO;
 
 
-    public ThunderDiveGoal(PathfinderMob mob,
-                           IntProvider cooldownProvider,
-                           double ascendBoost,
-                           double ascendHoldY,
-                           double diveSpeedXZ,
-                           double diveSpeedY,
-                           float ringRadius) {
+    public LeapDiveGoal(PathfinderMob mob,
+                        IntProvider cooldownProvider,
+                        double ascendBoost,
+                        double ascendHoldY,
+                        double diveSpeedXZ,
+                        double diveSpeedY,
+                        float ringRadius) {
         this.mob = mob;
         this.cooldownProvider = cooldownProvider;
         this.ascendBoost = ascendBoost;
@@ -191,10 +189,10 @@ public class ThunderDiveGoal extends Goal {
 
         // Anel de trovões em 4 ondas (outline em XZ)
         applyKnockBack(center);
-        spawnThunderCircle(serverLevel, center, ringRadius, 6);
-        DelayedTask.schedule(5, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.4, 4));
-        DelayedTask.schedule(10, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.8, 8));
-        DelayedTask.schedule(15, () -> spawnThunderCircle(serverLevel, center, ringRadius * 2.2, 14));
+        spawnBlockBreakParticleCircle(serverLevel, center, ringRadius, 6, 5);
+        DelayedTask.schedule(5, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 1.4, 4, 4));
+        DelayedTask.schedule(10, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 1.8, 8, 3));
+        DelayedTask.schedule(15, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 2.2, 14, 2));
 
         // efeito visual simples no chão
         serverLevel.levelEvent(2001, center, Block.getId(Blocks.LIGHTNING_ROD.defaultBlockState()));
@@ -226,37 +224,69 @@ public class ThunderDiveGoal extends Goal {
     }
 
 
-    public static void spawnThunderCircle(ServerLevel level, BlockPos center, double radius, int bolts) {
-        // garante que os strikes ocorram no topo do terreno naquele XZ
-        for (int i = 0; i < bolts; i++) {
-            double angle = (2 * Math.PI * i) / bolts;
+    public void spawnBlockBreakParticleCircle(
+            ServerLevel level,
+            BlockPos center,
+            double radius,
+            int points,
+            int crackStage
+    ) {
+        int minY = level.getMinBuildHeight() + 1;
+
+        for (int i = 0; i < points; i++) {
+            double angle = (Math.PI * 2 * i) / points;
             double x = center.getX() + 0.5 + radius * Math.cos(angle);
             double z = center.getZ() + 0.5 + radius * Math.sin(angle);
 
-            int topY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(x), Mth.floor(z));
+            BlockPos startPos = new BlockPos(
+                    Mth.floor(x),
+                    center.getY(),
+                    Mth.floor(z)
+            );
 
-            if (level.dimensionType().hasCeiling()) {
-                // Começa do teto e desce até achar espaço
-                int maxY = level.getHeight() - 1;
-                for (int y = maxY; y > 0; y--) {
-                    BlockPos checkPos = new BlockPos(x, y, z);
-                    // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
-                    if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(checkPos.above())) {
-                        topY = y;
+            BlockPos validPos = null;
+            int y = startPos.getY();
+
+            // 🔍 desce até achar chão sólido + espaço suficiente
+            while (y > minY) {
+                BlockPos feetPos = new BlockPos(startPos.getX(), y, startPos.getZ());
+                BlockPos belowPos = feetPos.below();
+
+                boolean hasSpace = true;
+                for (int h = 0; h < mob.getBbHeight(); h++) {
+                    if (!level.isEmptyBlock(feetPos.above(h))) {
+                        hasSpace = false;
                         break;
                     }
                 }
+
+                if (hasSpace && !level.isEmptyBlock(belowPos)) {
+                    validPos = feetPos;
+                    break;
+                }
+
+                y--;
             }
 
-            BlockPos strikePos = new BlockPos(Mth.floor(x), topY, Mth.floor(z));
+            if (validPos == null) continue;
 
-            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
-            if (bolt != null) {
-                bolt.moveTo(strikePos.getX() + 0.5, strikePos.getY(), strikePos.getZ() + 0.5);
-                bolt.setVisualOnly(false); // true = só visual (sem dano/fogo)
-                bolt.setDamage(2f);
-                level.addFreshEntity(bolt);
+            BlockState state = level.getBlockState(validPos.below());
+            if (state.isAir()) continue;
+
+            level.levelEvent(
+                    2001,
+                    validPos.below(),
+                    Block.getId(state)
+            );
+
+            if (crackStage >= 0) {
+                level.destroyBlockProgress(
+                        mob.getId(),
+                        validPos.below(),
+                        crackStage
+                );
             }
         }
     }
+
 }
