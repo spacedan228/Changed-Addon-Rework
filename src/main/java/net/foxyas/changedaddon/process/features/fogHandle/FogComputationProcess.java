@@ -47,10 +47,10 @@ public class FogComputationProcess {
         float nearPlaneDistance = fogEvent.getNearPlaneDistance();
 
         float farPlane = lerp(farPlaneDistance,   10, partialTicks);
-        float nearPlane = lerp(nearPlaneDistance, 1, partialTicks);
+        float nearPlane = lerp(nearPlaneDistance, -1, partialTicks);
 
         if (!isHolding) {
-            farPlane = lerp(farPlaneDistance,   10, partialTicks);
+            farPlane = lerp(farPlaneDistance,   20, partialTicks);
             nearPlane = lerp(nearPlaneDistance, 10, partialTicks);
         }
 
