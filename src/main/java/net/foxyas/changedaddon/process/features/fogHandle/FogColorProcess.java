@@ -18,11 +18,10 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static net.foxyas.changedaddon.process.features.fogHandle.FogLerpState.lerp;
-
 @Mod.EventBusSubscriber(value = {Dist.CLIENT})
 public class FogColorProcess {
 
+    private static final float[] COLOR_WHITE = {1f, 1f, 1f};
     private static final float[] COLOR_10 = {61 / 255.0f, 0f, 0f};
     private static final float[] COLOR_009 = {0f, 194 / 255.0f, 219 / 255.0f};
     private static final float[] COLOR_MIX = {126 / 255.0f, 0f, 217 / 255.0f};
@@ -54,6 +53,8 @@ public class FogColorProcess {
             setFogColor(COLOR_009);
         } else if (has10DNA && has009DNA) {
             setFogColor(COLOR_MIX);
+        } else {
+            setFogColor(COLOR_WHITE);
         }
 
         // Fog by nearby boss entities
@@ -79,6 +80,7 @@ public class FogColorProcess {
     }
 
     protected static void setFogColor(float[] rgb) {
+        ClientFogData.FOG.targetColorRgb0 = ClientFogData.FOG.targetColorRgb;
         ClientFogData.FOG.setTargetColor(rgb);
     }
 
