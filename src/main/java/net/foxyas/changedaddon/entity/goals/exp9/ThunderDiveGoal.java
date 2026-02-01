@@ -187,6 +187,7 @@ public class ThunderDiveGoal extends Goal {
     private void affectNearbyEntities(Vec3 lateral) {
         for (LivingEntity livingEntity : mob.level().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(4))) {
             if (livingEntity.isFallFlying()) {
+                if (livingEntity instanceof Player player) player.stopFallFlying();
                 livingEntity.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                 ChangedSounds.broadcastSound(livingEntity, SoundEvents.PLAYER_ATTACK_CRIT.getLocation(), 1, 1);
             } else if (livingEntity instanceof Player player) {
@@ -198,6 +199,7 @@ public class ThunderDiveGoal extends Goal {
                         ChangedSounds.broadcastSound(serverPlayer, SoundEvents.PLAYER_ATTACK_CRIT.getLocation(), 1, 1);
                     } else {
                         player.getAbilities().flying = false;
+                        player.onUpdateAbilities();
                         player.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                         ChangedSounds.broadcastSound(player, SoundEvents.PLAYER_ATTACK_CRIT.getLocation(), 1, 1);
                     }
