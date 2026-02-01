@@ -70,10 +70,6 @@ public class LeapDiveGoal extends Goal {
 
     @Override
     public boolean canUse() {
-        if (mob.isNoGravity() && mob.tickCount < 2) {
-            mob.setNoGravity(false);
-        }
-
         LivingEntity t = mob.getTarget();
         if (cooldown > 0) {
             cooldown--;
@@ -83,6 +79,13 @@ public class LeapDiveGoal extends Goal {
                 cooldown -= 2;
             }
             return false;
+        }
+        if (this.mob.isNoGravity()) {
+            if (t != null && (t.isFallFlying() || !t.isOnGround())) {
+                return t.isAlive();
+            } else if (t instanceof Player player && player.getAbilities().flying) {
+                return player.isAlive();
+            }
         }
         return t != null && t.isAlive() && mob.isOnGround();
     }

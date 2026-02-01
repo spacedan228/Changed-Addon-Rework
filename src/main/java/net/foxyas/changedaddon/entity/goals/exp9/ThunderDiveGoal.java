@@ -76,6 +76,13 @@ public class ThunderDiveGoal extends Goal {
             }
             return false;
         }
+        if (this.mob.isNoGravity()) {
+            if (t != null && (t.isFallFlying() || !t.isOnGround())) {
+                return t.isAlive();
+            } else if (t instanceof Player player && player.getAbilities().flying) {
+                return player.isAlive();
+            }
+        }
         return t != null && t.isAlive() && mob.isOnGround();
     }
 
