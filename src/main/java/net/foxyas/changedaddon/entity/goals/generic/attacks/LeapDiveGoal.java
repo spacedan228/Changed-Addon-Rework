@@ -70,6 +70,10 @@ public class LeapDiveGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (mob.isNoGravity() && mob.tickCount < 2) {
+            mob.setNoGravity(false);
+        }
+
         LivingEntity t = mob.getTarget();
         if (cooldown > 0) {
             cooldown--;
