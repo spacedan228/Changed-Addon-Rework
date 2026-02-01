@@ -220,6 +220,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         this.goalSelector.addGoal(5, new ThunderStrikeGoal(
                 this,
                 UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+                UniformInt.of(4, 8), //IntProvider -> damageProvider
                 1.5f,
                 200));
         this.goalSelector.addGoal(10, new ThunderDiveGoal(this,
