@@ -125,11 +125,7 @@ public class LeapDiveGoal extends Goal {
         switch (phase) {
             case ASCEND -> {
                 // quando atingir altura desejada (ou após timeout), trocar para DIVE
-                boolean highEnough = mob.getY() >= (startGroundPos.getY() + ascendHoldY);
-                if (t != null) {
-                    double targetY = t.getEyeY() + ascendHoldY;
-                    highEnough = mob.getY() >= targetY;
-                }
+                boolean highEnough = isHighEnough(t);
 
                 boolean timeout = ticks > failSafeTicks; // failsafe
                 if (highEnough || timeout) {
@@ -154,6 +150,7 @@ public class LeapDiveGoal extends Goal {
                             Vec3 dm = mob.position().vectorTo(t.position()).multiply(followAscendMultiplier.x, 0, followAscendMultiplier.z);
                             mob.setDeltaMovement(dm.x, dm.y, dm.z);
                         }
+                        mob.getLookControl().setLookAt(t, 90f, 90f);
                     }
                     mob.push(0, 1 * ascendSpeed, 0);
                 }
@@ -174,6 +171,20 @@ public class LeapDiveGoal extends Goal {
                 }
             }
         }
+    }
+
+    private boolean isHighEnough(LivingEntity t) {
+        boolean highEnough = mob.getY() >= (startGroundPos.getY() + (ascendHoldY * 1.25f));
+        if (t != null) {
+            if (t.isFallFlying() || !t.onGround()) {
+                double targetY = t.getEyeY() + ascendHoldY;
+                highEnough = mob.getY() >= targetY;
+            } else if (t instanceof Player player && player.getAbilities().flying) {
+                double targetY = t.getEyeY() + ascendHoldY;
+                highEnough = mob.getY() >= targetY;
+            }
+        }
+        return highEnough;
     }
 
     private void affectNearbyEntities(Vec3 lateral) {
