@@ -16,44 +16,50 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
 public class LeapDiveGoal extends Goal {
+
     private enum Phase {ASCEND, DIVE}
 
     private final PathfinderMob mob;
-    private final double ascendBoost;     // impulso Y inicial
+    private final Vec3 followAscendMultiplier;
+    private final double ascendSpeed;     // impulso Y inicial
+    private final double ascendInitialBoost;
     private final double ascendHoldY;     // altura alvo acima do chão antes do mergulho
-    private final double diveSpeedXZ;     // velocidade lateral no mergulho
-    private final double diveSpeedY;      // velocidade vertical para baixo
+    private final Vec3 diveSpeedMultiplier; // velocidade lateral e vertical para baixo do mergulho
     private final float ringRadius;       // raio base dos círculos de raio
+    private final int failSafeTicks;
+    protected final IntProvider cooldownProvider;
     private Phase phase;
     private int ticks;
     private BlockPos startGroundPos;
-    protected final IntProvider cooldownProvider;
     public int cooldown = 0;
     private Vec3 lateral = Vec3.ZERO;
 
-
     public LeapDiveGoal(PathfinderMob mob,
                         IntProvider cooldownProvider,
-                        double ascendBoost,
+                        Vec3 followAscendMultiplier,
+                        double ascendSpeed,
+                        double ascendInitialBoost,
                         double ascendHoldY,
-                        double diveSpeedXZ,
-                        double diveSpeedY,
-                        float ringRadius) {
+                        Vec3 diveSpeedMultiplier,
+                        float ringRadius,
+                        int failSafeTicks) {
         this.mob = mob;
         this.cooldownProvider = cooldownProvider;
-        this.ascendBoost = ascendBoost;
+        this.followAscendMultiplier = followAscendMultiplier;
+        this.ascendSpeed = ascendSpeed;
+        this.ascendInitialBoost = ascendInitialBoost;
         this.ascendHoldY = ascendHoldY;
-        this.diveSpeedXZ = diveSpeedXZ;
-        this.diveSpeedY = diveSpeedY;
+        this.diveSpeedMultiplier = diveSpeedMultiplier;
         this.ringRadius = ringRadius;
+        this.failSafeTicks = failSafeTicks;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
     }
 
@@ -86,7 +92,7 @@ public class LeapDiveGoal extends Goal {
         // impulso para cima e leve drift em direção ao alvo
         LivingEntity t = mob.getTarget();
         Vec3 dir = (t != null ? mob.position().vectorTo(t.position()).normalize() : Vec3.ZERO);
-        mob.setDeltaMovement(mob.getDeltaMovement().add(dir.x * 0.2, ascendBoost, dir.z * 0.2));
+        mob.setDeltaMovement(mob.getDeltaMovement().add(dir.x * 0.2, ascendInitialBoost, dir.z * 0.2));
         ChangedSounds.broadcastSound(mob, ChangedSounds.BOW2, 1, 1);
 
         // pairar levemente enquanto sobe
@@ -113,7 +119,12 @@ public class LeapDiveGoal extends Goal {
             case ASCEND -> {
                 // quando atingir altura desejada (ou após timeout), trocar para DIVE
                 boolean highEnough = mob.getY() >= (startGroundPos.getY() + ascendHoldY);
-                boolean timeout = ticks > 60; // failsafe
+                if (t != null) {
+                    double targetY = t.getEyeY() + ascendHoldY;
+                    highEnough = mob.getY() >= targetY;
+                }
+
+                boolean timeout = ticks > failSafeTicks; // failsafe
                 if (highEnough || timeout) {
                     phase = Phase.DIVE;
                     // reativa gravidade para garantir colisão e onGround corretos
@@ -123,30 +134,36 @@ public class LeapDiveGoal extends Goal {
                     Vec3 lateral = Vec3.ZERO;
                     if (t != null) {
                         Vec3 toT = mob.position().vectorTo(t.position());
-                        lateral = new Vec3(toT.x, 0, toT.z).normalize().scale(diveSpeedXZ);
+                        lateral = new Vec3(toT.x, 0, toT.z).normalize().multiply(diveSpeedMultiplier.x, 0, diveSpeedMultiplier.z);
                     }
-                    mob.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
+                    mob.setDeltaMovement(lateral.x, -diveSpeedMultiplier.y, lateral.z);
                     this.lateral = lateral;
                 } else {
                     // manter um “hover” suave (sem subir indefinidamente)
-                    Vec3 dm = mob.getDeltaMovement();
-                    // limita subida
-                    if (dm.y > 0.6) mob.setDeltaMovement(dm.x, 0.6, dm.z);
+                    if (t != null) {
+                        Vec2 mobXZ = new Vec2((float) mob.getX(), (float) mob.getZ());
+                        Vec2 targetXZ = new Vec2((float) t.getX(), (float) t.getZ());
+                        if (mobXZ.distanceToSqr(targetXZ) > 2.25) {
+                            Vec3 dm = mob.position().vectorTo(t.position()).multiply(followAscendMultiplier.x, 0, followAscendMultiplier.z);
+                            mob.setDeltaMovement(dm.x, dm.y, dm.z);
+                        }
+                    }
+                    mob.push(0, 1 * ascendSpeed, 0);
                 }
             }
             case DIVE -> {
                 // reforça queda e correção lateral durante o mergulho
                 if (t != null) {
-                    mob.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
-                    Vec3 position = mob.position().add(lateral.x, -Math.abs(diveSpeedY), lateral.z);
+                    mob.setDeltaMovement(lateral.x, -diveSpeedMultiplier.y, lateral.z);
+                    Vec3 position = mob.position().add(lateral.x, -diveSpeedMultiplier.y, lateral.z);
                     mob.getLookControl().setLookAt(position.x, position.y, position.z, 30f, 30f);
                     affectNearbyEntities(lateral);
                 } else {
                     // sem alvo, só cai
-                    mob.setDeltaMovement(0, -Math.abs(diveSpeedY), 0);
-                    Vec3 position = mob.position().add(0, -Math.abs(diveSpeedY), 0);
+                    mob.setDeltaMovement(0, -diveSpeedMultiplier.y, 0);
+                    Vec3 position = mob.position().add(0, -diveSpeedMultiplier.y, 0);
                     mob.getLookControl().setLookAt(position.x, position.y, position.z, 30f, 30f);
-                    affectNearbyEntities(new Vec3(0, -Math.abs(diveSpeedY), 0));
+                    affectNearbyEntities(new Vec3(0, -diveSpeedMultiplier.y, 0));
                 }
             }
         }
@@ -156,19 +173,19 @@ public class LeapDiveGoal extends Goal {
         for (LivingEntity livingEntity : mob.getLevel().getEntitiesOfClass(LivingEntity.class, mob.getBoundingBox().inflate(4))) {
             if (livingEntity.isFallFlying()) {
                 if (livingEntity instanceof Player player) player.stopFallFlying();
-                livingEntity.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
+                livingEntity.setDeltaMovement(lateral.x, -diveSpeedMultiplier.y, lateral.z);
                 ChangedSounds.broadcastSound(livingEntity, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
             } else if (livingEntity instanceof Player player) {
                 if (player.getAbilities().flying) {
                     if (player instanceof ServerPlayer serverPlayer) {
                         serverPlayer.getAbilities().flying = false;
                         serverPlayer.onUpdateAbilities();
-                        serverPlayer.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
+                        serverPlayer.setDeltaMovement(lateral.x, -diveSpeedMultiplier.y, lateral.z);
                         serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(serverPlayer.getId(), serverPlayer.getDeltaMovement()));
                         ChangedSounds.broadcastSound(serverPlayer, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
                     } else {
                         player.getAbilities().flying = false;
-                        player.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
+                        player.setDeltaMovement(lateral.x, -diveSpeedMultiplier.y, lateral.z);
                         ChangedSounds.broadcastSound(player, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
                     }
                 }
@@ -187,15 +204,15 @@ public class LeapDiveGoal extends Goal {
 
         BlockPos center = mob.blockPosition();
 
-        // Anel de trovões em 4 ondas (outline em XZ)
+        // Anel of effects em 4 ondas (outline em XZ)
         applyKnockBack(center);
         spawnBlockBreakParticleCircle(serverLevel, center, ringRadius, 6, 5);
-        DelayedTask.schedule(5, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 1.4, 4, 4));
-        DelayedTask.schedule(10, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 1.8, 8, 3));
-        DelayedTask.schedule(15, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 2.2, 14, 2));
+        DelayedTask.schedule(2, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 1.4, 4, 4));
+        DelayedTask.schedule(5, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 1.8, 8, 3));
+        DelayedTask.schedule(8, () -> spawnBlockBreakParticleCircle(serverLevel, center, ringRadius * 2.2, 14, 2));
 
         // efeito visual simples no chão
-        serverLevel.levelEvent(2001, center, Block.getId(Blocks.LIGHTNING_ROD.defaultBlockState()));
+        // serverLevel.levelEvent(2001, center, Block.getId(Blocks.LIGHTNING_ROD.defaultBlockState()));
 
         cooldown = cooldownProvider.sample(this.mob.getRandom());
     }
