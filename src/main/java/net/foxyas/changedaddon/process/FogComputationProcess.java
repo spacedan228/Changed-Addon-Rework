@@ -19,7 +19,7 @@ public class FogComputationProcess {
 
     @SubscribeEvent
     public static void onRenderFog(ViewportEvent.RenderFog event) {
-        if(event.getMode() != FogRenderer.FogMode.FOG_TERRAIN) return;
+        //if(event.getMode() != FogRenderer.FogMode.FOG_TERRAIN) return;
 
         try {
             ClientLevel clientLevel = Minecraft.getInstance().level;
