@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.procedure;
+package net.foxyas.changedaddon.process;
 
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
@@ -19,7 +19,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = {Dist.CLIENT})
-public class Experiment10FogColorProcessProcedure {
+public class FogColorProcess {
 
     private static final float[] COLOR_10 = {61 / 255.0f, 0f, 0f};
     private static final float[] COLOR_009 = {0f, 194 / 255.0f, 219 / 255.0f};

@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.procedure;
+package net.foxyas.changedaddon.process;
 
 import com.mojang.blaze3d.shaders.FogShape;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
@@ -15,11 +15,11 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = {Dist.CLIENT})
-public class Experiment009FogComputationProcedure {
+public class FogComputationProcess {
 
     @SubscribeEvent
     public static void onRenderFog(EntityViewRenderEvent.RenderFogEvent event) {
-        if(event.getMode() != FogRenderer.FogMode.FOG_TERRAIN) return;
+        //if(event.getMode() != FogRenderer.FogMode.FOG_TERRAIN) return;
 
         try {
             ClientLevel clientLevel = Minecraft.getInstance().level;
