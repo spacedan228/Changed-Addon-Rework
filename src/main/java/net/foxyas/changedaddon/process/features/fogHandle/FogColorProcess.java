@@ -79,16 +79,16 @@ public class FogColorProcess {
     }
 
     protected static void setFogColor(float[] rgb) {
-        ClientFogData.FOG.targetColorRgb = rgb;
+        ClientFogData.FOG.setTargetColor(rgb);
     }
 
     protected static void lerpFogColor(EntityViewRenderEvent.FogColors fog) {
         float partialTicks = ClientFogData.FOG.get();
-        float[] rgb = ClientFogData.FOG.targetColorRgb;
+        float[] rgb = ClientFogData.FOG.getLerpColor();
 
-        float r = lerp(fog.getRed(), rgb[0], partialTicks);
-        float g = lerp(fog.getGreen(), rgb[1], partialTicks);
-        float b = lerp(fog.getBlue(), rgb[2], partialTicks);
+        float r = rgb[0]; //lerp(fog.getRed(), rgb[0], partialTicks);
+        float g = rgb[1]; //lerp(fog.getGreen(), rgb[1], partialTicks);
+        float b = rgb[2]; //lerp(fog.getBlue(), rgb[2], partialTicks);
 
         fog.setRed(r);
         fog.setGreen(g);
