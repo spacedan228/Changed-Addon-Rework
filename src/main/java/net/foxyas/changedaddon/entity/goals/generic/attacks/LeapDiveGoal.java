@@ -192,6 +192,7 @@ public class LeapDiveGoal extends Goal {
                         ChangedSounds.broadcastSound(serverPlayer, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
                     } else {
                         player.getAbilities().flying = false;
+                        player.onUpdateAbilities();
                         player.setDeltaMovement(lateral.x, -diveSpeedMultiplier.y, lateral.z);
                         ChangedSounds.broadcastSound(player, SoundEvents.PLAYER_ATTACK_CRIT, 1, 1);
                     }
