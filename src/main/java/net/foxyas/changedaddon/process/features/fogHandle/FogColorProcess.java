@@ -42,28 +42,31 @@ public class FogColorProcess {
     protected static void applyFogColor(LevelAccessor world, Vec3 pos, Entity entity, EntityViewRenderEvent.FogColors viewport) {
         if (!(entity instanceof LivingEntity living)) return;
         if (isInCreativeOrSpectator(entity)) return;
+        if (!ClientFogData.FOG.isActive()) return;
 
         boolean has10DNA = hasItem(living, ChangedAddonItems.EXPERIMENT_10_DNA.get());
         boolean has009DNA = hasItem(living, ChangedAddonItems.EXPERIMENT_009_DNA.get());
 
         // Fog by item
         if (has10DNA && !has009DNA) {
-            setFogColor(viewport, COLOR_10);
+            setFogColor(COLOR_10);
         } else if (has009DNA && !has10DNA) {
-            setFogColor(viewport, COLOR_009);
+            setFogColor(COLOR_009);
         } else if (has10DNA && has009DNA) {
-            setFogColor(viewport, COLOR_MIX);
+            setFogColor(COLOR_MIX);
         }
 
         // Fog by nearby boss entities
         if (!entity.getPersistentData().getBoolean("NoAI")) {
             if (isEntityNearby(world, pos, Experiment10BossEntity.class, 50)) {
-                setFogColor(viewport, COLOR_10);
+                setFogColor(COLOR_10);
             }
             if (isEntityNearby(world, pos, Experiment009BossEntity.class, 50)) {
-                setFogColor(viewport, COLOR_009);
+                setFogColor(COLOR_009);
             }
         }
+
+        lerpFogColor(viewport);
     }
 
     protected static boolean hasItem(LivingEntity entity, net.minecraft.world.item.Item item) {
@@ -75,12 +78,17 @@ public class FogColorProcess {
         return world.getEntitiesOfClass(clazz, box, e -> true).stream().findAny().isPresent();
     }
 
-    protected static void setFogColor(EntityViewRenderEvent.FogColors fog, float[] rgb) {
-        float partialTicks = ClientFogData.FOG.get();
+    protected static void setFogColor(float[] rgb) {
+        ClientFogData.FOG.targetColorRgb = rgb;
+    }
 
-        float r = lerp(fog.getRed(),   rgb[0], partialTicks);
+    protected static void lerpFogColor(EntityViewRenderEvent.FogColors fog) {
+        float partialTicks = ClientFogData.FOG.get();
+        float[] rgb = ClientFogData.FOG.targetColorRgb;
+
+        float r = lerp(fog.getRed(), rgb[0], partialTicks);
         float g = lerp(fog.getGreen(), rgb[1], partialTicks);
-        float b = lerp(fog.getBlue(),  rgb[2], partialTicks);
+        float b = lerp(fog.getBlue(), rgb[2], partialTicks);
 
         fog.setRed(r);
         fog.setGreen(g);

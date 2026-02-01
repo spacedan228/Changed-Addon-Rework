@@ -5,6 +5,8 @@ public class FogLerpState {
     private float value = 0f;
     private float target = 0f;
 
+    public float[] targetColorRgb = new float[]{0,0,0};
+
     public void setTarget(boolean active) {
         this.target = active ? 1f : 0f;
     }
