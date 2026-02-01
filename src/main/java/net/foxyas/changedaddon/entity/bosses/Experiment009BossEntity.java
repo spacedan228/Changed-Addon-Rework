@@ -220,6 +220,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         this.goalSelector.addGoal(5, new ThunderStrikeGoal(
                 this,
                 UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+                UniformInt.of(4, 8), //IntProvider -> damageProvider
                 1.5f,
                 200));
         this.goalSelector.addGoal(10, new ThunderDiveGoal(this,
@@ -531,6 +532,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                     );
                 }
             }
+
             this.playSound(SoundEvents.GENERIC_EXPLODE, 1, 1);
             for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(blockPosition(), 16, 16, 1).toList()) {
                 BlockState state = level.getBlockState(pos);
@@ -539,6 +541,10 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                     level.removeBlock(pos, false);
                     level.levelEvent(1009, pos, 0); // Partículas e som de "extinguir fogo"
                 }
+            }
+
+            if (entityDamageSource.getEntity() instanceof LivingEntity living) {
+                FoxyasUtils.repairAllItems(living, 1000);
             }
         }
 

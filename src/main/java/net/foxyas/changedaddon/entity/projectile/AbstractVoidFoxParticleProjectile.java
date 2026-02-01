@@ -359,9 +359,9 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
         if (this.isParryAble()) {
             if (result.getEntity() instanceof LivingEntity livingEntity) {
                 livingEntity.invulnerableTime = 0;
-                livingEntity.hurtDuration = 1;
-                livingEntity.hurtDir = 1;
-                livingEntity.hurtTime = 1;
+                livingEntity.hurtDuration = 0;
+                livingEntity.hurtDir = 0;
+                livingEntity.hurtTime = 0;
                 livingEntity.hurtMarked = false;
             }
         }
@@ -394,6 +394,13 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
         Entity entity = result.getEntity();
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.isBlocking()) {
+                if (this.getOwner() == null) {
+                    ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 5, 0.5f);
+                    if (!this.isRemoved()) {
+                        ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
+                        this.discard();
+                    }
+                }
                 if (this.getOwner() != null && this.getTarget() != null) {
                     Entity oTarget = this.getTarget();
                     Entity oOwner = this.getOwner();
@@ -421,6 +428,13 @@ public abstract class AbstractVoidFoxParticleProjectile extends ParriableProject
         if (this.isParryAble()) {
             Entity entity = damageSource.getDirectEntity();
             if (entity instanceof LivingEntity livingEntity) {
+                if (this.getOwner() == null) {
+                    ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 5, 0.5f);
+                    if (!this.isRemoved()) {
+                        ParticlesUtil.sendParticles(this.level, particle, this.position(), 0.05f, 0.05f, 0.05f, 20, 0.5f);
+                        this.discard();
+                    }
+                }
                 if (this.getOwner() != null && this.getTarget() != null) {
                     Entity oTarget = this.getTarget();
                     Entity oOwner = this.getOwner();

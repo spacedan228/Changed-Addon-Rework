@@ -1,12 +1,13 @@
 package net.foxyas.changedaddon.init;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.gui.TransfurSoundsGuiScreen;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.network.packet.OpenExtraDetailsPacket;
 import net.foxyas.changedaddon.network.packet.PatKeyPacket;
 import net.foxyas.changedaddon.network.packet.TurnOffTransfurPacket;
 import net.foxyas.changedaddon.network.packet.VariantSecondAbilityActivate;
+import net.foxyas.changedaddon.util.ComponentUtil;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.tutorial.ChangedTutorial;
@@ -33,7 +34,19 @@ public class ChangedAddonKeyMappings {
         public void setDown(boolean isDown) {
             super.setDown(isDown);
             if (isDownOld != isDown && isDown) {
-                ChangedAddonMod.PACKET_HANDLER.sendToServer(new OpenExtraDetailsPacket());
+                Minecraft minecraft = Minecraft.getInstance();
+                Player player = minecraft.player;
+                if (player != null && !player.isDeadOrDying() && !player.isSpectator() && minecraft.screen == null) {
+
+                    if (ProcessTransfur.isPlayerTransfurred(player)) {
+                        minecraft.setScreen(new TransfurSoundsGuiScreen());
+                    } else {
+                        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
+                        if (vars != null && vars.showWarns) {
+                            player.displayClientMessage(ComponentUtil.translatable("changedaddon.when_not.transfur"), true);
+                        }
+                    }
+                }
             }
             isDownOld = isDown;
         }

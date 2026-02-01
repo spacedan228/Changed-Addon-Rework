@@ -4,7 +4,6 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.minecraft.core.Registry;
-import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -76,6 +75,7 @@ public final class ChangedAddonTags {
         public static final TagKey<EntityType<?>> IGNORE_GRABBED_TARGETS = key("ignore_grabber_targets");
         public static final TagKey<EntityType<?>> CANT_SPAWN_AS_ALPHA_ENTITY = key("cant_spawn_as_alpha_entity");
         public static final TagKey<EntityType<?>> CANT_USE_GRAB = key("cant_use_grab");
+        public static final TagKey<EntityType<?>> CAN_ROAR = key("can_roar");
 
         private static TagKey<EntityType<?>> key(String path) {
             return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ChangedAddonMod.resourceLoc(path));
@@ -98,6 +98,7 @@ public final class ChangedAddonTags {
         public static final TagKey<TransfurVariant<?>> LEOPARD_LIKE = key("leopard_like");
         public static final TagKey<TransfurVariant<?>> SHARK_LIKE = key("shark_like");
         public static final TagKey<TransfurVariant<?>> WOLF_LIKE = key("wolf_like");
+        public static final TagKey<TransfurVariant<?>> SPIDER_LIKE = key("spider_like");
 
         // Transfur Diets
         public static final TagKey<TransfurVariant<?>> AQUATIC_DIET = key("aquatic_diet");

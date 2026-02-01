@@ -232,6 +232,9 @@ public class TFTagsProvider extends TagsProvider<TransfurVariant<?>> {
             return path.contains("dog") || path.contains("wolf");
         }).add(ChangedTransfurVariants.LATEX_PURPLE_FOX.get(), LATEX_SQUID_TIGER_SHARK.get());
 
+        tag(ChangedAddonTags.TransfurTypes.SPIDER_LIKE)
+                .add(ChangedTransfurVariants.LATEX_STIGER.get());
+
 
         tag(ChangedAddonTags.TransfurTypes.AQUATIC_DIET)
                 .addTag(ChangedAddonTags.TransfurTypes.AQUATIC_LIKE);

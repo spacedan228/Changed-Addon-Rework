@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.entity.bosses;
 import net.foxyas.changedaddon.entity.api.CustomPatReaction;
 import net.foxyas.changedaddon.entity.api.ICrawlAndSwimAbleEntity;
 import net.foxyas.changedaddon.entity.api.IHasBossMusic;
-import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
 import net.foxyas.changedaddon.entity.goals.exp10.ClawsComboAttackGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.ThrowWitherProjectileGoal;
 import net.foxyas.changedaddon.entity.goals.exp10.WitherWave;
@@ -11,6 +10,7 @@ import net.foxyas.changedaddon.entity.goals.generic.BreakBlocksAroundGoal;
 import net.foxyas.changedaddon.entity.goals.generic.BurstAttack;
 import net.foxyas.changedaddon.entity.goals.generic.LatexPullEntityGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.DashPunchGoal;
+import net.foxyas.changedaddon.entity.goals.generic.attacks.LeapDiveGoalBuilder;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.LeapSmashGoal;
 import net.foxyas.changedaddon.entity.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
@@ -23,7 +23,6 @@ import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedParticles;
-import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.core.Registry;
@@ -39,7 +38,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.UniformFloat;
@@ -58,9 +56,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
@@ -80,7 +78,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment10BossEntity.class, EntityDataSerializers.BOOLEAN);
     private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.RED, ServerBossEvent.BossBarOverlay.NOTCHED_6);
-    private float TpCooldown;
 
     public Experiment10BossEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXPERIMENT_10_BOSS.get(), world);
@@ -234,6 +231,18 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     protected void registerGoals() {
         super.registerGoals();
 
+        this.goalSelector.addGoal(10, new LeapDiveGoalBuilder(this)
+                .withCooldown(UniformInt.of(60, 100)) //IntProvider -> cooldownProvider
+                .withFollowAscendMultiplier(new Vec3(0.25f, 0.25f, 0.25f))
+                .withAscendInitialBoost(0.6)
+                .withAscendSpeed(0.8f)
+                .withAscendHoldY(2f)
+                .withDiveSpeedMultiplier(new Vec3(1f, 1f, 1f))
+                .withFailSafeTicks(120)
+                .withRingRadius(4)
+                .build()
+        );
+
         this.goalSelector.addGoal(5, new ClawsComboAttackGoal(this, //PathfinderMob -> holder,
                 UniformInt.of(150, 200), //IntProvider -> cooldown,
                 UniformInt.of(3, 6), //IntProvider -> attackCount,
@@ -380,8 +389,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
 
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        if (tag.contains("Tp_Cooldown"))
-            TpCooldown = tag.getFloat("Tp_Cooldown");
         if (tag.contains("Phase2")) {
             setPhase2(tag.getBoolean("Phase2"));
         }
@@ -390,7 +397,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        tag.putFloat("Tp_Cooldown", TpCooldown);
         tag.putBoolean("Phase2", isPhase2());
     }
 
@@ -409,16 +415,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         SetDefense(this);
         SetAttack(this);
         SetSpeed(this);
-        TpEntity(this);
         this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.35f);
-        thisBurstAttack();
-    }
-
-    private void thisBurstAttack() {
-        if (TpCooldown <= 0) {
-            BossAbilitiesHandle.BurstAttack(this);
-            this.TpCooldown = 50;
-        }
     }
 
 
@@ -459,51 +456,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             }
         } else {
             entity.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(AttibuteChange);
-        }
-    }
-
-    public void TpEntity(Experiment10BossEntity entity) {
-        double deltaZ;
-        double distance;
-        double deltaX;
-        double deltaY;
-        if (entity.getTarget() == null) {
-            return; //stop if target = @null
-        }
-
-
-        Entity Target = entity.getTarget();
-        LivingEntity Targets = entity.getLastHurtByMob();
-        deltaX = Target.getX() - entity.getX();
-        deltaY = Target.getY() - entity.getY();
-        deltaZ = Target.getZ() - entity.getZ();
-        distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-
-        if (TpCooldown == 0) {
-            if (distance > 3) {
-                if (entity.getLastHurtByMob() == Target) {
-                    entity.teleportTo(Target.getX(), Target.getY(), Target.getZ());
-                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.BOW2, SoundSource.HOSTILE, 10, 1, true);
-                    TpCooldown = 40;
-                } else {
-                    if (Targets != null && !(Targets instanceof ServerPlayer)) {
-                        entity.setTarget(Targets);
-                    } else if (Targets instanceof ServerPlayer serverPlayer) {
-                        if (serverPlayer.gameMode.getGameModeForPlayer() != GameType.CREATIVE && serverPlayer.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
-                            entity.setTarget(Targets);
-                        }
-                    }// Check if the entity in not null and is instance of server player if is will check if the gametype and if is not Creative and Spectator return true
-                    entity.teleportTo(Target.getX(), Target.getY(), Target.getZ());
-                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.BOW2, SoundSource.HOSTILE, 10, 1, true);
-                    TpCooldown = 40;
-                }
-
-				/*if((TpCooldown != 0)){
-					TpCooldown -= 0.5f;
-				}*/
-            }
-        } else {
-            TpCooldown -= 0.5f;
         }
     }
 

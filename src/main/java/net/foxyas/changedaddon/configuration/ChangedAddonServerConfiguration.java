@@ -1,7 +1,9 @@
 package net.foxyas.changedaddon.configuration;
 
 import net.foxyas.changedaddon.world.gamerules.ChangedEntitySpawnDressedType;
+import net.foxyas.changedaddon.world.gamerules.WorldDifficulty;
 import net.ltxprogrammer.changed.data.RegistryElementPredicate;
+import net.minecraft.world.Difficulty;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.List;
@@ -28,6 +30,8 @@ public class ChangedAddonServerConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_NORMAL;
     public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_HARD;
     public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_HARDCORE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_GRABBY_ENTITIES_SPAWN;
+    public static final ForgeConfigSpec.ConfigValue<WorldDifficulty> BEHEMOTH_CAN_USE_GRAB_IN_DIFFICULTY;
 
     static {
         ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -45,6 +49,14 @@ public class ChangedAddonServerConfiguration {
         BUILDER.push("Beasts Behavior");
         DL_COAT_AFFECT_ALL = BUILDER.comment("When active, the Dark Latex Coat will affect all beasts").define("DL Coat Confuse All Creatures", true);
         BUILDER.push("Changed Entities");
+
+        CAN_GRABBY_ENTITIES_SPAWN = BUILDER
+                .comment("Allow Changed Entities to be able to spawn with the grab ability feature")
+                .define("Grabby Entities Spawn", false);
+
+        BEHEMOTH_CAN_USE_GRAB_IN_DIFFICULTY = BUILDER
+                .comment("Defines which level of difficulty should allow behemoths to use the grab ability feature, if NONE then the behemoth will never use it")
+                .defineEnum("Behemoth difficulty grab ability feature", WorldDifficulty.HARD);
 
         BUILDER.push("Alpha Spawn Difficulty Scaling");
         ALPHA_SPAWN_PEACEFUL = BUILDER

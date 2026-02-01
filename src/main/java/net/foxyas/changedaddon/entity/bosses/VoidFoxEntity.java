@@ -86,6 +86,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
 
     private static final EntityDataAccessor<Float> DODGE_HEALTH = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Float> MAX_DODGE_HEALTH = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Boolean> IS_BOSS = SynchedEntityData.defineId(VoidFoxEntity.class, EntityDataSerializers.BOOLEAN);
 
     public final ServerBossEvent bossBar = getBossBar();
     public final ServerBossEvent dodgeHealthBossBar = getDodgeHealthBossBar();
@@ -97,8 +98,6 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     private int AttackInUse;
     private int ticksInUse;
     private int ticksTakeDmgFromFire = 0;
-
-    private boolean isBoss;
 
     public VoidFoxEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.VOID_FOX.get(), world);
@@ -113,17 +112,17 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     }
 
     public boolean isBoss() {
-        return isBoss;
+        return this.entityData.get(IS_BOSS);
     }
 
     public void setBoss(boolean boss) {
-        if (boss && !isBoss) {
+        if (boss && !isBoss()) {
             handleBoss();
-        } else if (!boss && isBoss) {
+        } else if (!boss && isBoss()) {
             handleNonBoss();
         }
 
-        isBoss = boss;
+        this.entityData.set(IS_BOSS, boss);
     }
 
     @Override
@@ -190,6 +189,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         super.defineSynchedData();
         this.entityData.define(MAX_DODGE_HEALTH, 200f);
         this.entityData.define(DODGE_HEALTH, getMaxDodgeHealth());
+        this.entityData.define(IS_BOSS, false);
     }
 
     @Override
@@ -777,6 +777,15 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         super.actuallyHurt(pDamageSource, pDamageAmount);
     }
 
+    @Override
+    public void die(@NotNull DamageSource pDamageSource) {
+        if (pDamageSource.getEntity() instanceof LivingEntity living) {
+            FoxyasUtils.repairAllItems(living, 1000);
+        }
+
+        super.die(pDamageSource);
+    }
+
     public boolean hurtDodgeHealth(@NotNull DamageSource damageSource, float damageAmount) {
         if (!damageSource.isFire()) {
 
@@ -938,7 +947,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     @Override
     public void baseTick() {
         super.baseTick();
-        crawlingSystem(this, this.getTarget());
+        crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.35f);
         tickDodgeTicks();
         tickAttackTicks();
 
@@ -1081,8 +1090,8 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
 
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor p_21434_, @NotNull DifficultyInstance p_21435_, @NotNull MobSpawnType p_21436_, @Nullable SpawnGroupData p_21437_, @Nullable CompoundTag tag) {
-        if ((tag != null && tag.getBoolean("isBoss"))) {
-            setBoss(true);
+        if ((tag != null)) {
+            setBoss(tag.getBoolean("isBoss"));
         }
         return super.finalizeSpawn(p_21434_, p_21435_, p_21436_, p_21437_, tag);
     }
