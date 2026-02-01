@@ -155,10 +155,10 @@ public class SummonLightningGoal extends Goal {
 
     public void applyKnockBack(AABB hitbox) {
         var list = holder.level()
-                .getNearbyEntities(
+                .getEntitiesOfClass(
                         LivingEntity.class,
-                        TargetingConditions.forCombat().selector(target -> !target.is(holder)),
-                        holder, hitbox
+                        hitbox,
+                        (target -> !target.is(holder))
                 );
 
         Vec3 direction;

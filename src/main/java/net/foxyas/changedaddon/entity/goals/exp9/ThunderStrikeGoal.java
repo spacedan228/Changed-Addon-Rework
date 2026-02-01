@@ -21,6 +21,7 @@ import java.util.EnumSet;
 public class ThunderStrikeGoal extends Goal {
     protected final IntProvider cooldownProvider;
     private final PathfinderMob pathfinderMob;
+    private final IntProvider damageProvider;
     private final double jumpPower;
     private final int duration; // ticks de duração do ataque
     public int cooldown = 0;
@@ -28,8 +29,9 @@ public class ThunderStrikeGoal extends Goal {
     private BlockPos groundPos;
     private LivingEntity target;
 
-    public ThunderStrikeGoal(PathfinderMob pathfinderMob, IntProvider cooldownProvider, double jumpPower, int duration) {
+    public ThunderStrikeGoal(PathfinderMob pathfinderMob, IntProvider cooldownProvider, IntProvider damageProvider, double jumpPower, int duration) {
         this.pathfinderMob = pathfinderMob;
+        this.damageProvider = damageProvider;
         this.jumpPower = jumpPower;
         this.duration = duration;
         this.cooldownProvider = cooldownProvider;
@@ -86,13 +88,13 @@ public class ThunderStrikeGoal extends Goal {
                     if (pathfinderMob instanceof ChangedEntity changedEntity) {
                         lightning.setCause((ServerPlayer) changedEntity.getUnderlyingPlayer());
                     }
-                    lightning.setDamage(10);
+                    lightning.setDamage(damageProvider.sample(pathfinderMob.getRandom()));
                     ParticlesUtil.sendParticles(pathfinderMob.level(), ChangedAddonParticleTypes.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
-                    if (!lightning.isRemoved()) {
-                        pathfinderMob.getLookControl().setLookAt(lightning, 30.0F, 30.0F);
-                    }
                     DelayedTask.schedule(10, () -> {
                         pathfinderMob.level().addFreshEntity(lightning);
+                        if (!lightning.isRemoved()) {
+                            pathfinderMob.getLookControl().setLookAt(lightning, 30.0F, 30.0F);
+                        }
                         applyKnockBack(lightning);
                         pathfinderMob.swing(pathfinderMob.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
                         // recoil de knockback para trás
@@ -109,15 +111,14 @@ public class ThunderStrikeGoal extends Goal {
 
     public void applyKnockBack(Entity lightning) {
         var list = lightning.level()
-                .getNearbyEntities(
+                .getEntitiesOfClass(
                         LivingEntity.class,
-                        TargetingConditions.DEFAULT
-                                .selector((target) -> !target.is(lightning) && !target.is(pathfinderMob)),
-                        pathfinderMob, lightning.getBoundingBox().inflate(8)
+                        lightning.getBoundingBox().inflate(8),
+                        (target) -> !target.is(lightning) && !target.is(pathfinderMob)
                 );
 
         for (LivingEntity livingEntity : list) {
-            livingEntity.push(0, 0.5f, 0);
+            livingEntity.push(0,0.5f,0);
         }
     }
 

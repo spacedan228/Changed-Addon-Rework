@@ -174,6 +174,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         goalSelector.addGoal(5, new ThunderStrikeGoal(
                 this,
                 UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+                UniformInt.of(4, 8), //IntProvider -> damageProvider
                 1.5f,
                 200));
         goalSelector.addGoal(10, new ThunderDiveGoal(this,
