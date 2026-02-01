@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.process;
+package net.foxyas.changedaddon.process.features.fogHandle;
 
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
@@ -17,6 +17,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import static net.foxyas.changedaddon.process.features.fogHandle.FogLerpState.lerp;
 
 @Mod.EventBusSubscriber(value = {Dist.CLIENT})
 public class FogColorProcess {
@@ -37,7 +39,7 @@ public class FogColorProcess {
         }
     }
 
-    private static void applyFogColor(LevelAccessor world, Vec3 pos, Entity entity, EntityViewRenderEvent.FogColors viewport) {
+    protected static void applyFogColor(LevelAccessor world, Vec3 pos, Entity entity, EntityViewRenderEvent.FogColors viewport) {
         if (!(entity instanceof LivingEntity living)) return;
         if (isInCreativeOrSpectator(entity)) return;
 
@@ -64,22 +66,28 @@ public class FogColorProcess {
         }
     }
 
-    private static boolean hasItem(LivingEntity entity, net.minecraft.world.item.Item item) {
+    protected static boolean hasItem(LivingEntity entity, net.minecraft.world.item.Item item) {
         return entity.getMainHandItem().is(item) || entity.getOffhandItem().is(item);
     }
 
-    private static boolean isEntityNearby(LevelAccessor world, Vec3 pos, Class<? extends Entity> clazz, double range) {
+    protected static boolean isEntityNearby(LevelAccessor world, Vec3 pos, Class<? extends Entity> clazz, double range) {
         AABB box = AABB.ofSize(pos, range, range, range);
         return world.getEntitiesOfClass(clazz, box, e -> true).stream().findAny().isPresent();
     }
 
-    private static void setFogColor(EntityViewRenderEvent.FogColors fog, float[] rgb) {
-        fog.setRed(rgb[0]);
-        fog.setGreen(rgb[1]);
-        fog.setBlue(rgb[2]);
+    protected static void setFogColor(EntityViewRenderEvent.FogColors fog, float[] rgb) {
+        float partialTicks = ClientFogData.FOG.get();
+
+        float r = lerp(fog.getRed(),   rgb[0], partialTicks);
+        float g = lerp(fog.getGreen(), rgb[1], partialTicks);
+        float b = lerp(fog.getBlue(),  rgb[2], partialTicks);
+
+        fog.setRed(r);
+        fog.setGreen(g);
+        fog.setBlue(b);
     }
 
-    private static boolean isInCreativeOrSpectator(Entity entity) {
+    protected static boolean isInCreativeOrSpectator(Entity entity) {
         if (entity instanceof ServerPlayer serverPlayer) {
             GameType type = serverPlayer.gameMode.getGameModeForPlayer();
             return type == GameType.CREATIVE || type == GameType.SPECTATOR;
