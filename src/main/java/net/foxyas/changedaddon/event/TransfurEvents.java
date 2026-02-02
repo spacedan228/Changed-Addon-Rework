@@ -8,6 +8,7 @@ import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
@@ -46,7 +47,7 @@ public class TransfurEvents {
             IAbstractChangedEntity source = transfurContext.source;
             if (source != null) {
                 boolean wantAbsorption = source.wantAbsorption();
-                if (wantAbsorption) {
+                if (wantAbsorption && transfurContext.cause != TransfurCause.GRAB_REPLICATE) {
                     if (source.getEntity() instanceof IAlphaAbleEntity alphaAbleEntity && transfurVariantInstance.getChangedEntity() instanceof IAlphaAbleEntity iAlphaAble) {
                         iAlphaAble.setAlpha(alphaAbleEntity.isAlpha());
                     }

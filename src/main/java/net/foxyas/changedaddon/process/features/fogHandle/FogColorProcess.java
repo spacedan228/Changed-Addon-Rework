@@ -1,4 +1,4 @@
-package net.foxyas.changedaddon.procedure;
+package net.foxyas.changedaddon.process.features.fogHandle;
 
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.entity.bosses.Experiment10BossEntity;
@@ -19,8 +19,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(value = {Dist.CLIENT})
-public class Experiment10FogColorProcessProcedure {
+public class FogColorProcess {
 
+    private static final float[] COLOR_WHITE = {1f, 1f, 1f};
     private static final float[] COLOR_10 = {61 / 255.0f, 0f, 0f};
     private static final float[] COLOR_009 = {0f, 194 / 255.0f, 219 / 255.0f};
     private static final float[] COLOR_MIX = {126 / 255.0f, 0f, 217 / 255.0f};
@@ -37,49 +38,66 @@ public class Experiment10FogColorProcessProcedure {
         }
     }
 
-    private static void applyFogColor(LevelAccessor world, Vec3 pos, Entity entity, EntityViewRenderEvent.FogColors viewport) {
+    protected static void applyFogColor(LevelAccessor world, Vec3 pos, Entity entity, EntityViewRenderEvent.FogColors viewport) {
         if (!(entity instanceof LivingEntity living)) return;
         if (isInCreativeOrSpectator(entity)) return;
+        if (!ClientFogData.FOG.isActive()) return;
 
         boolean has10DNA = hasItem(living, ChangedAddonItems.EXPERIMENT_10_DNA.get());
         boolean has009DNA = hasItem(living, ChangedAddonItems.EXPERIMENT_009_DNA.get());
 
         // Fog by item
         if (has10DNA && !has009DNA) {
-            setFogColor(viewport, COLOR_10);
+            setFogColor(COLOR_10);
         } else if (has009DNA && !has10DNA) {
-            setFogColor(viewport, COLOR_009);
+            setFogColor(COLOR_009);
         } else if (has10DNA && has009DNA) {
-            setFogColor(viewport, COLOR_MIX);
+            setFogColor(COLOR_MIX);
+        } else {
+            setFogColor(COLOR_WHITE);
         }
 
         // Fog by nearby boss entities
         if (!entity.getPersistentData().getBoolean("NoAI")) {
             if (isEntityNearby(world, pos, Experiment10BossEntity.class, 50)) {
-                setFogColor(viewport, COLOR_10);
+                setFogColor(COLOR_10);
             }
             if (isEntityNearby(world, pos, Experiment009BossEntity.class, 50)) {
-                setFogColor(viewport, COLOR_009);
+                setFogColor(COLOR_009);
             }
         }
+
+        lerpFogColor(viewport);
     }
 
-    private static boolean hasItem(LivingEntity entity, net.minecraft.world.item.Item item) {
+    protected static boolean hasItem(LivingEntity entity, net.minecraft.world.item.Item item) {
         return entity.getMainHandItem().is(item) || entity.getOffhandItem().is(item);
     }
 
-    private static boolean isEntityNearby(LevelAccessor world, Vec3 pos, Class<? extends Entity> clazz, double range) {
+    protected static boolean isEntityNearby(LevelAccessor world, Vec3 pos, Class<? extends Entity> clazz, double range) {
         AABB box = AABB.ofSize(pos, range, range, range);
         return world.getEntitiesOfClass(clazz, box, e -> true).stream().findAny().isPresent();
     }
 
-    private static void setFogColor(EntityViewRenderEvent.FogColors fog, float[] rgb) {
-        fog.setRed(rgb[0]);
-        fog.setGreen(rgb[1]);
-        fog.setBlue(rgb[2]);
+    protected static void setFogColor(float[] rgb) {
+        ClientFogData.FOG.targetColorRgb0 = ClientFogData.FOG.targetColorRgb;
+        ClientFogData.FOG.setTargetColor(rgb);
     }
 
-    private static boolean isInCreativeOrSpectator(Entity entity) {
+    protected static void lerpFogColor(EntityViewRenderEvent.FogColors fog) {
+        float partialTicks = ClientFogData.FOG.get();
+        float[] rgb = ClientFogData.FOG.getLerpColor();
+
+        float r = rgb[0]; //lerp(fog.getRed(), rgb[0], partialTicks);
+        float g = rgb[1]; //lerp(fog.getGreen(), rgb[1], partialTicks);
+        float b = rgb[2]; //lerp(fog.getBlue(), rgb[2], partialTicks);
+
+        fog.setRed(r);
+        fog.setGreen(g);
+        fog.setBlue(b);
+    }
+
+    protected static boolean isInCreativeOrSpectator(Entity entity) {
         if (entity instanceof ServerPlayer serverPlayer) {
             GameType type = serverPlayer.gameMode.getGameModeForPlayer();
             return type == GameType.CREATIVE || type == GameType.SPECTATOR;
