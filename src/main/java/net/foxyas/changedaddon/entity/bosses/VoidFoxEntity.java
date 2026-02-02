@@ -118,10 +118,14 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     }
 
     public void setBoss(boolean boss) {
+        this.setBoss(boss, false);
+    }
+
+    public void setBoss(boolean boss, boolean isSpawn) {
         if (boss && !isBoss()) {
-            handleBoss();
+            handleBoss(isSpawn);
         } else if (!boss && isBoss()) {
-            handleNonBoss();
+            handleNonBoss(isSpawn);
         }
 
         this.entityData.set(IS_BOSS, boss);
@@ -1092,12 +1096,12 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     @Override
     public @Nullable SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor p_21434_, @NotNull DifficultyInstance p_21435_, @NotNull MobSpawnType p_21436_, @Nullable SpawnGroupData p_21437_, @Nullable CompoundTag tag) {
         if ((tag != null)) {
-            setBoss(tag.getBoolean("isBoss"));
+            setBoss(tag.getBoolean("isBoss"), true);
         }
         return super.finalizeSpawn(p_21434_, p_21435_, p_21436_, p_21437_, tag);
     }
 
-    public void handleBoss() {
+    public void handleBoss(boolean isSpawn) {
         //this.setAbsorptionAmount(75f);
         Objects.requireNonNull(this.getAttribute(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((7.5));
         this.getAttribute(Attributes.MAX_HEALTH).setBaseValue((500));
@@ -1109,13 +1113,20 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         this.getAttribute(Attributes.ARMOR_TOUGHNESS).setBaseValue(12);
         this.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
         this.getAttribute(Attributes.ATTACK_KNOCKBACK).setBaseValue(2);
-        this.setHealth(500f);
+        if (isSpawn) {
+            this.setHealth(this.getMaxHealth());
+            this.setDodgeHealth(this.getMaxDodgeHealth());
+        }
         this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
         IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
-    public void handleNonBoss() {
+    public void handleNonBoss(boolean isSpawn) {
         this.setAttributes(this.getAttributes());
+        if (isSpawn) {
+            this.setHealth(this.getMaxHealth());
+            this.setMaxDodgeHealth(3);
+        }
         IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
     }
 
