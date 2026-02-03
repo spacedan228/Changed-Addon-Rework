@@ -93,11 +93,11 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
 
     public int timesUsedAttack1, timesUsedAttack2, timesUsedAttack3, timesUsedAttack4/*, timesUsedAttack5*/ = 0;
     public int stunTicks = 0;
-    public DodgeAbilityInstance dodgeAbilityInstance = null;
     private int Attack1Cooldown, Attack2Cooldown, Attack3Cooldown, Attack4Cooldown/*, Attack5Cooldown*/;
     private int AttackInUse;
     private int ticksInUse;
     private int ticksTakeDmgFromFire = 0;
+    private boolean shouldUpdateHealth = true;
 
     public VoidFoxEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.VOID_FOX.get(), world);
@@ -108,7 +108,6 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         xpReward = 1000;
         setNoAi(false);
         setPersistenceRequired();
-        this.dodgeAbilityInstance = this.registerAbility((abilityInstance -> true), new DodgeAbilityInstance(ChangedAddonAbilities.DODGE.get(), IAbstractChangedEntity.forEntity(this)));
     }
 
     public boolean isBoss() {
@@ -117,8 +116,10 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
 
     public void setBoss(boolean boss) {
         if (boss && !isBoss()) {
+            shouldUpdateHealth = true;
             handleBoss();
         } else if (!boss && isBoss()) {
+            shouldUpdateHealth = true;
             handleNonBoss();
         }
 
@@ -877,18 +878,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
             this.getLookControl().setLookAt(entity.getEyePosition());
         }
         this.getNavigation().stop();
-        if (this.dodgeAbilityInstance != null) {
-            this.dodgeAbilityInstance.executeDodgeAnimations(this.getLevel(), this);
-            this.dodgeAbilityInstance.setDodgeActivate(true);
-        }
-    }
-
-    public void tickDodgeTicks() {
-        if (!this.isNoAi()) {
-            if (this.dodgeAbilityInstance != null && this.dodgeAbilityInstance.isDodgeActive()) {
-                this.dodgeAbilityInstance.setDodgeActivate(false);
-            }
-        }
+        DodgeAbilityInstance.executeRandomDodgeAnimation(this.level, this);
     }
 
     public void tickAttackTicks() {
@@ -948,7 +938,6 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     public void baseTick() {
         super.baseTick();
         crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.35f);
-        tickDodgeTicks();
         tickAttackTicks();
 
         handleChanges();
@@ -1011,14 +1000,20 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         }
         if (this.getDodgeHealth() > 0) {
             this.dodgeHealthBossBar.setVisible(true);
-            this.bossBar.setVisible(false);
+            //this.bossBar.setVisible(false);
             this.dodgeHealthBossBar.setProgress(this.getDodgeHealth() / this.getMaxDodgeHealth());
             this.dodgeHealthBossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_12);
         } else {
-            this.bossBar.setVisible(true);
             this.dodgeHealthBossBar.setVisible(false);
+        }
+
+        if (this.getDodgeHealth() <= 0 || this.computeHealthRatio() < 1) {
+            this.bossBar.setVisible(true);
+            //this.dodgeHealthBossBar.setVisible(false);
             this.bossBar.setProgress(this.getHealth() / this.getMaxHealth());
             this.bossBar.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
+        } else {
+            this.bossBar.setVisible(false);
         }
     }
 
@@ -1108,14 +1103,22 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         this.getAttribute(Attributes.ARMOR_TOUGHNESS).setBaseValue(12);
         this.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
         this.getAttribute(Attributes.ATTACK_KNOCKBACK).setBaseValue(2);
-        this.setHealth(500f);
         this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
         IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+        if (shouldUpdateHealth) {
+            this.setHealth(this.getMaxHealth());
+            this.setDodgeHealth(this.getMaxDodgeHealth());
+            this.shouldUpdateHealth = false;
+        }
     }
 
     public void handleNonBoss() {
         this.setAttributes(this.getAttributes());
         IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
+        if (shouldUpdateHealth) {
+            this.setHealth(this.getMaxHealth());
+            this.setMaxDodgeHealth(3);
+        }
     }
 
     @Override

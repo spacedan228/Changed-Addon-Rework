@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.ability;
 
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.api.ICoatLikeEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractExp2SnepChangedEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractTamableLatexEntity;
@@ -90,14 +91,18 @@ public class UnfuseAbility extends SimpleAbility {
         super.startUsing(entity);
         Entity entityUnfused;
         TransfurVariantInstance<?> transfurVariantInstance = entity.getTransfurVariantInstance();
+
         if (transfurVariantInstance != null) {
             ChangedEntity changedEntity = transfurVariantInstance.getChangedEntity();
+
             if (changedEntity instanceof ICoatLikeEntity iCoatLikeEntity) {
                 Player host = transfurVariantInstance.getHost();
                 entityUnfused = changedEntity.getType().create(host.getLevel());
+
                 if (!(entityUnfused instanceof ChangedEntity changedEntityUnfused)) {
                     return;
                 }
+
                 if (changedEntityUnfused instanceof AbstractTamableLatexEntity abstractTamableLatexEntity) {
                     abstractTamableLatexEntity.tame(host);
                     iCoatLikeEntity.setIsUnfusedFromHost(true);
@@ -105,14 +110,23 @@ public class UnfuseAbility extends SimpleAbility {
                     abstractExp2SnepChangedEntity.tame(host);
                     abstractExp2SnepChangedEntity.setIsUnfusedFromHost(true);
                 }
+
                 iCoatLikeEntity.setIsUnfusedFromHost(true);
+
                 changedEntityUnfused.setPos(host.position());
                 LivingEntity target = host.getLastHurtByMob();
+
                 if (target != null && target.distanceTo(host) < 5 && FoxyasUtils.canEntitySeeOther(changedEntityUnfused, target)) {
                     changedEntityUnfused.setTarget(target);
                 }
+
                 if (host.getLevel() instanceof ServerLevel serverLevel) {
                     changedEntityUnfused.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(changedEntityUnfused.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+
+                    if (changedEntity instanceof IAlphaAbleEntity original && entityUnfused instanceof IAlphaAbleEntity alphaAble) {
+                        alphaAble.setAlpha(original.isAlpha());
+                    }
+
                     serverLevel.addFreshEntity(changedEntityUnfused);
                     serverLevel.playSound(null, host, ChangedSounds.POISON, SoundSource.PLAYERS, 1, 1);
                     PlayerUtil.UnTransfurPlayer(host);

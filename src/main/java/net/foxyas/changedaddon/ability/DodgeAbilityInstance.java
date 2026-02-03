@@ -10,7 +10,6 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -59,6 +58,11 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         Vec3 dodgerPosition = dodger.position();
 
         Vec3 rawMotion = attackerPosition.subtract(dodgerPosition).scale(-0.25);
+        if (dodger instanceof LivingEntity living) {
+            double randomYaw = living.getRandom().nextGaussian() * 90f;
+            rawMotion = rawMotion.yRot((float) randomYaw);
+        }
+
         Vec3 motion = divideVec(rawMotion, Math.max(dodger.distanceTo(attacker), 1d));
         if (dodger instanceof ServerPlayer serverPlayer) {
             serverPlayer.setDeltaMovement(motion.x, motion.y, motion.z);
@@ -221,6 +225,26 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                         ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), DodgeAnimationParameters.INSTANCE);
                 //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
             }
+        }
+    }
+
+    public static void executeRandomDodgeAnimation(LevelAccessor levelAccessor, LivingEntity dodger) {
+        ChangedSounds.broadcastSound(dodger, ChangedSounds.BOW2, 2.5f, 1);
+        int randomValue = levelAccessor.getRandom().nextInt(6);
+        switch (randomValue) {
+            case 0 ->
+                    ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_LEFT.get(), DodgeAnimationParameters.INSTANCE);
+            case 1 ->
+                    ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), DodgeAnimationParameters.INSTANCE);
+            case 2 ->
+                    ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), DodgeAnimationParameters.INSTANCE);
+            case 3 ->
+                    ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), DodgeAnimationParameters.INSTANCE);
+            case 4 ->
+                    ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), DodgeAnimationParameters.INSTANCE);
+            case 5 ->
+                    ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), DodgeAnimationParameters.INSTANCE);
+            //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
         }
     }
 
