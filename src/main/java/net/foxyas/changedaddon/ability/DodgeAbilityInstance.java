@@ -10,7 +10,6 @@ import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -59,6 +58,11 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         Vec3 dodgerPosition = dodger.position();
 
         Vec3 rawMotion = attackerPosition.subtract(dodgerPosition).scale(-0.25);
+        if (dodger instanceof LivingEntity living) {
+            double randomYaw = living.getRandom().nextGaussian() * 90f;
+            rawMotion = rawMotion.yRot((float) randomYaw);
+        }
+
         Vec3 motion = divideVec(rawMotion, Math.max(dodger.distanceTo(attacker), 1d));
         if (dodger instanceof ServerPlayer serverPlayer) {
             serverPlayer.setDeltaMovement(motion.x, motion.y, motion.z);
