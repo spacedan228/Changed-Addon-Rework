@@ -59,6 +59,11 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         Vec3 dodgerPosition = dodger.position();
 
         Vec3 rawMotion = attackerPosition.subtract(dodgerPosition).scale(-0.25);
+        if (dodger instanceof LivingEntity living) {
+            double randomYaw = living.getRandom().nextGaussian() * 90f;
+            rawMotion = rawMotion.yRot((float) randomYaw);
+        }
+
         Vec3 motion = divideVec(rawMotion, Math.max(dodger.distanceTo(attacker), 1d));
         if (dodger instanceof ServerPlayer serverPlayer) {
             serverPlayer.setDeltaMovement(motion.x, motion.y, motion.z);
