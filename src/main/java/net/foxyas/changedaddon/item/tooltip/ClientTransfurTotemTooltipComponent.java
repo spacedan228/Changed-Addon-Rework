@@ -14,6 +14,7 @@ import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -101,6 +102,16 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
     public void renderText(@NotNull Font font, int posX, int posY,
                            @NotNull Matrix4f matrix,
                            @NotNull MultiBufferSource.BufferSource bufferSource) {
+        CompoundTag transfurTotemStackDataTag = this.transfurTotemStack.getTag();
+        if (transfurTotemStackDataTag == null || transfurTotemStackDataTag.isEmpty()) return;
+
+        CompoundTag transfurVariantData = transfurTotemStackDataTag.getCompound("TransfurVariantData");
+        if (transfurVariantData.isEmpty()) return;
+
+        CompoundTag entityData = transfurVariantData.getCompound("entityData");
+        if (entityData.isEmpty() || !entityData.getBoolean("isAlpha")) return;
+
+        font.drawInBatch("Alpha", posX, posY, -1, false, matrix, bufferSource, false, 0, LightTexture.FULL_BRIGHT);
     }
 
     public static void renderEntityInInventory(float posX, float posY, int scale,
