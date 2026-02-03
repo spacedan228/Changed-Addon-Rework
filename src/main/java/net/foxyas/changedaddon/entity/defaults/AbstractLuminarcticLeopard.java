@@ -174,8 +174,9 @@ public abstract class AbstractLuminarcticLeopard extends AbstractSnowLeopard imp
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        this.entityData.define(GLOW_STAGE, 0);
-        this.entityData.define(ACTIVATED_ABILITY, false);
+        entityData.define(GLOW_STAGE, 0);
+        entityData.define(ACTIVATED_ABILITY, false);
+        entityData.define(IS_BOSS, false);
     }
 
     public int getGlowStage() {
