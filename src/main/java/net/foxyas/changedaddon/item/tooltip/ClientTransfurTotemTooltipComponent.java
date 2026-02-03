@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.CompoundTag;
@@ -107,7 +108,16 @@ public class ClientTransfurTotemTooltipComponent implements ClientTooltipCompone
     public void renderText(@NotNull Font font, int posX, int posY,
                            @NotNull Matrix4f matrix,
                            @NotNull MultiBufferSource.BufferSource bufferSource) {
-        ClientTooltipComponent.super.renderText(font, posX, posY, matrix, bufferSource);
+        CompoundTag transfurTotemStackDataTag = this.transfurTotemStack.getTag();
+        if (transfurTotemStackDataTag == null || transfurTotemStackDataTag.isEmpty()) return;
+
+        CompoundTag transfurVariantData = transfurTotemStackDataTag.getCompound("TransfurVariantData");
+        if (transfurVariantData.isEmpty()) return;
+
+        CompoundTag entityData = transfurVariantData.getCompound("entityData");
+        if (entityData.isEmpty() || !entityData.getBoolean("isAlpha")) return;
+
+        font.drawInBatch("Alpha", posX, posY, -1, false, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
     }
 
     public static void renderEntityInInventoryFollowsAngleSameRotation(GuiGraphics pGuiGraphics, float pX, float pY, float pScale, float angleXComponent, float angleYComponent, LivingEntity pEntity) {
