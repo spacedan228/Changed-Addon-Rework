@@ -97,7 +97,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     private int AttackInUse;
     private int ticksInUse;
     private int ticksTakeDmgFromFire = 0;
-    private boolean shouldUpdateHealth = true;
+    private boolean wasBoss = false;
 
     public VoidFoxEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.VOID_FOX.get(), world);
@@ -115,15 +115,25 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
     }
 
     public void setBoss(boolean boss) {
-        if (boss && !isBoss()) {
-            shouldUpdateHealth = true;
+        wasBoss = this.entityData.get(IS_BOSS);
+        this.entityData.set(IS_BOSS, boss);
+    }
+
+    public void refreshBossAttributes() {
+        if (!wasBoss && isBoss()) {
             handleBoss();
-        } else if (!boss && isBoss()) {
-            shouldUpdateHealth = true;
+        } else if (wasBoss && !isBoss()) {
             handleNonBoss();
         }
+    }
 
-        this.entityData.set(IS_BOSS, boss);
+    @Override
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {
+        super.onSyncedDataUpdated(pKey);
+
+        if (pKey == IS_BOSS) {
+            refreshBossAttributes();
+        }
     }
 
     @Override
@@ -637,6 +647,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
             //if (attackTag.contains("timeUsedAttack5")) this.timesUsedAttack5 = attackTag.getInt("timeUsedAttack5");
         }
 
+        if (tag.contains("shouldUpdateHealth")) this.wasBoss = tag.getBoolean("shouldUpdateHealth");
         setBoss(tag.getBoolean("isBoss"));
     }
 
@@ -663,6 +674,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
 
         tag.put("AttacksHandle", attackTag);
 
+        tag.putBoolean("shouldUpdateHealth", this.wasBoss);
         if (isBoss()) tag.putBoolean("isBoss", true);
     }
 
@@ -1104,20 +1116,20 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
         this.getAttribute(Attributes.KNOCKBACK_RESISTANCE).setBaseValue(0);
         this.getAttribute(Attributes.ATTACK_KNOCKBACK).setBaseValue(2);
         this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
-        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
-        if (shouldUpdateHealth) {
+        if (wasBoss) {
             this.setHealth(this.getMaxHealth());
             this.setDodgeHealth(this.getMaxDodgeHealth());
-            this.shouldUpdateHealth = false;
+            this.wasBoss = false;
+            IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
         }
     }
 
     public void handleNonBoss() {
         this.setAttributes(this.getAttributes());
-        IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
-        if (shouldUpdateHealth) {
+        if (wasBoss) {
             this.setHealth(this.getMaxHealth());
             this.setMaxDodgeHealth(3);
+            IAbstractChangedEntity.forEitherSafe(maybeGetUnderlying()).map(IAbstractChangedEntity::getTransfurVariantInstance).ifPresent(TransfurVariantInstance::refreshAttributes);
         }
     }
 
