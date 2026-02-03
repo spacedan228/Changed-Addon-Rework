@@ -647,7 +647,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
             //if (attackTag.contains("timeUsedAttack5")) this.timesUsedAttack5 = attackTag.getInt("timeUsedAttack5");
         }
 
-        if (tag.contains("shouldUpdateHealth")) this.wasBoss = tag.getBoolean("shouldUpdateHealth");
+        if (tag.contains("wasBoss")) this.wasBoss = tag.getBoolean("wasBoss");
         setBoss(tag.getBoolean("isBoss"));
     }
 
@@ -674,7 +674,7 @@ public class VoidFoxEntity extends ChangedEntity implements ICrawlAndSwimAbleEnt
 
         tag.put("AttacksHandle", attackTag);
 
-        tag.putBoolean("shouldUpdateHealth", this.wasBoss);
+        tag.putBoolean("wasBoss", this.wasBoss);
         if (isBoss()) tag.putBoolean("isBoss", true);
     }
 
