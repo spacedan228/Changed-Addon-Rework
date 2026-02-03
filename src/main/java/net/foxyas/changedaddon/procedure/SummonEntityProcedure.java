@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.procedure;
 
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -30,6 +31,11 @@ public class SummonEntityProcedure {
             if (entityToSpawn instanceof Mob mob) {
                 mob.finalizeSpawn(level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
             }
+
+            if (fakeEntity instanceof IAlphaAbleEntity original && entityToSpawn instanceof IAlphaAbleEntity alphaAble) {
+                alphaAble.setAlpha(original.isAlpha());
+            }
+
             world.addFreshEntity(entityToSpawn);
         }
     }

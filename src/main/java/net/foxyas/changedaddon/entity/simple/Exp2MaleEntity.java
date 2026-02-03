@@ -87,7 +87,7 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntity {
             boolean flag = this.isOwnedBy(player) || this.isTame() || this.isTameItem(itemstack) && !this.isTame();
             return flag ? InteractionResult.CONSUME : InteractionResult.PASS;
         } else {
-            tryFuseBack(player, this);
+            if (tryFuseBack(player, this)) return InteractionResult.SUCCESS;
 
             if (!this.isTame() && this.isTameItem(itemstack)) {
                 if (!player.getAbilities().instabuild) {
