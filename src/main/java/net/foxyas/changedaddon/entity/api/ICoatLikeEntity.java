@@ -10,46 +10,48 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.Arrays;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 public interface ICoatLikeEntity extends TamableLatexEntity {
+
     boolean isUnfusedFromHost();
 
     void setIsUnfusedFromHost(boolean value);
 
-    default void tryFuseBack(Player player, ChangedEntity changedEntity) {
-        if (isTame() && getOwner() == player) {
-            if (isUnfusedFromHost() && player.isShiftKeyDown()) {
-                TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
-                if (transfurVariantInstance == null && changedEntity.getSelfVariant() != null) {
-                    ProcessTransfur.setPlayerTransfurVariant(player, changedEntity.getSelfVariant(), TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1f);
-                    ChangedSounds.broadcastSound(player, changedEntity.getSelfVariant().sound, 1, 1);
-                    Arrays.stream(EquipmentSlot.values())
-                            .filter(slot -> slot.getType() == EquipmentSlot.Type.ARMOR)
-                            .forEach(slot -> {
-                                ItemStack entityStack = changedEntity.getItemBySlot(slot);
+    default boolean tryFuseBack(Player player, ChangedEntity changedEntity) {
+        if (!isTame() || getOwner() != player) return false;
 
-                                if (!entityStack.isEmpty()) {
-                                    ItemStack copy = entityStack.copy();
-                                    entityStack.setCount(0);
+        if (!isUnfusedFromHost() || !player.isShiftKeyDown()) return false;
 
-                                    ItemStack playerStack = player.getItemBySlot(slot);
-                                    if (playerStack.isEmpty()) {
-                                        // Equip directly to player
-                                        player.setItemSlot(slot, copy);
-                                    } else {
-                                        // Drop near player if their slot is occupied
-                                        if (player.addItem(copy)) {
-                                            player.drop(copy, false);
-                                        }
-                                    }
-                                }
-                            });
-                    changedEntity.discard();
-                }
+        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+        if (instance != null || changedEntity.getSelfVariant() == null) return false;
+
+        ProcessTransfur.setPlayerTransfurVariant(player, changedEntity.getSelfVariant(), TransfurContext.hazard(TransfurCause.GRAB_ABSORB), 1f);
+        ChangedSounds.broadcastSound(player, changedEntity.getSelfVariant().sound, 1, 1);
+
+        ItemStack stack, copy, playerStack;
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (slot.getType() != EquipmentSlot.Type.ARMOR) continue;
+
+            stack = changedEntity.getItemBySlot(slot);
+            if (stack.isEmpty()) continue;
+
+            copy = stack.copy();
+            stack.setCount(0);
+            playerStack = player.getItemBySlot(slot);
+
+            if (playerStack.isEmpty()) {
+                player.setItemSlot(slot, copy);
+            } else {
+                ItemHandlerHelper.giveItemToPlayer(player, copy);
             }
         }
-    }
 
+        if (changedEntity instanceof IAlphaAbleEntity original && ProcessTransfur.getPlayerTransfurVariant(player).getChangedEntity() instanceof IAlphaAbleEntity alphaAble) {
+            alphaAble.setAlpha(original.isAlpha());
+        }
+
+        changedEntity.discard();
+        return true;
+    }
 }
