@@ -23,6 +23,7 @@
     "enchantments.EnchantmentMixin",
     "enchantments.InfinityEnchantmentMixin",
     "entity.AccessoryEntitiesAccessor",
+    "entity.CatMixin",
     "entity.CombatTrackerAccessor",
     "entity.EntityMixin",
     "entity.IronGolemMixin",
