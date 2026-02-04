@@ -22,6 +22,7 @@
     "enchantments.EnchantmentHelperMixin",
     "enchantments.InfinityEnchantmentMixin",
     "entity.AccessoryEntitiesAccessor",
+    "entity.CatMixin",
     "entity.EntityMixin",
     "entity.IronGolemMixin",
     "entity.ItemEntityMixin",

@@ -15,8 +15,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.EnumSet;
 
 public class FollowAndLookAtLaser extends Goal {
+
     private final Mob mob;
     private final double speedModifier;
+
     private LivingEntity laserPlayer;
     @Nullable
     private Vec3 laserTarget;
@@ -51,14 +53,6 @@ public class FollowAndLookAtLaser extends Goal {
                 && Math.sqrt(mob.distanceToSqr(laserTarget)) < 100;
     }
 
-    @Override
-    public boolean canContinueToUse() {
-        return laserTarget != null
-                && isPlayerUsingLaser()
-                && hasLineOfSight(laserTarget)
-                && Math.sqrt(mob.distanceToSqr(laserTarget)) < 100;
-    }
-
     private boolean hasLineOfSight(Vec3 target) {
         return mob.level.clip(new ClipContext(
                 mob.getEyePosition(), target,
@@ -72,6 +66,11 @@ public class FollowAndLookAtLaser extends Goal {
     public void start() {
         super.start();
         this.mob.playSound(SoundEvents.CAT_AMBIENT, 1, 1);
+    }
+
+    @Override
+    public boolean requiresUpdateEveryTick() {
+        return true;
     }
 
     @Override
