@@ -59,8 +59,10 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
         Vec3 rawMotion = attackerPosition.subtract(dodgerPosition).scale(-0.25);
         if (dodger instanceof LivingEntity living) {
-            double randomYaw = living.getRandom().nextGaussian() * 90f;
-            rawMotion = rawMotion.yRot((float) randomYaw);
+            float randomYawDeg = (float) (living.getRandom().nextGaussian() * 90f);
+            float randomYawRad = randomYawDeg * ((float) Math.PI / 180F);
+
+            rawMotion = rawMotion.yRot(randomYawRad);
         }
 
         Vec3 motion = divideVec(rawMotion, Math.max(dodger.distanceTo(attacker), 1d));
@@ -146,6 +148,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         if (dodgeAmount > 0) dodgeAmount--;
         if (dodgeAmount <= 0 && (this.getCanDodgeTicks() > 0 && this.getDodgeType() instanceof CounterDodgeType))
             this.canDodgeTicks = 0;
+        if (dodgeAmount <= 0) this.setDodgeActivate(false);
     }
 
     public DodgeType getDodgeType() {
