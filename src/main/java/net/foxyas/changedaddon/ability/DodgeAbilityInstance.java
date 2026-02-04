@@ -37,7 +37,7 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     private final int defaultRegenCooldown = 20;
     public boolean ultraInstinct = false; //FUNNY VARIABLE :3
     public DodgeType dodgeType = DodgeType.WEAVE;
-    private int dodgeAmount = 4;
+    private int dodgeAmount = 0;
     private int maxDodgeAmount = 4;
     private boolean dodgeActive = false;
     private int dodgeRegenCooldown = defaultRegenCooldown;
@@ -127,11 +127,12 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     }
 
     public boolean isDodgeActive() {
-        return this.ultraInstinct || this.getCanDodgeTicks() > 0 || dodgeActive || this.getController().getHoldTicks() > 0;
+        return this.ultraInstinct || this.getCanDodgeTicks() > 0 || dodgeActive;
     }
 
     public void setDodgeActivate(boolean active) {
         this.dodgeActive = active;
+        this.ability.setDirty(entity);
     }
 
     public int getDodgeAmount() {
@@ -140,17 +141,24 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     public void setDodgeAmount(int amount) {
         dodgeAmount = Math.min(amount, maxDodgeAmount);
+        this.ability.setDirty(entity);
     }
 
     public void addDodgeAmount() {
         if (dodgeAmount < maxDodgeAmount) dodgeAmount++;
+        this.ability.setDirty(entity);
     }
 
     public void subDodgeAmount() {
         if (dodgeAmount > 0) dodgeAmount--;
         if (dodgeAmount <= 0 && (this.getCanDodgeTicks() > 0 && this.getDodgeType() instanceof CounterDodgeType))
             this.canDodgeTicks = 0;
-        if (dodgeAmount <= 0) this.setDodgeActivate(false);
+        if (dodgeAmount <= 0) {
+            this.setDodgeActivate(false);
+            this.getController().resetHoldTicks();
+            this.getController().applyCoolDown();
+        }
+        this.ability.setDirty(entity);
     }
 
     public DodgeType getDodgeType() {
@@ -413,6 +421,18 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     @Override
     public void stopUsing() {
         setDodgeActivate(false);
+        this.ability.setDirty(entity);
+        if (entity.getEntity() instanceof Player player) {
+            if (!(player.level.isClientSide())) {
+                if (!ultraInstinct) {
+                    player.displayClientMessage(
+                            Component.translatable("ability.changed_addon.dodge.dodge_amount",
+                                    getDodgeStaminaRatio()),
+                            true
+                    );
+                }
+            }
+        }
     }
 
     @Override
