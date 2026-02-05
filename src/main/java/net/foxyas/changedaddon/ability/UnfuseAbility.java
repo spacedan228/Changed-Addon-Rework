@@ -120,8 +120,15 @@ public class UnfuseAbility extends SimpleAbility {
             LivingEntity target = host.getLastHurtByMob();
 
             if (target != null && target.distanceTo(host) < 5 && FoxyasUtils.canEntitySeeOther(changedEntityUnfused, target)) {
-                changedEntityUnfused.setTarget(target);
+                if (changedEntityUnfused.canAttack(target)) {
+                    changedEntityUnfused.setTarget(target);
+                }
             }
+
+            changedEntityUnfused.setXRot(host.getViewXRot(0));
+            changedEntityUnfused.setYRot(host.getViewXRot(0));
+            changedEntityUnfused.setYBodyRot(host.yBodyRotO);
+            changedEntityUnfused.setYHeadRot(host.getYHeadRot());
 
             if (host.level() instanceof ServerLevel serverLevel) {
                 ForgeEventFactory.onFinalizeSpawn(changedEntityUnfused, serverLevel, serverLevel.getCurrentDifficultyAt(changedEntityUnfused.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
