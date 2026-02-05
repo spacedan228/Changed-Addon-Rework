@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.init;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.client.gui.TransfurSoundsGuiScreen;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
@@ -8,6 +9,8 @@ import net.foxyas.changedaddon.network.packet.PatKeyPacket;
 import net.foxyas.changedaddon.network.packet.TurnOffTransfurPacket;
 import net.foxyas.changedaddon.network.packet.VariantSecondAbilityActivate;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
+import net.ltxprogrammer.changed.Changed;
+import net.ltxprogrammer.changed.network.VariantAbilityActivate;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.tutorial.ChangedTutorial;
 import net.minecraft.client.KeyMapping;
@@ -18,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -85,7 +89,31 @@ public class ChangedAddonKeyMappings {
         }
     };
 
-    public static final KeyMapping USE_SECOND_ABILITY = new KeyMapping("key.changed_addon.use_second_ability", GLFW.GLFW_KEY_X, "key.categories.movement");
+    public static final KeyMapping USE_SECOND_ABILITY = new KeyMapping(
+            "key.changed_addon.use_second_ability",
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_X,
+            "key.categories.movement") {
+
+        @Override
+        public void setDown(boolean newState) {
+            super.setDown(newState);
+            if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
+            LocalPlayer local = Minecraft.getInstance().player;
+            ProcessTransfur.ifPlayerTransfurred(local, (variant) -> {
+                assert local != null;
+                if (variant.isTemporaryFromSuit() || !(variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor))
+                    return;
+
+                // KeyStateTracker will check if the state has changed
+                if (transfurVariantInstanceExtensor.getSecondAbilityKey().queueKeyState(newState)) {
+                    ChangedTutorial.triggerOnUseAbility(transfurVariantInstanceExtensor.getSecondSelectedAbilityInstance());
+                    ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
+                }
+            });
+        }
+    };
 
     @SubscribeEvent
     public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
@@ -100,7 +128,7 @@ public class ChangedAddonKeyMappings {
 
         @SubscribeEvent
         public static void onClientTick(TickEvent.ClientTickEvent event) {
-            if(Minecraft.getInstance().screen != null) return;
+            if (Minecraft.getInstance().screen != null) return;
 
             OPEN_EXTRA_DETAILS.consumeClick();
             TURN_OFF_TRANSFUR.consumeClick();
@@ -110,11 +138,11 @@ public class ChangedAddonKeyMappings {
         @SubscribeEvent
         public static void onKeyInput(InputEvent.Key event) {
             LocalPlayer local = Minecraft.getInstance().player;
-            if(local == null || Minecraft.getInstance().screen != null) return;
+            if (local == null || Minecraft.getInstance().screen != null) return;
 
-            if(!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
+            if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
 
-            if(event.getKey() != USE_SECOND_ABILITY.getKey().getValue()) return;
+            if (event.getKey() != USE_SECOND_ABILITY.getKey().getValue()) return;
 
             USE_SECOND_ABILITY.consumeClick();
             ProcessTransfur.ifPlayerTransfurred(local, (variant) -> {
