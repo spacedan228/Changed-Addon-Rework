@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,6 +46,11 @@ public class BuffDazedLatexEntity extends AbstractDazedEntity {
         if (SPAWN_BIOMES.contains(event.getName())) {
             event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.BUFF_DAZED_LATEX.get(), 125, 1, 4));
         }
+    }
+
+    @Override
+    public float getScale() {
+        return super.getScale() * 1.08f;
     }
 
     public static void init() {
@@ -99,25 +105,26 @@ public class BuffDazedLatexEntity extends AbstractDazedEntity {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        AttributeSupplier.Builder builder = Mob.createMobAttributes();
+        AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
         builder.add(ChangedAttributes.TRANSFUR_DAMAGE.get(), 0);
         builder = builder.add(Attributes.MOVEMENT_SPEED, 0.3);
         builder = builder.add(Attributes.MAX_HEALTH, 24);
         builder = builder.add(Attributes.ARMOR, 0);
         builder = builder.add(Attributes.ATTACK_DAMAGE, 3);
         builder = builder.add(Attributes.FOLLOW_RANGE, 16);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 16);
         return builder;
     }
 
     protected void setAttributes(AttributeMap attributes) {
-        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()),3);
-        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH),26);
+        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()),5f);
+        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH),40f);
         safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE),40.0f);
-        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED),1.075F);
+        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED),1.05F);
         safeSetBaseValue(attributes.getInstance(ForgeMod.SWIM_SPEED.get()),1.025F);
-        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE),3.0f);
-        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR),0);
-        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS),0);
-        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE),0);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE),5.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR),4);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS),1);
+        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE),0.25f);
     }
 }

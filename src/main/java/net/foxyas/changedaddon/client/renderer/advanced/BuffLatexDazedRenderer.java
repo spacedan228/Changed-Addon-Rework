@@ -47,6 +47,11 @@ public class BuffLatexDazedRenderer extends AdvancedHumanoidRenderer<BuffDazedLa
         return ChangedAddonMod.textureLoc("textures/entities/buff_dazed_creature");
     }
 
+    @Override
+    protected void scale(@NotNull BuffDazedLatexEntity pLivingEntity, @NotNull PoseStack poseStack, float pPartialTickTime) {
+        super.scale(pLivingEntity, poseStack, pPartialTickTime);
+        poseStack.scale(1.08f, 1.08f, 1.08f);
+    }
 
     @Override
     public boolean shouldRenderArmor(BuffDazedLatexEntity entity) {

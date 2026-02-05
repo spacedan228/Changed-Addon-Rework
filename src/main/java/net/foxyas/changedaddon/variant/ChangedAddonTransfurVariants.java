@@ -107,7 +107,7 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<BuffDazedLatexEntity>> BUFF_DAZED_LATEX = register("form_buff_dazed_latex",
             TransfurVariant.Builder.of(ChangedAddonEntities.BUFF_DAZED_LATEX)
                     .transfurMode(TransfurMode.ABSORPTION)
-                    .addAbility(ChangedAddonAbilities.DAZED_PUDDLE)
+                    //.addAbility(ChangedAddonAbilities.DAZED_PUDDLE) the big one can't use puddle mode canonically
                     .scares(List.of())
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
