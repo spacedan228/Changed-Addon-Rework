@@ -28,12 +28,11 @@ import java.util.Random;
 import java.util.Set;
 
 @Mod.EventBusSubscriber
-public class DazedLatexEntity extends AbstractDazedEntity {
+public class BuffDazedLatexEntity extends AbstractDazedEntity {
 
-    // Definindo a chave de sincronização no seu código
     private static final Set<ResourceLocation> SPAWN_BIOMES = Set.of(ResourceLocation.parse("plains"));
 
-    public DazedLatexEntity(EntityType<DazedLatexEntity> type, Level world) {
+    public BuffDazedLatexEntity(EntityType<BuffDazedLatexEntity> type, Level world) {
         super(type, world);
         xpReward = 0;
         this.setAttributes(this.getAttributes());
@@ -44,16 +43,16 @@ public class DazedLatexEntity extends AbstractDazedEntity {
     @SubscribeEvent
     public static void addLivingEntityToBiomes(BiomeLoadingEvent event) {
         if (SPAWN_BIOMES.contains(event.getName())) {
-            event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 125, 1, 4));
+            event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.BUFF_DAZED_LATEX.get(), 125, 1, 4));
         }
     }
 
     public static void init() {
         SpawnPlacements.register(
-                ChangedAddonEntities.DAZED_LATEX.get(),
+                ChangedAddonEntities.BUFF_DAZED_LATEX.get(),
                 SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES,
-                DazedLatexEntity::canSpawnNear
+                BuffDazedLatexEntity::canSpawnNear
         );
     }
 
@@ -68,7 +67,7 @@ public class DazedLatexEntity extends AbstractDazedEntity {
         }
     }
 
-    private static boolean canSpawnNear(EntityType<DazedLatexEntity> entityType, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, Random random) {
+    private static boolean canSpawnNear(EntityType<BuffDazedLatexEntity> entityType, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, Random random) {
         if (world.getDifficulty() == Difficulty.PEACEFUL) {
             return false;
         }

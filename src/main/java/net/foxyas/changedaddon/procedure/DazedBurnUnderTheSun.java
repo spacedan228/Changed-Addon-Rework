@@ -23,7 +23,8 @@ public class DazedBurnUnderTheSun {
         if(!level.getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.DO_DAZED_LATEX_BURN)
                 || entity.hasEffect(MobEffects.FIRE_RESISTANCE)) return;
 
-        if(!ProcessTransfur.getEntityVariant(entity).map(var -> var.is(ChangedAddonTransfurVariants.DAZED_LATEX)).orElse(Boolean.FALSE)) return;
+        if(!ProcessTransfur.getEntityVariant(entity).map(var -> var.is(ChangedAddonTransfurVariants.DAZED_LATEX) || var.is(ChangedAddonTransfurVariants.BUFF_DAZED_LATEX))
+                .orElse(Boolean.FALSE)) return;
 
         if (level.canSeeSkyFromBelowWater(entity.blockPosition()) && level.isDay() && !entity.isInWaterRainOrBubble()) {
             if (entity.getHealth() / entity.getMaxHealth() >= 0.4) {

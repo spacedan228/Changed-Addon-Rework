@@ -1,6 +1,5 @@
 package net.foxyas.changedaddon.variant;
 
-import com.google.common.base.Suppliers;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.advanced.*;
 import net.foxyas.changedaddon.entity.api.IOriginalCharacterEntity;
@@ -10,7 +9,6 @@ import net.foxyas.changedaddon.entity.simple.*;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.util.ComponentUtil;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.beast.AquaticEntity;
 import net.ltxprogrammer.changed.entity.variant.GenderedPair;
@@ -33,7 +31,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static net.foxyas.changedaddon.variant.TransfurVariantsInfo.OCS;
@@ -97,6 +98,14 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<DazedLatexEntity>> DAZED_LATEX = register("form_dazed_latex",
             TransfurVariant.Builder.of(ChangedAddonEntities.DAZED_LATEX)
+                    .transfurMode(TransfurMode.ABSORPTION)
+                    .addAbility(ChangedAddonAbilities.DAZED_PUDDLE)
+                    .scares(List.of())
+                    .nightVision()
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
+
+    public static final RegistryObject<TransfurVariant<BuffDazedLatexEntity>> BUFF_DAZED_LATEX = register("form_buff_dazed_latex",
+            TransfurVariant.Builder.of(ChangedAddonEntities.BUFF_DAZED_LATEX)
                     .transfurMode(TransfurMode.ABSORPTION)
                     .addAbility(ChangedAddonAbilities.DAZED_PUDDLE)
                     .scares(List.of())

@@ -1,11 +1,12 @@
 package net.foxyas.changedaddon.ability;
 
-import net.foxyas.changedaddon.entity.advanced.DazedLatexEntity;
+import net.foxyas.changedaddon.entity.advanced.AbstractDazedEntity;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbility;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTags;
@@ -31,7 +32,7 @@ public class DazedPuddleAbility extends SimpleAbility {
 
     @Override
     public void startUsing(IAbstractChangedEntity entity) {
-        if (entity.getChangedEntity() instanceof DazedLatexEntity dazedLatexEntity) {
+        if (entity.getChangedEntity() instanceof AbstractDazedEntity dazedLatexEntity) {
             entity.getEntity().playSound(ChangedSounds.POISON, 1, 1);
             dazedLatexEntity.setMorphed(true);
         }
@@ -51,7 +52,7 @@ public class DazedPuddleAbility extends SimpleAbility {
                 return;
             if (caught.getType().is(ChangedTags.EntityTypes.HUMANOIDS)) {
                 if (caught instanceof Player player && ProcessTransfur.getPlayerTransfurVariant(player) == null) {
-                    ProcessTransfur.progressTransfur(player, TransfurDmgAmount, ChangedAddonTransfurVariants.DAZED_LATEX.get(), TransfurContext.hazard(TransfurCause.FLOOR_HAZARD));
+                    ProcessTransfur.progressTransfur(player, TransfurDmgAmount, entity.getTransfurVariant(), TransfurContext.hazard(TransfurCause.FLOOR_HAZARD));
                     caught.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 100, 2, false, false, false));
                 }
             }
@@ -60,7 +61,7 @@ public class DazedPuddleAbility extends SimpleAbility {
 
     @Override
     public void stopUsing(IAbstractChangedEntity entity) {
-        if (entity.getChangedEntity() instanceof DazedLatexEntity dazedLatexEntity) {
+        if (entity.getChangedEntity() instanceof AbstractDazedEntity dazedLatexEntity) {
             dazedLatexEntity.setMorphed(false);
         }
     }
@@ -72,6 +73,9 @@ public class DazedPuddleAbility extends SimpleAbility {
 
     @Override
     public boolean canUse(IAbstractChangedEntity entity) {
-        return true;
+        TransfurVariant<?> var = entity.getTransfurVariant();
+        if (var == null) return false;
+
+        return var.is(ChangedAddonTransfurVariants.DAZED_LATEX) || var.is(ChangedAddonTransfurVariants.BUFF_DAZED_LATEX);
     }
 }

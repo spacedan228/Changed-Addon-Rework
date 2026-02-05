@@ -344,6 +344,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityFromId(CRYSTAL_GAS_CAT_MALE);
         addEntityFromId(PINK_CYAN_SKUNK);
         addEntityFromId(DAZED_LATEX);
+        addEntityFromId(BUFF_DAZED_LATEX);
         addEntityFromId(ERIK);
         addEntityFromId(EXP_1_FEMALE);
         addEntityFromId(EXP_1_MALE);
