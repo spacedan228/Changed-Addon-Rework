@@ -348,6 +348,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityFromId(CRYSTAL_GAS_CAT_MALE);
         addEntityFromId(PINK_CYAN_SKUNK);
         addEntityFromId(DAZED_LATEX);
+        addEntityFromId(BUFF_DAZED_LATEX);
         addEntityFromId(ERIK);
         addEntityFromId(EXP_1_FEMALE);
         addEntityFromId(EXP_1_MALE);
@@ -582,6 +583,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addItemFromId(LATEX_BORDER_COLLIE_SPAWN_EGG);
         addItemFromId(LATEX_CALICO_CAT_SPAWN_EGG);
         addItemFromId(DAZED_LATEX_SPAWN_EGG);
+        addItemFromId(BUFF_DAZED_LATEX_SPAWN_EGG);
         addItem(LATEX_SNEP_SHARK_SPAWN_EGG, "Latex Dragon Snow Leopard Shark Fusion Spawn Egg");
         addItemFromId(LATEX_KAYLA_SHARK_SPAWN_EGG);
         addItem(LATEX_KITSUNE_FEMALE_SPAWN_EGG, "Female Latex Kitsune Spawn Egg");

@@ -2,15 +2,16 @@ package net.foxyas.changedaddon.client.renderer.advanced;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.model.LatexDazedModel;
-import net.foxyas.changedaddon.client.model.armors.ArmorLatexDazedModel;
-import net.foxyas.changedaddon.entity.advanced.DazedLatexEntity;
+import net.foxyas.changedaddon.client.model.BuffLatexDazedModel;
+import net.foxyas.changedaddon.entity.advanced.AbstractDazedEntity;
+import net.foxyas.changedaddon.entity.advanced.BuffDazedLatexEntity;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.client.renderer.layers.CustomEyesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.GasMaskLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.LatexParticlesLayer;
 import net.ltxprogrammer.changed.client.renderer.layers.TransfurCapeLayer;
 import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
+import net.ltxprogrammer.changed.client.renderer.model.armor.ArmorLatexMaleWolfModel;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,11 +21,11 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
-public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntity, LatexDazedModel> {
+public class BuffLatexDazedRenderer extends AdvancedHumanoidRenderer<BuffDazedLatexEntity, BuffLatexDazedModel> {
 
-    public LatexDazedRenderer(EntityRendererProvider.Context context) {
-        super(context, new LatexDazedModel(context.bakeLayer(LatexDazedModel.LAYER_LOCATION)),
-                ArmorLatexDazedModel.MODEL_SET, 0.5f);
+    public BuffLatexDazedRenderer(EntityRendererProvider.Context context) {
+        super(context, new BuffLatexDazedModel(context.bakeLayer(BuffLatexDazedModel.LAYER_LOCATION)),
+                ArmorLatexMaleWolfModel.MODEL_SET, 0.5f);
         this.addLayer(new LatexParticlesLayer<>(this, getModel(), model::isPartNotPuddle));
         this.addLayer(new ConditionalCustomEyesLayer<>(this,
                 new CustomEyesLayer<>(this, context.getModelSet(),
@@ -41,16 +42,12 @@ public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntit
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull DazedLatexEntity entity) {
-        if (entity.isMorphed()) {
-            return ChangedAddonMod.textureLoc("textures/entities/dazed_creature_puddle");
-        }
-
-        return ChangedAddonMod.textureLoc("textures/entities/dazed_creature");
+    public @NotNull ResourceLocation getTextureLocation(@NotNull BuffDazedLatexEntity entity) {
+        return ChangedAddonMod.textureLoc("textures/entities/buff_dazed_creature");
     }
 
     @Override
-    public boolean shouldRenderArmor(DazedLatexEntity entity) {
+    public boolean shouldRenderArmor(BuffDazedLatexEntity entity) {
         return !entity.isMorphed();
     }
 
@@ -65,7 +62,7 @@ public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntit
 
         @Override
         public void render(@NotNull PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, @NotNull T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (entity instanceof DazedLatexEntity dazedLatexEntity
+            if (entity instanceof AbstractDazedEntity dazedLatexEntity
                     && !dazedLatexEntity.isMorphed()) {
                 customEyesLayer.render(pose, bufferSource, packedLight, entity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
             }
@@ -92,7 +89,7 @@ public class LatexDazedRenderer extends AdvancedHumanoidRenderer<DazedLatexEntit
 
         @Override
         public void render(@NotNull PoseStack pose, @NotNull MultiBufferSource bufferSource, int packedLight, @NotNull T entity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (entity instanceof DazedLatexEntity dazedLatexEntity
+            if (entity instanceof AbstractDazedEntity dazedLatexEntity
                     && !dazedLatexEntity.isMorphed()) {
                 transfurCapeLayer.render(pose, bufferSource, packedLight, entity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
                 gasMaskLayer.render(pose, bufferSource, packedLight, entity, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);

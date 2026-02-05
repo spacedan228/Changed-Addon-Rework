@@ -90,7 +90,8 @@ public class BiomeModifierProvider {
                 null,
                 Set.of(BiomeTags.IS_OVERWORLD),
                 List.of(
-                        new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 4, 1, 2)
+                        new MobSpawnSettings.SpawnerData(ChangedAddonEntities.DAZED_LATEX.get(), 4, 1, 2),
+                        new MobSpawnSettings.SpawnerData(ChangedAddonEntities.BUFF_DAZED_LATEX.get(), 3, 1, 2)
                 )
         );
 

@@ -186,11 +186,11 @@ public class ChangedAddonEntities {
 
 
     public static final RegistryObject<EntityType<DazedLatexEntity>> DAZED_LATEX = registerChangedEntity("latex_dazed",
-            EntityType.Builder.<DazedLatexEntity>of(DazedLatexEntity::new, MobCategory.MONSTER)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .setTrackingRange(64)
-                    .setUpdateInterval(3)
-                    .setCustomClientFactory(DazedLatexEntity::new)
+            EntityType.Builder.of(DazedLatexEntity::new, MobCategory.MONSTER)
+                    .sized(0.7f, 1.93f));
+
+    public static final RegistryObject<EntityType<BuffDazedLatexEntity>> BUFF_DAZED_LATEX = registerChangedEntity("buff_latex_dazed",
+            EntityType.Builder.of(BuffDazedLatexEntity::new, MobCategory.MONSTER)
                     .sized(0.7f, 1.93f));
 
     public static final RegistryObject<EntityType<PuroKindMaleEntity>> PURO_KIND_MALE = registerChangedEntity("puro_kind_male",
@@ -648,6 +648,7 @@ public class ChangedAddonEntities {
         event.put(LATEX_SNOW_FOX_MALE.get(), LatexSnowFoxMaleEntity.createAttributes().build());
         event.put(LATEX_SNOW_FOX_FEMALE.get(), LatexSnowFoxFemaleEntity.createAttributes().build());
         event.put(DAZED_LATEX.get(), DazedLatexEntity.createAttributes().build());
+        event.put(BUFF_DAZED_LATEX.get(), BuffDazedLatexEntity.createAttributes().build());
         event.put(PURO_KIND_MALE.get(), PuroKindMaleEntity.createAttributes().build());
         event.put(PURO_KIND_FEMALE.get(), PuroKindFemaleEntity.createAttributes().build());
         event.put(BUNY.get(), BunyEntity.createAttributes().build());

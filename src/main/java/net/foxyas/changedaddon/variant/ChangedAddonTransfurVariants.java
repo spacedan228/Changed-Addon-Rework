@@ -31,7 +31,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static net.foxyas.changedaddon.variant.TransfurVariantsInfo.OCS;
@@ -91,7 +94,13 @@ public class ChangedAddonTransfurVariants {
             TransfurVariant.Builder.of(ChangedAddonEntities.DAZED_LATEX)
                     .transfurMode(TransfurMode.ABSORPTION)
                     .addAbility(ChangedAddonAbilities.DAZED_PUDDLE)
-                    .scares(List.of())
+                    .nightVision()
+                    .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
+
+    public static final RegistryObject<TransfurVariant<BuffDazedLatexEntity>> BUFF_DAZED_LATEX = register("form_buff_dazed_latex",
+            TransfurVariant.Builder.of(ChangedAddonEntities.BUFF_DAZED_LATEX)
+                    .transfurMode(TransfurMode.ABSORPTION)
+                    .addAbility(ChangedAddonAbilities.DAZED_PUDDLE)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION));
 
