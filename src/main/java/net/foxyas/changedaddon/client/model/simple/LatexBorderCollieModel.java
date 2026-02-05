@@ -6,7 +6,6 @@ package net.foxyas.changedaddon.client.model.simple;// Made with Blockbench 5.0.
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.renderer.layers.animation.CarryAbilityAnimation;
 import net.foxyas.changedaddon.entity.simple.LatexBorderCollieEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
@@ -138,7 +137,6 @@ public class LatexBorderCollieModel extends AdvancedHumanoidModel<LatexBorderCol
     public void setupAnim(@NotNull LatexBorderCollieEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        CarryAbilityAnimation.playAnimation(entity, this);
     }
 
     @Override

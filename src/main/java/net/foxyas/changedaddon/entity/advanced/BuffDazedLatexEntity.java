@@ -44,6 +44,11 @@ public class BuffDazedLatexEntity extends AbstractDazedEntity {
                 SpawnPlacementRegisterEvent.Operation.REPLACE);
     }
 
+    @Override
+    public float getScale() {
+        return super.getScale() * 1.08f;
+    }
+
     private static boolean canSpawnNear(EntityType<BuffDazedLatexEntity> entityType, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
         if (world.getDifficulty() == Difficulty.PEACEFUL) {
             return false;
@@ -89,14 +94,14 @@ public class BuffDazedLatexEntity extends AbstractDazedEntity {
     protected void setAttributes(AttributeMap attributes) {
         super.setAttributes(attributes);
 
-        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()),3);
-        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH),26);
+        safeSetBaseValue(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get()),5f);
+        safeSetBaseValue(attributes.getInstance(Attributes.MAX_HEALTH),40f);
         safeSetBaseValue(attributes.getInstance(Attributes.FOLLOW_RANGE),40.0f);
-        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED),1.075F);
+        safeSetBaseValue(attributes.getInstance(Attributes.MOVEMENT_SPEED),1.05F);
         safeSetBaseValue(attributes.getInstance(ForgeMod.SWIM_SPEED.get()),1.025F);
-        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE),3.0f);
-        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR),0);
-        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS),0);
-        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE),0);
+        safeSetBaseValue(attributes.getInstance(Attributes.ATTACK_DAMAGE),5.0f);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR),4);
+        safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS),1);
+        safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE),0.25f);
     }
 }
