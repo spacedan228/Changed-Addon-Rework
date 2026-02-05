@@ -99,9 +99,9 @@ public class ChangedAddonKeyMappings {
         @Override
         public void setDown(boolean newState) {
             super.setDown(newState);
-            if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
             LocalPlayer local = Minecraft.getInstance().player;
             ProcessTransfur.ifPlayerTransfurred(local, (variant) -> {
+                if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
                 assert local != null;
                 if (variant.isTemporaryFromSuit() || !(variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor))
                     return;
@@ -137,25 +137,6 @@ public class ChangedAddonKeyMappings {
 
         @SubscribeEvent
         public static void onKeyInput(InputEvent.Key event) {
-            LocalPlayer local = Minecraft.getInstance().player;
-            if (local == null || Minecraft.getInstance().screen != null) return;
-
-            if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
-
-            if (event.getKey() != USE_SECOND_ABILITY.getKey().getValue()) return;
-
-            USE_SECOND_ABILITY.consumeClick();
-            ProcessTransfur.ifPlayerTransfurred(local, (variant) -> {
-                if (variant.isTemporaryFromSuit() || !(variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor)) {
-                    return;
-                }
-
-                boolean newState = event.getAction() != GLFW.GLFW_RELEASE;
-                if (transfurVariantInstanceExtensor.getSecondAbilityKey().queueKeyState(newState)) {
-                    ChangedTutorial.triggerOnUseAbility(transfurVariantInstanceExtensor.getSecondSelectedAbilityInstance());
-                    ChangedAddonMod.PACKET_HANDLER.sendToServer(new VariantSecondAbilityActivate(local, newState, transfurVariantInstanceExtensor.getSecondSelectedAbility()));
-                }
-            });
         }
     }
 }

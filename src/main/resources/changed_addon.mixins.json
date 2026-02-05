@@ -16,7 +16,7 @@
     "blocks.DroppedSyringeMixin",
     "blocks.FluidsMixin",
     "blocks.WolfCrystalSmallMixin",
-    "client.renderer.AnimationsMixin",
+    "client.renderer.HumanoidAnimatorMixin",
     "client.renderer.WingFallFlyAnimationMixin",
     "client.renderer.WingFlyAnimationMixin",
     "enchantments.EnchantmentHelperMixin",

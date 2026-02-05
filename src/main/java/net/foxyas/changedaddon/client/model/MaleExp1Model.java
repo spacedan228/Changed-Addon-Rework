@@ -3,7 +3,6 @@ package net.foxyas.changedaddon.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.foxyas.changedaddon.ChangedAddonMod;
-import net.foxyas.changedaddon.client.renderer.layers.animation.PsychicGrabAbilityAnimation;
 import net.foxyas.changedaddon.entity.simple.Exp1MaleEntity;
 import net.ltxprogrammer.changed.client.renderer.animate.AnimatorPresets;
 import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
@@ -209,7 +208,6 @@ public class MaleExp1Model extends AdvancedHumanoidModel<Exp1MaleEntity> {
     public void setupAnim(@NotNull Exp1MaleEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         animator.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        PsychicGrabAbilityAnimation.playAnimation(entity, this);
     }
 
     public @NotNull ModelPart getArm(HumanoidArm p_102852) {
