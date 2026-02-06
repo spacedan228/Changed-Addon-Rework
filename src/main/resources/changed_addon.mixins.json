@@ -99,6 +99,7 @@
     "mods.changed.AbilityOverlayMixin",
     "mods.changed.AbilityRadialScreenMixin",
     "mods.changed.AbstractRadialScreenMixin",
+    "mods.changed.AccessoryLayerMixin",
     "mods.changed.ChangedClientMixin",
     "mods.firstPerson.LogicHandleMixin"
   ]
