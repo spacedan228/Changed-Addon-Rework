@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.entity.simple;
 import net.foxyas.changedaddon.entity.api.IConditionalFuseEntity;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.ability.SimpleAbilityInstance;
 import net.ltxprogrammer.changed.entity.*;
@@ -22,7 +23,7 @@ import net.minecraftforge.common.ForgeMod;
 
 import java.util.Objects;
 
-public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity implements IConditionalFuseEntity {
+public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity implements IConditionalFuseEntity, VariantExtraStats {
     protected final SimpleAbilityInstance summonPups;
 
     public DarkLatexYufengQueenEntity(EntityType<? extends DarkLatexYufengQueenEntity> p_19870_, Level p_19871_) {
@@ -99,5 +100,10 @@ public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity implemen
     @Override
     public TransfurMode getTransfurMode() {
         return TransfurMode.ABSORPTION;
+    }
+
+    @Override
+    public float getFlySpeed() {
+        return defaultPlayerFlySpeed * 1.5f;
     }
 }

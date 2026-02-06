@@ -650,7 +650,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addText("miningStrength", "Mining Strength: %s");
         addText("display.hazard_body_suit.cant_have_helmet", "Mmph... it’s squishing my ears! Better not wear it.");
 
-        addMessage("induction_coil_melt", "§c Your metal armor and hotbar items are melting from the heat §r");
+        addMessage("induction_coil_melt", "§4⚡ You brought metal to an electric fight. §cSuch Foolish Move. §6Your gear is melting from the heat!");
 
         add("commands.accessory.no_slots.single", "%s has no accessory slots.");
         add("commands.accessory.no_slots.multiple", "%s has no accessory slots, ignoring and passing to the next.");

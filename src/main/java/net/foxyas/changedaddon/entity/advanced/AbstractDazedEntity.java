@@ -4,6 +4,7 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -228,6 +229,19 @@ public abstract class AbstractDazedEntity extends ChangedEntity {
 		this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
 		this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
 		this.goalSelector.addGoal(5, new FloatGoal(this));*/
+    }
+
+    @Override
+    public void onReplicateOther(IAbstractChangedEntity other, TransfurVariant<?> variant) {
+        super.onReplicateOther(other, variant);
+        if (this.getReplicationTimes() > 0) {
+            this.subReplicationTimes(1);
+        }
+        ChangedEntity changedEntity = other.getChangedEntity();
+        if (changedEntity instanceof AbstractDazedEntity abstractDazedEntity) {
+            abstractDazedEntity.setReplicationTimes(0);
+        }
+
     }
 
     @Override
