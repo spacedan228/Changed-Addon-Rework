@@ -124,6 +124,12 @@ public class TransfurVariantEvents {
      */
     public static class OverrideSourceTransfurVariantEvent extends Event {
 
+        public enum TransfurType {
+            ABSORPTION,
+            REPLICATION
+        }
+
+        private final TransfurType transfurType;
         private final TransfurVariant<?> original;
         private final ChangedEntity changedEntity;
         private final LivingEntity target;
@@ -136,12 +142,14 @@ public class TransfurVariantEvents {
         private TransfurVariant<?> variant;
 
         public OverrideSourceTransfurVariantEvent(
+                TransfurType transfurType,
                 TransfurVariant<?> original,
                 ChangedEntity changedEntity, LivingEntity target,
                 IAbstractChangedEntity source,
                 float amount,
                 @Nullable List<TransfurVariant<?>> possibleMobFusions
         ) {
+            this.transfurType = transfurType;
             this.original = original;
             this.changedEntity = changedEntity;
             this.target = target;
@@ -149,6 +157,10 @@ public class TransfurVariantEvents {
             this.amount = amount;
             this.possibleMobFusions = possibleMobFusions;
             this.variant = original;
+        }
+
+        public TransfurType getTransfurType() {
+            return transfurType;
         }
 
         /**

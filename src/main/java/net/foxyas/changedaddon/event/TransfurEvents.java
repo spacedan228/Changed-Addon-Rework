@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.event;
 
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.simple.DarkLatexYufengQueenEntity;
+import net.foxyas.changedaddon.event.TransfurVariantEvents.OverrideSourceTransfurVariantEvent.TransfurType;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
@@ -12,6 +13,7 @@ import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -64,6 +66,20 @@ public class TransfurEvents {
             if (source instanceof IAlphaAbleEntity alphaSource) {
                 alphaSource.setAlpha(toReplaceAlpha.isAlpha());
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void makeDazedLatexBuffAfterGrabAssimilation(TransfurVariantEvents.OverrideSourceTransfurVariantEvent event) {
+        LivingEntity target = event.getTarget();
+        IAbstractChangedEntity source = event.getSource();
+
+        if (event.getTransfurType() == TransfurType.ABSORPTION) {
+            source.getAbilityInstanceSafe(ChangedAbilities.GRAB_ENTITY_ABILITY.get()).ifPresent((grabEntityAbilityInstance) -> {
+                if (grabEntityAbilityInstance.grabbedEntity == target) {
+                    event.setVariant(ChangedAddonTransfurVariants.BUFF_DAZED_LATEX.get());
+                }
+            });
         }
     }
 
