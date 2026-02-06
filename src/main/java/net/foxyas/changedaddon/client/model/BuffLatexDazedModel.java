@@ -193,7 +193,8 @@ public class BuffLatexDazedModel extends AdvancedHumanoidModel<BuffDazedLatexEnt
     }
 
     @Override
-    public void prepareMobModel(BuffDazedLatexEntity entity, float p_102862, float p_102863, float p_102864_) {
+    public void prepareMobModel(@NotNull BuffDazedLatexEntity entity, float p_102862, float p_102863, float p_102864_) {
+        super.prepareMobModel(entity, p_102862, p_102863, p_102864_);
         if (entity.isMorphed()) {
             RightArm.visible = false;
             LeftArm.visible = false;

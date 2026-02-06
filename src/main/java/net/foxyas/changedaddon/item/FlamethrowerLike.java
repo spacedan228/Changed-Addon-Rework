@@ -240,6 +240,7 @@ public abstract class FlamethrowerLike extends Item implements SpecializedAnimat
             for (ChangedEntity entity : entities) {
                 if (!player.canAttack(entity)) continue;
                 if (player.isAlliedTo(entity)) continue;
+                if (player.is(entity)) continue;
 
                 // evita dano duplicado exagerado
                 if (!affected.add(entity)) continue;

@@ -95,6 +95,11 @@ public class LatexInsulatorBlock extends Block implements NonLatexCoverableBlock
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         pos.set(origin);
 
+        LatexCoverState originLatexCoverState = LatexCoverState.getAt(level, pos);
+        if (!originLatexCoverState.is(ChangedLatexTypes.NONE.get())) {
+            LatexCoverState.setAtAndUpdate(level, pos, ChangedLatexTypes.NONE.get().defaultCoverState());
+        }
+
         for (Direction dir : Direction.values()) {
             pos.set(origin).move(dir);
             LatexCoverState latexCoverState = LatexCoverState.getAt(level, pos);

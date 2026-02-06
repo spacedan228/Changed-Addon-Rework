@@ -9,6 +9,7 @@ import net.foxyas.changedaddon.entity.api.IConditionalFuseEntity;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.simple.WolfyEntity;
 import net.foxyas.changedaddon.event.TransfurVariantEvents;
+import net.foxyas.changedaddon.event.TransfurVariantEvents.OverrideSourceTransfurVariantEvent.TransfurType;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.item.armor.HazardBodySuit;
@@ -64,7 +65,8 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     @Shadow
     public abstract LatexType getLatexType();
 
-    @Shadow public abstract TransfurContext getReplicateContext();
+    @Shadow
+    public abstract TransfurContext getReplicateContext();
 
     @Unique
     protected boolean pacified = false;
@@ -230,7 +232,7 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
             float amount,
             @Nullable List<TransfurVariant<?>> possibleMobFusions
     ) {
-        TransfurVariantEvents.OverrideSourceTransfurVariantEvent event = new TransfurVariantEvents.OverrideSourceTransfurVariantEvent(original, getSelf(), target, source, amount, possibleMobFusions);
+        TransfurVariantEvents.OverrideSourceTransfurVariantEvent event = new TransfurVariantEvents.OverrideSourceTransfurVariantEvent(TransfurType.ABSORPTION, original, getSelf(), target, source, amount, possibleMobFusions);
         if (ChangedAddonMod.postEvent(event)) {
             return original;
         } else {
@@ -254,12 +256,12 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         }
 
         IAbstractChangedEntity abstractChangedEntity = IAbstractChangedEntity.forEither(this.maybeGetUnderlying());
-        float amount = (float)this.maybeGetUnderlying().getAttributeValue(ChangedAttributes.TRANSFUR_DAMAGE.get());
+        float amount = (float) this.maybeGetUnderlying().getAttributeValue(ChangedAttributes.TRANSFUR_DAMAGE.get());
         amount = ProcessTransfur.difficultyAdjustTransfurAmount(entity.level().getDifficulty(), amount, abstractChangedEntity);
         TransfurContext context = this.getReplicateContext();
         IAbstractChangedEntity source = context.source;
 
-        TransfurVariantEvents.OverrideSourceTransfurVariantEvent event = new TransfurVariantEvents.OverrideSourceTransfurVariantEvent(original, getSelf(), target, source, amount, null);
+        TransfurVariantEvents.OverrideSourceTransfurVariantEvent event = new TransfurVariantEvents.OverrideSourceTransfurVariantEvent(TransfurType.REPLICATION, original, getSelf(), target, source, amount, null);
         if (ChangedAddonMod.postEvent(event)) {
             return original;
         } else {

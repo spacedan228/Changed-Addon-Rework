@@ -1,11 +1,11 @@
 package net.foxyas.changedaddon.item;
 
+import net.foxyas.changedaddon.util.DamageSourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -81,6 +81,7 @@ public class FlamethrowerItem extends FlamethrowerLike {
             for (LivingEntity entity : entities) {
                 if (!player.canAttack(entity)) continue;
                 if (player.isAlliedTo(entity)) continue;
+                if (player.is(entity)) continue;
 
                 // evita dano duplicado exagerado
                 if (!affected.add(entity)) continue;
@@ -91,7 +92,7 @@ public class FlamethrowerItem extends FlamethrowerLike {
 
     @Override
     protected void affectEntity(Player shooter, LivingEntity entity) {//needs a new damage type to be ranged
-        entity.hurt(new DamageSource(shooter.damageSources().onFire().typeHolder(), shooter), 6);
+        entity.hurt(DamageSourceUtils.projectileDamageSourceOfType(shooter.damageSources().onFire().typeHolder(), shooter), 6);
         entity.setSecondsOnFire(5);
     }
 }
