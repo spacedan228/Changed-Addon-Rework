@@ -76,16 +76,6 @@ public class DarkLatexYufengQueenEntity extends AbstractDarkLatexEntity implemen
         return Color3.fromInt(0x3d3d3d);
     }
 
-    @Override
-    public TransfurVariant<?> getSelfVariant() {
-        return ChangedAddonTransfurVariants.DARK_LATEX_YUFENG_QUEEN.get();
-    }
-
-    @Override
-    public TransfurVariant<?> getTransfurVariant() {
-        return ChangedTransfurVariants.DARK_LATEX_YUFENG.get();
-    }
-
     // Can the Queen fuse with X entity
     @Override
     public boolean tryFuseWithTarget(LivingEntity entity, IAbstractChangedEntity source, float amount) {
