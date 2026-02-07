@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.event;
 
+import net.foxyas.changedaddon.entity.advanced.DazedLatexEntity;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.simple.DarkLatexYufengQueenEntity;
 import net.foxyas.changedaddon.event.TransfurVariantEvents.OverrideSourceTransfurVariantEvent.TransfurType;
@@ -73,6 +74,7 @@ public class TransfurEvents {
     public static void makeDazedLatexBuffAfterGrabAssimilation(TransfurVariantEvents.OverrideSourceTransfurVariantEvent event) {
         LivingEntity target = event.getTarget();
         IAbstractChangedEntity source = event.getSource();
+        if (!(source.getChangedEntity() instanceof DazedLatexEntity)) return;
 
         if (event.getTransfurType() == TransfurType.ABSORPTION) {
             source.getAbilityInstanceSafe(ChangedAbilities.GRAB_ENTITY_ABILITY.get()).ifPresent((grabEntityAbilityInstance) -> {
