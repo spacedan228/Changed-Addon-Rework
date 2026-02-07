@@ -109,7 +109,8 @@ public class TransfurEvents {
     public static void makeDazedLatexBuffAfterGrabAssimilation(TransfurVariantEvents.OverrideSourceTransfurVariantEvent event) {
         LivingEntity target = event.getTarget();
         IAbstractChangedEntity source = event.getSource();
-
+        if (!(source.getChangedEntity() instanceof DazedLatexEntity)) return;
+        
         if (event.getTransfurType() == TransfurType.ABSORPTION) {
             source.getAbilityInstanceSafe(ChangedAbilities.GRAB_ENTITY_ABILITY.get()).ifPresent((grabEntityAbilityInstance) -> {
                 if (grabEntityAbilityInstance.grabbedEntity == target) {
