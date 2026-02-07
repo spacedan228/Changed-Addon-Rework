@@ -637,7 +637,7 @@
   "key.changed_addon.turn_off_transfur.grab_safe_mode": "You set the Friendly Grab to %s",
   "key.changed_addon.turn_off_transfur.safe_mode": "You set the Transfur Attack to %s",
   "key.changed_addon.use_second_ability": "Use Second Variant Ability",
-  "message.changed_addon.induction_coil_melt": "§c Your metal armor and hotbar items are melting from the heat §r",
+  "message.changed_addon.induction_coil_melt": "§4⚡ You brought metal to an electric fight. §cSuch Foolish Move. §6Your gear is melting from the heat!",
   "painting.changed_addon.fighting_exp9_pov.author": "@Smoopa",
   "painting.changed_addon.fighting_exp9_pov.title": "Fighting Experiment 009",
   "painting.changed_addon.luminarctic_leopard_female_selfie.author": "@Smoopa",
