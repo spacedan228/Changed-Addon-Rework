@@ -377,7 +377,6 @@ public class ChangedAddonTransfurVariants {
 
     public static final RegistryObject<TransfurVariant<BunyEntity>> BUNY = register("form_buny",
             TransfurVariant.Builder.of(ChangedAddonEntities.BUNY)
-                    .transfurMode(TransfurMode.ABSORPTION)
                     .scares(List.of()));
 
     public static final RegistryObject<TransfurVariant<BagelEntity>> BAGEL = register("form_bagel",
