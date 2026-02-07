@@ -673,7 +673,7 @@ public class HULanguageProvider extends LanguageProvider {
         addText("miningStrength", "Bányászati erősség: %s");
         addText("display.hazard_body_suit.cant_have_helmet", "Mmph... Nyomja a fülem! Jobb, ha nem veszem fel.");
 
-        addMessage("induction_coil_melt", "§c A fémpáncélod és a gyorstárad fémtárgyai olvadnak a hőtől §r");
+        addMessage("induction_coil_melt", "§4⚡ Fémet vittél egy elektromos harcba. §cMicsoda ostoba lépés. §6Olvad a felszerelésed a hőségtől!");
 
         addCommand("accessory.no_slots.single", "A(z) %s-nek nincsenek kellék rekeszei.");
         addCommand("accessory.no_slots.multiple", "%s-nek nincsenek kellék rekeszei, figyelmen kívül hagyja és a következőre ugrik.");
