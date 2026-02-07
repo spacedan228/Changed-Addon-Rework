@@ -1,13 +1,10 @@
 package net.foxyas.changedaddon.entity.advanced;
 
-import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.init.ChangedAttributes;
-import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -22,8 +19,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.goal.RestrictSunGoal;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -38,7 +33,6 @@ public abstract class AbstractDazedEntity extends ChangedEntity {
     protected static final EntityDataAccessor<Boolean> DATA_PUDDLE_MORPHED = SynchedEntityData.defineId(AbstractDazedEntity.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Integer> DATA_REPLICATION_TIMES = SynchedEntityData.defineId(AbstractDazedEntity.class, EntityDataSerializers.INT);
 
-    protected boolean willTransfurTarget = false;
     protected boolean wasMorphed = false;
 
     public AbstractDazedEntity(EntityType<? extends ChangedEntity> type, Level level) {
@@ -171,9 +165,6 @@ public abstract class AbstractDazedEntity extends ChangedEntity {
     @Override
     public TransfurMode getTransfurMode() {
         if (this.getReplicationTimes() > 0) {
-            if (willTransfurTarget){
-                subReplicationTimes(1);
-            }
             return TransfurMode.REPLICATION;
         }
         return TransfurMode.ABSORPTION;
@@ -218,17 +209,6 @@ public abstract class AbstractDazedEntity extends ChangedEntity {
                 return super.canUse() && level.getGameRules().getBoolean(ChangedAddonGameRules.DO_DAZED_LATEX_BURN);
             }
         });
-
-		/*this.goalSelector.addGoal(1, new MeleeAttackGoal(this, 1.2, false) {
-			@Override
-			protected double getAttackReachSqr(LivingEntity entity) {
-				return this.mob.getBbWidth() * this.mob.getBbWidth() + entity.getBbWidth();
-			}
-		});
-		this.goalSelector.addGoal(2, new RandomStrollGoal(this, 1));
-		this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
-		this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
-		this.goalSelector.addGoal(5, new FloatGoal(this));*/
     }
 
     @Override
@@ -257,21 +237,5 @@ public abstract class AbstractDazedEntity extends ChangedEntity {
     @Override
     public @NotNull SoundEvent getDeathSound() {
         return SoundEvents.GENERIC_DEATH;
-    }
-
-    @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
-    public static class WhenTransferredEntity {
-
-        @SubscribeEvent
-        public static void WhenDazedTransfur(ProcessTransfur.TransfurAttackEvent event) {
-            IAbstractChangedEntity source = event.context.source;
-            if (source == null) return;
-
-            LivingEntity target = event.target;
-            if (source.getChangedEntity() instanceof DazedLatexEntity dazedLatexEntity) {
-                dazedLatexEntity.willTransfurTarget = ProcessTransfur.willTransfur(target,
-                        (float) dazedLatexEntity.getAttributeValue(ChangedAttributes.TRANSFUR_DAMAGE.get()));
-            }
-        }
     }
 }
