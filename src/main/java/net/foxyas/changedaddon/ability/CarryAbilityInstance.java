@@ -206,7 +206,7 @@ public class CarryAbilityInstance extends AbstractAbilityInstance {
         if (target instanceof WhiteLatexCentaur ||
                 (target instanceof Player p && ProcessTransfur.getPlayerTransfurVariant(p) != null &&
                         ProcessTransfur.getPlayerTransfurVariant(p).is(ChangedTransfurVariants.WHITE_LATEX_CENTAUR.get()))) {
-            player.displayClientMessage(Component.translatable("changedaddon.warn.cant_carry", target.getDisplayName()), true);
+            player.displayClientMessage(Component.translatable("changed_addon.warn.cant_carry", target.getDisplayName()), true);
             return;
         }
 

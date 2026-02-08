@@ -80,7 +80,7 @@ public class LitixCamoniaFluidBlock extends LiquidBlock {
             } else {
                 if ((entity.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY, null).orElse(new ChangedAddonVariables.PlayerVariables())).showWarns) {
                     if (entity instanceof Player _player && !_player.level().isClientSide())
-                        _player.displayClientMessage(Component.translatable("changedaddon.untransfur.Immune.fluid"), true);
+                        _player.displayClientMessage(Component.translatable("changed_addon.untransfur.Immune.fluid"), true);
                 }
             }
         } else {

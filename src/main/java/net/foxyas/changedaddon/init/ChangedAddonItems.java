@@ -59,6 +59,7 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> SYRINGE_WITH_LITIX_CAMMONIA = REGISTRY.register("syringe_with_litix_cammonia", SyringeWithLitixCammoniaItem::new);
     public static final RegistryObject<Item> LAETHIN_SYRINGE = REGISTRY.register("laethin_syringe", LaethinSyringeItem::new);
     public static final RegistryObject<Item> POT_WITH_CAMONIA = REGISTRY.register("pot_with_camonia", PotWithCamoniaItem::new);
+    public static final RegistryObject<AlphaSerumSyringeItem> ALPHA_SERUM_SYRINGE = REGISTRY.register("alpha_serum_syringe", AlphaSerumSyringeItem::new);
 
     public static final RegistryObject<Item> RAW_IRIDIUM = REGISTRY.register("raw_iridium", RawIridiumItem::new);
     public static final RegistryObject<Item> IRIDIUM = REGISTRY.register("iridium", IridiumItem::new);

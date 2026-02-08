@@ -63,7 +63,7 @@ public class UntransfurMobEffect extends MobEffect {
         if (!ProcessTransfur.isPlayerTransfurred(player)) {
             if (vars.showWarns) {
                 if (!player.level.isClientSide())
-                    player.displayClientMessage(Component.literal((Component.translatable("changedaddon.untransfur.no_effect").getString())), true);
+                    player.displayClientMessage(Component.literal((Component.translatable("changed_addon.untransfur.no_effect").getString())), true);
             }
             return;
         }

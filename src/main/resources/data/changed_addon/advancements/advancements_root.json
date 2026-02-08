@@ -5,10 +5,10 @@
       "item": "changed_addon:changedbook"
     },
     "title": {
-      "translate": "advancements.changedaddon_advancement.title"
+      "translate": "advancements.advancements_root.title"
     },
     "description": {
-      "translate": "advancements.changedaddon_advancement.descr"
+      "translate": "advancements.advancements_root.descr"
     },
     "frame": "task",
     "show_toast": true,
@@ -16,8 +16,9 @@
     "hidden": false
   },
   "criteria": {
-    "changedaddon_advancement": {
-      "trigger": "minecraft:impossible"
+    "advancements_root": {
+      "trigger": "minecraft:tick",
+      "conditions": {}
     }
   }
 }

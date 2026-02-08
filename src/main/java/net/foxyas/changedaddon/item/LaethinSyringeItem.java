@@ -43,14 +43,14 @@ public class LaethinSyringeItem extends AbstractSyringeItem implements Specializ
 
         if (!ProcessTransfur.isPlayerTransfurred(player)) {
             if (playerVars.showWarns && !player.level.isClientSide())
-                player.displayClientMessage(Component.translatable("changedaddon.untransfur.no_effect"), true);
+                player.displayClientMessage(Component.translatable("changed_addon.untransfur.no_effect"), true);
             return;
         }
 
         if (ProcessTransfur.isPlayerNotLatex(player)) {
             applyMobEffect(player, ChangedAddonMobEffects.UNTRANSFUR.get(), 1000);
             if (playerVars.showWarns && !player.level.isClientSide())
-                player.displayClientMessage(Component.translatable("changedaddon.untransfur.slow_effect"), true);
+                player.displayClientMessage(Component.translatable("changed_addon.untransfur.slow_effect"), true);
             return;
         }
 

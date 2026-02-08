@@ -79,7 +79,7 @@ public class PlayerUtil {
                     return;
                 }
 
-                player.displayClientMessage(Component.translatable("changedaddon.untransfur.fail"), true);
+                player.displayClientMessage(Component.translatable("changed_addon.untransfur.fail"), true);
                 return;
             }
 
@@ -104,7 +104,7 @@ public class PlayerUtil {
                     return;
                 }
 
-                player.displayClientMessage(Component.translatable("changedaddon.untransfur.fail"), true);
+                player.displayClientMessage(Component.translatable("changed_addon.untransfur.fail"), true);
                 return;
             }
 
@@ -133,7 +133,7 @@ public class PlayerUtil {
                     return;
                 }
 
-                player.displayClientMessage(Component.translatable("changedaddon.untransfur.fail"), true);
+                player.displayClientMessage(Component.translatable("changed_addon.untransfur.fail"), true);
                 return;
             }
 
