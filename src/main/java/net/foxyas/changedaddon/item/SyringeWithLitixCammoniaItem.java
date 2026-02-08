@@ -49,12 +49,12 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
                 handleUntransfurSuccess(level, player);
             } else {
                 player.hurt(new DamageSource("untransfur_fail").bypassArmor(), 15);
-                sendMessage(player, "changedaddon.untransfur.fail");
+                sendMessage(player, "changed_addon.untransfur.fail");
             }
             return;
         }
 
-        if (getVars(player).showWarns) sendMessage(player, "changedaddon.untransfur.no_effect");
+        if (getVars(player).showWarns) sendMessage(player, "changed_addon.untransfur.no_effect");
     }
 
     @Override
@@ -96,7 +96,7 @@ public class SyringeWithLitixCammoniaItem extends AbstractSyringeItem {
                 player.addEffect(new MobEffectInstance(ChangedAddonMobEffects.UNTRANSFUR.get(), 1000, 0, false, false));
             }
             if (getVars(player).showWarns) {
-                sendMessage(player, "changedaddon.untransfur.slow_effect");
+                sendMessage(player, "changed_addon.untransfur.slow_effect");
             }
             return;
         }

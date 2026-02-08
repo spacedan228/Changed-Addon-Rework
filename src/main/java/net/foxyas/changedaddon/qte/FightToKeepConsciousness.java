@@ -105,14 +105,14 @@ public class FightToKeepConsciousness {
 
     @ApiStatus.Internal
     public static void successFTKC(ChangedAddonVariables.PlayerVariables vars, ServerPlayer player) {
-        player.displayClientMessage(new TranslatableComponent("changedaddon.fight_conscience.success"), true);
+        player.displayClientMessage(new TranslatableComponent("changed_addon.fight_conscience.success"), true);
 
         updatePlayerVariables(vars, null, 0, player);
     }
 
     @ApiStatus.Internal
     public static void failFTKC(ChangedAddonVariables.PlayerVariables vars, ServerPlayer player) {
-        player.displayClientMessage(new TranslatableComponent("changedaddon.fight_conscience.fail"), true);
+        player.displayClientMessage(new TranslatableComponent("changed_addon.fight_conscience.fail"), true);
 
         SummonEntityProcedure.execute(player.level, player);
         PlayerUtil.UnTransfurPlayer(player);

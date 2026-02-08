@@ -26,7 +26,7 @@ public class DiffusionSyringeItem extends AbstractSyringeItem {
         if (entity instanceof Player player) {
             SummonEntityProcedure.execute(level, player);
             PlayerUtil.UnTransfurPlayerAndPlaySound(player, !player.isCreative() && !player.isSpectator());
-            player.displayClientMessage(new TranslatableComponent("changedaddon.untransfur.diffusion"), true);
+            player.displayClientMessage(new TranslatableComponent("changed_addon.untransfur.diffusion"), true);
         }
     }
 }

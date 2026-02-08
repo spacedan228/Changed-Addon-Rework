@@ -301,18 +301,18 @@ public class ENLanguageProvider extends LanguageProvider {
         add(modid + ".latex_totem.tittle.text_1", "§o§n§l§3⚡ The Artifact Resonates ⚡");
         add(modid + ".latex_totem.tittle.text_2", "§o§l§3Shielding your mind, Your consciousness is pulled back from the brink, refusing to let you fall into oblivion.");
 
-        add("changedaddon.fight_conscience.success", "You §2Maintained!!! §rYour Conscience Good Job");
-        add("changedaddon.fight_conscience.fail", "You §4Lose §rYour Conscience");
+        add("changed_addon.fight_conscience.success", "You §2Maintained!!! §rYour Conscience Good Job");
+        add("changed_addon.fight_conscience.fail", "You §4Lose §rYour Conscience");
 
-        add("changedaddon.untransfur.fail", "the untransfur fail for some reason");
-        add("changedaddon.untransfur.Immune", "I'm not affected");
-        add("changedaddon.untransfur.Immune.fluid", "I'm not affected by this fluid");
-        add("changedaddon.untransfur.diffusion", "You unfuse with the latex creature that was attached to you. Maybe it wants to fuse back so better RUN");
-        add("changedaddon.untransfur.no_effect", "The syringe doesn't seem to have worked");
-        add("changedaddon.untransfur.slow_effect", "For some reason this seems to have slowed effect");
+        add("changed_addon.untransfur.fail", "the untransfur fail for some reason");
+        add("changed_addon.untransfur.Immune", "I'm not affected");
+        add("changed_addon.untransfur.Immune.fluid", "I'm not affected by this fluid");
+        add("changed_addon.untransfur.diffusion", "You unfuse with the latex creature that was attached to you. Maybe it wants to fuse back so better RUN");
+        add("changed_addon.untransfur.no_effect", "The syringe doesn't seem to have worked");
+        add("changed_addon.untransfur.slow_effect", "For some reason this seems to have slowed effect");
 
-        add("changedaddon.warn.cant_carry", "You try to lift %1$s, but it's far too heavy.");
-        add("changedaddon.when_not.transfur", "You aren't a latex creature");
+        add("changed_addon.warn.cant_carry", "You try to lift %1$s, but it's far too heavy.");
+        add("changed_addon.when_not.transfur", "You aren't a latex creature");
 
         addDeathMessage("OverDose", "%1$s get a §4OverDose§r", null, "%1$s get a §4OverDose§r while fighting with %2$s");
         addDeathMessage("assimilation", "%1$s was assimilated", null, "%1$s was assimilated by %2$s");

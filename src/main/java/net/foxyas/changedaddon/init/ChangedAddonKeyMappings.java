@@ -43,7 +43,7 @@ public class ChangedAddonKeyMappings {
                     } else {
                         ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.of(player);
                         if (vars != null && vars.showWarns) {
-                            player.displayClientMessage(ComponentUtil.translatable("changedaddon.when_not.transfur"), true);
+                            player.displayClientMessage(ComponentUtil.translatable("changed_addon.when_not.transfur"), true);
                         }
                     }
                 }

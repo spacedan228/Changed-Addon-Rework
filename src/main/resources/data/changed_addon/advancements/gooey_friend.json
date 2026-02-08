@@ -22,5 +22,5 @@
   "rewards": {
     "experience": 5
   },
-  "parent": "changed_addon:changedaddon_advancement"
+  "parent": "changed_addon:advancements_root"
 }

@@ -302,18 +302,18 @@ public class HULanguageProvider extends LanguageProvider {
         add(modid + ".latex_totem.tittle.text_1", "§o§n§l§3⚡ A műtárgy rezonál ⚡");
         add(modid + ".latex_totem.tittle.text_2", "§o§l§3Megvédve elmédet, eszméleted visszahúzódik a szakadék széléről, nem hagyva, hogy a feledésbe merülj.");
 
-        add("changedaddon.fight_conscience.success", "§2Megtartotta §reszméletét!!! Szép munka!");
-        add("changedaddon.fight_conscience.fail", "§4Elvesztette §reszméletét");
+        add("changed_addon.fight_conscience.success", "§2Megtartotta §reszméletét!!! Szép munka!");
+        add("changed_addon.fight_conscience.fail", "§4Elvesztette §reszméletét");
 
-        add("changedaddon.untransfur.fail", "A visszatranszfur valamilyen oknál fogva nem sikerült");
-        add("changedaddon.untransfur.Immune", "Engem nem érint");
-        add("changedaddon.untransfur.Immune.fluid", "Ez a folyadék nem hat rám");
-        add("changedaddon.untransfur.diffusion", "Elválsz a hozzád kapcsolódó latex lénytől. Lehet, hogy vissza akar kapcsolódni, úgyhogy jobb, ha FUTSZ.");
-        add("changedaddon.untransfur.no_effect", "A fecskendő nem működött");
-        add("changedaddon.untransfur.slow_effect", "Valamilyen oknál fogva ez lassított hatást váltott ki");
+        add("changed_addon.untransfur.fail", "A visszatranszfur valamilyen oknál fogva nem sikerült");
+        add("changed_addon.untransfur.Immune", "Engem nem érint");
+        add("changed_addon.untransfur.Immune.fluid", "Ez a folyadék nem hat rám");
+        add("changed_addon.untransfur.diffusion", "Elválsz a hozzád kapcsolódó latex lénytől. Lehet, hogy vissza akar kapcsolódni, úgyhogy jobb, ha FUTSZ.");
+        add("changed_addon.untransfur.no_effect", "A fecskendő nem működött");
+        add("changed_addon.untransfur.slow_effect", "Valamilyen oknál fogva ez lassított hatást váltott ki");
 
-        add("changedaddon.warn.cant_carry", "Megpróbálja felemelni %1$s-t, de túl nehéz.");
-        add("changedaddon.when_not.transfur", "Nem vagy latex lény");
+        add("changed_addon.warn.cant_carry", "Megpróbálja felemelni %1$s-t, de túl nehéz.");
+        add("changed_addon.when_not.transfur", "Nem vagy latex lény");
 
         addDeathMessage("OverDose", "%1$s §4túladagolást§r kapott", null, "%1$s §4túladagolást§r kapott, miközben vele harcolt: %2$s");
         addDeathMessage("assimilation", "%1$s be lett olvasztva", null, "%2$s beolvasztotta %1$s játékost");

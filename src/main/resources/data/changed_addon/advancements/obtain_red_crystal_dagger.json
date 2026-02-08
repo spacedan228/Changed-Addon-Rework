@@ -40,5 +40,5 @@
       "changed_addon:crystal_addager_green_recipe"
     ]
   },
-  "parent": "changed_addon:changedaddon_advancement"
+  "parent": "changed_addon:advancements_root"
 }
