@@ -4,6 +4,8 @@ import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
+import net.ltxprogrammer.changed.init.ChangedBlocks;
+import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -12,12 +14,20 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.LootingEnchantFunction;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
@@ -46,6 +56,76 @@ public class BuffDazedLatexEntity extends AbstractDazedEntity {
         if (SPAWN_BIOMES.contains(event.getName())) {
             event.getSpawns().getSpawner(MobCategory.MONSTER).add(new MobSpawnSettings.SpawnerData(ChangedAddonEntities.BUFF_DAZED_LATEX.get(), 125, 1, 4));
         }
+    }
+
+    public static LootTable.Builder getLoot() {
+        return LootTable.lootTable()
+
+                // white_latex_goo
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(ChangedItems.WHITE_LATEX_GOO.get())
+                                .apply(SetItemCountFunction.setCount(
+                                        UniformGenerator.between(2.0F, 4.0F)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(
+                                        UniformGenerator.between(1, 3)))
+                        )
+                )
+
+                // white_latex_block
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(ChangedBlocks.WHITE_LATEX_BLOCK.get())
+                                .apply(SetItemCountFunction.setCount(
+                                        UniformGenerator.between(0.0F, 2.0F)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(
+                                        UniformGenerator.between(1, 3)))
+                        )
+                )
+
+                // white_dye
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Items.WHITE_DYE)
+                                .apply(SetItemCountFunction.setCount(
+                                        UniformGenerator.between(0.0F, 2.0F)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(
+                                        UniformGenerator.between(1, 3)))
+                        )
+                )
+
+                // latex_base
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(ChangedItems.LATEX_BASE.get())
+                                .apply(SetItemCountFunction.setCount(
+                                        UniformGenerator.between(1.0F, 3.0F)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(
+                                        UniformGenerator.between(1, 3)))
+                        )
+                )
+
+                // white_latex_puddle_male
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(ChangedBlocks.WHITE_LATEX_PUDDLE_MALE.get())
+                                .apply(SetItemCountFunction.setCount(
+                                        UniformGenerator.between(0.0F, 2.0F)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(
+                                        UniformGenerator.between(1, 3)))
+                        )
+                )
+
+                // white_latex_puddle_female
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(ChangedBlocks.WHITE_LATEX_PUDDLE_FEMALE.get())
+                                .apply(SetItemCountFunction.setCount(
+                                        UniformGenerator.between(0.0F, 2.0F)))
+                                .apply(LootingEnchantFunction.lootingMultiplier(
+                                        UniformGenerator.between(1, 3)))
+                        )
+                );
     }
 
     @Override
