@@ -189,9 +189,9 @@ public class ChangedAddonEntities {
             EntityType.Builder.of(DazedLatexEntity::new, MobCategory.MONSTER)
                     .sized(0.7f, 1.93f));
 
-    public static final RegistryObject<EntityType<BuffDazedLatexEntity>> BUFF_DAZED_LATEX = registerChangedEntity("buff_latex_dazed",
+    public static final RegistryObject<EntityType<BuffDazedLatexEntity>> BUFF_DAZED_LATEX = registerChangedEntityWithLoot("buff_latex_dazed",
             EntityType.Builder.of(BuffDazedLatexEntity::new, MobCategory.MONSTER)
-                    .sized(0.7f, 1.93f));
+                    .sized(0.7f, 1.93f), BuffDazedLatexEntity::getLoot);
 
     public static final RegistryObject<EntityType<PuroKindMaleEntity>> PURO_KIND_MALE = registerChangedEntity("puro_kind_male",
             EntityType.Builder.<PuroKindMaleEntity>of(PuroKindMaleEntity::new, MobCategory.MONSTER)
