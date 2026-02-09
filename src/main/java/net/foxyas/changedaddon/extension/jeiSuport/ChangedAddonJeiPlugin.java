@@ -160,6 +160,7 @@ public class ChangedAddonJeiPlugin implements IModPlugin {
             registerLatexSolventDescriptions(registration);
             registerChangedLureDescriptions(registration);
             registerTransfurAspectDescriptions(registration);
+            registration.addIngredientInfo(ChangedAddonItems.ALPHA_SERUM_SYRINGE.get().getDefaultInstance(), VanillaTypes.ITEM_STACK, new TranslatableComponent("jei_descriptions.changed_addon.alpha_serum_syringe"));
         }
 
         private static void registerLatexSolventDescriptions(IRecipeRegistration registration) {

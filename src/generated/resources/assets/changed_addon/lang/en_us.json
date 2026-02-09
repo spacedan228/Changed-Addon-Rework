@@ -631,6 +631,7 @@
   "itemGroup.changed_addon_main_tab": "Changed Addon Plus",
   "itemGroup.changed_addon_optional_combat_tab": "Changed Addon Plus Combat Optional",
   "jei.changed_addon.keycard_color": "Keycard Coloring",
+  "jei_descriptions.changed_addon.alpha_serum_syringe": "When injected, turns a transfurred player into an alpha if applicable.",
   "key.categories.changed_addon": "Changed Addon Keybinds",
   "key.changed_addon.open_extra_details": "Open Transfur Extra",
   "key.changed_addon.pat_key": "Pat",
