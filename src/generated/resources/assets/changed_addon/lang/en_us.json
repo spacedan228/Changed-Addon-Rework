@@ -619,6 +619,7 @@
   "itemGroup.changed_addon_main_tab": "Changed Addon Plus",
   "itemGroup.changed_addon_optional_combat_tab": "Changed Addon Plus Combat Optional",
   "jei.changed_addon.keycard_color": "Keycard Coloring",
+  "jei_descriptions.changed_addon.alpha_serum_syringe": "When injected, turns a transfurred player into an alpha if applicable.",
   "jei_descriptions.changed_addon.diffusion_syringe": "Untransfurs you back to human form while summoning your previous transfur form.",
   "jei_descriptions.changed_addon.exp9_dna": "Found within a specific room in a §lfacility§r with chemical compounds in boxes.",
   "jei_descriptions.changed_addon.informant_block": "Show the stats of the transfur of any Transfur Holder Item (or just any item with the \"form\" nbt), it also allow you see the stats when in inventory",

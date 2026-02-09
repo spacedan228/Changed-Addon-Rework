@@ -288,6 +288,7 @@ public class ENLanguageProvider extends LanguageProvider {
 
         add("jei.changed_addon.keycard_color", "Keycard Coloring");
 
+        addJeiDescriptions("alpha_serum_syringe", "When injected, turns a transfurred player into an alpha if applicable.");
         addJeiDescriptions("diffusion_syringe", "Untransfurs you back to human form while summoning your previous transfur form.");
         addJeiDescriptions("exp9_dna", "Found within a specific room in a §lfacility§r with chemical compounds in boxes.");
         addJeiDescriptions("informant_block", "Show the stats of the transfur of any Transfur Holder Item (or just any item with the \"form\" nbt), it also allow you see the stats when in inventory");
