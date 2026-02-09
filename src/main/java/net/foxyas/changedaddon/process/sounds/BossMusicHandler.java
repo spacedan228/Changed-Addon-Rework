@@ -15,6 +15,12 @@ import java.util.*;
 
 @OnlyIn(Dist.CLIENT)
 public class BossMusicHandler {
+
+    public enum FollowType {
+        BOSS,
+        PLAYER_CAMERA
+    }
+
     private static final Minecraft mc = Minecraft.getInstance();
 
     // Agora suportando vários bosses
