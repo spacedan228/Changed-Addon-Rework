@@ -30,31 +30,35 @@ public class AlphaSerumSyringeItem extends AbstractSyringeItem {
 
         if (!(entity instanceof Player player)) return;
 
-        ChangedAddonVariables.PlayerVariables playerVars = ChangedAddonVariables.ofOrDefault(player);
-
         if (!ProcessTransfur.isPlayerTransfurred(player)) {
-            if (playerVars.showWarns && !player.level.isClientSide())
-                player.displayClientMessage(new TranslatableComponent("changed_addon.untransfur.no_effect"), true);
+            failMessage(player);
             return;
         }
 
         TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
         if (transfurVariant == null) {
+            failMessage(player);
             return;
         }
         
         ChangedEntity changedEntity = transfurVariant.getChangedEntity();
         if (!(changedEntity instanceof IAlphaAbleEntity iAlphaAbleEntity)) {
+            failMessage(player);
             return;
         }
         
         if (iAlphaAbleEntity.isAlpha()) {
-            if (playerVars.showWarns && !player.level.isClientSide())
-                player.displayClientMessage(new TranslatableComponent("changed_addon.untransfur.no_effect"), true);
+            failMessage(player);
             return; 
         }
 
         iAlphaAbleEntity.setAlpha(true);
         iAlphaAbleEntity.setAlphaScale(0.75f);
+    }
+
+    private void failMessage(Player player) {
+        ChangedAddonVariables.PlayerVariables playerVars = ChangedAddonVariables.ofOrDefault(player);
+        if (playerVars.showWarns && !player.level.isClientSide())
+            player.displayClientMessage(new TranslatableComponent("changed_addon.untransfur.no_effect"), true);
     }
 }
