@@ -503,6 +503,7 @@ public class ENLanguageProvider extends LanguageProvider {
 
         addItemFromId(LAETHIN);
         addItemFromId(LAETHIN_SYRINGE);
+        addItemFromId(ALPHA_SERUM_SYRINGE);
         addItemFromId(LAETHINMINATOR);
         addItemFromId(FLAMETHROWER);
         addItemFromId(LASER_POINTER);

@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.configuration;
 
+import net.foxyas.changedaddon.process.sounds.BossMusicHandler;
 import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ChangedAddonClientConfiguration {
@@ -18,12 +19,14 @@ public class ChangedAddonClientConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Boolean> SMOOTH_LASER_MOVEMENT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> PLANTOIDS_VISIBILITY;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALPHA_COMPATIBILITY_MODE_RENDER;
+    public static final ForgeConfigSpec.ConfigValue<BossMusicHandler.FollowType> BOSS_MUSIC_LOCATION_TYPE;
 
     static {
         ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
         BUILDER.push("MusicPlayer");
         MUSIC_PLAYER = BUILDER.comment("allow the music player to play boss themes").define("Music Player", true);
+        BOSS_MUSIC_LOCATION_TYPE = BUILDER.comment("define which entity the boss music will follow.").defineEnum("Boss Music Location Type", BossMusicHandler.FollowType.BOSS);
         BUILDER.pop();
 
         BUILDER.push("Custom Hair Color");

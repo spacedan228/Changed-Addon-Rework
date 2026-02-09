@@ -20,17 +20,15 @@ public class FogLerpState {
 
     /* ===================== TICK ===================== */
 
-    public void tick(float speed) {
-        value += (target - value) * speed;
-        color += (colorTarget - color) * speed;
+    public void tick(float inSpeed, float outSpeed) {
+        float sValue = target > value ? inSpeed : outSpeed;
+        float sColor = colorTarget > color ? inSpeed : outSpeed;
 
-        if (Math.abs(target - value) < 0.001f) {
-            value = target;
-        }
+        value += (target - value) * sValue;
+        color += (colorTarget - color) * sColor;
 
-        if (Math.abs(colorTarget - color) < 0.001f) {
-            color = colorTarget;
-        }
+        if (Math.abs(target - value) < 0.001f) value = target;
+        if (Math.abs(colorTarget - color) < 0.001f) color = colorTarget;
     }
 
     /* ===================== GETTERS ===================== */

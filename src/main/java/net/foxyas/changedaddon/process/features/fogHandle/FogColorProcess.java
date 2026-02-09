@@ -18,8 +18,6 @@ import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import static net.foxyas.changedaddon.process.features.fogHandle.FogLerpState.lerp;
-
 @Mod.EventBusSubscriber(value = {Dist.CLIENT})
 public class FogColorProcess {
 
@@ -82,17 +80,34 @@ public class FogColorProcess {
     }
 
     protected static void setFogColor(float[] rgb) {
-        ClientFogData.FOG.targetColorRgb0 = ClientFogData.FOG.targetColorRgb;
-        ClientFogData.FOG.setTargetColor(rgb);
+        if (!sameColor(ClientFogData.FOG.targetColorRgb, rgb)) {
+            ClientFogData.FOG.targetColorRgb0 = ClientFogData.FOG.targetColorRgb;
+            ClientFogData.FOG.setTargetColor(rgb);
+        }
+    }
+
+    private static boolean sameColor(float[] a, float[] b) {
+        if (a == null || b == null) return false;
+        return Math.abs(a[0] - b[0]) < 0.001f
+                && Math.abs(a[1] - b[1]) < 0.001f
+                && Math.abs(a[2] - b[2]) < 0.001f;
     }
 
     protected static void lerpFogColor(ViewportEvent.ComputeFogColor fog) {
-        float partialTicks = ClientFogData.FOG.get();
-        float[] rgb = ClientFogData.FOG.getLerpColor();
+//        float partialTicks = ClientFogData.FOG.get();
+//        float[] rgb = ClientFogData.FOG.getLerpColor();
+//
+//        float r = rgb[0]; //lerp(fog.getRed(), rgb[0], partialTicks);
+//        float g = rgb[1]; //lerp(fog.getGreen(), rgb[1], partialTicks);
+//        float b = rgb[2]; //lerp(fog.getBlue(), rgb[2], partialTicks);
 
-        float r = rgb[0]; //lerp(fog.getRed(), rgb[0], partialTicks);
-        float g = rgb[1]; //lerp(fog.getGreen(), rgb[1], partialTicks);
-        float b = rgb[2]; //lerp(fog.getBlue(), rgb[2], partialTicks);
+
+        float[] rgb = ClientFogData.FOG.targetColorRgb;
+        float t = ClientFogData.FOG.getColor();
+
+        float r = FogLerpState.lerp(fog.getRed(), rgb[0], t);
+        float g = FogLerpState.lerp(fog.getGreen(), rgb[1], t);
+        float b = FogLerpState.lerp(fog.getBlue(), rgb[2], t);
 
         fog.setRed(r);
         fog.setGreen(g);
