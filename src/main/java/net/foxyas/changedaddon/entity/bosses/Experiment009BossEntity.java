@@ -69,10 +69,8 @@ import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
@@ -311,20 +309,6 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         return 0.5f;
     }
 
-    @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
-    public static class WhenAttackAEntity {
-        @SubscribeEvent
-        public static void WhenAttack(LivingAttackEvent event) {
-            LivingEntity target = event.getEntityLiving();
-            Entity source = event.getSource().getEntity();
-            if (source instanceof Experiment009BossEntity experiment009BossEntity) {
-                if (experiment009BossEntity.isPhase3()) {
-                    experiment009BossEntity.heal(0.5f);
-                }
-            }
-        }
-    }
-
     @Override
     public @NotNull MobType getMobType() {
         return MobType.UNDEFINED;
@@ -375,8 +359,9 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         if (source.getMsgId().equals("witherSkull"))
             return false;
         if (source == DamageSource.IN_WALL) {
+            Stream<LivingEntity> entitiesOfClass = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(64f), (target) -> !target.is(this) && this.canAttack(target)).stream().sorted((Comparator.comparing((target) -> (Float) target.distanceTo(this))));
             Exp9AttacksHandle.TeleportAttack.Teleport(this, this.getTarget() == null
-                    ? this.getLevel().getNearestPlayer(this.getX(), this.getY(), this.getZ(), 32d, false)
+                    ? entitiesOfClass.toList().get(0)
                     : this.getTarget());
             return false;
         }
@@ -737,4 +722,19 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         }
         this.addEffect(mobEffectInstance);
     }
+
+    @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
+    public static class WhenAttackAEntity {
+        @SubscribeEvent
+        public static void WhenAttack(LivingAttackEvent event) {
+            LivingEntity target = event.getEntityLiving();
+            Entity source = event.getSource().getEntity();
+            if (source instanceof Experiment009BossEntity experiment009BossEntity) {
+                if (experiment009BossEntity.isPhase3() && !target.isDamageSourceBlocked(event.getSource())) {
+                    experiment009BossEntity.heal(0.5f);
+                }
+            }
+        }
+    }
+
 }
