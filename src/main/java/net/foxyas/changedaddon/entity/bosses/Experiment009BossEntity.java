@@ -26,6 +26,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -94,6 +96,12 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         xpReward = 3000;
         setNoAi(false);
         setPersistenceRequired();
+        applyDefaultBasicPlayerInfo();
+    }
+
+    protected void applyDefaultBasicPlayerInfo() {
+        this.getBasicPlayerInfo().setSize(1f);
+        this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
     }
 
     public static void init() {
@@ -364,6 +372,18 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                     : this.getTarget());
             return false;
         }
+
+        if (source.getEntity() == null || source.getDirectEntity() == null) {
+            Stream<LivingEntity> nearbyEntities = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(64f), (target) -> !target.is(this) && this.canAttack(target)).stream().sorted((Comparator.comparing((target) -> (Float) target.distanceTo(this))));
+            LivingEntity mostNearbyEntity = nearbyEntities.toList().get(0);
+            if (!this.getSensing().hasLineOfSight(mostNearbyEntity)) {
+                Exp9AttacksHandle.TeleportAttack.Teleport(this, this.getTarget() == null
+                        ? mostNearbyEntity
+                        : this.getTarget());
+                return false;
+            }
+        }
+
         if (source.isProjectile()) {
             maybeSendReactionToPlayer(source);
             return super.hurt(source, amount * 0.5f);
@@ -405,8 +425,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
     @Override
     public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType reason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag tag) {
         SpawnGroupData retval = super.finalizeSpawn(world, difficulty, reason, livingdata, tag);
-        this.getBasicPlayerInfo().setSize(1f);
-        this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
+        applyDefaultBasicPlayerInfo();
         return retval;
     }
 
@@ -540,8 +559,7 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
         super.baseTick();
         if (this.getUnderlyingPlayer() == null) {
             if (firstTick) {
-                this.getBasicPlayerInfo().setSize(1f);
-                this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
+                applyDefaultBasicPlayerInfo();
             }
 
             if (shouldBleed && (this.computeHealthRatio() / 0.4f) > 0.25f && this.tickCount % 4 == 0) {
@@ -705,7 +723,11 @@ public class Experiment009BossEntity extends ChangedEntity implements CustomPatR
                 0.0f,
                 0.0f, 1, 0f
         );
-        player.displayClientMessage(translatableComponentList.get(this.getRandom().nextInt(translatableComponentList.size())), false);
+
+        TranslatableComponent translatableComponent = translatableComponentList.get(this.getRandom().nextInt(translatableComponentList.size()));
+        MutableComponent entityChat = new TranslatableComponent("chat.type.text", this.getDisplayName(), translatableComponent);
+
+        player.displayClientMessage(entityChat, false);
         applyRampage();
     }
 

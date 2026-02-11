@@ -27,6 +27,10 @@ public class BreakBlocksAroundGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (breakCooldown > 0) {
+            tickCooldown();
+        }
+
         if (!holder.level.getGameRules().getBoolean(GameRules.RULE_MOBGRIEFING)) {
             return false;
         }
@@ -60,10 +64,6 @@ public class BreakBlocksAroundGoal extends Goal {
         }
 
         if (!holder.isAlive() || breakCooldown > 0) {
-            if (breakCooldown > 0) {
-                tickCooldown();
-            }
-
             return false;
         }
 
@@ -96,7 +96,7 @@ public class BreakBlocksAroundGoal extends Goal {
             if (!state.isAir() && state.getDestroySpeed(serverLevel, pos) >= 0) {
                 if ((!state.is(Blocks.BEDROCK) || !state.is(BlockTags.WITHER_IMMUNE)) && !(state.getBlock() instanceof LiquidBlock)) {
                     serverLevel.destroyBlock(pos, true, holder);
-                    suppedCooldown += 5;
+                    suppedCooldown += 1;
                 }
             }
         }
