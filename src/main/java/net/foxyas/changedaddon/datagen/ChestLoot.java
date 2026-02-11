@@ -54,7 +54,7 @@ public class ChestLoot extends net.minecraft.data.loot.ChestLoot {
                                         UniformGenerator.between(1, 3))))
 
                         // Livro encantado fraco (raro)
-                        .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK)
+                        .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(2)
                                 .apply(EnchantWithLevelsFunction.enchantWithLevels(
                                         UniformGenerator.between(5, 10)
@@ -79,7 +79,7 @@ public class ChestLoot extends net.minecraft.data.loot.ChestLoot {
                                 .apply(SetItemCountFunction.setCount(
                                         UniformGenerator.between(1, 2))))
 
-                        .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK)
+                        .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(6)
                                 .apply(EnchantWithLevelsFunction.enchantWithLevels(
                                         UniformGenerator.between(15, 25)
@@ -105,7 +105,7 @@ public class ChestLoot extends net.minecraft.data.loot.ChestLoot {
                                         UniformGenerator.between(1, 2))))
 
                         // Livro encantado forte
-                        .add(LootItem.lootTableItem(Items.ENCHANTED_BOOK)
+                        .add(LootItem.lootTableItem(Items.BOOK)
                                 .setWeight(7)
                                 .apply(EnchantWithLevelsFunction.enchantWithLevels(
                                         UniformGenerator.between(30, 40)
@@ -113,7 +113,10 @@ public class ChestLoot extends net.minecraft.data.loot.ChestLoot {
 
                         // Alpha Gene Syringe (chance média)
                         .add(LootItem.lootTableItem(ChangedAddonItems.ALPHA_SERUM_SYRINGE.get())
-                                .setWeight(3))
+                                .setWeight(3).apply(SetItemCountFunction.setCount(
+                                        UniformGenerator.between(0, 1))
+                                )
+                        )
                 );
     }
 }
