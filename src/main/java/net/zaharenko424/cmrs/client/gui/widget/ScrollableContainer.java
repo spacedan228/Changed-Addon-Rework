@@ -19,12 +19,24 @@ public class ScrollableContainer extends WidgetContainer {
     };
     private float actualHeight;
 
+    public RoundedRectWidget getScrollBar() {
+        return scrollBar;
+    }
+
     public void setActualHeight(float height){
         actualHeight = height;
     }
 
     public boolean isScrollEnabled(){
         return actualHeight > getHeight();
+    }
+
+    public float getActualHeight() {
+        return actualHeight;
+    }
+
+    public void addHeight(float toAdd) {
+        this.actualHeight += toAdd;
     }
 
     @Override

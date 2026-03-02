@@ -59,6 +59,7 @@
     "items.LatexSyringeMixin",
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",
+    "mods.changed.FacilityMixin",
     "mods.changed.FacilitySinglePieceAccessor",
     "mods.changed.FacilitySinglePieceInstanceAccessor",
     "mods.changed.LatexTypeMixin",
@@ -103,6 +104,10 @@
     "mods.changed.AbstractRadialScreenMixin",
     "mods.changed.AccessoryLayerMixin",
     "mods.changed.ChangedClientMixin",
-    "mods.firstPerson.LogicHandleMixin"
+    "mods.firstPerson.LogicHandleMixin",
+    "mods.vivecraft.AdvancedHumanoidModelMixin",
+    "mods.vivecraft.AdvancedHumanoidRendererMixin",
+    "mods.vivecraft.EntityRendererMixin",
+    "mods.vivecraft.LatexElytraLayerMixin"
   ]
 }

@@ -1,12 +1,15 @@
 package net.zaharenko424.cmrs;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.foxyas.changedaddon.entity.api.IBestiaryEntityData;
+import net.foxyas.changedaddon.process.DEBUG;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
@@ -20,7 +23,7 @@ import net.zaharenko424.cmrs.client.gui.widget.*;
 import java.awt.*;
 import java.util.List;
 
-@Mod.EventBusSubscriber(value = Dist.CLIENT)
+//@Mod.EventBusSubscriber(value = Dist.CLIENT) //TODO turn this on when tweaking.
 public class Test {
 
     @SubscribeEvent
@@ -38,13 +41,13 @@ public class Test {
         static final float MaxBackGroundWidth = 425f;
         static final float MaxBackGroundHeight = 256f;
         final WidgetContainer window = new WidgetContainer().setSize(MaxBackGroundWidth, MaxBackGroundHeight);
-        final ScrollableContainer info = (ScrollableContainer) new ScrollableContainer().setSize(425, 100);
+        final ScrollableContainer info = (ScrollableContainer) new ScrollableContainer().setSize(425, 200);
         final RoundedRectWidget displayBackGround = new RoundedRectWidget().setSize(1, 1).setInsideColorFunc(a -> Color.DARK_GRAY.getRGB());
         final RoundedButton button = new RoundedButton().setRoundingRadius(5).setSize(50, 25).setText(Component.literal("Text").withStyle(ChatFormatting.AQUA))
                 .setOrigin(0, 0, 50).setRenderTransform(WidgetHelper.hoverAnim(.1f, 0.025f, 0.025f));
         final ChangedEntityModelWidget modelWidget = new ChangedEntityModelWidget().setSize(100, 200).setRenderTransform(WidgetHelper.hoverOrSelectedAnim(.1f, 0.025f, 0.025f));
-        final InfoWidget infoWidget = new InfoWidget().setSize(200, 50).setLineSize(200, 4);
-        final InfoWidget info2Widget = new InfoWidget().setSize(200, 50).setLineSize(200, 4);
+        final InfoWidget infoWidget = new InfoWidget().setSize(200, 100).setLineSize(200, 4);
+        final InfoWidget info2Widget = new InfoWidget().setSize(200, 100).setLineSize(200, 4);
 //        final ImageWidget screenBackGroundWidget = new ImageWidget().setOrigin(0, 0, 0)
 //                .setTex(ResourceLocation.parse("changed_addon:textures/screens/generatorgui.png"),
 //                0, 0, 200, 99, 200, 99).setSize(425, 256);
@@ -85,26 +88,42 @@ public class Test {
             });
             button.rebuildMesh();
 
-            infoWidget.setTextInfo(Component.literal("Some Cool Title"), Component.literal("Some Cool Description"));
-            infoWidget.setLineColor(Color.GREEN);
-            infoWidget.setOrigin(modelWidget.getOrigin().x + 50, modelWidget.getOrigin().y, modelWidget.getOrigin().z + 10);
+            infoWidget.setTextInfo(Component.literal("Info/Lore"), Component.literal("N/A"));
+            infoWidget.setLineColor(Color.YELLOW);
+            infoWidget.setOrigin(modelWidget.getOrigin().x + 50, modelWidget.getOrigin().y - DEBUG.HeadPosY, modelWidget.getOrigin().z + 10);
 
-            info2Widget.setTextInfo(Component.literal("Some Cool Title2"), Component.literal("Some Cool Description2"));
+            info2Widget.setTextInfo(Component.literal("Attributes"), Component.literal("???"));
             info2Widget.setLineColor(Color.GREEN);
             info2Widget.setOrigin(infoWidget.getOrigin().x, infoWidget.getOrigin().y + 40, infoWidget.getOrigin().z);
 
             window.addWidget(displayBackGround);
             window.addWidget(button);
             window.addWidget(modelWidget);
+
             info.addWidget(infoWidget);
             info.addWidget(info2Widget);
             info.setOrigin(width / 2f, height / 2f, 10);
             info.setInteractable(false);
             info.setClickThrough(true);
             info.init();
+            info.getScrollBar().setRoundingRadius(3);
+            info.getScrollBar().rebuildMesh();
+
             //window.addWidget(screenBackGroundWidget);
             window.addWidget(info);
             window.init();
+
+
+            float backGroundWidth = this.displayBackGround.getWidth();
+            float backGroundHeight = this.displayBackGround.getHeight();
+
+            for (Widget child : this.window.children()) {
+                if (child == displayBackGround) {
+                    continue;
+                }
+
+                child.setVisible(backGroundHeight >= MaxBackGroundHeight && backGroundWidth >= MaxBackGroundWidth);
+            }
         }
 
 
@@ -129,7 +148,24 @@ public class Test {
                 child.setVisible(backGroundHeight >= MaxBackGroundHeight && backGroundWidth >= MaxBackGroundWidth);
             }
 
-            info.setActualHeight(100 * info.children().size());
+            if (modelWidget.getChangedEntity() != null) {
+
+                if (modelWidget.getChangedEntity() instanceof IBestiaryEntityData iBestiaryEntityData) {
+                    infoWidget.setDescription(iBestiaryEntityData.getLore());
+                }
+
+                List<Component> attributePreview = IBestiaryEntityData.getAttributePreview(modelWidget.getChangedEntity());
+                if (!attributePreview.isEmpty()) {
+                    MutableComponent mutableComponent = Component.empty();
+                    attributePreview.forEach((component) -> {
+                        mutableComponent.append("\n").append(component);
+                        info.addHeight(40);
+                    });
+                    info2Widget.setDescription(mutableComponent);
+                }
+            }
+
+            info.setActualHeight(60f * info.children().size());
         }
 
         @Override
