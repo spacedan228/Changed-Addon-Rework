@@ -4,12 +4,11 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.ltxprogrammer.changed.client.renderer.AdvancedHumanoidRenderer;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.extension.RequiredMods;
+import net.foxyas.changedaddon.extension.RequiredMods;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.vivecraft.client_vr.ClientDataHolderVR;
@@ -20,7 +19,7 @@ import org.vivecraft.client_vr.render.helpers.VREffectsHelper;
 public class EntityRendererMixin {
 
     @ModifyReturnValue(method = "getRenderOffset", at = @At("RETURN"))
-    private Vec3 hook(Vec3 original, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) float pPartialTicks) {
+    private Vec3 getRenderOffsetHook(Vec3 original, @Local(argsOnly = true) Entity entity, @Local(argsOnly = true) float pPartialTicks) {
         var self = (EntityRenderer<?>) (Object) this;
         if (self instanceof AdvancedHumanoidRenderer<?, ?> advancedHumanoidRenderer) {
             if (entity instanceof ChangedEntity changedEntity) {

@@ -399,6 +399,10 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     @Override
     public void startUsing() {
+        if (entity.getLevel().isClientSide()) {
+            return;
+        }
+
         if (entity.getEntity() instanceof Player player && this.getController().getHoldTicks() == 0) {
             if (!(player.level().isClientSide())) {
                 if (this.dodgeType instanceof CounterDodgeType) {
@@ -421,15 +425,17 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     @Override
     public void tick() {
         //super.tick();
+        if (entity.getLevel().isClientSide()) {
+            return;
+        }
+
         if (entity.getEntity() instanceof Player player) {
-            if (!(player.level().isClientSide())) {
-                if (this.dodgeType instanceof CounterDodgeType) {
-                    return;
-                }
-                if (!ultraInstinct) {
-                    player.displayClientMessage(
-                            Component.translatable("ability.changed_addon.dodge.dodge_amount", getDodgeStaminaRatio()), true);
-                }
+            if (this.dodgeType instanceof CounterDodgeType) {
+                return;
+            }
+            if (!ultraInstinct) {
+                player.displayClientMessage(
+                        Component.translatable("ability.changed_addon.dodge.dodge_amount", getDodgeStaminaRatio()), true);
             }
         }
         setDodgeActivate(canUse());
@@ -438,6 +444,10 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     @Override
     public void stopUsing() {
+        if (entity.getLevel().isClientSide()) {
+            return;
+        }
+
         setDodgeActivate(false);
         this.ability.setDirty(entity);
         if (entity.getEntity() instanceof Player player) {
@@ -457,16 +467,13 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
     public void tickIdle() {
         super.tickIdle();
 
+        if (entity.getLevel().isClientSide()) {
+            return;
+        }
+
         if (entity.getLevel() instanceof ServerLevel level) {
             if (trailTicks > 0) {
                 addFadeParticle(level);
-
-
-                /*for (ServerPlayer serverPlayer : level.players()) {
-                    if (level.sendParticles(serverPlayer, particleOption, true, particlePos.x, particlePos.y, particlePos.z, 0, 0f, 1, 0, 0.02f)) {
-                    }
-                }
-                ParticlesUtil.sendParticles(level, ChangedAddonParticleTypes.entityModelFade(dodger, color.getRGB(), 2.5f), dodger.position().add(0, 1.425f, 0), 0, 1f, 0, 0, 0.02f);*/
                 trailTicks--;
             }
         }

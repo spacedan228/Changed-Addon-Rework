@@ -76,15 +76,20 @@ repositories {
         url "https://cursemaven.com"
     }
 
+    maven {
+        name = "Changed"
+        url = "https://ltxprogrammer.github.io/maven/"
+    }
+
     //maven {
     //    name = "Changed"
     //    url = "https://raw.githubusercontent.com/foxyas/Changed-Minecraft-Mod/1.20.1-dev/mcmodsrepo/"
     //}
-
+    /*
     maven {
         name = "Changed_Local_file"
         url uri("${rootProject.projectDir}/libs")
-    }
+    }*/
 
 
   /* maven {
@@ -102,6 +107,7 @@ repositories {
 mixin {
     add sourceSets.main, "changed_addon.refmap.json"
     config "changed_addon.mixins.json"
+    config "changed_addon.compatibility.mixins.json"
     env {
         remapRefMap = true
     }
@@ -111,6 +117,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraftVersion}-${forgeVersion}" //Forge Version
 
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+    annotationProcessor project(':ap')
 
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1")) {
@@ -118,7 +125,7 @@ dependencies {
     }
 
   //implementation fg.deobf('net.ltxprogrammer.changed:Changed-m1.18.2-f40.2.0:v0.14b') //Changed Local File
-    implementation fg.deobf("net.ltxprogrammer.changed:Changed-m1.20.1-f47.4.0:v0.15.0") {
+    implementation fg.deobf("net.ltxprogrammer.changed:Changed-m1.20.1-f47.4.0:v0.15.1") {
         changing = true
     }//Changed
 

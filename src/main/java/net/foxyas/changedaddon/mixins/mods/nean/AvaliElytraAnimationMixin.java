@@ -6,9 +6,9 @@ import dev.tr7zw.notenoughanimations.versionless.animations.BodyPart;
 import net.foxyas.changedaddon.ability.WingFlapAbility;
 import net.foxyas.changedaddon.client.model.animations.AvaliFallFlyAnimator;
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
+import net.foxyas.changedaddon.extension.RequiredMods;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
-import net.ltxprogrammer.changed.extension.RequiredMods;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -36,7 +36,7 @@ public class AvaliElytraAnimationMixin {
             CallbackInfo ci
     ) {
         var tf = ProcessTransfur.getPlayerTransfurVariant(entity);
-        if (tf == null || !(tf.getChangedEntity() instanceof AvaliEntity) || !tf.is(ChangedAddonTransfurVariants.AVALI)) {
+        if (tf == null || !(tf.getChangedEntity() instanceof AvaliEntity)) {
             return;
         }
 
