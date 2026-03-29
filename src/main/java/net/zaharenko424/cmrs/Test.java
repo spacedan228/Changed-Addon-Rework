@@ -1,9 +1,12 @@
 package net.zaharenko424.cmrs;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.foxyas.changedaddon.client.gui.BestiaryScreen;
 import net.foxyas.changedaddon.entity.api.IBestiaryEntityData;
 import net.foxyas.changedaddon.process.DEBUG;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.init.ChangedEntities;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -16,11 +19,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.zaharenko424.cmrs.client.gui.LayoutHelper;
 import net.zaharenko424.cmrs.client.gui.WidgetHelper;
 import net.zaharenko424.cmrs.client.gui.screen.MouseMoveListener;
 import net.zaharenko424.cmrs.client.gui.widget.*;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 //@Mod.EventBusSubscriber(value = Dist.CLIENT) //TODO turn this on when tweaking.
@@ -28,12 +33,16 @@ public class Test {
 
     @SubscribeEvent
     public static void a(InputEvent.Key event) {
-        if (event.getKey() != InputConstants.KEY_I) return;
+        if (event.getKey() != InputConstants.KEY_I && event.getKey() != InputConstants.KEY_O) return;
 
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.screen != null) return;
 
-        minecraft.setScreen(new TestScreen());
+        if (event.getKey() == InputConstants.KEY_I) {
+            minecraft.setScreen(new TestScreen());
+        } else {
+            minecraft.setScreen(new BestiaryScreen());
+        }
     }
 
     static class TestScreen extends Screen implements MouseMoveListener {
@@ -111,8 +120,23 @@ public class Test {
 
             //window.addWidget(screenBackGroundWidget);
             window.addWidget(info);
+            window.addWidget(tfs);
             window.init();
 
+            List<TransfurVariant<?>> l = List.of(
+                    ChangedAddonTransfurVariants.PROTOTYPE.get(), ChangedAddonTransfurVariants.EXPERIMENT_009.get(), ChangedAddonTransfurVariants.PROTOGEN_0SENIA0.get(),
+                    ChangedAddonTransfurVariants.BOREALIS_FEMALE.get(), ChangedAddonTransfurVariants.EXP1_MALE.get(), ChangedAddonTransfurVariants.EXP6.get(),
+                    ChangedAddonTransfurVariants.LATEX_CHEETAH_FEMALE.get(), ChangedAddonTransfurVariants.EXP2_MALE.get(), ChangedAddonTransfurVariants.LUMINARCTIC_LEOPARD_FEMALE.get()
+            );
+
+            List<TFEntryWidget> entries = new ArrayList<>();
+            for (TransfurVariant<?> tf : l) {
+                entries.add(new TFEntryWidget(tf));
+            }
+
+            LayoutHelper.listLayout(tfs, entries, 5);
+            tfs.init();
+            tfs.getScrollBar().setRoundingRadius(4).setSizeAndUpdate(8, 50);
 
             float backGroundWidth = this.displayBackGround.getWidth();
             float backGroundHeight = this.displayBackGround.getHeight();
@@ -125,6 +149,8 @@ public class Test {
                 child.setVisible(backGroundHeight >= MaxBackGroundHeight && backGroundWidth >= MaxBackGroundWidth);
             }
         }
+
+        final ScrollableContainer tfs = (ScrollableContainer) new ScrollableContainer().setSize(100, 200).setOrigin(0, 0, 100);
 
 
         @Override
@@ -151,7 +177,7 @@ public class Test {
             if (modelWidget.getChangedEntity() != null) {
 
                 if (modelWidget.getChangedEntity() instanceof IBestiaryEntityData iBestiaryEntityData) {
-                    infoWidget.setDescription(iBestiaryEntityData.getLore());
+                    infoWidget.setDescription(iBestiaryEntityData.getBasicLore().description());
                 }
 
                 List<Component> attributePreview = IBestiaryEntityData.getAttributePreview(modelWidget.getChangedEntity());
@@ -170,6 +196,7 @@ public class Test {
 
         @Override
         protected void init() {
+            tfs.setOrigin(-window.getWidth() / 3f, 0, 100);
             window.setOrigin(width / 2f, height / 2f, 0);
 
             if (this.minecraft != null) {
@@ -181,6 +208,34 @@ public class Test {
         @Override
         public boolean isPauseScreen() {
             return false;
+        }
+    }
+
+    static class TFEntryWidget extends WidgetContainer {
+
+        final TransfurVariant<?> tf;
+        final RoundedButton button = new RoundedButton().setRoundingRadius(0);
+        final RoundedTextField name = new RoundedTextField().setOrigin(0, 0, 1);
+
+        TFEntryWidget(TransfurVariant<?> tf) {
+            setSize(80, 20);
+
+            this.tf = tf;
+
+            button.setSize(getWidth(), getHeight());
+            button.setOnClick((a, b) -> {
+                Minecraft.getInstance().player.displayClientMessage(Component.translatable(tf.getEntityType().getDescriptionId()), true);
+                return true;
+            });
+            button.rebuildMesh();
+
+            name.setSize(70, 12);
+            name.setDefText(Component.translatable(tf.getEntityType().getDescriptionId()));
+            name.setClickThrough(true);
+
+            addWidget(button);
+            addWidget(name);
+            init();
         }
     }
 }

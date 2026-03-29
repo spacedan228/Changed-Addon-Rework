@@ -7,9 +7,14 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.Iterator;
 
 public class DelayedTask {
 
+    public static final Logger LOGGER = LogManager.getLogger(DelayedTask.class);
     private static final Int2ObjectOpenHashMap<DelayedTask> activeTasks = new Int2ObjectOpenHashMap<>();
     private static int nextId = 0;
 
@@ -39,8 +44,18 @@ public class DelayedTask {
 
     @SubscribeEvent
     public static void onServerTick(TickEvent.ServerTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            activeTasks.values().forEach(DelayedTask::tick);
+        if (event.phase != TickEvent.Phase.END) return;
+
+        Iterator<DelayedTask> it = activeTasks.values().iterator();
+        DelayedTask task;
+        while (it.hasNext()) {
+            task = it.next();
+            if (task.isCancelledOrFinished()) {
+                it.remove();
+                continue;
+            }
+
+            task.tick();
         }
     }
 
@@ -77,8 +92,7 @@ public class DelayedTask {
 
     public void tick() {
         if (paused) return;
-        if (isCancelled()) {// Ensure the instance is removed correctly
-            destroy();
+        if (isCancelledOrFinished()) {// Ensure the instance is removed correctly
             return;
         }
 
@@ -88,7 +102,7 @@ public class DelayedTask {
         try {
             task.run();
         } catch (Exception e) {
-            System.err.println("Error during the execution of the DelayedTask with ID: " + id + "\n " + e.getMessage());
+            LOGGER.error("Error during the execution of the DelayedTask with ID: {}\n {}", id, e.getMessage()); //Using a Logger here cuz is more fancy :>
             //e.printStackTrace();
         } finally {
             cancel();// Automatically cancel after execution
@@ -100,13 +114,6 @@ public class DelayedTask {
      */
     public void cancel() {
         this.cancelled = true;
-    }
-
-    /**
-     * This is To Remove the DelayedTask from memory, Keep in Mind that this action can't be reversed
-     */
-    private void destroy() {
-        activeTasks.remove(id);
     }
 
     /**
@@ -129,7 +136,7 @@ public class DelayedTask {
         return paused;
     }
 
-    public boolean isCancelled() {
+    public boolean isCancelledOrFinished() {
         return cancelled;
     }
 

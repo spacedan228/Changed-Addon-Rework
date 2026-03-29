@@ -6,14 +6,12 @@ import net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock;
 import net.foxyas.changedaddon.command.*;
 import net.foxyas.changedaddon.entity.ai.goals.AlphaSleepGoal;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
-import net.foxyas.changedaddon.init.ChangedAddonAttributes;
-import net.foxyas.changedaddon.init.ChangedAddonGameRules;
-import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
-import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
@@ -213,7 +211,7 @@ public class CommonEvent {
     }
 
     @SubscribeEvent
-    public static void onFarmlandTrampleWhenTransfured(BlockEvent.FarmlandTrampleEvent event) {
+    public static void onFarmlandTrampleWhenTransfurred(BlockEvent.FarmlandTrampleEvent event) {
         if (event.getEntity() instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
             if (transfurVariant != null && transfurVariant.is(ChangedAddonTransfurVariants.PROTOTYPE)) {
@@ -233,6 +231,21 @@ public class CommonEvent {
     @SubscribeEvent
     public static void onPlayerProgressTransfurTick(ProgressTransfurEvents.TickPlayerTransfurProgressEvent tickPlayerTransfurProgressEvent) {
         tickInfectionAndRes(tickPlayerTransfurProgressEvent);
+    }
+
+    @SubscribeEvent
+    public static void onEntityAbsorbOther(ProgressTransfurEvents.onEntityAbsorbOther event) {
+        IAbstractChangedEntity source = event.getSource();
+        if (source.getEntity() instanceof Player player) {
+            player.awardStat(ChangedAddonStatRegistry.ENTITY_ASSIMILATED.get());
+        }
+    }
+    @SubscribeEvent
+    public static void onEntityReplicateOther(ProgressTransfurEvents.onEntityReplicateOther event) {
+        IAbstractChangedEntity source = event.getSource();
+        if (source.getEntity() instanceof Player player) {
+            player.awardStat(ChangedAddonStatRegistry.ENTITY_TRANSFURED.get());
+        }
     }
 
     private static void cleanAlphaAttributes(Player player) {

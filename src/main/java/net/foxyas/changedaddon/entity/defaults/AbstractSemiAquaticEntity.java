@@ -15,6 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.control.MoveControl;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
@@ -34,6 +35,7 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
     protected final WaterBoundPathNavigation waterNavigation;
     protected final GroundPathNavigation groundNavigation;
     private boolean wantsSurface;
+    private final float oldWaterCost;
 
     protected AbstractSemiAquaticEntity(EntityType<? extends ChangedEntity> type, Level level) {
         super(type, level);
@@ -42,6 +44,7 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
         this.groundNavigation = new GroundPathNavigation(this, level);
         this.groundNavigation.setCanOpenDoors(true);
         this.groundNavigation.setCanFloat(true);
+        this.oldWaterCost = getPathfindingMalus(BlockPathTypes.WATER);
     }
 
     /* =========================
@@ -58,6 +61,10 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
 
     public double getPreferredSurfaceDepth() {
         return super.getFluidJumpThreshold();
+    }
+
+    public double getSwimSpeed() {
+        return this.getAttributeValue(ForgeMod.SWIM_SPEED.get());
     }
 
     @Override
@@ -92,9 +99,18 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
     @Override
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(0, new RiseToSurfaceGoal(this, 0.25));
 
-        //this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(0, new FloatGoal(this) {
+            @Override
+            public boolean canUse() {
+                return super.canUse() && (!AbstractSemiAquaticEntity.this.wantsToSwim() || AbstractSemiAquaticEntity.this.wantsToSurface());
+            }
+
+            @Override
+            public void start() {
+                super.start();
+            }
+        });
         //this.goalSelector.addGoal(5, new RandomStrollGoal(this, 0.8));
     }
 
@@ -102,12 +118,20 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
        === SWIMMING LOGIC ======
        ========================= */
 
+    protected boolean needToRecoverBreath = false;
+
     protected boolean wantsToSwim() {
         LivingEntity target = this.getTarget();
+        if (needToRecoverBreath) {
+            this.needToRecoverBreath = !(this.getAirSupply() >= this.getMaxAirSupply() * 0.75f);
+            return false;
+        }
 
         // Quase se afogando → subir / nadar
-        if (this.getAirSupply() < this.getMaxAirSupply() * 0.25f && this.isUnderWater())
+        if (this.getAirSupply() < this.getMaxAirSupply() * 0.25f && this.isUnderWater()) {
+            this.needToRecoverBreath = true;
             return false;
+        }
 
         // Target está na água → perseguir
         return (target != null && target.isInWater()) || this.isUnderWater();
@@ -158,6 +182,11 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
                 );
     }
 
+    protected boolean isAirAtEyesWhenStanding(Vec3 pos) {
+        BlockPos originalPos = new BlockPos(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.z));
+        return BlockPos.betweenClosedStream(this.getDimensions(Pose.STANDING).makeBoundingBox(pos).inflate(-0.05)).filter((checkPos) -> checkPos.getY() > originalPos.getY()).allMatch((blockPos) -> this.level().getBlockState(blockPos).getFluidState().isEmpty());
+    }
+
     @Override
     public void updateSwimming() {
         updateSwimmingState();
@@ -175,8 +204,7 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
 
         if (wantsToSwim()) {
             this.setPathfindingMalus(BlockPathTypes.WATER, 0);
-
-        } else this.setPathfindingMalus(BlockPathTypes.WATER, 8.0F);
+        } else this.setPathfindingMalus(BlockPathTypes.WATER, oldWaterCost);
 
         if (isEffectiveAi() && shouldSwim) {
             this.navigation = this.waterNavigation;
@@ -231,90 +259,54 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
        ========================= */
 
     public static class SwimableEntityMoveControl extends MoveControl {
+        private final AbstractSemiAquaticEntity semiAquaticEntity;
 
-        private final AbstractSemiAquaticEntity mob;
-
-        public SwimableEntityMoveControl(AbstractSemiAquaticEntity mob) {
-            super(mob);
-            this.mob = mob;
+        public SwimableEntityMoveControl(AbstractSemiAquaticEntity p_32433_) {
+            super(p_32433_);
+            this.semiAquaticEntity = p_32433_;
         }
 
-        @Override
         public void tick() {
-            LivingEntity target = mob.getTarget();
-
-            if (mob.isInWater() && mob.wantsToSurface() && !mob.isSwimming()) {
-//                double surfaceY = mob.getWaterSurfaceY(mob.blockPosition());
-//                double desiredEyeY = surfaceY - mob.getPreferredSurfaceDepth();
-//
-//
-//                double delta = desiredEyeY - mob.getEyeY();
-//
-//                mob.setDeltaMovement(
-//                        mob.getDeltaMovement().add(
-//                                0,
-//                                Mth.clamp(delta * 0.04, -1, 1),
-//                                0
-//                        )
-//                );
-
-                boolean eyeFlag = this.mob.isInWater() && this.mob.getFluidHeight(FluidTags.WATER) > this.mob.getPreferredSurfaceDepth() || this.mob.isInLava() || this.mob.isInFluidType((fluidType, height) -> this.mob.canSwimInFluidType(fluidType) && height > this.mob.getPreferredSurfaceDepth());
-                if (eyeFlag) {
-                    if (this.mob.getRandom().nextFloat() < 0.8F) {
-                        this.mob.getJumpControl().jump();
-                    }
-                }
-            }
-
-            if (mob.isSwimming()) {
-                // Olhar e nadar em direção ao target na água
-                if (target != null && target.isInWater()) {
-                    Vec3 dir = target.getEyePosition().subtract(mob.getEyePosition()).normalize();
-                    mob.getLookControl().setLookAt(target, 30, 30);
-                    if (!target.isUnderWater()) {
-                        boolean eyeFlag = this.mob.isInWater() && this.mob.getFluidHeight(FluidTags.WATER) > this.mob.getPreferredSurfaceDepth() || this.mob.isInLava() || this.mob.isInFluidType((fluidType, height) -> this.mob.canSwimInFluidType(fluidType) && height > this.mob.getPreferredSurfaceDepth());
-                        if (eyeFlag) {
-                            if (this.mob.getRandom().nextFloat() < 0.8F) {
-                                this.mob.getJumpControl().jump();
-                            }
-                        }
-                    }
-
-                    mob.setDeltaMovement(mob.getDeltaMovement().add(dir.scale(0.04 * mob.getAttributeValue(ForgeMod.SWIM_SPEED.get()))));
-                }
-
-                // Subir só se estiver quase se afogando
-                if (mob.getAirSupply() < mob.getMaxAirSupply() * 0.25f && mob.isUnderWater()) {
-                    mob.setDeltaMovement(mob.getDeltaMovement().add(0, 0.03, 0));
-                }
-
-                if (this.operation != Operation.MOVE_TO || mob.getNavigation().isDone()) {
-                    mob.setSpeed(0);
+            this.semiAquaticEntity.updateSwimming();
+            LivingEntity livingentity = this.semiAquaticEntity.getTarget();
+            if (this.semiAquaticEntity.isSwimming()) {
+                if (semiAquaticEntity.wantsToSurface()) {
+                    super.tick();
                     return;
                 }
 
-                double dx = this.wantedX - mob.getX();
-                double dy = this.wantedY - mob.getY();
-                double dz = this.wantedZ - mob.getZ();
+                if (livingentity != null && livingentity.getY() > this.semiAquaticEntity.getY()) {
+                    double dx = livingentity.getX() - this.semiAquaticEntity.getX();
+                    double dz = livingentity.getZ() - this.semiAquaticEntity.getZ();
+                    double dist = Math.sqrt(dx * dx + dz * dz);
+                    this.semiAquaticEntity.setDeltaMovement(this.semiAquaticEntity.getDeltaMovement().add(dx / dist * 0.02, 0.04, dz / dist * 0.02));
+                }
 
-                double dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-                dy /= dist;
+                if (this.operation != Operation.MOVE_TO || this.semiAquaticEntity.getNavigation().isDone()) {
+                    this.semiAquaticEntity.setSpeed(0.0F);
+                    return;
+                }
 
-                float yaw = (float) (Mth.atan2(dz, dx) * 180F / Math.PI) - 90F;
-                mob.setYRot(this.rotlerp(mob.getYRot(), yaw, 90F));
-                mob.yBodyRot = mob.getYRot();
-
-                float swimSpeed = (float) (this.speedModifier * mob.getAttributeValue(ForgeMod.SWIM_SPEED.get()));
-
-                mob.setSpeed(swimSpeed);
-                mob.setDeltaMovement(mob.getDeltaMovement().add(
-                        dx * 0.005 * swimSpeed,
-                        dy * 0.1 * swimSpeed,
-                        dz * 0.005 * swimSpeed)
-                );
+                double dx = this.wantedX - this.semiAquaticEntity.getX();
+                double dy = this.wantedY - this.semiAquaticEntity.getY();
+                double dz = this.wantedZ - this.semiAquaticEntity.getZ();
+                //double d3 = Math.sqrt(dx * dx + dy * dy + dz * dz);
+                //dy /= d3;
+                float f = (float) (Mth.atan2(dz, dx) * (double) (180F / (float) Math.PI)) - 90.0F;
+                this.semiAquaticEntity.setYRot(this.rotlerp(this.semiAquaticEntity.getYRot(), f, 90.0F));
+                this.semiAquaticEntity.yBodyRot = this.semiAquaticEntity.getYRot();
+                float swimSpeed = (float) (this.speedModifier * this.semiAquaticEntity.getSwimSpeed());
+                float speed = Mth.lerp(0.125F, this.semiAquaticEntity.getSpeed(), swimSpeed);
+                this.semiAquaticEntity.setSpeed(speed * 1.05F);
+                this.semiAquaticEntity.setDeltaMovement(this.semiAquaticEntity.getDeltaMovement().add(
+                        speed * dx * 0.005,
+                        speed * dy * 0.1,
+                        speed * dz * 0.005
+                ));
             } else {
                 super.tick();
             }
+
         }
     }
 
@@ -356,6 +348,11 @@ public abstract class AbstractSemiAquaticEntity extends ChangedEntity {
             }
 
             return !this.mob.getNavigation().isDone();
+        }
+
+        @Override
+        public boolean requiresUpdateEveryTick() {
+            return true;
         }
 
         public void start() {

@@ -21,7 +21,6 @@ import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DARK_LATEX_PUDDLE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DEEPSLATE_IRIDIUM_ORE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DORMANT_DARK_LATEX;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DORMANT_WHITE_LATEX;
-import static net.foxyas.changedaddon.init.ChangedAddonBlocks.GENERATOR;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.GOO_CORE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.HAND_SCANNER;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.INFORMANT_BLOCK;
@@ -144,7 +143,6 @@ public class ENLanguageProvider extends LanguageProvider {
         addBlock(FOXTA_CAN, "§bFoxta Can§r");
         addBlockFromId(HAND_SCANNER);
         addBlockFromId(PAWS_SCANNER);
-        addBlockFromId(GENERATOR);
         addBlockFromId(GOO_CORE);
         addBlockFromId(INFORMANT_BLOCK);
         addBlockFromId(IRIDIUM_BLOCK);
@@ -193,7 +191,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addAbility("custom_interaction.have_interaction.luminara_beast", "This variant allows toggling the emission of glowing particles.");
         addAbility("custom_interaction.have_interaction.luminara_beast.extra", "Particles emission is currently set to %s");
         addAbility("custom_interaction.have_interaction.luminara_beast.action", "Particles emission has been set to %s");
-        addAbility("custom_interaction.have_interaction.latex_kayla_shark.action", "The glowing state has been set to %s");
+        addAbility("custom_interaction.have_interaction.glow_layer.action", "The glowing state has been set to %s");
         addAbility("dissolve", "Dissolve Ability");
         addAbility("dissolve.warn.too_far", "You are too far from the place to teleport there");
         addAbility("dissolve.warn.wrong_dimension", "i can't find warp in this dimension");
@@ -224,7 +222,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addAbility("wither_wave", "Wither Wave");
         addAbility("teleport", "Teleport");
         addAbility("unfuse", "Unfuse");
-        addAbility("unfuse.description.line1", "Allows the player to unfuse from the slime creature and summon it for battle");
+        addAbility("unfuse.description.line1", "Allows the player to unfuse from the latex creature and summon it for battle");
         addAbility("unfuse.description.line2", "The creature can be fused back by interacting while holding shift");
         addAbility("wind_control", "Wind Control");
         addAbility("wind_control.desc", "Allows The player to use the Wind to boost theyself or others");
@@ -340,6 +338,10 @@ public class ENLanguageProvider extends LanguageProvider {
 
         addEntityFromId(AVALI);
         addEntityFromId(AVALI_ZERGODMASTER);
+        addStasisModifyForEntity(AVALI, "pattern_style", "Modify Feathers Style");
+        addStasisModifyToolTipForEntity(AVALI, "pattern_style", "Change the style of the feathers from your body.");
+        addStasisModifyForEntity(AVALI, "size_scaling", "Modify Size Scaling");
+        addStasisModifyToolTipForEntity(AVALI, "size_scaling", "Change the size scaling from your body.");
         addEntityFromId(BAGEL);
         addEntityFromId(BLUE_LIZARD);
         addEntityFromId(BOREALIS_FEMALE);
@@ -358,6 +360,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityFromId(EXP_6);
         addEntityFromId(EXPERIMENT_009);
         addEntityType(EXPERIMENT_009_BOSS, "Experiment 009");
+        addText("lore." + EXPERIMENT_009.getId().getPath(), "Created within the confines of a laboratory, it was never shown mercy or compassion by most of the scientists who studied it. Those few who dared to sympathize with the creature met tragic ends. After eventually being contained and fragmented into a strange orb of condensed DNA, it did not fade into silence. Instead, it endured—its mind filled with resentment. Now it seeks vengeance against humanity, and against any being that dares to resemble them.");
         addEntityFromId(EXPERIMENT_10);
         addEntityType(EXPERIMENT_10_BOSS, "Experiment 10");
         addEntityFromId(LUMINARCTIC_LEOPARD_FEMALE);
@@ -446,7 +449,7 @@ public class ENLanguageProvider extends LanguageProvider {
         add("deathScreen.select_tf.hardcore", "Continue as a Transfur?");
         add("deathScreen.select_tf.confirm", "Are you sure that you want to respawn as transfur?");
         add("deathScreen.select_tf.confirm.info", "You will not be affected by any untransfur items anymore\nThis means that you will be stuck with whatever form that you respawn §bForever§r");
-        add("deathScreen.select_tf.spawn_as_infected", "Respawn as Transfured");
+        add("deathScreen.select_tf.spawn_as_infected", "Respawn as Transfurred");
         add("deathScreen.select_tf.cancel_spawn_as_infected", "On second Thought, Cancel");
 
         add("itemGroup.changed_addon_main_tab", "Changed Addon Plus");
@@ -614,6 +617,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addItemFromId(PINK_CYAN_SKUNK_SPAWN_EGG);
         addItemFromId(PROTOGEN_SPAWN_EGG);
         addItemFromId(PROTOTYPE_SPAWN_EGG);
+        addItem(CRAFTABLE_PROTOTYPE_SPAWN_EGG, "Craftable Prototype Spawn Egg");
         addItemFromId(PROTOGEN_0SENIA0_SPAWN_EGG);
         addItemFromId(PURO_KIND_FEMALE_SPAWN_EGG);
         addItemFromId(PURO_KIND_MALE_SPAWN_EGG);
@@ -684,5 +688,9 @@ public class ENLanguageProvider extends LanguageProvider {
 
         addStat(ChangedAddonStatRegistry.PATS_GIVEN, "Pats given");
         addStat(ChangedAddonStatRegistry.PATS_RECEIVED, "Pats received");
+        addStat(ChangedAddonStatRegistry.ENTITY_ASSIMILATED, "Entities assimilated while transfurred");
+        addStat(ChangedAddonStatRegistry.ENTITY_TRANSFURED, "Entities transfurred while transfurred");
+
+        add("warn.rei.not.supported.move.items.but.right.container", "Move Items is not supported with this kind of workstation");
     }
 }

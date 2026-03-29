@@ -17,10 +17,7 @@ import net.ltxprogrammer.changed.entity.beast.AquaticEntity;
 import net.ltxprogrammer.changed.entity.variant.GenderedPair;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.init.ChangedAbilities;
-import net.ltxprogrammer.changed.init.ChangedRegistry;
-import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.init.ChangedTransfurVariants;
+import net.ltxprogrammer.changed.init.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.animal.AbstractGolem;
@@ -30,6 +27,7 @@ import net.minecraft.world.entity.monster.piglin.Piglin;
 import net.minecraft.world.entity.monster.piglin.PiglinBrute;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
@@ -275,6 +273,9 @@ public class ChangedAddonTransfurVariants {
     public static final RegistryObject<TransfurVariant<VoidFoxEntity>> VOID_FOX = register("form_void_fox",
             () -> TransfurVariant.Builder.of(ChangedAddonEntities.VOID_FOX)
                     .addAbility(ChangedAddonAbilities.SONAR)
+                    .addAbility(ChangedAddonAbilities.DASH)
+                    .addAbility(ChangedAddonAbilities.DODGE)
+                    .addAbility(ChangedAbilities.TOGGLE_WAVE_VISION)
                     .nightVision()
                     .addAbility(ChangedAbilities.TOGGLE_NIGHT_VISION)
                     .scares(List.of(Creeper.class, Rabbit.class)));
@@ -536,7 +537,8 @@ public class ChangedAddonTransfurVariants {
                     .abilities(List.of(
                                     entityType -> ChangedAddonAbilities.THUNDERBOLT.get(),
                                     entityType -> ChangedAddonAbilities.THUNDER_PATH.get(),
-                                    entityType -> ChangedAddonAbilities.SHOCKWAVE.get()
+                                    entityType -> ChangedAddonAbilities.SHOCKWAVE.get(),
+                                    entityType -> ChangedAddonAbilities.CUSTOM_INTERACTION.get()
                             )
                     )
                     .transfurMode(TransfurMode.ABSORPTION)
@@ -550,7 +552,8 @@ public class ChangedAddonTransfurVariants {
                                     entityType -> ChangedAddonAbilities.WITHER_GRENADE.get(),
                                     entityType -> ChangedAbilities.HYPNOSIS.get(),
                                     entityType -> ChangedAddonAbilities.CLAWS.get(),
-                                    entityType -> ChangedAddonAbilities.LEAP.get()
+                                    entityType -> ChangedAddonAbilities.LEAP.get(),
+                                    entityType -> ChangedAddonAbilities.CUSTOM_INTERACTION.get()
                             )
                     )
                     .transfurMode(TransfurMode.ABSORPTION)
@@ -570,7 +573,8 @@ public class ChangedAddonTransfurVariants {
                                     entityType -> ChangedAddonAbilities.THUNDERBOLT.get(),
                                     entityType -> ChangedAddonAbilities.THUNDER_PATH.get(),
                                     entityType -> ChangedAddonAbilities.SHOCKWAVE.get(),
-                                    entityType -> ChangedAddonAbilities.DODGE.get()
+                                    entityType -> ChangedAddonAbilities.DODGE.get(),
+                                    entityType -> ChangedAddonAbilities.CUSTOM_INTERACTION.get()
                             )
                     )
                     .transfurMode(TransfurMode.ABSORPTION)
@@ -592,7 +596,8 @@ public class ChangedAddonTransfurVariants {
                                     entityType -> ChangedAddonAbilities.WITHER_GRENADE.get(),
                                     entityType -> ChangedAbilities.HYPNOSIS.get(),
                                     entityType -> ChangedAddonAbilities.CLAWS.get(),
-                                    entityType -> ChangedAddonAbilities.LEAP.get()
+                                    entityType -> ChangedAddonAbilities.LEAP.get(),
+                                    entityType -> ChangedAddonAbilities.CUSTOM_INTERACTION.get()
                             )
                     )
                     .transfurMode(TransfurMode.ABSORPTION)
@@ -687,7 +692,7 @@ public class ChangedAddonTransfurVariants {
     @Nullable
     public static List<Component> getVariantComponentIfAny(TransfurVariant<?> transfurVariant, Level level) {
         if (isVariantOC(transfurVariant, level)) {
-            if (transfurVariant.getEntityType().create(level) instanceof IOriginalCharacterEntity iOriginalCharacterEntity) {
+            if (ChangedEntities.getCachedEntity(level, transfurVariant.getEntityType()) instanceof IOriginalCharacterEntity iOriginalCharacterEntity) {
                 return iOriginalCharacterEntity.getOcVariantComponents();
             }
             return OCS.get().get(transfurVariant);
@@ -695,12 +700,12 @@ public class ChangedAddonTransfurVariants {
         return null;
     }
 
+
     public static boolean isVariantOC(TransfurVariant<?> transfurVariant, @Nullable Level level) {
-        if (level != null && transfurVariant.getEntityType()
-                .create(level) instanceof PatronOC) {
+        ChangedEntity cachedEntity = ChangedEntities.getCachedEntity(level, transfurVariant.getEntityType());
+        if (level != null && cachedEntity instanceof PatronOC) {
             return true;
-        } else if (level != null && transfurVariant.getEntityType()
-                .create(level) instanceof IOriginalCharacterEntity) {
+        } else if (level != null && cachedEntity instanceof IOriginalCharacterEntity) {
             return true;
         } else return OCS.get().containsKey(transfurVariant);
     }
@@ -718,6 +723,9 @@ public class ChangedAddonTransfurVariants {
         return new ArrayList<>(humanForms.stream().map(Supplier::get).toList());
     }
 
+    // WHY THE F### isn't this working before?. IS A STATIC FINAL JAVA!.. IS SUPPOSED TO LOAD IN THE START-UP AHHHHHHHHHHHHHHHHHHHHHHHHHHHH
+    // I HAD TO F###ING ADD THE ANNOTATION FOR IT TO WORK!!!!!
+    @Mod.EventBusSubscriber
     public static class Gendered {
         public static final GenderedPair<PuroKindMaleEntity, PuroKindFemaleEntity> PURO_KIND = registerPair(PURO_KIND_MALE, PURO_KIND_FEMALE);
         public static final GenderedPair<SnowLeopardMaleOrganicEntity, SnowLeopardFemaleOrganicEntity> ORGANIC_SNOW_LEOPARD = registerPair(ORGANIC_SNOW_LEOPARD_MALE, ORGANIC_SNOW_LEOPARD_FEMALE);

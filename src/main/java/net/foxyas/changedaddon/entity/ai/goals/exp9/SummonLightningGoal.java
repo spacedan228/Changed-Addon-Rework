@@ -144,6 +144,9 @@ public class SummonLightningGoal extends Goal {
     public void start() {
         lightnings = lightningCountProvider.sample(holder.getRandom());
         castDuration = castDurationProvider.sample(holder.getRandom());
+        if (holder instanceof Experiment009BossEntity boss) {
+            castDuration *= (int) boss.getPhase().getCastModifier();
+        }
         holder.level.playSound(null, holder.getX(), holder.getY(), holder.getZ(), SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.WEATHER, 1, 1);
         holder.getNavigation().stop();
     }
@@ -158,7 +161,8 @@ public class SummonLightningGoal extends Goal {
 
             holder.setDeltaMovement(Vec3.ZERO);
             if (target == null) return;
-            holder.getLookControl().setLookAt(target, 90f, 90f);
+            //holder.getLookControl().setLookAt(target, 90f, 90f);
+            //holder.setYBodyRot(holder.yHeadRot);
 
             if (holder.tickCount % 2 == 0) {
                 ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK,

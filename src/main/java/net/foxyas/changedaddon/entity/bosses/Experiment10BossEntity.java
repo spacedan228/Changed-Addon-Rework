@@ -10,10 +10,7 @@ import net.foxyas.changedaddon.entity.ai.goals.generic.LatexPullEntityGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.DashPunchGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.LeapSmashGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.SimpleAntiFlyingAttack;
-import net.foxyas.changedaddon.entity.api.CustomPatReaction;
-import net.foxyas.changedaddon.entity.api.ICrawlAndSwimAbleEntity;
-import net.foxyas.changedaddon.entity.api.IHasBossMusic;
-import net.foxyas.changedaddon.entity.customHandle.BossAbilitiesHandle;
+import net.foxyas.changedaddon.entity.api.*;
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
@@ -24,7 +21,6 @@ import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedParticles;
-import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
@@ -47,6 +43,7 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.BossEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -60,7 +57,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
-import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -79,12 +75,11 @@ import java.util.UUID;
 import static net.foxyas.changedaddon.event.TransfurEvents.getPlayerVars;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment10BossEntity extends ChangedEntity implements GenderedEntity, CustomPatReaction, PowderSnowWalkable, IHasBossMusic, ICrawlAndSwimAbleEntity {
+public class Experiment10BossEntity extends Experiment10Entity implements IExp10Logic {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment10BossEntity.class, EntityDataSerializers.BOOLEAN);
     private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.RED, ServerBossEvent.BossBarOverlay.NOTCHED_6);
-    private float TpCooldown;
 
     public Experiment10BossEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXPERIMENT_10_BOSS.get(), world);
@@ -125,17 +120,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     protected void applyDefaultBasicPlayerInfo() {
-        this.getBasicPlayerInfo().setSize(1f);
-        this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
-        this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#880015"));
-        this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#880015"));
-        this.getBasicPlayerInfo().setScleraColor(Color3.getColor("#edd725"));
-    }
-
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(PHASE2, false);
+        super.applyDefaultBasicPlayerInfo();
     }
 
     @Override
@@ -202,55 +187,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         return super.getMeleeAttackRangeSqr(target);
     }
 
-    public Color3 getHairColor(int i) {
-        return Color3.getColor("#1f1f1f");
-    }
-
-    @Override
-    public int getTicksRequiredToFreeze() {
-        return 1000;
-    }
-
-    protected boolean targetSelectorTest(LivingEntity livingEntity) {
-        return livingEntity instanceof Player || livingEntity instanceof ServerPlayer || livingEntity.getType().is(ChangedTags.EntityTypes.HUMANOIDS);
-    }
-
-    @Override
-    protected boolean shouldDespawnInPeaceful() {
-        return false;
-    }
-
-    @Override
-    public TransfurMode getTransfurMode() {
-        return TransfurMode.NONE;
-    }
-
-    @Override
-    public HairStyle getDefaultHairStyle() {
-        return BALD.get();
-    }
-
-    @Override
-    public @Nullable List<HairStyle> getValidHairStyles() {
-        return HairStyle.Collection.FEMALE.getStyles();
-    }
-
-    public Color3 getDripColor() {
-        return Color3.getColor("#181818");
-    }
-
-    @Override
-    public Color3 getTransfurColor(TransfurCause cause) {
-        Color3 firstColor = Color3.getColor("#181818");
-        Color3 secondColor = Color3.getColor("#ed1c24");
-        return ColorUtil.lerpTFColor(firstColor, secondColor, this.getUnderlyingPlayer());
-    }
-
-    @Override
-    public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
     @Override
     protected void registerGoals() {
         super.registerGoals();
@@ -277,28 +213,8 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     @Override
-    public @NotNull MobType getMobType() {
-        return MobType.UNDEFINED;
-    }
-
-    @Override
-    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
-        return false;
-    }
-
-    @Override
     public double getMyRidingOffset() {
         return super.getMyRidingOffset();
-    }
-
-    @Override
-    public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return SoundEvents.GENERIC_HURT;
-    }
-
-    @Override
-    public @NotNull SoundEvent getDeathSound() {
-        return SoundEvents.GENERIC_DEATH;
     }
 
     @Override
@@ -331,6 +247,19 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         return super.hurt(source, amount);
     }
 
+    @Override
+    protected void actuallyHurt(@NotNull DamageSource pDamageSource, float pDamageAmount) {
+        super.actuallyHurt(pDamageSource, pDamageAmount);
+
+        float currentHealth = this.getHealth();
+        float maxHealth = this.getMaxHealth();
+
+        if (this.getUnderlyingPlayer() == null && currentHealth <= maxHealth * 0.75f && !isPhase2()) {
+            this.setPhase2(true);
+            level.playSound(null, this.blockPosition(), SoundEvents.PLAYER_ATTACK_CRIT, SoundSource.HOSTILE, 1, 0);
+        }
+    }
+
     private void maybeSendReactionToPlayer(DamageSource source) {
         if (source.getEntity() instanceof Player player) {
             if (this.level().random.nextFloat() <= 0.25f) {
@@ -353,11 +282,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     }
 
     @Override
-    public boolean canChangeDimensions() {
-        return false;
-    }
-
-    @Override
     public void startSeenByPlayer(@NotNull ServerPlayer player) {
         super.startSeenByPlayer(player);
         this.bossInfo.addPlayer(player);
@@ -372,7 +296,23 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
     @Override
     public void customServerAiStep() {
         super.customServerAiStep();
-        this.bossInfo.setProgress(this.getHealth() / this.getMaxHealth());
+
+        float maxHealth = this.getMaxHealth();
+        float currentHealth = this.getHealth();
+        float healthRatio = currentHealth / maxHealth;
+
+        // Se estiver com menos de 50% da vida, simula que 50% é o "cheio" da barra
+        if (healthRatio <= 0.5f) {
+            this.bossInfo.setProgress(healthRatio / 0.5f);
+            if (this.bossInfo.getOverlay() != BossEvent.BossBarOverlay.NOTCHED_10) {
+                this.bossInfo.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
+            }
+        } else {
+            this.bossInfo.setProgress(healthRatio);
+            if (this.bossInfo.getOverlay() != BossEvent.BossBarOverlay.NOTCHED_6) {
+                this.bossInfo.setOverlay(BossEvent.BossBarOverlay.NOTCHED_6);
+            }
+        }
     }
 
     @Override
@@ -380,34 +320,14 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         return Gender.FEMALE;
     }
 
-    public boolean isPhase2() {
-        return this.entityData.get(PHASE2);
-    }
-
-    public void setPhase2(boolean set) {
-        this.entityData.set(PHASE2, set);
-    }
-
-    public void readAdditionalSaveData(CompoundTag tag) {
-        super.readAdditionalSaveData(tag);
-        if (tag.contains("Tp_Cooldown"))
-            TpCooldown = tag.getFloat("Tp_Cooldown");
-        if (tag.contains("Phase2")) {
-            setPhase2(tag.getBoolean("Phase2"));
-        }
-    }
-
     @Override
-    public void addAdditionalSaveData(CompoundTag tag) {
-        super.addAdditionalSaveData(tag);
-        tag.putFloat("Tp_Cooldown", TpCooldown);
-        tag.putBoolean("Phase2", isPhase2());
+    protected EntityDataAccessor<Boolean> getPhase2DataAccessor() {
+        return PHASE2;
     }
 
     @Override
     public void baseTick() {
         super.baseTick();
-
         if (firstTick) {
             applyDefaultBasicPlayerInfo();
         }
@@ -415,16 +335,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         SetDefense(this);
         SetAttack(this);
         SetSpeed(this);
-        TpEntity(this);
         this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.35f);
-        thisBurstAttack();
-    }
-
-    private void thisBurstAttack() {
-        if (TpCooldown <= 0) {
-            BossAbilitiesHandle.BurstAttack(this);
-            this.TpCooldown = 50;
-        }
     }
 
     public void SetDefense(Experiment10BossEntity entity) {
@@ -464,48 +375,6 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             }
         } else {
             entity.getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(AttibuteChange);
-        }
-    }
-
-    public void TpEntity(Experiment10BossEntity entity) {
-        double deltaZ;
-        double distance;
-        double deltaX;
-        double deltaY;
-        if (entity.getTarget() == null) {
-            return; //stop if target = @null
-        }
-
-
-        Entity Target = entity.getTarget();
-        LivingEntity Targets = entity.getLastHurtByMob();
-        deltaX = Target.getX() - entity.getX();
-        deltaY = Target.getY() - entity.getY();
-        deltaZ = Target.getZ() - entity.getZ();
-        distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
-
-        if (TpCooldown == 0) {
-            if (distance > 3) {
-                if (entity.getLastHurtByMob() == Target) {
-                    entity.teleportTo(Target.getX(), Target.getY(), Target.getZ());
-                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.HOSTILE, 10, 1, true);
-                    TpCooldown = 40;
-                } else {
-                    if (Targets != null && !(Targets instanceof ServerPlayer)) {
-                        entity.setTarget(Targets);
-                    } else if (Targets instanceof ServerPlayer serverPlayer) {
-                        if (serverPlayer.gameMode.getGameModeForPlayer() != GameType.CREATIVE && serverPlayer.gameMode.getGameModeForPlayer() != GameType.SPECTATOR) {
-                            entity.setTarget(Targets);
-                        }
-                    }// Check if the entity in not null and is instance of server player if is will check if the gametype and if is not Creative and Spectator return true
-                    entity.teleportTo(Target.getX(), Target.getY(), Target.getZ());
-                    this.level.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), ChangedSounds.CARDBOARD_BOX_OPEN.get(), SoundSource.HOSTILE, 10, 1, true);
-                    TpCooldown = 40;
-                }
-
-            }
-        } else {
-            TpCooldown -= 0.5f;
         }
     }
 
@@ -552,6 +421,36 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
         this.addEffect(mobEffectInstance);
     }
 
+    @Override
+    public boolean canCauseGrabDamage() {
+        return true;
+    }
+
+    @Override
+    public void applyAlphaAttributesModifiers(LivingEntity entity, float normalized) {
+        IAlphaAbleEntity.apply(entity, Attributes.MAX_HEALTH, IAlphaAbleEntity.MAX_HEALTH, "Alpha Max Health", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ATTACK_DAMAGE, IAlphaAbleEntity.ATTACK_DAMAGE, "Alpha Attack Damage", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ARMOR, IAlphaAbleEntity.ARMOR, "Alpha Armor", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ARMOR_TOUGHNESS, IAlphaAbleEntity.ARMOR_TOUGHNESS, "Alpha Armor Toughness", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ForgeMod.STEP_HEIGHT_ADDITION.get(), IAlphaAbleEntity.STEP_HEIGHT, "Alpha Step Height", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), IAlphaAbleEntity.TRANSFUR_DAMAGE, "Alpha Transfur Damage", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ATTACK_KNOCKBACK, IAlphaAbleEntity.ATTACK_KNOCKBACK, "Alpha Knockback", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ATTACK_SPEED, IAlphaAbleEntity.ATTACK_SPEED, "Alpha Attack Speed", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ForgeMod.ENTITY_REACH.get(), IAlphaAbleEntity.ENTITY_REACH, "Alpha Attack Reach", normalized * 0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ForgeMod.BLOCK_REACH.get(), IAlphaAbleEntity.BLOCK_REACH, "Alpha Block Reach", normalized * 0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ChangedAttributes.JUMP_STRENGTH.get(), IAlphaAbleEntity.JUMP_STRENGTH, "Alpha Jump Strength", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    }
+
     private enum GearTier {
         LOW,
         MID,
@@ -569,8 +468,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             GearTier tier = getGearTier(target);
 
             switch (tier) {
-                case LOW -> event.setAmount(event.getAmount() * 0.75F);
-                case MID -> event.setAmount(event.getAmount());
+                case LOW, MID -> event.setAmount(event.getAmount());
                 case HIGH -> event.setAmount(event.getAmount() * 1.25F);
             }
         }
@@ -583,7 +481,7 @@ public class Experiment10BossEntity extends ChangedEntity implements GenderedEnt
             GearTier tier = getGearTier(source);
 
             switch (tier) {
-                case LOW -> event.setAmount(event.getAmount() * 3.5F);
+                case LOW -> event.setAmount(event.getAmount() * 2F);
                 case MID, HIGH -> event.setAmount(event.getAmount());
             }
         }

@@ -12,6 +12,7 @@
     "blocks.BlockBehaviourMixin",
     "blocks.BlockMixin",
     "blocks.BlockStateBaseMixin",
+    "blocks.CropBlockAccess",
     "blocks.CrossCollisionBlockMixin",
     "blocks.DroppedSyringeMixin",
     "blocks.FluidsMixin",
@@ -38,8 +39,6 @@
     "entity.changedEntity.DarkLatexWolfPupMixin",
     "entity.changedEntity.LivingEntityChangedEntityMixin",
     "entity.changedEntity.MobChangedEntityMixin",
-    "entity.elytraFly.LivingEntityMixin",
-    "entity.elytraFly.PlayerMixin",
     "entity.goals.AvoidEntityGoalMixin",
     "entity.goals.ChangedEntityGoalsMixin",
     "entity.goals.MeleeAttackGoalMixin",
@@ -57,6 +56,7 @@
     "items.ItemStackMixin",
     "items.LatexFlaskMixin",
     "items.LatexSyringeMixin",
+    "level.pathfinder.NodeMixin",
     "level.storage.loot.LootTableAccessor",
     "mods.changed.ChangedMixin",
     "mods.changed.FacilityMixin",
@@ -66,6 +66,8 @@
     "mods.changed.ProcessTransfurMixin",
     "mods.changed.TransfurVariantMixin",
     "mods.changed.WhiteLatexTransportInterfaceMixin",
+    "mods.mekanism.LuminarCrystalLargeMixin",
+    "mods.mekanism.LuminarCrystalSmallMixin",
     "world.ConsumeItemTrigger",
     "world.DataFixTypesMixin",
     "world.LevelStorageAccessMixin",
@@ -95,7 +97,6 @@
     "client.renderer.PostChainMixin",
     "client.renderer.layer.LatexHeldEntityLayerMixin",
     "cmrs.MixinPoseStack",
-    "entity.elytraFly.LocalPlayerMixin",
     "entity.player.LocalPlayerMixin",
     "entity.projectiles.GasParticleMixin",
     "mods.changed.AbilityOverlayMixin",
@@ -103,6 +104,7 @@
     "mods.changed.AbstractRadialScreenMixin",
     "mods.changed.AccessoryLayerMixin",
     "mods.changed.ChangedClientMixin",
-    "mods.changed.ExoskeletonModelAccessor"
+    "mods.changed.ExoskeletonModelAccessor",
+    "mods.changed.FormRenderHandleMixin"
   ]
 }

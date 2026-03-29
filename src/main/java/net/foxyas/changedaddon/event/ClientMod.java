@@ -26,9 +26,8 @@ public class ClientMod {
     @SubscribeEvent
     public static void clientLoad(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            MenuScreens.register(ChangedAddonMenus.GENERATORGUI.get(), GeneratorguiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.CATALYZER_GUI.get(), CatalyzerGuiScreen::new);
-            MenuScreens.register(ChangedAddonMenus.UNIFUSER_GUI.get(), UnifuserGuiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.CATALYZER_MENU.get(), CatalyzerGuiScreen::new);
+            MenuScreens.register(ChangedAddonMenus.UNIFUSER_MENU.get(), UnifuserGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.INFORMANT_MENU.get(), InformantGuiScreen::new);
             MenuScreens.register(ChangedAddonMenus.PROTOTYPE_MENU.get(), PrototypeMenuScreen::new);
             MenuScreens.register(ChangedAddonMenus.MERCHANT_MENU.get(), CustomMerchantScreen::new);

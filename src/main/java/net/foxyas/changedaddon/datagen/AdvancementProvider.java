@@ -3,14 +3,12 @@ package net.foxyas.changedaddon.datagen;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.advancements.critereon.UsedItemAmountTrigger;
 import net.foxyas.changedaddon.datagen.customData.AdvancementWriter;
+import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.init.ChangedItems;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.PackOutput;
@@ -62,9 +60,13 @@ public class AdvancementProvider extends net.minecraft.data.advancements.Advance
     public static final AdvancementWriter advancementWrite = new AdvancementWriter();
 
     protected final PackOutput output;
+    protected final ExistingFileHelper fileHelperIn;
+    protected final CompletableFuture<HolderLookup.Provider> lookup;
 
     public AdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, ExistingFileHelper fileHelperIn) {
         super(output, lookup, List.of(AdvancementProvider::generate));
+        this.lookup = lookup;
+        this.fileHelperIn = fileHelperIn;
         this.output = output;
     }
 
@@ -119,6 +121,26 @@ public class AdvancementProvider extends net.minecraft.data.advancements.Advance
 
         advancementWrite.write(cache, output, ResourceLocation.parse("changed_addon:snepsi_addictive"), snepsiBuilder);
         advancementWrite.write(cache, output, ResourceLocation.parse("changed_addon:foxta_addictive"), foxtaBuilder);
+
+        Advancement.Builder latexInsulatorAdvancement = Advancement.Builder.advancement()
+                .parent(ResourceLocation.fromNamespaceAndPath("changed_addon", "advancements_root"))
+                .display(
+                        ChangedAddonItems.SNEPSI.get(),
+                        Component.translatable("advancements.latex_insulator_advancement.title"),
+                        Component.translatable("advancements.latex_insulator_advancement.descr"),
+                        null,
+                        FrameType.GOAL,
+                        true,
+                        true,
+                        true
+                )
+                .addCriterion(
+                        "place",
+                        ItemUsedOnLocationTrigger.TriggerInstance.placedBlock(ChangedAddonBlocks.LATEX_INSULATOR.get())
+                )
+                .rewards(AdvancementRewards.Builder.experience(0).build());
+
+        advancementWrite.write(cache, output, ResourceLocation.parse("changed_addon:latex_insulator"), latexInsulatorAdvancement);
 
         AdvancementRewards.Builder formsRecipes = new AdvancementRewards.Builder();
         for (String id : ADDON_FORM_RECIPES) {

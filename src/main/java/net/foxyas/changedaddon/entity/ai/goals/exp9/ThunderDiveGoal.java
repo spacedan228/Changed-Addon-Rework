@@ -15,6 +15,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -69,16 +70,14 @@ public class ThunderDiveGoal extends Goal {
 
             int topY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(x), Mth.floor(z));
 
-            if (level.dimensionType().hasCeiling()) {
-                // Começa do teto e desce até achar espaço
-                int maxY = level.getHeight() - 1;
-                for (int y = maxY; y > 0; y--) {
-                    BlockPos checkPos = new BlockPos((int) x, y, (int) z);
-                    // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
-                    if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(checkPos.above())) {
-                        topY = y;
-                        break;
-                    }
+            // Começa do teto e desce até achar espaço
+            int minY = level.getMinBuildHeight() - 1;
+            for (int y = minY; y < (level.getMaxBuildHeight() - 1); y++) {
+                BlockPos checkPos = new BlockPos((int) x, y, (int) z);
+                // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
+                if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(checkPos.above())) {
+                    topY = y;
+                    break;
                 }
             }
 
@@ -101,6 +100,9 @@ public class ThunderDiveGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        if (mob.isInWater()) {
+            return false;
+        }
         LivingEntity t = mob.getTarget();
         if (cooldown > 0) {
             cooldown--;
@@ -153,8 +155,10 @@ public class ThunderDiveGoal extends Goal {
         ticks++;
 
         LivingEntity t = mob.getTarget();
+        LookControl lookControl = mob.getLookControl();
         if (t != null) {
-            mob.getLookControl().setLookAt(t, 90f, 90f);
+            lookControl.setLookAt(t, 90f, 90f);
+            mob.setYBodyRot(mob.yHeadRot);
         }
 
         switch (phase) {
@@ -187,13 +191,13 @@ public class ThunderDiveGoal extends Goal {
                 if (t != null) {
                     mob.setDeltaMovement(lateral.x, -Math.abs(diveSpeedY), lateral.z);
                     Vec3 position = mob.position().add(lateral.x, -Math.abs(diveSpeedY), lateral.z);
-                    mob.getLookControl().setLookAt(position.x, position.y, position.z, 90f, 90f);
+                    lookControl.setLookAt(position.x, position.y, position.z, 90f, 90f);
                     affectNearbyEntities(lateral);
                 } else {
                     // sem alvo, só cai
                     mob.setDeltaMovement(0, -Math.abs(diveSpeedY), 0);
                     Vec3 position = mob.position().add(0, -Math.abs(diveSpeedY), 0);
-                    mob.getLookControl().setLookAt(position.x, position.y, position.z, 90f, 90f);
+                    lookControl.setLookAt(position.x, position.y, position.z, 90f, 90f);
                     affectNearbyEntities(new Vec3(0, -Math.abs(diveSpeedY), 0));
                 }
 

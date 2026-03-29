@@ -25,12 +25,17 @@ public class UnifuserGuiMenu extends AbstractMenu {
     private final UnifuserBlockEntity unifuser;
     private final BlockPos blockPos;
 
+    protected final SlotItemHandler slot1;
+    protected final SlotItemHandler slot2;
+    protected final SlotItemHandler slot3;
+    protected final SlotItemHandler slot4;
+
     public UnifuserGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         this(id, inv, extraData.readBlockPos());
     }
 
     public UnifuserGuiMenu(int id, Inventory inv, BlockPos pos) {
-        super(ChangedAddonMenus.UNIFUSER_GUI.get(), id);
+        super(ChangedAddonMenus.UNIFUSER_MENU.get(), id);
         this.entity = inv.player;
         this.level = inv.player.level;
 
@@ -44,29 +49,44 @@ public class UnifuserGuiMenu extends AbstractMenu {
         createPlayerHotbar(inv, 12, 21);
         createPlayerInventory(inv, 12, 21);
 
-        addSlot(new SlotItemHandler(internal, 0, 15, 45) {
+
+        //35 is the last slot before this
+        SlotItemHandler slot1 = new SlotItemHandler(internal, 0, 15, 45) { //36
 
             @Override
             public boolean mayPlace(@NotNull ItemStack itemstack) {
                 return true;
             }
-        });
-        addSlot(new SlotItemHandler(internal, 3, 155, 57) {
+        };
+
+        this.slot1 = slot1;
+        addSlot(slot1);
+
+        SlotItemHandler slot2 = new SlotItemHandler(internal, 1, 15, 70);
+        this.slot2 = slot2;
+        addSlot(slot2); //37
+
+        SlotItemHandler slot3 = new SlotItemHandler(internal, 2, 50, 57) { //38
+
+            @Override
+            public boolean mayPlace(@NotNull ItemStack itemstack) {
+                return itemstack.isEmpty() || itemstack.getItem() == ChangedAddonItems.CATALYZED_DNA.get() || itemstack.is(ChangedItems.BLOOD_SYRINGE.get())
+                        || itemstack.is(ChangedItems.LATEX_SYRINGE.get());
+            }
+        };
+        this.slot3 = slot3;
+        addSlot(slot3);
+
+        SlotItemHandler slot4 = new SlotItemHandler(internal, 3, 155, 57) { //39
 
             @Override
             public boolean mayPlace(@NotNull ItemStack stack) {
                 return false;
             }
-        });
-        addSlot(new SlotItemHandler(internal, 2, 50, 57) {
+        };
+        this.slot4 = slot4;
+        addSlot(slot4);
 
-            @Override
-            public boolean mayPlace(@NotNull ItemStack itemstack) {
-                return itemstack.getItem() == ChangedAddonItems.CATALYZED_DNA.get() || itemstack.is(ChangedItems.BLOOD_SYRINGE.get())
-                        || itemstack.is(ChangedItems.LATEX_SYRINGE.get());
-            }
-        });
-        addSlot(new SlotItemHandler(internal, 1, 15, 70));
     }
 
     public UnifuserBlockEntity getUnifuser() {
@@ -84,5 +104,21 @@ public class UnifuserGuiMenu extends AbstractMenu {
 
     public BlockPos getBlockPos() {
         return blockPos;
+    }
+
+    public SlotItemHandler getOutputSlot() {
+        return slot4;
+    }
+
+    public SlotItemHandler getSyringeSlot() {
+        return slot3;
+    }
+
+    public SlotItemHandler getBottomSlot() {
+        return slot2;
+    }
+
+    public SlotItemHandler getTopSlot() {
+        return slot1;
     }
 }

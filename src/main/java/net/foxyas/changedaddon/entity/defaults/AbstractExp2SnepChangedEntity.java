@@ -1,7 +1,6 @@
 package net.foxyas.changedaddon.entity.defaults;
 
-import net.foxyas.changedaddon.entity.api.CustomPatReaction;
-import net.foxyas.changedaddon.entity.api.ICoatLikeEntity;
+import net.foxyas.changedaddon.entity.api.*;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
@@ -34,6 +33,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -52,7 +52,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard implements ICoatLikeEntity, CustomPatReaction {
+public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard implements ICoatLikeEntity, CustomPatReaction, ISafeChangedEntity, IDynamicRideOffsetEntity, ChangedEntityExtension {
     protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.BYTE);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     protected static final EntityDataAccessor<Boolean> UNFUSED_FROM_HOST = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.BOOLEAN);
@@ -63,6 +63,11 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
 
     public static LootTable.@NotNull Builder getLoot() {
         return LootTable.lootTable();
+    }
+
+    @Override
+    public boolean shouldScareVillagers(ChangedEntity entity, AbstractVillager villager) {
+        return ISafeChangedEntity.super.shouldScareVillagers(entity, villager);
     }
 
     protected void registerGoals() {
@@ -89,6 +94,24 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
         this.entityData.define(DATA_OWNER_UUID_ID, Optional.empty());
         this.entityData.define(UNFUSED_FROM_HOST, false);
 
+    }
+
+    @Override
+    public int getDripParticleMultiplier() {
+        int dripParticleMultiplier = ChangedEntityExtension.super.getDripParticleMultiplier();
+        if (this.isUnfusedFromHost()) {
+            return dripParticleMultiplier * 4;
+        }
+        return dripParticleMultiplier;
+    }
+
+    @Override
+    public float getDripRate(float damage) {
+        float dripRate = super.getDripRate(damage);
+        if (this.isUnfusedFromHost()) {
+            return dripRate * 4;
+        }
+        return dripRate;
     }
 
     @Override

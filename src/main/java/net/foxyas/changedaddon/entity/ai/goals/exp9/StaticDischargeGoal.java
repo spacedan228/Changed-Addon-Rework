@@ -12,6 +12,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -115,7 +116,15 @@ public class StaticDischargeGoal extends Goal {
             }
 
             level.getEntities(holder, aabb, entity -> entity.distanceToSqr(holder) <= aoeSqr).forEach(entity -> {
-                        entity.hurt(target.level().damageSources().lightningBolt(), damageProvider.sample(random));
+                        DamageSource pSource;
+                        if (holder instanceof Experiment009BossEntity bossEntity) {
+                            pSource = bossEntity.getThunderDmg();
+                        } else pSource = target.level().damageSources().lightningBolt();
+                        float sample = damageProvider.sample(random);
+                        if (holder instanceof Experiment009BossEntity experiment009BossEntity) {
+                            sample *= experiment009BossEntity.getPhase().getDamageModifier(holder);
+                        }
+                        entity.hurt(pSource, sample);
                         Vec3 direction = entity.position().subtract(holder.position());
 
                         direction = direction.normalize();

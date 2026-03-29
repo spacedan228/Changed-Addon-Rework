@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
 import net.foxyas.changedaddon.entity.ai.*;
 import net.foxyas.changedaddon.entity.api.TamableLatexEntityFavors;
+import net.foxyas.changedaddon.entity.api.TamableLatexEntityWithTameFunction;
 import net.foxyas.changedaddon.menu.TamedLatexInventoryMenu;
 import net.foxyas.changedaddon.menu.TamedLatexMenu;
 import net.foxyas.changedaddon.network.syncher.ChangedAddonEntityDataSerializers;
@@ -31,7 +32,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
@@ -59,7 +59,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public abstract class AbstractExp2SnepChangedEntityFavors extends AbstractExp2SnepChangedEntity implements TamableLatexEntityFavors {
+public abstract class AbstractExp2SnepChangedEntityFavors extends AbstractExp2SnepChangedEntity implements TamableLatexEntityFavors, TamableLatexEntityWithTameFunction {
     public static final int OWNER_HOSTILE_DURATION_TICKS = 600;
     //protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(AbstractCanTameChangedEntityFavors.class, EntityDataSerializers.BYTE);
     //protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(AbstractCanTameChangedEntityFavors.class, EntityDataSerializers.OPTIONAL_UUID);
@@ -91,6 +91,11 @@ public abstract class AbstractExp2SnepChangedEntityFavors extends AbstractExp2Sn
 
     public @Nullable LatexInventory getInventory() {
         return inventory;
+    }
+
+    @Override
+    public void setInventory(@Nullable LatexInventory inventory) {
+        this.inventory = inventory;
     }
 
     public @Nullable GrabEntityAbilityInstance getGrabAbility() {
@@ -422,6 +427,11 @@ public abstract class AbstractExp2SnepChangedEntityFavors extends AbstractExp2Sn
         return true;
     }
 
+    @Override
+    public void tameEntityForPlayer(Player player) {
+        this.tame(player);
+    }
+
     public void tame(Player player) {
         this.setTame(true);
         this.setFollowOwner(true);
@@ -487,14 +497,14 @@ public abstract class AbstractExp2SnepChangedEntityFavors extends AbstractExp2Sn
                 if (!player.getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
-                boolean isTransfured = ProcessTransfur.isPlayerTransfurred(player);
+                boolean isTransfurred = ProcessTransfur.isPlayerTransfurred(player);
 
-                if (!isTransfured && this.random.nextInt(2) == 0) { // One in 2 chance
+                if (!isTransfurred && this.random.nextInt(2) == 0) { // One in 2 chance
                     this.tame(player);
                     this.navigation.stop();
                     this.setTarget(null);
                     this.level.broadcastEntityEvent(this, (byte) 7);
-                } else if (isTransfured && this.random.nextInt(12) == 0) { //One in 12
+                } else if (isTransfurred && this.random.nextInt(12) == 0) { //One in 12
                     this.tame(player);
                     this.navigation.stop();
                     this.setTarget(null);
@@ -635,6 +645,11 @@ public abstract class AbstractExp2SnepChangedEntityFavors extends AbstractExp2Sn
             else
                 this.inventory.setItem(LatexInventory.SLOT_OFFHAND, itemStack);
         }
+    }
+
+    @Override
+    public void copyTraitsFrom(IAbstractChangedEntity entity) {
+        super.copyTraitsFrom(entity);
     }
 
     @Override

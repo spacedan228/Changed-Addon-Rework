@@ -20,7 +20,6 @@ import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DARK_LATEX_PUDDLE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DEEPSLATE_IRIDIUM_ORE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DORMANT_DARK_LATEX;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.DORMANT_WHITE_LATEX;
-import static net.foxyas.changedaddon.init.ChangedAddonBlocks.GENERATOR;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.GOO_CORE;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.HAND_SCANNER;
 import static net.foxyas.changedaddon.init.ChangedAddonBlocks.INFORMANT_BLOCK;
@@ -143,7 +142,6 @@ public class HULanguageProvider extends LanguageProvider {
         addBlock(FOXTA_CAN, "§bFoxtás doboz§r");
         addBlock(HAND_SCANNER, "Kézérzékelő");
         addBlock(PAWS_SCANNER, "Mancsérzékelő");
-        addBlock(GENERATOR, "Generátor");
         addBlock(GOO_CORE, "Ragacsmag");
         addBlock(INFORMANT_BLOCK, "Informátor blokk");
         addBlock(IRIDIUM_BLOCK, "Irídiumblokk");
@@ -192,7 +190,7 @@ public class HULanguageProvider extends LanguageProvider {
         addAbility("custom_interaction.have_interaction.luminara_beast", "Ez a változat lehetővé teszi az izzó részecskék kibocsátásának ki-/bekapcsolását.");
         addAbility("custom_interaction.have_interaction.luminara_beast.extra", "Jelenlegi részecskekibocsátás: %s");
         addAbility("custom_interaction.have_interaction.luminara_beast.action", "Részecskekibocsátás átállítva %sra");
-        addAbility("custom_interaction.have_interaction.latex_kayla_shark.action", "Ragyogó állapot %sra lett beállítva");
+        addAbility("custom_interaction.have_interaction.glow_layer.action", "Ragyogó állapot %sra lett beállítva");
         addAbility("dissolve", "Oldódás");
         addAbility("dissolve.warn.too_far", "Túl messze vagy a helytől, hogy oda teleportálj");
         addAbility("dissolve.warn.wrong_dimension", "Nem találok iszapot ebben a dimenzióban");
@@ -339,6 +337,10 @@ public class HULanguageProvider extends LanguageProvider {
 
         addEntityFromId(AVALI);
         addEntityFromId(AVALI_ZERGODMASTER);
+        addStasisModifyForEntity(AVALI, "pattern_style", "Tollak stílusának módosítása");
+        addStasisModifyToolTipForEntity(AVALI, "pattern_style", "Változtasd meg a tollak stílusát a testeden.");
+        addStasisModifyForEntity(AVALI, "size_scaling", "Méretezés módosítása");
+        addStasisModifyToolTipForEntity(AVALI, "size_scaling", "Módosítsa a méretezést a testéről.");
         addEntityFromId(BAGEL);
         addEntityType(BLUE_LIZARD, "Kék gyík");
         addEntityType(BOREALIS_FEMALE, "Hím Borealis");
@@ -357,6 +359,7 @@ public class HULanguageProvider extends LanguageProvider {
         addEntityType(EXP_6, "6-os kísérlet");
         addEntityType(EXPERIMENT_009, "009-es kísérlet");
         addEntityType(EXPERIMENT_009_BOSS, "009-es kísérlet");
+        addText("lore." + EXPERIMENT_009.getId().getPath(), "Egy laboratórium falai között létrehozva, a legtöbb tudós, aki tanulmányozta, soha nem mutatott irgalmat vagy együttérzést. Azok a kevesek, akik mertek szimpatizálni a lénnyel, tragikus véget értek. Miután végül bezárták és egy furcsa, sűrített DNS-gömbbé darabolták, nem némult el. Ehelyett fennmaradt – elméje tele volt nehezteléssel. Most bosszút áll az emberiségen, és minden olyan lényen, amely mer rájuk hasonlítani.");
         addEntityType(EXPERIMENT_10, "10-es kísérlet");
         addEntityType(EXPERIMENT_10_BOSS, "10-es kísérlet");
         addEntityType(LUMINARCTIC_LEOPARD_FEMALE, "Nőstény fénylő párduc");
@@ -628,6 +631,7 @@ public class HULanguageProvider extends LanguageProvider {
         addItem(PINK_CYAN_SKUNK_SPAWN_EGG, "Rózsaszín-türkizkék borzot idéző tojás");
         addItem(PROTOGEN_SPAWN_EGG, "Protogenidéző tojás");
         addItem(PROTOTYPE_SPAWN_EGG, "Prototípusidéző tojás");
+        addItem(CRAFTABLE_PROTOTYPE_SPAWN_EGG, "Barkácsolható Prototípusidéző tojás");
         addItem(PROTOGEN_0SENIA0_SPAWN_EGG, "Protogen 0senia0-t idéző tojás");
         addItem(PURO_KIND_FEMALE_SPAWN_EGG, "Nőstény Puro-félét idéző tojás");
         addItem(PURO_KIND_MALE_SPAWN_EGG, "Hím Puro-félét idéző tojás");
@@ -698,5 +702,9 @@ public class HULanguageProvider extends LanguageProvider {
 
         addStat(ChangedAddonStatRegistry.PATS_GIVEN, "Simogatások adva");
         addStat(ChangedAddonStatRegistry.PATS_RECEIVED, "Simogatások fogadva");
+        addStat(ChangedAddonStatRegistry.ENTITY_ASSIMILATED, "Entitások beolvaszva miközben transzfurált állapotban van");
+        addStat(ChangedAddonStatRegistry.ENTITY_TRANSFURED, "Entitások transzfurálva miközben transzfurált állapotban van");
+
+        add("warn.rei.not.supported.move.items.but.right.container", "Az elemek áthelyezése nem támogatott ennél a munkaállomásnál");
     }
 }

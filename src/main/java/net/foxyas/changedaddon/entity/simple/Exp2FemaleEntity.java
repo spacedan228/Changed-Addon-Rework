@@ -98,14 +98,14 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
                 if (!player.getAbilities().instabuild) {
                     itemstack.shrink(1);
                 }
-                boolean isTransfured = ProcessTransfur.isPlayerTransfurred(player);
+                boolean isTransfurred = ProcessTransfur.isPlayerTransfurred(player);
 
-                if (!isTransfured && this.random.nextInt(2) == 0) { // One in 2 chance
+                if (!isTransfurred && this.random.nextInt(2) == 0) { // One in 2 chance
                     this.tame(player);
                     this.navigation.stop();
                     this.setTarget(null);
                     this.level.broadcastEntityEvent(this, (byte) 7);
-                } else if (isTransfured && this.random.nextInt(12) == 0) { //One in 12
+                } else if (isTransfurred && this.random.nextInt(12) == 0) { //One in 12
                     this.tame(player);
                     this.navigation.stop();
                     this.setTarget(null);
@@ -180,19 +180,6 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
     @Override
     public double getMyRidingOffset() {
         return super.getMyRidingOffset();
-    }
-
-    public double getTorsoYOffset(ChangedEntity self) {
-        float ageAdjusted = (float) self.tickCount * 0.33333334F * 0.25F * 0.15F;
-        float ageSin = Mth.sin(ageAdjusted * 3.1415927F * 0.5F);
-        float ageCos = Mth.cos(ageAdjusted * 3.1415927F * 0.5F);
-        float bpiSize = (self.getBasicPlayerInfo().getSize(this) - 1.0F) * 2.0F;
-        return Mth.lerp(Mth.lerp(1.0F - Mth.abs(Mth.positiveModulo(ageAdjusted, 2.0F) - 1.0F), ageSin * ageSin * ageSin * ageSin, 1.0F - ageCos * ageCos * ageCos * ageCos), 0.95F, 0.87F) + bpiSize;
-    }
-
-    public double getTorsoYOffsetForFallFly(ChangedEntity self) {
-        float bpiSize = (self.getBasicPlayerInfo().getSize(this) - 1.0F) * 2.0F;
-        return 0.375 + bpiSize;
     }
 
     @Override

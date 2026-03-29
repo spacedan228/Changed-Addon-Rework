@@ -39,7 +39,7 @@ public class LightningComboAttackGoal extends Goal {
     protected LivingEntity target;
     protected int cooldown;
     protected int attacks;
-    protected Vec3 attackPos;
+    protected Vec3 attackPos = Vec3.ZERO;
     protected int aboveWaterY;
     protected int castDuration;
     protected int wasBlocked;
@@ -101,10 +101,14 @@ public class LightningComboAttackGoal extends Goal {
     public void start() {
         attacks = attackCountProvider.sample(random);
         castDuration = castDurationProvider.sample(random);
+        if (holder instanceof Experiment009BossEntity boss) {
+            castDuration *= (int) boss.getPhase().getCastModifier();
+        }
         pickAttackPos();
 
         holder.getNavigation().stop();
-        holder.getLookControl().setLookAt(target);
+        if (target.isRemoved() && target.isDeadOrDying()) return;
+        holder.getLookControl().setLookAt(target, 180, 180);
     }
 
     protected void pickAttackPos() {
@@ -125,7 +129,8 @@ public class LightningComboAttackGoal extends Goal {
         Level level = holder.level;
 
         if (target != null) {
-            holder.getLookControl().setLookAt(target, 30, 30);
+            if (target.isRemoved() && target.isDeadOrDying()) return;
+            holder.getLookControl().setLookAt(target, 180, 180);
         }
 
         if (wasBlocked > 0) {
@@ -233,7 +238,6 @@ public class LightningComboAttackGoal extends Goal {
         target = null;
         cooldown = cooldownProvider.sample(random);
         attacks = 0;
-        attackPos = null;
         castDuration = 0;
         wasBlocked = 0;
         if (holder instanceof Experiment009BossEntity exp9) {

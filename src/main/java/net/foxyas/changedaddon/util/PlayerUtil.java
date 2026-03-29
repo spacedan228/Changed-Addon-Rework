@@ -2,16 +2,22 @@ package net.foxyas.changedaddon.util;
 
 import com.google.common.base.Predicates;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.client.gui.TransfurSoundsGuiScreen;
 import net.foxyas.changedaddon.entity.simple.AbstractSnowFoxEntity;
+import net.foxyas.changedaddon.event.TransfurEvents;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.ltxprogrammer.changed.ability.AbstractAbility;
+import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.beast.AbstractAquaticEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.world.LatexCoverGetter;
@@ -20,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -38,8 +45,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -49,7 +55,7 @@ public class PlayerUtil {
     public static final ClipContext.ShapeGetter BLOCK_COLLISION = ClipContext.Block.COLLIDER;
     public static final Predicate<Entity> NON_SPECTATOR = entity -> !entity.isSpectator();
 
-    public static void TransfurPlayer(Player player, String id, float progress) {
+    public static void transfurPlayer(Player player, String id, float progress) {
         ResourceLocation form = ResourceLocation.tryParse(id);
         TransfurVariant<?> latexVariant = form == null ? null : ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
         if (latexVariant == null) return;
@@ -57,19 +63,35 @@ public class PlayerUtil {
         ProcessTransfur.setPlayerTransfurVariant(player, latexVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), progress);
     }
 
-    public static void TransfurPlayerAndLoadData(Player player, String id, CompoundTag data, float progress) {
+    public static void transfurPlayerAndLoadData(Player player, String id, CompoundTag data, float progress) {
         ResourceLocation form = ResourceLocation.tryParse(id);
         TransfurVariant<?> latexVariant = form == null ? null : ChangedRegistry.TRANSFUR_VARIANT.get().getValue(form);
-        if (latexVariant == null) return;
-        var tf = ProcessTransfur.setPlayerTransfurVariant(player, latexVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), progress);
-        if (tf != null) {
+        transfurPlayerAndLoadData(player, latexVariant, data, progress);
+    }
+
+    public static void transfurPlayerAndLoadData(Player player, TransfurVariant<?> latexVariant, CompoundTag data, float progress) {
+        transfurPlayerAndLoadData(player, latexVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), data, progress);
+    }
+
+    public static void transfurPlayerAndLoadData(Player player, TransfurVariant<?> latexVariant, TransfurContext transfurContext, CompoundTag data, float progress) {
+        if (latexVariant == null || player == null) return;
+
+        TransfurVariantInstance<?> tf = ProcessTransfur.setPlayerTransfurVariant(player, latexVariant, transfurContext, progress);
+
+        if (tf != null && data != null && !data.isEmpty()) {
             CompoundTag save = tf.save();
             save.merge(data);
             tf.load(save);
+            for (Map.Entry<AbstractAbility<?>, AbstractAbilityInstance> abstractAbilityAbstractAbilityInstanceEntry : tf.abilityInstances.entrySet()) {
+                IAbstractChangedEntity entity = IAbstractChangedEntity.forEither(tf.getHost());
+                if (entity == null) continue;
+
+                abstractAbilityAbstractAbilityInstanceEntry.getKey().setDirty(entity);
+            }
         }
     }
 
-    public static void UnTransfurPlayer(Player player) {
+    public static void unTransfurPlayer(Player player) {
         if (player.level.isClientSide()) return;
 
         ProcessTransfur.ifPlayerTransfurred(player, (instance) -> {
@@ -94,7 +116,7 @@ public class PlayerUtil {
         });
     }
 
-    public static void UnTransfurPlayer(Player player, boolean shouldApplyEffects) {
+    public static void unTransfurPlayer(Player player, boolean shouldApplyEffects) {
         if (player.level.isClientSide()) return;
 
         ProcessTransfur.ifPlayerTransfurred(player, (instance) -> {
@@ -123,7 +145,7 @@ public class PlayerUtil {
         });
     }
 
-    public static void UnTransfurPlayerAndPlaySound(Player player, boolean shouldApplyEffects) {
+    public static void unTransfurPlayerAndPlaySound(Player player, boolean shouldApplyEffects) {
         if (player.level.isClientSide()) return;
 
         ProcessTransfur.ifPlayerTransfurred(player, (instance) -> {
@@ -196,8 +218,6 @@ public class PlayerUtil {
         return entity instanceof AbstractAquaticEntity;
     }
 
-    //=================================================== LookingAt ==================================================//
-
     public static boolean isSpiderTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
         return variant.is(ChangedAddonTags.TransfurTypes.SPIDER_LIKE);
@@ -207,6 +227,88 @@ public class PlayerUtil {
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return entity.getType().is(ChangedAddonTags.EntityTypes.CAN_ROAR);
     }
+
+    public static boolean isApexPredator(Player player) {
+        if (!ProcessTransfur.isPlayerTransfurred(player))
+            return false;
+
+        ResourceLocation id =
+                ProcessTransfur.getPlayerTransfurVariant(player).getFormId();
+
+        if (id == null)
+            return false;
+
+        String path = id.toString();
+
+        return path.contains("lion")
+                || path.contains("tiger")
+                || path.startsWith("changed_addon:form_experiment009") || TransfurEvents.resolveChangedEntity(player).getType().is(ChangedAddonTags.EntityTypes.CAN_ROAR);
+    }
+
+
+    /* ------------------------------------------------------------
+     * Titles & state
+     * ------------------------------------------------------------ */
+    public static List<Component> getPlayerSubtitle(Player player) {
+
+        if (!ProcessTransfur.isPlayerTransfurred(player)) {
+            return List.of(Component.literal("§7Not Transfurred"));
+        }
+
+        List<Component> subtitles = new ArrayList<>();
+
+        // Prefixo base
+        subtitles.add(Component.literal("§fYou are a"));
+
+        // ===============================
+        // Species / family
+        // ===============================
+
+        List<MutableComponent> species = new ArrayList<>();
+
+        if (isCatTransfur(player)) {
+            species.add(Component.literal("§fCat"));
+        }
+
+        if (isFoxTransfur(player)) {
+            species.add(Component.literal("§fFox"));
+        }
+
+        if (isWolfTransfur(player)) {
+            species.add(Component.literal("§fCanine"));
+        }
+
+        if (isDragonTransfur(player)) {
+            species.add(Component.literal("§fDragon"));
+        }
+
+        if (isAquaticTransfur(player)) {
+            species.add(Component.literal("§fFish"));
+        }
+
+        if (isSpiderTransfur(player)) {
+            species.add(Component.literal("§fSpider"));
+        }
+
+        if (species.isEmpty()) {
+            species.add(Component.literal("§7Unknown"));
+        }
+
+        subtitles.add(TransfurSoundsGuiScreen.joinWithSeparator(species, "§7 / "));
+
+        // ===============================
+        // Special traits
+        // ===============================
+
+        if (isApexPredator(player)) {
+            subtitles.add(Component.literal("§6Apex Predator"));
+        }
+
+        return subtitles;
+    }
+
+    //=================================================== LookingAt ==================================================//
+
 
     @Nullable
     public static Entity getEntityLookingAt(Entity entity, float reach, @Nullable ClipContext.ShapeGetter testLineOfSight) {

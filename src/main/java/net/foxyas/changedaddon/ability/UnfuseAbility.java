@@ -2,14 +2,15 @@ package net.foxyas.changedaddon.ability;
 
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.api.ICoatLikeEntity;
+import net.foxyas.changedaddon.entity.api.TamableLatexEntityWithTameFunction;
 import net.foxyas.changedaddon.entity.defaults.AbstractExp2SnepChangedEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractTamableLatexEntity;
+import net.foxyas.changedaddon.entity.defaults.AbstractUnfuseableChangedEntity;
 import net.foxyas.changedaddon.util.FoxyasUtils;
 import net.foxyas.changedaddon.util.PlayerUtil;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.client.AbilityColor;
 import net.ltxprogrammer.changed.client.AbilityColors;
 import net.ltxprogrammer.changed.client.gui.AbstractRadialScreen;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -94,6 +95,8 @@ public class UnfuseAbility extends AbstractAbility<Instance> {
     public static class Instance extends AbstractAbilityInstance {
 
         protected boolean entitySpawned = false;
+        //protected Container entityInventory = null;
+        //protected ChangedEntity unfusedEntity = null;
 
         public Instance(AbstractAbility<?> ability, IAbstractChangedEntity entity) {
             super(ability, entity);
@@ -116,6 +119,9 @@ public class UnfuseAbility extends AbstractAbility<Instance> {
             if (transfurVariantInstance == null) {
                 return;
             }
+            if (!(entity.getLevel() instanceof ServerLevel serverLevel)) {
+                return;
+            }
 
 
             ChangedEntity changedEntity = transfurVariantInstance.getChangedEntity();
@@ -123,19 +129,25 @@ public class UnfuseAbility extends AbstractAbility<Instance> {
                 Player host = transfurVariantInstance.getHost();
                 entityUnfused = changedEntity.getType().create(host.level());
 
-                if (!(entityUnfused instanceof ChangedEntity changedEntityUnfused)) {
+                if (!(entityUnfused instanceof ChangedEntity changedEntityUnfused) || !(changedEntityUnfused instanceof ICoatLikeEntity coatLikeEntity)) {
                     return;
                 }
 
                 if (changedEntityUnfused instanceof AbstractTamableLatexEntity abstractTamableLatexEntity) {
                     abstractTamableLatexEntity.tame(host);
-                    iCoatLikeEntity.setIsUnfusedFromHost(true);
+                    coatLikeEntity.setIsUnfusedFromHost(true);
                 } else if (changedEntityUnfused instanceof AbstractExp2SnepChangedEntity abstractExp2SnepChangedEntity) {
                     abstractExp2SnepChangedEntity.tame(host);
                     abstractExp2SnepChangedEntity.setIsUnfusedFromHost(true);
+                } else if (changedEntityUnfused instanceof AbstractUnfuseableChangedEntity unfuseableChangedEntity) {
+                    unfuseableChangedEntity.tame(host);
+                    unfuseableChangedEntity.setIsUnfusedFromHost(true);
+                } else if (changedEntityUnfused instanceof TamableLatexEntityWithTameFunction tamableLatexEntityWithTameFunction) {
+                    tamableLatexEntityWithTameFunction.tameEntityForPlayer(host);
+                    coatLikeEntity.setIsUnfusedFromHost(true);
+                } else {
+                    coatLikeEntity.setIsUnfusedFromHost(true);
                 }
-
-                iCoatLikeEntity.setIsUnfusedFromHost(true);
 
                 changedEntityUnfused.setPos(host.position());
                 LivingEntity target = host.getLastHurtByMob();
@@ -151,15 +163,19 @@ public class UnfuseAbility extends AbstractAbility<Instance> {
                 changedEntityUnfused.setYBodyRot(host.yBodyRotO);
                 changedEntityUnfused.setYHeadRot(host.getYHeadRot());
 
-                if (host.level() instanceof ServerLevel serverLevel) {
-                    ForgeEventFactory.onFinalizeSpawn(changedEntityUnfused, serverLevel, serverLevel.getCurrentDifficultyAt(changedEntityUnfused.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+                ForgeEventFactory.onFinalizeSpawn(changedEntityUnfused, serverLevel, serverLevel.getCurrentDifficultyAt(changedEntityUnfused.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
 
-                    if (changedEntity instanceof IAlphaAbleEntity original && entityUnfused instanceof IAlphaAbleEntity alphaAble) {
-                        alphaAble.setAlpha(original.isAlpha());
-                    }
-
-                    entitySpawned = serverLevel.addFreshEntity(changedEntityUnfused);
+                if (changedEntity instanceof IAlphaAbleEntity original && entityUnfused instanceof IAlphaAbleEntity alphaAble) {
+                    alphaAble.setAlpha(original.isAlpha());
                 }
+                changedEntityUnfused.copyTraitsFrom(IAbstractChangedEntity.forEither(changedEntity));
+
+
+//                if (changedEntity instanceof TamableLatexEntityFavors fusedEntity) {
+//                    this.entityInventory = fusedEntity.getInventory();
+//                }
+//                unfusedEntity = changedEntityUnfused;
+                entitySpawned = serverLevel.addFreshEntity(changedEntityUnfused);
             }
         }
 
@@ -170,8 +186,14 @@ public class UnfuseAbility extends AbstractAbility<Instance> {
 
         @Override
         public void stopUsing() {
-            if (entity.getEntity() instanceof Player player && entitySpawned) {
-                PlayerUtil.UnTransfurPlayerAndPlaySound(player, true);
+            LivingEntity livingEntity = entity.getEntity();
+//            if (unfusedEntity instanceof TamableLatexEntityFavors tamableLatexEntityFavors) {
+//                if (entityInventory instanceof LatexInventory latexInventory) {
+//                    tamableLatexEntityFavors.setInventory(latexInventory);
+//                }
+//            }
+            if (livingEntity instanceof Player player && entitySpawned) {
+                PlayerUtil.unTransfurPlayerAndPlaySound(player, true);
             }
         }
     }

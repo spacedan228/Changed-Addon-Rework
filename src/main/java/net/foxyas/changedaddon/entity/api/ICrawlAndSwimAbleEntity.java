@@ -3,11 +3,12 @@ package net.foxyas.changedaddon.entity.api;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
+import org.jetbrains.annotations.Nullable;
 
 public interface ICrawlAndSwimAbleEntity {
 
@@ -15,16 +16,33 @@ public interface ICrawlAndSwimAbleEntity {
         return (entity.overridePose == null || entity.overridePose == pose) && entity.level.noCollision(entity, entity.getBoundingBoxForPose(pose).deflate(1.0E-7D));
     }
 
+    @Nullable(value = "Should only be null in a IllegalState")
+    default LivingEntity asEntity() {
+        return this instanceof LivingEntity livingEntity ? livingEntity : null;
+    }
+
     default void crawlingSystem(ChangedEntity livingEntity, LivingEntity target, float swimSpeed) {
-        if (!updateSwimmingMovement(livingEntity, swimSpeed)) {
+        boolean updateSwimmingMovement = updateSwimmingMovement(livingEntity, swimSpeed);
+        updateStepSizeBasedInSwimState(updateSwimmingMovement);
+        if (!updateSwimmingMovement) {
             if (target != null) {
                 setCrawlingPoseIfNeeded(livingEntity, target);
-                crawlToTarget(livingEntity, target);
             } else switchToSafePose(livingEntity);
+        }
+
+    }
+
+    default void updateStepSizeBasedInSwimState(boolean updateSwimmingMovement) {
+        if (this instanceof LivingEntity livingEntity) {
+            livingEntity.setMaxUpStep(updateSwimmingMovement ? 1f : 0.7f);
         }
     }
 
     private void switchToSafePose(ChangedEntity livingEntity) {
+        if (livingEntity.isSwimming() && livingEntity.hasPose(Pose.SWIMMING)) {
+            return;
+        }
+
         Pose currentPose = livingEntity.getPose();
         Pose safePose = currentPose;
 
@@ -79,13 +97,12 @@ public interface ICrawlAndSwimAbleEntity {
     default void onlyCrawlingSystem(ChangedEntity livingEntity, LivingEntity target) {
         if (target != null) {
             setCrawlingPoseIfNeeded(livingEntity, target);
-            crawlToTarget(livingEntity, target);
         } else switchToSafePose(livingEntity);
     }
 
     default void setCrawlingPoseIfNeeded(ChangedEntity livingEntity, LivingEntity target) {
         if (target.getPose() == Pose.SWIMMING && livingEntity.getPose() != Pose.SWIMMING) {
-            if (target.getY() < livingEntity.getEyeY() && !target.level.getBlockState(new BlockPos((int) target.getX(), (int) target.getEyeY(), (int) target.getZ()).above()).isAir()) {
+            if (target.getY() < livingEntity.getEyeY() && !target.level.getBlockState(BlockPos.containing(target.getEyePosition()).above()).isAir()) {
                 livingEntity.setPose(Pose.SWIMMING);
             }
         } else {
@@ -93,51 +110,58 @@ public interface ICrawlAndSwimAbleEntity {
         }
     }
 
-    default void crawlToTarget(LivingEntity livingEntity, LivingEntity target) {
-        if (target.getPose() == Pose.SWIMMING && livingEntity.getPose() == Pose.SWIMMING) {
-            Vec3 direction = target.position().subtract(livingEntity.position()).normalize();
-            livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().add(direction.scale(0.05)));
-        }
-    }
-
     default boolean updateSwimmingMovement(ChangedEntity livingEntity, float speed) {
-        if (!livingEntity.isInWater())
+        if (!livingEntity.isInWater() || this.shouldFloat())
             return false;
 
-        Vec3 movementDir = null;
-
         LivingEntity target = livingEntity.getTarget();
-        if (target != null) {
-            movementDir = target
-                    .position()
-                    .subtract(livingEntity.position())
-                    .normalize();
-        }/* else if (livingEntity.getDeltaMovement().lengthSqr() > 0.0001) {
-            movementDir = livingEntity.getDeltaMovement().normalize();
-        }*/
 
         if (target != null) {
-            if (!target.isInWater() && target.onGround()) {
-                movementDir = null;
+
+            if (!target.isInWater() && (livingEntity.getNavigation().isStuck() || livingEntity.horizontalCollision)) {
+                livingEntity.setPose(Pose.STANDING);
+                livingEntity.setSwimming(false);
+                return false;
             }
-        }
 
-        if (movementDir != null) {
+            Vec3 movementDir = target.position().subtract(livingEntity.position()).normalize();
             float appliedSpeed = livingEntity.isEyeInFluid(FluidTags.WATER)
                     ? speed
-                    : speed * 0.25F;
+                    : speed * 0.75F;
 
             float swimSpeed = (float) (livingEntity.getMoveControl().getSpeedModifier() * livingEntity.getAttributeValue(ForgeMod.SWIM_SPEED.get()));
             livingEntity.setSpeed(swimSpeed);
-            livingEntity.setDeltaMovement(movementDir.scale(appliedSpeed));
+            Vec3 scale = movementDir.scale(appliedSpeed);
+            livingEntity.setDeltaMovement(scale);
+            livingEntity.getNavigation().stop();
 
-            float yaw = (float) (Mth.atan2(movementDir.z, movementDir.x) * (180F / Math.PI)) - 90.0F;
-            livingEntity.setYRot(Mth.rotLerp(0.2F, livingEntity.getYRot(), yaw));
-            livingEntity.yBodyRot = livingEntity.getYRot();
+            livingEntity.getLookControl().setLookAt(target, 180, 180);
+            livingEntity.setYBodyRot(livingEntity.getYHeadRot());
+
+//            if (target != null) {
+//                Vec3 position = target.position();
+//                livingEntity.getLookControl().setLookAt(position.x, position.y, position.z, 180, 180);
+//                livingEntity.setYBodyRot(livingEntity.getYHeadRot());
+//             } else {
+//                Vec3 position = livingEntity.position().add(scale);
+//                livingEntity.getLookControl().setLookAt(position.x, position.y, position.z, 180, 180);
+//                livingEntity.setYBodyRot(livingEntity.getYHeadRot());
+//            }
+
         }
 
-        if (livingEntity.isEyeInFluid(FluidTags.WATER)) {
-            livingEntity.setPose(Pose.SWIMMING);
+        if (target != null && !target.isInWater() && target.distanceTo(livingEntity) <= 3.25f) {
+            livingEntity.setPose(Pose.STANDING);
+            livingEntity.setSwimming(false);
+            return false;
+        }
+
+        if (target != null && target.isAlive() && (target.isSwimming() || target.distanceToSqr(livingEntity) >= 6) && livingEntity.isInWater()) {
+            if (target.distanceToSqr(livingEntity) >= 6 || target.isSwimming()) {
+                livingEntity.setPose(Pose.SWIMMING);
+            } else {
+                livingEntity.setPose(Pose.STANDING);
+            }
             livingEntity.setSwimming(true);
             return true;
         } else {
@@ -145,5 +169,17 @@ public interface ICrawlAndSwimAbleEntity {
             livingEntity.setSwimming(false);
             return false;
         }
+    }
+
+    default boolean shouldFloat() {
+        LivingEntity livingEntity = asEntity();
+        if (livingEntity == null) return true;
+
+        if (livingEntity instanceof PathfinderMob mob && mob.getTarget() == null) {
+            return true;
+        }
+
+        float airPercentage = (float) livingEntity.getAirSupply() / livingEntity.getMaxAirSupply();
+        return airPercentage <= 0.25F;
     }
 }

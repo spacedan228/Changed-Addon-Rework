@@ -63,21 +63,27 @@ public class TransfurTotemItem extends Item {
                 .stacksTo(1).fireResistant().rarity(Rarity.RARE));
     }
 
-    private static void tryLinkForm(Level level, Player player, ItemStack itemstack) {
+    private static boolean tryLinkForm(Level level, Player player, ItemStack itemstack) {
         TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
         ResourceLocation latexFormRes = tf == null ? null : tf.getFormId();
-        if (latexFormRes == null) return;
+        if (latexFormRes == null) return false;
 
         String latexForm = latexFormRes.toString();
 
-        if (ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() || latexForm.startsWith("changed:form"))
+        if (ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() || latexForm.startsWith("changed:form")) {
             linkForm(level, player, itemstack, tf, latexForm);
-        else if (latexForm.startsWith("changed_addon:form")) {
+            return true;
+        } else if (latexForm.startsWith("changed_addon:form")) {
             cooldown(player, itemstack, 50);
             visualActivate(level, player, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR);
             player.displayClientMessage(Component.translatable("changed_addon.latex_totem.not_valid"), true);
-        } else if (latexForm.startsWith("changed:special"))
+            return true;
+        } else if (latexForm.startsWith("changed:special")) {
             linkForm(level, player, itemstack, tf, "changed:form_light_latex_wolf");
+            return true;
+        }
+
+        return false;
     }
 
     private static void linkForm(Level level, Player player, ItemStack stack, TransfurVariantInstance<?> tf, String form) {
@@ -198,68 +204,71 @@ public class TransfurTotemItem extends Item {
     public boolean isFoil(@NotNull ItemStack itemstack) {
         String form = itemstack.getOrCreateTag().getString("form");
         if (form.isEmpty()) return false;
-        else if (form.startsWith("changed:form")) return true;
 
-        return form.startsWith("changed_addon:form") && ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get() == true;
+        ResourceLocation parse = ResourceLocation.parse(form);
+        TransfurVariant<?> value = ChangedRegistry.TRANSFUR_VARIANT.getValue(parse);
+        if (value != null) {
+            return parse.getNamespace().equals("changed") || ChangedAddonServerConfiguration.ACCEPT_ALL_VARIANTS.get();
+        }
+
+        return false;
     }
 
     @Override
     public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
-        InteractionResultHolder<ItemStack> ar = super.use(level, player, hand);
-        ItemStack stack = ar.getObject();
-        if (!(level instanceof ServerLevel)) return ar;
+        ItemStack stack = player.getItemInHand(hand);
+        if (!(level instanceof ServerLevel)) return InteractionResultHolder.pass(stack);
 
         boolean isValidUse = (player.getOffhandItem().is(stack.getItem()) && (player.getMainHandItem().is(stack.getItem())))
                 || (player.getOffhandItem().is(stack.getItem()) && player.getMainHandItem().isEmpty())
                 || player.getMainHandItem().is(stack.getItem());
 
-        if (!isValidUse) return ar;
+        if (!isValidUse) return InteractionResultHolder.pass(stack);
 
-        String form = stack.getOrCreateTag().getString("form");
+        CompoundTag tag = stack.getOrCreateTag();
+        String form = tag.getString("form");
         boolean isTransfurred = ProcessTransfur.isPlayerTransfurred(player);
 
         if (player.isShiftKeyDown()) {
             if (!form.isEmpty()) {
-                stack.getOrCreateTag().putString("form", "");
-                if (stack.getOrCreateTag().contains("TransfurVariantData"))
-                    stack.getOrCreateTag().remove("TransfurVariantData");
+                tag.remove("form");
+                if (tag.contains("TransfurVariantData"))
+                    tag.remove("TransfurVariantData");
                 activateVisuals(level, player, stack, null, 50, SoundEvents.BEACON_DEACTIVATE);
-                return ar;
+                return InteractionResultHolder.consume(stack);
             }
 
-            if (isTransfurred) tryLinkForm(level, player, stack);
-            return ar;
+            if (isTransfurred) return tryLinkForm(level, player, stack) ? InteractionResultHolder.consume(stack) : InteractionResultHolder.pass(stack);
+            return InteractionResultHolder.pass(stack);
         }
 
         if (form.isEmpty()) {
             player.displayClientMessage(Component.literal("No form linked, please link one with §e<Shift+Click>"), true);
-            return ar;
+            return InteractionResultHolder.pass(stack);
         }
 
         if (isTransfurred) {
             SummonDripParticlesProcedure.execute(player);
-            PlayerUtil.UnTransfurPlayer(player);
+            PlayerUtil.unTransfurPlayer(player);
             cooldown(player, stack, 100);
             visualActivate(level, player, ChangedAddonSoundEvents.UNTRANSFUR.get());
             grantAdvancement(player, "changed_addon:transfur_totem_advancement_1");
-            return ar;
+            return InteractionResultHolder.consume(stack);
         }
 
         if (form.equals("changed_addon:form_puro_kind/female")) {
             form = "changed_addon:form_latex_puro_kind/female";
-            stack.getOrCreateTag().putString("form", form);
+            tag.putString("form", form);
         }
 
-        if (stack.getOrCreateTag().contains("TransfurVariantData")) {
-            CompoundTag data = stack.getOrCreateTag().getCompound("TransfurVariantData");
-            PlayerUtil.TransfurPlayerAndLoadData(player, form, data, 0.85f);
+        if (tag.contains("TransfurVariantData")) {
+            CompoundTag data = tag.getCompound("TransfurVariantData");
+            PlayerUtil.transfurPlayerAndLoadData(player, form, data, 0.85f);
             // 0.85f to avoid issues with the transfur animation and because is design choice
-        } else PlayerUtil.TransfurPlayer(player, form, 0.85f);
+        } else PlayerUtil.transfurPlayer(player, form, 0.85f);
 
         activateVisuals(level, player, stack, "changed_addon:transfur_totem_advancement_1", 100, null);
-
-
-        return ar;
+        return InteractionResultHolder.consume(stack);
     }
 
     @Override
@@ -364,7 +373,7 @@ public class TransfurTotemItem extends Item {
             return;
 
         SummonDripParticlesProcedure.execute(entity);
-        PlayerUtil.UnTransfurPlayer(player);
+        PlayerUtil.unTransfurPlayer(player);
 
         level.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.TOTEM_USE, SoundSource.NEUTRAL, 1, 1);
 

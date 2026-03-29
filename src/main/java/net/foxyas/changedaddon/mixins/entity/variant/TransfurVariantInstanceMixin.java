@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity.variant;
 
 import com.google.common.collect.ImmutableMap;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
@@ -35,8 +36,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class TransfurVariantInstanceMixin implements TransfurVariantInstanceExtensor {
 
     @Shadow
-    public int ticksFlying;
-    @Shadow
     @Final
     public ImmutableMap<AbstractAbility<?>, AbstractAbilityInstance> abilityInstances;
     @Unique
@@ -54,8 +53,6 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Shadow
     @Final
     private Player host;
-    @Unique
-    private boolean appliedFlySpeed;
 
     @Shadow
     public abstract TransfurVariant<?> getParent();
@@ -68,6 +65,8 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @Shadow
     public abstract boolean isTemporaryFromSuit();
+
+    @Shadow public abstract boolean canCreativeFly();
 
     @Override
     public boolean getUntransfurImmunity(UntransfurEvent.UntransfurType type) {
@@ -184,54 +183,25 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
         }
     }
 
-    @Inject(method = "meetsCriteriaForFlying", at = @At(value = "RETURN"), cancellable = true)
-    private void negateFly(CallbackInfoReturnable<Boolean> cir) {
-        if (!this.host.isCreative() && !this.host.isSpectator()) {
-            if (getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                if (!variantExtraStats.getFlyType().canFly()) {
-//                    if (host.getAbilities().flying || host.getAbilities().mayfly) {
-//                        host.getAbilities().mayfly = false;
-//                        host.getAbilities().flying = false;
-//                        host.onUpdateAbilities();
-//                    }
-//
-//                    ticksFlying = 0;
-                    cir.setReturnValue(false);
-                }
-            }
+
+    @ModifyReturnValue(method = "canElytraGlide", at = @At("RETURN"))
+    private boolean canElytraGlideHook(boolean original) {
+        if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+            return variantExtraStats.getFlyType().canGlide();
         }
+        return original;
+    }
+
+    @ModifyReturnValue(method = "canCreativeFly", at = @At("RETURN"))
+    private boolean canCreativeFlyHook(boolean original) {
+        if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
+            return variantExtraStats.getFlyType().canFly();
+        }
+        return original;
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
-    private void negateFlyInTick(CallbackInfo cir) {
-        if (this.parent.canGlide && this.shouldApplyAbilities()) {
-            if (!this.host.isCreative() && !this.host.isSpectator()) {
-                if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                    if (!variantExtraStats.getFlyType().canFly()) {
-                        if (this.host.getAbilities().flying || this.host.getAbilities().mayfly) {
-                            this.host.getAbilities().mayfly = false;
-                            this.host.getAbilities().flying = false;
-                            this.host.onUpdateAbilities();
-                        }
-                    }
-                }
-            }
-
-            if (!this.host.isSpectator()) { // Spectator Can have multiple fly speeds
-                if (getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                    if (variantExtraStats.getFlySpeed() != 0) {
-                        if (variantExtraStats.getFlyType().canFly()) {
-                            if (!this.appliedFlySpeed) {
-                                this.appliedFlySpeed = true;
-                                this.host.getAbilities().setFlyingSpeed(variantExtraStats.getFlySpeed());
-                                this.host.onUpdateAbilities();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+    private void tickHook(CallbackInfo cir) {
         if (this.shouldApplyAbilities()) {
             ++this.ticksSinceSecondAbilityActivity;
         }
@@ -240,13 +210,6 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Inject(method = "unhookAll", at = @At("TAIL"))
     private void injectUnHookALl(Player player, CallbackInfo ci) {
         ChangedEntity changedEntity = this.getChangedEntity();
-        if (changedEntity instanceof VariantExtraStats stats) {
-            if (this.appliedFlySpeed) {
-                this.appliedFlySpeed = false;
-                this.host.getAbilities().setFlyingSpeed(AttributesHandle.DefaultPlayerFlySpeed);
-                this.host.onUpdateAbilities();
-            }
-        }
         if (changedEntity instanceof IAlphaAbleEntity iAlphaAbleEntity) {
             iAlphaAbleEntity.cleanAlphaAttributesFromHost(changedEntity);
         }

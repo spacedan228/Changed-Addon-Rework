@@ -14,10 +14,7 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -113,18 +110,20 @@ public class ThunderStrikeGoal extends Goal {
         if (target == null) return;
 
         // olha para o alvo
-        pathfinderMob.getLookControl().setLookAt(target, 90f, 90f);
+        if (target.isRemoved() && target.isDeadOrDying()) return;
+        pathfinderMob.getLookControl().setLookAt(target, 180f, 180f);
         pathfinderMob.getNavigation().stop();
         if (tickCounter >= 60) {
             pathfinderMob.setDeltaMovement(Vec3.ZERO);
         }
 
-        if (tickCounter % 10 != 0) return;// a cada 1/2s lança um raio
+        if (tickCounter % 20 != 0) return;
 
         LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(pathfinderMob.level());
         if (lightning == null) return;
 
-        lightning.setVisualOnly(true);
+        lightning.setVisualOnly(Experiment009BossEntity.getMetalPercentage(target) <= 0.4f || Experiment009BossEntity.shouldAlwaysDamageEntity(target));
+
         lightning.moveTo(target.position());
         if (pathfinderMob instanceof ChangedEntity changedEntity) {
             lightning.setCause((ServerPlayer) changedEntity.getUnderlyingPlayer());
@@ -136,9 +135,21 @@ public class ThunderStrikeGoal extends Goal {
             lightning.moveTo(random, 0, 0);
         }
 
-        lightning.setDamage(damageProvider.sample(pathfinderMob.getRandom()));
+        if (pathfinderMob instanceof Experiment009BossEntity boss) {
+            lightning.setDamage(damageProvider.sample(pathfinderMob.getRandom()) * boss.getPhase().getDamageModifier(target));
+        } else lightning.setDamage(damageProvider.sample(pathfinderMob.getRandom()));
+
         ParticlesUtil.sendParticles(pathfinderMob.level(), ChangedAddonParticleTypes.thunderSpark(5), lightning.getEyePosition(), 0.3f, 0.3f, 0.3f, 25, 0.25f);
-        DelayedTask.schedule(10, () -> {
+        pathfinderMob.level().addFreshEntity(lightning);
+        applyKnockBack(lightning);
+        pathfinderMob.swing(pathfinderMob.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
+
+
+        pathfinderMob.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration + 40, 10, false, false));
+    }
+
+    private void oldSpawn(LightningBolt lightning) {
+        DelayedTask delayedTask = DelayedTask.schedule(20, () -> {
             pathfinderMob.level().addFreshEntity(lightning);
             applyKnockBack(lightning);
             pathfinderMob.swing(pathfinderMob.isLeftHanded() ? InteractionHand.OFF_HAND : InteractionHand.MAIN_HAND);
@@ -148,7 +159,6 @@ public class ThunderStrikeGoal extends Goal {
 //                pathfinderMob.push(dir.x, dir.y * 1.25f, dir.z);
 //            }
         });
-        pathfinderMob.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, duration + 40, 10, false, false));
     }
 
     protected boolean isConductive(BlockState state) {
@@ -189,8 +199,8 @@ public class ThunderStrikeGoal extends Goal {
         var list = lightning.level
                 .getEntitiesOfClass(
                         LivingEntity.class,
-                        getBoundingBoxFromLightningBolt(lightning).inflate(4),
-                        (target) -> !target.is(lightning) && !target.is(pathfinderMob)
+                        getBoundingBoxFromLightningBolt(lightning).inflate(-0.5),
+                        (target) -> !target.is(lightning) && !target.is(pathfinderMob) && EntitySelector.NO_CREATIVE_OR_SPECTATOR.test(target)
                 );
 
         for (LivingEntity livingEntity : list) {

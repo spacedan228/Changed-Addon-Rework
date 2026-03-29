@@ -30,6 +30,7 @@ public class ChangedAddonServerConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_HARD;
     public static final ForgeConfigSpec.ConfigValue<Double> ALPHA_SPAWN_HARDCORE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> CAN_GRABBY_ENTITIES_SPAWN;
+    public static final ForgeConfigSpec.ConfigValue<Double> GRABBY_ENTITIES_SPAWN_CHANCE;
     public static final ForgeConfigSpec.ConfigValue<WorldDifficulty> BEHEMOTH_CAN_USE_GRAB_IN_DIFFICULTY;
     public static final ForgeConfigSpec.ConfigValue<Integer> FIGHT_TO_KEEP_CONSCIOUSNESS_TIMER;
     public static final ForgeConfigSpec.ConfigValue<Double> FIGHT_TO_KEEP_CONSCIOUSNESS_STRUGGLE_NEED;
@@ -54,6 +55,9 @@ public class ChangedAddonServerConfiguration {
         CAN_GRABBY_ENTITIES_SPAWN = BUILDER
                 .comment("Allow Changed Entities to be able to spawn with the grab ability feature")
                 .define("Grabby Entities Spawn", false);
+        GRABBY_ENTITIES_SPAWN_CHANCE = BUILDER
+                .comment("Control the chance for the \"Grabby\" entities to spawn with the grab ability feature")
+                .define("Grabby Entities Spawn Chance", 0.005);
 
         BEHEMOTH_CAN_USE_GRAB_IN_DIFFICULTY = BUILDER
                 .comment("Defines which level of difficulty should allow behemoths to use the grab ability feature, if NONE then the behemoth will never use it")
@@ -88,25 +92,25 @@ public class ChangedAddonServerConfiguration {
         BUILDER.push("Fight To Keep Consciousness");
         FIGHT_TO_KEEP_CONSCIOUSNESS_TIMER = BUILDER
                 .comment("Ticks before the fail or success check of the Fight to keep consciousness mine-game")
-                .defineInRange("Fight To Keep consciousness timer", 150, 0, Integer.MAX_VALUE);
+                .defineInRange("Duration", 150, 0, Integer.MAX_VALUE);
         FIGHT_TO_KEEP_CONSCIOUSNESS_STRUGGLE_NEED = BUILDER
                 .comment("Struggle need to success the Fight to keep consciousness mine-game")
-                .defineInRange("Fight To Keep consciousness timer", 30, 0f, Double.MAX_VALUE);
+                .defineInRange("Struggle Points Required", 30, 0f, Double.MAX_VALUE);
         BUILDER.pop();
 
         BUILDER.push("Chat");
         {
-            TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE = BUILDER.comment("The Chat of Transfured Players Should be affect by Latex Language?").define("Transfured Players Chat in Latex Language", false);
+            TRANSFURED_PLAYERS_CHAT_IN_LATEX_LANGUAGE = BUILDER.comment("The Chat of Transfurred Players Should be affect by Latex Language?\nCareful when using this feature because it disable the chat report").define("Transfurred Players Chat in Latex Language", false);
         }
         BUILDER.pop();
 
         BUILDER.push("Respawn As Transfur");
         {
-            ALLOW_RESPAWN_AS_TRANSFUR = BUILDER.comment("Allow the Player to respawn as a transfured entity").define("Allow Respawn as Transfur", false);
+            ALLOW_RESPAWN_AS_TRANSFUR = BUILDER.comment("Allow the Player to respawn as a transfurred entity").define("Allow Respawn as Transfur", false);
             ALLOWED_RESPAWN_TRANSFURS = BUILDER.comment("List of form ids, transfur variant tags or mod ids.\n(@modid, #tag:id, formId)").defineList("allowed Respawn Transfur Variants", List.of("changed:random"), RegistryElementPredicate::isValidSyntax);
-            ALLOW_PLAYERS_TO_SELECT_RESPAWN_TRANSFUR = BUILDER.comment("Allow the non admins Players to select a transfur to be transfured when spawning").define("Allow Players to Select Respawn Transfur", false);
-            APPLY_UNTRANSFUR_IMMUNITY_AFTER_RESPAWN_AS_TRANSFUR = BUILDER.comment("Apply Untransfur Immunity to the player after they respawn as a transfured player").define("Apply Untransfur Immunity After Respawn as a Transfur", false);
-            ALLOW_TRANSFURED_PLAYERS_TO_RESPAWN_WAS_TRANSFUR = BUILDER.comment("Allow a already transfured player to respawn as another transfur").define("Allow transfured players to respawn as another transfur", false);
+            ALLOW_PLAYERS_TO_SELECT_RESPAWN_TRANSFUR = BUILDER.comment("Allow the non admins Players to select a transfur to be transfurred when spawning").define("Allow Players to Select Respawn Transfur", false);
+            APPLY_UNTRANSFUR_IMMUNITY_AFTER_RESPAWN_AS_TRANSFUR = BUILDER.comment("Apply Untransfur Immunity to the player after they respawn as a transfurred player").define("Apply Untransfur Immunity After Respawn as a Transfur", false);
+            ALLOW_TRANSFURED_PLAYERS_TO_RESPAWN_WAS_TRANSFUR = BUILDER.comment("Allow a already transfurred player to respawn as another transfur").define("Allow transfurred players to respawn as another transfur", false);
         }
         BUILDER.pop();
 
