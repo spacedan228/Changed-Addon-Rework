@@ -19,6 +19,7 @@ import net.zaharenko424.cmrs.client.gui.WidgetHelper;
 import net.zaharenko424.cmrs.client.gui.screen.MouseMoveListener;
 import net.zaharenko424.cmrs.client.gui.widget.*;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -38,17 +39,22 @@ public class BestiaryScreen extends Screen implements MouseMoveListener {
     final ChangedEntityModelWidget modelWidget =
             new ChangedEntityModelWidget().setSize(120, 200)
                     .setRenderTransform(WidgetHelper.hoverOrSelectedAnim(.1f, 0.025f, 0.025f));
+    final RoundedRectWidget modelBackGround = new RoundedRectWidget().setSize(120, 200).setInsideColorFunc(a -> Color.BLACK.getRGB());
 
     final ScrollableContainer loreScroll =
             (ScrollableContainer) new ScrollableContainer().setSize(200, 200);
 
     final ScrollableContainer tfs =
             (ScrollableContainer) new ScrollableContainer().setSize(120, 200).setOrigin(0, 0, 100);
+    final RoundedRectWidget tfsListBackGround = new RoundedRectWidget().setSize(120, 200).setInsideColorFunc(a -> Color.BLACK.getRGB());
 
     public BestiaryScreen() {
         super(Component.literal("Bestiary"));
 
         displayBackGround.rebuildMesh();
+        Vector3f displayBackGroundOrigin = displayBackGround.getOrigin();
+        modelBackGround.setOrigin(displayBackGroundOrigin.x, displayBackGroundOrigin.y, displayBackGroundOrigin.z + 10);
+        modelBackGround.rebuildMesh();
 
         /* MODEL */
 
@@ -79,13 +85,18 @@ public class BestiaryScreen extends Screen implements MouseMoveListener {
         LayoutHelper.listLayout(tfs, entries, -2, 0, 5);
         tfs.init();
         tfs.getScrollBar().setRoundingRadius(4).setSizeAndUpdate(8, 50);
+        Vector3f tfsOrigin = tfs.getOrigin();
+        tfsListBackGround.setOrigin(tfsOrigin.x - 120, tfsOrigin.y, displayBackGroundOrigin.z + 10);
+        tfsListBackGround.rebuildMesh();
 
         /* WINDOW */
 
         window.addWidget(displayBackGround);
         window.addWidget(modelWidget);
         window.addWidget(loreScroll);
+        window.addWidget(modelBackGround);
         window.addWidget(tfs);
+        window.addWidget(tfsListBackGround);
 
         window.init();
 
@@ -222,6 +233,11 @@ public class BestiaryScreen extends Screen implements MouseMoveListener {
                     heightAmount = 40f + heightByLines;
                 }
 
+                if (bestiaryInfo.forceOffsetByLine) {
+                    int heightByLines = minecraft.font.lineHeight * i;
+                    heightAmount = 40f + heightByLines;
+                }
+
                 heightAmount += bestiaryInfo.heightSizeOffset();
 
                 InfoWidget infoWidget = new InfoWidget().setSize(180, heightAmount).setLineSize(180, 4);
@@ -230,7 +246,8 @@ public class BestiaryScreen extends Screen implements MouseMoveListener {
             }
         } else {
             /* LORE */
-            loreWidget = new InfoWidget().setSize(180, 40).setLineSize(180, 4);
+            int loreHeight = 40; // To avoid Crazy scales
+            loreWidget = new InfoWidget().setSize(180, loreHeight).setLineSize(180, 4);
             loreWidget.setTextInfo(Component.literal("Lore").withStyle(ChatFormatting.YELLOW), Component.literal("N/A"));
             // don't create lore widget if there is no lore?
             // the lore stuff is supposed to be a "funny" Easter egg, having it to be N/A for generic entities is funnier then not having it.
@@ -244,6 +261,11 @@ public class BestiaryScreen extends Screen implements MouseMoveListener {
                     subTiles.append("\n").append(component);
                 }
                 index++;
+            }
+            if (index > 3) {
+                loreWidget.setSize(loreWidget.getWidth(), loreHeight + (font.lineHeight * entitySubtitles.size()));
+            } else if (index == 3) {
+                loreWidget.setSize(loreWidget.getWidth(), loreHeight + font.lineHeight); // It Looks better
             }
 
             loreWidget.setDescription(subTiles);

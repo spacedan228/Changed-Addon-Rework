@@ -8,10 +8,8 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -28,7 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -38,6 +35,7 @@ import java.util.Objects;
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
 public class Exp2MaleEntity extends AbstractExp2SnepChangedEntityFavors {
+
     private static final List<SoundEvent> sounds = List.of(SoundEvents.CAT_AMBIENT, SoundEvents.CAT_PURR, SoundEvents.CAT_PURREOW);
 
     public Exp2MaleEntity(PlayMessages.SpawnEntity packet, Level world) {
@@ -48,7 +46,6 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntityFavors {
         super(type, world);
         xpReward = ChangedEntity.XP_REWARD_LARGE;
         this.setAttributes(this.getAttributes());
-        setNoAi(false);
         setPersistenceRequired();
     }
 
@@ -68,9 +65,9 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntityFavors {
 
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
         Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((24));
-        Objects.requireNonNull(attributes.getInstance(Attributes.FOLLOW_RANGE)).setBaseValue(40.0F);
-        Objects.requireNonNull(attributes.getInstance(Attributes.MOVEMENT_SPEED)).setBaseValue(1.17f);
-        Objects.requireNonNull(attributes.getInstance(ForgeMod.SWIM_SPEED.get())).setBaseValue(1.05f);
+        Objects.requireNonNull(attributes.getInstance(Attributes.FOLLOW_RANGE)).setBaseValue(40.0f);
+        Objects.requireNonNull(attributes.getInstance(Attributes.MOVEMENT_SPEED)).setBaseValue(1.18F);
+        Objects.requireNonNull(attributes.getInstance(ForgeMod.SWIM_SPEED.get())).setBaseValue(1.065f);
         Objects.requireNonNull(attributes.getInstance(Attributes.ATTACK_DAMAGE)).setBaseValue(3.0f);
         Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR)).setBaseValue(0);
         Objects.requireNonNull(attributes.getInstance(Attributes.ARMOR_TOUGHNESS)).setBaseValue(0);
@@ -122,7 +119,7 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntityFavors {
 
     @Override
     public TransfurMode getTransfurMode() {
-        if (level.random.nextInt() > 5) {
+        if (random.nextInt() > 5) {
             return TransfurMode.ABSORPTION;
         }
         return TransfurMode.REPLICATION;
@@ -144,7 +141,7 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntityFavors {
 
     @Override
     public HairStyle getDefaultHairStyle() {
-        if (level.random.nextInt(10) > 5) {
+        if (random.nextInt(10) > 5) {
             return HairStyle.SHORT_MESSY.get();
         }
         return BALD.get();
@@ -161,12 +158,6 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntityFavors {
     }
 
     @Override
-    protected void registerGoals() {
-        super.registerGoals();
-
-    }
-
-    @Override
     public @NotNull MobType getMobType() {
         return MobType.UNDEFINED;
     }
@@ -174,11 +165,6 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntityFavors {
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;
-    }
-
-    @Override
-    public double getMyRidingOffset() {
-        return super.getMyRidingOffset();
     }
 
     @Override
@@ -191,12 +177,12 @@ public class Exp2MaleEntity extends AbstractExp2SnepChangedEntityFavors {
 
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.hurt")));
+        return SoundEvents.GENERIC_HURT;
     }
 
     @Override
     public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.death")));
+        return SoundEvents.GENERIC_DEATH;
     }
 
     @Override

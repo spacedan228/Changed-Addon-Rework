@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.zaharenko424.cmrs.client.gui.WidgetHelper;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 import org.lwjgl.glfw.GLFW;
@@ -76,11 +77,11 @@ public abstract class CircleMinigameScreen extends Screen {
             guiGraphics.setColor(1 - color.red(), 1 - color.green(), 1 - color.blue(), 1);
         } else guiGraphics.setColor(0, 0, 0, 0);
 
-        guiGraphics.blit(CIRCLE_SLOT, (int) circle.x - 9, (int) circle.y - 9, 0, 0, 19, 19, 19, 19);
+        WidgetHelper.blit(CIRCLE_SLOT, guiGraphics.pose(), circle.x - 10, circle.y - 10, 19, 19, 19, 19);
         guiGraphics.setColor(1, 1, 1, 1);
 
         RenderSystem.setShaderTexture(0, CIRCLE_CURSOR);
-        guiGraphics.blit(CIRCLE_CURSOR, (int) cursor.x - 9, (int) cursor.y - 9, 0, 0, 19, 19, 19, 19);
+        WidgetHelper.blit(CIRCLE_CURSOR, guiGraphics.pose(), cursor.x - 10, cursor.y - 10, 19, 19, 19, 19);
     }
 
     @Override
@@ -106,10 +107,7 @@ public abstract class CircleMinigameScreen extends Screen {
 
     @Override
     public void tick() {
-        if (ChangedAddonVariables.ofOrDefault(player).FTKCminigameType == null) {
-            minecraft.setScreen(null);
-            return;
-        }
+        if (mayCloseScreenAndStopCode()) return;
 
         struggleProgressO = struggleProgress;
         if (cursor.distanceSquared(circle) <= INTERACTION_RADIUS_SQR) {
@@ -125,6 +123,20 @@ public abstract class CircleMinigameScreen extends Screen {
         if (struggleProgress > 0) {
             struggleProgress = Math.max(0, struggleProgress - .1f);
         }
+    }
+
+    protected boolean mayCloseScreenAndStopCode() {
+        if (ChangedAddonVariables.ofOrDefault(player).FTKCminigameType == null && this.closeOnInvalidState()) {
+            minecraft.setScreen(null);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean shouldCloseOnInvalidState = true;
+
+    protected boolean closeOnInvalidState() {
+        return shouldCloseOnInvalidState;
     }
 
     protected abstract void increaseStruggle();

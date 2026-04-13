@@ -1,9 +1,9 @@
 package net.foxyas.changedaddon.entity.bosses;
 
 import net.foxyas.changedaddon.entity.ai.goals.exp9.*;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.api.IBestiaryEntityData;
 import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
-import net.foxyas.changedaddon.entity.defaults.AbstractSemiAquaticEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.ltxprogrammer.changed.entity.*;
@@ -27,20 +27,18 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
@@ -54,7 +52,7 @@ import java.util.Objects;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment009Entity extends ChangedEntity implements PowderSnowWalkable, IBestiaryEntityData {
+public class Experiment009Entity extends ChangedEntity implements PowderSnowWalkable, IBestiaryEntityData, IAlphaAbleEntity.CustomAlphaAttributes {
 
     private static final EntityDataAccessor<Boolean> PHASE2 = SynchedEntityData.defineId(Experiment009Entity.class, EntityDataSerializers.BOOLEAN);
 
@@ -77,6 +75,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
             super.setYRot(0);
             return;
         }
+
         super.setYRot(pYRot);
     }
 
@@ -86,6 +85,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
             super.setXRot(0);
             return;
         }
+
         super.setXRot(pXRot);
     }
 
@@ -136,10 +136,36 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
     }
 
     @Override
+    public void applyAlphaAttributesModifiers(LivingEntity entity, float normalized) {
+        IAlphaAbleEntity.apply(entity, Attributes.MAX_HEALTH, IAlphaAbleEntity.MAX_HEALTH, "Alpha Max Health", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ATTACK_DAMAGE, IAlphaAbleEntity.ATTACK_DAMAGE, "Alpha Attack Damage", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ARMOR, IAlphaAbleEntity.ARMOR, "Alpha Armor", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ARMOR_TOUGHNESS, IAlphaAbleEntity.ARMOR_TOUGHNESS, "Alpha Armor Toughness", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ForgeMod.STEP_HEIGHT_ADDITION.get(), IAlphaAbleEntity.STEP_HEIGHT, "Alpha Step Height", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ChangedAttributes.TRANSFUR_DAMAGE.get(), IAlphaAbleEntity.TRANSFUR_DAMAGE, "Alpha Transfur Damage", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ATTACK_KNOCKBACK, IAlphaAbleEntity.ATTACK_KNOCKBACK, "Alpha Knockback", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, Attributes.ATTACK_SPEED, IAlphaAbleEntity.ATTACK_SPEED, "Alpha Attack Speed", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ForgeMod.ENTITY_REACH.get(), IAlphaAbleEntity.ENTITY_REACH, "Alpha Attack Reach", normalized * 0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ForgeMod.BLOCK_REACH.get(), IAlphaAbleEntity.BLOCK_REACH, "Alpha Block Reach", normalized * 0.5, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
+        IAlphaAbleEntity.apply(entity, ChangedAttributes.JUMP_STRENGTH.get(), IAlphaAbleEntity.JUMP_STRENGTH, "Alpha Jump Strength", normalized * 0.25f, AttributeModifier.Operation.MULTIPLY_TOTAL);
+    }
+
+    @Override
     public boolean startRiding(@NotNull Entity EntityIn, boolean force) {
         if (EntityIn instanceof Boat || EntityIn instanceof Minecart) {
             return false;
         }
+
         return super.startRiding(EntityIn, force);
     }
 
@@ -148,6 +174,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         if (target.getEyeY() > this.getEyeY() + 1) {
             return super.getMeleeAttackRangeSqr(target) * 1.5D;
         }
+
         return super.getMeleeAttackRangeSqr(target);
     }
 
@@ -317,38 +344,49 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
     public boolean hurt(DamageSource source, float amount) {
         if (source.getDirectEntity() instanceof ThrownPotion || source.getDirectEntity() instanceof AreaEffectCloud)
             return false;
+
         if (source.is(DamageTypes.FALL))
             return false;
+
         if (source.is(DamageTypes.CACTUS))
             return false;
+
         if (source.is(DamageTypes.DROWN))
             return false;
+
         if (source.is(DamageTypes.LIGHTNING_BOLT))
             return false;
+
         if (source.getMsgId().equals("trident")) {
-            if (this.level().random.nextFloat() <= 0.25f) {
+            if (this.random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
                     player.displayClientMessage(Component.literal("§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!"), true);
                 }
             }
             return super.hurt(source, amount * 0.5f);
         }
+
         if (source.is(DamageTypes.FALLING_ANVIL))
             return false;
+
         if (source.is(DamageTypes.DRAGON_BREATH))
             return false;
+
         if (source.is(DamageTypes.WITHER))
             return false;
+
         if (source.getMsgId().equals("witherSkull"))
             return false;
+
         if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-            if (this.level().random.nextFloat() <= 0.25f) {
+            if (this.random.nextFloat() <= 0.25f) {
                 if (source.getEntity() instanceof Player player) {
                     player.displayClientMessage(Component.literal("§l§o§4Coward! Is distance all you can rely on? How PATHETIC!!!"), true);
                 }
             }
             return super.hurt(source, amount * 0.5f);
         }
+
         return super.hurt(source, amount);
     }
 
@@ -358,11 +396,6 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
             return true;
         }
         return super.isDamageSourceBlocked(pDamageSource);
-    }
-
-    @Override
-    public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor world, @NotNull DifficultyInstance difficulty, @NotNull MobSpawnType reason, @Nullable SpawnGroupData livingdata, @Nullable CompoundTag tag) {
-        return super.finalizeSpawn(world, difficulty, reason, livingdata, tag);
     }
 
     @Override
@@ -433,12 +466,12 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         super.baseTick();
     }
 
-    public void SpawnThunderBolt(Vec3 pos) {
+    public void spawnThunderBolt(Vec3 pos) {
         LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(this.level);
-        if (lightning != null) {
-            lightning.moveTo(pos.x(), pos.y(), pos.z());
-            this.level.addFreshEntity(lightning);
-        }
+        if (lightning == null) return;
+
+        lightning.moveTo(pos.x(), pos.y(), pos.z());
+        this.level.addFreshEntity(lightning);
     }
 
     @Override
@@ -451,18 +484,19 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
 
     @Override
     public BestiaryInfo getBasicLore() {
-        return new BestiaryInfo(Component.literal("Lore").withStyle(ChatFormatting.YELLOW), Component.translatableWithFallback("text.changed_addon.lore.experiment_009", "Unknown"), 0);
+        return new BestiaryInfo(Component.literal("Lore").withStyle(ChatFormatting.YELLOW), Component.translatableWithFallback("text.changed_addon.bestiary.lore.experiment_009", "Unknown"), 0);
     }
 
     @Override
-    public EntityType<?> getReferencedEntityType() {
-        return this.getType();
+    public BestiaryInfo getBasicAttributesInfo() {
+        BestiaryInfo basicAttributesInfo = IBestiaryEntityData.super.getBasicAttributesInfo();
+        return basicAttributesInfo.withHeightOffset(-60);
     }
 
     @Override
     public List<BestiaryInfo> getBestiaryInfo() {
         List<BestiaryInfo> bestiaryInfo = new ArrayList<>(IBestiaryEntityData.super.getBestiaryInfo());
-        bestiaryInfo.add(new BestiaryInfo(Component.literal("Passive skills").withStyle(ChatFormatting.AQUA), Component.literal("Cappable To Manipulate Electricity\nCareful when using metal around them"), 2));
+        bestiaryInfo.add(new BestiaryInfo(Component.literal("Passive skills").withStyle(ChatFormatting.AQUA), Component.literal("Able to manipulate Electricity.\nNot recommended having anything metallic around them"), 2));
         return bestiaryInfo;
     }
 }

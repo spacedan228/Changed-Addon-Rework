@@ -14,10 +14,9 @@ import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
-import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.*;
+import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedItems;
@@ -65,7 +64,6 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         super(type, world);
         xpReward = 0;
         this.setAttributes(getAttributes());
-        setNoAi(false);
         setPersistenceRequired();
 
         if (this.grabEntityAbilityInstance == null) {
@@ -85,7 +83,6 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         return builder;
     }
 
-    @SuppressWarnings("DataFlowIssue")
     protected void setAttributes(AttributeMap attributes) {
         super.setAttributes(attributes);
 
@@ -101,15 +98,21 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
-    public boolean tryAbsorbTarget(LivingEntity target, IAbstractChangedEntity source, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions) {
-        boolean thisOrUnderlyingPlayerHasEffect = (
-                (this.getUnderlyingPlayer() != null && this.getUnderlyingPlayer().hasEffect(MobEffects.DAMAGE_BOOST)) || this.hasEffect(MobEffects.DAMAGE_BOOST)
-        );
+    public @Nullable LatexAssimilationDecision<?> makeLatexAssimilationDecision(TransfurCause cause, LivingEntity targetEntity) {
+        LatexAssimilationDecision<?> latexAssimilationDecision = super.makeLatexAssimilationDecision(cause, targetEntity);
 
-        if (thisOrUnderlyingPlayerHasEffect || target.hasEffect(ChangedAddonMobEffects.LATEX_EXPOSURE.get())) {
-            return super.tryAbsorbTarget(target, source, amount, possibleMobFusions);
+        if (latexAssimilationDecision != null && latexAssimilationDecision.method() == LatexAssimilationDecision.Method.ABSORPTION) {
+            boolean thisOrUnderlyingPlayerHasEffect = ((this.getUnderlyingPlayer() != null && this.getUnderlyingPlayer().hasEffect(MobEffects.DAMAGE_BOOST))
+                    || this.hasEffect(MobEffects.DAMAGE_BOOST));
+
+            if (thisOrUnderlyingPlayerHasEffect || targetEntity.hasEffect(ChangedAddonMobEffects.LATEX_EXPOSURE.get())) {
+                return latexAssimilationDecision;
+            } else {
+                return null;
+            }
         }
-        return false;
+
+        return latexAssimilationDecision;
     }
 
     @Override
@@ -150,11 +153,6 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     @Override
     public TransfurMode getTransfurMode() {
         return TransfurMode.NONE;
-    }
-
-    @Override
-    public boolean isAlliedTo(Entity entity) {
-        return super.isAlliedTo(entity);
     }
 
     @Override
@@ -240,7 +238,10 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
 
     @Override
     public <A extends AbstractAbilityInstance> A getAbilityInstance(AbstractAbility<A> ability) {
-        return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : super.getAbilityInstance(ability));
+        if (this.getUnderlyingPlayer() == null) {
+            return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : super.getAbilityInstance(ability));
+        }
+        return super.getAbilityInstance(ability);
     }
 
     @Override
@@ -279,8 +280,8 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     public Color3 getDripColor() {
-        Color3 color = Color3.getColor("#000000");
-        if (level.random.nextInt(10) > 5) {
+        Color3 color;
+        if (random.nextInt(10) > 5) {
             color = Color3.getColor("#393939");
         } else {
             color = Color3.getColor("#303030");

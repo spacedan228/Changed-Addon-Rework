@@ -2,26 +2,31 @@ package net.foxyas.changedaddon.mixins.entity.variant;
 
 import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
-import net.foxyas.changedaddon.entity.customHandle.AttributesHandle;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.util.KeyStateTracker;
 import net.ltxprogrammer.changed.util.TagUtil;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -66,7 +71,18 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Shadow
     public abstract boolean isTemporaryFromSuit();
 
-    @Shadow public abstract boolean canCreativeFly();
+    @Shadow
+    public abstract Player getHost();
+
+    @Inject(at = @At("HEAD"), method = "lambda$onBlockRightClick$13", cancellable = true)
+    private static void allowCuddleInteract(PlayerInteractEvent.RightClickBlock event, TransfurVariantInstance<?> variant, CallbackInfo ci) {
+        Level level = event.getLevel();
+        BlockPos pos = event.getPos();
+        if (!level.getBlockState(pos).isBed(level, pos, variant.getHost())) return;
+
+        GrabEntityAbilityInstance instance = variant.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
+        if (instance != null && instance.grabbedEntity != null && ((GrabEntityAbilityExtensor)instance).isSafeMode()) ci.cancel();
+    }
 
     @Override
     public boolean getUntransfurImmunity(UntransfurEvent.UntransfurType type) {
@@ -77,6 +93,19 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     public void setUntransfurImmunity(UntransfurEvent.UntransfurType type, boolean value) {
         if (type == UntransfurEvent.UntransfurType.SURVIVAL) untransfurImmunity = value;
         if (type == UntransfurEvent.UntransfurType.COMMAND) untransfurImmunityCommand = value;
+        maySendDataUpdate();
+    }
+
+    private boolean transfurredBySafeMethod = false;
+
+    @Override
+    public boolean isTransfurredBySafeMethod() {
+        return transfurredBySafeMethod;
+    }
+
+    @Override
+    public void setTransfurredBySafeMethod(boolean value) {
+        transfurredBySafeMethod = value;
     }
 
     @Override
@@ -96,17 +125,18 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @Override
     public void setSecondSelectedAbility(AbstractAbility<?> secondSelectedAbility) {
-        if (this.abilityInstances.containsKey(secondSelectedAbility)) {
-            this.resetTicksSinceSecondAbilityActivity();
-            AbstractAbilityInstance instance = this.abilityInstances.get(secondSelectedAbility);
-            if (instance.getUseType() != AbstractAbility.UseType.MENU) {
-                if (this.secondSelectedAbility != secondSelectedAbility) {
-                    instance.onSelected();
-                }
+        if (!abilityInstances.containsKey(secondSelectedAbility)) return;
 
-                this.secondSelectedAbility = secondSelectedAbility;
-            }
+        this.resetTicksSinceSecondAbilityActivity();
+        AbstractAbilityInstance instance = this.abilityInstances.get(secondSelectedAbility);
+        if (instance == null) return;
+        if (instance.getUseType() == AbstractAbility.UseType.MENU) return;
+
+        if (this.secondSelectedAbility != secondSelectedAbility) {
+            instance.onSelected();
         }
+
+        this.secondSelectedAbility = secondSelectedAbility;
     }
 
     @Override
@@ -131,48 +161,47 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
             shift = At.Shift.BY)
     )
     private void changedAddon$onTickAbilities(CallbackInfo ci) {
-        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-            if (!this.isTemporaryFromSuit() && this.shouldApplyAbilities()) {
-                if (this.secondSelectedAbility != null) {
-                    AbstractAbilityInstance instance = this.abilityInstances.get(this.secondSelectedAbility);
-                    if (instance != null) {
-                        AbstractAbility.Controller controller = instance.getController();
-                        secondAbilityKey.handleStateUpdates((isDown, wasDown, unique) -> {
-                            boolean oldState = controller.exchangeKeyState(isDown);
-                            if (isDown || instance.getController().isCoolingDown())
-                                this.resetTicksSinceSecondAbilityActivity();
-                            if (host.containerMenu == host.inventoryMenu && !host.isUsingItem() && !instance.getController().isCoolingDown())
-                                instance.getUseType().check(isDown, oldState, unique, controller);
-                        });
-                    }
-                }
-            }
-        }
+        if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
+
+        if (this.isTemporaryFromSuit() || !this.shouldApplyAbilities()) return;
+
+        if (this.secondSelectedAbility == null) return;
+
+        AbstractAbilityInstance instance = this.abilityInstances.get(this.secondSelectedAbility);
+        if (instance == null) return;
+
+        AbstractAbility.Controller controller = instance.getController();
+        secondAbilityKey.handleStateUpdates((isDown, wasDown, unique) -> {
+            boolean oldState = controller.exchangeKeyState(isDown);
+            if (isDown || instance.getController().isCoolingDown())
+                this.resetTicksSinceSecondAbilityActivity();
+            if (host.containerMenu == host.inventoryMenu && !host.isUsingItem() && !instance.getController().isCoolingDown())
+                instance.getUseType().check(isDown, oldState, unique, controller);
+        });
     }
 
     @Inject(method = "saveAbilities", at = @At("TAIL"))
     private void changedAddon$saveAbilities(CallbackInfoReturnable<CompoundTag> cir) {
-        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-            CompoundTag returnValue = cir.getReturnValue();
+        if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
 
-            if (returnValue != null) {
-                ResourceLocation selectedKey = ChangedRegistry.ABILITY.get().getKey(this.secondSelectedAbility);
-                if (selectedKey != null) {
-                    TagUtil.putResourceLocation(returnValue, "secondSelectedAbility", selectedKey);
-                }
-            }
+        CompoundTag returnValue = cir.getReturnValue();
+        if (returnValue == null) return;
+
+        ResourceLocation selectedKey = ChangedRegistry.ABILITY.get().getKey(this.secondSelectedAbility);
+        if (selectedKey != null) {
+            TagUtil.putResourceLocation(returnValue, "secondSelectedAbility", selectedKey);
         }
     }
 
     @Inject(method = "loadAbilities", at = @At("TAIL"))
     private void changedAddon$loadAbilities(CompoundTag tagAbilities, CallbackInfo ci) {
-        if (ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) {
-            if (tagAbilities.contains("secondSelectedAbility")) {
-                AbstractAbility<?> savedSelected = ChangedRegistry.ABILITY.get().getValue(TagUtil.getResourceLocation(tagAbilities, "secondSelectedAbility"));
-                if (this.abilityInstances.containsKey(savedSelected)) {
-                    this.secondSelectedAbility = savedSelected;
-                }
-            }
+        if (!ChangedAddonServerConfiguration.ALLOW_SECOND_ABILITY_USE.get()) return;
+
+        if (!tagAbilities.contains("secondSelectedAbility")) return;
+
+        AbstractAbility<?> savedSelected = ChangedRegistry.ABILITY.get().getValue(TagUtil.getResourceLocation(tagAbilities, "secondSelectedAbility"));
+        if (this.abilityInstances.containsKey(savedSelected)) {
+            this.secondSelectedAbility = savedSelected;
         }
     }
 
@@ -222,6 +251,7 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
             stats.saveExtraData(returnValue);
         }
 
+        returnValue.putBoolean("transfurredBySafeMethod", isTransfurredBySafeMethod());
         returnValue.putBoolean("untransfurImmunity", getUntransfurImmunity(UntransfurEvent.UntransfurType.SURVIVAL));
         if (!getUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND)) {
             returnValue.putBoolean("untransfurImmunityCommand", getUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND));
@@ -233,17 +263,11 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
         if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
             variantExtraStats.readExtraData(tag);
         }
-
+        if (tag.contains("transfurredBySafeMethod"))
+            setTransfurredBySafeMethod(tag.getBoolean("transfurredBySafeMethod"));
         if (tag.contains("untransfurImmunity"))
             setUntransfurImmunity(UntransfurEvent.UntransfurType.SURVIVAL, tag.getBoolean("untransfurImmunity"));
         if (tag.contains("untransfurImmunityCommand"))
             setUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND, tag.getBoolean("untransfurImmunity"));
     }
-
-    /*@Inject(method = "canWear", at = @At("HEAD"), cancellable = true)
-    private void negateArmorForms(Player player, ItemStack itemStack, EquipmentSlot slot, CallbackInfoReturnable<Boolean> cir){
-        if (this.getParent() == ChangedAddonTransfurVariants.LATEX_SNEP_FERAL_FORM.get() || this.getParent() == ChangedAddonTransfurVariants.LATEX_SNEP.get()){
-            cir.setReturnValue(false);
-        }
-    }*/
 }

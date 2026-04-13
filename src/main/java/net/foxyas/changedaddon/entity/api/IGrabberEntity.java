@@ -1,8 +1,6 @@
 package net.foxyas.changedaddon.entity.api;
 
-import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.network.packet.S2CCheckGrabberEntity;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -15,7 +13,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -26,6 +23,10 @@ import net.minecraftforge.network.PacketDistributor;
 
 public interface IGrabberEntity {
 
+
+    interface IGrabberCondition {
+        boolean isAffectedByGrab();
+    }
 
     interface IConditionalGrabber {
         boolean canCauseGrabDamage();
@@ -199,6 +200,9 @@ public interface IGrabberEntity {
             return false;
         }
         if (this instanceof ChangedEntity changedEntity) {
+            if (changedEntity.getUnderlyingPlayer() != null) {
+                return false;
+            }
             if (changedEntity instanceof IAlphaAbleEntity alphaAbleEntity) return alphaAbleEntity.isAlpha();
         }
         return selfType.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab();

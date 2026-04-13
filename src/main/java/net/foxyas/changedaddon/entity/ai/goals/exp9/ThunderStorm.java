@@ -29,7 +29,7 @@ public class ThunderStorm extends Goal {
         }
 
         if (!boss.getCombatTracker().takingDamage) {
-            return boss.level.random.nextFloat() <= 0.05f;
+            return boss.getRandom().nextFloat() <= 0.05f;
         }
 
         LivingEntity target = this.getTarget();
@@ -37,7 +37,7 @@ public class ThunderStorm extends Goal {
             double distance = this.boss.distanceTo(target);
             return distance <= 6;
         }
-        return boss.level.random.nextFloat() >= 0.6f;
+        return boss.getRandom().nextFloat() >= 0.6f;
     }
 
 
@@ -69,7 +69,7 @@ public class ThunderStorm extends Goal {
                     double offsetZ = boss.getRandom().nextGaussian() * 20;
                     BlockPos pos = new BlockPos((int) (this.boss.getX() + offsetX), (int) this.boss.getY(), (int) (this.boss.getZ() + offsetZ));
                     if (level.getBlockState(pos.below()).isAir()) return;
-                    this.boss.SpawnThunderBolt(pos);
+                    this.boss.spawnThunderBolt(pos);
                 }
             } else {
                 for (int i = 0; i < 12; i++) {
@@ -77,7 +77,7 @@ public class ThunderStorm extends Goal {
                     double offsetZ = boss.getRandom().nextGaussian() * 10;
                     BlockPos pos = new BlockPos((int) (this.boss.getX() + offsetX), (int) this.boss.getY(), (int) (this.boss.getZ() + offsetZ));
                     if (level.getBlockState(pos.below()).isAir()) return;
-                    this.boss.SpawnThunderBolt(pos);
+                    this.boss.spawnThunderBolt(pos);
                 }
             }
         }

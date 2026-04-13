@@ -7,12 +7,9 @@ import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.control.LookControl;
@@ -20,11 +17,12 @@ import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
+
+import static net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity.spawnThunderCircle;
 
 public class ThunderDiveGoal extends Goal {
 
@@ -59,38 +57,6 @@ public class ThunderDiveGoal extends Goal {
         this.diveSpeedY = diveSpeedY;
         this.ringRadius = ringRadius;
         this.setFlags(EnumSet.of(Goal.Flag.MOVE, Goal.Flag.LOOK, Goal.Flag.JUMP));
-    }
-
-    public static void spawnThunderCircle(ServerLevel level, BlockPos center, double radius, int bolts) {
-        // garante que os strikes ocorram no topo do terreno naquele XZ
-        for (int i = 0; i < bolts; i++) {
-            double angle = (2 * Math.PI * i) / bolts;
-            double x = center.getX() + 0.5 + radius * Math.cos(angle);
-            double z = center.getZ() + 0.5 + radius * Math.sin(angle);
-
-            int topY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Mth.floor(x), Mth.floor(z));
-
-            // Começa do teto e desce até achar espaço
-            int minY = level.getMinBuildHeight() - 1;
-            for (int y = minY; y < (level.getMaxBuildHeight() - 1); y++) {
-                BlockPos checkPos = new BlockPos((int) x, y, (int) z);
-                // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
-                if (level.isEmptyBlock(checkPos) && level.isEmptyBlock(checkPos.above())) {
-                    topY = y;
-                    break;
-                }
-            }
-
-            BlockPos strikePos = new BlockPos(Mth.floor(x), topY, Mth.floor(z));
-
-            LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
-            if (bolt != null) {
-                bolt.moveTo(strikePos.getX() + 0.5, strikePos.getY(), strikePos.getZ() + 0.5);
-                bolt.setVisualOnly(false); // true = só visual (sem dano/fogo)
-                bolt.setDamage(2f);
-                level.addFreshEntity(bolt);
-            }
-        }
     }
 
     @Override
@@ -245,9 +211,9 @@ public class ThunderDiveGoal extends Goal {
         // Anel de trovões em 4 ondas (outline em XZ)
         applyKnockBack(center);
         spawnThunderCircle(serverLevel, center, ringRadius, 6);
-        DelayedTask.schedule(5, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.4, 4));
-        DelayedTask.schedule(10, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.8, 8));
-        DelayedTask.schedule(15, () -> spawnThunderCircle(serverLevel, center, ringRadius * 2.2, 14));
+        DelayedTask.schedule(5, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.4f, 4));
+        DelayedTask.schedule(10, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.8f, 8));
+        DelayedTask.schedule(15, () -> spawnThunderCircle(serverLevel, center, ringRadius * 2.2f, 14));
 
         // efeito visual simples no chão
         serverLevel.levelEvent(2001, center, Block.getId(Blocks.LIGHTNING_ROD.defaultBlockState()));

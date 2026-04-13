@@ -2,32 +2,25 @@ package net.foxyas.changedaddon.mixins.entity.changedEntity;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
-import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
+import net.foxyas.changedaddon.entity.ai.advanced.AdvancedGroundPathNavigation;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
-import net.foxyas.changedaddon.entity.api.IConditionalFuseEntity;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.simple.WolfyEntity;
-import net.foxyas.changedaddon.event.TransfurVariantEvents;
-import net.foxyas.changedaddon.event.TransfurVariantEvents.OverrideSourceTransfurVariantEvent.TransfurType;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
-import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
+import net.ltxprogrammer.changed.entity.beast.LatexSnowLeopardFemale;
+import net.ltxprogrammer.changed.entity.beast.LatexSnowLeopardMale;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
-import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
-import net.ltxprogrammer.changed.init.ChangedAccessorySlots;
-import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,17 +30,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
 import java.util.Optional;
 
 @Mixin(value = ChangedEntity.class, remap = false)
@@ -142,22 +132,6 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         return original;
     }
 
-    @Inject(at = @At("HEAD"), method = "tryAbsorbTarget", cancellable = true)
-    private void tryAbsorbTargetInjector(LivingEntity target, IAbstractChangedEntity source, float amount, @Nullable List<TransfurVariant<?>> possibleMobFusions, CallbackInfoReturnable<Boolean> cir) {
-        Optional<AccessorySlots> forEntity = AccessorySlots.getForEntity(maybeGetUnderlying());
-        if (forEntity.isPresent()) {
-            AccessorySlots accessorySlots = forEntity.get();
-            Optional<ItemStack> item = accessorySlots.getItem(ChangedAccessorySlots.FULL_BODY.get());
-            if (item.isPresent()) {
-                ItemStack stack = item.get();
-                if (stack.getItem() instanceof HazardBodySuit) {
-                    ChangedAddonMod.LOGGER.info("Event Canceled Happened, value has been set to:{}", false);
-                    cir.setReturnValue(false);
-                }
-            }
-        }
-    }
-
     @Inject(at = @At("TAIL"), method = "registerGoals", remap = true, cancellable = true)
     private void goalsHook(CallbackInfo ci) {
         var self = ChangedAddonChangedEntityMixin$getSelf();
@@ -207,66 +181,11 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         }
     }
 
-    @Inject(at = @At("HEAD"), method = "tryFuseWithTarget", cancellable = true)
-    private void conditionalFuseEntities(LivingEntity targetToFuse, IAbstractChangedEntity source, float amount, CallbackInfoReturnable<Boolean> cir) {
-        if (!(targetToFuse instanceof IConditionalFuseEntity conditionalFuseEntity)) {
-            return;
-        }
-
-        if (!conditionalFuseEntity.canBeFusedBy(targetToFuse, source, amount)) {
-            cir.cancel();
-        }
-    }
-
-    @ModifyVariable(
-            method = "tryAbsorbTarget",
-            at = @At(
-                    value = "STORE",
-                    ordinal = -1
-            ),
-            name = "sourceTfVariant"
-    )
-    private TransfurVariant<?> changedaddon$overrideSourceTfAbsorptionVariant(
-            TransfurVariant<?> original,
-            LivingEntity target,
-            IAbstractChangedEntity source,
-            float amount,
-            @Nullable List<TransfurVariant<?>> possibleMobFusions
-    ) {
-        TransfurVariantEvents.OverrideSourceTransfurVariantEvent event = new TransfurVariantEvents.OverrideSourceTransfurVariantEvent(TransfurType.ABSORPTION, original, ChangedAddonChangedEntityMixin$getSelf(), target, source, amount, possibleMobFusions);
-        if (ChangedAddonMod.postEvent(event)) {
-            return original;
-        } else {
-            return event.getVariant();
-        }
-    }
-
-    @ModifyVariable(
-            method = "tryTransfurTarget",
-            at = @At(
-                    value = "STORE",
-                    ordinal = -1
-            ),
-            name = "variant"
-    )
-    private TransfurVariant<?> changedaddon$overrideSourceTfReplicationVariant(
-            TransfurVariant<?> original, Entity entity
-    ) {
-        if (!(entity instanceof LivingEntity target)) {
-            return original;
-        }
-
-        IAbstractChangedEntity abstractChangedEntity = IAbstractChangedEntity.forEither(this.maybeGetUnderlying());
-        float amount = (float) this.maybeGetUnderlying().getAttributeValue(ChangedAttributes.TRANSFUR_DAMAGE.get());
-        amount = ProcessTransfur.difficultyAdjustTransfurAmount(entity.level().getDifficulty(), amount, abstractChangedEntity);
-        TransfurContext context = this.getReplicateContext();
-        IAbstractChangedEntity source = context.source;
-
-        TransfurVariantEvents.OverrideSourceTransfurVariantEvent event = new TransfurVariantEvents.OverrideSourceTransfurVariantEvent(TransfurType.REPLICATION, original, ChangedAddonChangedEntityMixin$getSelf(), target, source, amount, null);
-        if (ChangedAddonMod.postEvent(event)) {
-            return original;
-        } else {
-            return event.getVariant();
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void changedAiPathNavigator(EntityType<?> type, Level level, CallbackInfo ci) {
+        ChangedEntity self = (ChangedEntity) (Object) this;
+        if (self instanceof LatexSnowLeopardMale || self instanceof LatexSnowLeopardFemale) {
+            this.navigation = new AdvancedGroundPathNavigation(this, level);
         }
     }
 

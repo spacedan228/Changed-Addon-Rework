@@ -6,13 +6,13 @@
   "refmap": "changed_addon.refmap.json",
   "plugin": "net.foxyas.changedaddon.mixins.compatibility.ChangedAddonMixinPlugin",
   "mixins": [
+    "blocks.WolfCrystalSmallMixin",
     "mods.nean.AvaliElytraAnimationMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
-    "client.renderer.DebugRendererMixin",
     "mods.firstPerson.LogicHandleMixin",
     "mods.vivecraft.AdvancedHumanoidModelMixin",
     "mods.vivecraft.AdvancedHumanoidRendererMixin",

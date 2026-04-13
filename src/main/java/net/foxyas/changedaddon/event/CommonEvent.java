@@ -3,15 +3,25 @@ package net.foxyas.changedaddon.event;
 import com.mojang.brigadier.CommandDispatcher;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.block.interfaces.ConditionalLatexCoverableBlock;
+import net.foxyas.changedaddon.client.model.animations.CarryAbilityAnimation;
+import net.foxyas.changedaddon.client.model.animations.MagicAttackCastingAnimator;
+import net.foxyas.changedaddon.client.model.animations.PsychicGrabAbilityAnimation;
 import net.foxyas.changedaddon.command.*;
+import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.ai.goals.AlphaSleepGoal;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
+import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
+import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.util.ParticlesUtil;
+import net.foxyas.changedaddon.util.RPTransfurDenialMessages;
 import net.foxyas.changedaddon.util.TransfurVariantUtils;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.ltxprogrammer.changed.client.renderer.animate.HumanoidAnimator;
+import net.ltxprogrammer.changed.client.renderer.model.AdvancedHumanoidModel;
+import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.latex.SpreadingLatexType;
@@ -20,6 +30,7 @@ import net.ltxprogrammer.changed.init.ChangedItems;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.item.Syringe;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.process.TransfurEvents;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.commands.CommandBuildContext;
@@ -30,12 +41,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySelector;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.CrossbowItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -46,10 +57,12 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.VanillaGameEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.SleepingLocationCheckEvent;
+import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -58,9 +71,15 @@ import net.minecraftforge.fml.common.Mod;
 import java.util.List;
 
 import static net.foxyas.changedaddon.entity.ai.goals.AlphaSleepGoal.hasValidAlphaSleepGoal;
+import static net.foxyas.changedaddon.event.TransfurEvents.resolveChangedEntity;
 
 @Mod.EventBusSubscriber(modid = ChangedAddonMod.MODID)
 public class CommonEvent {
+
+    // to use this event we need to put exactly the entity that should get the animations.. which is not that ideal... soo we made a mixin to adds the animations in every humanoid animator.
+    //    @SubscribeEvent
+    //    public static void addCustomDefaultAnimators(HumanoidAnimator.GatherAnimatorsEvent<ChangedEntity, AdvancedHumanoidModel<ChangedEntity>> event) {
+    //    }
 
     @SubscribeEvent
     public static void denyBlockSpread(SpreadingLatexType.CoveringBlockEvent event) {
@@ -69,6 +88,37 @@ public class CommonEvent {
         BlockState blockState = level.getBlockState(blockPos);
         if (blockState.getBlock() instanceof ConditionalLatexCoverableBlock conditionalLatexCoverableBlock) {
             event.setCanceled(!conditionalLatexCoverableBlock.canBeSpread(level, blockState, blockPos));
+        }
+    }
+
+    @SubscribeEvent
+    public static void denyUseBowItem(LivingEntityUseItemEvent.Start event) {
+        ItemStack itemStack = event.getItem();
+        LivingEntity entity = event.getEntity();
+
+        // Verificamos se é um Player (pois LivingEntity inclui mobs)
+        if (!(entity instanceof Player player)) {
+            return;
+        }
+
+        Item item = itemStack.getItem();
+
+        // Checa se o item é um arco ou besta
+        if (item instanceof BowItem || item instanceof CrossbowItem) {
+
+            // Sua lógica para verificar se o player está transformado
+            if (ProcessTransfur.isPlayerTransfurred(player)) {
+
+                // Checa a config que criamos
+                if (ChangedAddonServerConfiguration.STOP_TRANSFURRED_PLAYERS_USE_BOWS.get()) {
+
+                    // Cancela a ação de usar o item
+                    event.setCanceled(true);
+
+                    // Envia a mensagem aleatória (Action Bar)
+                    player.displayClientMessage(RPTransfurDenialMessages.getRandomBowDenial(), true);
+                }
+            }
         }
     }
 
@@ -83,7 +133,7 @@ public class CommonEvent {
     @SubscribeEvent
     public static void modifyFallDamage(LivingFallEvent event) {
         LivingEntity livingEntity = event.getEntity();
-        Entity entity = TransfurEvents.resolveChangedEntity(livingEntity);
+        Entity entity = resolveChangedEntity(livingEntity);
         if (entity instanceof IAlphaAbleEntity iAlphaAbleEntity && iAlphaAbleEntity.isAlpha()) {
             event.setDistance(event.getDistance() * (1 - (0.25f * (IAlphaAbleEntity.getEntityAlphaScale(entity) / 0.75f))));
         }
@@ -99,38 +149,64 @@ public class CommonEvent {
         }
     }
 
+    @SubscribeEvent
+    public static void allowPlayersToSleepAtAnyMomentWhenCuddling(SleepingTimeCheckEvent event) {
+        Player sleeper = event.getEntity();
+        if (!ChangedAddonVariables.ofOrDefault(sleeper).isCuddling) return;
+
+        event.setResult(Event.Result.ALLOW);
+    }
+
+    @SubscribeEvent
+    public static void forcePlayersToNeverSleepEnough(TickEvent.PlayerTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) return;
+
+        Player sleeper = event.player;
+        if (!sleeper.isSleeping()) return;
+
+        if (!ChangedAddonVariables.ofOrDefault(sleeper).isCuddling) return;
+
+        LivingEntityDataExtensor ext = LivingEntityDataExtensor.ofEntity(sleeper);
+        if (ext == null) return;
+
+        ext.setSleepCounter(1);
+    }
+
 
     @SubscribeEvent
     public static void sendAlphasAlert(VanillaGameEvent event) {
-        Entity cause = event.getCause();
         Level level = event.getLevel();
-        Vec3 eventPosition = event.getEventPosition();
         if (level.isClientSide()) return;
+
+        Entity cause = event.getCause();
         if (cause == null) return;
 
-        if (event.getVanillaEvent().is(ChangedAddonTags.GameEvents.CAN_WAKE_UP_ALPHAS)) {
-            List<PathfinderMob> entitiesOfClass = level.getEntitiesOfClass(PathfinderMob.class,
-                    new AABB(eventPosition, eventPosition).inflate(32),
-                    EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(target -> !target.is(cause)).and(target -> target instanceof PathfinderMob mob && mob.isSleeping() && hasAlphaSleepGoal(mob)));
+        if (!event.getVanillaEvent().is(ChangedAddonTags.GameEvents.CAN_WAKE_UP_ALPHAS)) return;
 
-            if (cause instanceof LivingEntity living && living.isSteppingCarefully()) {
-                return;
+        Vec3 eventPosition = event.getEventPosition();
+        List<PathfinderMob> entitiesOfClass = level.getEntitiesOfClass(PathfinderMob.class,
+                new AABB(eventPosition, eventPosition).inflate(32),
+                EntitySelector.NO_CREATIVE_OR_SPECTATOR.and(target -> !target.is(cause)).and(target -> target instanceof PathfinderMob mob && mob.isSleeping() && hasAlphaSleepGoal(mob)));
+
+        if (cause instanceof LivingEntity living && living.isSteppingCarefully()) {
+            return;
+        }
+
+        float dist;
+        int sleepDuration;
+        for (PathfinderMob target : entitiesOfClass) {
+            dist = cause.distanceTo(target);
+            List<AlphaSleepGoal> allSleepGoalsFromEntity = AlphaSleepGoal.getAllSleepGoalsFromEntity(target);
+            if (allSleepGoalsFromEntity.isEmpty()) continue;
+
+            for (AlphaSleepGoal alphaSleepGoal : allSleepGoalsFromEntity) {
+                sleepDuration = (int) (alphaSleepGoal.sleepDuration / dist);
+                alphaSleepGoal.sleepDuration -= sleepDuration;
+                alphaSleepGoal.sleepDuration = Math.max(0, alphaSleepGoal.sleepDuration);
             }
 
-            for (PathfinderMob target : entitiesOfClass) {
-                float distance = cause.distanceTo(target);
-                List<AlphaSleepGoal> allSleepGoalsFromEntity = AlphaSleepGoal.getAllSleepGoalsFromEntity(target);
-                if (allSleepGoalsFromEntity.isEmpty()) continue;
-
-                for (AlphaSleepGoal alphaSleepGoal : allSleepGoalsFromEntity) {
-                    int sleepDuration = (int) (alphaSleepGoal.sleepDuration / distance);
-                    alphaSleepGoal.sleepDuration -= sleepDuration;
-                    alphaSleepGoal.sleepDuration = Math.max(0, alphaSleepGoal.sleepDuration);
-                }
-
-                VibrationParticleOption vibrationParticleOption = new VibrationParticleOption(new EntityPositionSource(target, target.getEyeHeight()), 20);
-                ParticlesUtil.sendParticles(level, vibrationParticleOption, eventPosition, 0, 0, 0, 1, 0);
-            }
+            VibrationParticleOption vibrationParticleOption = new VibrationParticleOption(new EntityPositionSource(target, target.getEyeHeight()), 20);
+            ParticlesUtil.sendParticles(level, vibrationParticleOption, eventPosition, 0, 0, 0, 1, 0);
         }
     }
 
@@ -234,37 +310,28 @@ public class CommonEvent {
     }
 
     @SubscribeEvent
-    public static void onEntityAbsorbOther(ProgressTransfurEvents.onEntityAbsorbOther event) {
-        IAbstractChangedEntity source = event.getSource();
+    public static void onEntityAbsorbOther(TransfurEvents.AbsorbedEntityEvent event) {
+        IAbstractChangedEntity source = event.entity;
         if (source.getEntity() instanceof Player player) {
             player.awardStat(ChangedAddonStatRegistry.ENTITY_ASSIMILATED.get());
         }
     }
+
     @SubscribeEvent
-    public static void onEntityReplicateOther(ProgressTransfurEvents.onEntityReplicateOther event) {
-        IAbstractChangedEntity source = event.getSource();
+    public static void onEntityReplicateOther(TransfurEvents.AssimilatedEntityEvent event) {
+        IAbstractChangedEntity source = event.entity;
         if (source.getEntity() instanceof Player player) {
-            player.awardStat(ChangedAddonStatRegistry.ENTITY_TRANSFURED.get());
+            player.awardStat(ChangedAddonStatRegistry.ENTITY_TRANSFURRED.get());
         }
     }
 
     private static void cleanAlphaAttributes(Player player) {
-        if (player.isDeadOrDying()) {
-            return;
-        }
+        if (player.isDeadOrDying()) return;
 
         TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (transfurVariant != null) {
-            if (transfurVariant.getChangedEntity() instanceof IAlphaAbleEntity iAlphaAbleEntity) {
-                if (!iAlphaAbleEntity.isAlpha()) {
-                    IAlphaAbleEntity.removeAlphaModifiers(player);
-                    return;
-                }
-            }
-            return;
+        if (transfurVariant == null || (transfurVariant.getChangedEntity() instanceof IAlphaAbleEntity alphaAble && !alphaAble.isAlpha())) {
+            IAlphaAbleEntity.removeAlphaModifiers(player);
         }
-
-        IAlphaAbleEntity.removeAlphaModifiers(player);
     }
 
     private static void maskTransfur(Player player, Level level) {

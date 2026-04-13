@@ -23,6 +23,7 @@ import net.minecraftforge.network.PlayMessages;
 import java.util.Objects;
 
 public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements PowderSnowWalkable, ComplexRenderer {
+
     public SnowLeopardPartialEntity(PlayMessages.SpawnEntity packet, Level world) {
         this(ChangedAddonEntities.SNOW_LEOPARD_PARTIAL.get(), world);
     }
@@ -76,7 +77,7 @@ public class SnowLeopardPartialEntity extends AbstractSnowLeopard implements Pow
     }
 
     public Color3 getDripColor() {
-        return this.level.random.nextInt(10) > 3 ? Color3.GRAY : Color3.WHITE;
+        return random.nextInt(10) > 3 ? Color3.GRAY : Color3.WHITE;
     }
 
     public Color3 getHairColor(int layer) {

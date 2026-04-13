@@ -9,10 +9,8 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,7 +27,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -37,6 +34,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Exp6Entity extends AbstractCanTameSnepChangedEntityFavors {
+
     public Exp6Entity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXP_6.get(), world);
     }
@@ -45,7 +43,6 @@ public class Exp6Entity extends AbstractCanTameSnepChangedEntityFavors {
         super(type, world);
         xpReward = ChangedEntity.XP_REWARD_LARGE;
         this.setAttributes(this.getAttributes());
-        setNoAi(false);
         setPersistenceRequired();
     }
 
@@ -117,7 +114,7 @@ public class Exp6Entity extends AbstractCanTameSnepChangedEntityFavors {
 
     @Override
     public TransfurMode getTransfurMode() {
-        if (level.random.nextInt() > 5) {
+        if (random.nextInt() > 5) {
             return TransfurMode.ABSORPTION;
         }
         return TransfurMode.REPLICATION;
@@ -130,7 +127,7 @@ public class Exp6Entity extends AbstractCanTameSnepChangedEntityFavors {
 
     @Override
     public HairStyle getDefaultHairStyle() {
-        if (level.random.nextInt(10) > 5) {
+        if (random.nextInt(10) > 5) {
             return HairStyle.LONG_MESSY.get();
         }
         return HairStyle.LONG_KEPT.get();

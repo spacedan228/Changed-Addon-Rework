@@ -3,6 +3,7 @@ package net.foxyas.changedaddon.mixins.abilities;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
@@ -14,6 +15,7 @@ import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurContext;
+import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
@@ -64,10 +66,8 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
     @Unique
     private boolean alreadySnuggledTight = false;
 
-
-    // Right now it works but has a renderer bug. I don't recommend turning this to true
     @Unique
-    private boolean allowGrabTransfurred = false;
+    private boolean allowGrabTransfurred = false; // Default is false. it can be true using external code
 
     public GrabEntityAbilityInstanceMixin(AbstractAbility<?> ability, IAbstractChangedEntity entity) {
         super(ability, entity);
@@ -129,6 +129,15 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
             ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.TRACKING_ENTITY.with(entity::getEntity), new SafeGrabSyncPacket(entity.getEntity().getId(), safeMode));
     }
 
+    @WrapOperation(method = "tick", at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/ability/GrabEntityAbilityInstance;releaseEntity(Z)V", ordinal = 1))
+    private void stopDebuffsIfFriendlyMode(GrabEntityAbilityInstance instance, boolean debuffs, Operation<Void> original) {
+        if (this.isSafeMode()) {
+            original.call(instance, false);
+            return;
+        }
+        original.call(instance, debuffs);
+    }
+
     @Inject(method = "tickIdle", at = @At(value = "HEAD"), cancellable = true)
     private void tickSnuggleCooldown(CallbackInfo ci) {
         if (!isSafeMode()) return;
@@ -186,33 +195,47 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
 
     @ModifyExpressionValue(method = "isGrabbedInvalid", at = @At(value = "INVOKE",
             target = "Lnet/ltxprogrammer/changed/entity/variant/TransfurVariantInstance;isTemporaryFromSuit()Z"))
-    private boolean allowGrabTransfurredPlayers(boolean original) {
-        if (this.allowGrabTransfurred()) {
+    private boolean allowGrabTransfurredPlayers(boolean original, @Local(name = "player") Player player) {
+        if (canGrabEntity(player)) {
             return true;
         }
         return original;
     }
 
-    @Inject(
-            method = "releaseEntity",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;getEntity()Lnet/minecraft/world/entity/LivingEntity;",
-                    ordinal = 0
-            )
-    )
-    private void beforeAttemptToSendPacket(CallbackInfo ci) {
-        GrabEntityAbilityInstance self = getSelf();
-        IAbstractChangedEntity entity = self.entity;
-        if (!(entity.getEntity() instanceof Player) && grabbedEntity instanceof Player) {
-            if (!grabbedEntity.level().isClientSide()) {
-                Changed.PACKET_HANDLER.send(
-                        PacketDistributor.TRACKING_ENTITY.with(entity::getEntity),
-                        new GrabEntityPacket(entity.getEntity(), grabbedEntity, GrabEntityPacket.GrabType.RELEASE)
-                );
-            }
-        }
+    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;isPlayerTransfurred(Lnet/minecraft/world/entity/player/Player;)Z"),
+            method = "getHoveredEntity")
+    private boolean allowTfedGrab(boolean original, @Local(name = "targetPlayer") Player player) {
+
+        return !this.canGrabEntity(player) && original;
     }
+
+    @ModifyExpressionValue(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/EntityType;is(Lnet/minecraft/tags/TagKey;)Z", remap = true),
+            method = "getHoveredEntity")
+    private boolean ignoreTagCheck(boolean original, @Local(name = "livingEntity") LivingEntity livingEntity) {
+
+        return this.canGrabEntity(livingEntity) || original;
+    }
+
+//    @Inject(
+//            method = "releaseEntity",
+//            at = @At(
+//                    value = "INVOKE",
+//                    target = "Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;getEntity()Lnet/minecraft/world/entity/LivingEntity;",
+//                    ordinal = 0
+//            )
+//    )
+//    private void beforeAttemptToSendPacket(CallbackInfo ci) {
+//        GrabEntityAbilityInstance self = getSelf();
+//        IAbstractChangedEntity entity = self.entity;
+//        if (!(entity.getEntity() instanceof Player) && grabbedEntity instanceof Player) {
+//            if (!grabbedEntity.level().isClientSide()) {
+//                Changed.PACKET_HANDLER.send(
+//                        PacketDistributor.TRACKING_ENTITY.with(entity::getEntity),
+//                        new GrabEntityPacket(entity.getEntity(), grabbedEntity, GrabEntityPacket.GrabType.RELEASE)
+//                );
+//            }
+//        }
+//    }
 
     @Override
     public boolean isAlreadySnuggled() {
@@ -260,10 +283,10 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
             method = "tickIdle",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;progressTransfur(Lnet/minecraft/world/entity/LivingEntity;FLnet/ltxprogrammer/changed/entity/variant/TransfurVariant;Lnet/ltxprogrammer/changed/entity/TransfurContext;)Z"
+                    target = "Lnet/ltxprogrammer/changed/process/ProcessTransfur;progressTransfur(Lnet/minecraft/world/entity/LivingEntity;Lnet/ltxprogrammer/changed/entity/ai/LatexAssimilationDecision;)Z"
             )
     )
-    private boolean changedAddon$disableProgressTransfur(LivingEntity livingEntity, float amount, TransfurVariant<?> variant, TransfurContext context, Operation<Boolean> original) {
+    private boolean changedAddon$disableProgressTransfur(LivingEntity livingEntity, LatexAssimilationDecision<?> decision, Operation<Boolean> original) {
         if (safeMode && grabbedEntity != null) {
             // Safe mode -> nunca aplica transfur
             if (!isAlreadySnuggled()) {
@@ -272,7 +295,7 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
             return false;
         }
         // comportamento normal
-        return original.call(livingEntity, amount, variant, context);
+        return original.call(livingEntity, decision);
     }
 
 

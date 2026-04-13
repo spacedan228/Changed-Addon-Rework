@@ -33,7 +33,6 @@ public class FoxtaFoxyEntity extends ChangedEntity implements GenderedEntity, Po
         super(type, world);
         xpReward = 5;
         this.setAttributes(this.getAttributes());
-        setNoAi(false);
         setPersistenceRequired();
     }
 
@@ -79,7 +78,7 @@ public class FoxtaFoxyEntity extends ChangedEntity implements GenderedEntity, Po
     @Override
     public HairStyle getDefaultHairStyle() {
         HairStyle Hair = BALD.get();
-        if (level.random.nextInt(10) > 5) {
+        if (random.nextInt(10) > 5) {
             Hair = HairStyle.SHORT_MESSY.get();
         } else {
             Hair = BALD.get();
@@ -93,8 +92,8 @@ public class FoxtaFoxyEntity extends ChangedEntity implements GenderedEntity, Po
     }
 
     public Color3 getDripColor() {
-        Color3 color = Color3.getColor("#ffffff");
-        if (level.random.nextInt(10) > 5) {
+        Color3 color;
+        if (random.nextInt(10) > 5) {
             color = Color3.getColor("#FF8F33");
         } else {
             color = Color3.getColor("#FFBC85");
@@ -114,11 +113,6 @@ public class FoxtaFoxyEntity extends ChangedEntity implements GenderedEntity, Po
     @Override
     public @NotNull Packet<ClientGamePacketListener> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket(this);
-    }
-
-    @Override
-    protected void registerGoals() {
-        super.registerGoals();
     }
 
     @Override

@@ -9,7 +9,6 @@ import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -22,7 +21,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -46,7 +44,6 @@ public class ReynEntity extends ChangedEntity {
         super(type, world);
         xpReward = 5;
         this.setAttributes(this.getAttributes());
-        setNoAi(false);
     }
 
 
@@ -148,8 +145,8 @@ public class ReynEntity extends ChangedEntity {
 
     @Override
     public HairStyle getDefaultHairStyle() {
-        HairStyle Hair = BALD.get();
-        if (level.random.nextInt(10) > 5) {
+        HairStyle Hair;
+        if (random.nextInt(10) > 5) {
             Hair = HairStyle.SHORT_MESSY.get();
         } else {
             Hair = BALD.get();
@@ -163,8 +160,8 @@ public class ReynEntity extends ChangedEntity {
     }
 
     public Color3 getDripColor() {
-        Color3 color = Color3.getColor("#ffffff");
-        if (level.random.nextInt(10) > 5) {
+        Color3 color;
+        if (random.nextInt(10) > 5) {
             color = Color3.getColor("#4c4c4c");
         } else {
             color = Color3.getColor("#5c5c5c");
@@ -183,12 +180,6 @@ public class ReynEntity extends ChangedEntity {
     }
 
     @Override
-    protected void registerGoals() {
-        super.registerGoals();
-
-    }
-
-    @Override
     public @NotNull MobType getMobType() {
         return MobType.UNDEFINED;
     }
@@ -196,11 +187,6 @@ public class ReynEntity extends ChangedEntity {
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;
-    }
-
-    @Override
-    public double getMyRidingOffset() {
-        return super.getMyRidingOffset();
     }
 
     @Override

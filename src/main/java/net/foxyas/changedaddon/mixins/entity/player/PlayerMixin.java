@@ -1,20 +1,24 @@
 package net.foxyas.changedaddon.mixins.entity.player;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.foxyas.changedaddon.ability.ClawsAbility;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.client.renderer.items.HazardBodySuitClothingRenderer;
 import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
+import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.variant.VariantExtraStats;
-import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
+import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -60,6 +64,8 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
     @Shadow
     public abstract @NotNull ItemStack getItemBySlot(@NotNull EquipmentSlot equipmentSlot);
 
+    @Shadow private int sleepCounter;
+
     @Override
     public boolean isInWater() {
         boolean inWater = super.isInWater();
@@ -71,10 +77,33 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
 
     @Inject(method = "sweepAttack", at = @At("HEAD"), cancellable = true)
     private void customSweepAttackEffect(CallbackInfo ci) {
-        if (this.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof AbstractKatanaItem abstractKatanaItem) {
+        if (this.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof AbstractKatanaItem abstractKatanaItem) {
             ci.cancel();
             abstractKatanaItem.spawnElectricSwingParticle((Player) (Object) this, 2);
         }
+    }
+
+    @Override
+    public void setSleepCounter(int value) {
+        this.sleepCounter = value;
+    }
+
+    @ModifyReturnValue(method = "isSleepingLongEnough", at = @At("RETURN"))
+    private boolean isSleepingLongEnoughHook(boolean original) {
+        Player self = ((Player) (Object) this);
+        if (!ChangedAddonVariables.ofOrDefault(self).isCuddling) return original;
+
+        TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(self);
+        if (transfurVariant == null) return original;
+
+        GrabEntityAbilityInstance grabAbilityInstance = transfurVariant.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
+        if (grabAbilityInstance instanceof GrabEntityAbilityExtensor ext) {
+            if (ext.isSafeMode()/* && grabAbilityInstance.grabbedEntity != null*/) {
+                return false;
+            }
+        }
+
+        return original;
     }
 
     @Inject(method = "updateSwimming", at = @At("RETURN"))
@@ -138,7 +167,7 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
     }*/
 
     @Inject(method = "attack", at = @At("HEAD"))
-    private void CustomClawSweepAttack(Entity entity, CallbackInfo ci) {
+    private void customClawSweepAttack(Entity entity, CallbackInfo ci) {
         //System.out.println("O attack foi disparado!");
         Player player = (Player) (Object) this;
         //System.out.println("O ataque foi feito por um jogador: " + player.getName().getString());
@@ -148,8 +177,8 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
         ProcessTransfur.getPlayerTransfurVariantSafe(player).ifPresent((variantInstance -> {
             AbstractAbilityInstance abilityInstance = variantInstance.getAbilityInstance(ChangedAddonAbilities.CLAWS.get());
             if (abilityInstance != null) {
-                AbstractAbility<?> clawAbility = variantInstance.getAbilityInstance(ChangedAddonAbilities.CLAWS.get()).ability;
-                if (clawAbility instanceof ClawsAbility ability && ability.isActive && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
+                ClawsAbility.Data clawAbility = variantInstance.getAbilityInstance(ChangedAddonAbilities.CLAWS.get());
+                if (clawAbility.isActive && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty()) {
                     //System.out.println("Habilidade ativada!");
                     // ⚔ Área de efeito: Raio de 1.5 blocos ao redor do alvo
                     double radius = 1;

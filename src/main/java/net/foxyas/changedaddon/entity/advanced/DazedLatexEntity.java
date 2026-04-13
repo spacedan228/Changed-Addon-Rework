@@ -1,14 +1,22 @@
 package net.foxyas.changedaddon.entity.advanced;
 
+import com.mojang.datafixers.util.Either;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
+import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.ltxprogrammer.changed.ability.ILatexAssimilatedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.TransfurCause;
+import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
@@ -25,6 +33,9 @@ import net.minecraftforge.event.entity.SpawnPlacementRegisterEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class DazedLatexEntity extends AbstractDazedEntity {
@@ -33,7 +44,6 @@ public class DazedLatexEntity extends AbstractDazedEntity {
         super(type, world);
         xpReward = 0;
         this.setAttributes(this.getAttributes());
-        setNoAi(false);
         setPersistenceRequired();
     }
 
@@ -95,5 +105,32 @@ public class DazedLatexEntity extends AbstractDazedEntity {
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR), 0);
         safeSetBaseValue(attributes.getInstance(Attributes.ARMOR_TOUGHNESS), 0);
         safeSetBaseValue(attributes.getInstance(Attributes.KNOCKBACK_RESISTANCE), 0);
+    }
+
+    @Override
+    public @Nullable LatexAssimilationDecision<?> makeLatexAssimilationDecision(TransfurCause cause, LivingEntity targetEntity) {
+        LatexAssimilationDecision<?> decision = super.makeLatexAssimilationDecision(cause, targetEntity); // Saves the original value just in case
+
+        AtomicReference<LatexAssimilationDecision<?>> decisionAtomicReference = new AtomicReference<>(decision); // A shut up for the compiler.
+        if (decision == null || decision.context() == null || decision.context().source() == null) {
+            return decision; // Fail Safe Stuff;
+        }
+
+        Either<IAbstractChangedEntity, ILatexAssimilatedEntity> source = decision.context().source();
+
+        if (targetEntity.level().isClientSide()) return decision;
+        source.ifLeft(sourceEntity -> {
+            // If entity is a Dazed Entity and the "method" is Absorption progress
+            if (!(sourceEntity.getChangedEntity() instanceof DazedLatexEntity) || decision.method() != LatexAssimilationDecision.Method.ABSORPTION) return;
+
+            // If the entity is grabbing the target and wants to absorb -> make them into the "buffed" variant.
+            sourceEntity.getAbilityInstanceSafe(ChangedAbilities.GRAB_ENTITY_ABILITY.get()).ifPresent(abilityInstance -> {
+                if (abilityInstance.grabbedEntity == targetEntity) {
+                    decisionAtomicReference.set(decision.withTransfurVariant(ChangedAddonTransfurVariants.BUFF_DAZED_LATEX.get()));
+                }
+            });
+        });
+
+        return decisionAtomicReference.get();
     }
 }

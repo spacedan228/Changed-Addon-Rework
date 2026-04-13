@@ -353,14 +353,14 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityFromId(DAZED_LATEX);
         addEntityFromId(BUFF_DAZED_LATEX);
         addEntityFromId(ERIK);
-        addEntityFromId(EXP_1_FEMALE);
-        addEntityFromId(EXP_1_MALE);
-        addEntityFromId(EXP_2_FEMALE);
-        addEntityFromId(EXP_2_MALE);
-        addEntityFromId(EXP_6);
+        addEntityType(EXP_1_FEMALE, "Exp1 Female");
+        addEntityType(EXP_1_MALE, "Exp1 Male");
+        addEntityType(EXP_2_FEMALE, "Exp2 Female");
+        addEntityType(EXP_2_MALE, "Exp2 Male");
+        addEntityType(EXP_6, "Exp6");
         addEntityFromId(EXPERIMENT_009);
         addEntityType(EXPERIMENT_009_BOSS, "Experiment 009");
-        addText("lore." + EXPERIMENT_009.getId().getPath(), "Created within the confines of a laboratory, it was never shown mercy or compassion by most of the scientists who studied it. Those few who dared to sympathize with the creature met tragic ends. After eventually being contained and fragmented into a strange orb of condensed DNA, it did not fade into silence. Instead, it endured—its mind filled with resentment. Now it seeks vengeance against humanity, and against any being that dares to resemble them.");
+        addBestiaryText("lore." + EXPERIMENT_009.getId().getPath(), "Created within the confines of a laboratory, it was never shown mercy or compassion by most of the scientists who studied it. Those few who dared to sympathize with the creature met tragic ends. After eventually being contained and fragmented into a strange orb of condensed DNA, it did not fade into silence. Instead, it endured—its mind filled with resentment. Now it seeks vengeance against humanity, and against any being that dares to resemble them.");
         addEntityFromId(EXPERIMENT_10);
         addEntityType(EXPERIMENT_10_BOSS, "Experiment 10");
         addEntityFromId(LUMINARCTIC_LEOPARD_FEMALE);
@@ -389,6 +389,8 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityType(LATEX_WHITE_SNOW_LEOPARD_FEMALE, "Female Latex White Snow Leopard");
         addEntityType(LATEX_WHITE_SNOW_LEOPARD_MALE, "Male Latex White Snow Leopard");
         addEntityFromId(LUMINARA_FLOWER_BEAST);
+        addBestiaryTitle("transformation." + LUMINARA_FLOWER_BEAST.getId().getPath(), "Mutation Trigger");
+        addBestiaryDesc("transformation." + LUMINARA_FLOWER_BEAST.getId().getPath(), "This creature can mutate spontaneously when triggered by certain environmental factors.");
         addEntityFromId(LYNX);
         addEntityFromId(MIRROR_WHITE_TIGER);
         addEntityFromId(PROTOTYPE);
@@ -638,6 +640,8 @@ public class ENLanguageProvider extends LanguageProvider {
         add("key.changed_addon.turn_off_transfur.grab_safe_mode", "You set the Friendly Grab to %s");
         add("key.changed_addon.turn_off_transfur.safe_mode", "You set the Transfur Attack to %s");
         addKey(USE_SECOND_ABILITY, "Use Second Variant Ability");
+        addKey(CUDDLE_KEY, "Switch cuddle mode");
+        addKey(CUDDLE_KEY, "set", "Cuddle mode is set to %s");
 
         addSound(ARMOR_EQUIP, "Armor Equip");
         addSound(PLUSHY_SOUND, "Plush Squeezed");
@@ -667,6 +671,17 @@ public class ENLanguageProvider extends LanguageProvider {
         addText("miningStrength", "Mining Strength: %s");
         addText("display.hazard_body_suit.cant_have_helmet", "Mmph... it’s squishing my ears! Better not wear it.");
 
+        addText("item.vial.wrong_use", "Using this item in there will not work");
+
+        addText("rp.guns_compatibility.paws_too_big", "Your paws are too bulky to fit in the trigger guard!");
+        addText("rp.guns_compatibility.no_fingers_for_trigger", "You lack the finger dexterity to pull the trigger!");
+        addText("rp.guns_compatibility.claws_stuck", "Your claws are getting in the way of the safety switch!");
+        addText("rp.guns_compatibility.anatomical_error", "Your current form's hands aren't designed for firearms!");
+        addText("rp.bow_and_crossbow_stop.claws_rip_string", "Your sharp claws would rip the bowstring to shreds!");
+        addText("rp.bow_and_crossbow_stop.no_grip_strength", "Your paws can't maintain a steady grip on the bow!");
+        addText("rp.bow_and_crossbow_stop.crossbow_safety", "Your fingers are too thick to operate the crossbow's mechanism!");
+        addText("rp.bow_and_crossbow_stop.clumsy_paws", "It's nearly impossible to nock an arrow with such clumsy paws!");
+
         addMessage("induction_coil_melt", "§4⚡ You brought metal to an electric fight. §cSuch Foolish Move. §6Your gear is melting from the heat!");
 
         addCommand("accessory.no_slots.single", "%s has no accessory slots.");
@@ -685,12 +700,19 @@ public class ENLanguageProvider extends LanguageProvider {
         addCommand("alpha.get.fail", "Target does not support Alpha gene");
         addCommand("alpha_scale.set.success", "Alpha scale set to %s for %s entities");
         addCommand("alpha_scale.get.success", "Alpha scale: %s");
+        addCommand("ftkMinigame.set.success", "FTKC parameters successfully initialized for %s target(s).");
+        addCommand("ftkMinigame.set.fail", "Command execution failed: No eligible transfur subjects identified in selection.");
+        addCommand("ftkMinigame.get.has", "Active cognitive lock detected: %s.");
+        addCommand("ftkMinigame.get.hasnt", "No active FTKC state detected for the specified subject.");
+        addCommand("ftkMinigame.reset.success", "FTKC state has been purged for %s target(s).");
+        addCommand("ftkMinigame.reset.fail", "Command execution failed: No eligible transfur subjects identified in selection.");
 
         addStat(ChangedAddonStatRegistry.PATS_GIVEN, "Pats given");
         addStat(ChangedAddonStatRegistry.PATS_RECEIVED, "Pats received");
         addStat(ChangedAddonStatRegistry.ENTITY_ASSIMILATED, "Entities assimilated while transfurred");
-        addStat(ChangedAddonStatRegistry.ENTITY_TRANSFURED, "Entities transfurred while transfurred");
+        addStat(ChangedAddonStatRegistry.ENTITY_TRANSFURRED, "Entities transfurred while transfurred");
 
         add("warn.rei.not.supported.move.items.but.right.container", "Move Items is not supported with this kind of workstation");
+        addText("cuddle_button", "Start cuddling");
     }
 }

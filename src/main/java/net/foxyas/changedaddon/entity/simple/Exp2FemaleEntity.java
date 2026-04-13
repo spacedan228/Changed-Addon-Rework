@@ -8,10 +8,8 @@ import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.util.Color3;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -28,7 +26,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -47,10 +44,8 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
         super(type, world);
         xpReward = ChangedEntity.XP_REWARD_LARGE;
         this.setAttributes(this.getAttributes());
-        setNoAi(false);
         setPersistenceRequired();
     }
-
 
     public static AttributeSupplier.Builder createAttributes() {
         AttributeSupplier.Builder builder = ChangedEntity.createLatexAttributes();
@@ -67,7 +62,6 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
         super.setAttributes(attributes);
 
         Objects.requireNonNull(attributes.getInstance(ChangedAttributes.TRANSFUR_DAMAGE.get())).setBaseValue((3));
-        Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((30));
         Objects.requireNonNull(attributes.getInstance(Attributes.MAX_HEALTH)).setBaseValue((24));
         Objects.requireNonNull(attributes.getInstance(Attributes.FOLLOW_RANGE)).setBaseValue(40.0f);
         Objects.requireNonNull(attributes.getInstance(Attributes.MOVEMENT_SPEED)).setBaseValue(1.18F);
@@ -123,7 +117,7 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
 
     @Override
     public TransfurMode getTransfurMode() {
-        if (level.random.nextInt() > 5) {
+        if (random.nextInt() > 5) {
             return TransfurMode.ABSORPTION;
         }
         return TransfurMode.REPLICATION;
@@ -140,7 +134,7 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
 
     @Override
     public HairStyle getDefaultHairStyle() {
-        if (level.random.nextInt(10) > 5) {
+        if (random.nextInt(10) > 5) {
             return HairStyle.LONG_MESSY.get();
         }
         return HairStyle.LONG_KEPT.get();
@@ -162,12 +156,6 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
     }
 
     @Override
-    protected void registerGoals() {
-        super.registerGoals();
-
-    }
-
-    @Override
     public @NotNull MobType getMobType() {
         return MobType.UNDEFINED;
     }
@@ -175,11 +163,6 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
     @Override
     public boolean removeWhenFarAway(double distanceToClosestPlayer) {
         return false;
-    }
-
-    @Override
-    public double getMyRidingOffset() {
-        return super.getMyRidingOffset();
     }
 
     @Override
@@ -192,12 +175,12 @@ public class Exp2FemaleEntity extends AbstractExp2SnepChangedEntityFavors {
 
     @Override
     public @NotNull SoundEvent getHurtSound(@NotNull DamageSource ds) {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.hurt")));
+        return SoundEvents.GENERIC_HURT;
     }
 
     @Override
     public @NotNull SoundEvent getDeathSound() {
-        return Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getValue(ResourceLocation.parse("entity.generic.death")));
+        return SoundEvents.GENERIC_DEATH;
     }
 
     @Override
