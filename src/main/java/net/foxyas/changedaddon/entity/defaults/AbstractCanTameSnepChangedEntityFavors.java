@@ -31,7 +31,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.OldUsersConverter;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
@@ -59,16 +58,15 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+@Deprecated
 public abstract class AbstractCanTameSnepChangedEntityFavors extends AbstractCanTameSnepChangedEntity implements TamableLatexEntityFavors {
-    public static final int OWNER_HOSTILE_DURATION_TICKS = 600;
-    //protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(AbstractCanTameChangedEntityFavors.class, EntityDataSerializers.BYTE);
-    //protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNERUUID_ID = SynchedEntityData.defineId(AbstractCanTameChangedEntityFavors.class, EntityDataSerializers.OPTIONAL_UUID);
     protected static final EntityDataAccessor<LatexTargetType> DATA_TARGET_TYPE_ID = SynchedEntityData.defineId(AbstractCanTameSnepChangedEntityFavors.class, ChangedAddonEntityDataSerializers.LATEX_TARGET_TYPE);
     protected static final EntityDataAccessor<LatexAttackType> DATA_ATTACK_TYPE_ID = SynchedEntityData.defineId(AbstractCanTameSnepChangedEntityFavors.class, ChangedAddonEntityDataSerializers.LATEX_ATTACK_TYPE);
     protected static final EntityDataAccessor<LatexAttackCondition> DATA_ATTACK_CONDITION_ID = SynchedEntityData.defineId(AbstractCanTameSnepChangedEntityFavors.class, ChangedAddonEntityDataSerializers.LATEX_ATTACK_CONDITION);
     protected static final EntityDataAccessor<LatexFavor> DATA_FAVOR_ID = SynchedEntityData.defineId(AbstractCanTameSnepChangedEntityFavors.class, ChangedAddonEntityDataSerializers.LATEX_FAVOR);
     protected @Nullable LatexInventory inventory; // Inventory doesn't exist until DL is tamed
     protected @Nullable GrabEntityAbilityInstance grabEntityAbilityInstance; // Grab doesn't exist until DL is tamed
+    public static final int OWNER_HOSTILE_DURATION_TICKS = 600;
 
     public AbstractCanTameSnepChangedEntityFavors(EntityType<? extends AbstractSnowLeopard> p_19870_, Level p_19871_) {
         super(p_19870_, p_19871_);
@@ -104,7 +102,7 @@ public abstract class AbstractCanTameSnepChangedEntityFavors extends AbstractCan
 
     @Override
     public <A extends AbstractAbilityInstance> A getAbilityInstance(AbstractAbility<A> ability) {
-        if (grabEntityAbilityInstance != null && ability == grabEntityAbilityInstance.ability)
+        if (this.getUnderlyingPlayer() == null && grabEntityAbilityInstance != null && ability == grabEntityAbilityInstance.ability)
             return (A) grabEntityAbilityInstance;
         return super.getAbilityInstance(ability);
     }
@@ -223,7 +221,15 @@ public abstract class AbstractCanTameSnepChangedEntityFavors extends AbstractCan
             uuid = tag.getUUID("Owner");
         } else {
             String s = tag.getString("Owner");
-            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
+            if (this.getServer() != null) {
+                uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
+            } else {
+                try {
+                    uuid = UUID.fromString(s);
+                } catch (IllegalArgumentException e) {
+                    uuid = null;
+                }
+            }
         }
 
         if (tag.contains("FollowOwner"))

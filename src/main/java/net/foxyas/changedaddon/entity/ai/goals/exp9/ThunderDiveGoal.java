@@ -24,7 +24,7 @@ import java.util.EnumSet;
 
 import static net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity.spawnThunderCircle;
 
-public class ThunderDiveGoal extends Goal {
+public class ThunderDiveGoal extends Goal implements IAbilityGoal {
 
     private static final int FAILSAFE_DIVING = 120;
 
@@ -123,7 +123,7 @@ public class ThunderDiveGoal extends Goal {
         LivingEntity t = mob.getTarget();
         LookControl lookControl = mob.getLookControl();
         if (t != null) {
-            lookControl.setLookAt(t, 90f, 90f);
+            lookControl.setLookAt(t, 180f, 180f);
             mob.setYBodyRot(mob.yHeadRot);
         }
 
@@ -167,7 +167,7 @@ public class ThunderDiveGoal extends Goal {
                     affectNearbyEntities(new Vec3(0, -Math.abs(diveSpeedY), 0));
                 }
 
-                mob.yBodyRot = mob.getYRot();
+                mob.setYBodyRot(mob.getYRot());
                 divingTicks++;
             }
         }
@@ -210,10 +210,10 @@ public class ThunderDiveGoal extends Goal {
 
         // Anel de trovões em 4 ondas (outline em XZ)
         applyKnockBack(center);
-        spawnThunderCircle(serverLevel, center, ringRadius, 6);
-        DelayedTask.schedule(5, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.4f, 4));
-        DelayedTask.schedule(10, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.8f, 8));
-        DelayedTask.schedule(15, () -> spawnThunderCircle(serverLevel, center, ringRadius * 2.2f, 14));
+        spawnThunderCircle(mob, serverLevel, center, ringRadius, 6);
+        DelayedTask.schedule(5, () -> spawnThunderCircle(mob, serverLevel, center, ringRadius * 1.4f, 4));
+        DelayedTask.schedule(10, () -> spawnThunderCircle(mob, serverLevel, center, ringRadius * 1.8f, 8));
+        DelayedTask.schedule(15, () -> spawnThunderCircle(mob, serverLevel, center, ringRadius * 2.2f, 14));
 
         // efeito visual simples no chão
         serverLevel.levelEvent(2001, center, Block.getId(Blocks.LIGHTNING_ROD.defaultBlockState()));

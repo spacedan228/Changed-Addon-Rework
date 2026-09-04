@@ -2,13 +2,12 @@ package net.foxyas.changedaddon.mixins.entity.variant;
 
 import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
+import net.foxyas.changedaddon.variant.IVariantExtraStats;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
-import net.foxyas.changedaddon.variant.VariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
@@ -81,7 +80,7 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
         if (!level.getBlockState(pos).isBed(level, pos, variant.getHost())) return;
 
         GrabEntityAbilityInstance instance = variant.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
-        if (instance != null && instance.grabbedEntity != null && ((GrabEntityAbilityExtensor)instance).isSafeMode()) ci.cancel();
+        if (instance != null && instance.grabbedEntity != null) ci.cancel();
     }
 
     @Override
@@ -96,34 +95,22 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
         maySendDataUpdate();
     }
 
-    private boolean transfurredBySafeMethod = false;
-
-    @Override
-    public boolean isTransfurredBySafeMethod() {
-        return transfurredBySafeMethod;
-    }
-
-    @Override
-    public void setTransfurredBySafeMethod(boolean value) {
-        transfurredBySafeMethod = value;
-    }
-
-    @Override
+    @Override @Deprecated
     public KeyStateTracker getSecondAbilityKey() {
         return secondAbilityKey;
     }
 
-    @Override
+    @Override @Deprecated
     public void setSecondAbilityKey(KeyStateTracker secondAbilityKey) {
         this.secondAbilityKey = secondAbilityKey;
     }
 
-    @Override
+    @Override @Deprecated
     public AbstractAbility<?> getSecondSelectedAbility() {
         return secondSelectedAbility;
     }
 
-    @Override
+    @Override @Deprecated
     public void setSecondSelectedAbility(AbstractAbility<?> secondSelectedAbility) {
         if (!abilityInstances.containsKey(secondSelectedAbility)) return;
 
@@ -139,17 +126,17 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
         this.secondSelectedAbility = secondSelectedAbility;
     }
 
-    @Override
+    @Override @Deprecated
     public int getTicksSinceSecondAbilityActivity() {
         return ticksSinceSecondAbilityActivity;
     }
 
-    @Override
+    @Override @Deprecated
     public void resetTicksSinceSecondAbilityActivity() {
         this.ticksSinceSecondAbilityActivity = 0;
     }
 
-    @Override
+    @Override @Deprecated
     public AbstractAbilityInstance getSecondSelectedAbilityInstance() {
         return this.abilityInstances.get(this.secondSelectedAbility);
     }
@@ -215,16 +202,16 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @ModifyReturnValue(method = "canElytraGlide", at = @At("RETURN"))
     private boolean canElytraGlideHook(boolean original) {
-        if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-            return variantExtraStats.getFlyType().canGlide();
+        if (this.getChangedEntity() instanceof IVariantExtraStats IVariantExtraStats) {
+            return IVariantExtraStats.getFlyType().canGlide();
         }
         return original;
     }
 
     @ModifyReturnValue(method = "canCreativeFly", at = @At("RETURN"))
     private boolean canCreativeFlyHook(boolean original) {
-        if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-            return variantExtraStats.getFlyType().canFly();
+        if (this.getChangedEntity() instanceof IVariantExtraStats IVariantExtraStats) {
+            return IVariantExtraStats.getFlyType().canFly();
         }
         return original;
     }
@@ -247,11 +234,10 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
     @Inject(method = "save", at = @At("RETURN"))
     private void InjectData(CallbackInfoReturnable<CompoundTag> cir) {
         CompoundTag returnValue = cir.getReturnValue();
-        if (this.getChangedEntity() instanceof VariantExtraStats stats) {
+        if (this.getChangedEntity() instanceof IVariantExtraStats stats) {
             stats.saveExtraData(returnValue);
         }
 
-        returnValue.putBoolean("transfurredBySafeMethod", isTransfurredBySafeMethod());
         returnValue.putBoolean("untransfurImmunity", getUntransfurImmunity(UntransfurEvent.UntransfurType.SURVIVAL));
         if (!getUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND)) {
             returnValue.putBoolean("untransfurImmunityCommand", getUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND));
@@ -260,14 +246,13 @@ public abstract class TransfurVariantInstanceMixin implements TransfurVariantIns
 
     @Inject(method = "load", at = @At("RETURN"))
     private void readInjectedData(CompoundTag tag, CallbackInfo cir) {
-        if (this.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-            variantExtraStats.readExtraData(tag);
+        if (this.getChangedEntity() instanceof IVariantExtraStats IVariantExtraStats) {
+            IVariantExtraStats.readExtraData(tag);
         }
-        if (tag.contains("transfurredBySafeMethod"))
-            setTransfurredBySafeMethod(tag.getBoolean("transfurredBySafeMethod"));
+
         if (tag.contains("untransfurImmunity"))
             setUntransfurImmunity(UntransfurEvent.UntransfurType.SURVIVAL, tag.getBoolean("untransfurImmunity"));
         if (tag.contains("untransfurImmunityCommand"))
-            setUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND, tag.getBoolean("untransfurImmunity"));
+            setUntransfurImmunity(UntransfurEvent.UntransfurType.COMMAND, tag.getBoolean("untransfurImmunityCommand"));
     }
 }

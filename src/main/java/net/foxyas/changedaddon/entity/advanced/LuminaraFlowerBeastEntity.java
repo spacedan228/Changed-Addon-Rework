@@ -1,19 +1,19 @@
 package net.foxyas.changedaddon.entity.advanced;
 
-import net.foxyas.changedaddon.entity.api.CustomPatReaction;
 import net.foxyas.changedaddon.entity.api.IBestiaryEntityData;
+import net.foxyas.changedaddon.entity.api.ICustomPatReaction;
 import net.foxyas.changedaddon.entity.api.IDynamicRideOffsetEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractBasicOrganicChangedEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure;
+import net.foxyas.changedaddon.init.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.process.variantsExtraStats.diets.FoodDietEntry;
 import net.foxyas.changedaddon.util.ColorUtil;
 import net.foxyas.changedaddon.util.DelayedTask;
-import net.foxyas.changedaddon.util.FoxyasUtils;
+import net.foxyas.changedaddon.util.FoxyasUtil;
 import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
-import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.foxyas.changedaddon.variant.IVariantExtraStats;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.PowderSnowWalkable;
@@ -34,6 +34,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -51,6 +52,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
@@ -62,9 +64,27 @@ import net.minecraftforge.network.PlayMessages;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements VariantExtraStats, CustomPatReaction, PowderSnowWalkable, IDynamicRideOffsetEntity, IBestiaryEntityData {
+public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity implements IVariantExtraStats, ICustomPatReaction, PowderSnowWalkable, IDynamicRideOffsetEntity, IBestiaryEntityData {
 
-    public static final CreatureDietsHandleProcedure.DietType LUMINARA_DIET = CreatureDietsHandleProcedure.DietType.create("LUMINARA", ChangedAddonTags.TransfurTypes.DRAGON_LIKE, ChangedAddonTags.Items.DRAGON_DIET, List.of(Items.CHORUS_FRUIT, ChangedItems.ORANGE.get()));
+    public static final List<FoodDietEntry> LUMINARA_DIET = List.of(
+            new FoodDietEntry(
+                    // Ingredient.of can accept a TagKey<Item> directly
+                    Ingredient.of(ChangedAddonTags.Items.DRAGON_DIET),
+                    ConstantFloat.of(2.0f), // hungerBonus (replace with your FloatProvider)
+                    ConstantFloat.of(0.5f), // saturationBonus (replace with your FloatProvider)
+                    List.of(),              // mobEffect list (empty or add your effects)
+                    false                   // isSickType
+            ),
+            new FoodDietEntry(
+                    // You can combine multiple explicit items into an Ingredient using Stream or multiple arguments
+                    Ingredient.of(Items.CHORUS_FRUIT, ChangedItems.ORANGE.get()),
+                    ConstantFloat.of(1.0f), // hungerBonus
+                    ConstantFloat.of(0.2f), // saturationBonus
+                    List.of(),              // mobEffect list
+                    false                   // isSickType
+            )
+    );
+
     private static final EntityDataAccessor<Boolean> AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> HYPER_AWAKENED = SynchedEntityData.defineId(LuminaraFlowerBeastEntity.class, EntityDataSerializers.BOOLEAN);
     public boolean spawnParticles = true;
@@ -209,19 +229,19 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     @Override
-    public List<CreatureDietsHandleProcedure.DietType> getExtraDietTypes() {
-        return List.of(LUMINARA_DIET);
+    public List<FoodDietEntry> getExtraDietTypes() {
+        return LUMINARA_DIET;
     }
 
     @Override
-    public void WhenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
+    public void whenPatEvent(LivingEntity patter, InteractionHand hand, LivingEntity patTarget) {
         if (patter.level().isClientSide()) return;
 
         patTarget.addEffect(getPatEffect(patter), patter);
     }
 
     @Override
-    public void WhenPattedReaction(Player patter, InteractionHand hand) {
+    public void whenPattedReaction(LivingEntity patter, InteractionHand hand) {
         if (patter.level().isClientSide()) return;
 
         patter.addEffect(getPatEffect(this), this);
@@ -298,8 +318,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
                         spawnHyperAwakenedParticles();
                     }
                 }
-
-                tryToPacifyNearbyEntities(128);
+                tryToPacifyNearbyEntities(128 * this.getScale());
             }
             if (this.isAwakened() && !attributesApplied) {
                 applyAwakenedBuffs();
@@ -312,7 +331,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
             if (attributeInstance != null) {
                 range = attributeInstance.getValue();
             }
-            tryToPacifyNearbyEntities(range);
+            tryToPacifyNearbyEntities(range * this.getScale());
         }
     }
 
@@ -358,7 +377,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
         if (attributeInstance != null) {
             range = attributeInstance.getValue();
         }
-        tryToPacifyNearbyEntities(range);
+        tryToPacifyNearbyEntities(range * this.getScale());
 
         if (this.isAwakened() && !attributesAppliedEntity) {
             this.setAttributesAwakened(this.getAttributes());
@@ -374,7 +393,7 @@ public class LuminaraFlowerBeastEntity extends AbstractBasicOrganicChangedEntity
     }
 
     public void tryToPacifyNearbyEntities(double range) {
-        List<LivingEntity> nearChangedBeasts = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(range), (entity) -> FoxyasUtils.canEntitySeeOtherIgnoreGlass(entity, this, 90f));
+        List<LivingEntity> nearChangedBeasts = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(range), (entity) -> FoxyasUtil.canEntitySeeOtherIgnoreGlass(entity, this, 90f));
         for (LivingEntity livingEntity : nearChangedBeasts) {
             if (livingEntity instanceof ChangedEntity changedEntity) {
                 if (changedEntity.getType().is(ChangedAddonTags.EntityTypes.PACIFY_IMMUNE)) {

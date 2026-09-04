@@ -4,7 +4,7 @@ import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.entity.api.*;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.init.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.ai.LatexFollowOwnerGoal;
@@ -56,7 +56,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard implements ICoatLikeEntity, CustomPatReaction, ISafeChangedEntity, IDynamicRideOffsetEntity, ChangedEntityExtension {
+public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard implements ICoatLikeEntity, ICustomPatReaction, ISafeChangedEntity, IDynamicRideOffsetEntity, ChangedEntityExtension {
     protected static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.BYTE);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_OWNER_UUID_ID = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.OPTIONAL_UUID);
     protected static final EntityDataAccessor<Boolean> UNFUSED_FROM_HOST = SynchedEntityData.defineId(AbstractExp2SnepChangedEntity.class, EntityDataSerializers.BOOLEAN);
@@ -175,7 +175,15 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
             uuid = tag.getUUID("Owner");
         } else {
             String s = tag.getString("Owner");
-            uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
+            if (this.getServer() != null) {
+                uuid = OldUsersConverter.convertMobOwnerIfNecessary(this.getServer(), s);
+            } else {
+                try {
+                    uuid = UUID.fromString(s);
+                } catch (IllegalArgumentException e) {
+                    uuid = null;
+                }
+            }
         }
 
         if (tag.contains("FollowOwner"))
@@ -342,7 +350,10 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
     }
 
     @Override
-    public void WhenPattedReactionSpecific(Player patter, InteractionHand hand, Vec3 pattedLocation) {
+    public void whenPattedReactionSpecific(LivingEntity patterLiving, InteractionHand hand, Vec3 pattedLocation) {
+        if (!(patterLiving instanceof Player patter)) {
+            return;
+        }
 
         boolean isPlayerTransfur = (ProcessTransfur.getPlayerTransfurVariant(patter) != null);
         boolean isPlayerTransfurInExp2 = (ProcessTransfur.getPlayerTransfurVariant(patter) != null
@@ -361,7 +372,7 @@ public abstract class AbstractExp2SnepChangedEntity extends AbstractSnowLeopard 
     }
 
     @Override
-    public void WhenPatEvent(LivingEntity self, InteractionHand hand, LivingEntity patTarget) {
+    public void whenPatEvent(LivingEntity self, InteractionHand hand, LivingEntity patTarget) {
         if (self instanceof Player patter) {
             boolean isPlayerTransfur = ProcessTransfur.isPlayerTransfurred(patter);
             boolean isPlayerTransfurInExp2 = (ProcessTransfur.getPlayerTransfurVariant(patter) != null

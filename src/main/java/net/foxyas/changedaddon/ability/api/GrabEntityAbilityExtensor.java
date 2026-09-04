@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.ability.api;
 
 import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
+import net.foxyas.changedaddon.variant.IVariantExtraStats;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -34,6 +35,9 @@ public interface GrabEntityAbilityExtensor {
                 }
                 player.level().playSound(null, player, ChangedAddonSoundEvents.PLUSHY_SOUND.get(), SoundSource.BLOCKS, 1, 1);
                 setSnuggled(true);
+                if (EntityUtil.maybeGetUnderlying(player) instanceof IVariantExtraStats iVariantExtraStats) {
+                    iVariantExtraStats.onHugTarget(livingEntity, HugType.SNUGGLE);
+                }
             }
             if (livingEntity instanceof Player grabbedPlayer) {
                 if (!grabbedPlayer.level().isClientSide())
@@ -46,9 +50,9 @@ public interface GrabEntityAbilityExtensor {
 
     void setSnuggled(boolean value);
 
-    boolean isAlreadySnuggledTight();
+    boolean isSnugglingTight();
 
-    void setSnuggledTight(boolean value);
+    void setSnugglingTight(boolean value);
 
     default void runTightHug(@NotNull LivingEntity livingEntity) {
         if (grabber() instanceof Player player) {
@@ -59,7 +63,10 @@ public interface GrabEntityAbilityExtensor {
                     ChangedAddonCriteriaTriggers.GRAB_ENTITY_TRIGGER.trigger(serverPlayer, ProcessTransfur.getPlayerTransfurVariant(serverPlayer), "hug_tight");
                 }
                 player.level().playSound(null, player, ChangedAddonSoundEvents.PLUSHY_SOUND.get(), SoundSource.BLOCKS, 1, 1);
-                setSnuggledTight(true);
+                setSnugglingTight(true);
+                if (EntityUtil.maybeGetUnderlying(player) instanceof IVariantExtraStats iVariantExtraStats) {
+                    iVariantExtraStats.onHugTarget(livingEntity, HugType.TIGHT);
+                }
             }
             if (livingEntity instanceof Player grabbedPlayer) {
                 if (!grabbedPlayer.level().isClientSide()) {
@@ -76,7 +83,7 @@ public interface GrabEntityAbilityExtensor {
     default boolean canGrabEntity(LivingEntity livingTarget) {
         GrabEntityAbilityInstance self = this instanceof GrabEntityAbilityInstance instance ? instance : null;
         if (self != null && self.entity.getChangedEntity() instanceof IOverrideGrabAbilityTargetConditions overrideGrabAbilityTargetConditions) {
-            return overrideGrabAbilityTargetConditions.canGrabEntity(livingTarget); // For custom entities conditions
+            return overrideGrabAbilityTargetConditions.canGrabEntity(livingTarget, self); // For custom entities conditions
         }
 
         if (!this.isSafeMode()) return false;
@@ -88,8 +95,23 @@ public interface GrabEntityAbilityExtensor {
     }
 
     interface IOverrideGrabAbilityTargetConditions {
-        default boolean canGrabEntity(LivingEntity target) {
-            return false;
+        default boolean canGrabEntity(LivingEntity livingTarget, GrabEntityAbilityInstance grabEntityAbilityInstance) {
+            if (!(grabEntityAbilityInstance instanceof GrabEntityAbilityExtensor grabEntityAbilityExtensor)) {
+                return false;
+            }
+
+            // Uses the default behavior.
+            if (!grabEntityAbilityExtensor.isSafeMode()) return false;
+            boolean allowGrabTransfurred = grabEntityAbilityExtensor.allowGrabTransfurred();
+            if (ProcessTransfur.isPlayerTransfurred(EntityUtil.playerOrNull(livingTarget)) && allowGrabTransfurred) {
+                return true;
+            }
+            return livingTarget instanceof ChangedEntity && allowGrabTransfurred;
         }
+    }
+
+    enum HugType {
+        SNUGGLE,
+        TIGHT
     }
 }

@@ -1,5 +1,8 @@
 package net.foxyas.changedaddon.block.entity;
 
+import com.google.common.collect.Lists;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.foxyas.changedaddon.init.ChangedAddonBlockEntities;
 import net.foxyas.changedaddon.menu.UnifuserGuiMenu;
 import net.foxyas.changedaddon.recipe.UnifuserRecipe;
@@ -9,21 +12,27 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.ContainerHelper;
-import net.minecraft.world.Containers;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.WorldlyContainer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.RecipeHolder;
+import net.minecraft.world.inventory.StackedContentsCompatible;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -39,14 +48,15 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer {
+public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implements WorldlyContainer, RecipeHolder, IRecipeRewarder, StackedContentsCompatible {
 
-    protected final LazyOptional<? extends IItemHandler>[] handlers = SidedInvWrapper.create(this, Direction.values());
+    protected final LazyOptional<? extends IItemHandler>[] itemHandler = SidedInvWrapper.create(this, Direction.values());
     public boolean startRecipe = true;
     public double recipeProgress = 0;
     public int tickCount;
     protected NonNullList<ItemStack> stacks = NonNullList.withSize(4, ItemStack.EMPTY);
     protected boolean recipeProgressOn = true;
+    private final Object2IntOpenHashMap<ResourceLocation> recipesUsed = new Object2IntOpenHashMap<>();
 
     public UnifuserBlockEntity(BlockPos position, BlockState state) {
         super(ChangedAddonBlockEntities.UNIFUSER.get(), position, state);
@@ -178,6 +188,7 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
                 // Resetar progresso e consumir energia
                 unifuser.recipeProgress = 0;
+                unifuser.setRecipeUsed(recipe);
                 serverLevel.playSound(null,
                         blockPos,
                         SoundEvents.BREWING_STAND_BREW,
@@ -196,10 +207,6 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
         // Obtém todas as receitas do tipo JeiCatalyzerRecipe
         List<UnifuserRecipe> unifuserRecipes = recipeManager.getAllRecipesFor(UnifuserRecipe.Type.INSTANCE);
-
-        // Cria um contêiner simples com o input fornecido
-        SimpleContainer container = new SimpleContainer(1);
-        container.setItem(0, input1);
 
         // Verifica cada receita para ver se ela corresponde ao input fornecido
         for (UnifuserRecipe recipe : unifuserRecipes) {
@@ -220,6 +227,10 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
         return 1f;
     }
 
+    public float getExperienceMultiplier() {
+        return 1f;
+    }
+
     @Override
     public void load(@NotNull CompoundTag tag) {
         super.load(tag);
@@ -227,9 +238,14 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
             this.stacks = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
         ContainerHelper.loadAllItems(tag, this.stacks);
 
-        recipeProgress = tag.getDouble("recipe_progress");
-        recipeProgressOn = tag.getBoolean("recipe_on");
-        startRecipe = tag.getBoolean("start_recipe");
+        recipeProgress = tag.getDouble("recipeProgress");
+        recipeProgressOn = tag.getBoolean("recipeOn");
+        startRecipe = tag.getBoolean("startRecipe");
+        CompoundTag compoundtag = tag.getCompound("RecipesUsed");
+
+        for (String s : compoundtag.getAllKeys()) {
+            this.recipesUsed.put(ResourceLocation.parse(s), compoundtag.getInt(s));
+        }
     }
 
     @Override
@@ -239,9 +255,14 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
             ContainerHelper.saveAllItems(tag, this.stacks);
         }
 
-        tag.putDouble("recipe_progress", recipeProgress);
-        tag.putBoolean("recipe_on", recipeProgressOn);
-        tag.putBoolean("start_recipe", startRecipe);
+        tag.putDouble("recipeProgress", recipeProgress);
+        tag.putBoolean("recipeOn", recipeProgressOn);
+        tag.putBoolean("startRecipe", startRecipe);
+        CompoundTag compoundtag = new CompoundTag();
+        this.recipesUsed.forEach((p_187449_, p_187450_) -> {
+            compoundtag.putInt(p_187449_.toString(), p_187450_);
+        });
+        tag.put("RecipesUsed", compoundtag);
     }
 
     @Override
@@ -298,38 +319,119 @@ public class UnifuserBlockEntity extends RandomizableContainerBlockEntity implem
 
     @Override
     public int @NotNull [] getSlotsForFace(@NotNull Direction side) {
+        if (side == Direction.DOWN) {
+            return new int[]{3};
+        }
+        if (side == Direction.UP) {
+            return new int[]{0, 1, 2};
+        }
+
+
         return IntStream.range(0, this.getContainerSize()).toArray();
     }
 
     @Override
     public boolean canPlaceItemThroughFace(int index, @NotNull ItemStack stack, @Nullable Direction direction) {
-        return this.canPlaceItem(index, stack);
+//        return true;
+        return this.canPlaceItem(index, stack) && index <= 2;
     }
 
     @Override
     public boolean canTakeItemThroughFace(int index, @NotNull ItemStack stack, @NotNull Direction direction) {
-        if (index == 0)
-            return false;
-        if (index == 1)
-            return false;
-        return index != 2;
+        return true;
     }
 
     @Override
     public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction facing) {
         if (!this.remove && facing != null && capability == ForgeCapabilities.ITEM_HANDLER)
-            return handlers[facing.ordinal()].cast();
+            return itemHandler[facing.ordinal()].cast();
         return super.getCapability(capability, facing);
     }
 
     @Override
     public void setRemoved() {
         super.setRemoved();
-        for (LazyOptional<? extends IItemHandler> handler : handlers)
+        for (LazyOptional<? extends IItemHandler> handler : itemHandler)
             handler.invalidate();
     }
 
     public SimpleContainer getContainer() {
         return new SimpleContainer(this.stacks.toArray(new ItemStack[0]));
+    }
+
+    @Override
+    public boolean canTakeItem(@NotNull Container pTarget, int pIndex, @NotNull ItemStack pStack) {
+        if (pTarget instanceof HopperBlockEntity hopperBlockEntity && pIndex != 3) {
+            return false;
+        }
+
+        return super.canTakeItem(pTarget, pIndex, pStack);
+    }
+
+    @Override
+    public boolean canPlaceItem(int pIndex, @NotNull ItemStack pStack) {
+        return super.canPlaceItem(pIndex, pStack);
+    }
+
+    @Override
+    public void setRecipeUsed(@Nullable Recipe<?> pRecipe) {
+        if (pRecipe != null) {
+            ResourceLocation resourcelocation = pRecipe.getId();
+            this.recipesUsed.addTo(resourcelocation, 1);
+        }
+    }
+
+    @Override
+    public @Nullable Recipe<?> getRecipeUsed() {
+        return null;
+    }
+
+    @Override
+    public void fillStackedContents(@NotNull StackedContents stackedContents) {
+        for (ItemStack itemstack : this.stacks) {
+            stackedContents.accountStack(itemstack);
+        }
+
+    }
+
+    @Override
+    public void awardUsedRecipes(ServerPlayer player, ItemStack pStack) {
+        awardUsedRecipesAndPopExperience(player);
+    }
+
+    public void awardUsedRecipesAndPopExperience(ServerPlayer pPlayer) {
+        List<Recipe<?>> list = this.getRecipesToAwardAndPopExperience(pPlayer.serverLevel(), pPlayer.position());
+        pPlayer.awardRecipes(list);
+
+        for (Recipe<?> recipe : list) {
+            if (recipe != null) {
+                pPlayer.triggerRecipeCrafted(recipe, this.stacks);
+            }
+        }
+
+        this.recipesUsed.clear();
+    }
+
+    public List<Recipe<?>> getRecipesToAwardAndPopExperience(ServerLevel pLevel, Vec3 pPopVec) {
+        List<Recipe<?>> list = Lists.newArrayList();
+
+        for (Object2IntMap.Entry<ResourceLocation> entry : this.recipesUsed.object2IntEntrySet()) {
+            pLevel.getRecipeManager().byKey(entry.getKey()).ifPresent((recipe) -> {
+                list.add(recipe);
+                createExperience(pLevel, pPopVec, entry.getIntValue(), ((UnifuserRecipe) recipe).getExperience() * this.getExperienceMultiplier());
+            });
+        }
+
+        return list;
+    }
+
+    private static void createExperience(ServerLevel pLevel, Vec3 pPopVec, int pRecipeIndex, float pExperience) {
+        int i = Mth.floor((float) pRecipeIndex * pExperience);
+        float f = Mth.frac((float) pRecipeIndex * pExperience);
+        if (f != 0.0F && Math.random() < (double) f) {
+            ++i;
+        }
+
+        ExperienceOrb.award(pLevel, pPopVec, i);
     }
 }

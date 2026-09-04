@@ -1,27 +1,25 @@
 package net.foxyas.changedaddon.mixins.entity.player;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.ability.ClawsAbility;
-import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.client.renderer.items.HazardBodySuitClothingRenderer;
 import net.foxyas.changedaddon.entity.api.LivingEntityDataExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonAbilities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
+import net.foxyas.changedaddon.init.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.item.AbstractKatanaItem;
-import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
-import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.foxyas.changedaddon.item.api.IDrinkItem;
+import net.foxyas.changedaddon.variant.IVariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
-import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.data.AccessorySlotType;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -64,7 +62,8 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
     @Shadow
     public abstract @NotNull ItemStack getItemBySlot(@NotNull EquipmentSlot equipmentSlot);
 
-    @Shadow private int sleepCounter;
+    @Shadow
+    private int sleepCounter;
 
     @Override
     public boolean isInWater() {
@@ -88,24 +87,6 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
         this.sleepCounter = value;
     }
 
-    @ModifyReturnValue(method = "isSleepingLongEnough", at = @At("RETURN"))
-    private boolean isSleepingLongEnoughHook(boolean original) {
-        Player self = ((Player) (Object) this);
-        if (!ChangedAddonVariables.ofOrDefault(self).isCuddling) return original;
-
-        TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(self);
-        if (transfurVariant == null) return original;
-
-        GrabEntityAbilityInstance grabAbilityInstance = transfurVariant.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
-        if (grabAbilityInstance instanceof GrabEntityAbilityExtensor ext) {
-            if (ext.isSafeMode()/* && grabAbilityInstance.grabbedEntity != null*/) {
-                return false;
-            }
-        }
-
-        return original;
-    }
-
     @Inject(method = "updateSwimming", at = @At("RETURN"))
     private void customUpdateSwimming(CallbackInfo ci) {
         Player self = ((Player) (Object) this);
@@ -120,7 +101,7 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
         Boolean returnValue = cir.getReturnValue();
         if (returnValue != null) {
             if (!returnValue) {
-                this.wasUnderwater = overrideSwim();
+                this.wasUnderwater = overrideWasUnderwater();
                 cir.setReturnValue(wasUnderwater);
             }
         }
@@ -158,13 +139,26 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
 
     }
 
-    /* // Maybe Fix the Blurp Sound After "drinking" a food item?
-    @Inject(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"), cancellable = true)
-    private void stopSound(Level pLevel, ItemStack pFood, CallbackInfoReturnable<ItemStack> cir) {
-        if (pFood.getUseAnimation().equals(UseAnim.DRINK) && pFood.isEdible()) {
-            cir.cancel();
+    @WrapOperation(method = "eat", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/Level;playSound(Lnet/minecraft/world/entity/player/Player;DDDLnet/minecraft/sounds/SoundEvent;Lnet/minecraft/sounds/SoundSource;FF)V"))
+    private void stopSound(Level instance,
+                           Player pPlayer,
+                           double pX,
+                           double pY,
+                           double pZ,
+                           SoundEvent pSound,
+                           SoundSource pCategory,
+                           float pVolume,
+                           float pPitch,
+                           Operation<Void> original,
+                           @Local(argsOnly = true) ItemStack pFood) {
+        if (pFood.isEdible() && pFood.getItem() instanceof IDrinkItem iDrinkItem) {
+            if (iDrinkItem.getDrankSound() != null) {
+                original.call(instance, pPlayer, pX, pY, pZ, iDrinkItem.getDrankSound(), pCategory, pVolume, pPitch);
+            }
+            return;
         }
-    }*/
+        original.call(instance, pPlayer, pX, pY, pZ, pSound, pCategory, pVolume, pPitch);
+    }
 
     @Inject(method = "attack", at = @At("HEAD"))
     private void customClawSweepAttack(Entity entity, CallbackInfo ci) {
@@ -213,8 +207,8 @@ public abstract class PlayerMixin extends LivingEntity implements LivingEntityDa
     public boolean changed$shouldIgnoreFallDamage(Abilities instance, Operation<Boolean> original) {
         var self = (Player) (Object) this;
         TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(self);
-        if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats)
-            return original.call(instance) && !variantExtraStats.shouldTakeFallDamage();
+        if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof IVariantExtraStats IVariantExtraStats)
+            return original.call(instance) && !IVariantExtraStats.shouldTakeFallDamage();
         return original.call(instance);
     }
 

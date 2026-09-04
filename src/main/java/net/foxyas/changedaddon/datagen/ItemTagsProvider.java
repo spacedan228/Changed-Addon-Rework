@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.init.ChangedTags;
 import net.ltxprogrammer.changed.init.ChangedItems;
@@ -34,15 +35,34 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
+        tag(ChangedAddonTags.Items.AIR).add(Items.AIR);
         tag(Tags.Items.RAW_MATERIALS).add(RAW_IRIDIUM.get());
         tag(forgeRawIridium).add(RAW_IRIDIUM.get());
+        tag(ItemTags.TRIM_MATERIALS).add(IRIDIUM.get(), GOO_CORE_FRAGMENT.get());
 
         tag(Tags.Items.INGOTS).add(IRIDIUM.get());
         tag(forgeIngotsIridium).add(IRIDIUM.get());
 
         tag(Tags.Items.STORAGE_BLOCKS).add(IRIDIUM_BLOCK.get());
         tag(forgeStorageBlocksIridium).add(IRIDIUM_BLOCK.get());
+        tag(ChangedAddonTags.Items.MAKE_TRANSFUR_SAFE).add(Items.ENCHANTED_GOLDEN_APPLE);
+        tag(ChangedAddonTags.Items.STABILIZER_TICKS).add(LUMINARA_BLOOM_PETALS.get());
 
+        tag(ItemTags.PLANKS).add(ChangedAddonItems.LUMINARA_PLANKS.get());
+        tag(ItemTags.SLABS).add(LUMINARA_SLAB.get());
+        tag(ItemTags.WOODEN_DOORS).add(LUMINARA_DOOR.get());
+        tag(ItemTags.WOODEN_TRAPDOORS).add(LUMINARA_TRAPDOOR.get());
+        tag(ItemTags.WOODEN_FENCES).add(LUMINARA_FENCE.get());
+        tag(ItemTags.FENCE_GATES).add(LUMINARA_FENCE_GATE.get());
+        tag(Tags.Items.FENCE_GATES_WOODEN).add(LUMINARA_FENCE_GATE.get());
+        tag(ItemTags.SIGNS).add(LUMINARA_SIGN.get(), LUMINARA_HANGING_SIGN.get());
+        tag(ItemTags.WOODEN_BUTTONS).add(LUMINARA_BUTTON.get());
+        tag(ItemTags.WOODEN_PRESSURE_PLATES).add(LUMINARA_PRESSURE_PLATE.get());
+        tag(ChangedAddonTags.Items.LUMINARA_LOGS).add(LUMINARA_LOG.get(), STRIPPED_LUMINARA_LOG.get(), LUMINARA_WOOD.get(), STRIPPED_LUMINARA_WOOD.get());
+
+        tag(ChangedAddonTags.Items.UNIFUSER_RECIPE_CATALYST).add(ChangedAddonItems.CATALYZED_DNA.get(),
+                ChangedItems.BLOOD_SYRINGE.get(),
+                ChangedItems.LATEX_SYRINGE.get());
 
         tag(ChangedTags.AccessoryItems.FULL_BODY)
                 .add(HAZARD_BODY_SUIT.get());
@@ -149,7 +169,8 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
                 Items.PUFFERFISH,
                 Items.TROPICAL_FISH);
 
-        tag(ChangedAddonTags.Items.SHARK_DIET);
+        tag(ChangedAddonTags.Items.SHARK_DIET)
+                .addTag(ChangedAddonTags.Items.AQUATIC_DIET).remove(Items.DRIED_KELP);
 
         tag(ChangedAddonTags.Items.CAT_DIET).add(
                 Items.COD,
@@ -225,5 +246,8 @@ public class ItemTagsProvider extends net.minecraft.data.tags.ItemTagsProvider {
         tag(ItemTags.BEACON_PAYMENT_ITEMS).add(
                 PAINITE.get(),
                 IRIDIUM.get());
+
+        tag(ChangedAddonTags.Items.UNTRANSFUR_AGENTS).add(ANTI_LATEX_BASE.get());
+        tag(ChangedAddonTags.Items.UNTRANSFUR_CATALYZERS).add(LUMINARA_BLOOM_PETALS.get(), LUMINARA_BLOOM.get(), LUMINARA_SAPLING.get());
     }
 }

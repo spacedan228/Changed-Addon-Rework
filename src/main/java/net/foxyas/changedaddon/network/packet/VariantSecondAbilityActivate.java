@@ -20,7 +20,9 @@ import net.minecraftforge.network.PacketDistributor;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+@Deprecated
 public class VariantSecondAbilityActivate {
+
     final UUID uuid;
     final boolean keyDown;
     final AbstractAbility<?> ability;
@@ -92,7 +94,7 @@ public class VariantSecondAbilityActivate {
                     }
                 });
             } else {
-                ProcessTransfur.ifPlayerTransfurred(UniversalDist.getLevel().getPlayerByUUID(this.uuid), (player, variant) -> {
+                ProcessTransfur.ifPlayerTransfurred(UniversalDist.getLevel(context).getPlayerByUUID(this.uuid), (player, variant) -> {
                     context.setPacketHandled(true);
                     if (variant instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor) {
                         if (variant.isTemporaryFromSuit()) {

@@ -1,25 +1,34 @@
 package net.foxyas.changedaddon.entity.bosses;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Iterables;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.DodgeAbilityInstance;
+import net.foxyas.changedaddon.client.model.animations.parameters.DodgeAnimationParameters;
+import net.foxyas.changedaddon.effect.particles.EntityLinkedThunderParticleOptions;
+import net.foxyas.changedaddon.effect.particles.ThunderParticleOptions;
 import net.foxyas.changedaddon.entity.ai.goals.exp9.*;
-import net.foxyas.changedaddon.entity.ai.goals.generic.BreakBlocksAroundGoal;
+import net.foxyas.changedaddon.entity.ai.goals.generic.ExtinguishFireNearbyGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.LatexPullEntityGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
+import net.foxyas.changedaddon.entity.customHandle.BurstAbilityHandle;
 import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
+import net.foxyas.changedaddon.network.syncher.ChangedAddonEntityDataSerializers;
 import net.foxyas.changedaddon.util.DelayedTask;
-import net.foxyas.changedaddon.util.FoxyasUtils;
+import net.foxyas.changedaddon.util.FoxyasUtil;
 import net.foxyas.changedaddon.util.ParticlesUtil;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.animation.StunAnimationParameters;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.*;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
@@ -39,7 +48,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.BossEvent;
@@ -51,20 +62,26 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.*;
-import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
-import net.minecraft.world.entity.ai.navigation.WaterBoundPathNavigation;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.memory.MemoryModuleType;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.monster.warden.Warden;
+import net.minecraft.world.entity.monster.warden.WardenAi;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.phys.*;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -72,22 +89,47 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 import java.util.*;
 
 public class Experiment009BossEntity extends Experiment009Entity implements IExp9Logic {
+    public static final float PHASE_3_HEALTH_RATIO = 0.4f;
+    public static final float PHASE_2_HEALTH_RATIO = 0.75f;
+    public static final String KNOCKBACK_RESISTANCE_MODIFER_UUID = "a06083b0-291d-4a72-85de-73bd93ffb739";
 
+    private static final EntityDataAccessor<Integer> CLIENT_ANGER_LEVEL = SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> PHASE3 =
             SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> CASTING_ATTACK =
             SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> CASTING_TICKS =
+            SynchedEntityData.defineId(Experiment009BossEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Exp9Phase> PHASE =
+            SynchedEntityData.defineId(Experiment009BossEntity.class, ChangedAddonEntityDataSerializers.EXP9_PHASES.get());
+    public static final String ATTACK_DAMAGE_MODIFIER_UUID = "a06083b0-291d-4a72-85de-73bd93ffb736";
+    public static final String ARMOR_MODIFIER_UUID = "a06083b0-291d-4a72-85de-73bd93ffb737";
+    public static final String ARMOR_TOUGHNESS_MODIFIER_UUID = "a06083b0-291d-4a72-85de-73bd93ffb738";
+    public static final float PHASE_1_HEALTH_RATIO = 0.25f;
 
-    private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.BLUE, ServerBossEvent.BossBarOverlay.NOTCHED_6);
-    private boolean shouldBleed;
-    protected final WaterBoundPathNavigation waterNavigation;
-    protected final GroundPathNavigation groundNavigation;
+//
+//    private static EntityDataAccessor<Exp9Phase> PHASE() {
+//        return SynchedEntityData.defineId(Experiment009BossEntity.class, ChangedAddonEntityDataSerializers.EXP9_PHASES.get());
+//    }
+
+    protected final Map<Exp9Phase, List<Goal>> phaseGoals = new EnumMap<>(Exp9Phase.class);
+    private final DynamicAngerManagement angerManagement;
+    protected int maxCastingTicks = 200;
+    protected boolean wasPhasedForPhase2 = false;
+    protected boolean wasPhasedForPhase3 = false;
+
+    protected final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.BLUE, ServerBossEvent.BossBarOverlay.NOTCHED_6);
+    protected boolean shouldBleed;
+//    public final TargetDataManager targetDataManager;
+
+    public final BurstAbilityHandle<Experiment009BossEntity> burstAbilityHandle;
 
     public Experiment009BossEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXPERIMENT_009_BOSS.get(), world);
@@ -99,9 +141,18 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         xpReward = 3000;
         setNoAi(false);
         setPersistenceRequired();
-        applyDefaultBasicPlayerInfo();
-        this.waterNavigation = new WaterBoundPathNavigation(this, world);
-        this.groundNavigation = new GroundPathNavigation(this, world);
+        this.angerManagement = new DynamicAngerManagement(this::targetSelectorTest, new ArrayList<>());
+//        this.targetDataManager = new TargetDataManager(this, this::targetSelectorTest);
+        this.setPathfindingMalus(BlockPathTypes.DAMAGE_FIRE, 0.0F);
+        this.setPathfindingMalus(BlockPathTypes.DANGER_FIRE, 0.0F);
+        burstAbilityHandle = new BurstAbilityHandle.Builder<>(this)
+                .setEvasive()
+                .setDestructive()
+                .canDestroyBlock((state, pos) -> !state.isAir() && state.getDestroySpeed(this.level, pos) >= 0.0F)
+                .maxProgress(this::getMaxBurstProgress)
+                .onEvasiveBurst(this::onEvasiveBurst)
+                .build();
+        registerDynamicPhaseGoals();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -111,7 +162,7 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         builder = builder.add(Attributes.MAX_HEALTH, 425);
         builder = builder.add(Attributes.ARMOR, 12.5);
         builder = builder.add(Attributes.ATTACK_DAMAGE, 15);
-        builder = builder.add(Attributes.FOLLOW_RANGE, 16);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 256f);
         builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 0.3);
         builder = builder.add(Attributes.ATTACK_KNOCKBACK, 1);
         return builder;
@@ -129,8 +180,32 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         return GearTier.LOW;
     }
 
-    protected void applyDefaultBasicPlayerInfo() {
-        super.applyDefaultBasicPlayerInfo();
+    public BurstAbilityHandle<Experiment009BossEntity> getBurstAbilityHandle() {
+        return burstAbilityHandle;
+    }
+
+    public float getMaxBurstProgress(Experiment009BossEntity exp9, BurstAbilityHandle<Experiment009BossEntity> burst) {
+        return switch (exp9.getPhase()) {
+            case PHASE1 -> 150f;
+            case PHASE2 -> 100f;
+            case PHASE3 -> 75f;
+            default -> 1f;
+        };
+    }
+
+    public void onEvasiveBurst(Experiment009BossEntity exp9, BurstAbilityHandle<Experiment009BossEntity> burst) {
+        switch (exp9.getPhase()) {
+            case PHASE1 -> burst.applyEvasiveKnockback(5.0D, 1.25D); //Generic Handle.
+            case PHASE2 -> this.knockBackAndDoThunderBolt();
+            case PHASE3 -> {
+                float v = this.random.nextFloat();
+                if (v <= 0.25f) {
+                    this.knockbackAndDoThunderStorm();
+                } else if (v <= 0.5f) {
+                    this.knockBackAndDoThunderBolt();
+                }
+            }
+        }
     }
 
     public DamageSource getThunderDmg() {
@@ -150,6 +225,51 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         super.defineSynchedData();
         this.entityData.define(PHASE3, false);
         this.entityData.define(CASTING_ATTACK, false);
+        this.entityData.define(CASTING_TICKS, 0);
+        this.entityData.define(PHASE, this.getPhase());
+        this.entityData.define(CLIENT_ANGER_LEVEL, 0);
+    }
+
+    public int getClientAngerLevel() {
+        return this.entityData.get(CLIENT_ANGER_LEVEL);
+    }
+
+    private void syncClientAngerLevel() {
+        this.entityData.set(CLIENT_ANGER_LEVEL, this.getActiveAnger());
+    }
+
+    public AngerLevel getAngerLevel() {
+        return AngerLevel.byAnger(this.getActiveAnger());
+    }
+
+    private int getActiveAnger() {
+        return this.angerManagement.getActiveAnger(this.getTarget());
+    }
+
+    public DynamicAngerManagement getAngerManagement() {
+        return this.angerManagement;
+    }
+
+    public void clearAnger(LivingEntity pEntity) {
+        this.angerManagement.clearAnger(pEntity);
+    }
+
+    public void increaseAngerAt(@Nullable LivingEntity pEntity) {
+        this.increaseAngerAt(pEntity, 35);
+    }
+
+    @VisibleForTesting
+    public void increaseAngerAt(@Nullable LivingEntity pEntity, int pOffset) {
+        if (!this.isNoAi() && this.targetSelectorTest(pEntity)) {
+            WardenAi.setDigCooldown(this);
+            boolean flag = !(this.getBrain().getMemory(MemoryModuleType.ATTACK_TARGET).orElse(null) instanceof Player);
+            int i = this.angerManagement.increaseAnger(pEntity, pOffset);
+        }
+
+    }
+
+    public Optional<LivingEntity> getEntityAngryAt() {
+        return this.getAngerLevel().isAngry() ? this.angerManagement.getActiveEntity() : Optional.empty();
     }
 
     @Override
@@ -157,12 +277,57 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         return PHASE2;
     }
 
+    @Override
+    public void updateSwimming() {
+        super.updateSwimming();
+    }
+
+    public int getCastingTicks() {
+        return this.entityData.get(CASTING_TICKS);
+    }
+
+    public void setCastingTicks(int value) {
+        this.entityData.set(CASTING_TICKS, value);
+    }
+
     public boolean isCastingAttack() {
         return this.entityData.get(CASTING_ATTACK);
     }
 
+    public boolean hasAirCastingAttackAnimation() {
+        BlockHitResult clip = level().clip(new ClipContext(
+                this.position(),
+                this.position().subtract(0, 32, 0),
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                this
+        ));
+
+        float distanceToGround = (float) clip.getLocation().distanceTo(this.position());
+        boolean isFarFromGround = distanceToGround >= 1.0F || clip.getType() == HitResult.Type.MISS;
+
+        return this.isCastingAttack() && isFarFromGround;
+    }
+
     public void setCastingAttack(boolean value) {
         this.entityData.set(CASTING_ATTACK, value);
+        this.setCastingTicks(0);
+    }
+
+    public void refreshCastingTicks() {
+        if (isCastingAttack()) {
+            this.setCastingTicks(0);
+        } else {
+            this.setCastingTicks(maxCastingTicks);
+        }
+    }
+
+    public void setMaxCastingTicks(int maxCastingTicks) {
+        this.maxCastingTicks = maxCastingTicks;
+    }
+
+    public int getMaxCastingTicks() {
+        return maxCastingTicks;
     }
 
     protected void setAttributes(AttributeMap attributes) {
@@ -184,7 +349,12 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
 
     @Override
     protected boolean shouldDespawnInPeaceful() {
-        return true;
+        return super.shouldDespawnInPeaceful();
+    }
+
+    @Override
+    public Gender getGender() {
+        return Gender.MALE;
     }
 
     @Override
@@ -215,61 +385,168 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
+    public void refreshPhaseAIGoals() {
+        this.goalSelector.removeAllGoals(goal -> goal instanceof IAbilityGoal);
+        this.passiveSelector.removeAllGoals(goal -> true);
+
+        this.addAbilitiesGoals();
+        this.addPassiveGoals();
+    }
+
     @Override
-    protected void addAbilitiesGoals() {
-        this.goalSelector.addGoal(15, new ElectrifyNearbyWaterGoal(this, UniformFloat.of(2, 6)));
-        this.goalSelector.addGoal(20, new SimpleAntiFlyingAttack(this,
+    protected void addPassiveGoals() {
+        super.addPassiveGoals();
+        this.passiveSelector.addGoal(10, new ThunderStorm(this, UniformInt.of(60, 100)));
+        this.passiveSelector.addGoal(20, new ExtinguishFireNearbyGoal(this) {
+            @Override
+            public void start() {
+                super.start();
+                Experiment009BossEntity.this.maySpeak(FIRE_EXTINGUISH_MESSAGE_ID);
+            }
+        });
+        this.passiveSelector.addGoal(20, new SimpleAntiFlyingAttack(this,
                 UniformInt.of(60, 100),
                 3,
                 32,
                 8f,
                 10));
-        this.goalSelector.addGoal(10, new ThunderStorm(this, UniformInt.of(60, 100)));
 
-        //New AI
-        this.goalSelector.addGoal(5, new ThunderStrikeGoal(
-                this,
-                UniformInt.of(80, 120), //IntProvider -> cooldownProvider
-                UniformInt.of(4, 8), //IntProvider -> damageProvider
-                1.5f,
-                200));
-        this.goalSelector.addGoal(10, new ThunderDiveGoal(this,
-                UniformInt.of(60, 100), //IntProvider -> cooldownProvider
-                1.5f,
-                6f,
-                1f,
-                0.5f,
-                4));
+        this.passiveSelector.addGoal(20, new ElectrifyNearbyWaterGoal(this, UniformFloat.of(2, 6)));
+        this.passiveSelector.addGoal(10, new LatexPullEntityGoal(this, 32, 1));
+    }
 
-        //Basically perfect, damn... well done 0senia0
-        this.goalSelector.addGoal(5, new SummonLightningGoal(this, //PathfinderMob -> holder,
-                UniformInt.of(120, 240), //IntProvider -> cooldown,
-                UniformInt.of(2, 4), //IntProvider -> lightningCount,
-                UniformInt.of(80, 160), //IntProvider -> castDuration,
-                UniformInt.of(80, 100), //IntProvider -> lightningDelay,
-                UniformFloat.of(5, 12))); //FloatProvider -> damage
+    protected void initPhaseGoals() {
+        // Phase 1 Goals (Base Abilities)
+        phaseGoals.put(Exp9Phase.PHASE1, List.of(
+                new ThunderDashAttack(this),
+                new ThunderDiveGoal(this, UniformInt.of(60, 100), 1.5f, 6f, 1f, 0.5f, 4),
+                new AoEThunderStrikeGoal(
+                        this,
+                        UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+                        UniformInt.of(4, 8), //IntProvider -> damageProvider
+                        1.5f,
+                        200)
+        ));
 
-        this.goalSelector.addGoal(5, new StaticDischargeGoal(this,//PathfinderMob holder,
-                UniformInt.of(75, 125), //IntProvider -> cooldown,
-                4,
-                UniformInt.of(40, 80), //IntProvider -> castDuration,
-                8,
-                UniformFloat.of(4, 8))); //FloatProvider -> damage
+        // Phase 2 Goals
+        phaseGoals.put(Exp9Phase.PHASE2, List.of(
+                new ThunderDashAttack(this),
+                new SummonLightningGoal(this, //PathfinderMob -> holder,
+                        UniformInt.of(120, 240), //IntProvider -> cooldown,
+                        UniformInt.of(2, 4), //IntProvider -> lightningCount,
+                        UniformInt.of(80, 160), //IntProvider -> castDuration,
+                        UniformInt.of(80, 100), //IntProvider -> lightningDelay,
+                        UniformFloat.of(5, 12)),
+                new StaticDischargeGoal(this,
+                        UniformInt.of(75, 125),
+                        4,
+                        UniformInt.of(40, 80),
+                        8,
+                        UniformFloat.of(4, 8)),
+                new AoEThunderStrikeGoal(
+                        this,
+                        UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+                        UniformInt.of(4, 8), //IntProvider -> damageProvider
+                        1.5f,
+                        200)
+        ));
 
-//        this.goalSelector.addGoal(1, new InductionCoilGoal(this, //PathfinderMob -> holder
-//                UniformInt.of(100, 150), //IntProvider -> cooldown
-//                20,
-//                UniformInt.of(60, 80), //IntProvider -> duration
-//                UniformFloat.of(3, 5))); //FloatProvider -> damage
+        // Phase 3 Goals
+        phaseGoals.put(Exp9Phase.PHASE3, List.of(
+                new ThunderDashAttack(this),
+                new ThunderDiveGoal(this,
+                        UniformInt.of(60, 100), //IntProvider -> cooldownProvider
+                        1.5f,
+                        6f,
+                        1f,
+                        0.5f,
+                        4),
+                new LightningComboAttackGoal(this,
+                        UniformInt.of(100, 140),
+                        UniformInt.of(4, 8),
+                        UniformInt.of(20, 40),
+                        UniformFloat.of(8, 12)),
+                new AoEThunderStrikeGoal(
+                        this,
+                        UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+                        UniformInt.of(4, 8), //IntProvider -> damageProvider
+                        1.5f,
+                        200)
+        ));
+    }
 
-        this.goalSelector.addGoal(5, new LightningComboAttackGoal(this, //PathfinderMob -> holder,
-                UniformInt.of(150, 200), //IntProvider -> cooldown,
-                UniformInt.of(3, 6), //IntProvider -> attackCount,
-                UniformInt.of(20, 60), //IntProvider -> castDuration,
-                UniformFloat.of(6, 8))); //FloatProvider -> damage)
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+    }
 
-        this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
-        this.goalSelector.addGoal(10, new LatexPullEntityGoal(this, 32, 1));
+    protected void registerDynamicPhaseGoals() {
+        initPhaseGoals();
+        List<Goal> goals = phaseGoals.get(getPhase());
+        if (goals != null) {
+            for (Goal goal : goals) {
+                this.goalSelector.addGoal(5, goal);
+            }
+        }
+    }
+
+    @Override
+    protected void addAbilitiesGoals() {
+        if (phaseGoals != null) {
+            List<Goal> goals = phaseGoals.get(getPhase());
+            if (goals != null) {
+                for (Goal goal : goals) {
+                    this.goalSelector.addGoal(5, goal);
+                }
+            }
+        }
+//        //New AI
+//        this.goalSelector.addGoal(15, new ThunderDashAttack(this));
+//        this.goalSelector.addGoal(15, new ThunderDiveGoal(this,
+//                UniformInt.of(60, 100), //IntProvider -> cooldownProvider
+//                1.5f,
+//                6f,
+//                1f,
+//                0.5f,
+//                4)
+//        );
+//        this.goalSelector.addGoal(5, new AoEThunderStrikeGoal(
+//                this,
+//                UniformInt.of(80, 120), //IntProvider -> cooldownProvider
+//                UniformInt.of(4, 8), //IntProvider -> damageProvider
+//                1.5f,
+//                200));
+//
+//
+//        //Basically perfect, damn... well done 0senia0
+//        this.goalSelector.addGoal(5, new SummonLightningGoal(this, //PathfinderMob -> holder,
+//                UniformInt.of(120, 240), //IntProvider -> cooldown,
+//                UniformInt.of(2, 4), //IntProvider -> lightningCount,
+//                UniformInt.of(80, 160), //IntProvider -> castDuration,
+//                UniformInt.of(80, 100), //IntProvider -> lightningDelay,
+//                UniformFloat.of(5, 12))); //FloatProvider -> damage
+//
+//        this.goalSelector.addGoal(5, new StaticDischargeGoal(this,//PathfinderMob holder,
+//                UniformInt.of(75, 125), //IntProvider -> cooldown,
+//                4,
+//                UniformInt.of(40, 80), //IntProvider -> castDuration,
+//                8,
+//                UniformFloat.of(4, 8))); //FloatProvider -> damage
+//
+//
+//        this.goalSelector.addGoal(5, new LightningComboAttackGoal(this, //PathfinderMob -> holder,
+//                UniformInt.of(150, 200), //IntProvider -> cooldown,
+//                UniformInt.of(3, 6), //IntProvider -> attackCount,
+//                UniformInt.of(20, 60), //IntProvider -> castDuration,
+//                UniformFloat.of(6, 8)) //FloatProvider -> damage)
+//        );
+
+        //this.goalSelector.addGoal(1, new InductionCoilGoal(this, //PathfinderMob -> holder
+        //        UniformInt.of(100, 150), //IntProvider -> cooldown
+        //        20,
+        //        UniformInt.of(60, 80), //IntProvider -> duration
+        //        UniformFloat.of(3, 5))); //FloatProvider -> damage
+//        //this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
     }
 
     public enum Exp9Phase {
@@ -286,19 +563,40 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
             this.castModifier = castModifier;
         }
 
-        public float getDamageModifier(LivingEntity target) {
+        public float getDamageModifier(@Nullable LivingEntity target) {
             return damageModifier; //Todo tweak this damage modifier to be less or more based on the player "metalic points". (Being a prototype/Protogen,using metal armor, etc).
         }
 
-        public float getCastModifier() {
+        public float getCastModifier(@Nullable LivingEntity target) {
             return castModifier;
         }
     }
 
+    @Override
     public Exp9Phase getPhase() {
-        if (isPhase2()) return Exp9Phase.PHASE2;
-        if (isPhase3()) return Exp9Phase.PHASE3;
-        return Exp9Phase.PHASE1;
+        if (entityData.hasItem(PHASE)) {
+            return entityData.get(PHASE);
+        } else {
+            if (isPhase3()) return Exp9Phase.PHASE3;
+            if (isPhase2()) return Exp9Phase.PHASE2;
+            return Exp9Phase.PHASE1;
+        }
+    }
+
+    @Override
+    public void setPhase(Exp9Phase phase) {
+        entityData.set(PHASE, phase);
+    }
+
+    @Override
+    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> pKey) {
+        super.onSyncedDataUpdated(pKey);
+        if (pKey.equals(PHASE3) || pKey.equals(PHASE2)) {
+            this.setPhase(entityData.get(PHASE3) ? Exp9Phase.PHASE3 : entityData.get(PHASE2) ? Exp9Phase.PHASE2 : Exp9Phase.PHASE1);
+        }
+        if (pKey.equals(PHASE)) {
+            onPhaseChange(entityData.get(PHASE));
+        }
     }
 
     @Override
@@ -312,14 +610,14 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         if (instance == null) return;
 
         if (playerInControl.level().getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.NEED_PERMISSION_FOR_BOSS_TRANSFUR)) {
-            if (!ChangedAddonVariables.ofOrDefault(playerInControl).Exp009TransfurAllowed) {
+            if (!ChangedAddonVariables.ofOrDefault(playerInControl).exp009BossTransfurPermission) {
                 ProcessTransfur.setPlayerTransfurVariant(playerInControl, ChangedAddonTransfurVariants.EXPERIMENT_009.get(), TransfurContext.hazard(TransfurCause.GRAB_ABSORB), 1, false);
             }
         }
     }
 
     @Override
-    public @Nullable ResourceLocation getBossMusic() {
+    public @Nullable ResourceLocation getBossMusicId() {
         return ChangedAddonSoundEvents.EXP9_THEME.get().getLocation();
     }
 
@@ -346,103 +644,167 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypes.OUTSIDE_BORDER) || source.is(DamageTypes.GENERIC_KILL))
+        boolean shouldTeleportAndNegateDamage = false;
+        boolean shouldDodgeAndNegateDamage = false;
+        DodgeAnimationParameters dodgeAnimationParameters = DodgeAnimationParameters.DEFAULT;
+        if (source.is(DamageTypes.FELL_OUT_OF_WORLD) || source.is(DamageTypes.OUTSIDE_BORDER) || source.is(DamageTypes.GENERIC_KILL)) {
             return super.hurt(source, amount);
-
-        if (source.getDirectEntity() instanceof ThrownPotion || source.getDirectEntity() instanceof AreaEffectCloud)
-            return false;
-
-        if (source.is(DamageTypeTags.IS_FALL))
-            return false;
-
-        if (source.is(DamageTypes.CACTUS))
-            return false;
-
-        if (source.is(DamageTypes.DROWN))
-            return false;
-
-        if (source.is(DamageTypes.LIGHTNING_BOLT))
-            return false;
-
-        if (source.getMsgId().equals("trident")) {
-            maybeSendReactionToPlayer(source);
-            return super.hurt(source, amount * 0.5f);
         }
 
-        if (source.is(DamageTypes.FALLING_ANVIL))
-            return false;
-
-        if (source.is(DamageTypes.DRAGON_BREATH))
-            return false;
-
-        if (source.is(DamageTypes.WITHER))
-            return false;
-
-        if (source.getMsgId().equals("witherSkull"))
-            return false;
-
-        if (source.is(DamageTypes.IN_WALL)) {
-            teleportToNearLivingEntity();
+        if (source.getDirectEntity() instanceof ThrownPotion ||
+                source.getDirectEntity() instanceof AreaEffectCloud ||
+                source.is(DamageTypeTags.IS_FALL) ||
+                source.is(DamageTypes.CACTUS) ||
+                source.is(DamageTypes.DROWN) ||
+                source.is(DamageTypes.LIGHTNING_BOLT) ||
+                source.is(DamageTypes.FALLING_ANVIL) ||
+                source.is(DamageTypes.DRAGON_BREATH) ||
+                source.is(DamageTypes.WITHER) ||
+                source.getMsgId().equals("witherSkull")) {
             return false;
         }
 
+        boolean isProjectile = source.is(DamageTypeTags.IS_PROJECTILE) ||
+                source.getMsgId().equals("trident") ||
+                source.getMsgId().contains("bullet") ||
+                source.getMsgId().contains("gun");
+
+        if (isProjectile && !source.getMsgId().equals("trident") && !isVulnerableToProjectiles()) {
+            shouldDodgeAndNegateDamage = true;
+        }
+
+        shouldTeleportAndNegateDamage = source.is(DamageTypes.IN_WALL);
         if (source.getEntity() instanceof Warden) {
-            DodgeAbilityInstance.executeRandomDodgeAnimation(this);
-            this.navigation.stop();
+            shouldDodgeAndNegateDamage = true;
+        }
+
+        if ((source.getEntity() == null || source.getDirectEntity() == null) && (this.getTarget() == null)) {
+            shouldTeleportAndNegateDamage = true;
+        }
+
+        if (source.is(DamageTypeTags.IS_FIRE) && shouldTeleportAndNegateDamage) {
+            shouldTeleportAndNegateDamage = false;
+        }
+
+        if (shouldTeleportAndNegateDamage ^ shouldDodgeAndNegateDamage) {
+            if (shouldTeleportAndNegateDamage) {
+                if (!tryTeleportToNearLivingEntity()) {
+                    if (source.is(DamageTypes.THORNS) || source.is(DamageTypeTags.IS_FIRE)) amount = 0;
+                    maybeSendDamageReactionToPlayer(source);
+
+                    return super.hurt(source, amount);
+                }
+            } else {
+                if (source.getDirectEntity() != null && source.getDirectEntity().getType().is(EntityTypeTags.IMPACT_PROJECTILES)) {
+                    double speed = Math.min(source.getDirectEntity().getDeltaMovement().length(), 2.0f);
+                    dodgeAnimationParameters = new DodgeAnimationParameters((float) speed, 1.1f);
+                }
+
+                DodgeAbilityInstance.executeRandomDodgeAnimationWithFade(this, dodgeAnimationParameters);
+                this.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1, true, false));
+            }
+
+            triggerOnDamageReactiveGoals(source, amount, false);
             return false;
         }
 
-        if (source.getEntity() == null || source.getDirectEntity() == null) {
-            if (this.getTarget() == null) {
-                teleportToNearLivingEntity();
-                return false;
-            }
-        }
 
-        if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-            maybeSendReactionToPlayer(source);
-            return super.hurt(source, amount * 0.5f);
-        }
+        if (source.is(DamageTypes.THORNS) || source.is(DamageTypeTags.IS_FIRE)) amount = 0;
+        maybeSendDamageReactionToPlayer(source);
 
-        if (source.getMsgId().contains("bullet") || source.getMsgId().contains("gun")) {
-            maybeSendReactionToPlayer(source);
-            return super.hurt(source, amount * 0.45f);
-        }
-
-        if (source.is(DamageTypeTags.IS_FIRE)) {
-            maybeSendReactionToPlayer(source);
-            return super.hurt(source, amount * 0f);
-        }
-
-        if (source.is(DamageTypes.THORNS)) {
-            return super.hurt(source, 0);
+        if (burstAbilityHandle != null) {
+            burstAbilityHandle.onDamageTaken(source, amount);
         }
 
         return super.hurt(source, amount);
     }
 
-    private void teleportToNearLivingEntity() {
-        List<LivingEntity> entitiesOfClass = this.level.getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(64f), (target) -> !target.is(this) && this.canAttack(target)).stream().sorted((Comparator.comparing((target) -> target.distanceTo(this)))).toList();
-        if (!entitiesOfClass.isEmpty()) {
-            teleport(this.getTarget() == null
-                    ? entitiesOfClass.get(0)
-                    : this.getTarget());
+    private boolean tryTeleportToNearLivingEntity() {
+        LivingEntity target = this.level().getNearestEntity(
+                LivingEntity.class,
+                TargetingConditions.forCombat().ignoreLineOfSight(),
+                this,
+                this.getX(), this.getY(), this.getZ(),
+                this.getBoundingBox().inflate(64.0D)
+        );
+        if (target != null) {
+            teleportToTarget(target);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isVulnerableToProjectiles() {
+        return (isCastingAttack() && isPhase2()) || isPhase3();
+    }
+
+    private void maybeSendDamageReactionToPlayer(DamageSource source) {
+        if (!(source.getEntity() instanceof Player player)) return;
+
+        float nextFloat = this.random.nextFloat();
+        if (source.is(DamageTypeTags.IS_FIRE) && nextFloat >= 0.25f) {
+            player.displayClientMessage(getEntityChat(Component.translatable("entity_dialogues.changed_addon.exp9.reaction.fire_damage")), false);
+        }
+
+        if (source.is(DamageTypeTags.IS_PROJECTILE)) {
+            if (isVulnerableToProjectiles()) {
+                if (player.distanceTo(this) >= 3 && isPhase3()) {
+                    if (nextFloat >= 0.25f) {
+                        player.displayClientMessage(getEntityChat(Component.translatable("entity_dialogues.changed_addon.exp9.reaction.range_attacks.attack_at_distance")), false);
+                    }
+                } else if (nextFloat >= 0.25f) {
+                    player.displayClientMessage(getEntityChat(Component.translatable("entity_dialogues.changed_addon.exp9.reaction.range_attacks.attack_when_vulnerable")), false);
+                }
+            } else { // Hints will always show up but "rage bait" reactions is a random.
+                player.displayClientMessage(getEntityChat(Component.translatable("entity_dialogues.changed_addon.exp9.reaction.range_attacks.not_affect")), false);
+            }
         }
     }
 
-    private void maybeSendReactionToPlayer(DamageSource source) {
-        if (!(source.getEntity() instanceof Player player)) return;
+    public static final int FIRE_EXTINGUISH_MESSAGE_ID = 1001;
+    private static final Int2ObjectMap<Component> TALK_MESSAGES = Util.make(new Int2ObjectArrayMap<>(), (map) -> {
+        map.put(FIRE_EXTINGUISH_MESSAGE_ID, Component.translatable("entity_dialogues.changed_addon.exp9.reaction.fire_extinguish"));
+    });
 
-       if (this.random.nextFloat() <= 0.25f) {
-           if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-               player.displayClientMessage(Component.translatable("entity_dialogues.changed_addon.exp9.reaction.range_attacks"), true);
-           } else if (source.is(DamageTypeTags.IS_FIRE)) {
-               player.displayClientMessage(Component.translatable("entity_dialogues.changed_addon.exp9.reaction.fire_damage"), true);
-           }
-       }
+    private void maySpeak(int id) {
+        Component component = TALK_MESSAGES.get(id);
+        LivingEntity target = this.getTarget();
+        speak(component, target);
     }
 
-    public void teleport(LivingEntity target) {
+    @Override
+    public MutableComponent getEntityChat(Component message) {
+        return Component.translatable("chat.type.text", this.getDisplayName(), message);
+    }
+
+    @Override
+    public void sendSystemMessage(@NotNull Component pComponent) {
+        super.sendSystemMessage(pComponent);
+    }
+
+    @Override
+    public boolean speak(Component component, @Nullable LivingEntity hearTarget) {
+        MutableComponent entityChat = getEntityChat(component);
+        boolean spoke = false;
+        if (hearTarget instanceof Player player) {
+            player.displayClientMessage(entityChat, false);
+            spoke = true;
+        } else {
+            sout(component);
+        }
+        return spoke;
+    }
+
+    @Override
+    public void sout(Component component) {
+        MutableComponent entityChat = getEntityChat(component);
+        List<Player> nearbyPlayers = this.level.getNearbyPlayers(TargetingConditions.DEFAULT.ignoreLineOfSight().ignoreInvisibilityTesting(), this, this.getBoundingBox().inflate(this.speakRange()));
+        for (Player player : nearbyPlayers) {
+            player.displayClientMessage(entityChat, false);
+        }
+    }
+
+    public void teleportToTarget(LivingEntity target) {
         if (target == null || this.level().isClientSide) return;
 
         Vec3 targetPos = target.position().add(0, target.getEyeHeight() * 0.5, 0);
@@ -479,22 +841,31 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
     public void customServerAiStep() {
         super.customServerAiStep();
 
+        if (this.tickCount % 20 == 0) {
+//            this.targetDataManager.resolveTarget();
+
+            if (this.level() instanceof ServerLevel serverLevel) {
+                this.angerManagement.tick(serverLevel, this::targetSelectorTest);
+                this.syncClientAngerLevel();
+            }
+        }
+
         float maxHealth = this.getMaxHealth();
         float currentHealth = this.getHealth();
         float healthRatio = currentHealth / maxHealth;
 
-        if (healthRatio <= 0.4f) {
+        if (healthRatio <= PHASE_3_HEALTH_RATIO) {
 
-            float progress = healthRatio / 0.4f;
+            float progress = healthRatio / PHASE_3_HEALTH_RATIO;
             this.bossInfo.setProgress(progress);
 
             if (this.bossInfo.getOverlay() != BossEvent.BossBarOverlay.NOTCHED_10) {
                 this.bossInfo.setOverlay(BossEvent.BossBarOverlay.NOTCHED_10);
             }
             this.bossInfo.setName(bossInfo.getName().copy().withStyle(style -> style.withColor(ChatFormatting.AQUA)));
-        } else if (healthRatio <= 0.75f) {
+        } else if (healthRatio <= PHASE_2_HEALTH_RATIO) {
 
-            float progress = (healthRatio - 0.4f) / (0.75f - 0.4f);
+            float progress = (healthRatio - PHASE_3_HEALTH_RATIO) / (PHASE_2_HEALTH_RATIO - PHASE_3_HEALTH_RATIO);
             this.bossInfo.setProgress(progress);
 
             if (this.bossInfo.getOverlay() != BossEvent.BossBarOverlay.NOTCHED_6) {
@@ -503,7 +874,7 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
             this.bossInfo.setName(bossInfo.getName().copy().withStyle(style -> style.withColor(ChatFormatting.DARK_AQUA)));
         } else {
 
-            float progress = (healthRatio - 0.75f) / (1.0f - 0.75f);
+            float progress = (healthRatio - PHASE_2_HEALTH_RATIO) / (PHASE_1_HEALTH_RATIO);
             this.bossInfo.setProgress(progress);
 
             if (this.bossInfo.getOverlay() != BossEvent.BossBarOverlay.PROGRESS) {
@@ -513,77 +884,222 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         }
 
         // Formula used: progress = (value - minValueOfPhase) / (maxValueOfPhase - minValueOfPhase)
+        // PHASE_1_HEALTH_RATIO = maxValueOfPhase(1f) - minValueOfPhase(0.75f);
     }
 
     @Override
     protected void actuallyHurt(@NotNull DamageSource pDamageSource, float pDamageAmount) {
+        float beforeHealth = this.getHealth();
         super.actuallyHurt(pDamageSource, pDamageAmount);
-
         float currentHealth = this.getHealth();
         float maxHealth = this.getMaxHealth();
 
-
         if (this.isPhase2()) {
             float ratio = this.computeHealthRatio();
-            if (currentHealth <= maxHealth * 0.4f && ratio >= 0.4f && !this.isPhase3()) {
+            if (currentHealth <= maxHealth * PHASE_3_HEALTH_RATIO && ratio >= PHASE_3_HEALTH_RATIO && !this.isPhase3()) {
                 this.setPhase3(true);
                 this.onPhaseChange(this.getPhase());
                 level.playSound(null, this.blockPosition().above(), SoundEvents.BEACON_POWER_SELECT, SoundSource.HOSTILE, 500, 0);
             }
-        } else if (this.getUnderlyingPlayer() == null && currentHealth <= maxHealth * 0.75f) {
+        } else if (this.getUnderlyingPlayer() == null && currentHealth <= maxHealth * PHASE_2_HEALTH_RATIO) {
             this.setPhase2(true);
             this.onPhaseChange(this.getPhase());
             level.playSound(null, this.blockPosition().above(), SoundEvents.BEACON_POWER_SELECT, SoundSource.HOSTILE, 500, 0);
         }
     }
 
+    public float getMaxHealthForCurrentPhase() {
+        float ratio = this.isPhase3() ? PHASE_3_HEALTH_RATIO : this.isPhase2() ? PHASE_2_HEALTH_RATIO : PHASE_1_HEALTH_RATIO;
+        return this.getMaxHealth() * ratio;
+    }
+
     protected void onPhaseChange(Exp9Phase phase) {
         switch (phase) {
-            case PHASE1 -> {}
+            case PHASE1 -> {
+                refreshPhaseAIGoals();
+                removeStatModifiers();
+            }
             case PHASE2 -> {
-                this.spawnThunderBolt(this.position());
-                this.knockbackNearbyEntities(this);
+                if (!wasPhasedForPhase2) {
+                    refreshPhaseAIGoals();
+                    removeStatModifiers();
+                    applyStatModifier(this, 1.5f);
+                    knockBackAndDoThunderBolt();
+                    wasPhasedForPhase2 = true;
+                    wasPhasedForPhase3 = false;
+                }
             }
             case PHASE3 -> {
-                final BlockPos center = this.blockPosition();
-                final float ringRadius = 4;
-                final int bolts = 8;
-                if (this.level() instanceof ServerLevel serverLevel) {
-                    spawnThunderCircle(serverLevel, center, ringRadius, bolts);
-                    DelayedTask.schedule(5, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.4f, bolts * 2));
-                    DelayedTask.schedule(10, () -> spawnThunderCircle(serverLevel, center, ringRadius * 1.8f, bolts * 3));
-                    DelayedTask.schedule(15, () -> spawnThunderCircle(serverLevel, center, ringRadius * 2.2f, bolts * 4));
+                if (!wasPhasedForPhase3) {
+                    refreshPhaseAIGoals();
+                    removeStatModifiers();
+                    applyStatModifierAllOutPhase();
+                    knockbackAndDoThunderStorm();
+                    wasPhasedForPhase2 = true;
+                    wasPhasedForPhase3 = true;
                 }
-                this.knockbackNearbyEntities(this);
             }
         }
     }
 
-    public static void spawnThunderCircle(ServerLevel level, BlockPos center, float radius, int bolts) {
-        // garante que os strikes ocorram no topo do terreno naquele XZ
+    private void spawnThunderParticle() {
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
+
+        ThunderParticleOptions particleOptions = ChangedAddonParticleTypes.thunderBolt(4f, false, true, 2, new Vector3f(0.3f, 0.3f, 0.3f), new Vector3f(1.0f, 1.0f, 1.0f), 20, 4.0f);
+        serverLevel.sendParticles(
+                particleOptions,
+                getX(), getY() + 16, getZ(), // Spawn location
+                0,                      // Count must be 0 for speed params to behave as raw deltas
+                getX(), getY(), getZ(), // Target end relative vector
+                1.0                     // Particle speed scale
+        );
+    }
+
+    private void knockBackAndDoThunderBolt() {
+        spawnThunderParticle();
+        playSound(SoundEvents.LIGHTNING_BOLT_THUNDER, 4, 1);
+        this.knockbackNearbyEntities(this, 2.5f);
+        spawnThunderBoltsSpark(16, 16, 2f, 1f);
+    }
+
+    public void spawnThunderBoltsSpark(double radius, int amountOfPositions, float speed, float size) {
+        spawnThunderBoltsSpark(10, radius, amountOfPositions, false, 0, speed, size);
+    }
+
+    public void spawnThunderBoltsSpark(int particleAge, double radius, int amountOfPositions, float speed, float size) {
+        spawnThunderBoltsSpark(particleAge, radius, amountOfPositions, false, 0, speed, size);
+    }
+
+    public void spawnThunderBoltsSpark(int particleAge, double radius, int amountOfPositions, boolean shakyBody, int bodyShakeFrequency, float speed, float size) {
+        if (!(this.level() instanceof ServerLevel serverLevel)) return;
+
+        // Base position at the entity's center height
+        double startX = this.getX();
+        float startYOffset = this.getBbHeight() / 2.0f;
+        double startY = this.getY() + startYOffset;
+        double startZ = this.getZ();
+
+        for (int i = 0; i < amountOfPositions; i++) {
+            // Calculate relative offset vectors instead of absolute positions
+            double offsetX = (this.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double offsetY = (this.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+            double offsetZ = (this.getRandom().nextDouble() * 2.0 - 1.0) * radius;
+
+            // Build options set to false for useTargetPosAsBaseForDeltas
+            EntityLinkedThunderParticleOptions particleOptions = ChangedAddonParticleTypes.thunderBoltLinkedTo(
+                    this,
+                    true, // useTargetPosAsBaseForDeltas = false means xSpeed/ySpeed/zSpeed acts directly as relative offset from target
+                    new Vector3f(0, startYOffset, 0),
+                    speed,
+                    false,
+                    shakyBody, bodyShakeFrequency,
+                    new Vector3f(0.3f, 0.3f, 0.3f),
+                    new Vector3f(1.0f, 1.0f, 1.0f),
+                    particleAge,// particle lifetime in ticks
+                    size
+            );
+
+            // Send particle with count = 0 to pass offsetX, offsetY, offsetZ into xSpeed, ySpeed, zSpeed parameters
+            serverLevel.sendParticles(
+                    particleOptions,
+                    startX, startY, startZ, // Spawn location
+                    0,                      // Count must be 0 for speed params to behave as raw deltas
+                    offsetX, offsetY, offsetZ, // Target end relative vector
+                    1.0                     // Particle speed scale
+            );
+        }
+    }
+
+    public boolean spawnThunderBoltsSparkNearbyEntities(int particleAge, double pushRadius, boolean shakyBody, int bodyShakeFrequency, float speed, float size) {
+        if (!(this.level() instanceof ServerLevel serverLevel)) return false;
+
+        // Base position at the entity's center height
+        double startX = this.getX();
+        float startYOffset = this.getBbHeight() / 2.0f;
+        double startY = this.getY() + startYOffset;
+        double startZ = this.getZ();
+
+        AABB pushBox = this.getBoundingBox().inflate(pushRadius);
+        List<LivingEntity> entities = serverLevel.getEntitiesOfClass(LivingEntity.class, pushBox, e -> !e.is(this) && e.isAlive() && (!e.isSpectator() && e.isPickable()));
+
+        for (LivingEntity entity : entities) {
+            double offsetX = entity.getEyePosition().x();
+            double offsetY = entity.getEyePosition().y();
+            double offsetZ = entity.getEyePosition().z();
+
+            EntityLinkedThunderParticleOptions particleOptions = ChangedAddonParticleTypes.thunderBoltLinkedTo(
+                    this,
+                    false, // useTargetPosAsBaseForDeltas = false means xSpeed/ySpeed/zSpeed acts directly as relative offset from target
+                    new Vector3f(0, startYOffset, 0),
+                    speed,
+                    false,
+                    shakyBody, bodyShakeFrequency,
+                    new Vector3f(0.3f, 0.3f, 0.3f),
+                    new Vector3f(1.0f, 1.0f, 1.0f),
+                    particleAge,// particle lifetime in ticks
+                    size
+            );
+
+            // Send particle with count = 0 to pass offsetX, offsetY, offsetZ into xSpeed, ySpeed, zSpeed parameters
+            serverLevel.sendParticles(
+                    particleOptions,
+                    startX, startY, startZ, // Spawn location
+                    0,                      // Count must be 0 for speed params to behave as raw deltas
+                    offsetX, offsetY, offsetZ, // Target end relative vector
+                    1.0                     // Particle speed scale
+            );
+        }
+
+        return !entities.isEmpty();
+    }
+
+    public void knockbackAndDoThunderStorm() {
+        final BlockPos center = this.blockPosition();
+        final float ringRadius = 4;
+        final int bolts = 8;
+        if (this.level() instanceof ServerLevel serverLevel) {
+            spawnThunderCircle(this, serverLevel, center, ringRadius, bolts);
+            DelayedTask.schedule(5, () -> spawnThunderCircle(this, serverLevel, center, ringRadius * 1.4f, bolts * 2));
+            DelayedTask.schedule(10, () -> spawnThunderCircle(this, serverLevel, center, ringRadius * 1.8f, bolts * 3));
+            DelayedTask.schedule(15, () -> spawnThunderCircle(this, serverLevel, center, ringRadius * 2.2f, bolts * 4));
+        }
+        this.knockbackNearbyEntities(this, 5f);
+    }
+
+    public static void spawnThunderCircle(LivingEntity livingEntity, ServerLevel level, BlockPos center, float radius, int bolts) {
         float angle, x, z;
+        // Calcula minY/maxY uma vez fora do loop de bolts
+        int minY = livingEntity.getBlockY() - 5;
+        int maxY = livingEntity.getBlockY() + 5;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+
         for (int i = 0; i < bolts; i++) {
             angle = (2 * Mth.PI * i) / bolts;
             x = center.getX() + 0.5f + radius * Mth.cos(angle);
             z = center.getZ() + 0.5f + radius * Mth.sin(angle);
 
-            // Começa do teto e desce até achar espaço
-            int minY = level.getMinBuildHeight() - 1;
-            pos.set(x, minY, z);
-            for (int y = minY; y < (level.getMaxBuildHeight() - 1); y++) {
-                pos.setY(y);
-                // Verifica se tem 2 blocos de espaço (ou mais, dependendo da entidade)
-                if (level.isEmptyBlock(pos) && level.isEmptyBlock(pos.above())) {
-                    break;
+            // Tenta usar o heightmap primeiro (O(1), sem loop)
+            int surfaceY = level.getHeight(Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, (int) x, (int) z);
+
+            if (surfaceY >= minY && surfaceY <= maxY) {
+                // Heightmap deu uma Y válida dentro do range, usa direto
+                pos.set((int) x, surfaceY, (int) z);
+            } else {
+                // Fallback: busca manual só se heightmap fugiu do range (ex: teto fechado)
+                pos.set((int) x, minY, (int) z);
+                for (int y = minY; y < maxY; y++) {
+                    pos.setY(y);
+                    if (level.isEmptyBlock(pos) && level.isEmptyBlock(pos.above())) {
+                        break;
+                    }
                 }
             }
 
             LightningBolt bolt = EntityType.LIGHTNING_BOLT.create(level);
-            if (bolt == null) return;
+            if (bolt == null) continue; // continue em vez de return, para não abortar os outros raios
 
             bolt.moveTo(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
-            bolt.setVisualOnly(false); // true = só visual (sem dano/fogo)
+            bolt.setVisualOnly(false);
             bolt.setDamage(2f);
             level.addFreshEntity(bolt);
         }
@@ -594,17 +1110,21 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         return this.getTarget() != null ? 0.98f : super.getWaterSlowDown();
     }
 
-    private void knockbackNearbyEntities(LivingEntity source) {
+    protected void knockbackNearbyEntities(LivingEntity source) {
         this.knockbackNearbyEntities(source, 5, Vec3.ZERO);
     }
 
-    private void knockbackNearbyEntities(LivingEntity source, float force, Vec3 extraMotion) {
+    protected void knockbackNearbyEntities(LivingEntity source, float force) {
+        this.knockbackNearbyEntities(source, force, Vec3.ZERO);
+    }
+
+    protected void knockbackNearbyEntities(LivingEntity source, float force, Vec3 extraMotion) {
         AABB attackArea = source.getBoundingBox().inflate(6);
         List<LivingEntity> nearby = source.level.getEntitiesOfClass(LivingEntity.class, attackArea);
 
         float xForce, zForce;
         for (LivingEntity target : nearby) {
-            if (target == source || !source.canAttack(target)) continue;
+            if (target == EntityUtil.maybeGetUnderlying(source) || !source.canAttack(target)) continue;
 
             xForce = Mth.sin(source.getYRot() * Mth.DEG_TO_RAD);
             zForce = -Mth.cos(source.getYRot() * Mth.DEG_TO_RAD);
@@ -636,37 +1156,61 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         this.entityData.set(PHASE2, set);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag tag) {
+        if (tag.contains("wasPhasedForPhase2")) {
+            wasPhasedForPhase2 = tag.getBoolean("wasPhasedForPhase2");
+        }
+        if (tag.contains("wasPhasedForPhase3")) {
+            wasPhasedForPhase3 = tag.getBoolean("wasPhasedForPhase3");
+        }
         super.readAdditionalSaveData(tag);
         if (tag.contains("isPhase3"))
             setPhase3(tag.getBoolean("isPhase3"));
-        if (tag.contains("Bleeding"))
-            shouldBleed = tag.getBoolean("Bleeding");
-        if (tag.contains("casting"))
-            this.setCastingAttack(tag.getBoolean("casting"));
+        if (tag.contains("isBleeding"))
+            shouldBleed = tag.getBoolean("isBleeding");
+        if (tag.contains("castingAttack"))
+            this.setCastingAttack(tag.getBoolean("castingAttack"));
+        if (tag.contains("castingAttackTicks"))
+            this.setCastingTicks(tag.getInt("castingAttackTicks"));
+        if (tag.contains("maxCastingTicks"))
+            this.setMaxCastingTicks(tag.getInt("maxCastingTicks"));
+        this.angerManagement.load(tag);
+//        this.targetDataManager.loadAndResolveTarget(tag);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
+        tag.putBoolean("wasPhasedForPhase2", wasPhasedForPhase2);
+        tag.putBoolean("wasPhasedForPhase3", wasPhasedForPhase3);
         super.addAdditionalSaveData(tag);
         tag.putBoolean("isPhase3", isPhase3());
-        tag.putBoolean("Bleeding", shouldBleed);
-        tag.putBoolean("casting", this.isCastingAttack());
+        tag.putBoolean("isBleeding", shouldBleed);
+        tag.putBoolean("castingAttack", this.isCastingAttack());
+        tag.putFloat("castingAttackTicks", this.getCastingTicks());
+        tag.putFloat("maxCastingTicks", this.getMaxCastingTicks());
+        this.angerManagement.save(tag);
+//        this.targetDataManager.saveTarget(tag);
     }
 
     @Override
     public CompoundTag savePlayerVariantData() {
         CompoundTag tag = super.savePlayerVariantData();
-        tag.putBoolean("isPhase2", isPhase2());
+        tag.putBoolean("wasPhasedForPhase2", wasPhasedForPhase2);
+        tag.putBoolean("wasPhasedForPhase3", wasPhasedForPhase3);
         tag.putBoolean("isPhase3", isPhase3());
         return tag;
     }
 
     @Override
     public void readPlayerVariantData(CompoundTag tag) {
+        if (tag.contains("wasPhasedForPhase2")) {
+            wasPhasedForPhase2 = tag.getBoolean("wasPhasedForPhase2");
+        }
+        if (tag.contains("wasPhasedForPhase2")) {
+            wasPhasedForPhase3 = tag.getBoolean("wasPhasedForPhase3");
+        }
         super.readPlayerVariantData(tag);
-        if (tag.contains("isPhase2"))
-            setPhase2(tag.getBoolean("isPhase2"));
         if (tag.contains("isPhase3"))
             setPhase3(tag.getBoolean("isPhase3"));
     }
@@ -690,6 +1234,9 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
 
     @Override
     public void die(@NotNull DamageSource damageSource) {
+        if (this.isCastingAttack()) {
+            this.setCastingAttack(false);
+        }
         if (damageSource.getDirectEntity() == null) {
             super.die(damageSource);
             return;
@@ -708,16 +1255,17 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
                 z = (float) getZ() + Mth.sin(anglePhi) * Mth.sin(angleTheta) * 4.0f;
                 ParticlesUtil.sendParticlesWithMotion(
                         this,
+                        0,
                         ParticleTypes.ELECTRIC_SPARK,
                         Vec3.ZERO,
-                        this.position().subtract(x, y, z),
+                        this.getPosition(0).subtract(x, y, z),
                         5, 0.025f
                 );
             }
         }
 
         this.playSound(SoundEvents.GENERIC_EXPLODE, 1, 1);
-        for (BlockPos pos : FoxyasUtils.betweenClosedStreamSphere(blockPosition(), 16, 16, 1).toList()) {
+        for (BlockPos pos : FoxyasUtil.betweenClosedStreamSphere(blockPosition(), 16, 16, 1).toList()) {
             BlockState state = level.getBlockState(pos);
 
             if (state.is(Blocks.FIRE) || state.is(Blocks.SOUL_FIRE)) {
@@ -727,7 +1275,7 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         }
 
         if (damageSource.getEntity() instanceof LivingEntity living) {
-            FoxyasUtils.repairAllItems(living, 1000);
+            FoxyasUtil.repairAllItems(living, 1000);
         }
 
         super.die(damageSource);
@@ -737,43 +1285,51 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
     public void baseTick() {
         super.baseTick();
         if (getUnderlyingPlayer() != null) return;
-
-        if (firstTick) {
-            applyDefaultBasicPlayerInfo();
+        this.burstAbilityHandle.tick();
+        if (this.isCastingAttack()) {
+//            if (this.goalSelector.getRunningGoals().noneMatch(wrappedGoal -> wrappedGoal.getGoal() instanceof CastingAttackGoal) && this.targetSelector.getRunningGoals().noneMatch(wrappedGoal -> wrappedGoal.getGoal() instanceof CastingAttackGoal)) {
+//                this.setCastingAttack(false);
+//            }
+            this.setCastingTicks(this.getCastingTicks() + 1);
+            if (this.getTarget() == null || this.getCastingTicks() >= maxCastingTicks) {
+                this.setCastingAttack(false);
+            }
         }
 
-        if (shouldBleed && (this.computeHealthRatio() / 0.4f) > 0.25f && this.tickCount % 4 == 0) {
-            this.setHealth(this.getHealth() - 0.25f);
+        if (shouldBleed) {
+            if (this.computeHealthRatio() / PHASE_3_HEALTH_RATIO > 0.25f) {
+                if (this.tickCount % 20 == 0) {
+                    spawnThunderBoltsSpark(20, 2.5f, 16, true, 2, 10f, 0.25f);
+                }
+            }
+
+            if (this.tickCount % 4 == 0 && (!hurtMarked && hurtTime <= 0)) {
+                this.setHealth(this.getHealth() - 0.25f);
+            }
         }
 
-        Random randomSource = new Random();
+        RandomSource randomSource = this.getRandom();
         if (randomSource.nextFloat() < 1 - Math.min(0.95, computeHealthRatio())) {
             if (this.isPhase2()) {
                 if (this.shouldBleed) {
-                    ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.01f);
-                    ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 15, 0.05f);
+                    ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition(0).subtract(0, randomSource.nextFloat() * this.getEyeHeight(), 0), 0.3f, 0.25f, 0.3f, 15, 0.01f);
+                    ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition(0).subtract(0, randomSource.nextFloat() * this.getEyeHeight(), 0), 0.3f, 0.25f, 0.3f, 15, 0.05f);
                 } else {
                     if (randomSource.nextFloat() > 0.95) {
-                        ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.3f, 0.25f, 0.3f, 10, 0.01f);
+                        ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, this.getEyePosition(0).subtract(0, randomSource.nextFloat() * this.getEyeHeight(), 0), 0.3f, 0.25f, 0.3f, 10, 0.01f);
                     }
-                    ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 10, 1);
+                    ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition(0).subtract(0, randomSource.nextFloat() * this.getEyeHeight(), 0), 0.25f, 0.25f, 0.25f, 10, 1);
                 }
             } else {
-                ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition().subtract(0, randomSource.nextFloat(this.getEyeHeight()), 0), 0.25f, 0.25f, 0.25f, 5, 1);
+                ParticlesUtil.sendParticles(this.level(), ChangedAddonParticleTypes.thunderSpark(1), this.getEyePosition(0).subtract(0, randomSource.nextFloat() * this.getEyeHeight(), 0), 0.25f, 0.25f, 0.25f, 5, 1);
             }
         }
 
         if (this.isPhase2()) {
-            if (this.computeHealthRatio() <= 0.4f) {
-                removeStatModifiers();
-                applyStatModifierAllOutPhase();
+            if (this.computeHealthRatio() <= PHASE_3_HEALTH_RATIO) {
                 this.shouldBleed = true;
                 setPhase3(true);
-            } else {
-                applyStatModifier(this, 1.5);
             }
-        } else {
-            removeStatModifiers();
         }
 
         setSpeed(this);
@@ -782,15 +1338,23 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
     }
 
     @Override
+    public void setTarget(@Nullable LivingEntity entity) {
+        super.setTarget(entity);
+        if (burstAbilityHandle != null) {
+            burstAbilityHandle.setTarget(entity);
+        }
+    }
+
+    @Override
     public void updateStepSizeBasedInSwimState(boolean updateSwimmingMovement) {
         this.setMaxUpStep(updateSwimmingMovement ? 1f : 0.7f);
     }
 
     public void removeStatModifiers() {
-        removeModifierUUID(this, Attributes.ATTACK_DAMAGE, "a06083b0-291d-4a72-85de-73bd93ffb736");
-        removeModifierUUID(this, Attributes.ARMOR, "a06083b0-291d-4a72-85de-73bd93ffb737");
-        removeModifierUUID(this, Attributes.ARMOR_TOUGHNESS, "a06083b0-291d-4a72-85de-73bd93ffb738");
-        removeModifierUUID(this, Attributes.KNOCKBACK_RESISTANCE, "a06083b0-291d-4a72-85de-73bd93ffb739");
+        removeModifierUUID(this, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE_MODIFIER_UUID);
+        removeModifierUUID(this, Attributes.ARMOR, ARMOR_MODIFIER_UUID);
+        removeModifierUUID(this, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS_MODIFIER_UUID);
+        removeModifierUUID(this, Attributes.KNOCKBACK_RESISTANCE, KNOCKBACK_RESISTANCE_MODIFER_UUID);
         //removeModifierUUID(this, Attributes.MOVEMENT_SPEED, "a06083b0-291d-4a72-85de-73bd93ffb710");
     }
 
@@ -808,18 +1372,18 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
     }
 
     public void applyStatModifier(LivingEntity entity, double multiplier) {
-        applyModifierIfAbsent(entity, Attributes.ATTACK_DAMAGE, "a06083b0-291d-4a72-85de-73bd93ffb736", "AttackMultiplier", multiplier - 1);
-        applyModifierIfAbsent(entity, Attributes.ARMOR, "a06083b0-291d-4a72-85de-73bd93ffb737", "ArmorMultiplier", multiplier - 1);
-        applyModifierIfAbsent(entity, Attributes.ARMOR_TOUGHNESS, "a06083b0-291d-4a72-85de-73bd93ffb738", "ArmorToughnessMultiplier", multiplier - 1);
-        applyModifierIfAbsent(entity, Attributes.KNOCKBACK_RESISTANCE, "a06083b0-291d-4a72-85de-73bd93ffb739", "KnockbackResistanceMultiplier", multiplier - 1);
+        applyModifierIfAbsent(entity, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE_MODIFIER_UUID, "AttackMultiplier", multiplier - 1);
+        applyModifierIfAbsent(entity, Attributes.ARMOR, ARMOR_MODIFIER_UUID, "ArmorMultiplier", multiplier - 1);
+        applyModifierIfAbsent(entity, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS_MODIFIER_UUID, "ArmorToughnessMultiplier", multiplier - 1);
+        applyModifierIfAbsent(entity, Attributes.KNOCKBACK_RESISTANCE, KNOCKBACK_RESISTANCE_MODIFER_UUID, "KnockbackResistanceMultiplier", multiplier - 1);
         //applyModifierIfAbsent(entity, Attributes.MOVEMENT_SPEED, "a06083b0-291d-4a72-85de-73bd93ffb710", "SpeedMultiplier", (multiplier - 1) * 0.5);
     }
 
     public void applyStatModifierAllOutPhase() {
-        applyModifierIfAbsent(this, Attributes.ATTACK_DAMAGE, "a06083b0-291d-4a72-85de-73bd93ffb736", "AttackMultiplier", 0.25f);
-        applyModifierIfAbsent(this, Attributes.ARMOR, "a06083b0-291d-4a72-85de-73bd93ffb737", "ArmorMultiplier", 1.25f);
-        applyModifierIfAbsent(this, Attributes.ARMOR_TOUGHNESS, "a06083b0-291d-4a72-85de-73bd93ffb738", "ArmorToughnessMultiplier", 1.25f);
-        applyModifierIfAbsent(this, Attributes.KNOCKBACK_RESISTANCE, "a06083b0-291d-4a72-85de-73bd93ffb739", "KnockbackResistanceMultiplier", 0.5f);
+        applyModifierIfAbsent(this, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE_MODIFIER_UUID, "AttackMultiplier", 0.25f);
+        applyModifierIfAbsent(this, Attributes.ARMOR, ARMOR_MODIFIER_UUID, "ArmorMultiplier", 1.25f);
+        applyModifierIfAbsent(this, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS_MODIFIER_UUID, "ArmorToughnessMultiplier", 1.25f);
+        applyModifierIfAbsent(this, Attributes.KNOCKBACK_RESISTANCE, KNOCKBACK_RESISTANCE_MODIFER_UUID, "KnockbackResistanceMultiplier", 0.5f);
         //applyModifierIfAbsent(entity, Attributes.MOVEMENT_SPEED, "a06083b0-291d-4a72-85de-73bd93ffb710", "SpeedMultiplier", (multiplier - 1) * 0.5);
     }
 
@@ -840,6 +1404,17 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
         lightning.moveTo(pos.getX(), pos.getY(), pos.getZ());
         lightning.setCause(null);
         lightning.setDamage(6f);
+        this.level.addFreshEntity(lightning);
+        ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
+    }
+
+    public void spawnVisualThunderBolt(Vec3 pos) {
+        LightningBolt lightning = EntityType.LIGHTNING_BOLT.create(this.level);
+        if (lightning == null) return;
+
+        lightning.moveTo(pos.x(), pos.y(), pos.z());
+        lightning.setCause(null);
+        lightning.setVisualOnly(true);
         this.level.addFreshEntity(lightning);
         ParticlesUtil.sendParticles(this.level(), ParticleTypes.ELECTRIC_SPARK, pos, 0.3f, 0.5f, 0.3f, 5, 1f);
     }
@@ -868,10 +1443,13 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
     }
 
     @Override
-    public void WhenPattedReaction(Player player, InteractionHand hand) {
-        if (!(player.level() instanceof ServerLevel)) return;
-        if (player instanceof ServerPlayer serverPlayer) {
-            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, this, "pats_on_the_beast");
+    public void whenPattedReaction(LivingEntity patter, InteractionHand hand) {
+        if (!(patter.level() instanceof ServerLevel)) return;
+        if (patter instanceof ServerPlayer serverPlayer) {
+            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.trigger(serverPlayer, this, "pats_on_the_beast");
+        }
+        if (!(patter instanceof Player player)) {
+            return;
         }
 
         List<Component> translatableComponentList = new ArrayList<>();
@@ -991,7 +1569,7 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
                 float extraDamage = 5.0f * metalPercentage;
                 event.setAmount(event.getAmount() + extraDamage);
 
-                if (!target.level.isClientSide) {
+                if (!target.level().isClientSide) {
                     ChangedAnimationEvents.broadcastEntityAnimation(target, ChangedAnimationEvents.SHOCK_STUN.get(), StunAnimationParameters.INSTANCE);
                     target.level.playSound(null, target.getX(), target.getY(), target.getZ(),
                             ChangedSounds.TSC_WEAPON_SHOCK.get(), SoundSource.HOSTILE, 1.0f, 1.0f);
@@ -1000,32 +1578,30 @@ public class Experiment009BossEntity extends Experiment009Entity implements IExp
                 target.hurtTime = 10;
                 target.hurtDuration = 10;
             }
+
+            if (boss.burstAbilityHandle != null)
+                boss.burstAbilityHandle.onDamageDealt(event.getSource(), event.getAmount());
         }
 
         @SubscribeEvent
-        public static void onBossHurtPlayer(LivingHurtEvent event) {
-            if (!(event.getSource().getEntity() instanceof Experiment009BossEntity)) return;
-            if (!(event.getEntity() instanceof Player target)) return;
-
-            GearTier tier = getGearTier(target);
-
-            switch (tier) {
-                case LOW -> event.setAmount(event.getAmount() * 0.75F);
-                case MID -> event.setAmount(event.getAmount());
-                case HIGH -> event.setAmount(event.getAmount() * 1.25F);
+        public static void onProjectileImpact(ProjectileImpactEvent event) {
+            Projectile self = event.getProjectile();
+            HitResult hitResult = event.getRayTraceResult();
+            if (!(hitResult instanceof EntityHitResult entityHitResult)) {
+                return;
             }
-        }
 
-        @SubscribeEvent
-        public static void onPlayerHurtBoss(LivingHurtEvent event) {
-            if (!(event.getSource().getEntity() instanceof Player source)) return;
-            if (!(event.getEntity() instanceof Experiment009BossEntity target)) return;
-
-            GearTier tier = getGearTier(source);
-
-            switch (tier) {
-                case LOW -> event.setAmount(event.getAmount() * 2.5F);
-                case MID, HIGH -> event.setAmount(event.getAmount());
+            Entity pTarget = entityHitResult.getEntity();
+            if (!pTarget.level.isClientSide()) {
+                if (pTarget instanceof Experiment009BossEntity experiment009BossEntity) {
+                    if (!experiment009BossEntity.isVulnerableToProjectiles()) {
+                        double speed = Math.min(self.getDeltaMovement().length(), 2.0f);
+                        var dodgeAnimationParameters = new DodgeAnimationParameters((float) speed, 1.1f);
+                        DodgeAbilityInstance.executeRandomDodgeAnimationWithFade(experiment009BossEntity, dodgeAnimationParameters);
+                        experiment009BossEntity.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1, true, false));
+                        event.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
+                    }
+                }
             }
         }
     }

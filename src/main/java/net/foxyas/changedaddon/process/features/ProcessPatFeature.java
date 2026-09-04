@@ -24,13 +24,13 @@ import javax.annotation.Nullable;
 
 public class ProcessPatFeature {
 
-    public static void SpawnEmote(Player player, LivingEntity target, ServerLevel level) {
+    public static void spawnEmote(LivingEntity patter, LivingEntity target, ServerLevel level) {
         if (target instanceof Player targetPl && !ProcessTransfur.isPlayerTransfurred(targetPl)) return;
 
         if (target instanceof ChangedEntity changedEntity) {
-            if (changedEntity.getTarget() == player) return;
+            if (changedEntity.getTarget() == patter) return;
 
-            if (PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
+            if (PatFeatureHandle.shouldBeConfused(patter, changedEntity)) {
                 level.sendParticles(ChangedParticles.emote(target, Emote.CONFUSED),
                         target.getX(), target.getY() + (double) target.getDimensions(target.getPose()).height + 0.65, target.getZ(),
                         0, 0, 0, 0, 0);
@@ -44,15 +44,15 @@ public class ProcessPatFeature {
     }
 
     public static class GlobalPatReactionEvent extends Event {
-        public final Player player;
+        public final LivingEntity patter;
         public final LivingEntity target;
         public final LevelAccessor world;
         public final InteractionHand hand;
         @Nullable
         public final Vec3 pattedLocation;
 
-        public GlobalPatReactionEvent(LevelAccessor world, Player player, InteractionHand hand, LivingEntity target, @Nullable Vec3 pattedLocation) {
-            this.player = player;
+        public GlobalPatReactionEvent(LevelAccessor world, LivingEntity patter, InteractionHand hand, LivingEntity target, @Nullable Vec3 pattedLocation) {
+            this.patter = patter;
             this.target = target;
             this.world = world;
             this.hand = hand;
@@ -74,10 +74,17 @@ public class ProcessPatFeature {
 
         @SubscribeEvent
         public static void HandlePat(GlobalPatReactionEvent event) {
-            Player player = event.player;
+            LivingEntity patter = event.patter;
             LivingEntity target = event.target;
 
-            if (!(player.level instanceof ServerLevel level)) return;
+            if (!(patter.level instanceof ServerLevel level)) return;
+
+            spawnEmote(patter, target, level);
+            if (target instanceof Player targetPlayer) {
+                targetPlayer.displayClientMessage(Component.translatable("key.changed_addon.pat_received", patter.getDisplayName().getString()), true);
+            }
+
+            if (!(patter instanceof Player player)) return;
 
             if (target instanceof ChangedEntity changedEntity && !ProcessTransfur.isPlayerTransfurred(player)) {
                 if (!PatFeatureHandle.shouldBeConfused(player, changedEntity)) {
@@ -85,19 +92,13 @@ public class ProcessPatFeature {
                     if (random.nextFloat() <= 0.0005f) {
                         changedEntity.addEffect(new MobEffectInstance(ChangedAddonMobEffects.PACIFIED.get(), 600, 0, true, false, true), player);
                         if (player instanceof ServerPlayer serverPlayer) {
-                            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, changedEntity, "paticifier");
+                            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.trigger(serverPlayer, changedEntity, "paticifier");
                         }
                     }
                 }
             }
 
             player.displayClientMessage(Component.translatable("key.changed_addon.pat_message", target.getDisplayName().getString()), true);
-            if (target instanceof Player targetPlayer) {
-                targetPlayer.displayClientMessage(Component.translatable("key.changed_addon.pat_received", player.getDisplayName().getString()), true);
-            }
-
-            SpawnEmote(player, target, level);
         }
     }
-
 }

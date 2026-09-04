@@ -4,16 +4,14 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
 import net.foxyas.changedaddon.init.ChangedAddonGameRules;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.network.packet.ClientboundOpenFTKCScreenPacket;
-import net.foxyas.changedaddon.procedure.SummonEntityProcedure;
 import net.foxyas.changedaddon.util.PlayerUtil;
-import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedSounds;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
-import net.ltxprogrammer.changed.util.EntityUtil;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,8 +22,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -50,8 +52,19 @@ public class FightToKeepConsciousness {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public static void onPlayerTransfur(ProcessTransfur.KeepConsciousEvent event) {
+        if (event.player instanceof ServerPlayer player && ((event.keepConscious || event.shouldKeepConscious) || !player.level.getGameRules().getBoolean(ChangedAddonGameRules.FIGHT_TO_KEEP_CONSCIOUSNESS))) {
+            ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.ofOrDefault(player);
+            if (!vars.isTransfuredBySafeMethod) {
+                vars.isTransfuredBySafeMethod = true;
+                vars.syncPlayerVariables(player);
+            }
+            return;
+        }
+
         if (!(event.player instanceof ServerPlayer player) || event.shouldKeepConscious
-                || !player.level.getGameRules().getBoolean(ChangedAddonGameRules.FIGHT_TO_KEEP_CONSCIOUSNESS)) return;
+                || !player.level.getGameRules().getBoolean(ChangedAddonGameRules.FIGHT_TO_KEEP_CONSCIOUSNESS)) {
+            return;
+        }
 
         @Nullable
         TransfurVariantInstance<?> oldVariantInstance = ProcessTransfur.getPlayerTransfurVariant(player);
@@ -61,9 +74,18 @@ public class FightToKeepConsciousness {
         }
 
         event.shouldKeepConscious = true;
+        startFightToKeepConsciousness(player);
+    }
 
+    public static void startFightToKeepConsciousness(ServerPlayer player) {
         MinigameType minigameType = MinigameType.getRandom(player.getRandom());
-        updatePlayerVariables(ChangedAddonVariables.ofOrDefault(player), minigameType, 0, player);
+        startFightToKeepConsciousness(player, minigameType);
+    }
+
+    public static void startFightToKeepConsciousness(ServerPlayer player, MinigameType minigameType) {
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.ofOrDefault(player);
+        vars.isTransfuredBySafeMethod = false;
+        updatePlayerVariables(vars, minigameType, 0, player);
 
         ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundOpenFTKCScreenPacket(minigameType));
     }
@@ -73,9 +95,36 @@ public class FightToKeepConsciousness {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer player)) return;
 
         if (!player.isAlive()) return;
+        if (!player.level.getGameRules().getBoolean(ChangedAddonGameRules.FIGHT_TO_KEEP_CONSCIOUSNESS)) return;
 
         TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
         ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.ofOrDefault(player);
+
+        if (ChangedAddonServerConfiguration.FIGHT_TO_KEEP_CONSCIOUSNESS_DO_REPLAY.get()) {
+            if (instance != null && !vars.isTransfuredBySafeMethod) {
+                vars.timeAfterVictoryOfFTK++;
+                vars.syncPlayerVariables(player);
+            }
+
+            if (vars.timeAfterVictoryOfFTK > 0 && vars.FTKCminigameType == null) {
+                if (!vars.isTransfuredBySafeMethod) {
+                    if (vars.timeAfterVictoryOfFTK % ChangedAddonServerConfiguration.FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_DELAY.get() == 0) {
+                        if (ChangedAddonServerConfiguration.FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_CHANCE.get() > 0) {
+                            if (player.getRandom().nextFloat() <= ChangedAddonServerConfiguration.FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_CHANCE.get()) {
+                                replayFTKC(player, vars);
+                            } else {
+                                warnAboutReplayOfFTKC(player, vars);
+                            }
+                        }
+                    }
+                } else {
+                    resetTimeAfterVictory(player, vars);
+                }
+            }
+        } else {
+            vars.timeAfterVictoryOfFTK = 0;
+            vars.syncPlayerVariables(player);
+        }
 
         if (vars.FTKCminigameType == null) return;
 
@@ -84,7 +133,10 @@ public class FightToKeepConsciousness {
             return;
         }
 
-        if (instance.ageAsVariant >= getStruggleTime()) {
+        vars.ticksFightingForConsciousness++;
+        vars.syncPlayerVariables(player);
+
+        if (vars.ticksFightingForConsciousness >= getStruggleTime()) {
 
             if (vars.consciousnessFightProgress >= getStruggleNeed()) {
                 successFTKC(vars, player);
@@ -93,6 +145,11 @@ public class FightToKeepConsciousness {
 
             failFTKC(vars, player);
         }
+    }
+
+    private static void resetTimeAfterVictory(ServerPlayer player, ChangedAddonVariables.PlayerVariables vars) {
+        vars.timeAfterVictoryOfFTK = 0;
+        vars.syncPlayerVariables(player);
     }
 
     @SubscribeEvent
@@ -117,26 +174,34 @@ public class FightToKeepConsciousness {
         vars.syncPlayerVariables(entity);
     }
 
-    private static void updatePlayerVariablesForWinning(ChangedAddonVariables.PlayerVariables vars, Entity entity) {
-        TransfurVariantInstance<?> transfurVariantInstance = ProcessTransfur.getPlayerTransfurVariant(EntityUtil.playerOrNull(entity));
-        if (transfurVariantInstance instanceof TransfurVariantInstanceExtensor transfurVariantInstanceExtensor) {
-            // TODO MAKE THE SYSTEM FOR REPLAY THE FIGHT TO KEEP CONSCIENCE
-        }
+    @ApiStatus.Internal
+    private static void replayFTKC(ServerPlayer player, ChangedAddonVariables.PlayerVariables vars) {
+        player.displayClientMessage(Component.translatable("changed_addon.fight_conscience.retry"), true);
+        MinigameType minigameType = MinigameType.getRandom(player.getRandom());
+        updatePlayerVariables(ChangedAddonVariables.ofOrDefault(player), minigameType, 0, player);
+        ChangedAddonMod.PACKET_HANDLER.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundOpenFTKCScreenPacket(minigameType));
+        resetTimeAfterVictory(player, vars);
+    }
+
+    @ApiStatus.Internal
+    private static void warnAboutReplayOfFTKC(ServerPlayer player, ChangedAddonVariables.PlayerVariables vars) {
+        player.displayClientMessage(Component.translatable("changed_addon.fight_conscience.retry.warn"), true);
+        resetTimeAfterVictory(player, vars);
     }
 
     @ApiStatus.Internal
     public static void successFTKC(ChangedAddonVariables.PlayerVariables vars, ServerPlayer player) {
         player.displayClientMessage(Component.translatable("changed_addon.fight_conscience.success"), true);
 
+        vars.ticksFightingForConsciousness = 0;
         updatePlayerVariables(vars, null, 0, player);
-        updatePlayerVariablesForWinning(vars, player);
     }
 
     @ApiStatus.Internal
     public static void failFTKC(ChangedAddonVariables.PlayerVariables vars, ServerPlayer player) {
         player.displayClientMessage(Component.translatable("changed_addon.fight_conscience.fail"), true);
 
-        SummonEntityProcedure.execute(player.level, player);
+        PlayerUtil.spawnPlayerTransfurAsChangedEntity(player.level, player);
         PlayerUtil.unTransfurPlayer(player);
 
         DamageSource source = ChangedAddonDamageSources.CONSCIENCE_LOSE.source(player.level());
@@ -150,12 +215,46 @@ public class FightToKeepConsciousness {
         updatePlayerVariables(vars, null, 0, player);
     }
 
-    public enum MinigameType {
-        MOUSE_PULL(3.5f, ChangedSounds.TRANSFUR_BY_LATEX.get(), FMLLoader.getDist().isDedicatedServer() ? null : FightToKeepConsciousnessClient.MOUSE_PULL()),
-        MOUSE_CIRCLE_PULL(4.5f, ChangedSounds.TRANSFUR_BY_LATEX.get(), FMLLoader.getDist().isDedicatedServer() ? null : FightToKeepConsciousnessClient.MOUSE_CIRCLE_PULL()),
-        KEY_PRESS(1, FMLLoader.getDist().isDedicatedServer() ? null : FightToKeepConsciousnessClient.KEY_PRESS()),
-        CIRCLE_HOVER(0.5f, FMLLoader.getDist().isDedicatedServer() ? null : FightToKeepConsciousnessClient.CIRCLE_HOVER());
+    @SubscribeEvent
+    public static void onPlayerFinishUsingItem(LivingEntityUseItemEvent.Finish event) {
+        ItemStack item = event.getItem();
+        LivingEntity livingEntity = event.getEntity();
+        ItemStack resultStack = event.getResultStack();
+        if (!(livingEntity instanceof Player player) || !ChangedAddonServerConfiguration.FIGHT_TO_KEEP_CONSCIOUSNESS_DO_REPLAY.get()) {
+            return;
+        }
 
+
+        ChangedAddonVariables.PlayerVariables playerVariables = ChangedAddonVariables.ofOrDefault(player);
+        if (playerVariables.isTransfuredBySafeMethod || playerVariables.timeAfterVictoryOfFTK <= 0) return;
+
+        double value = ChangedAddonServerConfiguration.FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_DELAY.get() * 0.25;
+
+        if (item.is(ChangedAddonTags.Items.STABILIZER_TICKS)) {
+            playerVariables.timeAfterVictoryOfFTK -= (int) value;
+            playerVariables.syncPlayerVariables(player);
+        }
+
+        if (item.is(ChangedAddonTags.Items.MAKE_TRANSFUR_SAFE)) {
+            playerVariables.isTransfuredBySafeMethod = true;
+            playerVariables.syncPlayerVariables(player);
+        }
+    }
+
+    public enum MinigameType {
+        MOUSE_PULL(3.5f,
+                ChangedSounds.TRANSFUR_BY_LATEX.get(),
+                FMLLoader.getDist().isDedicatedServer() ? null : FightToKeepConsciousnessClient.MOUSE_PULL()),
+        MOUSE_CIRCLE_PULL(4.5f,
+                10,
+                ChangedSounds.TRANSFUR_BY_LATEX.get(),
+                FMLLoader.getDist().isDedicatedServer() ? null : FightToKeepConsciousnessClient.MOUSE_CIRCLE_PULL()),
+        KEY_PRESS(1,
+                FMLLoader.getDist().isDedicatedServer() ? null : FightToKeepConsciousnessClient.KEY_PRESS()),
+        CIRCLE_HOVER(0.5f,
+                FMLLoader.getDist().isDedicatedServer() ? null : FightToKeepConsciousnessClient.CIRCLE_HOVER());
+
+        private final int removalTicks;
         public final Supplier<Screen> screen;
         public final float progressAmount;
         @Nullable
@@ -166,6 +265,15 @@ public class FightToKeepConsciousness {
         MinigameType(float progressAmount, Supplier<Screen> supplier) {
             this.screen = supplier;
             this.progressAmount = progressAmount;
+            this.removalTicks = 0;
+            this.struggleSound = null;
+            this.successSound = null;
+        }
+
+        MinigameType(float progressAmount, int removalTicks, Supplier<Screen> supplier) {
+            this.screen = supplier;
+            this.progressAmount = progressAmount;
+            this.removalTicks = removalTicks;
             this.struggleSound = null;
             this.successSound = null;
         }
@@ -173,6 +281,15 @@ public class FightToKeepConsciousness {
         MinigameType(float progressAmount, @Nullable SoundEvent struggleSound, Supplier<Screen> supplier) {
             this.screen = supplier;
             this.progressAmount = progressAmount;
+            this.removalTicks = 0;
+            this.struggleSound = struggleSound;
+            this.successSound = struggleSound;
+        }
+
+        MinigameType(float progressAmount, int removalTicks, @Nullable SoundEvent struggleSound, Supplier<Screen> supplier) {
+            this.screen = supplier;
+            this.progressAmount = progressAmount;
+            this.removalTicks = removalTicks;
             this.struggleSound = struggleSound;
             this.successSound = struggleSound;
         }
@@ -180,8 +297,25 @@ public class FightToKeepConsciousness {
         MinigameType(float progressAmount, @Nullable SoundEvent struggleSound, @Nullable SoundEvent successSound, Supplier<Screen> supplier) {
             this.screen = supplier;
             this.progressAmount = progressAmount;
+            this.removalTicks = 0;
             this.struggleSound = struggleSound;
             this.successSound = successSound;
+        }
+
+        MinigameType(float progressAmount, int removalTicks, @Nullable SoundEvent struggleSound, @Nullable SoundEvent successSound, Supplier<Screen> supplier) {
+            this.screen = supplier;
+            this.progressAmount = progressAmount;
+            this.removalTicks = removalTicks;
+            this.struggleSound = struggleSound;
+            this.successSound = successSound;
+        }
+
+        public int getRemovalTicks() {
+            return removalTicks;
+        }
+
+        public float getProgressAmount() {
+            return progressAmount;
         }
 
         public @Nullable SoundEvent getStruggleSound() {

@@ -6,10 +6,12 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
+import net.foxyas.changedaddon.ability.api.IWheelKeyPressHandler;
+import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
+import net.foxyas.changedaddon.network.packet.AbilityWheelKeyPressPacket;
 import net.foxyas.changedaddon.network.packet.SafeGrabSyncPacket;
-import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
@@ -18,7 +20,6 @@ import net.ltxprogrammer.changed.entity.TransfurContext;
 import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
-import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -30,6 +31,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -45,7 +47,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Mixin(value = GrabEntityAbilityInstance.class, remap = false)
-public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInstance implements GrabEntityAbilityExtensor {
+public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInstance implements GrabEntityAbilityExtensor, IWheelKeyPressHandler {
 
     @Shadow
     public boolean suited;
@@ -59,12 +61,16 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
     @Shadow
     int instructionTicks;
 
+    @Shadow public boolean useDown;
+
+    @Shadow public KeyReference currentEscapeKey;
+
     @Unique
     private boolean safeMode = false;
     @Unique
     private int snuggleCooldown = 0;
     @Unique
-    private boolean alreadySnuggledTight = false;
+    private boolean isSnugglingTight = false;
 
     @Unique
     private boolean allowGrabTransfurred = false; // Default is false. it can be true using external code
@@ -88,25 +94,25 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
     @Inject(method = "saveData", at = @At("TAIL"))
     private void injectCustomData(CompoundTag tag, CallbackInfo ci) {
         tag.putBoolean("safeMode", safeMode);
-        tag.putBoolean("alreadySnuggledTight", alreadySnuggledTight);
+        tag.putBoolean("alreadySnuggledTight", isSnugglingTight);
         tag.putBoolean("allowGrabTransfurred", allowGrabTransfurred);
     }
 
     @Inject(method = "readData", at = @At("TAIL"))
     private void readCustomData(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains("safeMode")) safeMode = tag.getBoolean("safeMode");
-        if (tag.contains("alreadySnuggledTight")) alreadySnuggledTight = tag.getBoolean("alreadySnuggledTight");
+        if (tag.contains("alreadySnuggledTight")) isSnugglingTight = tag.getBoolean("alreadySnuggledTight");
         if (tag.contains("allowGrabTransfurred")) allowGrabTransfurred = tag.getBoolean("allowGrabTransfurred");
     }
 
     @Unique
-    private GrabEntityAbilityInstance getSelf() {
+    private GrabEntityAbilityInstance ChangedAddon$getSelf() {
         return (GrabEntityAbilityInstance) (Object) this;
     }
 
     @Override
     public LivingEntity grabber() {
-        return getSelf().entity.getEntity();
+        return ChangedAddon$getSelf().entity.getEntity();
     }
 
     @Override
@@ -139,35 +145,87 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
     }
 
     @Inject(method = "tickIdle", at = @At(value = "HEAD"), cancellable = true)
+    private void tickIdleHook(CallbackInfo ci) {
+        if (!isSafeMode()) return;
+        if (this.isSnugglingTight()) {
+            // TODO: maybe make hugs heal targets?
+        }
+    }
+
+    @Inject(method = "tickIdle", at = @At(value = "HEAD"), cancellable = true)
+    private void tickSendKeyBindInfo(CallbackInfo ci) {
+        Level level = entity.getLevel();
+        if (level.isClientSide()) {
+            if (ChangedAddonClientConfiguration.GRAB_ABILITY_KEY_INFO.get()) {
+                this.entity.displayClientMessage(this.currentEscapeKey.getName(level), true);
+            }
+        }
+    }
+
+    @Inject(method = "tickIdle", at = @At(value = "HEAD"), cancellable = true)
     private void tickSnuggleCooldown(CallbackInfo ci) {
         if (!isSafeMode()) return;
         if (snuggleCooldown > 0) snuggleCooldown--;
     }
 
+    @Inject(method = "tickIdle", at = @At(value = "TAIL"), cancellable = true)
+    private void setGrabStrengthAtMaxIfGrabberCanAlwaysHold(CallbackInfo ci) {
+        if (ChangedAddon$getSelf().entity.getChangedEntity() instanceof ChangedEntityExtension changedEntityExtension
+                && changedEntityExtension.shouldAlwaysHoldInGrab(grabbedEntity, ChangedAddon$getSelf())) {
+            this.grabStrength = 1;
+        }
+    }
+
+//    Todo: Uncomment this stuff when 0.16.0 release;
+//    @ModifyReturnValue(method = "canSuit", at = @At("RETURN"))
+//    private boolean cancelSuit(boolean original) {
+//        if (this.isSafeMode()) {
+//            return false;
+//        } else {
+//            return original;
+//        }
+//    }
+//
+//    @Inject(method = "tickIdle",
+//            at = @At(
+//                    value = "FIELD",
+//                    target = "Lnet/ltxprogrammer/changed/ability/GrabEntityAbilityInstance;suitTransition:F",
+//                    ordinal = 2, opcode = Opcodes.GETFIELD,
+//                    shift = At.Shift.BY
+//            ))
+//    private void manuallyProgressSuit(CallbackInfo ci) {
+//        if (!isSafeMode()) return;
+//        if (useDown) {
+//            this.suitTransition += 0.075F;
+//        }
+//    }
+
+    @Deprecated(since = "since Changed 0.16.0, we gonna need to make other mixin to set \"canSuit\" to false ")
+    // Todo: move this logic to canSuit.
     @Inject(method = "tickIdle", at = @At(value = "INVOKE", target = "Ljava/lang/Math;max(FF)F", remap = true, shift = At.Shift.BY), cancellable = true)
     private void cancelSuit(CallbackInfo ci) {
         if (!isSafeMode()) return;
         ci.cancel();
 
-        if (getSelf().getController().getHoldTicks() >= 2) {
+        if (ChangedAddon$getSelf().getController().getHoldTicks() >= 2) {
             this.suitTransition -= 0.25f;
         }
 
         if (this.suitTransition >= 3) {
             this.suitTransition = 3.0F;
             this.suited = false;
-            if (getSelf().entity.getChangedEntity() instanceof ChangedEntityExtension changedEntityExtension && changedEntityExtension.shouldAlwaysHoldGrab(grabbedEntity)) {
-                this.grabStrength = 1;
+            if (ChangedAddon$getSelf().entity.getChangedEntity() instanceof ChangedEntityExtension changedEntityExtension && changedEntityExtension.shouldAlwaysHoldInGrab(grabbedEntity, ChangedAddon$getSelf())) {
+                this.grabStrength = 1; //Todo: maybe remove this later?
             }
 
             if (grabbedEntity != null) {
-                if (!isAlreadySnuggledTight()) {
+                if (!isSnugglingTight()) {
                     this.runTightHug(this.grabbedEntity);
                 }
             }
 
         } else {
-            this.alreadySnuggledTight = false;
+            this.isSnugglingTight = false;
         }
     }
 
@@ -216,27 +274,6 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
         return this.canGrabEntity(livingEntity) || original;
     }
 
-//    @Inject(
-//            method = "releaseEntity",
-//            at = @At(
-//                    value = "INVOKE",
-//                    target = "Lnet/ltxprogrammer/changed/ability/IAbstractChangedEntity;getEntity()Lnet/minecraft/world/entity/LivingEntity;",
-//                    ordinal = 0
-//            )
-//    )
-//    private void beforeAttemptToSendPacket(CallbackInfo ci) {
-//        GrabEntityAbilityInstance self = getSelf();
-//        IAbstractChangedEntity entity = self.entity;
-//        if (!(entity.getEntity() instanceof Player) && grabbedEntity instanceof Player) {
-//            if (!grabbedEntity.level().isClientSide()) {
-//                Changed.PACKET_HANDLER.send(
-//                        PacketDistributor.TRACKING_ENTITY.with(entity::getEntity),
-//                        new GrabEntityPacket(entity.getEntity(), grabbedEntity, GrabEntityPacket.GrabType.RELEASE)
-//                );
-//            }
-//        }
-//    }
-
     @Override
     public boolean isAlreadySnuggled() {
         return snuggleCooldown > 0;
@@ -248,13 +285,13 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
     }
 
     @Override
-    public boolean isAlreadySnuggledTight() {
-        return alreadySnuggledTight;
+    public boolean isSnugglingTight() {
+        return isSnugglingTight;
     }
 
     @Override
-    public void setSnuggledTight(boolean value) {
-        this.alreadySnuggledTight = value;
+    public void setSnugglingTight(boolean value) {
+        this.isSnugglingTight = value;
     }
 
     @Inject(method = "handleInstructions", at = @At("HEAD"), cancellable = true)
@@ -262,11 +299,11 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
         if (level.isClientSide() && this.isSafeMode()) {
             ci.cancel();
             if (this.instructionTicks == 180) {
-                getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_release", AbstractAbilityInstance.KeyReference.ABILITY.getName(level)), true);
+                ChangedAddon$getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_release", AbstractAbilityInstance.KeyReference.ABILITY.getName(level)), true);
             } else if (this.instructionTicks == 120) {
-                getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_hug", AbstractAbilityInstance.KeyReference.ATTACK.getName(level)), true);
+                ChangedAddon$getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_hug", AbstractAbilityInstance.KeyReference.ATTACK.getName(level)), true);
             } else if (this.instructionTicks == 60) {
-                getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_hug.tightly", AbstractAbilityInstance.KeyReference.USE.getName(level)), true);
+                ChangedAddon$getSelf().entity.displayClientMessage(Component.translatable("ability.changed_addon.grab_entity.extender.how_to_hug.tightly", AbstractAbilityInstance.KeyReference.USE.getName(level)), true);
             }
 
             if (this.instructionTicks > 0) {
@@ -337,5 +374,34 @@ public abstract class GrabEntityAbilityInstanceMixin extends AbstractAbilityInst
 
 
         return original;
+    }
+
+    @Override
+    public boolean isWheelKeyPressedValid(Player player, boolean isMouse, int keyPressed, int action, int modifiers) {
+        if (isMouse) {
+            boolean isKeyValid = keyPressed == GLFW.GLFW_MOUSE_BUTTON_RIGHT || keyPressed == GLFW.GLFW_MOUSE_BUTTON_MIDDLE;
+            return isKeyValid && action == GLFW.GLFW_PRESS;
+        }
+        return false;
+    }
+
+    @Override
+    public void onServerProcessWheelKeyPressed(Player player, boolean isMouse, int keyPressed, int action, int modifiers) {
+        if (isWheelKeyPressedValid(player, isMouse, keyPressed, action, modifiers)) {
+            this.setSafeMode(!this.isSafeMode());
+            if (!player.level().isClientSide()) {
+                player.displayClientMessage(Component.translatable("key.changed_addon.turn_off_transfur.grab_safe_mode", safeMode), true);
+            }
+        }
+    }
+
+    @Override
+    public boolean onClientWheelKeyPressed(Player player, boolean isMouse, int keyPressed, int action, int modifiers) {
+        if (isWheelKeyPressedValid(player, isMouse, keyPressed, action, modifiers)) {
+            this.setSafeMode(!this.isSafeMode());
+            ChangedAddonMod.PACKET_HANDLER.sendToServer(new AbilityWheelKeyPressPacket(keyPressed, action, modifiers, isMouse, ability));
+            return true;
+        }
+        return false;
     }
 }

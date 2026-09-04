@@ -4,8 +4,6 @@ import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.goal.Goal;
 
-import java.util.EnumSet;
-
 public class MayCauseGrabDamageGoal extends Goal {
 
     private final PathfinderMob mob;
@@ -16,7 +14,6 @@ public class MayCauseGrabDamageGoal extends Goal {
     public MayCauseGrabDamageGoal(IGrabberEntity grabber) {
         this.grabber = grabber;
         this.mob = grabber.asMob();
-        this.setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.TARGET));
     }
 
     @Override
@@ -28,7 +25,7 @@ public class MayCauseGrabDamageGoal extends Goal {
 
         if (!mob.isAlive()) return false;
 
-        if (grabber.getGrabbedEntity() == null) return false;
+        if (grabber.getGrabbedEntity() == null || grabber.getGrabAbilityInstance() == null) return false;
 
         return grabber.canCauseGrabDamage();
     }
@@ -43,6 +40,18 @@ public class MayCauseGrabDamageGoal extends Goal {
     public void tick() {
         // force a tick of the grab ability instances to avoid issues.
         grabber.mayTickGrabAbility();
+//        GrabEntityAbilityInstance grabAbilityInstance = grabber.getGrabAbilityInstance();
+//        LivingEntity grabbed = grabAbilityInstance.grabbedEntity;
+//        if (grabbed != null) {
+//            IAbstractChangedEntity entity = grabAbilityInstance.entity;
+//            int grabberId = entity.getEntity().getId();
+//            if (!grabbed.level().isClientSide()) {
+//                ChangedAddonMod.PACKET_HANDLER.send(
+//                        PacketDistributor.TRACKING_ENTITY.with(entity::getEntity),
+//                        new S2CCheckGrabberEntity(grabberId, grabbed.getId())
+//                );
+//            }
+//        }
     }
 
     @Override

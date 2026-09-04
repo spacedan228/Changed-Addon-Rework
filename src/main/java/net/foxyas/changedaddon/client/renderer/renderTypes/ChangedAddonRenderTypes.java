@@ -12,6 +12,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.ShaderInstance;
+import net.minecraft.client.renderer.blockentity.TheEndPortalRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +20,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterShadersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL14;
@@ -36,7 +38,7 @@ import static net.minecraft.client.renderer.RenderType.OutlineProperty.IS_OUTLIN
 public final class ChangedAddonRenderTypes extends RenderType {
 
     public static final RenderType QUADS_WITH_TRANSPARENCY = RenderType.create(
-            ChangedAddonMod.resourceLocString("quads"),
+            ChangedAddonMod.resourceLocString("quads_with_transparency"),
             DefaultVertexFormat.BLOCK,
             VertexFormat.Mode.QUADS,
             2097152,
@@ -46,7 +48,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setShaderState(RENDERTYPE_SOLID_SHADER)
                     .setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
-                    .setCullState(RenderStateShard.NO_CULL)
+                    .setCullState(RenderStateShard.CULL)
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true)
     );
@@ -76,7 +78,7 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     .setLightmapState(LIGHTMAP)
                     .setShaderState(RENDERTYPE_SOLID_SHADER)
                     .setTransparencyState(RenderStateShard.NO_TRANSPARENCY)
-                    .setCullState(RenderStateShard.NO_CULL)
+                    .setCullState(RenderStateShard.CULL)
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true)
     );
@@ -95,6 +97,37 @@ public final class ChangedAddonRenderTypes extends RenderType {
                     .setTextureState(BLOCK_SHEET_MIPPED)
                     .createCompositeState(true)
     );
+
+    private static final RenderType LIGHTNING_NO_CULL = create(ChangedAddonMod.resourceLocString("lightning_no_cull"), DefaultVertexFormat.POSITION_COLOR, VertexFormat.Mode.QUADS, 256, false, true, RenderType.CompositeState.builder().setShaderState(RENDERTYPE_LIGHTNING_SHADER).setCullState(NO_CULL).setWriteMaskState(COLOR_DEPTH_WRITE).setTransparencyState(LIGHTNING_TRANSPARENCY).setOutputState(WEATHER_TARGET).createCompositeState(false));
+    private static final RenderType LIGHTNING_NO_SORT = create(ChangedAddonMod.resourceLocString("lightning_no_short"),
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS,
+            256,
+            false,
+            false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RENDERTYPE_LIGHTNING_SHADER)
+                    .setWriteMaskState(COLOR_DEPTH_WRITE)
+                    .setTransparencyState(LIGHTNING_TRANSPARENCY)
+                    .setOutputState(WEATHER_TARGET)
+                    .createCompositeState(false));
+
+    public static final RenderType LIGHTNING_TRANSLUCENT_TRANSPARENCY = create(
+            ChangedAddonMod.resourceLocString("lightning_translucent_transparency"),
+            DefaultVertexFormat.POSITION_COLOR,
+            VertexFormat.Mode.QUADS,
+            256,
+            false,
+            true,
+            RenderType.CompositeState.builder()
+                    .setShaderState(POSITION_COLOR_SHADER) // Use standard position-color shader
+                    .setWriteMaskState(COLOR_WRITE)        // Disable depth write so overlapping layers blend smoothly
+                    .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+                    .setCullState(NO_CULL)                 // Keep no cull to prevent missing faces
+                    .setOutputState(WEATHER_TARGET)
+                    .createCompositeState(false)
+    );
+
     public static final BiFunction<ResourceLocation, RenderStateShard.CullStateShard, RenderType> OUTLINE_WITH_DEPTH = Util.memoize((resourceLocation, cullStateShard) ->
             create(ChangedAddonMod.resourceLocString("outline_with_deep_test"),
                     DefaultVertexFormat.POSITION_COLOR_TEX,
@@ -325,6 +358,21 @@ public final class ChangedAddonRenderTypes extends RenderType {
                 true,
                 rendertype$compositestate);
     });
+
+    private static final Function<ResourceLocation, RenderType> GLOW_ENTITY_DECAL = Util.memoize((p_286171_) -> {
+        RenderType.CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
+                .setShaderState(RENDERTYPE_EYES_SHADER)
+                .setTextureState(new RenderStateShard.TextureStateShard(p_286171_, false, false))
+                .setTransparencyState(ADDITIVE_TRANSPARENCY)
+                .setWriteMaskState(COLOR_WRITE)
+                .setDepthTestState(EQUAL_DEPTH_TEST)
+                .setCullState(NO_CULL)
+                .setLightmapState(LIGHTMAP)
+                .setOverlayState(OVERLAY)
+                .createCompositeState(false);
+        return RenderType.create(ChangedAddonMod.resourceLocString("glow_entity_decal"), DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, false, false, rendertype$compositestate);
+    });
+
     private static ShaderInstance TRANSLUCENT_OUTLINE_SHADER;
     public static final BiFunction<ResourceLocation, RenderStateShard.CullStateShard, RenderType> OUTLINE_WITH_TRANSLUCENCY = Util.memoize((resourceLocation, cullStateShard) ->
             create(ChangedAddonMod.resourceLocString("outline_with_translucenty"),
@@ -342,6 +390,117 @@ public final class ChangedAddonRenderTypes extends RenderType {
                             .setOutputState(OUTLINE_TARGET)
                             .createCompositeState(IS_OUTLINE)));
 
+    private static final BiFunction<ResourceLocation, Boolean, RenderType> ENTITY_ADDITIVE_TRANSLUCENT = Util.memoize((p_286156_, p_286157_) -> {
+        RenderType.CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
+                .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
+                .setTextureState(new RenderStateShard.TextureStateShard(p_286156_, false, false)
+                ).setTransparencyState(RenderStateShard.ADDITIVE_TRANSPARENCY)
+                .setCullState(NO_CULL)
+                .setLightmapState(LIGHTMAP).setOverlayState(OVERLAY).createCompositeState(p_286157_);
+        return create(ChangedAddonMod.resourceLocString("entity_additive_translucent"), DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, rendertype$compositestate);
+    });
+
+    public static RenderType entityAdditiveTranslucent(ResourceLocation pLocation, boolean pOutline) {
+        return ENTITY_ADDITIVE_TRANSLUCENT.apply(pLocation, pOutline);
+    }
+
+    protected static final Function<Float, RenderStateShard.TransparencyStateShard> DYNAMIC_TRANSPARENCY = (alpha) -> new RenderStateShard.TransparencyStateShard(ChangedAddonMod.resourceLocString("dynamic_transparency"), () -> {
+        RenderSystem.enableBlend();
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.setShaderColor(1, 1, 1, alpha);
+    }, () -> {
+        RenderSystem.disableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1, 1, 1, 1);
+    });
+
+    private static final BiFunction<ResourceLocation, Float, RenderType> GLOW_DYNAMIC = Util.memoize((texture, alpha) -> {
+        RenderType.CompositeState rendertype$compositestate = RenderType.CompositeState.builder()
+                .setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_EMISSIVE_SHADER)
+                .setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
+                .setTransparencyState(DYNAMIC_TRANSPARENCY.apply(alpha))
+                .setCullState(CULL)
+                .setWriteMaskState(COLOR_DEPTH_WRITE)
+                .setOverlayState(OVERLAY)
+                .createCompositeState(true);
+
+        return create("glow_dynamic", DefaultVertexFormat.NEW_ENTITY, VertexFormat.Mode.QUADS, 256, true, true, rendertype$compositestate);
+    });
+
+    public static final RenderType DYNAMIC_END_PORTAL = RenderType.create(ChangedAddonMod.resourceLocString("dynamic_end_portal"),
+            DefaultVertexFormat.POSITION_TEX, // <--- IGUAL AO ARMOR GLINT!
+            VertexFormat.Mode.QUADS, 256, false, false,
+            RenderType.CompositeState.builder()
+                    .setShaderState(RENDERTYPE_END_PORTAL_SHADER) // O shader do portal clássico
+                    .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+                            .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
+                            .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false)
+                            .build())
+                    .setWriteMaskState(COLOR_WRITE)
+                    .setCullState(NO_CULL)
+                    .setDepthTestState(EQUAL_DEPTH_TEST) // Só renderiza onde já tem pixel desenhado
+                    .setTransparencyState(GLINT_TRANSPARENCY)
+                    .createCompositeState(false)
+    );
+
+    public static final Function<ResourceLocation, RenderType> DYNAMIC_END_PORTAL_TEXTURE = Util.memoize(texture -> {
+        return RenderType.create(ChangedAddonMod.resourceLocString("dynamic_end_portal"),
+                DefaultVertexFormat.POSITION_TEX, // <--- IGUAL AO ARMOR GLINT!
+                VertexFormat.Mode.QUADS, 256, false, false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(RENDERTYPE_END_PORTAL_SHADER) // O shader do portal clássico
+                        .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+                                .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
+                                .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false)
+                                .add(texture, false, false)
+                                .build())
+                        .setWriteMaskState(COLOR_WRITE)
+                        .setCullState(NO_CULL)
+                        .setDepthTestState(EQUAL_DEPTH_TEST) // Só renderiza onde já tem pixel desenhado
+                        .setTransparencyState(GLINT_TRANSPARENCY)
+                        .createCompositeState(false)
+        );
+    });
+
+    private static ShaderInstance DYNAMIC_GALAXY_SHADER;
+    public static final Function<ResourceLocation, RenderType> DYNAMIC_GALAXY = Util.memoize(texture -> {
+        return RenderType.create(
+                ChangedAddonMod.resourceLocString("dynamic_galaxy"),
+                DefaultVertexFormat.NEW_ENTITY, // <--- OBRIGATÓRIO PARA ENTIDADES (Contém Lightmap e Overlay)
+                VertexFormat.Mode.QUADS, 256, false, false,
+                RenderType.CompositeState.builder()
+                        .setShaderState(new ShaderStateShard(() -> DYNAMIC_GALAXY_SHADER))
+                        .setTextureState(RenderStateShard.MultiTextureStateShard.builder()
+                                .add(TheEndPortalRenderer.END_SKY_LOCATION, false, false)
+                                .add(TheEndPortalRenderer.END_PORTAL_LOCATION, false, false)
+                                .add(texture, false, false) // Sampler2: Sua textura de máscara (WING_GLOW_TEXTURE)
+                                .build())
+                        .setWriteMaskState(COLOR_WRITE)
+                        .setCullState(NO_CULL)
+                        .setTransparencyState(NO_TRANSPARENCY)
+                        .createCompositeState(false)
+        );
+    });
+
+    public static final TriFunction<ResourceLocation, ResourceLocation, ResourceLocation, RenderType> DYNAMIC_GALAXY_WITH_CUSTOM_TEXTURE = (galaxyLayer1, galaxyLayer2, galaxyMask) -> {
+        return RenderType.create(
+                ChangedAddonMod.resourceLocString("dynamic_galaxy"),
+                DefaultVertexFormat.NEW_ENTITY, // <--- OBRIGATÓRIO PARA ENTIDADES (Contém Lightmap e Overlay)
+                VertexFormat.Mode.QUADS, 256, false, false,
+                CompositeState.builder()
+                        .setShaderState(new ShaderStateShard(() -> DYNAMIC_GALAXY_SHADER))
+                        .setTextureState(MultiTextureStateShard.builder()
+                                .add(galaxyLayer1, false, false)
+                                .add(galaxyLayer2, false, false)
+                                .add(galaxyMask, false, false) // Sampler2: Sua textura de máscara;
+                                .build())
+                        .setWriteMaskState(COLOR_WRITE)
+                        .setCullState(NO_CULL)
+                        .setTransparencyState(NO_TRANSPARENCY)
+                        .createCompositeState(false)
+        );
+    };
+
     // unused, just needed to extend RenderType for protected constants
     private ChangedAddonRenderTypes(String p_173178_, VertexFormat p_173179_, VertexFormat.Mode p_173180_, int p_173181_, boolean p_173182_, boolean p_173183_, Runnable p_173184_, Runnable p_173185_) {
         super(p_173178_, p_173179_, p_173180_, p_173181_, p_173182_, p_173183_, p_173184_, p_173185_);
@@ -349,7 +508,40 @@ public final class ChangedAddonRenderTypes extends RenderType {
 
     @SubscribeEvent
     public static void onRegisterShaders(RegisterShadersEvent event) throws IOException {
-        event.registerShader(new ShaderInstance(event.getResourceProvider(), ChangedAddonMod.resourceLoc("translucent_outline"), DefaultVertexFormat.POSITION_COLOR_TEX), shader -> TRANSLUCENT_OUTLINE_SHADER = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(),
+                ChangedAddonMod.resourceLoc("translucent_outline"),
+                DefaultVertexFormat.POSITION_COLOR_TEX), shader -> TRANSLUCENT_OUTLINE_SHADER = shader);
+        event.registerShader(new ShaderInstance(event.getResourceProvider(),
+                ChangedAddonMod.resourceLoc("dynamic_galaxy"),
+                DefaultVertexFormat.NEW_ENTITY), shader -> DYNAMIC_GALAXY_SHADER = shader); // <--- Ajustado aqui também!
+    }
+
+    @Nullable
+    public static ShaderInstance getTranslucentOutlineShader() {
+        return TRANSLUCENT_OUTLINE_SHADER;
+    }
+
+    @Nullable
+    public static ShaderInstance getDynamicGalaxyShader() {
+        return DYNAMIC_GALAXY_SHADER;
+    }
+
+    public static RenderType dynamicEndPortal() {
+        return DYNAMIC_END_PORTAL;
+    }
+
+    public static RenderType dynamicEndPortal(ResourceLocation resourceLocation) {
+        return DYNAMIC_END_PORTAL_TEXTURE.apply(resourceLocation);
+    }
+
+    public static RenderType dynamicGalaxy(ResourceLocation resourceLocation) {
+        return DYNAMIC_GALAXY.apply(resourceLocation);
+    }
+
+    public static RenderType dynamicGalaxyWithTexture(ResourceLocation galaxyLayer1,
+                                                      ResourceLocation galaxyLayer2,
+                                                      ResourceLocation galaxyMask) {
+        return DYNAMIC_GALAXY_WITH_CUSTOM_TEXTURE.apply(galaxyLayer1, galaxyLayer2, galaxyMask);
     }
 
     public static RenderType glowWithNoTransluced(ResourceLocation location) {
@@ -402,6 +594,26 @@ public final class ChangedAddonRenderTypes extends RenderType {
 
     public static RenderType outlineWithTranslucencyCull(ResourceLocation location) {
         return OUTLINE_WITH_TRANSLUCENCY.apply(location, CULL);
+    }
+
+    public static RenderType glowDynamic(ResourceLocation location, float alpha) {
+        return GLOW_DYNAMIC.apply(location, alpha);
+    }
+
+    public static RenderType glowEntityDecal(ResourceLocation pLocation) {
+        return GLOW_ENTITY_DECAL.apply(pLocation);
+    }
+
+    public static RenderType lightningNoCull() {
+        return LIGHTNING_NO_CULL;
+    }
+
+    public static RenderType lightningTranslucentTransparency() {
+        return LIGHTNING_TRANSLUCENT_TRANSPARENCY;
+    }
+
+    public static RenderType lightningNoShort() {
+        return LIGHTNING_NO_SORT;
     }
 
     public static class ParticleRenderTypes {

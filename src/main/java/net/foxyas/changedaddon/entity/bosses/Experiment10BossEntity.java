@@ -4,25 +4,21 @@ import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.entity.ai.goals.exp10.ClawsComboAttackGoal;
 import net.foxyas.changedaddon.entity.ai.goals.exp10.ThrowWitherProjectileGoal;
 import net.foxyas.changedaddon.entity.ai.goals.exp10.WitherWave;
-import net.foxyas.changedaddon.entity.ai.goals.generic.BreakBlocksAroundGoal;
-import net.foxyas.changedaddon.entity.ai.goals.generic.BurstAttack;
 import net.foxyas.changedaddon.entity.ai.goals.generic.LatexPullEntityGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.DashPunchGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.LeapSmashGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.SimpleAntiFlyingAttack;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
-import net.foxyas.changedaddon.init.ChangedAddonCriteriaTriggers;
-import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.init.ChangedAddonGameRules;
-import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
+import net.foxyas.changedaddon.entity.customHandle.BurstAbilityHandle;
+import net.foxyas.changedaddon.init.*;
 import net.foxyas.changedaddon.network.ChangedAddonVariables;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedAttributes;
 import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -48,6 +44,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -72,6 +69,11 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
             SynchedEntityData.defineId(Experiment10BossEntity.class, EntityDataSerializers.BOOLEAN);
     private final ServerBossEvent bossInfo = new ServerBossEvent(this.getDisplayName(), ServerBossEvent.BossBarColor.RED, ServerBossEvent.BossBarOverlay.NOTCHED_6);
 
+    public final TargetDataManager targetDataManager;
+
+    public final BurstAbilityHandle<Experiment10BossEntity> burstAbilityHandle;
+
+
     public Experiment10BossEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.EXPERIMENT_10_BOSS.get(), world);
     }
@@ -82,7 +84,14 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
         xpReward = 3000;
         setNoAi(false);
         setPersistenceRequired();
-        applyDefaultBasicPlayerInfo();
+        this.targetDataManager = new TargetDataManager(this, this::targetSelectorTest);
+        burstAbilityHandle = new BurstAbilityHandle.Builder<>(this)
+                .setEvasive()
+                .setDestructive()
+                .canDestroyBlock((state, pos) -> !state.isAir() && state.getDestroySpeed(this.level, pos) >= 0.0F)
+                .maxProgress(this::getMaxBurstProgress)
+                .onEvasiveBurst(this::onEvasiveBurst)
+                .build();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -92,7 +101,7 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
         builder = builder.add(Attributes.MAX_HEALTH, 300);
         builder = builder.add(Attributes.ARMOR, 20);
         builder = builder.add(Attributes.ATTACK_DAMAGE, 12);
-        builder = builder.add(Attributes.FOLLOW_RANGE, 32);
+        builder = builder.add(Attributes.FOLLOW_RANGE, 256f);
         builder = builder.add(Attributes.KNOCKBACK_RESISTANCE, 0.25);
         builder = builder.add(Attributes.ATTACK_KNOCKBACK, 1);
         return builder;
@@ -110,6 +119,18 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
         return GearTier.LOW;
     }
 
+    public BurstAbilityHandle<Experiment10BossEntity> getBurstAbilityHandle() {
+        return burstAbilityHandle;
+    }
+
+    public float getMaxBurstProgress(Experiment10BossEntity exp10, BurstAbilityHandle<Experiment10BossEntity> burst) {
+        return exp10.isPhase2() ? 75f : 150f;
+    }
+
+    public void onEvasiveBurst(Experiment10BossEntity exp10, BurstAbilityHandle<Experiment10BossEntity> burst) {
+        burst.applyEvasiveKnockback(5, 1.25D);
+    }
+
     @Override
     public void variantTick(Level level) {
         super.variantTick(level);
@@ -120,14 +141,14 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
         if (instance == null) return;
 
         if (playerInControl.level().getLevelData().getGameRules().getBoolean(ChangedAddonGameRules.NEED_PERMISSION_FOR_BOSS_TRANSFUR)) {
-            if (!ChangedAddonVariables.ofOrDefault(playerInControl).Exp10TransfurAllowed) {
+            if (!ChangedAddonVariables.ofOrDefault(playerInControl).exp10BossTransfurPermission) {
                 ProcessTransfur.setPlayerTransfurVariant(playerInControl, ChangedAddonTransfurVariants.EXPERIMENT_10.get(), TransfurContext.hazard(TransfurCause.GRAB_ABSORB), 1, false);
             }
         }
     }
 
     @Override
-    public @Nullable ResourceLocation getBossMusic() {
+    public @Nullable ResourceLocation getBossMusicId() {
         return ChangedAddonSoundEvents.EXP10_THEME.get().getLocation();
     }
 
@@ -176,29 +197,27 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
         return super.getMeleeAttackRangeSqr(target);
     }
 
-    @Override
-    protected void registerGoals() {
-        super.registerGoals();
-
+    protected void addAbilityGoals() {
         this.goalSelector.addGoal(5, new ClawsComboAttackGoal(this, //PathfinderMob -> holder,
                 UniformInt.of(150, 200), //IntProvider -> cooldown,
                 UniformInt.of(3, 6), //IntProvider -> attackCount,
                 UniformInt.of(20, 40), //IntProvider -> castDuration,
                 UniformFloat.of(6, 8))); //FloatProvider -> damage)
-
-        this.goalSelector.addGoal(6, new BurstAttack(this));
         this.goalSelector.addGoal(6, new WitherWave(this, UniformInt.of(60, 120)));
-        this.goalSelector.addGoal(20, new SimpleAntiFlyingAttack(this,
+        this.goalSelector.addGoal(10, new LeapSmashGoal(this));
+        this.goalSelector.addGoal(15, new DashPunchGoal(this));
+        //this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
+        this.goalSelector.addGoal(10, new ThrowWitherProjectileGoal(this, UniformInt.of(60, 120), UniformInt.of(1, 8), 36));
+    }
+
+    protected void addPassivesGoals() {
+        this.passivesSelector.addGoal(20, new SimpleAntiFlyingAttack(this,
                 UniformInt.of(60, 100),
                 3,
                 32,
                 8f,
                 10));
-        this.goalSelector.addGoal(10, new LeapSmashGoal(this));
-        this.goalSelector.addGoal(15, new DashPunchGoal(this));
-        this.goalSelector.addGoal(10, new BreakBlocksAroundGoal(this));
-        this.goalSelector.addGoal(10, new ThrowWitherProjectileGoal(this, UniformInt.of(60, 120), UniformInt.of(1, 8), 36));
-        this.goalSelector.addGoal(10, new LatexPullEntityGoal(this, 32, 1));
+        this.passivesSelector.addGoal(10, new LatexPullEntityGoal(this, 32, 1));
     }
 
     @Override
@@ -212,23 +231,32 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
             case "fall", "cactus", "drown", "lightningBolt", "anvil", "dragonBreath", "wither", "witherSkull" -> {
                 return false;
             }
-            case "trident" -> {
-                maybeSendReactionToPlayer(source);
-                return super.hurt(source, amount * 0.5f);
-            }
+            case "trident" -> amount *= 0.5f;
         }
 
         if (source.is(DamageTypeTags.IS_FIRE)) {
-            maybeSendReactionToPlayer(source);
-            return super.hurt(source, amount * 0f);
+            amount = 0;
         }
 
         if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-            maybeSendReactionToPlayer(source);
-            return super.hurt(source, amount * 0.5f);
+            amount *= 0.5f;
+        }
+
+        maybeSendDamageReactionToPlayer(source);
+
+        if (burstAbilityHandle != null) {
+            burstAbilityHandle.onDamageTaken(source, amount);
         }
 
         return super.hurt(source, amount);
+    }
+
+    @Override
+    public void setTarget(@Nullable LivingEntity entity) {
+        super.setTarget(entity);
+        if (burstAbilityHandle != null) {
+            burstAbilityHandle.setTarget(entity);
+        }
     }
 
     @Override
@@ -244,14 +272,14 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
         }
     }
 
-    private void maybeSendReactionToPlayer(DamageSource source) {
+    private void maybeSendDamageReactionToPlayer(DamageSource source) {
         if (!(source.getEntity() instanceof Player player)) return;
 
         if (this.random.nextFloat() <= 0.25f) {
             if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-                player.displayClientMessage(Component.translatable("entity_dialogues.changed_addon.exp10.reaction.range_attacks"), true);
+                player.displayClientMessage(getEntityChat(Component.translatable("entity_dialogues.changed_addon.exp10.reaction.range_attacks")), false);
             } else if (source.is(DamageTypeTags.IS_FIRE)) {
-                player.displayClientMessage(Component.translatable("entity_dialogues.changed_addon.exp10.reaction.fire_damage"), true);
+                player.displayClientMessage(getEntityChat(Component.translatable("entity_dialogues.changed_addon.exp10.reaction.fire_damage")), false);
             }
         }
     }
@@ -302,6 +330,18 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
     }
 
     @Override
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        this.targetDataManager.loadAndResolveTarget(tag);
+    }
+
+    @Override
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        this.targetDataManager.saveTarget(tag);
+    }
+
+    @Override
     public Gender getGender() {
         return Gender.FEMALE;
     }
@@ -314,14 +354,33 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
     @Override
     public void baseTick() {
         super.baseTick();
-        if (firstTick) {
-            applyDefaultBasicPlayerInfo();
-        }
-
         SetDefense(this);
         SetAttack(this);
         SetSpeed(this);
         this.crawlingSystem((float) this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) * 0.35f);
+        this.burstAbilityHandle.tick();
+    }
+
+    @Override
+    public boolean speak(Component component, @Nullable LivingEntity hearTarget) {
+        MutableComponent entityChat = getEntityChat(component);
+        boolean spoke = false;
+        if (hearTarget instanceof Player player) {
+            player.displayClientMessage(entityChat, false);
+            spoke = true;
+        } else {
+            sout(component);
+        }
+        return spoke;
+    }
+
+    @Override
+    public void sout(Component component) {
+        MutableComponent entityChat = getEntityChat(component);
+        List<Player> nearbyPlayers = this.level.getNearbyPlayers(TargetingConditions.DEFAULT.ignoreLineOfSight().ignoreInvisibilityTesting(), this, this.getBoundingBox().inflate(this.speakRange()));
+        for (Player player : nearbyPlayers) {
+            player.displayClientMessage(entityChat, false);
+        }
     }
 
     public void SetDefense(Experiment10BossEntity entity) {
@@ -365,10 +424,13 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
     }
 
     @Override
-    public void WhenPattedReaction(Player player, InteractionHand hand) {
-        if (!(player.level() instanceof ServerLevel)) return;
-        if (player instanceof ServerPlayer serverPlayer) {
-            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.Trigger(serverPlayer, this, "pats_on_the_beast");
+    public void whenPattedReaction(LivingEntity patter, InteractionHand hand) {
+        if (!(patter.level() instanceof ServerLevel)) return;
+        if (patter instanceof ServerPlayer serverPlayer) {
+            ChangedAddonCriteriaTriggers.PAT_ENTITY_TRIGGER.trigger(serverPlayer, this, "pats_on_the_beast");
+        }
+        if (!(patter instanceof Player player)) {
+            return;
         }
 
         List<Component> translatableComponentList = new ArrayList<>();
@@ -449,7 +511,7 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
 
         @SubscribeEvent
         public static void onBossDamagePlayer(LivingHurtEvent event) {
-            if (!(event.getSource().getEntity() instanceof Experiment10BossEntity)) return;
+            if (!(event.getSource().getEntity() instanceof Experiment10BossEntity source)) return;
             if (!(event.getEntity() instanceof Player target)) return;
 
             GearTier tier = getGearTier(target);
@@ -458,6 +520,8 @@ public class Experiment10BossEntity extends Experiment10Entity implements IExp10
                 case LOW, MID -> event.setAmount(event.getAmount());
                 case HIGH -> event.setAmount(event.getAmount() * 1.25F);
             }
+
+            if (source.burstAbilityHandle != null) source.burstAbilityHandle.onDamageDealt(event.getSource(), event.getAmount());
         }
 
         @SubscribeEvent

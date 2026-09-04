@@ -4,23 +4,33 @@ import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
 import net.foxyas.changedaddon.entity.ai.advanced.AdvancedGroundPathNavigation;
+import net.foxyas.changedaddon.entity.ai.goals.simple.HideInABoxGoal;
 import net.foxyas.changedaddon.entity.api.ChangedEntityExtension;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
 import net.foxyas.changedaddon.entity.simple.WolfyEntity;
 import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
+import net.foxyas.changedaddon.init.ChangedAddonTransfurVariants;
 import net.foxyas.changedaddon.item.armor.DarkLatexCoatItem;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.util.TagKeyUtil;
 import net.ltxprogrammer.changed.ability.GrabEntityAbility;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.ltxprogrammer.changed.block.entity.CardboardBoxBlockEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.SeatEntity;
 import net.ltxprogrammer.changed.entity.TransfurContext;
+import net.ltxprogrammer.changed.entity.TransfurMode;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
-import net.ltxprogrammer.changed.entity.beast.LatexSnowLeopardFemale;
-import net.ltxprogrammer.changed.entity.beast.LatexSnowLeopardMale;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
+import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.valueproviders.UniformInt;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +39,11 @@ import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -38,6 +52,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
 import java.util.Optional;
 
 @Mixin(value = ChangedEntity.class, remap = false)
@@ -57,6 +72,23 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
                 && itemStack.getItem() instanceof DarkLatexCoatItem;
     }
 
+    @Override
+    public boolean canSwimInFluidType(FluidType type) {
+        List<FluidType> lavaFluids = TagKeyUtil.getTagContents(level, FluidTags.LAVA).map(Fluid::getFluidType).toList();
+
+        var transfurVariant = getSelfVariant();
+        if (transfurVariant != null && (this.hasEffect(MobEffects.FIRE_RESISTANCE) && lavaFluids.contains(type))) {
+            boolean aquaticLike = transfurVariant.is(ChangedAddonTags.TransfurVariants.AQUATIC_LIKE);
+            boolean fastSwimSpeed = this.getAttributeValue(ForgeMod.SWIM_SPEED.get()) > 1;
+            boolean aquaticBreath = transfurVariant.breatheMode.canBreatheWater();
+            boolean aquaticAffinity = transfurVariant.breatheMode.hasAquaAffinity();
+
+            return aquaticLike || fastSwimSpeed || aquaticBreath || aquaticAffinity;
+        }
+
+        return super.canSwimInFluidType(type);
+    }
+
     @Shadow
     public abstract LivingEntity maybeGetUnderlying();
 
@@ -71,6 +103,10 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
 
     @Shadow
     public abstract TransfurContext getReplicateContext();
+
+    @Shadow public abstract TransfurVariant<?> getSelfVariant();
+
+    @Shadow public abstract @Nullable Player getUnderlyingPlayer();
 
     @Override
     protected boolean shouldDespawnInPeaceful() {
@@ -94,6 +130,22 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
 
         Optional<IAbstractChangedEntity> grabberSafe = GrabEntityAbility.getGrabberSafe(target);
         return grabberSafe.isPresent() && grabberSafe.get() instanceof IGrabberEntity changedEntity;
+    }
+
+    @Inject(at = @At("HEAD"), method = "variantTick", cancellable = true)
+    private void failSafePacified(Level level, CallbackInfo ci) {
+        if (level.isClientSide()) return;
+        Player player = getUnderlyingPlayer();
+        if (this.isPacified() && player != null) {
+            TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
+            if (tf == null) return;
+            if (tf.getParent().transfurMode != TransfurMode.NONE) {
+                if (tf.transfurMode != TransfurMode.NONE) {
+                    tf.transfurMode = TransfurMode.NONE;
+                }
+            }
+            this.setPacified(false);
+        }
     }
 
     @Inject(at = @At("HEAD"), method = "targetSelectorTest", cancellable = true)
@@ -138,6 +190,11 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         if (!(self instanceof WolfyEntity)) {
             this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, ChangedEntity.class, true, this::targetSelectorTest));
         }
+
+        // Todo: remove this next update
+        if (self.getType().is(ChangedAddonTags.EntityTypes.CARDBOARD_BOX_HIDER)) {
+            this.goalSelector.addGoal(10 , new HideInABoxGoal(this, UniformInt.of(1200, 2400), UniformInt.of(600, 1200)));
+        }
     }
 
     @Unique
@@ -157,7 +214,7 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
     }
 
     @Inject(method = "targetSelectorTest", at = @At("HEAD"), cancellable = true)
-    private void CancelTarget(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
+    private void cancelTargetIfCoatedWithDarkLatexCoat(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
         ItemStack Head = livingEntity.getItemBySlot(EquipmentSlot.HEAD);
         ItemStack Chest = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
         if (ChangedAddonServerConfiguration.DL_COAT_AFFECT_ALL.get()) {
@@ -181,10 +238,23 @@ public abstract class ChangedEntityMixin extends Monster implements ChangedEntit
         }
     }
 
+    @Inject(method = "targetSelectorTest", at = @At("HEAD"), cancellable = true)
+    private void cancelTargetIfInABox(LivingEntity livingEntity, CallbackInfoReturnable<Boolean> cir) {
+        if (this.goalSelector.getAvailableGoals().stream().anyMatch(wg -> wg.getGoal() instanceof HideInABoxGoal)) {
+            if (this.getVehicle() instanceof SeatEntity seatEntity) {
+                if (seatEntity.shouldSeatedBeInvisible()) {
+                    BlockPos attachedBlockPos = seatEntity.getAttachedBlockPos();
+                    if (level.getBlockEntity(attachedBlockPos) instanceof CardboardBoxBlockEntity) {
+                        cir.setReturnValue(false);
+                    }
+                }
+            }
+        }
+    }
+
     @Inject(method = "<init>", at = @At("TAIL"))
     private void changedAiPathNavigator(EntityType<?> type, Level level, CallbackInfo ci) {
-        ChangedEntity self = (ChangedEntity) (Object) this;
-        if (self instanceof LatexSnowLeopardMale || self instanceof LatexSnowLeopardFemale) {
+        if (type.is(ChangedAddonTags.EntityTypes.HAS_BETTER_GROUND_PATHFIND)) {
             this.navigation = new AdvancedGroundPathNavigation(this, level);
         }
     }

@@ -31,6 +31,14 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
         this.modid = modid;
     }
 
+    protected void addTrimMaterial(String id, String value) {
+        add("trim_material" + "." + modid + "." + id, value);
+    }
+
+    protected void addBuiltInResource(String id, String value) {
+        add("builtin_resources" + "." + modid + ":" + id, value);
+    }
+
     protected void addAdvancement(String key, String title, String description) {
         key = "advancements." + key;//TODO add modid eventually...
         //key = "advancements." + modid + "." + key;
@@ -185,6 +193,14 @@ public abstract class LanguageProvider extends net.minecraftforge.common.data.La
 
     protected void addJeiDescriptions(String key, String value) {
         add("jei_descriptions." + modid + "." + key, value);
+    }
+
+    protected void addPatchouliTitle(String key, String value) {
+        add("patchouli.title." + modid + "." + key, value);
+    }
+
+    protected void addPatchouliDescriptions(String key, String value) {
+        add("patchouli.descriptions." + modid + "." + key, value);
     }
 
     protected void addEffect(RegistryObject<? extends MobEffect> effect, String value, @Nullable String description) {

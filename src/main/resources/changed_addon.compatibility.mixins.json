@@ -6,18 +6,22 @@
   "refmap": "changed_addon.refmap.json",
   "plugin": "net.foxyas.changedaddon.mixins.compatibility.ChangedAddonMixinPlugin",
   "mixins": [
-    "blocks.WolfCrystalSmallMixin",
+    "mods.casualtiesCubed.PlayerHealthDataAccessor",
+    "mods.casualtiesCubed.PlayerHealthDataMixin",
+    "mods.casualtiesCubed.TransfurVariantInstanceMixin",
+    "mods.create.BeltMovementHandlerMixin",
     "mods.nean.AvaliElytraAnimationMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
+    "client.renderer.DebugRendererMixin",
+    "mods.casualtiesCubed.AdvancedHumanoidModelMixin",
     "mods.firstPerson.LogicHandleMixin",
     "mods.vivecraft.AdvancedHumanoidModelMixin",
     "mods.vivecraft.AdvancedHumanoidRendererMixin",
     "mods.vivecraft.AutoCalibrationMixin",
-    "mods.vivecraft.ChangedCompatibilityMixin",
     "mods.vivecraft.EntityRendererMixin",
     "mods.vivecraft.LatexElytraLayerMixin"
   ]

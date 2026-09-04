@@ -1,0 +1,34 @@
+{
+  "type": "farmersdelight:cutting",
+  "ingredients": [
+    {
+      "item": "changed_addon:luminara_sapling"
+    }
+  ],
+  "result": [
+    {
+      "item": "changed_addon:luminara_bloom"
+    },
+    {
+      "chance": 0.85,
+      "item": "changed_addon:luminara_bloom"
+    },
+    {
+      "chance": 0.85,
+      "item": "changed_addon:luminara_bloom_petals"
+    },
+    {
+      "chance": 0.65,
+      "item": "changed_addon:luminara_bloom_petals"
+    }
+  ],
+  "tool": [
+    {
+      "type": "farmersdelight:tool_action",
+      "action": "shears_dig"
+    },
+    {
+      "tag": "forge:shears"
+    }
+  ]
+}

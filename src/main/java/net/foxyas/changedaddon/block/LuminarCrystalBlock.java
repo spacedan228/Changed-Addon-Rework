@@ -1,7 +1,9 @@
 package net.foxyas.changedaddon.block;
 
+import net.foxyas.changedaddon.block.interfaces.IBrushableBlock;
 import net.foxyas.changedaddon.entity.defaults.AbstractLuminarcticLeopard;
 import net.foxyas.changedaddon.init.ChangedAddonBlocks;
+import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.block.AbstractLatexIceBlock;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -20,8 +22,12 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,7 +48,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class LuminarCrystalBlock extends AbstractLatexIceBlock {
+public class LuminarCrystalBlock extends AbstractLatexIceBlock implements IBrushableBlock {
 
     public static final int MAX_AGE = 3;
     public static final IntegerProperty AGE = BlockStateProperties.AGE_3;
@@ -186,5 +192,52 @@ public class LuminarCrystalBlock extends AbstractLatexIceBlock {
                 level.setBlock(relative, smallCrystalStage, 3);
             }
         }
+    }
+
+    @Override
+    public boolean brush(Level level, BlockState state, BlockPos pos, Player player, Direction side, ItemStack brushStack) {
+        if (!level.isClientSide()) {
+            RandomSource randomSource = player.getRandom();
+
+            // 1. Loot Level Logic (Makes it easier to get ANY crystal)
+            // Gets the Fortune level from the brush (you can change it to another enchantment if needed)
+            int lootLevel = EnchantmentHelper.getTagEnchantmentLevel(Enchantments.BLOCK_FORTUNE, brushStack);
+
+            // Base Chance: 5% (0.05f). Each Loot level increases it by 2% (0.02f).
+            // Ex: Fortune 3 = 0.05 + (3 * 0.02) = 0.11 (11%)
+            float crystalChance = 0.05f + (lootLevel * 0.02f);
+
+            int age = state.getValue(AGE);
+            if (randomSource.nextFloat() <= crystalChance) {
+
+                // 2. Player Luck Logic (Makes it easier to get the Hearted Crystal)
+                float playerLuck = player.getLuck();
+
+                // Base Chance: 0.01% (0.0001f). Each point of luck adds 0.05% (0.0005f).
+                // We use Mth.clamp to ensure the chance is never less than 0.0f or greater than 1.0f.
+                float heartedChance = Mth.clamp(0.0001f + (playerLuck * 0.0005f), 0f, 1f);
+
+                if (age < 3) {
+                    if (randomSource.nextFloat() <= heartedChance) {
+                        Block.popResource(level, pos, ChangedAddonItems.LUMINAR_CRYSTAL_SHARD_HEARTED.get().getDefaultInstance());
+                    } else {
+                        Block.popResource(level, pos, ChangedAddonItems.LUMINAR_CRYSTAL_SHARD.get().getDefaultInstance());
+                    }
+
+                    level.setBlockAndUpdate(pos, state.setValue(AGE, age + 1));
+                    level.playSound(null,
+                            pos,
+                            this.soundType.getBreakSound(),
+                            SoundSource.BLOCKS,
+                            1,
+                            1);
+                } else {
+                    level.destroyBlock(pos, false, player);
+                }
+                return true;
+            }
+        }
+
+        return false;
     }
 }

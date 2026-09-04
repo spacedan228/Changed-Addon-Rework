@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.mixins.entity.goals;
 
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.init.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
@@ -37,8 +37,8 @@ public class AvoidEntityGoalMixin {
                     if (ProcessTransfur.getPlayerTransfurVariant(player).is(ChangedAddonTransfurVariants.LATEX_SNEP.get())) {
                         // Cancela a IA de evitar o jogador
                         cir.setReturnValue(false);
-                    } else if (ProcessTransfur.getPlayerTransfurVariant(player).getParent().is(ChangedAddonTags.TransfurTypes.CAT_LIKE)
-                            || ProcessTransfur.getPlayerTransfurVariant(player).getParent().is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE)) {
+                    } else if (ProcessTransfur.getPlayerTransfurVariant(player).getParent().is(ChangedAddonTags.TransfurVariants.CAT_LIKE)
+                            || ProcessTransfur.getPlayerTransfurVariant(player).getParent().is(ChangedAddonTags.TransfurVariants.LEOPARD_LIKE)) {
                         cir.setReturnValue(false);
                     }
                 }

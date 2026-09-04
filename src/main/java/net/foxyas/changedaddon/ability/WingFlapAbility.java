@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.ability;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonClientConfiguration;
-import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.foxyas.changedaddon.variant.IVariantExtraStats;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
@@ -19,6 +19,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import java.util.Optional;
 
 
+@Deprecated
 public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInstance> {
 
     public static final int MAX_TICK_HOLD = 30;
@@ -172,8 +173,8 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
 
         @Override
         public boolean canUse() {
-            if (this.entity.getChangedEntity() instanceof VariantExtraStats extraStats) {
-                if (extraStats.getFlyType() == VariantExtraStats.FlyType.NONE) {
+            if (this.entity.getChangedEntity() instanceof IVariantExtraStats extraStats) {
+                if (extraStats.getFlyType() == IVariantExtraStats.FlyType.NONE) {
                     return false;
                 }
             }
@@ -189,8 +190,8 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
 
         @Override
         public boolean canKeepUsing() {
-            if (this.entity.getChangedEntity() instanceof VariantExtraStats extraStats) {
-                if (extraStats.getFlyType() == VariantExtraStats.FlyType.NONE) {
+            if (this.entity.getChangedEntity() instanceof IVariantExtraStats extraStats) {
+                if (extraStats.getFlyType() == IVariantExtraStats.FlyType.NONE) {
                     return false;
                 }
             }
@@ -259,7 +260,7 @@ public class WingFlapAbility extends AbstractAbility<WingFlapAbility.AbilityInst
             }
             if (player.isFallFlying() && !player.getAbilities().flying && readyToDash) {
                 this.readyToDash = false;
-                double speed = 2 * dashPower;
+                double speed = 0.25f * dashPower;
                 player.setDeltaMovement(player.getDeltaMovement().add(player.getViewVector(1).multiply(speed, speed, speed)));
                 playFlapSound(player);
                 exhaustPlayer(player, 4F * dashPower);

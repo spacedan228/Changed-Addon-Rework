@@ -1,13 +1,18 @@
 package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.init.ChangedAddonBlocks;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ItemModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.ModelProvider;
+import net.minecraftforge.client.model.generators.loaders.ItemLayerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.HashMap;
@@ -21,6 +26,14 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         super(output, ChangedAddonMod.MODID, existingFileHelper);
     }
 
+    private static ResourceLocation blockLoc(ResourceLocation loc) {
+        return ResourceLocation.fromNamespaceAndPath(loc.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + loc.getPath());
+    }
+
+    private static ResourceLocation blockLoc(ResourceLocation loc, String path) {
+        return ResourceLocation.fromNamespaceAndPath(loc.getNamespace(), ModelProvider.BLOCK_FOLDER + "/" + path + "/" + loc.getPath());
+    }
+
     @Override
     protected void registerModels() {
         basicSpawnEgg(PROTOGEN_0SENIA0_SPAWN_EGG);
@@ -29,6 +42,7 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         basicSpawnEgg(BUFF_DAZED_LATEX_SPAWN_EGG);
 
         basicSpawnEgg(AVALI_ZERGODMASTER_SPAWN_EGG);
+        basicSpawnEgg(WHITE_FOX_SPAWN_EGG);
         basicItem(ALPHA_SERUM_SYRINGE.get());
         basicItem(TRANSLATOR.get());
 
@@ -41,6 +55,59 @@ public class ItemModelProvider extends net.minecraftforge.client.model.generator
         );
 
         basicItem(CRAFTABLE_PROTOTYPE_SPAWN_EGG.get());
+
+        luminaraBloom();
+
+        ResourceLocation planksTex = blockLoc(LUMINARA_PLANKS.getId());
+        ResourceLocation trapdoorTex = blockLoc(LUMINARA_TRAPDOOR.getId());
+        basicBlockItem(ChangedAddonBlocks.LUMINARA_PLANKS);
+        basicBlockItem(ChangedAddonBlocks.LUMINARA_STAIRS);
+        basicBlockItem(ChangedAddonBlocks.LUMINARA_SLAB);
+        basicItem(LUMINARA_DOOR.get());
+        trapdoorBottom(LUMINARA_TRAPDOOR.getId().getPath(), trapdoorTex);
+        fenceInventory(ChangedAddonBlocks.LUMINARA_FENCE.getId().getPath(), planksTex);
+        fenceGate(ChangedAddonBlocks.LUMINARA_FENCE_GATE.getId().getPath(), planksTex);
+        basicItem(LUMINARA_SIGN.getId());
+        basicItem(LUMINARA_HANGING_SIGN.getId());
+        buttonInventory(LUMINARA_BUTTON.getId().getPath(), planksTex);
+        pressurePlate(LUMINARA_PRESSURE_PLATE.getId().getPath(), planksTex);
+
+        basicBlockItem(ChangedAddonBlocks.LUMINARA_LEAVES);
+        luminaraSapling();
+    }
+
+    public void luminaraBloom() {
+        ResourceLocation item = LUMINARA_BLOOM.getId();
+        getBuilder(item.toString())
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "block/" + item.getPath()))
+                .texture("layer1", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "block/" + item.getPath() + "_emissive"))
+                .customLoader(ItemLayerModelBuilder::begin).emissive(15, 15, 1);
+    }
+
+    public void luminaraSapling() {
+        ResourceLocation item = LUMINARA_SAPLING.getId();
+        getBuilder(item.toString())
+                .parent(new ModelFile.UncheckedModelFile("item/generated"))
+                .texture("layer0", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "block/" + item.getPath()))
+                .texture("layer1", ResourceLocation.fromNamespaceAndPath(item.getNamespace(), "block/" + item.getPath() + "_emissive"))
+                .customLoader(ItemLayerModelBuilder::begin).emissive(15, 15, 1);
+    }
+
+    private <T extends Block> ResourceLocation key(RegistryObject<T> block) {
+        return ForgeRegistries.BLOCKS.getKey(block.get());
+    }
+
+    public <T extends Block> ItemModelBuilder basicBlockItem(RegistryObject<T> block) {
+        ResourceLocation blockLoc = blockLoc(block.getId());
+
+        ModelFile defaultModel = getExistingFile(blockLoc);
+
+        return getBuilder(key(block).getPath()).parent(defaultModel);
+    }
+
+    public <T extends Block> ItemModelBuilder basicBlockItem(RegistryObject<T> block, ModelFile model) {
+        return getBuilder(key(block).getPath()).parent(model);
     }
 
     public ItemModelBuilder layeredItem(Item item, HashMap<Integer, ResourceLocation> layerTextures) {

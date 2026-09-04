@@ -1,7 +1,7 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.variant.VariantExtraStats;
+import net.foxyas.changedaddon.variant.IVariantExtraStats;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.minecraft.tags.FluidTags;
@@ -20,18 +20,19 @@ public interface LivingEntityDataExtensor {
         return (entity instanceof LivingEntityDataExtensor livingEntityDataExtensor) ? livingEntityDataExtensor : null;
     }
 
-    default void setSleepCounter(int value) {}
+    default void setSleepCounter(int value) {
+    }
 
-    default AnimationState getCustomAnimationState(int id) {
+    default AnimationState getCustomAnimationState(String id) {
         return null;
     }
 
     ///  It tries to override the {@link Player#updateIsUnderwater() updateIsUnderwater} which make the override value need to be other than false
-    default boolean overrideSwim() {
+    default boolean overrideWasUnderwater() {
         if (this instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                return variantExtraStats.variantOverrideSwim();
+            if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof IVariantExtraStats IVariantExtraStats) {
+                return IVariantExtraStats.variantOverrideWasUnderwater();
             }
 
             return isEyeOnLavaWithTransfurAndFireResistance(player);
@@ -45,8 +46,8 @@ public interface LivingEntityDataExtensor {
     default boolean overrideSwimUpdate() {
         if (this instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                return variantExtraStats.variantOverrideSwimUpdate();
+            if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof IVariantExtraStats IVariantExtraStats) {
+                return IVariantExtraStats.variantOverrideSwimUpdate();
             }
 
             return isEyeOnLavaWithTransfurAndFireResistance(player);
@@ -59,8 +60,8 @@ public interface LivingEntityDataExtensor {
     default boolean overrideIsInWater() {
         if (this instanceof Player player) {
             TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof VariantExtraStats variantExtraStats) {
-                return variantExtraStats.variantOverrideIsInWater();
+            if (transfurVariant != null && transfurVariant.getChangedEntity() instanceof IVariantExtraStats IVariantExtraStats) {
+                return IVariantExtraStats.variantOverrideIsInWater();
             }
 
             return isOnLavaWithTransfurAndFireResistance(player);
@@ -72,10 +73,10 @@ public interface LivingEntityDataExtensor {
 
     // Utils
 
-    default boolean isEyeOnLavaWithTransfurAndFireResistance(Player player) {
+    static boolean isEyeOnLavaWithTransfurAndFireResistance(Player player) {
         TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (transfurVariant != null && (player.hasEffect(MobEffects.FIRE_RESISTANCE) && player.isEyeInFluid(FluidTags.LAVA))) {
-            boolean aquaticLike = transfurVariant.getParent().is(ChangedAddonTags.TransfurTypes.AQUATIC_LIKE);
+        if (!player.canSwimInFluidType(ForgeMod.LAVA_TYPE.get()) && transfurVariant != null && (player.hasEffect(MobEffects.FIRE_RESISTANCE) && player.isEyeInFluid(FluidTags.LAVA))) {
+            boolean aquaticLike = transfurVariant.getParent().is(ChangedAddonTags.TransfurVariants.AQUATIC_LIKE);
             boolean fastSwimSpeed = transfurVariant.getChangedEntity().getAttributeValue(ForgeMod.SWIM_SPEED.get()) > 1;
             boolean aquaticBreath = transfurVariant.getParent().breatheMode.canBreatheWater();
             boolean aquaticAffinity = transfurVariant.getParent().breatheMode.hasAquaAffinity();
@@ -86,10 +87,10 @@ public interface LivingEntityDataExtensor {
         return false;
     }
 
-    default boolean isOnLavaWithTransfurAndFireResistance(Player player) {
+    static boolean isOnLavaWithTransfurAndFireResistance(Player player) {
         TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-        if (transfurVariant != null && (player.hasEffect(MobEffects.FIRE_RESISTANCE) && player.level().getFluidState(player.blockPosition()).is(FluidTags.LAVA))) {
-            boolean aquaticLike = transfurVariant.getParent().is(ChangedAddonTags.TransfurTypes.AQUATIC_LIKE);
+        if (!player.canSwimInFluidType(ForgeMod.LAVA_TYPE.get()) && transfurVariant != null && (player.hasEffect(MobEffects.FIRE_RESISTANCE) && player.level().getFluidState(player.blockPosition()).is(FluidTags.LAVA))) {
+            boolean aquaticLike = transfurVariant.getParent().is(ChangedAddonTags.TransfurVariants.AQUATIC_LIKE);
             boolean fastSwimSpeed = transfurVariant.getChangedEntity().getAttributeValue(ForgeMod.SWIM_SPEED.get()) > 1;
             boolean aquaticBreath = transfurVariant.getParent().breatheMode.canBreatheWater();
             boolean aquaticAffinity = transfurVariant.getParent().breatheMode.hasAquaAffinity();

@@ -12,12 +12,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static net.foxyas.changedaddon.qte.FightToKeepConsciousness.*;
+import static net.foxyas.changedaddon.qte.FightToKeepConsciousness.getStruggleNeed;
+import static net.foxyas.changedaddon.qte.FightToKeepConsciousness.getStruggleTime;
 
 public class KeyPressMinigameScreen extends Screen {
 
@@ -44,7 +46,11 @@ public class KeyPressMinigameScreen extends Screen {
                 .build();
         button_give_up = Button.builder(
                         Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.button_give_up"),
-                        e -> minecraft.setScreen(null))
+                        e -> {
+                            if (getTicksFighting(minecraft.player) > 20) {
+                                minecraft.setScreen(null);
+                            }
+                        })
                 .pos(0, 0)
                 .size(166, 20)
                 .build();
@@ -59,7 +65,14 @@ public class KeyPressMinigameScreen extends Screen {
     public static String getTimeRemaining(@NotNull Player player) {
         TransfurVariantInstance<?> transfurInstance = ProcessTransfur.getPlayerTransfurVariant(player);
 
-        return transfurInstance == null ? "" : Integer.toString(getStruggleTime() - transfurInstance.ageAsVariant);
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.nonNullOf(player);
+
+        return transfurInstance == null ? "" : Integer.toString(getStruggleTime() - vars.ticksFightingForConsciousness);
+    }
+
+    public static int getTicksFighting(Player player) {
+        ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.nonNullOf(player);
+        return vars.ticksFightingForConsciousness;
     }
 
     @Override
@@ -82,6 +95,7 @@ public class KeyPressMinigameScreen extends Screen {
 
         addRenderableWidget(button_fight);
         addRenderableWidget(button_give_up);
+        button_fight.setFocused(true);
     }
 
     @Override
@@ -93,16 +107,19 @@ public class KeyPressMinigameScreen extends Screen {
 
         super.render(pGuiGraphics, mouseX, mouseY, partialTick);
 
-        pGuiGraphics.drawCenteredString(font, Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", getTimeRemaining(player)), halfWidth, halfHeight - 50, -12829636);
-        pGuiGraphics.drawCenteredString(font, getProgressText(player), halfWidth, halfHeight + 7, -12829636);
+        MutableComponent text = Component.translatable("gui.changed_addon.fight_to_keep_consciousness_minigame.label_text", getTimeRemaining(player));
+        pGuiGraphics.drawString(font, text.getVisualOrderText(), halfWidth - font.width(text) / 2, halfHeight - 50, -12829636, false);
+        String progressText = getProgressText(player);
+        pGuiGraphics.drawString(font, progressText, halfWidth - font.width(progressText) / 2, halfHeight + 7, -12829636, false);
     }
 
     public void renderBackground(@NotNull GuiGraphics pGuiGraphics, float partialTick) {
         TransfurVariantInstance<?> tf = ProcessTransfur.getPlayerTransfurVariant(player);
 
         if (tf != null) {
-            double fightProgress = ChangedAddonVariables.nonNullOf(player).consciousnessFightProgress / FightToKeepConsciousness.getStruggleNeed();
-            double loseProgress = Mth.lerp(partialTick, Math.max(0, tf.ageAsVariant - 1), tf.ageAsVariant) / FightToKeepConsciousness.getStruggleTime();
+            ChangedAddonVariables.PlayerVariables vars = ChangedAddonVariables.nonNullOf(player);
+            double fightProgress = vars.consciousnessFightProgress / FightToKeepConsciousness.getStruggleNeed();
+            double loseProgress = Mth.lerp(partialTick, Math.max(0, vars.ticksFightingForConsciousness - 1), vars.ticksFightingForConsciousness) / FightToKeepConsciousness.getStruggleTime();
 
             int alpha = (int) (128 + 128 * (loseProgress - fightProgress));
 

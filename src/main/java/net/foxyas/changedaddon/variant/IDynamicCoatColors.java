@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.variant;
 
 import net.foxyas.changedaddon.entity.advanced.AvaliEntity;
+import net.foxyas.changedaddon.init.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -11,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public interface IDynamicCoatColors extends VariantExtraStats {
+public interface IDynamicCoatColors extends IVariantExtraStats {
 
     static boolean playerHasTransfurWithExtraColors(@Nullable Player player) {
         if (player == null) {

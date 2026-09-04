@@ -12,36 +12,30 @@ import net.minecraft.world.entity.player.Player;
 
 public interface TransfurVariantInstanceExtensor {
 
+    @Deprecated
     AbstractAbility<?> getSecondSelectedAbility();
 
+    @Deprecated
     void setSecondSelectedAbility(AbstractAbility<?> ability);
 
+    @Deprecated
     int getTicksSinceSecondAbilityActivity();
 
+    @Deprecated
     void resetTicksSinceSecondAbilityActivity();
 
+    @Deprecated
     KeyStateTracker getSecondAbilityKey();
 
+    @Deprecated
     void setSecondAbilityKey(KeyStateTracker secondAbilityKey);
 
+    @Deprecated
     AbstractAbilityInstance getSecondSelectedAbilityInstance();
 
     boolean getUntransfurImmunity(UntransfurEvent.UntransfurType type);
 
     void setUntransfurImmunity(UntransfurEvent.UntransfurType type, boolean value);
-
-    default boolean isTransfurredBySafeMethod() {
-        return true;
-    }
-
-    default void setTransfurredBySafeMethod(boolean value) {
-
-    }
-
-    //TODO make this getters
-//    boolean wonFTK();
-//    int getTicksSinceWinningFTK();
-//    int getTicksFightingForConscience();
 
     default void maySendDataUpdate() {
         if (!(this instanceof TransfurVariantInstance<?> variantInstance)) {

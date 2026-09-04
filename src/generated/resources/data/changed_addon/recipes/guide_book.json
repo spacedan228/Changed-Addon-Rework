@@ -1,0 +1,34 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:mod_loaded",
+          "modid": "patchouli"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "category": "equipment",
+        "ingredients": [
+          {
+            "item": "changed:dark_latex_goo"
+          },
+          {
+            "item": "changed:lab_book"
+          },
+          {
+            "item": "changed:white_latex_goo"
+          }
+        ],
+        "result": {
+          "type": "forge:nbt",
+          "count": 1,
+          "item": "patchouli:guide_book",
+          "nbt": "{\"patchouli:book\":\"changed_addon:guide_book\"}"
+        }
+      }
+    }
+  ]
+}

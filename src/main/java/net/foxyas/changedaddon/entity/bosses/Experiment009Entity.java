@@ -1,5 +1,6 @@
 package net.foxyas.changedaddon.entity.bosses;
 
+import net.foxyas.changedaddon.entity.ai.goals.IReactiveGoal;
 import net.foxyas.changedaddon.entity.ai.goals.exp9.*;
 import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
 import net.foxyas.changedaddon.entity.api.IBestiaryEntityData;
@@ -24,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.UniformFloat;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -34,11 +36,15 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
+import net.minecraft.world.entity.ai.goal.WrappedGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.Minecart;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.network.NetworkHooks;
@@ -52,9 +58,11 @@ import java.util.Objects;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment009Entity extends ChangedEntity implements PowderSnowWalkable, IBestiaryEntityData, IAlphaAbleEntity.CustomAlphaAttributes {
+public class Experiment009Entity extends ChangedEntity implements PowderSnowWalkable, IBestiaryEntityData, IAlphaAbleEntity.IOverrideAlphaAttributes {
 
     private static final EntityDataAccessor<Boolean> PHASE2 = SynchedEntityData.defineId(Experiment009Entity.class, EntityDataSerializers.BOOLEAN);
+
+    public final GoalSelector passiveSelector;
 
     public Experiment009Entity(PlayMessages.SpawnEntity packet, Level world) {
         this(ChangedAddonEntities.EXPERIMENT_009.get(), world);
@@ -66,32 +74,10 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         xpReward = 160;
         setNoAi(false);
         setPersistenceRequired();
-        applyDefaultBasicPlayerInfo();
-    }
-
-    @Override
-    public void setYRot(float pYRot) {
-        if (!Float.isFinite(pYRot)) {
-            super.setYRot(0);
-            return;
+        this.passiveSelector = new GoalSelector(world.getProfilerSupplier());
+        if (world != null && !world.isClientSide) {
+            this.registerPassives();
         }
-
-        super.setYRot(pYRot);
-    }
-
-    @Override
-    public void setXRot(float pXRot) {
-        if (!Float.isFinite(pXRot)) {
-            super.setXRot(0);
-            return;
-        }
-
-        super.setXRot(pXRot);
-    }
-
-    @Override
-    public void setYBodyRot(float pOffset) {
-        super.setYBodyRot(pOffset);
     }
 
     @Override
@@ -133,6 +119,11 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         attributes.getInstance(Attributes.ATTACK_KNOCKBACK).setBaseValue(defaultPlayerAttributes.getBaseValue(Attributes.ATTACK_KNOCKBACK));
         attributes.getInstance(ChangedAttributes.JUMP_STRENGTH.get()).setBaseValue(1.35f);
         attributes.getInstance(ChangedAttributes.FALL_RESISTANCE.get()).setBaseValue(2.5F);
+    }
+
+    @Override
+    public float getPathfindingMalus(@NotNull BlockPathTypes pNodeType) {
+        return super.getPathfindingMalus(pNodeType);
     }
 
     @Override
@@ -241,8 +232,15 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
         addAbilitiesGoals();
     }
 
+    protected void registerPassives() {
+        addPassiveGoals();
+    }
+
+    protected void addPassiveGoals() {
+    }
+
     protected void addAbilitiesGoals() {
-        goalSelector.addGoal(5, new ThunderStrikeGoal(
+        goalSelector.addGoal(5, new AoEThunderStrikeGoal(
                 this,
                 UniformInt.of(80, 120), //IntProvider -> cooldownProvider
                 UniformInt.of(4, 8), //IntProvider -> damageProvider
@@ -342,52 +340,83 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (source.getDirectEntity() instanceof ThrownPotion || source.getDirectEntity() instanceof AreaEffectCloud)
+        if (source.getDirectEntity() instanceof ThrownPotion ||
+                source.getDirectEntity() instanceof AreaEffectCloud ||
+                source.is(DamageTypes.FALL) ||
+                source.is(DamageTypes.CACTUS) ||
+                source.is(DamageTypes.DROWN) ||
+                source.is(DamageTypes.LIGHTNING_BOLT) ||
+                source.is(DamageTypes.FALLING_ANVIL) ||
+                source.is(DamageTypes.DRAGON_BREATH) ||
+                source.is(DamageTypes.WITHER) ||
+                source.getMsgId().equals("witherSkull")) {
+            triggerOnDamageReactiveGoals(source, amount, false);
             return false;
-
-        if (source.is(DamageTypes.FALL))
-            return false;
-
-        if (source.is(DamageTypes.CACTUS))
-            return false;
-
-        if (source.is(DamageTypes.DROWN))
-            return false;
-
-        if (source.is(DamageTypes.LIGHTNING_BOLT))
-            return false;
-
-        if (source.getMsgId().equals("trident")) {
-            if (this.random.nextFloat() <= 0.25f) {
-                if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(Component.literal("§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!"), true);
-                }
-            }
-            return super.hurt(source, amount * 0.5f);
         }
 
-        if (source.is(DamageTypes.FALLING_ANVIL))
-            return false;
-
-        if (source.is(DamageTypes.DRAGON_BREATH))
-            return false;
-
-        if (source.is(DamageTypes.WITHER))
-            return false;
-
-        if (source.getMsgId().equals("witherSkull"))
-            return false;
-
-        if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-            if (this.random.nextFloat() <= 0.25f) {
-                if (source.getEntity() instanceof Player player) {
-                    player.displayClientMessage(Component.literal("§l§o§4Coward! Is distance all you can rely on? How PATHETIC!!!"), true);
-                }
-            }
-            return super.hurt(source, amount * 0.5f);
+        if (source.is(DamageTypeTags.IS_PROJECTILE) || source.getMsgId().equals("trident")) {
+            amount *= 0.5f;
         }
 
-        return super.hurt(source, amount);
+        boolean willCauseDamage = super.hurt(source, amount);
+        triggerOnDamageReactiveGoals(source, amount, willCauseDamage);
+        return willCauseDamage;
+    }
+
+    public void triggerOnDamageReactiveGoals(DamageSource source, float finalAmount, boolean willCauseDamage) {
+        this.goalSelector.getRunningGoals()
+                .map(WrappedGoal::getGoal)
+                .filter(goal -> goal instanceof IReactiveGoal)
+                .forEach(goal -> ((IReactiveGoal) goal).onDamage(this, source, finalAmount, willCauseDamage));
+        this.targetSelector.getRunningGoals()
+                .map(WrappedGoal::getGoal)
+                .filter(goal -> goal instanceof IReactiveGoal)
+                .forEach(goal -> ((IReactiveGoal) goal).onDamage(this, source, finalAmount, willCauseDamage));
+    }
+
+    @Override
+    protected void actuallyHurt(@NotNull DamageSource pDamageSource, float pDamageAmount) {
+        super.actuallyHurt(pDamageSource, pDamageAmount);
+        triggerOnHurtReactiveGoals(pDamageSource, pDamageAmount);
+    }
+
+    @Override
+    public boolean isInvulnerableTo(@NotNull DamageSource pSource) {
+        if (pSource.is(DamageTypes.LIGHTNING_BOLT))
+            return true;
+        if (pSource.is(ChangedDamageSources.ELECTROCUTION.key())) {
+            return true;
+        }
+
+        return super.isInvulnerableTo(pSource);
+    }
+
+    public void triggerOnHurtReactiveGoals(@NotNull DamageSource pDamageSource, float pDamageAmount) {
+        this.goalSelector.getRunningGoals()
+                .map(WrappedGoal::getGoal)
+                .filter(goal -> goal instanceof IReactiveGoal)
+                .forEach(goal -> ((IReactiveGoal) goal).onHurt(this, pDamageSource, pDamageAmount));
+        this.targetSelector.getRunningGoals()
+                .map(WrappedGoal::getGoal)
+                .filter(goal -> goal instanceof IReactiveGoal)
+                .forEach(goal -> ((IReactiveGoal) goal).onHurt(this, pDamageSource, pDamageAmount));
+    }
+
+    @Override
+    public void heal(float pHealAmount) {
+        super.heal(pHealAmount);
+        triggerOnHealReactiveGoals(pHealAmount);
+    }
+
+    public void triggerOnHealReactiveGoals(float healAmound) {
+        this.goalSelector.getRunningGoals()
+                .map(WrappedGoal::getGoal)
+                .filter(goal -> goal instanceof IReactiveGoal)
+                .forEach(goal -> ((IReactiveGoal) goal).onHeal(this, healAmound));
+        this.targetSelector.getRunningGoals()
+                .map(WrappedGoal::getGoal)
+                .filter(goal -> goal instanceof IReactiveGoal)
+                .forEach(goal -> ((IReactiveGoal) goal).onHeal(this, healAmound));
     }
 
     @Override
@@ -400,7 +429,7 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
 
     @Override
     public boolean canChangeDimensions() {
-        return false;
+        return this.getTarget() == null && super.canChangeDimensions();
     }
 
     @Override
@@ -416,11 +445,34 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
     @Override
     public void customServerAiStep() {
         super.customServerAiStep();
+
+        int i = level.getServer().getTickCount() + this.getId();
+        if (i % 2 != 0 && this.tickCount > 1) {
+            level.getProfiler().push("passiveSelector");
+            this.passiveSelector.tickRunningGoals(false);
+            level.getProfiler().pop();
+        } else {
+            level.getProfiler().push("passiveSelector");
+            this.passiveSelector.tick();
+            level.getProfiler().pop();
+        }
     }
 
-    protected void applyDefaultBasicPlayerInfo() {
-        this.getBasicPlayerInfo().setSize(1f);
-        this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
+    @Override
+    protected void updateControlFlags() {
+        super.updateControlFlags();
+        boolean hasMovementAndHeadControl = !(this.getControllingPassenger() instanceof Mob);
+        boolean canJump = !(this.getVehicle() instanceof Boat);
+        this.passiveSelector.setControlFlag(Goal.Flag.MOVE, hasMovementAndHeadControl);
+        this.passiveSelector.setControlFlag(Goal.Flag.JUMP, hasMovementAndHeadControl && canJump);
+        this.passiveSelector.setControlFlag(Goal.Flag.LOOK, hasMovementAndHeadControl);
+    }
+
+    @Override
+    protected void initializeBPI(BasicPlayerInfo info, RandomSource random) {
+        super.initializeBPI(info, random);
+        info.setSize(1f);
+        info.setEyeStyle(EyeStyle.TALL);
     }
 
     public boolean isPhase2() {
@@ -478,7 +530,6 @@ public class Experiment009Entity extends ChangedEntity implements PowderSnowWalk
     public void applyBestiaryRenderState(ChangedEntity changedEntity, GuiGraphics guiGraphics) {
         if (changedEntity instanceof Experiment009Entity entity) {
             entity.setPhase2(true);
-            entity.applyDefaultBasicPlayerInfo();
         }
     }
 

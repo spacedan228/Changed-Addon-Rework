@@ -106,7 +106,9 @@ public class DashAttack extends Goal {
         if (tickCount < PREPARE_TIME) {
             dasher.getNavigation().stop();
             if (target.isRemoved() && target.isDeadOrDying()) return;
-            dasher.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            if (target.distanceTo(dasher) > 0) {
+                dasher.getLookControl().setLookAt(target, 30.0F, 30.0F);
+            }
             dashDirection = dasher.getViewVector(1).scale(strength).multiply(1, 0, 1);
             dasher.level().playSound(null, dasher, SoundEvents.BEACON_AMBIENT, SoundSource.HOSTILE, 2, (float) tickCount / PREPARE_TIME);
             if (dasher.level() instanceof ServerLevel serverLevel) {

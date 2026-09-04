@@ -14,6 +14,8 @@ import net.minecraft.world.item.DyeableLeatherItem;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
+
 public class ColorUtil {
 
     private static final Object2IntMap<DyeColor> COLOR_CACHE = new Object2IntArrayMap<>();
@@ -66,6 +68,13 @@ public class ColorUtil {
         return (avgR << 16) | (avgG << 8) | avgB;
     }
 
+    public static Color3 getColor3FromColor(Color color) {
+        return new Color3(color.getRed(), color.getGreen(), color.getBlue());
+    }
+
+    public static Color getColorFromColor3(Color3 color) {
+        return new Color(color.red(), color.green(), color.blue());
+    }
 
     public static Color3 lerpTFColor(@NotNull Color3 start, @NotNull Color3 end, @Nullable Player player) {
         if (player == null) return start;
@@ -117,5 +126,45 @@ public class ColorUtil {
 
         // Faz o lerp entre as duas cores do segmento atual
         return lerpTFColor(colors[index], colors[index + 1], localProgress);
+    }
+
+    public static Color3 lerpTFColors(float progress, Color3... colors) {
+        if (colors == null || colors.length == 0)
+            return new Color3(1.0f, 1.0f, 1.0f); // fallback branco
+
+        if (colors.length == 1)
+            return colors[0]; // só uma cor, nada pra interpolar
+
+        int amountOfColors = colors.length;
+
+        // Garante que o valor fique entre 0 e 1
+        progress = Mth.clamp(progress, 0.0f, 1.0f);
+
+        // Divide o progresso igualmente entre as cores
+        float segment = 1.0f / (amountOfColors - 1);
+
+        // Identifica entre quais cores o progresso atual está
+        int index = (int) Math.floor(progress / segment);
+        if (index < 0) index = 0;
+        if (index >= amountOfColors - 1) index = amountOfColors - 2;
+
+        float localProgress = (progress - (index * segment)) / segment;
+
+        // Faz o lerp entre as duas cores do segmento atual
+        return lerpTFColor(colors[index], colors[index + 1], localProgress);
+    }
+
+    /**
+     * Calculates a dynamic rainbow RGB integer based on a game tick counter.
+     * Adjust the multiplier (speed) to change the speed of the rainbow cycle.
+     */
+    public static int getDynamicRainbowColor(int ticks, float speed) {
+        // Sine wave calculations shifted by 120 and 240 degrees for RGB mixing
+        int r = (int) (Math.sin(ticks * speed + 0.0f) * 127 + 128);
+        int g = (int) (Math.sin(ticks * speed + 2.0f * Math.PI / 3.0f) * 127 + 128);
+        int b = (int) (Math.sin(ticks * speed + 4.0f * Math.PI / 3.0f) * 127 + 128);
+
+        // Explicitly include Alpha (0xFF) at the front for proper 32-bit ARGB alignment
+        return (0xFF << 24) | ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | (b & 0xFF);
     }
 }

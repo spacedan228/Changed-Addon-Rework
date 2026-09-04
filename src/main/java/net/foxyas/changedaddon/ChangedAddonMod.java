@@ -2,7 +2,7 @@ package net.foxyas.changedaddon;
 
 import net.foxyas.changedaddon.compatibility.ChangedAddonModCompatEvents;
 import net.foxyas.changedaddon.init.*;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.network.syncher.ChangedAddonEntityDataSerializers;
 import net.foxyas.changedaddon.world.datafixer.ChangedAddonDataFixer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.core.Registry;
@@ -50,6 +50,8 @@ public class ChangedAddonMod {
         ChangedAddonAttributes.ATTRIBUTES.register(bus);
         ChangedAddonItems.REGISTRY.register(bus);
         ChangedAddonMenus.REGISTRY.register(bus);
+        ChangedAddonEntityDataSerializers.SERIALIZERS.register(bus);
+        ChangedAddonTreeDecorators.TREE_DECORATORS.register(bus);
 
         ChangedAddonEntities.REGISTRY.register(bus);
         ChangedAddonAbilities.REGISTRY.register(bus);
@@ -59,14 +61,16 @@ public class ChangedAddonMod {
         ChangedAddonMobEffects.REGISTRY.register(bus);
         ChangedAddonPotions.REGISTRY.register(bus);
         ChangedAddonAnimationEvents.REGISTRY.register(bus);
+        ChangedAddonRecipeTypes.REGISTRY.register(bus);
         ChangedAddonRecipeTypes.SERIALIZERS.register(bus);
         ChangedAddonSoundEvents.SOUNDS.register(bus);
 
         ChangedAddonParticleTypes.REGISTRY.register(bus);
-        ChangedAddonVillagerProfessions.POI_TYPES.register(bus);
+        ChangedAddonPoiTypes.POI_TYPES.register(bus);
         ChangedAddonVillagerProfessions.PROFESSIONS.register(bus);
         ChangedAddonFluids.FLUID_TYPES.register(bus);
         ChangedAddonFluids.FLUIDS.register(bus);
+        ChangedAddonAbilityTreeCodecs.register(bus);
 
         ChangedAddonBiomeModifiers.BIOME_MODIFIERS.register(bus);
         ChangedAddonStructureTypes.STRUCTURE_TYPES.register(bus);

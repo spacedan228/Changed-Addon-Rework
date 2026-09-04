@@ -94,10 +94,17 @@ public class CommonMod {
                 (packet, contextSupplier) -> ClientPacketHandler.handleSafeGrabSync(packet, contextSupplier),
                 NetworkDirection.PLAY_TO_CLIENT);
 
-        ChangedAddonMod.addNetworkMessage(KeyPressPacket.class, KeyPressPacket::encode,
-                KeyPressPacket::new, KeyPressPacket::handle);
+        ChangedAddonMod.addNetworkMessage(AbilityKeyPressPacket.class, AbilityKeyPressPacket::encode,
+                AbilityKeyPressPacket::new, AbilityKeyPressPacket::handle);
+        ChangedAddonMod.addNetworkMessage(AbilityWheelKeyPressPacket.class, AbilityWheelKeyPressPacket::encode,
+                AbilityWheelKeyPressPacket::new, AbilityWheelKeyPressPacket::handle);
+
         ChangedAddonMod.addNetworkMessage(SyncTransfurVisionsPacket.class, SyncTransfurVisionsPacket::encode,
                 SyncTransfurVisionsPacket::new, SyncTransfurVisionsPacket::handle);
+
+        ChangedAddonMod.addNetworkMessage(SyncTransfurVariantDietsPacket.class, SyncTransfurVariantDietsPacket::encode,
+                SyncTransfurVariantDietsPacket::new, SyncTransfurVariantDietsPacket::handle);
+
         ChangedAddonMod.addNetworkMessage(SyncUntransfurImmunityPacket.class,
                 SyncUntransfurImmunityPacket::encode,
                 SyncUntransfurImmunityPacket::new,
@@ -119,8 +126,8 @@ public class CommonMod {
                 (packet, contextSupplier) -> ClientPacketHandler.handlerVariableSync(packet, contextSupplier),
                 NetworkDirection.PLAY_TO_CLIENT);
 
-        ChangedAddonMod.addNetworkMessage(GeneratorGuiButtonPacket.class, GeneratorGuiButtonPacket::encode,
-                GeneratorGuiButtonPacket::new, GeneratorGuiButtonPacket::handler);
+        ChangedAddonMod.addNetworkMessage(ToggleButtonPacket.class, ToggleButtonPacket::encode,
+                ToggleButtonPacket::new, ToggleButtonPacket::handler);
 
         ChangedAddonMod.addNetworkMessage(PatKeyPacket.class, PatKeyPacket::encode, PatKeyPacket::new, PatKeyPacket::handler);
 
@@ -129,6 +136,9 @@ public class CommonMod {
 
         ChangedAddonMod.addNetworkMessage(TurnOffTransfurPacket.class, TurnOffTransfurPacket::encode,
                 TurnOffTransfurPacket::new, TurnOffTransfurPacket::handler);
+
+        ChangedAddonMod.addNetworkMessage(ToggleSafeGrabPacket.class, ToggleSafeGrabPacket::encode,
+                ToggleSafeGrabPacket::new, ToggleSafeGrabPacket::handler);
 
         ChangedAddonMod.addNetworkMessage(InformantBlockGuiKeyPacket.class, InformantBlockGuiKeyPacket::encode,
                 InformantBlockGuiKeyPacket::new, InformantBlockGuiKeyPacket::handle);

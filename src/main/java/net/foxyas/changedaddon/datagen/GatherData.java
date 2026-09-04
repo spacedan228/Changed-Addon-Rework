@@ -2,9 +2,14 @@ package net.foxyas.changedaddon.datagen;
 
 import net.foxyas.changedaddon.ChangedAddonMod;
 import net.foxyas.changedaddon.datagen.ability_tree.AbilityTreeProviderImpl;
+import net.foxyas.changedaddon.datagen.compatibility.ModTrimMapsProvider;
 import net.foxyas.changedaddon.datagen.lang.ENLanguageProvider;
 import net.foxyas.changedaddon.datagen.lang.HULanguageProvider;
-import net.foxyas.changedaddon.datagen.worldgen.FacilityPieceProvider;
+import net.foxyas.changedaddon.datagen.patchouli.ENPatchouliBookProvider;
+import net.foxyas.changedaddon.datagen.patchouli.RUPatchouliBookProvider;
+import net.foxyas.changedaddon.datagen.patchouli.HUPatchouliBookProvider;
+import net.foxyas.changedaddon.datagen.worldgen.changed.facility.FacilityPieceProvider;
+import net.foxyas.changedaddon.datagen.worldgen.changed.facility_zone_spawns.FacilityZoneSpawnsProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -44,18 +49,26 @@ public class GatherData {
         generator.addProvider(event.includeServer(), new BiomeTagProvider(packOutput, lookup0, helper));
         generator.addProvider(event.includeServer(), new DamageTypeTagProvider(packOutput, lookup0, helper));
 
+        generator.addProvider(event.includeServer(), FacilityZoneSpawnsProvider.getChangedAddonZoneSpawns(packOutput, existingFileHelper));
         generator.addProvider(event.includeServer(), FacilityPieceProvider.getChangedAddonFacilitiesPieces(packOutput, existingFileHelper));
 
-        generator.addProvider(true, new RecipeProvider(packOutput));
+        generator.addProvider(true, new ModRecipeProvider(packOutput));
 
-        generator.addProvider(true, new LootTableProvider(packOutput));
-
+        generator.addProvider(true, new BlockModelProvider(packOutput, helper));
         generator.addProvider(true, new BlockStateProvider(packOutput, helper));
         generator.addProvider(true, new LatexCoverStateProvider(packOutput, helper, ChangedAddonMod.MODID));
         generator.addProvider(true, new ItemModelProvider(packOutput, helper));
-        generator.addProvider(true, new AdvancementProvider(packOutput, lookup0, helper));
+        generator.addProvider(true, new ModAdvancementProvider(packOutput, lookup0, helper));
+        generator.addProvider(true, new LootTableProvider(packOutput));
 
+        generator.addProvider(true, new ModTrimMapsProvider(packOutput));
+        generator.addProvider(true, new AtlasProvider(packOutput, helper));
         generator.addProvider(true, new ENLanguageProvider(packOutput));
         generator.addProvider(true, new HULanguageProvider(packOutput));
+
+        generator.addProvider(true, new ENPatchouliBookProvider(packOutput));
+        generator.addProvider(true, new RUPatchouliBookProvider(packOutput));
+        generator.addProvider(true, new HUPatchouliBookProvider(packOutput));
+//        generator.addProvider(true, new ModAnimationAssociationsProvider(packOutput));
     }
 }

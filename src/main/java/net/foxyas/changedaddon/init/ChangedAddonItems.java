@@ -8,7 +8,6 @@ import net.foxyas.changedaddon.item.armor.HazardBodySuit;
 import net.foxyas.changedaddon.item.clothes.DyeableShortsItem;
 import net.foxyas.changedaddon.item.clothes.TShirtClothingItem;
 import net.foxyas.changedaddon.procedure.DotValueOfViewProcedure;
-import net.foxyas.changedaddon.procedure.LaethinPropertyValueProviderProcedure;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.init.ChangedLatexTypes;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
@@ -17,10 +16,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -44,6 +40,23 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> CHANGED_BOOK = REGISTRY.register("changedbook", ChangedBookItem::new);
     public static final RegistryObject<Item> LUMINARA_BLOOM = block(ChangedAddonBlocks.LUMINARA_BLOOM, new Item.Properties().rarity(Rarity.RARE));
     public static final RegistryObject<Item> LUMINARA_BLOOM_PETALS = REGISTRY.register("luminara_bloom_petals", LuminaraBloomPetalsItem::new);
+    public static final RegistryObject<Item> LUMINARA_LOG = block(ChangedAddonBlocks.LUMINARA_LOG, new Item.Properties());
+    public static final RegistryObject<Item> STRIPPED_LUMINARA_LOG = block(ChangedAddonBlocks.STRIPPED_LUMINARA_LOG, new Item.Properties());
+    public static final RegistryObject<BlockItem> LUMINARA_WOOD = block(ChangedAddonBlocks.LUMINARA_WOOD);
+    public static final RegistryObject<BlockItem> STRIPPED_LUMINARA_WOOD = block(ChangedAddonBlocks.STRIPPED_LUMINARA_WOOD);
+    public static final RegistryObject<BlockItem> LUMINARA_PLANKS = block(ChangedAddonBlocks.LUMINARA_PLANKS);
+    public static final RegistryObject<BlockItem> LUMINARA_STAIRS = block(ChangedAddonBlocks.LUMINARA_STAIRS);
+    public static final RegistryObject<BlockItem> LUMINARA_SLAB = block(ChangedAddonBlocks.LUMINARA_SLAB);
+    public static final RegistryObject<BlockItem> LUMINARA_DOOR = block(ChangedAddonBlocks.LUMINARA_DOOR);
+    public static final RegistryObject<BlockItem> LUMINARA_TRAPDOOR = block(ChangedAddonBlocks.LUMINARA_TRAPDOOR);
+    public static final RegistryObject<BlockItem> LUMINARA_FENCE = block(ChangedAddonBlocks.LUMINARA_FENCE);
+    public static final RegistryObject<BlockItem> LUMINARA_FENCE_GATE = block(ChangedAddonBlocks.LUMINARA_FENCE_GATE);
+    public static final RegistryObject<SignItem> LUMINARA_SIGN = REGISTRY.register("luminara_sign", () -> new SignItem(new Item.Properties(), ChangedAddonBlocks.LUMINARA_SIGN.get(), ChangedAddonBlocks.LUMINARA_WALL_SIGN.get()));
+    public static final RegistryObject<HangingSignItem> LUMINARA_HANGING_SIGN = REGISTRY.register("luminara_hanging_sign", () -> new HangingSignItem(ChangedAddonBlocks.LUMINARA_HANGING_SIGN.get(), ChangedAddonBlocks.LUMINARA_WALL_HANGING_SIGN.get(), new Item.Properties()));
+    public static final RegistryObject<BlockItem> LUMINARA_BUTTON = block(ChangedAddonBlocks.LUMINARA_BUTTON);
+    public static final RegistryObject<BlockItem> LUMINARA_PRESSURE_PLATE = block(ChangedAddonBlocks.LUMINARA_PRESSURE_PLATE);
+    public static final RegistryObject<Item> LUMINARA_LEAVES = block(ChangedAddonBlocks.LUMINARA_LEAVES, new Item.Properties());
+    public static final RegistryObject<BlockItem> LUMINARA_SAPLING = block(ChangedAddonBlocks.LUMINARA_SAPLING);
     public static final RegistryObject<Item> BIOMASS = REGISTRY.register("biomass", BiomassItem::new);
     public static final RegistryObject<Item> ANTI_LATEX_BASE = REGISTRY.register("anti_latex_base", UnlatexbaseItem::new);
     public static final RegistryObject<Item> IMPURE_AMMONIA = REGISTRY.register("impure_ammonia", ImpureAmmoniaItem::new);
@@ -51,13 +64,13 @@ public class ChangedAddonItems {
     public static final RegistryObject<Item> AMMONIA_COMPRESSED = REGISTRY.register("ammonia_compressed", AmmoniaCompressedItem::new);
     public static final RegistryObject<Item> AMMONIA = REGISTRY.register("ammonia", AmmoniaItem::new);
     public static final RegistryObject<Item> LITIX_CAMONIA = REGISTRY.register("litix_camonia", LitixCamoniaItem::new);
-    public static final RegistryObject<Item> LAETHIN = REGISTRY.register("laethin", LaethinItem::new);
+    public static final RegistryObject<LaethinItem> LAETHIN = REGISTRY.register("laethin", LaethinItem::new);
     public static final RegistryObject<Item> CATALYZED_DNA = REGISTRY.register("catalyzed_dna", CatalyzedDNAItem::new);
 
     public static final RegistryObject<Item> SYRINGE = REGISTRY.register("syringe", SyringeItem::new);
     public static final RegistryObject<Item> DIFFUSION_SYRINGE = REGISTRY.register("diffusion_syringe", DiffusionSyringeItem::new);
     public static final RegistryObject<Item> SYRINGE_WITH_LITIX_CAMMONIA = REGISTRY.register("syringe_with_litix_cammonia", SyringeWithLitixCammoniaItem::new);
-    public static final RegistryObject<Item> LAETHIN_SYRINGE = REGISTRY.register("laethin_syringe", LaethinSyringeItem::new);
+    public static final RegistryObject<LaethinSyringeItem> LAETHIN_SYRINGE = REGISTRY.register("laethin_syringe", LaethinSyringeItem::new);
     public static final RegistryObject<Item> POT_WITH_CAMONIA = REGISTRY.register("pot_with_camonia", PotWithCamoniaItem::new);
     public static final RegistryObject<AlphaSerumSyringeItem> ALPHA_SERUM_SYRINGE = REGISTRY.register("alpha_serum_syringe", AlphaSerumSyringeItem::new);
 
@@ -73,14 +86,14 @@ public class ChangedAddonItems {
 
     public static final RegistryObject<Item> LITIX_CAMONIA_FLUID_BUCKET = REGISTRY.register("litix_camonia_fluid_bucket", LitixCamoniaFluidItem::new);
 
-    public static final RegistryObject<Item> EXPERIMENT_009_DNA = REGISTRY.register("experiment_009_dna", Experiment009dnaItem::new);
+    public static final RegistryObject<Item> EXPERIMENT_009_DNA = REGISTRY.register("experiment_009_dna", Experiment009DNAItem::new);
     public static final RegistryObject<Item> EXP_9_LATEX_BASE = REGISTRY.register("exp_9_latex_base", Exp9LatexBaseItem::new);
-    public static final RegistryObject<Item> EXP_9_CONTAINMENT_VIAL = REGISTRY.register("exp_9_containment_vial", Experiment009SpawnerItem::new);
+    public static final RegistryObject<Experiment009SpawnerItem> EXP_9_CONTAINMENT_VIAL = REGISTRY.register("exp_9_containment_vial", Experiment009SpawnerItem::new);
     public static final RegistryObject<TransfurTotemItem> TRANSFUR_TOTEM = REGISTRY.register("transfur_totem", TransfurTotemItem::new);
 
-    public static final RegistryObject<Item> EXPERIMENT_10_DNA = REGISTRY.register("experiment_10_dna", Experiment10DnaItem::new);
+    public static final RegistryObject<Item> EXPERIMENT_10_DNA = REGISTRY.register("experiment_10_dna", Experiment10DNAItem::new);
     public static final RegistryObject<Item> EXP_10_LATEX_BASE = REGISTRY.register("exp_10_latex_base", Exp10LatexBaseItem::new);
-    public static final RegistryObject<Item> EXP_10_CONTAINMENT_VIAL = REGISTRY.register("exp_10_containment_vial", Experiment10SpawnerItem::new);
+    public static final RegistryObject<Experiment10SpawnerItem> EXP_10_CONTAINMENT_VIAL = REGISTRY.register("exp_10_containment_vial", Experiment10SpawnerItem::new);
     public static final RegistryObject<Item> RED_LATEX_GOO = REGISTRY.register("red_latex_goo", RedLatexGooItem::new);
 
     // Foods and Drinks
@@ -170,6 +183,7 @@ public class ChangedAddonItems {
     // --- CHANGED ENTITIES SPAWN EGGS ---
     public static final RegistryObject<Item> PROTOTYPE_SPAWN_EGG = REGISTRY.register("prototype_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.PROTOTYPE, new Color(-5325833).getRGB(), new Color(-9306113).getRGB(), new Item.Properties()));
     public static final RegistryObject<SpecialSpawnEggItem> CRAFTABLE_PROTOTYPE_SPAWN_EGG = REGISTRY.register("prototype_spawn_egg_c", () -> new SpecialSpawnEggItem(ChangedAddonEntities.PROTOTYPE, new Item.Properties()));
+    public static final RegistryObject<Item> WHITE_FOX_SPAWN_EGG = REGISTRY.register("white_fox_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.WHITE_FOX, 0xFFFFFFF, 0xfD6DDF7, new Item.Properties()));
     public static final RegistryObject<Item> LATEX_SNOW_FOX_MALE_SPAWN_EGG = REGISTRY.register("latex_snow_fox_male_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LATEX_SNOW_FOX_MALE, 0xFFFFFFF, 0xfD6DDF7, new Item.Properties()));
     public static final RegistryObject<Item> LATEX_SNOW_FOX_FEMALE_SPAWN_EGG = REGISTRY.register("latex_snow_fox_female_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LATEX_SNOW_FOX_FEMALE, 0xFFFFFFF, 0xfD6DDF7, new Item.Properties()));
     public static final RegistryObject<Item> FOXYAS_SPAWN_EGG = REGISTRY.register("latex_snow_fox_foxyas_spawn_egg", () -> new ForgeSpawnEggItem(ChangedAddonEntities.LATEX_SNOW_FOX_FOXYAS, -1, -26215, new Item.Properties()));
@@ -238,7 +252,7 @@ public class ChangedAddonItems {
     //public static final RegistryObject<Item> DYEABLE_SPORTS_BRA = REGISTRY.register("dyeable_sports_bra", DyeableSportsBra::new);
     public static final RegistryObject<TShirtClothingItem> DYEABLE_TSHIRT = REGISTRY.register("dyeable_tshirt", TShirtClothingItem::new);
     public static final RegistryObject<DyeableShortsItem> DYEABLE_SHORTS = REGISTRY.register("dyeable_shorts", DyeableShortsItem::new);
-    public static final RegistryObject<Item> HAZARD_BODY_SUIT = REGISTRY.register("hazard_body_suit", HazardBodySuit::new);
+    public static final RegistryObject<HazardBodySuit> HAZARD_BODY_SUIT = REGISTRY.register("hazard_body_suit", HazardBodySuit::new);
     public static final RegistryObject<KeycardItem> KEYCARD_ITEM = REGISTRY.register("keycard", KeycardItem::new);
     public static final RegistryObject<TimedKeypadItem> TIMED_KEYPAD = REGISTRY.register("timed_keypad", TimedKeypadItem::new);
     public static final RegistryObject<Item> HAND_SCANNER = RegisterBlockItem(REGISTRY, ChangedAddonBlocks.HAND_SCANNER);
@@ -247,9 +261,9 @@ public class ChangedAddonItems {
     @SubscribeEvent
     public static void clientLoad(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            ItemProperties.register(LAETHIN.get(), ChangedAddonMod.resourceLoc("laethin_type"), (itemStackToRender, clientWorld, entity, itemEntityId) -> LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
+            ItemProperties.register(LAETHIN.get(), ChangedAddonMod.resourceLoc("laethin_type"), (itemStackToRender, clientWorld, entity, itemEntityId) -> LaethinItem.getLaethinTypeOfStack(itemStackToRender).getValue());
             ItemProperties.register(LAETHIN_SYRINGE.get(), ChangedAddonMod.resourceLoc("laethin_syringe_type"),
-                    (itemStackToRender, clientWorld, entity, itemEntityId) -> LaethinPropertyValueProviderProcedure.execute(itemStackToRender));
+                    (itemStackToRender, clientWorld, entity, itemEntityId) -> LaethinItem.getLaethinTypeOfStack(itemStackToRender).getValue());
             ItemProperties.register(TRANSFUR_TOTEM.get(), ChangedAddonMod.resourceLoc("transfur_totem_glowtick"), (itemStackToRender, clientWorld, entity, itemEntityId) -> TransfurTotemItem.itemPropertyFunc(entity));
             ItemProperties.register(SIGNAL_CATCHER.get(), ChangedAddonMod.resourceLoc("signal_catcher_dot_value"), (itemStackToRender, clientWorld, entity, itemEntityId) -> (float) DotValueOfViewProcedure.execute(entity, itemStackToRender));
             ItemProperties.register(SIGNAL_CATCHER.get(), ChangedAddonMod.resourceLoc("signal_catcher_cord_set"), (stack, level, entity, itemEntityId) -> {
@@ -285,19 +299,19 @@ public class ChangedAddonItems {
         return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
-    private static RegistryObject<Item> block(RegistryObject<Block> block, Item.Properties properties) {
+    private static RegistryObject<Item> block(RegistryObject<? extends Block> block, Item.Properties properties) {
         return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), properties));
     }
 
-    private static RegistryObject<Item> RegisterBlockItem(DeferredRegister<Item> registry, RegistryObject<Block> block) {
+    private static RegistryObject<Item> RegisterBlockItem(DeferredRegister<Item> registry, RegistryObject<? extends Block> block) {
         return registry.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
-    private static RegistryObject<Item> RegisterBlockItem(DeferredRegister<Item> registry, String id, RegistryObject<Block> block) {
+    private static RegistryObject<Item> RegisterBlockItem(DeferredRegister<Item> registry, String id, RegistryObject<? extends Block> block) {
         return registry.register(id, () -> new BlockItem(block.get(), new Item.Properties()));
     }
 
-    private static RegistryObject<Item> RegisterBlockItem(RegistryObject<Block> block) {
+    private static RegistryObject<Item> RegisterBlockItem(RegistryObject<? extends Block> block) {
         return REGISTRY.register(block.getId().getPath(), () -> new BlockItem(block.get(), new Item.Properties()));
     }
 

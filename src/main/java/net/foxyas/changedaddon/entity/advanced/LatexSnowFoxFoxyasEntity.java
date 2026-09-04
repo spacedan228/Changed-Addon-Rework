@@ -2,6 +2,7 @@ package net.foxyas.changedaddon.entity.advanced;
 
 import net.foxyas.changedaddon.entity.ai.goals.generic.LookAndFollowTradingPlayerSink;
 import net.foxyas.changedaddon.entity.ai.goals.generic.TradeWithPlayerGoal;
+import net.foxyas.changedaddon.entity.api.ISafeChangedEntity;
 import net.foxyas.changedaddon.entity.defaults.AbstractTraderChangedEntityWithInventory;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
 import net.foxyas.changedaddon.init.ChangedAddonItems;
@@ -40,8 +41,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
 import org.jetbrains.annotations.NotNull;
@@ -53,7 +56,7 @@ import java.util.function.Function;
 
 import static net.foxyas.changedaddon.util.CustomMerchantUtil.*;
 
-public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInventory {
+public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInventory implements ISafeChangedEntity {
 
     public static final float FOXYAS_SCALE = 0.85f;
     private static final List<Function<LatexSnowFoxFoxyasEntity, CustomMerchantOffer>> buyOffers = List.of(
@@ -105,6 +108,55 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
     }
 
     @Override
+    public void notifyTrade(CustomMerchantOffer offer) {
+        super.notifyTrade(offer);
+        Player player = this.getUnderlyingPlayer();
+        if (player == null) {
+            return;
+        }
+
+        ItemStack offerResult = offer.getResult();
+        if (player.getInventory().hasAnyMatching((stack) -> {
+            var ingredient = PartialNBTIngredient.of(offerResult.getItem(), stack.getOrCreateTag());
+            return ingredient.test(stack);
+        })) {
+            player.getInventory().removeItem(offerResult);
+        }
+
+        Ingredient[] ingredients = {offer.getCostA(), offer.getCostB()};
+        for (Ingredient ingredient : ingredients) {
+            for (ItemStack item : ingredient.getItems()) {
+                if (!player.addItem(item)) {
+                    player.drop(item, true);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void variantTick(Level level) {
+        super.variantTick(level);
+
+        Player player = this.getUnderlyingPlayer();
+        if (player == null) {
+            return;
+        }
+
+        CustomMerchantOffers merchantOffers = getOffers();
+        for (CustomMerchantOffer merchantOffer : merchantOffers) {
+            boolean hasAnyMatching = player.getInventory().hasAnyMatching((stack) -> {
+                var ingredient = PartialNBTIngredient.of(merchantOffer.getResult().getItem(), stack.getOrCreateTag());
+                return ingredient.test(stack);
+            });
+            if (!hasAnyMatching) {
+                merchantOffer.setToOutOfStock();
+            } else {
+                merchantOffer.resetUses();
+            }
+        }
+    }
+
+    @Override
     public TransfurMode getTransfurMode() {
         return TransfurMode.NONE;
     }
@@ -141,11 +193,11 @@ public class LatexSnowFoxFoxyasEntity extends AbstractTraderChangedEntityWithInv
         super.die(source);
 
         if (source.getEntity() instanceof ServerPlayer player) {
-            Advancement _adv = player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:foxyas_advancement"));
-            assert _adv != null;
-            AdvancementProgress _ap = player.getAdvancements().getOrStartProgress(_adv);
+            Advancement advancement = player.server.getAdvancements().getAdvancement(ResourceLocation.parse("changed_addon:foxyas_advancement"));
+            assert advancement != null;
+            AdvancementProgress _ap = player.getAdvancements().getOrStartProgress(advancement);
             if (!_ap.isDone()) {
-                for (String s : _ap.getRemainingCriteria()) player.getAdvancements().award(_adv, s);
+                for (String s : _ap.getRemainingCriteria()) player.getAdvancements().award(advancement, s);
             }
         }
     }

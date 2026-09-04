@@ -1,6 +1,7 @@
 package net.foxyas.changedaddon.entity.ai.goals.exp9;
 
 import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
+import net.foxyas.changedaddon.util.FoxyasUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
@@ -15,16 +16,16 @@ import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.EnumSet;
 
 import static net.minecraft.tags.BlockTags.FIRE;
 
 @ParametersAreNonnullByDefault
-public class StaticDischargeGoal extends Goal {
+public class StaticDischargeGoal extends CastingAttackGoal {
 
     protected final PathfinderMob holder;
     protected final IntProvider cooldownProvider;
@@ -50,6 +51,7 @@ public class StaticDischargeGoal extends Goal {
         this.aoe = aoe;
         aoeSqr = aoe * aoe;
         damageProvider = damage;
+        this.setFlags(EnumSet.of(Flag.LOOK));
     }
 
     @Override
@@ -87,12 +89,19 @@ public class StaticDischargeGoal extends Goal {
 
     @Override
     public void tick() {
+        if (!(holder.level() instanceof ServerLevel level)) {
+            return;
+        }
         if (castDuration > 0) {
             castDuration--;
             if (holder instanceof Experiment009BossEntity exp9) {
                 exp9.setCastingAttack(castDuration > 0);
             }
             holder.setDeltaMovement(Vec3.ZERO);
+
+            if (target != null) {
+                holder.getLookControl().setLookAt(target, 180, 180);
+            }
             return;
         }
 
@@ -100,17 +109,16 @@ public class StaticDischargeGoal extends Goal {
         float size = Mth.lerp(delta, 0.1f, 1);
         float doubleSize = size * 2;
 
-        ((ServerLevel) holder.level).sendParticles(ParticleTypes.ELECTRIC_SPARK,
+        level.sendParticles(ParticleTypes.ELECTRIC_SPARK,
                 holder.getX() - size, holder.getY() - size + holder.getBbHeight() / 2, holder.getZ() - size,
                 Math.round(Mth.lerp(delta, 20, 160)),
                 doubleSize, doubleSize, doubleSize, 0.2);
 
         if (delta >= 0.9f && !triggered) {
             AABB aabb = AABB.ofSize(holder.position(), aoe * 2, aoe * 2, aoe * 2);
-            ServerLevel level = (ServerLevel) holder.level;
             RandomSource random = holder.getRandom();
             BlockPos bossPos = holder.blockPosition();
-            for (BlockPos blockPos : BlockPos.betweenClosedStream(bossPos.offset(-16, -16, -16), bossPos.offset(16, 16, 16)).map(BlockPos::immutable).filter(pos -> level.getBlockState(pos).is(FIRE)).toList()) {
+            for (BlockPos blockPos : FoxyasUtil.betweenClosedStreamSphere(bossPos.offset(-16, -16, -16), bossPos.offset(16, 16, 16)).map(BlockPos::immutable).filter(pos -> level.getBlockState(pos).is(FIRE)).toList()) {
                 level.removeBlock(blockPos, false);
                 level.levelEvent(1009, blockPos, 0);
             }
@@ -119,7 +127,7 @@ public class StaticDischargeGoal extends Goal {
                         DamageSource pSource;
                         if (holder instanceof Experiment009BossEntity bossEntity) {
                             pSource = bossEntity.getThunderDmg();
-                        } else pSource = target.level().damageSources().lightningBolt();
+                        } else pSource = level.damageSources().lightningBolt();
                         float sample = damageProvider.sample(random);
                         if (holder instanceof Experiment009BossEntity experiment009BossEntity) {
                             sample *= experiment009BossEntity.getPhase().getDamageModifier(holder);

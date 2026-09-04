@@ -1,10 +1,12 @@
 package net.foxyas.changedaddon.entity.api;
 
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.Changed;
 import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
+import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexEntity;
 import net.ltxprogrammer.changed.init.ChangedAbilities;
 import net.ltxprogrammer.changed.network.packet.GrabEntityPacket;
 import net.minecraft.nbt.CompoundTag;
@@ -20,9 +22,19 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
 
 public interface IGrabberEntity {
 
+    interface IHasGrabAbility {
+        @Nullable
+        GrabEntityAbilityInstance createGrabAbilityInstance(boolean isSafeByDefault);
+
+        @Nullable
+        default GrabEntityAbilityInstance mayGetGrabAbilityInstance() {
+            return this instanceof IGrabberEntity iGrabber ? iGrabber.getGrabAbilityInstance() : null;
+        }
+    }
 
     interface IGrabberCondition {
         boolean isAffectedByGrab();
@@ -37,14 +49,41 @@ public interface IGrabberEntity {
 
     PathfinderMob asMob();
 
-    LivingEntity getGrabbedEntity();
+    default LivingEntity getGrabbedEntity() {
+        return this.getGrabAbilityInstance() != null ? this.getGrabAbilityInstance().grabbedEntity : null;
+    }
 
     GrabEntityAbilityInstance getGrabAbilityInstance();
 
-    default GrabEntityAbilityInstance createGrabAbility() {
-        if (this instanceof ChangedEntity changedEntity) {
-            return new GrabEntityAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get(), IAbstractChangedEntity.forEntity(changedEntity));
-        } else return null;
+    void setGrabAbilityInstance(GrabEntityAbilityInstance instance);
+
+    default boolean isGrabbing() {
+        return this.getGrabbedEntity() != null;
+    }
+
+    default GrabEntityAbilityInstance createGrabAbility(boolean isSafeByDefault) {
+        GrabEntityAbilityInstance instance = null;
+        if (this instanceof AbstractDarkLatexEntity abstractDarkLatexEntity) {
+            instance = abstractDarkLatexEntity.createGrabAbility();
+        } else if (this instanceof IHasGrabAbility iHasGrabAbility) {
+            instance = iHasGrabAbility.createGrabAbilityInstance(isSafeByDefault);
+        } else if (this instanceof ChangedEntity changedEntity) {
+            instance = new GrabEntityAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get(), IAbstractChangedEntity.forEntity(changedEntity));
+        }
+
+        if (instance instanceof GrabEntityAbilityExtensor grabEntityAbilityExtensor) {
+            grabEntityAbilityExtensor.setSafeMode(isSafeByDefault);
+        }
+
+        return instance;
+    }
+
+    default GrabEntityAbilityInstance createSimpleGrabAbility() {
+        return createGrabAbility(false);
+    }
+
+    default GrabEntityAbilityInstance createSafeGrabAbility() {
+        return createGrabAbility(true);
     }
 
     default boolean canUseGrab() {
@@ -206,5 +245,20 @@ public interface IGrabberEntity {
             if (changedEntity instanceof IAlphaAbleEntity alphaAbleEntity) return alphaAbleEntity.isAlpha();
         }
         return selfType.is(ChangedAddonTags.EntityTypes.CAN_GRAB) || isAbleToGrab();
+    }
+
+    /// Optional Function to handle the grab type decision
+    default GrabStrategy getGrabStrategy() {
+        if (this instanceof LivingEntity living) {
+            if (living.getType().is(ChangedAddonTags.EntityTypes.CAN_GRAB_SUIT)) {
+                return living.getRandom().nextFloat() <= 0.25f ? GrabStrategy.SUIT : GrabStrategy.GRAB;
+            }
+        }
+        return GrabStrategy.GRAB;
+    }
+
+    enum GrabStrategy {
+        GRAB,
+        SUIT;
     }
 }

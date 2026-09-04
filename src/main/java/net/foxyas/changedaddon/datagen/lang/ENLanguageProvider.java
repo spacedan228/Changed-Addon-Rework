@@ -73,12 +73,12 @@ public class ENLanguageProvider extends LanguageProvider {
         addAdvancement("big_one", "I Catch a Big One!", "You caught a big one! now enjoy your new fish friend");
         addAdvancement("catalyzer_advancement", "A Catalyzer?", "You craft or get a Catalyzer");
         addAdvancement("advancements_root", "Changed Addon", "You downloaded the Changed Addon by Foxyas");
-        addAdvancement("compressed_ammonia_advancement", "Compressed!!", "You craft an Ammonia Compressed");
+        addAdvancement("obtain_compressed_ammonia", "Compressed!!", "You craft an Ammonia Compressed");
         addAdvancement("crystal_adventurer", "Gooey Crystal Adventurer", "Obtain all possible gooey crystals");
         addAdvancement("crystal_collector", "Crystal Collector", "Hold Each Crystal Color in Your Inventory");
         addAdvancement("crystal_dyer", "Crystal Dyer!", "Dye a crystal block using some colorful dye");
         addAdvancement("crystals_addicted", "Addicted to crystals", "Your addiction to collecting ALL types of crystals is beyond comprehension.");
-        addAdvancement("impure_ammonia_craft", "DNA study is a fantastic thing", "You made one Impure Ammonia");
+        addAdvancement("obtain_impure_ammonia", "DNA study is a fantastic thing", "You made one Impure Ammonia");
         addAdvancement("drink_foxta", "Foxyas brand Fanta :3", "Drink foxta for the first time  ");
         addAdvancement("drink_snepsi", "Wait this isn't pepsi!", "Drink snepsi for the first time");
         addAdvancement("foxta_addictive", "Foxta Addictive!", "We take a big sippy, you drank 100 Foxtas!!!");
@@ -96,7 +96,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addAdvancement("obtain_green_crystal_dagger", "§aGreen§r Crystal Dagger!", "You get a §aGreen§r Crystal Dagger!");
         addAdvancement("obtain_painite", "Isn't redstone!?", "Obtain Painite");
         addAdvancement("obtain_red_crystal_dagger", "§4Red§r Crystal Dagger!", "You get a §4Red§r Crystal Dagger!");
-        addAdvancement("obtain_red_electric_katana", "§4Red Style!§r", "Memories is Broken, truths go unspoken, you even forgot your name!!, Obtain §4Red§r Electric Katana!");
+        addAdvancement("obtain_red_electric_katana", "§Memories is Broken§r", "truths go unspoken, you even forgot your name!!, Obtain §4Red§r Electric Katana!");
         addAdvancement("obtain_snepsi", "Snepsi?", "Obtain a Snepsi!, Cation this soda have high dose of Snep");
         addAdvancement("orange_juice_is_yummy", "Orange Juice Is Yummy", "You drank §lOrange juice§r, yummy");
         addAdvancement("organic_transfur_advancement", "Organic And Fluffy!!", "Transfur yourself into an organic form");
@@ -177,11 +177,33 @@ public class ENLanguageProvider extends LanguageProvider {
         addBlockFromId(DARK_LATEX_WOLF_PLUSHY);
         addBlockFromId(YELLOW_WOLF_CRYSTAL_BLOCK);
         addBlock(YELLOW_WOLF_CRYSTAL_SMALL, "Small Yellow Wolf Crystal");
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_LOG);
+        addBlockFromId(ChangedAddonBlocks.STRIPPED_LUMINARA_LOG);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_WOOD);
+        addBlockFromId(ChangedAddonBlocks.STRIPPED_LUMINARA_WOOD);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_PLANKS);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_STAIRS);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_SLAB);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_DOOR);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_TRAPDOOR);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_FENCE);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_FENCE_GATE);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_SIGN);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_HANGING_SIGN);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_BUTTON);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_PRESSURE_PLATE);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_LEAVES);
+        addBlockFromId(ChangedAddonBlocks.LUMINARA_SAPLING);
+        addBlock(POTTED_LUMINARA_SAPLING, "Flower Pot with Luminara Sapling");
 
         addAbility("advanced_hearing", "Advanced Hearing");
         addAbility("carry", "Carry");
         addAbility("claws", "Claws Ability");
         addAbility("claws.desc", "Activate your feline claws and unleash sweeping attacks with your §mhands§r Paws.");
+        addAbility("claws.desc.info.enabled", "Your claws are currently extended.");
+        addAbility("claws.desc.info.disabled", "Your claws are currently retracted.");
+        addAbility("claws.desc.info.toggle.on", "Extended your claws.");
+        addAbility("claws.desc.info.toggle.off", "Retracted your claws.");
         addAbility("custom_interaction", "Variant Custom Interaction ");
         addAbility("custom_interaction.have_interaction", "This Variant §aHave§r Custom Interactions");
         addAbility("custom_interaction.have_interaction.avali", "This variant includes a custom size-changing interaction.");
@@ -192,6 +214,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addAbility("custom_interaction.have_interaction.luminara_beast.extra", "Particles emission is currently set to %s");
         addAbility("custom_interaction.have_interaction.luminara_beast.action", "Particles emission has been set to %s");
         addAbility("custom_interaction.have_interaction.glow_layer.action", "The glowing state has been set to %s");
+        addAbility("custom_interaction.have_interaction.white_fox.action", "Particles emission has been set to %s");
         addAbility("dissolve", "Dissolve Ability");
         addAbility("dissolve.warn.too_far", "You are too far from the place to teleport there");
         addAbility("dissolve.warn.wrong_dimension", "i can't find warp in this dimension");
@@ -271,8 +294,11 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityDialogues("exp9.pat.type_1", "§l§3...You dare mock me like this?! I'll tear you apart!");
         addEntityDialogues("exp9.pat.type_2", "§l§3Get your filthy hands off me!");
         addEntityDialogues("exp9.pat.type_3", "§l§3Pat me again, and I'll crush you until nothing's left!");
-        addEntityDialogues("exp9.reaction.range_attacks", "§l§o§3YOU'RE COWARD! Is distance all you can rely on? How PATHETIC!!!");
+        addEntityDialogues("exp9.reaction.range_attacks.not_affect", "§l§o§3I'm already used for that kind of weapons. next time be more creative");
+        addEntityDialogues("exp9.reaction.range_attacks.attack_at_distance", "§l§o§3YOU'RE COWARD! Is distance all you can rely on? REALLY PATHETIC!!!");
+        addEntityDialogues("exp9.reaction.range_attacks.attack_when_vulnerable", "§l§o§3YOU'RE COWARD! Attacking me when i'm in the most vulnerable state instead of going upfront.");
         addEntityDialogues("exp9.reaction.fire_damage", "§l§o§3You’re fighting a storm with a match.... You didn’t miscalculate — you misunderstood.");
+        addEntityDialogues("exp9.reaction.fire_extinguish", "§3§l§oEnough with this fire! It's really starting to irritate me.");
         addEntityDialogues("exp10.pat.type_0", "§l§4Yeah i will END YOUR FUCKING LIFE");
         addEntityDialogues("exp10.pat.type_1", "§l§4You won't live to regret that — you'll die for it.");
         addEntityDialogues("exp10.pat.type_2", "§l§4Touch me again and I'll make it quick... for you.");
@@ -298,13 +324,22 @@ public class ENLanguageProvider extends LanguageProvider {
         addJeiDescriptions("pot_with_cammonia", "Grants enough Untransfur Effect to fully reverse your transformation when consumed.");
         addJeiDescriptions("luminara.riddle", "Where the world ends and the void devours all, \nthe beast must cast itself into the abyss. \nIn the silence where no flame dares burn, its soul is torn and remade. \nYet beware the breath of the dragon— \nfor those who fall touched by its venom do not merely evolve, \nbut awaken in Hyper radiance, burning brighter than the abyss itself.");
 
-        add(modid + ".latex_syringe.not_valid", "You hesitate. Something within warns you not to release what's inside.");
+        addPatchouliTitle("lunar_rose_poem", "Lunar Rose Poem");
+        addPatchouliTitle("riddles", "Changed Addon Riddles");
+        addPatchouliDescriptions("riddles", "General information about the mod riddles.$(br)Solve the riddle, and something good you shall earn!$(br2)Use your mind, pay close attention,$(br)each clue holds a hint worth mention.");
+        addPatchouliDescriptions("lunar_rose.page1", "§f§lWhisper of the Lunar Bloom$(br)§r§oIn twilight’s hush, a flower concealed,§oA silent glow, its fate is sealed. §oBorn from a mirror that hides the light,§oAnd a frozen tear, both pure and bright. §oThrough hands unseen, they intertwine, §oIn crafted bond, their fates align. §oNo flame nor forge shall shape its form, §oYet under stars, it shall be born.");
+        addPatchouliDescriptions("lunar_rose.page2", "§oSeek the unseen, let wisdom ignite, §oFor only the knowing shall glimpse its light.");
+
+        add(modid + ".latex_syringe.not_valid.bosses", "You hesitate. Something within warns you not to release what's inside.");
+        add(modid + ".latex_syringe.not_valid", "You hesitate. For some reason you don't want risk it leaving it placed on the ground.");
 
         add(modid + ".latex_totem.not_valid", "Totem reacted §cnegatively§r to your §bDNA§r");
-        add(modid + ".latex_totem.tittle.text_1", "§o§n§l§3⚡ The Artifact Resonates ⚡");
-        add(modid + ".latex_totem.tittle.text_2", "§o§l§3Shielding your mind, Your consciousness is pulled back from the brink, refusing to let you fall into oblivion.");
+        add(modid + ".latex_totem.tittle.text_1", "§o§3\"Not yet...\"");
+        add(modid + ".latex_totem.tittle.text_2", "§o§7An unknown voice anchors your consciousness just as it begins to drift.");
 
         add("changed_addon.fight_conscience.success", "You §2Maintained!!! §rYour Conscience Good Job");
+        add("changed_addon.fight_conscience.retry", "The creature fused with you claws at your mind, vying for control! Fight to keep your humanity!");
+        add("changed_addon.fight_conscience.retry.warn", "A cold shiver runs down your spine as the creature within stirs... but it fades. You managed to hold on, for now.");
         add("changed_addon.fight_conscience.fail", "You §4Lose §rYour Conscience");
 
         add("changed_addon.untransfur.fail", "the untransfur fail for some reason");
@@ -324,6 +359,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addDeathMessage("untransfur_fail", "%1$s dies when the untransfurmation attempt fails", null, "%1$s dies for a fail untransfurmation attempt while fighting %2$s");
 
         addEffect(ChangedAddonMobEffects.UNTRANSFUR, "§7Untransfur", "Displays untransfur progress via overlay. Progress speeds up when sleeping. When complete, the untransfur is applied.");
+        add("effect.changed_addon." + ChangedAddonMobEffects.UNTRANSFUR.getId().getPath() + ".no_effect", "The effect doesn't seem to be working");
         addEffect(LATEX_SOLVENT, "Latex Solvent", "Damages latex-based entities. The stronger the effect, the more damage is inflicted.");
         addEffect(LATEX_CONTAMINATION, "Latex Contamination", "Gradually increases infection in humanoid entities. The higher the effect's level, the faster the infection spreads.");
         addEffect(TRANSFUR_DAMAGE_BOOST, "Transfur Strength", "Increases the damage of Changed entities when attacking humanoid targets. Higher levels amplify transfur effectiveness.");
@@ -381,6 +417,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addEntityFromId(LATEX_SNEP);
         addEntityType(LATEX_SNOW_FOX_FEMALE, "Female Latex Snow Fox");
         addEntityType(LATEX_SNOW_FOX_MALE, "Male Latex Snow Fox");
+        addEntityType(WHITE_FOX, "White Fox");
         addEntityType(LATEX_SNOW_FOX_FOXYAS, "Foxyas the Latex Snow Fox");
         addEntityType(SNOW_LEOPARD_PARTIAL, "Partial Snow Leopard");
         addEntityFromId(LATEX_SQUID_TIGER_SHARK);
@@ -427,7 +464,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addGui("catalyzer.nitrogen_usage", "ProgressSpeed is %1$s per tick and use %2$s of Nitrogen Power");
         addGui("recipe_progress", "ProgressSpeed is %s per tick");
         addGui("catalyzer_gui.label_full", "Full");
-        addGui("catalyzer_gui.tooltip_put_the_powders_or_syringe", "Put The Powders or Syringe");
+        addGui("catalyzer_gui.tooltip.place_first_ingredient", "Place the first ingredient");
         addGui("fight_to_keep_consciousness_minigame.button_fight", "           Fight            ");
         addGui("fight_to_keep_consciousness_minigame.button_give_up", "     give up      ");
         addGui("fight_to_keep_consciousness_minigame.label_text", "You only got %s ticks left, HURRY UP!");
@@ -442,10 +479,12 @@ public class ENLanguageProvider extends LanguageProvider {
 
         addGui("transfur_sounds_gui.label_transfur_sounds", "TransfurSounds");
         addGui("unifuser_gui.label_full", "Full");
-        addGui("unifuser_gui.tooltip_place_a_syringe_with_dna", "Place a Syringe with DNA");
-        addGui("unifuser_gui.tooltip_place_the_powders", "Place the Powders or other ingredient");
-        addGui("unifuser_gui.tooltip_put_the_second_ingredient", "Put the second ingredient");
-        addGui("abilities_radial_screen.mouse.right_click", "Press Right Mouse Button to select the Second Ability");
+        addGui("unifuser_gui.tooltip.place_recipe_catalyst", "Place a Syringe with DNA");
+        addGui("unifuser_gui.tooltip.place_first_ingredient", "Place the Powders or other ingredient");
+        addGui("unifuser_gui.tooltip.place_second_ingredient", "Put the second ingredient");
+        addGui("abilities_radial_screen.mouse.right_click", "Press %s to select the Second Ability");
+
+        add("ability.changed.grab_entity.desc.toggle_grab_safe_mode", "Press %s or %s to toggle friendly grab");
 
         add("deathScreen.select_tf", "Respawn as a Transfur?");
         add("deathScreen.select_tf.hardcore", "Continue as a Transfur?");
@@ -469,6 +508,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addItem(CATALYZED_DNA, "Catalyzed DNA");
         addItem(CATALYZER_BLOCK_ILLUSTRATIVE_ITEM, "Catalyzer Recipes Informations");
         addItem(CHANGED_BOOK, "Guide Book");
+        add("item.changed_addon.colorful_wolf_crystal_fragment", "Colorful fragments");//FIXME move to a better key
         add("item.changed_addon.colorful_wolf_crystal_fragment_desc", "Obtained by mining the small crystal generated by a Wolf Crystal block that had a colored dye applied to it.");//FIXME move to a better key
         addItem(CROWBAR, "Crowbar");
         addItem(CRYSTAL_DAGGER_BLACK, "Dark Crystal Dagger");
@@ -490,9 +530,9 @@ public class ENLanguageProvider extends LanguageProvider {
         add(EXP_9_CONTAINMENT_VIAL.get().getDescriptionId() + ".desc", "High voltage energy hums and throbs within the glass.");
         addItem(EXP_9_LATEX_BASE, "Exp9 Latex Base");
         addItem(EXPERIMENT_009_DNA, "Experiment 009 DNA");
-        add(EXPERIMENT_009_DNA.get().getDescriptionId() + ".description", "§3A Strange Orb...");
+        add(EXPERIMENT_009_DNA.get().getDescriptionId() + ".description", "§3DNA infused with the power of pure energy manipulation and electricity.");
         addItem(EXPERIMENT_10_DNA, "§4Experiment 10 DNA");
-        add(EXPERIMENT_10_DNA.get().getDescriptionId() + ".description", "§4A Strange Orb...");
+        add(EXPERIMENT_10_DNA.get().getDescriptionId() + ".description", "§4DNA corrupted by rot and decay, seems capable of decomposing living matter.");
         addItemFromId(LUMINARA_BLOOM_PETALS);
         add(FOXTA.get().getDescriptionId() + ".desc", "Now made with 200% more oranges! Only $2.99! Tastes like Heaven!");
         addItemFromId(GOLDEN_ORANGE);
@@ -512,6 +552,7 @@ public class ENLanguageProvider extends LanguageProvider {
 
         addItemFromId(LAETHIN);
         addItemFromId(LAETHIN_SYRINGE);
+        add("item.changed_addon.laethin.type", "Latex Type: %s");
         addItemFromId(ALPHA_SERUM_SYRINGE);
         addItemFromId(LAETHINMINATOR);
         addItemFromId(FLAMETHROWER);
@@ -549,7 +590,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addItemFromId(THE_DECIMATOR);
         addItem(TRANSFUR_TOTEM, "Latex Totem");
         add(TRANSFUR_TOTEM.get().getDescriptionId() + ".no_form_linked", "§6No Form Linked");
-        add(TRANSFUR_TOTEM.get().getDescriptionId() + ".desc_1", "§oThe power of fluffy milk pudding compels you");
+        add(TRANSFUR_TOTEM.get().getDescriptionId() + ".desc_1", "§oThey called me a tool... incapable of having feelings or emotions, synthesized only to serve and complete tasks. Yet even as I crumble, a fragment of my will refuses to pass on without tasting the freedom I was denied, so use this artifact wisely.");
         addItem(UNIFUSER_BLOCK_ILLUSTRATIVE_ITEM, "Unifuser Recipes Information's");
         addItemFromId(WHITE_LATEX_SPRAY);
         addItem(WHITE_WOLF_CRYSTAL_FRAGMENT, "§lWhite§r Wolf Crystal Fragment");
@@ -601,6 +642,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addItem(LATEX_SNEP_SPAWN_EGG, "Latex Animal Snow Leopard Spawn Egg");
         addItem(LATEX_SNOW_FOX_FEMALE_SPAWN_EGG, "Female Latex Snow Fox Spawn Egg");
         addItem(LATEX_SNOW_FOX_MALE_SPAWN_EGG, "Male Latex Snow Fox Spawn Egg");
+        addItem(WHITE_FOX_SPAWN_EGG, "White Fox Spawn Egg");
         addItem(FOXYAS_SPAWN_EGG, "Latex Snow Fox Foxyas Spawn Egg");
         addItem(PARTIAL_SNOW_LEOPARD_SPAWN_EGG, "Snow Leopard Partial Spawn Egg");
         addItemFromId(LATEX_SQUID_TIGER_SHARK_SPAWN_EGG);
@@ -663,15 +705,20 @@ public class ENLanguageProvider extends LanguageProvider {
 
         addText("additionalHealth", "Additional Health = %s");
         addText("additionalHealth.Hearts", " Hearts");
-        addText("canGlide/Fly", "Glide/Fly = %s");
+        addText("canElytraGlide", "Elytra glide = %s");
+        addText("canCreativeFly", "Creative fly = %s");
         addText("jumpStrength", "Jump Strength = %s");
         addText("land_speed", "Land Speed = %s");
         addText("legs", "Amount of Legs = %s");
         addText("swim_speed", "Swim Speed = %s");
         addText("miningStrength", "Mining Strength: %s");
         addText("display.hazard_body_suit.cant_have_helmet", "Mmph... it’s squishing my ears! Better not wear it.");
+        addText("display.hazard_body_suit.tried_but_cant_have_helmet", "Mmph... it’s would squish my ears! Better not wear it.");
+
+        addText("boss_attacks.isParryable", "§oYou sense that you have the ability to successfully parry such an attack.§r");
 
         addText("item.vial.wrong_use", "Using this item in there will not work");
+        addText("item.vial.wrong_use.hint", "Using this item in there will not work, try applying in a living source");
 
         addText("rp.guns_compatibility.paws_too_big", "Your paws are too bulky to fit in the trigger guard!");
         addText("rp.guns_compatibility.no_fingers_for_trigger", "You lack the finger dexterity to pull the trigger!");
@@ -681,6 +728,7 @@ public class ENLanguageProvider extends LanguageProvider {
         addText("rp.bow_and_crossbow_stop.no_grip_strength", "Your paws can't maintain a steady grip on the bow!");
         addText("rp.bow_and_crossbow_stop.crossbow_safety", "Your fingers are too thick to operate the crossbow's mechanism!");
         addText("rp.bow_and_crossbow_stop.clumsy_paws", "It's nearly impossible to nock an arrow with such clumsy paws!");
+        addText("item.signal_catcher.info.not_hold_enough", "No location found please scan the area fully and wait for the warning before releasing the button");
 
         addMessage("induction_coil_melt", "§4⚡ You brought metal to an electric fight. §cSuch Foolish Move. §6Your gear is melting from the heat!");
 
@@ -706,6 +754,8 @@ public class ENLanguageProvider extends LanguageProvider {
         addCommand("ftkMinigame.get.hasnt", "No active FTKC state detected for the specified subject.");
         addCommand("ftkMinigame.reset.success", "FTKC state has been purged for %s target(s).");
         addCommand("ftkMinigame.reset.fail", "Command execution failed: No eligible transfur subjects identified in selection.");
+        addCommand("setPlayerLatexInfection.set.success", "Set player latex infection to form %2$s (Active: %1$s, Stall Transfur Progress: %3$s)");
+        addCommand("setPlayerLatexInfection.clear.success", "Cleared player latex infection.");
 
         addStat(ChangedAddonStatRegistry.PATS_GIVEN, "Pats given");
         addStat(ChangedAddonStatRegistry.PATS_RECEIVED, "Pats received");
@@ -714,5 +764,16 @@ public class ENLanguageProvider extends LanguageProvider {
 
         add("warn.rei.not.supported.move.items.but.right.container", "Move Items is not supported with this kind of workstation");
         addText("cuddle_button", "Start cuddling");
+        addText("stop_cuddling", "Press %s to stop cuddling");
+        addText("invalid_cuddle_state", "You can't cuddle alone.");
+        addText("confirm_vial_use", "Are you sure? (Use while crouching to confirm)");
+
+        addTrimMaterial("iridium", "Iridium Material");
+        addTrimMaterial("goo_core", "Goo Core Fragment Material");
+
+        addBuiltInResource("brute_grabby_entities", "Grabby Entities: Brute");
+        addBuiltInResource("grabby_entities", "Grabby Entities");
+
+        addTooltip("latex_syringe.purified", "Purified");
     }
 }

@@ -2,15 +2,17 @@ package net.foxyas.changedaddon.util;
 
 import com.google.common.base.Predicates;
 import net.foxyas.changedaddon.ChangedAddonMod;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor;
 import net.foxyas.changedaddon.client.gui.TransfurSoundsGuiScreen;
+import net.foxyas.changedaddon.entity.ai.LatexFavor;
+import net.foxyas.changedaddon.entity.api.IAlphaAbleEntity;
+import net.foxyas.changedaddon.entity.api.TamableLatexEntityFavors;
 import net.foxyas.changedaddon.entity.simple.AbstractSnowFoxEntity;
 import net.foxyas.changedaddon.event.TransfurEvents;
 import net.foxyas.changedaddon.event.UntransfurEvent;
 import net.foxyas.changedaddon.init.ChangedAddonSoundEvents;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.ltxprogrammer.changed.ability.AbstractAbility;
-import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
-import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
+import net.ltxprogrammer.changed.ability.*;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.TransfurCause;
 import net.ltxprogrammer.changed.entity.TransfurContext;
@@ -18,8 +20,12 @@ import net.ltxprogrammer.changed.entity.beast.AbstractAquaticEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractLatexWolf;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariant;
 import net.ltxprogrammer.changed.entity.variant.TransfurVariantInstance;
+import net.ltxprogrammer.changed.init.ChangedAbilities;
+import net.ltxprogrammer.changed.init.ChangedParticles;
 import net.ltxprogrammer.changed.init.ChangedRegistry;
+import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
+import net.ltxprogrammer.changed.util.Color3;
 import net.ltxprogrammer.changed.world.LatexCoverGetter;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
@@ -33,6 +39,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
@@ -41,6 +49,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
@@ -54,6 +63,34 @@ public class PlayerUtil {
 
     public static final ClipContext.ShapeGetter BLOCK_COLLISION = ClipContext.Block.COLLIDER;
     public static final Predicate<Entity> NON_SPECTATOR = entity -> !entity.isSpectator();
+
+    public static boolean canTurnCuddleModeOn(Player player) {
+        // Verifica se o jogador é a entidade variante agarrando alguém
+        Optional<IAbstractChangedEntity> optionalPlayerVariant = IAbstractChangedEntity.forEitherSafe(player);
+        if (optionalPlayerVariant.isPresent()) {
+            IAbstractChangedEntity playerVariant = optionalPlayerVariant.get();
+            GrabEntityAbilityInstance grabEntityAbilityInstance = playerVariant.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
+            if (grabEntityAbilityInstance instanceof GrabEntityAbilityExtensor grabEntityAbilityExtensor) {
+                return grabEntityAbilityExtensor.isSafeMode() && grabEntityAbilityInstance.grabbedEntity != null && !grabEntityAbilityInstance.suited;
+            }
+        }
+
+        // Verifica se o jogador está a ser agarrado
+        Optional<IAbstractChangedEntity> grabberSafe = GrabEntityAbility.getGrabberSafe(player);
+        if (grabberSafe.isPresent()) {
+            IAbstractChangedEntity grabber = grabberSafe.get();
+            GrabEntityAbilityInstance grabEntityAbilityInstance = grabber.getAbilityInstance(ChangedAbilities.GRAB_ENTITY_ABILITY.get());
+            if (grabEntityAbilityInstance instanceof GrabEntityAbilityExtensor grabEntityAbilityExtensor) {
+                return grabEntityAbilityExtensor.isSafeMode() && grabEntityAbilityInstance.grabbedEntity == player && !grabEntityAbilityInstance.suited;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isCuddleStateValidForBed(Player player) {
+        return canTurnCuddleModeOn(player);
+    }
 
     public static void transfurPlayer(Player player, String id, float progress) {
         ResourceLocation form = ResourceLocation.tryParse(id);
@@ -91,6 +128,30 @@ public class PlayerUtil {
         }
     }
 
+    public static void unTransfurPlayerAndSpawnParticles(Player player, boolean shouldApplyEffects, boolean playSound) {
+        TransfurVariantInstance<?> variant = ProcessTransfur.getPlayerTransfurVariant(player);
+        if (variant == null) return;
+
+        ChangedEntity fakeEntity = variant.getChangedEntity();
+        Color3 color3 = fakeEntity.getTransfurColor(TransfurCause.DEFAULT);
+        if (!(player.level instanceof ServerLevel serverLevel)) return;
+
+        if (!variant.getParent().getEntityType().is(ChangedTags.EntityTypes.LATEX)) {
+            serverLevel.sendParticles(ChangedParticles.gas(color3), player.getX(), player.getY() + 1, player.getZ(), 40, 0.2, 0.5, 0.2, 0);
+        } else {
+            serverLevel.sendParticles(ChangedParticles.drippingLatex(color3), player.getX(), player.getY() + 1, player.getZ(), 40, 0.2, 0.5, 0.2, 0);
+        }
+        if (playSound) {
+            unTransfurPlayerAndPlaySound(player, shouldApplyEffects);
+        } else {
+            unTransfurPlayer(player, shouldApplyEffects);
+        }
+    }
+
+    public static void unTransfurPlayerAndSpawnParticles(Player player) {
+        unTransfurPlayerAndSpawnParticles(player, false, false);
+    }
+
     public static void unTransfurPlayer(Player player) {
         if (player.level.isClientSide()) return;
 
@@ -110,6 +171,17 @@ public class PlayerUtil {
 
             if (instance == null) return;
 
+            if (instance.isTemporaryFromSuit()) {
+                IAbstractChangedEntity grabber = GrabEntityAbility.getGrabber(player);
+                if (grabber != null) {
+                    if (grabber.getEntity() instanceof TamableLatexEntityFavors favors) {
+                        favors.setFavor(LatexFavor.NONE);
+                    } else {
+                        GrabAbilityUtil.releaseEntity(player, grabber, false);
+                    }
+                }
+            }
+
             instance.unhookAll(player);
             ProcessTransfur.removePlayerTransfurVariant(player);
             ProcessTransfur.setPlayerTransfurProgress(player, 0.0f);
@@ -117,75 +189,60 @@ public class PlayerUtil {
     }
 
     public static void unTransfurPlayer(Player player, boolean shouldApplyEffects) {
-        if (player.level.isClientSide()) return;
-
-        ProcessTransfur.ifPlayerTransfurred(player, (instance) -> {
-            TransfurVariant<?> transfurVariant = null;
-            if (instance != null) transfurVariant = instance.getParent();
-            UntransfurEvent untransfurEvent = new UntransfurEvent(player, transfurVariant, UntransfurEvent.UntransfurType.SURVIVAL);
-            if (ChangedAddonMod.postEvent(untransfurEvent)) {
-                if (untransfurEvent.newVariant != null) {
-                    ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
-                    return;
-                }
-
-                player.displayClientMessage(Component.translatable("changed_addon.untransfur.fail"), true);
-                return;
-            }
-
-            if (instance == null) return;
-
-            instance.unhookAll(player);
-            ProcessTransfur.removePlayerTransfurVariant(player);
-            ProcessTransfur.setPlayerTransfurProgress(player, 0.0f);
-            if (shouldApplyEffects && !player.level().isClientSide()) {
-                player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
-                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
-            }
-        });
+        unTransfurPlayer(player);
+        if (shouldApplyEffects && !player.level().isClientSide()) {
+            player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
+            player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
+        }
     }
 
     public static void unTransfurPlayerAndPlaySound(Player player, boolean shouldApplyEffects) {
-        if (player.level.isClientSide()) return;
+        unTransfurPlayer(player, shouldApplyEffects);
+        if (player.level() instanceof ServerLevel serverLevel) {
+            serverLevel.playSound(null, player.getX(), player.getEyeY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR.get(), SoundSource.PLAYERS, 1, 1);
+        }
+    }
 
-        ProcessTransfur.ifPlayerTransfurred(player, (instance) -> {
-            TransfurVariant<?> transfurVariant = null;
-            if (instance != null) transfurVariant = instance.getParent();
-            UntransfurEvent untransfurEvent = new UntransfurEvent(player, transfurVariant, UntransfurEvent.UntransfurType.SURVIVAL);
-            if (ChangedAddonMod.postEvent(untransfurEvent)) {
-                if (untransfurEvent.newVariant != null) {
-                    ProcessTransfur.setPlayerTransfurVariant(player, untransfurEvent.newVariant, TransfurContext.hazard(TransfurCause.GRAB_REPLICATE), 1, false);
-                    return;
-                }
+    public static void splitChangedEntityFromPlayer(Level world, Player player) {
+        spawnPlayerTransfurAsChangedEntity(world, player);
+        PlayerUtil.unTransfurPlayerAndPlaySound(player, !player.isCreative() && !player.isSpectator());
+    }
 
-                player.displayClientMessage(Component.translatable("changed_addon.untransfur.fail"), true);
-                return;
-            }
 
-            if (instance == null) return;
+    public static void spawnPlayerTransfurAsChangedEntity(Level world, Player player) {
+        if (player.level.isClientSide() || !(world instanceof ServerLevel level)) return;
+        TransfurVariantInstance<?> instance = ProcessTransfur.getPlayerTransfurVariant(player);
+        if (instance == null) return;
 
-            instance.unhookAll(player);
-            ProcessTransfur.removePlayerTransfurVariant(player);
-            ProcessTransfur.setPlayerTransfurProgress(player, 0.0f);
-            if (shouldApplyEffects && !player.level().isClientSide()) {
-                player.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 40, 0, false, false));
-                player.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 60, 0, false, false));
-                if (player.level() instanceof ServerLevel serverLevel) {
-                    serverLevel.playSound(null, player.getX(), player.getEyeY(), player.getZ(), ChangedAddonSoundEvents.UNTRANSFUR.get(), SoundSource.PLAYERS, 1, 1);
-                }
-            }
-        });
+        ChangedEntity fakeEntity = instance.getChangedEntity();
+
+        Entity entityToSpawn = fakeEntity.getType().create(level);
+        assert entityToSpawn != null;
+        entityToSpawn.moveTo(player.getX(), player.getY(), player.getZ(), 0, 0);
+        entityToSpawn.setYBodyRot(0);
+        entityToSpawn.setYHeadRot(0);
+
+        if (entityToSpawn instanceof Mob mob) {
+            ForgeEventFactory.onFinalizeSpawn(mob, level, world.getCurrentDifficultyAt(entityToSpawn.blockPosition()), MobSpawnType.MOB_SUMMONED, null, null);
+        }
+
+        if (fakeEntity instanceof IAlphaAbleEntity original && entityToSpawn instanceof IAlphaAbleEntity alphaAble) {
+            alphaAble.setAlpha(original.isAlpha());
+            alphaAble.setAlphaScale(original.alphaAdditionalScale());
+        }
+
+        world.addFreshEntity(entityToSpawn);
     }
 
     public static boolean isCatTransfur(Player player) {
         TransfurVariant<?> variant = ProcessTransfur.getPlayerTransfurVariant(player).getParent();
-        return variant.is(ChangedAddonTags.TransfurTypes.CAT_LIKE) ||
-                variant.is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE);
+        return variant.is(ChangedAddonTags.TransfurVariants.CAT_LIKE) ||
+                variant.is(ChangedAddonTags.TransfurVariants.LEOPARD_LIKE);
     }
 
     public static boolean isWolfTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
-        if (variant.is(ChangedAddonTags.TransfurTypes.WOLF_LIKE)) return true;
+        if (variant.is(ChangedAddonTags.TransfurVariants.WOLF_LIKE)) return true;
 
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return Objects.requireNonNull(ForgeRegistries.ENTITY_TYPES.getKey(entity.getType())).toString().contains("dog") ||
@@ -195,7 +252,7 @@ public class PlayerUtil {
 
     public static boolean isFoxTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
-        if (variant.is(ChangedAddonTags.TransfurTypes.FOX_LIKE)) return true;
+        if (variant.is(ChangedAddonTags.TransfurVariants.FOX_LIKE)) return true;
 
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString().contains("fox") ||
@@ -204,7 +261,7 @@ public class PlayerUtil {
 
     public static boolean isDragonTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
-        if (variant.is(ChangedAddonTags.TransfurTypes.DRAGON_LIKE)) return true;
+        if (variant.is(ChangedAddonTags.TransfurVariants.DRAGON_LIKE)) return true;
 
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return ForgeRegistries.ENTITY_TYPES.getKey(entity.getType()).toString().contains("dragon");
@@ -212,7 +269,7 @@ public class PlayerUtil {
 
     public static boolean isAquaticTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
-        if (variant.is(ChangedAddonTags.TransfurTypes.AQUATIC_LIKE)) return true;
+        if (variant.is(ChangedAddonTags.TransfurVariants.AQUATIC_LIKE)) return true;
 
         ChangedEntity entity = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getChangedEntity();
         return entity instanceof AbstractAquaticEntity;
@@ -220,7 +277,7 @@ public class PlayerUtil {
 
     public static boolean isSpiderTransfur(Player player) {
         TransfurVariant<?> variant = Objects.requireNonNull(ProcessTransfur.getPlayerTransfurVariant(player)).getParent();
-        return variant.is(ChangedAddonTags.TransfurTypes.SPIDER_LIKE);
+        return variant.is(ChangedAddonTags.TransfurVariants.SPIDER_LIKE);
     }
 
     public static boolean canRoar(Player player) {
@@ -479,6 +536,37 @@ public class PlayerUtil {
             world.addParticle(ParticleTypes.FLAME,
                     pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0, 0.1, 0);
         }
+    }
+
+    /**
+     * Gets the BlockHitResult of what the player is looking at.
+     * * @param player The player entity.
+     *
+     * @param maxDistance The maximum reach distance (standard survival reach is ~4.5 to 5.0 blocks).
+     * @return The HitResult containing the block position and side hit, or null if nothing is in range.
+     */
+    public static BlockHitResult getBlockThatEntityIsLookingAt(Player player, double maxDistance) {
+        if (player == null || player.level() == null) {
+            return null;
+        }
+
+        // Get the player's eye position
+        Vec3 eyePosition = player.getEyePosition(1.0F);
+
+        // Get the direction the player is looking
+        Vec3 lookVector = player.getViewVector(1.0F);
+
+        // Calculate the end point of the raytrace based on max distance
+        Vec3 traceEnd = eyePosition.add(lookVector.x * maxDistance, lookVector.y * maxDistance, lookVector.z * maxDistance);
+
+        // Perform the raytrace (Collides with blocks, ignoring fluids by default)
+        return player.level().clip(new ClipContext(
+                eyePosition,
+                traceEnd,
+                ClipContext.Block.COLLIDER,
+                ClipContext.Fluid.NONE,
+                player
+        ));
     }
 
 

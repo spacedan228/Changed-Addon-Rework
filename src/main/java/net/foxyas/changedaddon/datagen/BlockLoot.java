@@ -12,6 +12,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -27,10 +28,7 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
-import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.predicates.LootItemEntityPropertyCondition;
-import net.minecraft.world.level.storage.loot.predicates.MatchTool;
+import net.minecraft.world.level.storage.loot.predicates.*;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.minecraftforge.registries.RegistryObject;
@@ -43,6 +41,11 @@ import static net.foxyas.changedaddon.init.ChangedAddonBlocks.*;
 public class BlockLoot extends net.minecraft.data.loot.BlockLootSubProvider {
 
     public static final LootItemCondition.Builder HAS_SILK_TOUCH = MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))));
+    protected static final LootItemCondition.Builder HAS_NO_SILK_TOUCH = HAS_SILK_TOUCH.invert();
+    protected static final LootItemCondition.Builder HAS_SHEARS = MatchTool.toolMatches(ItemPredicate.Builder.item().of(Items.SHEARS));
+    private static final LootItemCondition.Builder HAS_SHEARS_OR_SILK_TOUCH = HAS_SHEARS.or(HAS_SILK_TOUCH);
+    private static final LootItemCondition.Builder HAS_NO_SHEARS_OR_SILK_TOUCH = HAS_SHEARS_OR_SILK_TOUCH.invert();
+    public static final float[] NORMAL_LEAVES_SAPLING_CHANCES = new float[]{0.05F, 0.0625F, 0.083333336F, 0.1F};
 
     public BlockLoot() {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags());
@@ -79,6 +82,7 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLootSubProvider {
         dropSelf(REINFORCED_CROSS_BLOCK.get());
         dropSelf(WALL_WHITE_CRACKED.get());
         dropPottedContents(ChangedAddonBlocks.POTTED_LUMINARA_BLOOM.get());
+        dropPottedContents(POTTED_LUMINARA_SAPLING.get());
 
         add(LUMINAR_CRYSTAL_BLOCK.get(), createSilkTouchDispatchTable(LUMINAR_CRYSTAL_BLOCK.get(), LootItem.lootTableItem(ChangedAddonItems.LUMINAR_CRYSTAL_SHARD.get())
                 .apply(ApplyExplosionDecay.explosionDecay())
@@ -139,6 +143,37 @@ public class BlockLoot extends net.minecraft.data.loot.BlockLootSubProvider {
         coverBlockDrop(COVER_BLOCK.get());
         coverBlockDropSelfOrOther(DARK_LATEX_COVER_BLOCK.get(), ChangedItems.DARK_LATEX_GOO.get());
         coverBlockDropSelfOrOther(WHITE_LATEX_COVER_BLOCK.get(), ChangedItems.WHITE_LATEX_GOO.get());
+
+        add(LUMINARA_LEAVES.get(), (block) -> createLeavesWithFruitDrops(block, LUMINARA_SAPLING.get(), LUMINARA_BLOOM.get().asItem(), NORMAL_LEAVES_SAPLING_CHANCES));
+        dropSelf(LUMINARA_SAPLING.get());
+        dropSelf(LUMINARA_LOG.get());
+        dropSelf(STRIPPED_LUMINARA_LOG.get());
+        dropSelf(LUMINARA_WOOD);
+        dropSelf(STRIPPED_LUMINARA_WOOD);
+        dropSelf(LUMINARA_PLANKS);
+        dropSelf(LUMINARA_STAIRS);
+        add(LUMINARA_SLAB.get(), this::createSlabItemTable);
+        add(LUMINARA_DOOR.get(), this::createDoorTable);
+        dropSelf(LUMINARA_TRAPDOOR);
+        dropSelf(LUMINARA_FENCE);
+        dropSelf(LUMINARA_FENCE_GATE);
+        dropSelf(LUMINARA_SIGN);
+        dropSelf(LUMINARA_WALL_SIGN);
+        dropSelf(LUMINARA_HANGING_SIGN);
+        dropSelf(LUMINARA_WALL_HANGING_SIGN);
+        dropSelf(LUMINARA_BUTTON);
+        dropSelf(LUMINARA_PRESSURE_PLATE);
+    }
+
+    protected void dropSelf(RegistryObject<? extends Block> block) {
+        dropSelf(block.get());
+    }
+
+    /**
+     * Used for oak and dark oak, same as droppingWithChancesAndSticks but adding in apples.
+     */
+    protected LootTable.Builder createLeavesWithFruitDrops(Block leaves, Block sapling, Item fruit, float... pChances) {
+        return this.createLeavesDrops(leaves, sapling, pChances).withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).when(HAS_NO_SHEARS_OR_SILK_TOUCH).add(this.applyExplosionCondition(leaves, LootItem.lootTableItem(fruit)).when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.BLOCK_FORTUNE, 0.005F, 0.0055555557F, 0.00625F, 0.008333334F, 0.025F))));
     }
 
     private void coverBlockDrop(MultifaceBlock cover) {

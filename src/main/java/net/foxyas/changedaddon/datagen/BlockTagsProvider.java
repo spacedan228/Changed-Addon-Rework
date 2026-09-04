@@ -32,6 +32,27 @@ public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsP
 
     @Override
     protected void addTags(HolderLookup.@NotNull Provider pProvider) {
+        tag(BlockTags.FLOWER_POTS).add(POTTED_LUMINARA_SAPLING.get(), POTTED_LUMINARA_BLOOM.get());
+        tag(BlockTags.LEAVES).add(LUMINARA_LEAVES.get());
+        tag(BlockTags.SAPLINGS).add(LUMINARA_SAPLING.get());
+        tag(BlockTags.MINEABLE_WITH_HOE).add(LUMINARA_LEAVES.get());
+        tag(BlockTags.OVERWORLD_NATURAL_LOGS).add(LUMINARA_LOG.get(), STRIPPED_LUMINARA_LOG.get());
+        tag(BlockTags.LOGS_THAT_BURN).add(LUMINARA_LOG.get(), STRIPPED_LUMINARA_LOG.get(), LUMINARA_WOOD.get(), STRIPPED_LUMINARA_WOOD.get());
+        tag(BlockTags.PLANKS).add(LUMINARA_PLANKS.get());
+        tag(BlockTags.STAIRS).add(LUMINARA_STAIRS.get());
+        tag(BlockTags.SLABS).add(LUMINARA_SLAB.get());
+        tag(BlockTags.WOODEN_DOORS).add(LUMINARA_DOOR.get());
+        tag(BlockTags.WOODEN_TRAPDOORS).add(LUMINARA_TRAPDOOR.get());
+        tag(BlockTags.WOODEN_FENCES).add(LUMINARA_FENCE.get());
+        tag(BlockTags.FENCE_GATES).add(LUMINARA_FENCE_GATE.get());
+        tag(Tags.Blocks.FENCE_GATES_WOODEN).add(LUMINARA_FENCE_GATE.get());
+        tag(BlockTags.SIGNS).add(LUMINARA_SIGN.get());
+        tag(BlockTags.WALL_SIGNS).add(LUMINARA_WALL_SIGN.get());
+        tag(BlockTags.CEILING_HANGING_SIGNS).add(LUMINARA_HANGING_SIGN.get());
+        tag(BlockTags.WALL_HANGING_SIGNS).add(LUMINARA_WALL_HANGING_SIGN.get());
+        tag(BlockTags.WOODEN_BUTTONS).add(LUMINARA_BUTTON.get());
+        tag(BlockTags.WOODEN_PRESSURE_PLATES).add(LUMINARA_PRESSURE_PLATE.get());
+
         tag(Tags.Blocks.ORES).add(DEEPSLATE_IRIDIUM_ORE.get());
         tag(forgeOresIridium).add(DEEPSLATE_IRIDIUM_ORE.get());
         tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(DEEPSLATE_IRIDIUM_ORE.get());
@@ -51,7 +72,9 @@ public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsP
                 BLUE_WOLF_CRYSTAL_SMALL.get(),
                 WHITE_WOLF_CRYSTAL_SMALL.get(),
                 LUMINARA_BLOOM.get(),
-                POTTED_LUMINARA_BLOOM.get()
+                POTTED_LUMINARA_BLOOM.get(),
+                LUMINARA_SAPLING.get(),
+                POTTED_LUMINARA_SAPLING.get()
         );
 
 
@@ -61,6 +84,21 @@ public class BlockTagsProvider extends net.minecraftforge.common.data.BlockTagsP
         tag(ChangedAddonTags.Blocks.LAB_BIG_DOORS).add(ChangedBlocks.LARGE_LIBRARY_DOOR.get(), ChangedBlocks.LARGE_LAB_DOOR.get(), ChangedBlocks.LARGE_MAINTENANCE_DOOR.get(), ChangedBlocks.LARGE_BLUE_LAB_DOOR.get());
         tag(ChangedAddonTags.Blocks.LAB_DOORS).add(ChangedBlocks.LIBRARY_DOOR.get(), ChangedBlocks.LAB_DOOR.get(), ChangedBlocks.MAINTENANCE_DOOR.get(), ChangedBlocks.BLUE_LAB_DOOR.get());
         tag(ChangedAddonTags.Blocks.PASSABLE_BLOCKS).addTags(BlockTags.FENCES, BlockTags.FENCE_GATES, BlockTags.TRAPDOORS).add(Blocks.ACACIA_DOOR, Blocks.IRON_BARS, ChangedBlocks.BLACK_RAILING.get());
+        tag(ChangedAddonTags.Blocks.DORMANT_LATEX_BLOCKS).add(DORMANT_DARK_LATEX.get()).add(DORMANT_WHITE_LATEX.get());
+        tag(ChangedAddonTags.Blocks.CAN_LUMINAR_CRYSTAL_SURVIVE).add(LUMINAR_CRYSTAL_BLOCK.get()).add(Blocks.STONE).add(Blocks.CRYING_OBSIDIAN).add(Blocks.AMETHYST_BLOCK).add(Blocks.AMETHYST_CLUSTER).add(Blocks.SEA_LANTERN).add(Blocks.CALCITE).addTag(ChangedAddonTags.Blocks.DORMANT_LATEX_BLOCKS).addTag(BlockTags.ICE).addTag(Tags.Blocks.STORAGE_BLOCKS_QUARTZ);
+        tag(ChangedAddonTags.Blocks.CAN_SPAWN_LUMINARCTIC_LEOPARDS_ON_CRYSTAL_BREAK).add(LUMINAR_CRYSTAL_BLOCK.get());
+        tag(ChangedAddonTags.Blocks.CONDUCTIVE)
+                .addTag(Tags.Blocks.STORAGE_BLOCKS_RAW_IRON)
+                .addTag(Tags.Blocks.STORAGE_BLOCKS_RAW_COPPER)
+                .addTag(Tags.Blocks.STORAGE_BLOCKS_RAW_GOLD)
+                .addTag(Tags.Blocks.STORAGE_BLOCKS_IRON)
+                .addTag(Tags.Blocks.STORAGE_BLOCKS_COPPER)
+                .addTag(Tags.Blocks.STORAGE_BLOCKS_GOLD)
+                .addTag(BlockTags.IRON_ORES)
+                .addTag(BlockTags.GOLD_ORES)
+                .addTag(BlockTags.COPPER_ORES)
+                .add(Blocks.LIGHTNING_ROD)
+        ;
 
         tag(Tags.Blocks.NEEDS_NETHERITE_TOOL).add(DEEPSLATE_PAINITE_ORE.get(), PAINITE_BLOCK.get());
 

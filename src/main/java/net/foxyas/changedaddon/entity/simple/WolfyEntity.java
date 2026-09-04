@@ -1,19 +1,11 @@
 package net.foxyas.changedaddon.entity.simple;
 
-import net.foxyas.changedaddon.entity.ai.goals.abilities.MayCauseGrabDamageGoal;
-import net.foxyas.changedaddon.entity.ai.goals.abilities.MayDropGrabbedEntityGoal;
-import net.foxyas.changedaddon.entity.ai.goals.abilities.MayGrabTargetGoal;
+import net.foxyas.changedaddon.ability.api.GrabEntityAbilityExtensor.IOverrideGrabAbilityTargetConditions;
 import net.foxyas.changedaddon.entity.api.IGrabberEntity;
-import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.init.ChangedAddonItems;
-import net.foxyas.changedaddon.init.ChangedAddonMobEffects;
-import net.foxyas.changedaddon.init.ChangedAddonTags;
-import net.foxyas.changedaddon.mixins.abilities.AbilityControllerAccessor;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
-import net.foxyas.changedaddon.variant.VariantExtraStats;
-import net.ltxprogrammer.changed.ability.AbstractAbility;
-import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
-import net.ltxprogrammer.changed.ability.GrabEntityAbilityInstance;
+import net.foxyas.changedaddon.init.*;
+import net.foxyas.changedaddon.process.variantsExtraStats.diets.FoodDietEntry;
+import net.foxyas.changedaddon.util.TagKeyUtil;
+import net.foxyas.changedaddon.variant.ILavaSwimmableVariant;
 import net.ltxprogrammer.changed.entity.*;
 import net.ltxprogrammer.changed.entity.ai.LatexAssimilationDecision;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
@@ -29,18 +21,25 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PlayMessages;
@@ -50,11 +49,19 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Objects;
 
-import static net.foxyas.changedaddon.procedure.CreatureDietsHandleProcedure.DietType;
+public class WolfyEntity extends AbstractDarkLatexWolf implements ILavaSwimmableVariant, IOverrideGrabAbilityTargetConditions {
 
-public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraStats, IGrabberEntity {
-
-    public static final DietType WOLFY_DIET = DietType.create("WOLFY", ChangedAddonTags.TransfurTypes.WOLF_DIET, ChangedAddonTags.Items.WOLF_DIET, List.of(ChangedAddonItems.FOXTA.get(), ChangedItems.ORANGE.get()));
+    public static final FoodDietEntry WOLFY_DIET =
+            new FoodDietEntry(
+                    // Ingredient.of can accept a TagKey<Item> directly
+                    List.of(Ingredient.of(ChangedAddonTags.Items.WOLF_DIET),
+                            Ingredient.of(ChangedAddonItems.FOXTA.get(), ChangedItems.ORANGE.get())
+                    ),
+                    ConstantFloat.of(2.0f), // hungerBonus (replace with your FloatProvider)
+                    ConstantFloat.of(0.5f), // saturationBonus (replace with your FloatProvider)
+                    List.of(),              // mobEffect list (empty or add your effects)
+                    false                   // isSickType
+            );
 
     public WolfyEntity(PlayMessages.SpawnEntity ignoredPacket, Level world) {
         this(ChangedAddonEntities.WOLFY.get(), world);
@@ -65,11 +72,9 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         xpReward = 0;
         this.setAttributes(getAttributes());
         setPersistenceRequired();
-
-        if (this.grabEntityAbilityInstance == null) {
-            this.grabEntityAbilityInstance = this.createGrabAbility();
+        if (this instanceof IGrabberEntity grabber) {
+            grabber.setCanUseGrab(true);
         }
-        this.setCanUseGrab(true);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -120,35 +125,35 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         return NetworkHooks.getEntitySpawningPacket(this);
     }
 
-    @Override
-    public boolean variantOverrideSwim() {
-        if (this.maybeGetUnderlying() instanceof Player player) {
-            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            return transfurVariant != null && player.isEyeInFluid(FluidTags.LAVA);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean variantOverrideSwimUpdate() {
-        if (this.maybeGetUnderlying() instanceof Player player) {
-            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            return transfurVariant != null && player.isEyeInFluid(FluidTags.LAVA);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean variantOverrideIsInWater() {
-        if (this.maybeGetUnderlying() instanceof Player player) {
-            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
-            return transfurVariant != null && player.level().getFluidState(player.blockPosition()).is(FluidTags.LAVA);
-        }
-
-        return false;
-    }
+//    @Override
+//    public boolean variantOverrideSwim() {
+//        if (this.maybeGetUnderlying() instanceof Player player) {
+//            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+//            return transfurVariant != null && player.isEyeInFluid(FluidTags.LAVA);
+//        }
+//
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean variantOverrideSwimUpdate() {
+//        if (this.maybeGetUnderlying() instanceof Player player) {
+//            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+//            return transfurVariant != null && player.isEyeInFluid(FluidTags.LAVA);
+//        }
+//
+//        return false;
+//    }
+//
+//    @Override
+//    public boolean variantOverrideIsInWater() {
+//        if (this.maybeGetUnderlying() instanceof Player player) {
+//            TransfurVariantInstance<?> transfurVariant = ProcessTransfur.getPlayerTransfurVariant(player);
+//            return transfurVariant != null && player.level().getFluidState(player.blockPosition()).is(FluidTags.LAVA);
+//        }
+//
+//        return false;
+//    }
 
     @Override
     public TransfurMode getTransfurMode() {
@@ -179,104 +184,33 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
-    public boolean isAbleToGrab() {
-        return true;
-    }
-
-    @Override
-    public @Nullable GrabEntityAbilityInstance getGrabAbilityInstance() {
-        return super.getGrabAbility();
-    }
-
-    @Override
-    public LivingEntity getGrabbedEntity() {
-        return grabEntityAbilityInstance != null ? grabEntityAbilityInstance.grabbedEntity : null;
-    }
-
-    @Override
-    public PathfinderMob asMob() {
-        return this;
-    }
-
-    @Override
     protected void registerGoals() {
         super.registerGoals();
-        //this.goalSelector.addGoal(1, new GrabTargetGoal(this, 0.4f, false));
-        this.goalSelector.addGoal(10, new MayDropGrabbedEntityGoal(this));
-        this.goalSelector.addGoal(10, new MayGrabTargetGoal(this));
-        this.goalSelector.addGoal(10, new MayCauseGrabDamageGoal(this));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
     }
 
     @Override
     public void baseTick() {
         super.baseTick();
-        this.mayTickGrabAbility();
     }
 
     @Override
-    protected void actuallyHurt(DamageSource pDamageSource, float pDamageAmount) {
-        mayDropGrabbedEntity(pDamageSource, pDamageAmount);
+    protected void actuallyHurt(@NotNull DamageSource pDamageSource, float pDamageAmount) {
         super.actuallyHurt(pDamageSource, pDamageAmount);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        this.saveGrabAbilityInTag(tag);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.readGrabAbilityInTag(tag);
-    }
-
-    @Override
-    public @Nullable GrabEntityAbilityInstance getGrabAbility() {
-        return this.grabEntityAbilityInstance;
-    }
-
-    @Override
-    public <A extends AbstractAbilityInstance> A getAbilityInstance(AbstractAbility<A> ability) {
-        if (this.getUnderlyingPlayer() == null) {
-            return (A) (this.grabEntityAbilityInstance != null && ability == this.grabEntityAbilityInstance.ability ? this.grabEntityAbilityInstance : super.getAbilityInstance(ability));
-        }
-        return super.getAbilityInstance(ability);
-    }
-
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        if (!this.entityData.hasItem(GRAB_COOLDOWN)) {
-            entityData.define(GRAB_COOLDOWN, 0);
-        }
-    }
-
-    @Override
-    public int getGrabCooldown() {
-        return this.entityData.get(GRAB_COOLDOWN);
-    }
-
-    @Override
-    public void setGrabCooldown(int grabCooldown) {
-        GrabEntityAbilityInstance grabAbilityInstance = this.getGrabAbilityInstance();
-        if (grabAbilityInstance != null) {
-            AbstractAbility.Controller controller = grabAbilityInstance.getController();
-            controller.forceCooldown(grabCooldown);
-            if (controller instanceof AbilityControllerAccessor abilityControllerAccessor) {
-                this.entityData.set(GRAB_COOLDOWN, abilityControllerAccessor.getCooldownTicksRemaining());
-            }
-        }
-    }
-
-    @Override
-    public boolean canUseGrab() {
-        return this.entityData.get(CAN_USE_GRAB);
-    }
-
-    @Override
-    public void setCanUseGrab(boolean value) {
-        this.entityData.set(CAN_USE_GRAB, value);
     }
 
     public Color3 getDripColor() {
@@ -310,7 +244,7 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
     }
 
     @Override
-    public List<DietType> getExtraDietTypes() {
+    public List<FoodDietEntry> getExtraDietTypes() {
         return List.of(WOLFY_DIET);
     }
 
@@ -333,6 +267,12 @@ public class WolfyEntity extends AbstractDarkLatexWolf implements VariantExtraSt
         if (source.is(DamageTypeTags.IS_FIRE))
             return false;
         return super.hurt(source, amount);
+    }
+
+    @Override
+    public boolean canSwimInFluidType(FluidType type) {
+        List<FluidType> lavaFluids = TagKeyUtil.getTagContents(level, FluidTags.LAVA).map(Fluid::getFluidType).toList();
+        return super.canSwimInFluidType(type) || lavaFluids.contains(type);
     }
 
     @Mod.EventBusSubscriber

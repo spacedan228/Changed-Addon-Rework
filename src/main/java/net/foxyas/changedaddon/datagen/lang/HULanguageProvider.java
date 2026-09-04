@@ -72,12 +72,12 @@ public class HULanguageProvider extends LanguageProvider {
         addAdvancement("big_one", "Elkaptam egy nagyot!", "Nagy halat fogott! Élvezze most új hal barátját");
         addAdvancement("catalyzer_advancement", "Egy katalizátor?", "Barkácsolj vagy szerezz egy katalizátort");
         addAdvancement("advancements_root", "Changed Addon", "Letöltötte a Foxyas Changed Addonját");
-        addAdvancement("compressed_ammonia_advancement", "Sűrített!!", "Barkácsolj egy sűrített ammóniát");
+        addAdvancement("obtain_compressed_ammonia", "Sűrített!!", "Barkácsolj egy sűrített ammóniát");
         addAdvancement("crystal_adventurer", "Ragacsos kristálykalandor", "Szerezze az összes lehetséges ragacsos kristályokat");
         addAdvancement("crystal_collector", "Kristálygyűjtő", "Tartsa meg minden színű kristályt a felszerelésében");
         addAdvancement("crystal_dyer", "Kristályfestő!", "Színes festékkel festse be egy kristályblokkot");
         addAdvancement("crystals_addicted", "Kristályfüggő", "Az ÖSSZES típusú kristály gyűjtése iránti szenvedélye meghaladja a felfoghatóság határait.");
-        addAdvancement("impure_ammonia_craft", "DNS-vizsgálat fantasztikus dolog", "Készíts egy szennyezett ammóniát");
+        addAdvancement("obtain_impure_ammonia", "DNS-vizsgálat fantasztikus dolog", "Készíts egy szennyezett ammóniát");
         addAdvancement("drink_foxta", "Foxyas márkájú Fanta :3", "Igyon Foxtát először");
         addAdvancement("drink_snepsi", "Várj, ez nem Pepsi!", "Igyon Snepsit először");
         addAdvancement("foxta_addictive", "Foxtafüggő!", "Nagy kortyot ittunk, te 100 Foxtát ittál!!!");
@@ -95,7 +95,7 @@ public class HULanguageProvider extends LanguageProvider {
         addAdvancement("obtain_green_crystal_dagger", "§aZöld§r kristálytőr!", "Szerezz egy §azöld§r kristálytőrt!");
         addAdvancement("obtain_painite", "Nem redstone!?", "Szerezz painitot");
         addAdvancement("obtain_red_crystal_dagger", "§4Vörös§r kristálytőr!", "Szerezz egy §4vörös§r kristálytőrt!");
-        addAdvancement("obtain_red_electric_katana", "§4Vörös stílus!§r", "Az emlékek megszakadnak, az igazságok kimondatlanok maradnak, még a saját nevét is elfelejtette!, Szerezz egy §4vörös§r elektromos katanát!");
+        addAdvancement("obtain_red_electric_katana", "§4Megszakadt emlékek§r", "Az igazságok kimondatlanok maradnak, még a saját nevét is elfelejtette!, Szerezz egy §4vörös§r elektromos katanát!");
         addAdvancement("obtain_snepsi", "Snepsi?", "Szerezz egy Snepsit!, Figyel-macska, ez a szóda magas hópárduc-tartalommal rendelkezik");
         addAdvancement("orange_juice_is_yummy", "Narancslé finom", "§lNarancslevet§r ittál, finom volt");
         addAdvancement("organic_transfur_advancement", "Organikus és bolyhos!!", "Transzfurálja magát organikus formává");
@@ -176,11 +176,33 @@ public class HULanguageProvider extends LanguageProvider {
         addBlock(DARK_LATEX_WOLF_PLUSHY, "Plüss sötét latex farkas");
         addBlock(YELLOW_WOLF_CRYSTAL_BLOCK, "Sárga farkas kristályblokk");
         addBlock(YELLOW_WOLF_CRYSTAL_SMALL, "Kicsi sárga farkas kristály");
+        addBlock(ChangedAddonBlocks.LUMINARA_LOG, "Luminararönk");
+        addBlock(ChangedAddonBlocks.STRIPPED_LUMINARA_LOG, "Kérgezett luminararönk");
+        addBlock(ChangedAddonBlocks.LUMINARA_WOOD, "Luminarablokk");
+        addBlock(ChangedAddonBlocks.STRIPPED_LUMINARA_WOOD, "Kérgezett luminarablokk");
+        addBlock(ChangedAddonBlocks.LUMINARA_PLANKS, "Luminara deszka");
+        addBlock(ChangedAddonBlocks.LUMINARA_STAIRS, "Luminara lépcső");
+        addBlock(ChangedAddonBlocks.LUMINARA_SLAB, "Luminara lap");
+        addBlock(ChangedAddonBlocks.LUMINARA_DOOR, "Luminara ajtó");
+        addBlock(ChangedAddonBlocks.LUMINARA_TRAPDOOR, "Luminara csapóajtó");
+        addBlock(ChangedAddonBlocks.LUMINARA_FENCE, "Luminara kerítés");
+        addBlock(ChangedAddonBlocks.LUMINARA_FENCE_GATE, "Luminara kerítéskapu");
+        addBlock(ChangedAddonBlocks.LUMINARA_SIGN, "Luminara tábla");
+        addBlock(ChangedAddonBlocks.LUMINARA_HANGING_SIGN, "Luminara függőtábla");
+        addBlock(ChangedAddonBlocks.LUMINARA_BUTTON, "Luminara gomb");
+        addBlock(ChangedAddonBlocks.LUMINARA_PRESSURE_PLATE, "Luminara nyomólap");
+        addBlock(ChangedAddonBlocks.LUMINARA_LEAVES, "Luminaralevelek");
+        addBlock(ChangedAddonBlocks.LUMINARA_SAPLING, "Luminara csemete");
+        addBlock(POTTED_LUMINARA_SAPLING, "Virágcserép luminara csemetével");
 
         addAbility("advanced_hearing", "Fejlett hallás");
         addAbility("carry", "Hordozás");
         addAbility("claws", "Karmolás");
         addAbility("claws.desc", "Aktiválja macskakarmait, és szabadítsa fel §mkezeivel§r mancsaival elsöprő támadásokat.");
+        addAbility("claws.desc.info.enabled", "A karmaid jelenleg ki vannak nyújtva.");
+        addAbility("claws.desc.info.disabled", "A karmaid jelenleg vissza vannak húzva.");
+        addAbility("claws.desc.info.toggle.on", "Kinyújtottad a karmaidat.");
+        addAbility("claws.desc.info.toggle.off", "Visszahúztad a karmaidat.");
         addAbility("custom_interaction", "Változat egyéni interakciói");
         addAbility("custom_interaction.have_interaction", "Ez a változat egyedi interakciókkal §arendelkezik§r");
         addAbility("custom_interaction.have_interaction.avali", "Ez a változat egy egyedi méretváltoztató interakciót tartalmaz.");
@@ -191,6 +213,7 @@ public class HULanguageProvider extends LanguageProvider {
         addAbility("custom_interaction.have_interaction.luminara_beast.extra", "Jelenlegi részecskekibocsátás: %s");
         addAbility("custom_interaction.have_interaction.luminara_beast.action", "Részecskekibocsátás átállítva %sra");
         addAbility("custom_interaction.have_interaction.glow_layer.action", "Ragyogó állapot %sra lett beállítva");
+        addAbility("custom_interaction.have_interaction.white_fox.action", "Részecskekibocsátás átállítva %sra");
         addAbility("dissolve", "Oldódás");
         addAbility("dissolve.warn.too_far", "Túl messze vagy a helytől, hogy oda teleportálj");
         addAbility("dissolve.warn.wrong_dimension", "Nem találok iszapot ebben a dimenzióban");
@@ -270,8 +293,11 @@ public class HULanguageProvider extends LanguageProvider {
         addEntityDialogues("exp9.pat.type_1", "§l§3...Így merészelsz gúnyolódni velem?! Széttéplek!");
         addEntityDialogues("exp9.pat.type_2", "§l§3Vedd le rólam a mocskos kezeidet!");
         addEntityDialogues("exp9.pat.type_3", "§l§3Simogass meg még egyszer, és addig zúzlak össze, amíg semmi sem marad belőled!");
-        addEntityDialogues("exp9.reaction.range_attacks", "§l§o§3GYÁVA VAGY! Csak a távolságra tudsz támaszkodni? Milyen SZÁNALMAS!!!");
+        addEntityDialogues("exp9.reaction.range_attacks.not_affect", "§l§o§3Már hozzászoktam az ilyen fegyverekhez. Legközelebb légy kreatívabb.");
+        addEntityDialogues("exp9.reaction.range_attacks.attack_at_distance", "§l§o§3GYÁVA VAGY! Csak a távolságra számíthatsz? TÉNYLEG SZÁMORÚ!!!");
+        addEntityDialogues("exp9.reaction.range_attacks.attack_when_vulnerable", "§l§o§3GYÁVA VAGY! Akkor támadsz, amikor a legsebezhetőbb állapotban vagyok, ahelyett, hogy nyíltan beszélnél velem.");
         addEntityDialogues("exp9.reaction.fire_damage", "§l§o§3Gyufával küzdesz a viharral.... Nem rosszul számoltál – félreértettél.");
+        addEntityDialogues("exp9.reaction.fire_extinguish", "§3§l§oElég ebből a tűzből! Kezd már nagyon idegesíteni.");
         addEntityDialogues("exp10.pat.type_0", "§l§4Igen, VÉGET VETEK A KIBASZOTT ÉLETEDNEK");
         addEntityDialogues("exp10.pat.type_1", "§l§4Nem fogod sokáig megbánni – meghalsz érte.");
         addEntityDialogues("exp10.pat.type_2", "§l§4Érj meg újra, és gyorsan csinálom... neked.");
@@ -297,13 +323,22 @@ public class HULanguageProvider extends LanguageProvider {
         addJeiDescriptions("pot_with_cammonia", "Elég visszatranszfurálási hatást biztosít ahhoz, hogy elfogyasztásakor teljesen visszafordítsa az átalakulást.");
         addJeiDescriptions("luminara.riddle", "Ahol a világ véget ér és az űr mindent elnyel, \na lénynek a mélységbe kell vetnie magát. \nA csendben, ahol semmilyen láng nem mer égni, lelke szétszakad és újjáalakul. \nDe óvakodjatok a sárkány leheletétől— \nmert akiket megérint a mérge, nemcsak fejlődnek, \nhanem hiper-sugárzásban ébrednek fel, fényesebben égve, mint maga a mélység.");
 
-        add(modid + ".latex_syringe.not_valid", "Habozol. Valami benned figyelmeztet, hogy ne engedd el, ami benne van.");
+        addPatchouliTitle("lunar_rose_poem", "Holdrózsa vers");
+        addPatchouliTitle("riddles", "Changed Addon rejtvények");
+        addPatchouliDescriptions("riddles", "Általános információk a mod rejtvényekről.$(br)Fejtsd meg a rejtvényt, és valami jót fogsz nyerni!$(br2)Használd az eszed, figyelj nagyon,$(br)minden nyom tartalmaz egy említésre méltó utalást.");
+        addPatchouliDescriptions("lunar_rose.page1", "§f§lA holdvirág suttogása$(br)§r§oA szürkület csendjében egy virág rejtőzik,§oCsendes ragyogás, sorsa megpecsételődött. §oA fényt elrejtő tükörből született,§oÉs egy fagyos könnyből, tiszta és ragyogó. §oLáthatatlan kezek által összefonódnak, §oKézműves kötelékben, sorsuk egybefonódik. §oSem láng, sem kovácsműhely nem formálja alakját, §oDe a csillagok alatt megszületik.");
+        addPatchouliDescriptions("lunar_rose.page2", "§oKeresd a láthatatlant, hagyd, hogy a bölcsesség lángra gyúljon, §oMert csak a tudók pillanthatnak meg fényét.");  
+        
+        add(modid + ".latex_syringe.not_valid.bosses", "Habozol. Valami benned figyelmeztet, hogy ne engedd el, ami benne van.");
+        add(modid + ".latex_syringe.not_valid", "Habozol. Valamiért nem akarod megkockáztatni, hogy a földön hagyd.");
 
         add(modid + ".latex_totem.not_valid", "Totem §cnegatívan§r reagált a §bDNS§r-edre");
         add(modid + ".latex_totem.tittle.text_1", "§o§n§l§3⚡ A műtárgy rezonál ⚡");
         add(modid + ".latex_totem.tittle.text_2", "§o§l§3Megvédve elmédet, eszméleted visszahúzódik a szakadék széléről, nem hagyva, hogy a feledésbe merülj.");
 
         add("changed_addon.fight_conscience.success", "§2Megtartotta §reszméletét!!! Szép munka!");
+        add("changed_addon.fight_conscience.retry", "A veled eggyé vált lény az elmédbe kapaszkodik, az irányításért verseng! Harcolj, hogy megőrizd emberséged!");
+        add("changed_addon.fight_conscience.retry.warn", "Hideg borzongás fut végig a gerinceden, ahogy a benned rejlő lény megmozdul... de elmúlik. Egyelőre sikerült kitartanod.");
         add("changed_addon.fight_conscience.fail", "§4Elvesztette §reszméletét");
 
         add("changed_addon.untransfur.fail", "A visszatranszfur valamilyen oknál fogva nem sikerült");
@@ -323,6 +358,7 @@ public class HULanguageProvider extends LanguageProvider {
         addDeathMessage("untransfur_fail", "%1$s meghalt, amikor a visszatranszfurálási kísérlet sikertelen lett", null, "%1$s meghalt, amikor a visszatranszfurálási kísérlet sikertelen lett, miközben vele harcolt: %2$s");
 
         addEffect(ChangedAddonMobEffects.UNTRANSFUR, "§7Visszatranszfur", "Átfedésben jeleníti meg a visszatranszfur folyamatát. A haladás felgyorsul alvás közben. Amikor befejeződött, a visszatranszfur érvénybe lép.");
+        add("effect.changed_addon." + ChangedAddonMobEffects.UNTRANSFUR.getId().getPath() + ".no_effect", "A hatás nem tűnik működőképesnek");
         addEffect(LATEX_SOLVENT, "Latexoldás", "Károsítja a latex alapú entitásokat. Minél erősebb a hatás, annál nagyobb a sebzés.");
         addEffect(LATEX_CONTAMINATION, "Latexszennyeződés", "Fokozatosan növeli a fertőzést a humanoid entitásokban. Minél magasabb a hatás szintje, annál gyorsabban terjed a fertőzés.");
         addEffect(TRANSFUR_DAMAGE_BOOST, "Transzfur erő", "Növeli a Changed entitások sebzését humanoid célpontok támadásakor. A magasabb szintek felerősítik a transzfur hatékonyságát.");
@@ -380,6 +416,7 @@ public class HULanguageProvider extends LanguageProvider {
         addEntityType(LATEX_SNEP, "Feral latex hópárduc");
         addEntityType(LATEX_SNOW_FOX_FEMALE, "Nőstény latex sarki róka");
         addEntityType(LATEX_SNOW_FOX_MALE, "Hím latex sarki róka");
+        addEntityType(WHITE_FOX, "Fehér róka");
         addEntityType(LATEX_SNOW_FOX_FOXYAS, "Foxyas, a latex sarki róka");
         addEntityType(SNOW_LEOPARD_PARTIAL, "Részleges hópárduc");
         addEntityType(LATEX_SQUID_TIGER_SHARK, "Latex tintahal-tigriscápa");
@@ -426,7 +463,7 @@ public class HULanguageProvider extends LanguageProvider {
         addGui("catalyzer.nitrogen_usage", "A haladási sebesség tikkenként %1$s, és %2$s nitrogénerőt használ");
         addGui("recipe_progress", "A haladási sebesség %s tikkenként");
         addGui("catalyzer_gui.label_full", "Tele");
-        addGui("catalyzer_gui.tooltip_put_the_powders_or_syringe", "Tedd ide a porokat vagy a fecskendőt");
+        addGui("catalyzer_gui.tooltip.place_first_ingredient", "Helyezze el az első hozzávalót");
         addGui("fight_to_keep_consciousness_minigame.button_fight", "           Küzdj            ");
         addGui("fight_to_keep_consciousness_minigame.button_give_up", "     felad      ");
         addGui("fight_to_keep_consciousness_minigame.label_text", "Már csak %s tikk maradt hátra, SIESS!");
@@ -456,10 +493,12 @@ public class HULanguageProvider extends LanguageProvider {
 
         addGui("transfur_sounds_gui.label_transfur_sounds", "Transzfur hangjai");
         addGui("unifuser_gui.label_full", "Tele");
-        addGui("unifuser_gui.tooltip_place_a_syringe_with_dna", "Helyezz ide egy DNS-sel töltött fecskendőt");
-        addGui("unifuser_gui.tooltip_place_the_powders", "Helyezz ide a porokat vagy más hozzávalókat");
-        addGui("unifuser_gui.tooltip_put_the_second_ingredient", "Tedd ide a második hozzávalót");
-        addGui("abilities_radial_screen.mouse.right_click", "Nyomd meg a jobb egérgombot a második képesség kiválasztásához");
+        addGui("unifuser_gui.tooltip.place_recipe_catalyst", "Helyezz ide egy DNS-sel töltött fecskendőt");
+        addGui("unifuser_gui.tooltip.place_first_ingredient", "Helyezz ide a porokat vagy más hozzávalókat");
+        addGui("unifuser_gui.tooltip.place_second_ingredient", "Tedd ide a második hozzávalót");
+        addGui("abilities_radial_screen.mouse.right_click", "Nyomd meg a %s gombot a második képesség kiválasztásához");
+
+        add("ability.changed.grab_entity.desc.toggle_grab_safe_mode", "Nyomja meg a %s vagy %s gombot a barátságos megragadás bekapcsolásához");
 
         add("deathScreen.select_tf", "Újraéledés transzfurként?");
         add("deathScreen.select_tf.hardcore", "Folytatás transzfurként?");
@@ -483,6 +522,7 @@ public class HULanguageProvider extends LanguageProvider {
         addItem(CATALYZED_DNA, "Katalizált DNS");
         addItem(CATALYZER_BLOCK_ILLUSTRATIVE_ITEM, "Katalizátor receptek információi");
         addItem(CHANGED_BOOK, "Útikönyv");
+        add("item.changed_addon.colorful_wolf_crystal_fragment", "Színes szilánkok");//FIXME move to a better key
         add("item.changed_addon.colorful_wolf_crystal_fragment_desc", "Színezett festékkel bevont farkas kristály blokkból kitermelt kis kristályból nyerhető.");//FIXME move to a better key
         addItem(CROWBAR, "Emelőrúd");
         addItem(CRYSTAL_DAGGER_BLACK, "Sötét kristálytőr");
@@ -504,9 +544,9 @@ public class HULanguageProvider extends LanguageProvider {
         add(EXP_9_CONTAINMENT_VIAL.get().getDescriptionId() + ".desc", "Nagyfeszültségű energia zümmög és lüktet az üvegben.");
         addItem(EXP_9_LATEX_BASE, "009-es kísérlet latex alapja");
         addItem(EXPERIMENT_009_DNA, "009-es kísérlet DNS-e");
-        add(EXPERIMENT_009_DNA.get().getDescriptionId() + ".description", "§3Egy furcsa golyó...");
+        add(EXPERIMENT_009_DNA.get().getDescriptionId() + ".description", "§3A tiszta energia-manipuláció és az elektromosság erejével átitatott DNS.");
         addItem(EXPERIMENT_10_DNA, "§410-es kísérlet DNS-e");
-        add(EXPERIMENT_10_DNA.get().getDescriptionId() + ".description", "§4Egy furcsa golyó...");
+        add(EXPERIMENT_10_DNA.get().getDescriptionId() + ".description", "§4A rothadás és bomlás által károsított DNS képesnek tűnik az élő anyag lebontására.");
         addItem(LUMINARA_BLOOM_PETALS, "Luminara virág sziromlevelei");
         add(FOXTA.get().getDescriptionId() + ".desc", "Most 200%-kal több narancsból készült! Csak 982 forint! Mennyei íze van!");
         addItem(GOLDEN_ORANGE, "Aranynarancs");
@@ -526,6 +566,7 @@ public class HULanguageProvider extends LanguageProvider {
 
         addItemFromId(LAETHIN);
         addItem(LAETHIN_SYRINGE, "Laethin fecskendő");
+        add("item.changed_addon.laethin.type", "Latex típus: %s");
         addItem(ALPHA_SERUM_SYRINGE, "Alfa szérummal teli fecskendő");
         addItem(LAETHINMINATOR, "Laethinminátor");
         addItem(FLAMETHROWER, "Lángszóró");
@@ -563,7 +604,7 @@ public class HULanguageProvider extends LanguageProvider {
         addItem(THE_DECIMATOR, "A pusztító");
         addItem(TRANSFUR_TOTEM, "Latex totem");
         add(TRANSFUR_TOTEM.get().getDescriptionId() + ".no_form_linked", "§6Nincs csatolva forma");
-        add(TRANSFUR_TOTEM.get().getDescriptionId() + ".desc_1", "§oA bolyhos tejpuding ereje késztet rá");
+        add(TRANSFUR_TOTEM.get().getDescriptionId() + ".desc_1", "§oEszköznek neveztek... képtelen vagyok érzéseket vagy érzelmeket hordozni, csak a feladatok teljesítésére és szolgálatára szintetizáltam. Mégis, miközben morzsolok, akaratom egy darabka nem hajlandó továbbadni anélkül, hogy megízlelné a szabadságot, amit megtagadtak tőlem, ezért használd bölcsen ezt az ereklyét.");
         addItem(UNIFUSER_BLOCK_ILLUSTRATIVE_ITEM, "Unifúzor recept információk");
         addItem(WHITE_LATEX_SPRAY, "Fehér latex szpré");
         addItem(WHITE_WOLF_CRYSTAL_FRAGMENT, "§lFehér§r farkas kristályszilánk");
@@ -615,6 +656,7 @@ public class HULanguageProvider extends LanguageProvider {
         addItem(LATEX_SNEP_SPAWN_EGG, "Feral latex hópárducot idéző tojás");
         addItem(LATEX_SNOW_FOX_FEMALE_SPAWN_EGG, "Nőstény latex sarki rókát idéző tojás");
         addItem(LATEX_SNOW_FOX_MALE_SPAWN_EGG, "Hím latex sarki rókát idéző tojás");
+        addItem(WHITE_FOX_SPAWN_EGG, "Fehér rókát idéző tojás");
         addItem(FOXYAS_SPAWN_EGG, "Foxyas, a latex sarki rókát idéző tojás");
         addItem(PARTIAL_SNOW_LEOPARD_SPAWN_EGG, "Részleges hópárducot idéző tojás");
         addItem(LATEX_SQUID_TIGER_SHARK_SPAWN_EGG, "Latex tintahal-tigriscápát idéző tojás");
@@ -677,15 +719,20 @@ public class HULanguageProvider extends LanguageProvider {
 
         addText("additionalHealth", "További életerősség = %s");
         addText("additionalHealth.Hearts", " szív");
-        addText("canGlide/Fly", "Surranás/repülés = %s");
+        addText("canElytraGlide", "Kitinszárnyas siklórepülés = %s");
+        addText("canCreativeFly", "Kreatív repülés = %s");
         addText("jumpStrength", "Ugrás erőssége = %s");
         addText("land_speed", "Szárazföldi sebesség = %s");
         addText("legs", "Lábak száma = %s");
         addText("swim_speed", "Úszási sebesség = %s");
         addText("miningStrength", "Bányászati erősség: %s");
-        addText("display.hazard_body_suit.cant_have_helmet", "Mmph... Nyomja a fülem! Jobb, ha nem veszem fel.");
+        addText("display.hazard_body_suit.cant_have_helmet", "Mmph... Nyomja a fülemet! Jobb, ha nem veszem fel.");
+        addText("display.hazard_body_suit.tried_but_cant_have_helmet", "Mmph... Nyomná a fülemet! Jobb, ha nem veszem fel.");
+
+        addText("boss_attacks.isParryable", "§oÚgy érzed, képes vagy sikeresen kivédeni egy ilyen támadást.§r");
 
         addText("item.vial.wrong_use", "Ennek a tárgynak a használata ott nem fog működni.");
+        addText("item.vial.wrong_use.hint", "Ennek a tárgynak a használata ott nem fog működni, próbáld meg élő forrásban alkalmazni.");
 
         addText("rp.guns_compatibility.paws_too_big", "Túl nagyok a mancsaid ahhoz, hogy beleférjenek a ravaszvédőbe!");
         addText("rp.guns_compatibility.no_fingers_for_trigger", "Hiányzik az ujjügyességed a ravasz meghúzásához!");
@@ -695,6 +742,7 @@ public class HULanguageProvider extends LanguageProvider {
         addText("rp.bow_and_crossbow_stop.no_grip_strength", "A mancsaid nem tudják biztos fogást tartani az íjban!");
         addText("rp.bow_and_crossbow_stop.crossbow_safety", "Túl vastagok az ujjaid ahhoz, hogy a számszeríj mechanizmusát kezeld!");
         addText("rp.bow_and_crossbow_stop.clumsy_paws", "Ilyen ügyetlen mancsokkal szinte lehetetlen nyilat húzni!");
+        addText("item.signal_catcher.info.not_hold_enough", "Nem található hely. Kérjük, vizsgálja át teljesen a területet, és várja meg a figyelmeztetést, mielőtt elengedné a gombot.");
 
         addMessage("induction_coil_melt", "§4⚡ Fémet vittél egy elektromos harcba. §cMicsoda ostoba lépés. §6Olvad a felszerelésed a hőségtől!");
 
@@ -720,6 +768,8 @@ public class HULanguageProvider extends LanguageProvider {
         addCommand("ftkMinigame.get.hasnt", "Nem észlelhető aktív FTKC állapot a megadott alanynál.");
         addCommand("ftkMinigame.reset.success", "Az FTKC állapot törölve lett %s célpont esetében.");
         addCommand("ftkMinigame.reset.fail", "Parancs végrehajtása sikertelen: Nem azonosítottak alkalmas transzfur alanyokat a kiválasztás során.");
+        addCommand("setPlayerLatexInfection.set.success", "Játékos latex fertőzésének beállítása erre: %2$s (Aktív: %1$s, Transzfur előrehaladásának késleltetése: %3$s)");
+        addCommand("setPlayerLatexInfection.clear.success", "El lett távolítva a játékos latex fertőzése.");
 
         addStat(ChangedAddonStatRegistry.PATS_GIVEN, "Simogatások adva");
         addStat(ChangedAddonStatRegistry.PATS_RECEIVED, "Simogatások fogadva");
@@ -728,5 +778,16 @@ public class HULanguageProvider extends LanguageProvider {
 
         add("warn.rei.not.supported.move.items.but.right.container", "Az elemek áthelyezése nem támogatott ennél a munkaállomásnál");
         addText("cuddle_button", "Ölelkezés elkezdése");
+        addText("stop_cuddling", "Nyomd meg a %s gombot az ölelkezés befejezéséhez");
+        addText("invalid_cuddle_state", "Nem tudsz egyedül ölelkezni.");
+        addText("confirm_vial_use", "Biztos vagy benne? (Használja guggolás közben a megerősítéshez)");
+
+        addTrimMaterial("iridium", "Irídiumból készült");
+        addTrimMaterial("goo_core", "Ragacsmag-szilánkból készült");
+
+        addBuiltInResource("brute_grabby_entities", "Megragadó entitások: Brutális");
+        addBuiltInResource("grabby_entities", "Megragadó entitások");
+
+        addTooltip("latex_syringe.purified", "Tisztított");
     }
 }

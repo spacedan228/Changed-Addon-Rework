@@ -15,8 +15,10 @@ public class ChangedAddonServerConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Boolean> DEBUFFS;
     public static final ForgeConfigSpec.ConfigValue<Double> AGE_NEED;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALWAYS_INFECT;
+    public static final ForgeConfigSpec.ConfigValue<Double> INFECTION_CHANCE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> DL_COAT_AFFECT_ALL;
     public static final ForgeConfigSpec.ConfigValue<ChangedEntitySpawnDressedType> CHANGED_SPAWN_DRESS_MODE;
+    @Deprecated
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_SECOND_ABILITY_USE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_RESPAWN_AS_TRANSFUR;
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> ALLOWED_RESPAWN_TRANSFURS;
@@ -36,7 +38,7 @@ public class ChangedAddonServerConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Double> FIGHT_TO_KEEP_CONSCIOUSNESS_STRUGGLE_NEED;
     public static final ForgeConfigSpec.ConfigValue<Boolean> FIGHT_TO_KEEP_CONSCIOUSNESS_DO_REPLAY;
     public static final ForgeConfigSpec.DoubleValue FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_CHANCE;
-    public static final ForgeConfigSpec.DoubleValue FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_DELAY;
+    public static final ForgeConfigSpec.IntValue FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_DELAY;
     public static final ForgeConfigSpec.ConfigValue<Boolean> STOP_TRANSFURRED_PLAYERS_USE_BOWS;
     public static final ForgeConfigSpec.ConfigValue<Boolean> STOP_TRANSFURRED_PLAYERS_USE_GUNS;
 
@@ -53,6 +55,7 @@ public class ChangedAddonServerConfiguration {
         BUILDER.pop();
         BUILDER.push("Latex Infection");
         ALWAYS_INFECT = BUILDER.comment("Always Add Latex Infection").define("Always Cause Infect", false);
+        INFECTION_CHANCE = BUILDER.comment("Chance for a player get the Latex Infection after a transfur attack").define("Infection Chance", 1.0);
         BUILDER.pop();
         BUILDER.push("Beasts Behavior");
         DL_COAT_AFFECT_ALL = BUILDER.comment("When active, the Dark Latex Coat will affect all beasts").define("DL Coat Confuse All Creatures", true);
@@ -95,7 +98,7 @@ public class ChangedAddonServerConfiguration {
         BUILDER.push("Player Handle");
         ALLOW_SECOND_ABILITY_USE = BUILDER.comment("Allow the Player to use the second selected ability (similar to offhand and main hand)").define("Allow Second Ability use", false);
 
-        BUILDER.push("Fight To Keep Consciousness [W.I.P]");
+        BUILDER.push("Fight To Keep Consciousness (WIP)");
         FIGHT_TO_KEEP_CONSCIOUSNESS_TIMER = BUILDER
                 .comment("Ticks before the fail or success check of the Fight to keep consciousness mine-game")
                 .defineInRange("Duration", 150, 0, Integer.MAX_VALUE);
@@ -104,13 +107,13 @@ public class ChangedAddonServerConfiguration {
                 .defineInRange("Struggle Points Required", 30, 0f, Double.MAX_VALUE);
         FIGHT_TO_KEEP_CONSCIOUSNESS_DO_REPLAY = BUILDER
                 .comment("If enabled, the 'Fight to Keep Consciousness' minigame can trigger again after being won.")
-                .define("fight_to_keep_consciousness_do_replay", true);
+                .define("Do Fight to keep consciousness replay", false);
         FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_CHANCE = BUILDER
                 .comment("The probability that the minigame will replay after the delay has passed (0.0 = 0%, 1.0 = 100%).")
-                .defineInRange("fight_to_keep_consciousness_replay_chance", 0.5, 0.0, 1.0);
+                .defineInRange("Fight to keep consciousness replay chance", 0.5, 0.0, 1.0);
         FIGHT_TO_KEEP_CONSCIOUSNESS_REPLAY_DELAY = BUILDER
                 .comment("The delay (in ticks) before the minigame can attempt to replay after a successful win.")
-                .defineInRange("fight_to_keep_consciousness_replay_delay", 1200.0, 20.0, Double.MAX_VALUE);
+                .defineInRange("Fight to keep consciousness replay delay", 1200, 20, Integer.MAX_VALUE);
         BUILDER.pop();
 
         BUILDER.push("Chat");

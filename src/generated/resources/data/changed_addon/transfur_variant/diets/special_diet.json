@@ -1,0 +1,57 @@
+{
+  "foods": {
+    "hungerBonus": {
+      "type": "minecraft:uniform",
+      "value": {
+        "max_exclusive": 4.0,
+        "min_inclusive": 2.0
+      }
+    },
+    "ingredient": [
+      {
+        "tag": "changed_addon:special_diet_list"
+      }
+    ],
+    "mobEffect": [
+      {
+        "chance": 1.0,
+        "effect": {
+          "duration": 40,
+          "id": "minecraft:regeneration"
+        }
+      }
+    ],
+    "saturationBonus": 0.5
+  },
+  "offDietEffects": [
+    {
+      "chance": 0.85,
+      "effect": {
+        "ambient": true,
+        "duration": 40,
+        "id": "minecraft:nausea",
+        "visible": false
+      }
+    },
+    {
+      "chance": 0.75,
+      "effect": {
+        "ambient": true,
+        "amplifier": 2,
+        "duration": 40,
+        "id": "minecraft:hunger",
+        "visible": false
+      }
+    },
+    {
+      "chance": 0.25,
+      "effect": {
+        "ambient": true,
+        "duration": 40,
+        "id": "minecraft:poison",
+        "visible": false
+      }
+    }
+  ],
+  "variants": "#changed_addon:special_diet"
+}

@@ -14,13 +14,17 @@ public class ChangedAddonClientConfiguration {
     public static final ForgeConfigSpec.ConfigValue<Double> PAT_OVERLAY_X;
     public static final ForgeConfigSpec.ConfigValue<Double> PAT_OVERLAY_Y;
     public static final ForgeConfigSpec.ConfigValue<Boolean> WING_FLAP_INFO;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> GRAB_ABILITY_KEY_INFO;
     public static final ForgeConfigSpec.ConfigValue<Boolean> PAW_STYLE_PAT_OVERLAY;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> RENDER_LATEX_INFECTION_ICONS_OUTSIDE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> SHOW_EXTRA_HAND;
     public static final ForgeConfigSpec.ConfigValue<Boolean> SMOOTH_LASER_MOVEMENT;
     public static final ForgeConfigSpec.ConfigValue<Boolean> PLANTOIDS_VISIBILITY;
     public static final ForgeConfigSpec.ConfigValue<Boolean> ALPHA_COMPATIBILITY_MODE_RENDER;
     public static final ForgeConfigSpec.ConfigValue<Boolean> DYNAMIC_ALPHA_CHECKER;
     public static final ForgeConfigSpec.ConfigValue<BossMusicHandler.FollowType> BOSS_MUSIC_LOCATION_TYPE;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> SUIT_ANIM;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> USE_ADDITIVE_TRANSPARENCY_FOR_FADE_PARTICLES;
 
     static {
         ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -44,7 +48,9 @@ public class ChangedAddonClientConfiguration {
         PAT_OVERLAY_X = BUILDER.comment("Set the X pos of the pat overlay.  \n[Default 12]").define("Pat Overlay X pos", (double) 12);
         PAT_OVERLAY_Y = BUILDER.comment("Set the Y pos of the pat overlay.  \n[Default 72]").define("Pat Overlay Y pos", (double) 72);
         WING_FLAP_INFO = BUILDER.comment("Display How much Ticks You have Hold the Wing Flap Ability").define("Wing Flap Ability Ticks Info", false);
+        GRAB_ABILITY_KEY_INFO = BUILDER.comment("Display which key is the correct to be pressed in the moment").define("Grab ability key info", false);
         PAW_STYLE_PAT_OVERLAY = BUILDER.comment("Make the pat overlay use a paw icon instead of text").define("Paw Style Pat Overlay", true);
+        RENDER_LATEX_INFECTION_ICONS_OUTSIDE = BUILDER.comment("Should the render of latex infection icons be outside the main transfur progress").define("Render Latex Infection Icons Outside", true);
         BUILDER.pop();
 
         BUILDER.push("Extra Animations");
@@ -56,6 +62,12 @@ public class ChangedAddonClientConfiguration {
         PLANTOIDS_VISIBILITY = BUILDER.comment("Turn off the Plantoids [Female Chest Features]").define("Turn Off the Plantoids", false);
         ALPHA_COMPATIBILITY_MODE_RENDER = BUILDER.comment("Turn the Compatibility Mode Render For Alpha Scales, turning this off may add some performance").define("Alpha Compatibility Render Mode", true);
         BUILDER.pop();
+
+        SUIT_ANIM = BUILDER.comment("Switches on/off the animation where held entity is rendered closer to grabber based on suit progress.")
+                .define("Suit Anim", true);
+
+        USE_ADDITIVE_TRANSPARENCY_FOR_FADE_PARTICLES = BUILDER.comment("Switches the render type for the Entity model fade particle, it can look a bit odd with some specific colors so use it as your taste.")
+                .define("additive transparency for entity model fade particle", false);
 
         SPEC = BUILDER.build();
     }

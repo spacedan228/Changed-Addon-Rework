@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -27,6 +28,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeMap;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.goal.Goal;
+import net.minecraft.world.entity.ai.goal.GoalSelector;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -44,10 +47,12 @@ import java.util.Objects;
 
 import static net.ltxprogrammer.changed.entity.HairStyle.BALD;
 
-public class Experiment10Entity extends ChangedEntity implements GenderedEntity, IDynamicPawColor, PowderSnowWalkable, IAlphaAbleEntity.CustomAlphaAttributes {
+public class Experiment10Entity extends ChangedEntity implements GenderedEntity, IDynamicPawColor, PowderSnowWalkable, IAlphaAbleEntity.IOverrideAlphaAttributes {
 
     private static final EntityDataAccessor<Boolean> PHASE2 =
             SynchedEntityData.defineId(Experiment10Entity.class, EntityDataSerializers.BOOLEAN);
+
+    public final GoalSelector passivesSelector;
 
     public Experiment10Entity(PlayMessages.SpawnEntity packet, Level world) {
         this(ChangedAddonEntities.EXPERIMENT_10.get(), world);
@@ -59,30 +64,16 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
         xpReward = 160;
         setNoAi(false);
         setPersistenceRequired();
+        this.passivesSelector = new GoalSelector(world.getProfilerSupplier());
+        if (world != null && !world.isClientSide) {
+            this.registerPassives();
+        }
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(getPhase2DataAccessor(), false);
-    }
-
-    @Override
-    public void setYRot(float pYRot) {
-        if (!Float.isFinite(pYRot)) {
-            return;
-        }
-
-        super.setYRot(pYRot);
-    }
-
-    @Override
-    public void setXRot(float pXRot) {
-        if (!Float.isFinite(pXRot)) {
-            return;
-        }
-
-        super.setXRot(pXRot);
     }
 
     protected EntityDataAccessor<Boolean> getPhase2DataAccessor() {
@@ -162,6 +153,23 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
 
         return super.getMeleeAttackRangeSqr(target);
     }
+
+    @Override
+    protected void registerGoals() {
+        super.registerGoals();
+        addAbilityGoals();
+    }
+
+    protected void registerPassives() {
+        addPassivesGoals();
+    }
+
+    protected void addAbilityGoals() {
+    }
+
+    protected void addPassivesGoals() {
+    }
+
 
     public Color3 getHairColor(int i) {
         return Color3.getColor("#1f1f1f");
@@ -252,29 +260,55 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
             case "fall", "cactus", "drown", "lightningBolt", "anvil", "dragonBreath", "wither", "witherSkull" -> {
                 return false;
             }
-            case "trident" -> {
-                return super.hurt(source, amount * 0.5f);
-            }
+            case "trident" -> amount *= 0.5f;
         }
 
         if (source.is(DamageTypeTags.IS_PROJECTILE)) {
-            return super.hurt(source, amount * 0.5f);
+            amount *= 0.5f;
         }
 
         return super.hurt(source, amount);
     }
 
-    protected void applyDefaultBasicPlayerInfo() {
-        this.getBasicPlayerInfo().setSize(1f);
-        this.getBasicPlayerInfo().setEyeStyle(EyeStyle.TALL);
-        this.getBasicPlayerInfo().setRightIrisColor(Color3.getColor("#880015"));
-        this.getBasicPlayerInfo().setLeftIrisColor(Color3.getColor("#880015"));
-        this.getBasicPlayerInfo().setScleraColor(Color3.getColor("#edd725"));
+    @Override
+    public void customServerAiStep() {
+        super.customServerAiStep();
+
+        int i = level.getServer().getTickCount() + this.getId();
+        if (i % 2 != 0 && this.tickCount > 1) {
+            level.getProfiler().push("passivesSelector");
+            this.passivesSelector.tickRunningGoals(false);
+            level.getProfiler().pop();
+        } else {
+            level.getProfiler().push("passivesSelector");
+            this.passivesSelector.tick();
+            level.getProfiler().pop();
+        }
+    }
+
+    @Override
+    protected void updateControlFlags() {
+        super.updateControlFlags();
+        boolean hasMovementAndHeadControl = !(this.getControllingPassenger() instanceof Mob);
+        boolean canJump = !(this.getVehicle() instanceof Boat);
+        this.passivesSelector.setControlFlag(Goal.Flag.MOVE, hasMovementAndHeadControl);
+        this.passivesSelector.setControlFlag(Goal.Flag.JUMP, hasMovementAndHeadControl && canJump);
+        this.passivesSelector.setControlFlag(Goal.Flag.LOOK, hasMovementAndHeadControl);
+    }
+
+    @Override
+    protected void initializeBPI(BasicPlayerInfo info, RandomSource random) {
+        super.initializeBPI(info, random);
+        info.setSize(1f);
+        info.setEyeStyle(EyeStyle.TALL);
+        info.setRightIrisColor(Color3.getColor("#880015"));
+        info.setLeftIrisColor(Color3.getColor("#880015"));
+        info.setScleraColor(Color3.getColor("#edd725"));
     }
 
     @Override
     public boolean canChangeDimensions() {
-        return false;
+        return this.getTarget() == null && super.canChangeDimensions();
     }
 
     @Override
@@ -290,6 +324,7 @@ public class Experiment10Entity extends ChangedEntity implements GenderedEntity,
         this.entityData.set(getPhase2DataAccessor(), set);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         if (tag.contains("isPhase2")) setPhase2(tag.getBoolean("isPhase2"));

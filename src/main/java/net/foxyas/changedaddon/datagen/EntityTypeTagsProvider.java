@@ -9,6 +9,7 @@ import net.ltxprogrammer.changed.init.ChangedRegistry;
 import net.ltxprogrammer.changed.init.ChangedTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -57,6 +58,7 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 ERIK.get());
 
         tag(ChangedAddonTags.EntityTypes.CAN_GRAB);
+        tag(ChangedAddonTags.EntityTypes.CAN_GRAB_SUIT);
 
         tag(ChangedTags.EntityTypes.LATEX).add(LatexEntities.stream().map(Supplier::get)
                 .sorted(Comparator.comparing(entityType -> ForgeRegistries.ENTITY_TYPES.getKey(entityType).getPath()))
@@ -69,6 +71,8 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
         tag(ChangedTags.EntityTypes.PARTIAL_LATEX).add(
                 SNOW_LEOPARD_PARTIAL.get(),
                 LATEX_SNEP.get());
+
+        tag(ChangedAddonTags.EntityTypes.ALPHA_BY_DEFAULT);
 
         tag(ChangedAddonTags.EntityTypes.CAN_CARRY).add(
                 EntityType.WANDERING_TRADER,
@@ -84,7 +88,8 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 EntityType.FOX,
                 LATEX_SNOW_FOX_FOXYAS.get(),
                 PROTOTYPE.get(),
-                ERIK.get());
+                ERIK.get())
+                .addOptional(ResourceLocation.withDefaultNamespace("armadillo"));
 
         tag(ChangedAddonTags.EntityTypes.DRAGON_ENTITIES).add(
                 getCanGlideEntitiesArray()
@@ -120,7 +125,11 @@ public class EntityTypeTagsProvider extends net.minecraft.data.tags.EntityTypeTa
                 EXPERIMENT_009_BOSS.get(),
                 EXPERIMENT_10_BOSS.get()
         );
+        tag(ChangedAddonTags.EntityTypes.HAS_BETTER_GROUND_PATHFIND);
 
-        tag(ChangedTags.EntityTypes.CAN_WEAR_EXOSKELETON).add(canUseExoskeleton().toArray(new EntityType[0]));
+        tag(ChangedAddonTags.EntityTypes.PROTOGENS).add(getProtogensEntities().toArray(new EntityType[0]));
+
+        tag(ChangedTags.EntityTypes.CAN_WEAR_EXOSKELETON).add(canUseExoskeleton().toArray(new EntityType[0])).remove(ChangedAddonTags.EntityTypes.PROTOGENS);
+        tag(ChangedAddonTags.EntityTypes.CARDBOARD_BOX_HIDER).add(LATEX_SNOW_LEOPARD_MALE.get(), LATEX_SNOW_LEOPARD_FEMALE.get(), LATEX_HYPNO_CAT.get());
     }
 }

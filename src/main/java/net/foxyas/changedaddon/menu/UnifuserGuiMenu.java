@@ -1,23 +1,30 @@
 package net.foxyas.changedaddon.menu;
 
 import net.foxyas.changedaddon.block.entity.UnifuserBlockEntity;
-import net.foxyas.changedaddon.init.ChangedAddonItems;
 import net.foxyas.changedaddon.init.ChangedAddonMenus;
-import net.ltxprogrammer.changed.init.ChangedItems;
+import net.foxyas.changedaddon.init.ChangedAddonRecipeTypes;
+import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class UnifuserGuiMenu extends AbstractMenu {
+
+    public static final int POWER_BUTTON_ID = 0;
 
     public final Level level;
     public final Player entity;
@@ -25,10 +32,15 @@ public class UnifuserGuiMenu extends AbstractMenu {
     private final UnifuserBlockEntity unifuser;
     private final BlockPos blockPos;
 
-    protected final SlotItemHandler slot1;
-    protected final SlotItemHandler slot2;
-    protected final SlotItemHandler slot3;
-    protected final SlotItemHandler slot4;
+    public final RecipeManager recipeManager;
+
+    public final NonNullList<Slot> playerInvSlots = NonNullList.create();
+    public final NonNullList<Slot> menuInvSlots = NonNullList.create();
+
+    protected final SimpleItemHandlerInputSlot topSlot;
+    protected final SimpleItemHandlerInputSlot bottomSlot;
+    protected final SimpleItemHandlerInputSlot syringeSlot;
+    protected final SimpleBrewingResultSlot outputSLot;
 
     public UnifuserGuiMenu(int id, Inventory inv, FriendlyByteBuf extraData) {
         this(id, inv, extraData.readBlockPos());
@@ -46,43 +58,32 @@ public class UnifuserGuiMenu extends AbstractMenu {
         unifuser = be;
         IItemHandler internal = unifuser.getCapability(ForgeCapabilities.ITEM_HANDLER, null).resolve().orElseThrow();
 
-        createPlayerHotbar(inv, 12, 21);
-        createPlayerInventory(inv, 12, 21);
+        createPlayerHotbar(inv, 0, 0);
+        createPlayerInventory(inv, 0, 0);
 
+        playerInvSlots.addAll(this.slots);
 
-        //35 is the last slot before this
-        SlotItemHandler slot1 = new SlotItemHandler(internal, 0, 15, 45) { //36
+        this.recipeManager = inv.player.level().getRecipeManager();
 
+        SimpleItemHandlerInputSlot slot1 = new SimpleItemHandlerInputSlot(internal, 0, 26, 17);
+        this.topSlot = (SimpleItemHandlerInputSlot) addSlot(slot1);
+
+        SimpleItemHandlerInputSlot slot2 = new SimpleItemHandlerInputSlot(internal, 1, 26, 53);
+        this.bottomSlot = (SimpleItemHandlerInputSlot) addSlot(slot2);
+
+        SimpleItemHandlerInputSlot slot3 = new SimpleItemHandlerInputSlot(internal, 2, 53, 35) {
             @Override
             public boolean mayPlace(@NotNull ItemStack itemstack) {
-                return true;
+                boolean hasRecipe = UnifuserGuiMenu.this.recipeManager.getAllRecipesFor(ChangedAddonRecipeTypes.UNIFUSER_RECIPE_TYPE.get()).stream().anyMatch((recipe) -> recipe.getIngredients().stream().anyMatch(ingredient -> ingredient.test(itemstack)));
+                return itemstack.is(ChangedAddonTags.Items.UNIFUSER_RECIPE_CATALYST) || hasRecipe;
             }
         };
+        this.syringeSlot = (SimpleItemHandlerInputSlot) addSlot(slot3);
 
-        this.slot1 = (SlotItemHandler) addSlot(slot1);
+        SimpleBrewingResultSlot slot4 = new SimpleBrewingResultSlot(entity, unifuser, internal, 3, 116, syringeSlot.y); // y35
+        this.outputSLot = (SimpleBrewingResultSlot) addSlot(slot4);
 
-        SlotItemHandler slot2 = new SlotItemHandler(internal, 1, 15, 70);
-        this.slot2 = (SlotItemHandler) addSlot(slot2); //37
-
-        SlotItemHandler slot3 = new SlotItemHandler(internal, 2, 50, 57) { //38
-
-            @Override
-            public boolean mayPlace(@NotNull ItemStack itemstack) {
-                return itemstack.isEmpty() || itemstack.getItem() == ChangedAddonItems.CATALYZED_DNA.get() || itemstack.is(ChangedItems.BLOOD_SYRINGE.get())
-                        || itemstack.is(ChangedItems.LATEX_SYRINGE.get());
-            }
-        };
-        this.slot3 = (SlotItemHandler) addSlot(slot3);
-
-        SlotItemHandler slot4 = new SlotItemHandler(internal, 3, 155, 57) { //39
-
-            @Override
-            public boolean mayPlace(@NotNull ItemStack stack) {
-                return false;
-            }
-        };
-        this.slot4 = (SlotItemHandler) addSlot(slot4);
-
+        menuInvSlots.addAll(List.of(topSlot, bottomSlot, syringeSlot));
     }
 
     public UnifuserBlockEntity getUnifuser() {
@@ -98,23 +99,89 @@ public class UnifuserGuiMenu extends AbstractMenu {
         return AbstractContainerMenu.stillValid(this.access, player, this.unifuser.getBlockState().getBlock());
     }
 
+    @Override
+    public boolean clickMenuButton(@NotNull Player player, int pId) {
+        if (pId == POWER_BUTTON_ID) {
+            Component customName = unifuser.getCustomName();
+            if (customName == null) customName = unifuser.getDisplayName();
+            String name = customName.getString();
+            unifuser.startRecipe = !unifuser.startRecipe;
+
+            if (unifuser.startRecipe) {
+                player.displayClientMessage(Component.literal("you start the " + name), true);
+            } else {
+                player.displayClientMessage(Component.literal("you stop the " + name), true);
+            }
+            //unifuser.setChanged();
+            return true;
+        }
+        return super.clickMenuButton(player, pId);
+    }
+
+    @Override
+    public @NotNull ItemStack quickMoveStack(@NotNull Player pPlayer, int pIndex) {
+        ItemStack itemstack = ItemStack.EMPTY;
+        Slot slot = slots.get(pIndex);
+
+        if (slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
+            itemstack = itemstack1.copy();
+
+            // 1. Lógica de movimentação (Shift-Clique)
+            if (pIndex < 36) { // Se veio do inventário do jogador -> vai para os slots do bloco
+                if (!this.moveItemStackTo(itemstack1, 36, this.slots.size(), false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else { // Se veio dos slots do bloco -> vai para o inventário do jogador
+                if (!this.moveItemStackTo(itemstack1, 0, 36, false)) {
+                    return ItemStack.EMPTY;
+                }
+            }
+
+            // 2. DISPARAR EVENTOS DE CRAFT (Apenas se a transferência acima deu certo)
+            // Isso deve rodar ANTES do itemstack1 ser zerado ou modificado pelo slot.set()
+            if (slot instanceof SimpleBrewingResultSlot resultSlot) {
+                itemstack1.getItem().onCraftedBy(itemstack1, pPlayer.level(), pPlayer);
+                resultSlot.onQuickCraft(itemstack1, itemstack);
+            }
+
+            // 3. Atualizar o estado do Slot de origem
+            if (itemstack1.isEmpty()) {
+                slot.set(ItemStack.EMPTY);
+            } else {
+                slot.setChanged();
+            }
+
+            // 4. Verificação de segurança obrigatória do Minecraft
+            // Se o tamanho do pack não mudou nada, significa que não havia espaço para mover
+            if (itemstack1.getCount() == itemstack.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            // 5. Notificar o Slot que o jogador efetivamente "retirou" o item dali
+            slot.onTake(pPlayer, itemstack1);
+        }
+
+        return itemstack;
+    }
+
     public BlockPos getBlockPos() {
         return blockPos;
     }
 
-    public SlotItemHandler getOutputSlot() {
-        return slot4;
+    public Slot getOutputSlot() {
+        return outputSLot;
     }
 
-    public SlotItemHandler getSyringeSlot() {
-        return slot3;
+    public Slot getSyringeSlot() {
+        return syringeSlot;
     }
 
-    public SlotItemHandler getBottomSlot() {
-        return slot2;
+    public Slot getBottomSlot() {
+        return bottomSlot;
     }
 
-    public SlotItemHandler getTopSlot() {
-        return slot1;
+    public Slot getTopSlot() {
+        return topSlot;
     }
 }

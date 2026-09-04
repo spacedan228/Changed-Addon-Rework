@@ -67,7 +67,7 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-	// Mod Location
+    // Mod Location
     flatDir {
         dirs 'libs'
     }
@@ -93,17 +93,32 @@ repositories {
         url uri("${rootProject.projectDir}/libs")
     }
 
-
-  /* maven {
+    maven {
         // location of the maven that hosts JEI files
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
+
     maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.dev"
-    }*/
+    }
+
+    maven {
+        // EMI
+        url = "https://maven.terraformersmc.com/"
+    }
+
+    maven {
+        // location of the maven that hosts PatchouliProvider files
+        name = "BlameJared's maven"
+        url = 'https://maven.blamejared.com'
+    }
+
+    maven {
+        url 'https://maven.blamejared.com'
+    }
 }
 
 mixin {
@@ -126,62 +141,111 @@ dependencies {
         jarJar.ranged(it, "[0.4.1,)")
     }
 
-  //implementation fg.deobf('net.ltxprogrammer.changed:Changed-m1.18.2-f40.2.0:v0.14b') //Changed Local File
-    implementation fg.deobf("net.ltxprogrammer.changed:Changed-m1.20.1-f47.4.0:v0.15.4") {
+    implementation fg.deobf("net.ltxprogrammer.changed:Changed-m1.20.1-f47.4.0:v0.15.7") {
         changing = true
     }//Changed
 
+    //implementation fg.deobf("net.zaharenko424.casualties_cubed:casualties_cubed-1.2.1-all:1.2.1")
+    implementation fg.deobf("curse.maven:casualties-cubed-1539563:8389990")
+
+    // JEI Mod.
     compileOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-common-api:${jeiVersion}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-forge-api:${jeiVersion}")
 
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}")
+    implementation fg.deobf("mezz.jei:jei-${minecraftVersion}-common:${jeiVersion}")
+    implementation fg.deobf("mezz.jei:jei-${minecraftVersion}-forge:${jeiVersion}")
 
-    implementation fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${reiVersion}")
+    // REI Mod.
+    compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${reiVersion}")
     compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-api-forge:${reiVersion}")
-    implementation fg.deobf("me.shedaniel.cloth:cloth-config-forge:${clothVersion}")
-    implementation fg.deobf("dev.architectury:architectury-forge:${archVersion}")
+    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${clothVersion}")
+    compileOnly fg.deobf("dev.architectury:architectury-forge:${archVersion}")
 
-    implementation fg.deobf("com.mrcrayfish.framework:framework-forge-1.20.1-0.8.0:0.8.0")
-    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-1.20.1-4.8.3:4.8.3")
-    implementation fg.deobf("ttv.migami.jeg:JustEnoughGuns-0.13.2-1.20.1:0.13.2")
-    implementation fg.deobf("com.tacz.guns:tacz-1.20.1-1.1.7-hotfix2:1.1.7")
+    // EMI
+    compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
+    compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
 
+    // Gun Mods.
+    compileOnly fg.deobf("com.mrcrayfish.framework:framework-forge-1.20.1-0.8.0:0.8.0")
+    compileOnly fg.deobf("software.bernie.geckolib:geckolib-forge-1.20.1-4.8.3:4.8.3")
+    compileOnly fg.deobf("ttv.migami.jeg:JustEnoughGuns-0.13.2-1.20.1:0.13.2")
+    compileOnly fg.deobf("com.tacz.guns:tacz-1.20.1-1.1.7-hotfix2:1.1.7")
+
+    // First Person Mod.
     implementation fg.deobf("dev.tr7zw:notenoughanimations-forge-1.11.1-mc1.20.1:1.10.0")
     implementation fg.deobf("dev.tr7zw:firstperson-forge-2.4.9-mc1.20.1:2.4.9")
     runtimeOnly fg.deobf("dev.tr7zw:TRender-1.0.10-1.20.1-forge-SNAPSHOT:1.0.5")
     runtimeOnly fg.deobf("dev.tr7zw:TRansition-1.0.11-1.20.1-forge-SNAPSHOT:1.0.3")
 
-    implementation fg.deobf("curse.maven:vivecraft-667903:7625923")
-    //implementation fg.deobf("dev.tr7zw:firstperson-forge-2.3.2-mc1.18.2:2.3.2")
-    //implementation fg.deobf("curse.maven:playeranimator-658587:4418152") // Forge 1.18.2 v1.0.2
-    //compileOnly
-    //implementation fg.deobf("curse.maven:tinkers-construct-74072:5748362")
-    //implementation fg.deobf("curse.maven:mantle-74924:5979027")
+    // Vivecraft Mod.
+    compileOnly fg.deobf("curse.maven:vivecraft-667903:7625923")
 
-    //runtimeOnly fg.deobf("curse.maven:advanced-xray-256256:3712732")	//Xray BLOCKS
-    //runtimeOnly fg.deobf("curse.maven:lightspeedmod-821790:4594803") //Speed Up The Start of The Game
-    //runtimeOnly fg.deobf("curse.maven:forge-carpet-547361:3930877") //Player Summon
-    //runtimeOnly fg.deobf("curse.maven:embeddium-908741:5322305") //Fps Boost
-    //runtimeOnly fg.deobf("curse.maven:forgetmechunk-forge-632973:4041502") //Fps Boost
-    //runtimeOnly fg.deobf("curse.maven:oculus-581495:4578744") //Shaders :D [TURN THIS OFF WHEN RUNNING A SERVER]
-    //runtimeOnly fg.deobf("curse.maven:custom-player-models-439870:4840534") //Custom Player Models
-    //runtimeOnly fg.deobf("curse.maven:spark-361579:4505375") // Spark
-    //runtimeOnly fg.deobf("curse.maven:hardcore-revival-274036:3830873") //HardCore Survival
-    //runtimeOnly fg.deobf("curse.maven:balm-531761:4442615") //Balm API need for HardCore Survival
-    //runtimeOnly fg.deobf("curse.maven:appleskin-248787:4770822") //AppleSkin
-    //runtimeOnly fg.deobf("curse.maven:catalogue-459701:3803098") //Catalogue (Better Mod menu)
-    //runtimeOnly fg.deobf("curse.maven:configured-457570:4462832") //Configured (Config options in game)
-    //runtimeOnly fg.deobf("curse.maven:carry-on-274259:5141758") //Carry On mod
-    //runtimeOnly fg.deobf("curse.maven:in-game-account-switcher-232676:4589915") //ReAuth
+    compileOnly fg.deobf("curse.maven:thirst-was-taken-679270:6660408")
+    implementation fg.deobf("curse.maven:trimmed-857036:4845938")
 
-  //implementation fg.deobf("curse.maven:roughly-enough-items-310111:4774383") //Jei But better
-  //implementation fg.deobf("curse.maven:cloth-config-348521:4633387") // REI mod dependence
-  //implementation fg.deobf("curse.maven:architectury-api-419699:4521465") //REI mod dependence
+    // Botany Mod.
+    implementation fg.deobf("curse.maven:bookshelf-228525:7612389")
+    implementation fg.deobf("curse.maven:botany-pots-353928:7612402")
 
-    //compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.2.281:api") //Jei Api
-    //runtimeOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.2.281") //Jei Mod
+    // Create
+    compileOnly fg.deobf("curse.maven:create-328085:7178761")
+
+    // Apple Skin (Saturation View mod)
+    implementation fg.deobf("curse.maven:appleskin-248787:4770828")
+
+    // Farmers Delight
+    implementation fg.deobf("curse.maven:farmers-delight-398521:8083474")
+
+    // Patcholi Provider
+    implementation fg.deobf("xyz.brassgoggledcoders:PatchouliProvider:1.20.1-1.0.9-Snapshot.4")
+
+    // Patcholi Main Mod
+    compileOnly fg.deobf("vazkii.patchouli:Patchouli:1.20.1-85-FORGE:api")
+    runtimeOnly fg.deobf("vazkii.patchouli:Patchouli:1.20.1-85-FORGE")
+
     //implementation files("libs/Changed-m1.18.2-v0.14")
+}
+
+// This block of code expands all declared replace properties in the specified resource targets.
+// A missing property will result in an error. Properties are expanded using ${} Groovy notation.
+// When "copyIdeResources" is enabled, this will also run before the game launches in IDE environments.
+// See https://docs.gradle.org/current/dsl/org.gradle.language.jvm.tasks.ProcessResources.html
+//tasks.named('processResources', ProcessResources).configure {
+//    var replaceProperties = [
+//            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+//            forge_version       : forge_version, forge_version_range: forge_version_range,
+//            loader_version_range: loader_version_range,
+//            mod_id              : mod_id,
+//            mod_name            : mod_name,
+//            mod_license         : mod_license,
+//              mod_version         : mod_version,
+//            mod_authors         : mod_authors, mod_description: mod_description,
+//    ]
+//
+//    inputs.properties replaceProperties
+//
+//    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+//        expand replaceProperties + [project: project]
+//    }
+//}
+
+tasks.named('processResources', ProcessResources).configure {
+    // List here all the "variablesKeys" of the mods.toml and pack.mcmeta
+    def replacements = [
+            'mod_version': mod_version.toString(),
+    ]
+
+    inputs.properties(replacements)
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        filter { line ->
+            replacements.each { key, value ->
+                // look for ${variableKey} and change for the value
+                line = line.replace("\${${key}}", value)
+            }
+            line
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -221,5 +285,3 @@ publishing {
         }
     }
 }
-
-apply from: 'mcreator.gradle'

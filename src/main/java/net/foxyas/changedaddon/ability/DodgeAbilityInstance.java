@@ -1,6 +1,8 @@
 package net.foxyas.changedaddon.ability;
 
-import net.foxyas.changedaddon.ability.handle.CounterDodgeType;
+import net.foxyas.changedaddon.ability.handle.dodgeTypes.CounterDodgeType;
+import net.foxyas.changedaddon.ability.handle.dodgeTypes.DodgeType;
+import net.foxyas.changedaddon.ability.handle.dodgeTypes.WeaveDodgeType;
 import net.foxyas.changedaddon.client.model.animations.parameters.DodgeAnimationParameters;
 import net.foxyas.changedaddon.client.particle.EntityModelFadeParticleOptions;
 import net.foxyas.changedaddon.init.ChangedAddonAnimationEvents;
@@ -9,29 +11,19 @@ import net.foxyas.changedaddon.util.ParticlesUtil;
 import net.ltxprogrammer.changed.ability.AbstractAbility;
 import net.ltxprogrammer.changed.ability.AbstractAbilityInstance;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
-import net.ltxprogrammer.changed.entity.ChangedEntity;
-import net.ltxprogrammer.changed.entity.variant.EntityShape;
 import net.ltxprogrammer.changed.init.ChangedAnimationEvents;
 import net.ltxprogrammer.changed.init.ChangedSounds;
-import net.ltxprogrammer.changed.util.EntityUtil;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -40,18 +32,16 @@ import java.util.Random;
 
 public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
-    public static final int INF_DODGE_TICKS = -5;
+    public static final int INF_DODGE_TICKS = -1;
     public static final Color FADE_COLOR = new Color(96, 96, 96);
-    private final int defaultRegenCooldown = 20;
     public boolean ultraInstinct = false; //FUNNY VARIABLE :3
-    public DodgeType dodgeType = DodgeType.WEAVE;
+    public DodgeType dodgeType = WeaveDodgeType.INSTANCE;
     public int projectilesImmuneTicks = 0;
     public int canDodgeTicks = 0;
     public int trailTicks = 0;
     private int dodgeAmount = 0;
     private int maxDodgeAmount = 4;
     private boolean dodgeActive = false;
-    private int dodgeRegenCooldown = defaultRegenCooldown;
 
     public DodgeAbilityInstance(AbstractAbility<?> ability, IAbstractChangedEntity entity) {
         super(ability, entity);
@@ -63,6 +53,228 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
         this.dodgeAmount = maxDodge;
     }
 
+    @Override
+    public boolean canUse() {
+        if (ultraInstinct) {
+            return true;
+        }
+        return dodgeAmount > 0 && !isSpectator(entity.getEntity());
+    }
+
+    @Override
+    public boolean canKeepUsing() {
+        return canUse();
+    }
+
+    @Override
+    public void startUsing() {
+        if (entity.getLevel().isClientSide()) {
+            return;
+        }
+
+        if (entity.getEntity() instanceof Player player && this.getController().getHoldTicks() == 0) {
+            this.dodgeType.startUsing(this);
+
+            if (!ultraInstinct) {
+                player.displayClientMessage(
+                        Component.translatable("ability.changed_addon.dodge.dodge_amount", getDodgeStaminaRatio()),
+                        true
+                );
+            }
+
+            this.ability.setDirty(entity);
+        }
+    }
+
+    @Override
+    public void tick() {
+        if (entity.getLevel().isClientSide()) {
+            return;
+        }
+
+        if (entity.getEntity() instanceof Player player) {
+            if (!ultraInstinct && this.dodgeType.shouldDisplayDodgeAmount(this)) {
+                player.displayClientMessage(
+                        Component.translatable("ability.changed_addon.dodge.dodge_amount", getDodgeStaminaRatio()), true);
+            }
+        }
+        setDodgeActivate(canUse());
+        this.ability.setDirty(entity);
+    }
+
+    @Override
+    public void stopUsing() {
+        if (entity.getLevel().isClientSide()) {
+            return;
+        }
+
+        setDodgeActivate(false);
+        this.ability.setDirty(entity);
+        if (entity.getEntity() instanceof Player player) {
+            if (!(player.level.isClientSide())) {
+                if (!ultraInstinct) {
+                    player.displayClientMessage(
+                            Component.translatable("ability.changed_addon.dodge.dodge_amount",
+                                    getDodgeStaminaRatio()),
+                            true
+                    );
+                }
+            }
+        }
+    }
+
+    @Override
+    public void tickIdle() {
+        super.tickIdle();
+        if (entity.getLevel().isClientSide()) {
+            return;
+        }
+
+        if (entity.getLevel() instanceof ServerLevel level) {
+            if (trailTicks > 0) {
+                addFadeParticle(level);
+                trailTicks--;
+            }
+        }
+
+        if (ultraInstinct && !dodgeActive) {
+            this.setDodgeActivate(true);
+        }
+
+        if (projectilesImmuneTicks > 0) {
+            projectilesImmuneTicks--;
+        }
+
+        boolean nonHurtFrame = entity.getEntity().hurtTime <= 10 && entity.getEntity().invulnerableTime <= 10;
+        if (nonHurtFrame && !isDodgeActive() && dodgeAmount < maxDodgeAmount) {
+            if (entity.getEntity().tickCount % 5 == 0) {
+                addDodgeAmount();
+
+                if (entity.getEntity() instanceof Player player) {
+                    if (!(player.level().isClientSide())) {
+                        if (!ultraInstinct) {
+                            player.displayClientMessage(
+                                    Component.translatable("ability.changed_addon.dodge.dodge_amount",
+                                            getDodgeStaminaRatio()),
+                                    true
+                            );
+                        } else {
+                            player.displayClientMessage(Component.translatable("ability.changed_addon.dodge.ultra_instinct"),
+                                    true);
+                        }
+                    }
+                }
+            }
+        }
+
+        this.getDodgeType().tickIdle(this);
+    }
+
+    public DodgeAbilityInstance withDodgeType(DodgeType dodgeType) {
+        this.dodgeType = dodgeType;
+        return this;
+    }
+
+    public boolean isDodgeActive() {
+        return this.ultraInstinct || this.getCanDodgeTicks() > 0 || dodgeActive;
+    }
+
+    public void setDodgeActivate(boolean active) {
+        this.dodgeActive = active;
+        this.ability.setDirty(entity);
+    }
+
+    public int getDodgeAmount() {
+        return dodgeAmount;
+    }
+
+    public void setDodgeAmount(int amount) {
+        dodgeAmount = Math.min(amount, maxDodgeAmount);
+        this.ability.setDirty(entity);
+    }
+
+    public void addDodgeAmount() {
+        if (dodgeAmount < maxDodgeAmount) dodgeAmount++;
+        this.ability.setDirty(entity);
+    }
+
+    public void subDodgeAmount() {
+        if (dodgeAmount > 0) dodgeAmount--;
+        if (dodgeAmount <= 0 && (this.getCanDodgeTicks() > 0 && this.getDodgeType() instanceof CounterDodgeType))
+            this.canDodgeTicks = 0;
+        if (dodgeAmount <= 0) {
+            this.setDodgeActivate(false);
+            this.getController().resetHoldTicks();
+            this.getController().applyCoolDown();
+        }
+        this.ability.setDirty(entity);
+    }
+
+    public DodgeType getDodgeType() {
+        return dodgeType;
+    }
+
+    public int getCanDodgeTicks() {
+        return this.getDodgeType() instanceof CounterDodgeType ? this.canDodgeTicks : INF_DODGE_TICKS;
+    }
+
+    public boolean isUltraInstinct() {
+        return ultraInstinct;
+    }
+
+    public int getMaxDodgeAmount() {
+        return maxDodgeAmount;
+    }
+
+    public void setMaxDodgeAmount(int max) {
+        maxDodgeAmount = max;
+        dodgeAmount = Math.min(dodgeAmount, max); // Adjust current amount if needed
+    }
+
+    public float getDodgeStaminaRatio() {
+        return ((float) dodgeAmount / maxDodgeAmount) * 100f;
+    }
+
+    public void setUltraInstinct(boolean ultraInstinct) {
+        if (ultraInstinct) {
+            if (this.entity.getEntity() instanceof Player player) {
+                player.displayClientMessage(Component.translatable("ability.changed_addon.dodge.ultra_instinct.activated"), false);
+            }
+        }
+        this.ultraInstinct = ultraInstinct;
+    }
+
+    protected void addFadeParticle(ServerLevel level) {
+        Vec3 particlePos = entity.getEntity().position().add(0, 1.425f, 0);
+        EntityModelFadeParticleOptions particleOption = ChangedAddonParticleTypes.entityModelFade(entity.getEntity(), FADE_COLOR.getRGB(), 0.25f);
+        Vec3 motionOrDelta = new Vec3(0, 1, 0);
+        ParticlesUtil.sendParticles(level, particleOption, particlePos, motionOrDelta, 0, 0.1f);
+    }
+
+    @Override
+    public void readData(CompoundTag tag) {
+        super.readData(tag);
+        if (tag.contains("dodgeAmount")) dodgeAmount = tag.getInt("dodgeAmount");
+        if (tag.contains("maxDodgeAmount")) maxDodgeAmount = tag.getInt("maxDodgeAmount");
+        if (tag.contains("canDodgeTicks")) canDodgeTicks = tag.getInt("canDodgeTicks");
+        if (tag.contains("dodgeActivate")) dodgeActive = tag.getBoolean("dodgeActivate");
+        if (tag.contains("ultraInstinct")) ultraInstinct = tag.getBoolean("ultraInstinct");
+    }
+
+    @Override
+    public void saveData(CompoundTag tag) {
+        super.saveData(tag);
+        tag.putInt("dodgeAmount", dodgeAmount);
+        tag.putInt("maxDodgeAmount", maxDodgeAmount);
+        tag.putInt("canDodgeTicks", getCanDodgeTicks());
+        tag.putBoolean("dodgeActivate", dodgeActive);
+        tag.putBoolean("ultraInstinct", ultraInstinct);
+    }
+
+    public boolean willDodge(Entity entity) {
+        return this.dodgeType.willDodge(this, entity);
+    }
+
     private static Vec3 divideVec(Vec3 vec3, double value) {
         double vecX = vec3.x, vecY = vec3.y, vecZ = vec3.z;
         return new Vec3(vecX / value, vecY / value, vecZ / value);
@@ -70,6 +282,111 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
 
     public static boolean isSpectator(Entity entity) {
         return entity instanceof Player player && player.isSpectator();
+    }
+
+    public void applyDodgeEffects(LevelAccessor level, @Nullable Entity attacker, LivingEntity dodger, boolean causeExhaustion) {
+        if (!ultraInstinct) this.subDodgeAmount();
+
+        if (ultraInstinct) {
+            applyDodgeAnimations(dodger);
+            if (dodger instanceof Player player) {
+                player.displayClientMessage(Component.translatable("ability.changed_addon.dodge.ultra_instinct"), true);
+            }
+            return;
+        }
+        if (dodger instanceof Player player) {
+            player.displayClientMessage(Component.translatable("ability.changed_addon.dodge.dodge_amount_left", this.getDodgeStaminaRatio()), false);
+            if (causeExhaustion) {
+                player.causeFoodExhaustion(8f);
+            }
+        }
+
+        this.dodgeType.applyDodgeEffects(this, level, dodger, attacker, dodgeType, causeExhaustion);
+    }
+
+    public void applyDodgeParticles(LivingEntity dodger, Entity attacker) {
+        if (attacker instanceof LivingEntity attackerLiving) {
+            applyDodgeAwayParticlesTrails(dodger, attackerLiving);
+        }
+    }
+
+    public void applyDodgeAnimations(LivingEntity dodger) {
+        ChangedSounds.broadcastSound(dodger, ChangedSounds.CARDBOARD_BOX_OPEN, 2.5f, 1);
+        if (this.getDodgeType().willPlayDodgeAnimation(dodger)) {
+            int randomValue = dodger.getRandom().nextInt(6);
+            final DodgeAnimationParameters animationParameters = DodgeAnimationParameters.DEFAULT;
+            Vec3 particlePos = entity.getEntity().position().add(0, 1.425f, 0);
+            Vec3 motionOrDelta = new Vec3(0, 1, 0);
+            switch (randomValue) {
+                case 0 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_LEFT.get(), animationParameters);
+                case 1 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), animationParameters);
+                case 2 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), animationParameters);
+                case 3 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), animationParameters);
+                case 4 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), animationParameters);
+                case 5 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), animationParameters);
+            }
+        }
+    }
+
+    public void applyDodgeAnimations(LivingEntity dodger, DodgeAnimationParameters animationParameters) {
+        ChangedSounds.broadcastSound(dodger, ChangedSounds.CARDBOARD_BOX_OPEN, 2.5f, 1);
+        if (this.getDodgeType().willPlayDodgeAnimation(dodger)) {
+            int randomValue = dodger.getRandom().nextInt(6);
+            Vec3 particlePos = entity.getEntity().position().add(0, 1.425f, 0);
+            Vec3 motionOrDelta = new Vec3(0, 1, 0);
+            switch (randomValue) {
+                case 0 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_LEFT.get(), animationParameters);
+                case 1 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), animationParameters);
+                case 2 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), animationParameters);
+                case 3 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), animationParameters);
+                case 4 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), animationParameters);
+                case 5 ->
+                        ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), animationParameters);
+                //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
+            }
+        }
+    }
+
+    public void applyDodgeEffects(LevelAccessor levelAccessor, @Nullable Entity attacker, LivingEntity dodger) {
+        this.applyDodgeEffects(levelAccessor, attacker, dodger, true);
+    }
+
+    public void applyDodgeEffects(LivingEntity dodger, Entity attacker) {
+        this.applyDodgeEffects(dodger.level(), attacker, dodger);
+    }
+
+    public void applyDodgeMovement(LevelAccessor levelAccessor, Entity attacker, LivingEntity dodger, boolean causeExhaustion) {
+        Vec3 attackerPos = attacker.position();
+        Vec3 lookDirection = attacker.getLookAngle().normalize();
+        final double distanceBehind = 3;
+        Vec3 dodgePosBehind = attackerPos.subtract(lookDirection.scale(distanceBehind));
+        double distance = attacker.distanceTo(dodger);
+
+        if (this.ultraInstinct) { // UI override any behavior.
+            dodgeAwayFromAttacker(dodger, attacker);
+            return;
+        }
+
+        if (this.dodgeType instanceof CounterDodgeType counterDodgeType) {
+            counterDodgeType.applyDodgeMovement(this, levelAccessor, dodger, attacker, distance, dodgePosBehind, causeExhaustion);
+        } else {
+            this.dodgeType.applyDodgeMovement(this, levelAccessor, dodger, attacker, distance, dodgePosBehind, causeExhaustion);
+        }
+    }
+
+    public void applyDodgeMovement(LivingEntity dodger, Entity attacker) {
+        this.applyDodgeMovement(dodger.level(), attacker, dodger, true);
     }
 
     public static void executeRandomDodgeAnimation(LivingEntity dodger) {
@@ -108,6 +425,51 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                     ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), animationParameters);
             case 5 ->
                     ChangedAnimationEvents.broadcastEntityAnimation(dodger, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), animationParameters);
+            //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
+        }
+    }
+
+    public static void executeRandomDodgeAnimationWithFade(LivingEntity dodger) {
+        ChangedSounds.broadcastSound(dodger, ChangedSounds.CARDBOARD_BOX_OPEN, 2.5f, 1);
+        int randomValue = dodger.getRandom().nextInt(6);
+        final DodgeAnimationParameters animationParameters = DodgeAnimationParameters.DEFAULT;
+        Vec3 particlePos = dodger.position().add(0, 1.425f, 0);
+        Vec3 motionOrDelta = new Vec3(0, 1, 0);
+        switch (randomValue) {
+            case 0 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_LEFT.get(), animationParameters);
+            case 1 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), animationParameters);
+            case 2 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), animationParameters);
+            case 3 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), animationParameters);
+            case 4 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), animationParameters);
+            case 5 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), animationParameters);
+            //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
+        }
+    }
+
+    public static void executeRandomDodgeAnimationWithFade(LivingEntity dodger, DodgeAnimationParameters animationParameters) {
+        ChangedSounds.broadcastSound(dodger, ChangedSounds.CARDBOARD_BOX_OPEN, 2.5f, 1);
+        int randomValue = dodger.getRandom().nextInt(6);
+        Vec3 particlePos = dodger.position().add(0, 1.425f, 0);
+        Vec3 motionOrDelta = new Vec3(0, 1, 0);
+        switch (randomValue) {
+            case 0 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_LEFT.get(), animationParameters);
+            case 1 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), animationParameters);
+            case 2 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), animationParameters);
+            case 3 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), animationParameters);
+            case 4 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), animationParameters);
+            case 5 ->
+                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), animationParameters);
             //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
         }
     }
@@ -174,487 +536,6 @@ public class DodgeAbilityInstance extends AbstractAbilityInstance {
                     );
                 }
             }
-        }
-    }
-
-    public DodgeAbilityInstance withDodgeType(DodgeType dodgeType) {
-        this.dodgeType = dodgeType;
-        return this;
-    }
-
-    public boolean isDodgeActive() {
-        return this.ultraInstinct || this.getCanDodgeTicks() > 0 || dodgeActive;
-    }
-
-    public void setDodgeActivate(boolean active) {
-        this.dodgeActive = active;
-        this.ability.setDirty(entity);
-    }
-
-    public int getDodgeAmount() {
-        return dodgeAmount;
-    }
-
-    public void setDodgeAmount(int amount) {
-        dodgeAmount = Math.min(amount, maxDodgeAmount);
-        this.ability.setDirty(entity);
-    }
-
-    public void addDodgeAmount() {
-        if (dodgeAmount < maxDodgeAmount) dodgeAmount++;
-        this.ability.setDirty(entity);
-    }
-
-    public void subDodgeAmount() {
-        if (dodgeAmount > 0) dodgeAmount--;
-        if (dodgeAmount <= 0 && (this.getCanDodgeTicks() > 0 && this.getDodgeType() instanceof CounterDodgeType))
-            this.canDodgeTicks = 0;
-        if (dodgeAmount <= 0) {
-            this.setDodgeActivate(false);
-            this.getController().resetHoldTicks();
-            this.getController().applyCoolDown();
-        }
-        this.ability.setDirty(entity);
-    }
-
-    public DodgeType getDodgeType() {
-        return dodgeType;
-    }
-
-    public int getCanDodgeTicks() {
-        return this.getDodgeType() instanceof CounterDodgeType ? this.canDodgeTicks : INF_DODGE_TICKS;
-    }
-
-    public void executeDodgeEffects(LevelAccessor levelAccessor, @Nullable Entity attacker, LivingEntity dodger, @Nullable LivingAttackEvent event, boolean causeExhaustion) {
-        if (!ultraInstinct) {
-            this.subDodgeAmount();
-        }
-        if (dodger instanceof Player player) {
-            if (!ultraInstinct) {
-                player.displayClientMessage(Component.translatable("ability.changed_addon.dodge.dodge_amount_left", this.getDodgeStaminaRatio()), false);
-            } else {
-                player.displayClientMessage(Component.translatable("ability.changed_addon.dodge.ultra_instinct"), true);
-            }
-            if (causeExhaustion && !ultraInstinct) {
-                player.causeFoodExhaustion(8f);
-            }
-        }
-
-        if (this.getDodgeType() == DodgeType.WEAVE) {
-            dodger.invulnerableTime = 20 * 3;
-            dodger.hurtDuration = 20 * 3;
-            dodger.hurtTime = dodger.hurtDuration;
-            dodger.hurtMarked = false;
-        } else if (this.getDodgeType() == DodgeType.TELEPORT) {
-            dodger.hurtMarked = false;
-        } else {
-            if (this.dodgeType instanceof CounterDodgeType counterDodgeType) {
-                counterDodgeType.runDodgeEffects(this, levelAccessor, dodger, attacker, dodgeType, event, causeExhaustion);
-                return;
-            }
-
-            this.dodgeType.runDodgeEffects(this, levelAccessor, dodger, attacker, dodgeType, event, causeExhaustion);
-            return;
-        }
-
-        if (event != null) {
-            event.setCanceled(true);
-        }
-        if (this.getDodgeType() == DodgeType.WEAVE) {
-            executeDodgeParticles(levelAccessor, dodger, attacker);
-            executeDodgeAnimations(dodger);
-        }
-    }
-
-    public void executeDodgeParticles(LevelAccessor levelAccessor, LivingEntity dodger, Entity attacker) {
-        if (levelAccessor instanceof ServerLevel serverLevel) {
-            //spawnDodgeParticles(serverLevel, dodger, 0.5f, 0.3f, 0.3f, 0.3f, 10, 0.05f);
-        }
-        if (attacker instanceof LivingEntity attackerLiving) {
-            applyDodgeAwayParticlesTrails(dodger, attackerLiving);
-        }
-    }
-
-    public void executeDodgeAnimations(LivingEntity dodger) {
-        ChangedSounds.broadcastSound(dodger, ChangedSounds.CARDBOARD_BOX_OPEN, 2.5f, 1);
-        if (this.getDodgeType().shouldPlayDodgeAnimation(dodger)) {
-            int randomValue = dodger.getRandom().nextInt(6);
-            final DodgeAnimationParameters animationParameters = DodgeAnimationParameters.DEFAULT;
-            Vec3 particlePos = entity.getEntity().position().add(0, 1.425f, 0);
-            Vec3 motionOrDelta = new Vec3(0, 1, 0);
-            switch (randomValue) {
-                case 0 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_LEFT.get(), animationParameters);
-                }
-                case 1 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), animationParameters);
-                }
-                case 2 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), animationParameters);
-                }
-                case 3 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), animationParameters);
-                }
-                case 4 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), animationParameters);
-                }
-                case 5 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), animationParameters);
-                }
-                //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
-            }
-            //DelayedTask.schedule(5, () -> this.trailTicks = 1);
-        }
-    }
-
-    public void executeDodgeAnimations(LivingEntity dodger, DodgeAnimationParameters animationParameters) {
-        ChangedSounds.broadcastSound(dodger, ChangedSounds.CARDBOARD_BOX_OPEN, 2.5f, 1);
-        if (this.getDodgeType().shouldPlayDodgeAnimation(dodger)) {
-            int randomValue = dodger.getRandom().nextInt(6);
-            Vec3 particlePos = entity.getEntity().position().add(0, 1.425f, 0);
-            Vec3 motionOrDelta = new Vec3(0, 1, 0);
-            switch (randomValue) {
-                case 0 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_LEFT.get(), animationParameters);
-                }
-                case 1 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_RIGHT.get(), animationParameters);
-                }
-                case 2 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_LEFT.get(), animationParameters);
-                }
-                case 3 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_WEAVE_RIGHT.get(), animationParameters);
-                }
-                case 4 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_LEFT.get(), animationParameters);
-                }
-                case 5 -> {
-                    ChangedAddonAnimationEvents.broadcastEntityAnimationWithFade(dodger, FADE_COLOR, particlePos, motionOrDelta, 0.1f, 1, ChangedAddonAnimationEvents.DODGE_DOWN_RIGHT.get(), animationParameters);
-                }
-                //default -> ChangedAnimationEvents.broadcastEntityAnimation(player, ChangedAddonAnimationEvents.DODGE_LEFT.get(), null);
-            }
-            //DelayedTask.schedule(5, () -> this.trailTicks = 1);
-        }
-    }
-
-    public void executeDodgeEffects(LevelAccessor levelAccessor, @Nullable Entity attacker, LivingEntity dodger, @Nullable LivingAttackEvent event) {
-        this.executeDodgeEffects(levelAccessor, attacker, dodger, event, true);
-    }
-
-    public void executeDodgeHandle(LevelAccessor levelAccessor, Entity attacker, LivingEntity dodger, LivingAttackEvent event, boolean causeExhaustion) {
-        Vec3 attackerPos = attacker.position();
-        Vec3 lookDirection = attacker.getLookAngle().normalize();
-        //Vec3 dodgerLookDirection = dodger.getLookAngle();
-        final double distanceBehind = 3;
-        Vec3 dodgePosBehind = attackerPos.subtract(lookDirection.scale(distanceBehind));
-        double distance = attacker.distanceTo(dodger);
-
-        if (this.ultraInstinct) {
-            dodgeAwayFromAttacker(dodger, attacker);
-            if (event != null) {
-                event.setCanceled(true);
-            }
-            return;
-        }
-
-        if (this.getDodgeType() == DodgeType.TELEPORT) {
-            if (distance > 2f) {
-                // Random offset values
-                double maxDistance = 16.0; // maximum distance for teleport
-                double dx = (dodger.getRandom().nextDouble() - 0.5) * 2 * maxDistance;
-                double dz = (dodger.getRandom().nextDouble() - 0.5) * 2 * maxDistance;
-                double dy = (dodger.getRandom().nextInt(16) - 8); // vertical offset -8 to +7
-
-                // Calculate target position
-                BlockPos targetPos = new BlockPos((int) (dodger.getX() + dx), (int) (dodger.getY() + dy), (int) (dodger.getZ() + dz));
-                if (dodger.randomTeleport(targetPos.getX(), targetPos.getY(), targetPos.getZ(), true)) {
-                    // Optional: play sound & particles like Enderman
-                    levelAccessor.playSound(null, dodger.blockPosition(),
-                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    if (levelAccessor instanceof ServerLevel serverLevel) {
-                        serverLevel.sendParticles(ParticleTypes.PORTAL,
-                                dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
-                                20, 0.5, 1.0, 0.5, 0.1);
-                    }
-                }
-            } else {
-                if (dodger.randomTeleport(dodgePosBehind.x, dodgePosBehind.y, dodgePosBehind.z, true)) {
-                    // Optional: play sound & particles like Enderman
-                    levelAccessor.playSound(null, dodger.blockPosition(),
-                            SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-                    if (levelAccessor instanceof ServerLevel serverLevel) {
-                        serverLevel.sendParticles(ParticleTypes.PORTAL,
-                                dodger.getX(), dodger.getY() + 0.5, dodger.getZ(),
-                                20, 0.5, 1.0, 0.5, 0.1);
-                    }
-                }
-            }
-
-            if (event != null) {
-                event.setCanceled(true);
-            }
-        } else if (this.dodgeType == DodgeType.WEAVE) {
-            dodgeAwayFromAttacker(dodger, attacker);
-            if (event != null) {
-                event.setCanceled(true);
-            }
-        } else {
-            if (this.dodgeType instanceof CounterDodgeType counterDodgeType) {
-                counterDodgeType.runDodge(this, levelAccessor, dodger, attacker, event, distance, dodgePosBehind, causeExhaustion);
-            } else {
-                this.dodgeType.runDodge(this, levelAccessor, dodger, attacker, event, distance, dodgePosBehind, causeExhaustion);
-            }
-        }
-    }
-
-    public void executeDodgeHandle(LivingEntity dodger, Entity attacker) {
-        this.executeDodgeHandle(dodger.level(), attacker, dodger, null, true);
-    }
-
-    public void executeDodgeEffects(LivingEntity dodger, Entity attacker) {
-        this.executeDodgeEffects(dodger.level(), attacker, dodger, null);
-    }
-
-    private void spawnDodgeParticles(ServerLevel level, Entity entity, float middle, float xV, float yV, float zV, int count, float speed) {
-        level.sendParticles(ParticleTypes.POOF,
-                entity.getX(), entity.getY() + middle, entity.getZ(), count, xV, yV, zV, speed);
-    }
-
-    public int getMaxDodgeAmount() {
-        return maxDodgeAmount;
-    }
-
-    public void setMaxDodgeAmount(int max) {
-        maxDodgeAmount = max;
-        dodgeAmount = Math.min(dodgeAmount, max); // Adjust current amount if needed
-    }
-
-    public float getDodgeStaminaRatio() {
-        return ((float) dodgeAmount / maxDodgeAmount) * 100f;
-    }
-
-    public void setUltraInstinct(boolean ultraInstinct) {
-        if (ultraInstinct) {
-            if (this.entity.getEntity() instanceof Player player) {
-                player.displayClientMessage(Component.translatable("ability.changed_addon.dodge.ultra_instinct.activated"), false);
-            }
-        }
-        this.ultraInstinct = ultraInstinct;
-    }
-
-    @Override
-    public boolean canUse() {
-        if (ultraInstinct) {
-            return true;
-        }
-        return dodgeAmount > 0 && !isSpectator(entity.getEntity());
-    }
-
-    @Override
-    public boolean canKeepUsing() {
-        return canUse();
-    }
-
-    @Override
-    public void startUsing() {
-        if (entity.getLevel().isClientSide()) {
-            return;
-        }
-
-        if (entity.getEntity() instanceof Player player && this.getController().getHoldTicks() == 0) {
-            if (!(player.level().isClientSide())) {
-                if (this.dodgeType instanceof CounterDodgeType) {
-                    this.canDodgeTicks = 60;
-                    return;
-                }
-
-                if (!ultraInstinct) {
-                    player.displayClientMessage(
-                            Component.translatable("ability.changed_addon.dodge.dodge_amount", getDodgeStaminaRatio()),
-                            true
-                    );
-                }
-
-                this.ability.setDirty(entity);
-            }
-        }
-    }
-
-    @Override
-    public void tick() {
-        //super.tick();
-        if (entity.getLevel().isClientSide()) {
-            return;
-        }
-
-        if (entity.getEntity() instanceof Player player) {
-            if (this.dodgeType instanceof CounterDodgeType) {
-                return;
-            }
-            if (!ultraInstinct) {
-                player.displayClientMessage(
-                        Component.translatable("ability.changed_addon.dodge.dodge_amount", getDodgeStaminaRatio()), true);
-            }
-        }
-        setDodgeActivate(canUse());
-        this.ability.setDirty(entity);
-    }
-
-    @Override
-    public void stopUsing() {
-        if (entity.getLevel().isClientSide()) {
-            return;
-        }
-
-        setDodgeActivate(false);
-        this.ability.setDirty(entity);
-        if (entity.getEntity() instanceof Player player) {
-            if (!(player.level.isClientSide())) {
-                if (!ultraInstinct) {
-                    player.displayClientMessage(
-                            Component.translatable("ability.changed_addon.dodge.dodge_amount",
-                                    getDodgeStaminaRatio()),
-                            true
-                    );
-                }
-            }
-        }
-    }
-
-    @Override
-    public void tickIdle() {
-        super.tickIdle();
-
-        if (entity.getLevel().isClientSide()) {
-            return;
-        }
-
-        if (entity.getLevel() instanceof ServerLevel level) {
-            if (trailTicks > 0) {
-                addFadeParticle(level);
-                trailTicks--;
-            }
-        }
-
-        if (ultraInstinct) {
-            this.setDodgeActivate(true);
-        }
-
-        if (this.getController().getHoldTicks() > 0) this.dodgeRegenCooldown = 5;
-
-        if (this.getDodgeType() instanceof CounterDodgeType) {
-            this.setDodgeActivate(this.getCanDodgeTicks() > 0);
-            if (this.getCanDodgeTicks() > 0) {
-                this.canDodgeTicks--;
-                if (this.canDodgeTicks <= 0) {
-                    this.entity.getEntity().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 60, 1, true, true));
-                }
-            }
-        } else {
-            this.canDodgeTicks = INF_DODGE_TICKS;
-        }
-
-        if (projectilesImmuneTicks > 0) {
-            projectilesImmuneTicks--;
-        }
-
-        boolean nonHurtFrame = entity.getEntity().hurtTime <= 10 && entity.getEntity().invulnerableTime <= 10;
-        if (nonHurtFrame && !isDodgeActive() && dodgeAmount < maxDodgeAmount) {
-            if (dodgeRegenCooldown <= 0) {
-                addDodgeAmount();
-                dodgeRegenCooldown = 5;
-
-                if (entity.getEntity() instanceof Player player) {
-                    if (!(player.level().isClientSide())) {
-                        if (!ultraInstinct) {
-                            player.displayClientMessage(
-                                    Component.translatable("ability.changed_addon.dodge.dodge_amount",
-                                            getDodgeStaminaRatio()),
-                                    true
-                            );
-                        } else {
-                            player.displayClientMessage(Component.translatable("ability.changed_addon.dodge.ultra_instinct"),
-                                    true);
-                        }
-                    }
-                }
-            } else {
-                dodgeRegenCooldown--;
-            }
-        }
-    }
-
-    protected void addFadeParticle(ServerLevel level) {
-        Vec3 particlePos = entity.getEntity().position().add(0, 1.425f, 0);
-        EntityModelFadeParticleOptions particleOption = ChangedAddonParticleTypes.entityModelFade(entity.getEntity(), FADE_COLOR.getRGB(), 0.25f);
-        Vec3 motionOrDelta = new Vec3(0, 1, 0);
-        ParticlesUtil.sendParticles(level, particleOption, particlePos, motionOrDelta, 0, 0.1f);
-    }
-
-    @Override
-    public void readData(CompoundTag tag) {
-        super.readData(tag);
-        if (tag.contains("DodgeAmount")) dodgeAmount = tag.getInt("DodgeAmount");
-        if (tag.contains("canDodgeTicks")) canDodgeTicks = tag.getInt("canDodgeTicks");
-        if (tag.contains("MaxDodgeAmount")) maxDodgeAmount = tag.getInt("MaxDodgeAmount");
-        if (tag.contains("DodgeRegenCooldown")) dodgeRegenCooldown = tag.getInt("DodgeRegenCooldown");
-        if (tag.contains("DodgeActivate")) dodgeActive = tag.getBoolean("DodgeActivate");
-        if (tag.contains("ultraInstinct")) ultraInstinct = tag.getBoolean("ultraInstinct");
-    }
-
-    @Override
-    public void saveData(CompoundTag tag) {
-        super.saveData(tag);
-        tag.putInt("DodgeAmount", dodgeAmount);
-        tag.putInt("MaxDodgeAmount", maxDodgeAmount);
-        tag.putInt("DodgeRegenCooldown", dodgeRegenCooldown);
-        tag.putInt("canDodgeTicks", getCanDodgeTicks());
-        tag.putBoolean("DodgeActivate", dodgeActive);
-        tag.putBoolean("ultraInstinct", ultraInstinct);
-    }
-
-    public static class DodgeType {
-        public static final DodgeType TELEPORT = new DodgeType();
-        public static final DodgeType WEAVE = new DodgeType() {
-            @Override
-            public boolean shouldPlayDodgeAnimation(LivingEntity dodger) {
-                if (EntityUtil.maybeGetOverlaying(dodger) instanceof ChangedEntity changedEntity) {
-                    return changedEntity.getEntityShape() != EntityShape.FERAL;
-                } else if (dodger instanceof ChangedEntity changedEntity) {
-                    return changedEntity.getEntityShape() != EntityShape.FERAL;
-                }
-                return true;
-            }
-
-            @Override
-            public boolean shouldApplyIframes(DodgeAbilityInstance dodgeAbilityInstance, LevelAccessor levelAccessor, @Nullable LivingEntity dodger, @Nullable Entity attacker, DodgeType dodgeType, @Nullable LivingAttackEvent event, boolean causeExhaustion) {
-                return true;
-            }
-        };
-
-        public DodgeType() {
-            super();
-        }
-
-        public void runDodge(DodgeAbilityInstance dodgeAbilityInstance, LevelAccessor levelAccessor, LivingEntity dodger, Entity attacker, LivingAttackEvent event, double distance, Vec3 dodgePosBehind, boolean causeExhaustion) {
-        }
-
-        public void runDodgeEffects(DodgeAbilityInstance dodgeAbilityInstance, LevelAccessor levelAccessor, @Nullable LivingEntity dodger, @Nullable Entity attacker, DodgeType dodgeType, @Nullable LivingAttackEvent event, boolean causeExhaustion) {
-            if (this.shouldApplyIframes(dodgeAbilityInstance, levelAccessor, dodger, attacker, dodgeType, event, causeExhaustion) && dodger != null) {
-                dodger.invulnerableTime = 20 * 3;
-                dodger.hurtDuration = 20 * 3;
-                dodger.hurtTime = dodger.hurtDuration;
-                dodger.hurtMarked = false;
-            }
-        }
-
-        public boolean shouldApplyIframes(DodgeAbilityInstance dodgeAbilityInstance, LevelAccessor levelAccessor, @Nullable LivingEntity dodger, @Nullable Entity attacker, DodgeType dodgeType, @Nullable LivingAttackEvent event, boolean causeExhaustion) {
-            return false;
-        }
-
-        public boolean shouldPlayDodgeAnimation(LivingEntity dodger) {
-            return false;
         }
     }
 }

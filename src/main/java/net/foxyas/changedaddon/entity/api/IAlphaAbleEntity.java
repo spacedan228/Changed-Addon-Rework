@@ -1,9 +1,9 @@
 package net.foxyas.changedaddon.entity.api;
 
 import net.foxyas.changedaddon.configuration.ChangedAddonServerConfiguration;
-import net.foxyas.changedaddon.entity.ai.goals.AlphaSleepGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.AlphaLeapDiveGoal;
 import net.foxyas.changedaddon.entity.ai.goals.generic.attacks.AlphaLeapDiveGoalBuilder;
+import net.foxyas.changedaddon.entity.ai.goals.simple.AlphaSleepGoal;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.ability.IAbstractChangedEntity;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
@@ -32,14 +32,24 @@ import java.util.UUID;
 
 public interface IAlphaAbleEntity {
 
-    interface CustomAlphaAttributes {
+    float DEFAULT_ALPHA_SIZE = 0.75f;
+
+    interface IOverrideAlphaAttributes {
 
         void applyAlphaAttributesModifiers(LivingEntity entity, float normalized);
+    }
+
+    interface IOverrideAlphaState {
+
+        default boolean isConsiderateAlpha(boolean originalValue) {
+            return originalValue;
+        }
     }
 
     EntityDataAccessor<Boolean> IS_ALPHA = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.BOOLEAN);
     EntityDataAccessor<Float> ALPHA_SCALE = SynchedEntityData.defineId(ChangedEntity.class, EntityDataSerializers.FLOAT);
 
+    UUID FOLLOW_RANGE = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a000");
     UUID MAX_HEALTH = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a001");
     UUID ATTACK_DAMAGE = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a002");
     UUID ARMOR = UUID.fromString("8b8f5a1b-1c5c-4b9b-a001-01a01a01a003");
@@ -61,21 +71,9 @@ public interface IAlphaAbleEntity {
             Set<WrappedGoal> availableGoals = mob.goalSelector.getAvailableGoals();
             boolean flag = availableGoals.stream().map(WrappedGoal::getGoal).anyMatch(goal -> goal instanceof AlphaSleepGoal);
             if (flag && !isAlpha) {
-                mob.goalSelector.removeAllGoals(goal -> goal instanceof AlphaSleepGoal);
-                mob.goalSelector.removeAllGoals(goal -> goal instanceof AlphaLeapDiveGoal);
+                if (mob instanceof IAlphaAbleEntity iAlphaAbleEntity) iAlphaAbleEntity.removeAlphaGoals();
             } else if (!flag && isAlpha) {
-                mob.goalSelector.addGoal(10, new AlphaSleepGoal(mob, 6, (inter) -> inter >= 6, 1.5f, UniformInt.of(400, 800)));
-                mob.goalSelector.addGoal(10, new AlphaLeapDiveGoalBuilder(mob)
-                        .withCooldown(UniformInt.of(40, 80)) //IntProvider -> cooldownProvider
-                        .withFollowAscendMultiplier(new Vec3(0.25f, 0.25f, 0.25f))
-                        .withAscendInitialBoost(0.6)
-                        .withAscendSpeed(0.8f)
-                        .withAscendHoldY(2f)
-                        .withDiveSpeedMultiplier(new Vec3(1f, 1f, 1f))
-                        .withFailSafeTicks(60)
-                        .withRingRadius(4)
-                        .build()
-                );
+                if (mob instanceof IAlphaAbleEntity iAlphaAbleEntity) iAlphaAbleEntity.addAlphaGoals();
             }
         }
 
@@ -84,9 +82,9 @@ public interface IAlphaAbleEntity {
             return;
         }
 
-        float normalized = alphaScale / 0.75f;
+        float normalized = alphaScale / DEFAULT_ALPHA_SIZE;
 
-        if (entity instanceof CustomAlphaAttributes alphaAttributes) {
+        if (entity instanceof IOverrideAlphaAttributes alphaAttributes) {
             alphaAttributes.applyAlphaAttributesModifiers(entity, normalized);
         } else applyGenericAlphaAttributesModifiers(entity, normalized);
 
@@ -94,7 +92,35 @@ public interface IAlphaAbleEntity {
         entity.setHealth(entity.getMaxHealth());
     }
 
+    default void addAlphaGoals() {
+        if (!(this instanceof PathfinderMob mob)) {
+            return;
+        }
+        mob.goalSelector.addGoal(10, new AlphaSleepGoal(mob, 6, (inter) -> inter >= 6, 1.5f, UniformInt.of(400, 800)));
+        mob.goalSelector.addGoal(10, new AlphaLeapDiveGoalBuilder(mob)
+                .withCooldown(UniformInt.of(40, 80)) //IntProvider -> cooldownProvider
+                .withFollowAscendMultiplier(new Vec3(0.25f, 0.25f, 0.25f))
+                .withAscendInitialBoost(0.6)
+                .withAscendSpeed(0.8f)
+                .withAscendHoldY(2f)
+                .withDiveSpeedMultiplier(new Vec3(1f, 1f, 1f))
+                .withFailSafeTicks(60)
+                .withRingRadius(4)
+                .build()
+        );
+    }
+
+    default void removeAlphaGoals() {
+        if (!(this instanceof PathfinderMob mob)) {
+            return;
+        }
+        mob.goalSelector.removeAllGoals(goal -> goal instanceof AlphaSleepGoal);
+        mob.goalSelector.removeAllGoals(goal -> goal instanceof AlphaLeapDiveGoal);
+    }
+
     private static void applyGenericAlphaAttributesModifiers(LivingEntity entity, float normalized) {
+        apply(entity, Attributes.FOLLOW_RANGE, FOLLOW_RANGE, "Alpha Follow Range", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
+
         apply(entity, Attributes.MAX_HEALTH, MAX_HEALTH, "Alpha Max Health", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
 
         apply(entity, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE, "Alpha Attack Damage", normalized, AttributeModifier.Operation.MULTIPLY_TOTAL);
@@ -157,9 +183,11 @@ public interface IAlphaAbleEntity {
 
     boolean isAlpha();
 
-    void setAlpha(boolean alphaGene);
+    default void setAlpha(boolean alphaGene) {
+    }
 
-    void setAlphaScale(float scale);
+    default void setAlphaScale(float scale) {
+    }
 
     default void refreshAttributes(ChangedEntity self) {
         if (self.isDeadOrDying()) return;
@@ -221,13 +249,13 @@ public interface IAlphaAbleEntity {
     default float alphaAdditionalScale() {
         if (this instanceof ChangedEntity changedEntity) {
             SynchedEntityData entityData = changedEntity.getEntityData();
-            return entityData.hasItem(ALPHA_SCALE) ? entityData.get(ALPHA_SCALE) : 0.75f; // For future changes
+            return entityData.hasItem(ALPHA_SCALE) ? entityData.get(ALPHA_SCALE) : DEFAULT_ALPHA_SIZE; // For future changes
         }
         return 0f;
     }
 
     default float alphaScalePercent() {
-        return this.alphaAdditionalScale() / 0.75f;
+        return this.alphaAdditionalScale() / DEFAULT_ALPHA_SIZE;
     }
 
 }

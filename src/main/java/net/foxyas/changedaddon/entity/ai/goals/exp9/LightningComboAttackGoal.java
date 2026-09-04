@@ -4,7 +4,9 @@ import net.foxyas.changedaddon.entity.bosses.Experiment009BossEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -16,7 +18,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -26,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.EnumSet;
 
-public class LightningComboAttackGoal extends Goal {
+public class LightningComboAttackGoal extends CastingAttackGoal {
 
     protected final PathfinderMob holder;
     protected final RandomSource random;
@@ -51,11 +52,9 @@ public class LightningComboAttackGoal extends Goal {
         attackCountProvider = attackCount;
         castDurationProvider = castDuration;
         damageProvider = damage;
-
-
         adjustDamageSource(holder);
 
-        setFlags(EnumSet.of(Flag.MOVE, Flag.LOOK, Flag.JUMP));
+        setFlags(EnumSet.of(Flag.MOVE));
     }
 
     private DamageSource adjustDamageSource(PathfinderMob holder) {
@@ -102,13 +101,15 @@ public class LightningComboAttackGoal extends Goal {
         attacks = attackCountProvider.sample(random);
         castDuration = castDurationProvider.sample(random);
         if (holder instanceof Experiment009BossEntity boss) {
-            castDuration *= (int) boss.getPhase().getCastModifier();
+            castDuration *= (int) boss.getPhase().getCastModifier(target);
         }
         pickAttackPos();
 
         holder.getNavigation().stop();
         if (target.isRemoved() && target.isDeadOrDying()) return;
-        holder.getLookControl().setLookAt(target, 180, 180);
+        if (target.distanceTo(holder) > 0) {
+            holder.getLookControl().setLookAt(target, 180, 180);
+        }
     }
 
     protected void pickAttackPos() {
@@ -126,17 +127,22 @@ public class LightningComboAttackGoal extends Goal {
     public void tick() {
         if (attacks <= 0) return;
 
-        Level level = holder.level;
+        if (!(holder.level instanceof ServerLevel level)) {
+            return;
+        }
 
+        holder.getNavigation().stop();
         if (target != null) {
             if (target.isRemoved() && target.isDeadOrDying()) return;
-            holder.getLookControl().setLookAt(target, 180, 180);
+            if (target.distanceTo(holder) > 0) {
+                holder.getLookControl().setLookAt(target, 180, 180);
+            }
         }
 
         if (wasBlocked > 0) {
             wasBlocked--;
 
-            ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, holder.getX() - 1.5, holder.getY() - 1.5 + holder.getBbHeight() / 2, holder.getZ() - 1.5,
+            level.sendParticles(ParticleTypes.ELECTRIC_SPARK, holder.getX() - 1.5, holder.getY() - 1.5 + holder.getBbHeight() / 2, holder.getZ() - 1.5,
                     50 * wasBlocked / 30, 3, 3, 3, 0.5);
 
             if (wasBlocked == 0) pickAttackPos();
@@ -152,10 +158,10 @@ public class LightningComboAttackGoal extends Goal {
 
             if (holder.tickCount % 2 == 0) {
                 if (aboveWaterY != Integer.MAX_VALUE)
-                    ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, attackPos.x - 1, aboveWaterY, attackPos.z - 1,
+                    level.sendParticles(ParticleTypes.ELECTRIC_SPARK, attackPos.x - 1, aboveWaterY, attackPos.z - 1,
                             50, 2, 0.2, 2, 0.5);
 
-                ((ServerLevel) level).sendParticles(ParticleTypes.ELECTRIC_SPARK, attackPos.x - 1, attackPos.y, attackPos.z - 1,
+                level.sendParticles(ParticleTypes.ELECTRIC_SPARK, attackPos.x - 1, attackPos.y, attackPos.z - 1,
                         50, 2, 0.2, 2, 0.5);
             }
 
@@ -164,10 +170,11 @@ public class LightningComboAttackGoal extends Goal {
 
         attacks--;
 
+        if (holder instanceof Experiment009BossEntity exp9) exp9.setCastingAttack(false);
         holder.teleportTo(attackPos.x, attackPos.y, attackPos.z);
         holder.swing(InteractionHand.MAIN_HAND);
 
-        SummonLightningGoal.lightning(holder.level, attackPos.x, attackPos.y, attackPos.z, 1);
+        SummonLightningGoal.lightning(level, attackPos.x, attackPos.y, attackPos.z, 1f, 5);
         if (attacks == 0) {
             SummonLightningGoal.lightning(level, attackPos.x + 0.75, attackPos.y, attackPos.z + 0.75, 0);
             SummonLightningGoal.lightning(level, attackPos.x + 0.75, attackPos.y, attackPos.z - 0.75, 0);
@@ -205,7 +212,7 @@ public class LightningComboAttackGoal extends Goal {
             livingEntity.hurt(adjustDamageSource(holder), damageProvider.sample(random) * damageMul);//hurt anyway to damage shield
 
             direction = livingEntity.position().subtract(attackPos).normalize();
-            knockback = radius / dist * knockbackMul;
+            knockback = dist == 0 ? radius : (radius / dist) * knockbackMul;
             if (blocked) {
                 knockback *= 0.25f;
                 anyBlocked = true;
@@ -216,6 +223,13 @@ public class LightningComboAttackGoal extends Goal {
                     direction.y * knockback,
                     direction.z * knockback
             );
+
+            if (livingEntity instanceof ServerPlayer serverPlayer) {
+                serverPlayer.connection.send(new ClientboundSetEntityMotionPacket(
+                        serverPlayer.getId(),
+                        serverPlayer.getDeltaMovement())
+                );
+            }
         }
 
         if (anyBlocked) {

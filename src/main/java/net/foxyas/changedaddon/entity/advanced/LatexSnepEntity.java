@@ -4,7 +4,7 @@ import net.foxyas.changedaddon.entity.ai.goals.simple.SleepingWithOwnerGoal;
 import net.foxyas.changedaddon.entity.api.IDynamicPawColor;
 import net.foxyas.changedaddon.entity.defaults.AbstractCanTameSnepChangedEntity;
 import net.foxyas.changedaddon.init.ChangedAddonEntities;
-import net.foxyas.changedaddon.variant.ChangedAddonTransfurVariants;
+import net.foxyas.changedaddon.init.ChangedAddonTransfurVariants;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.Gender;
 import net.ltxprogrammer.changed.entity.TransfurMode;
@@ -226,6 +226,12 @@ public class LatexSnepEntity extends AbstractCanTameSnepChangedEntity implements
             this.playSound(SoundEvents.CAT_PURR, 1.0F, 1.0F); // Toca o som de ronronar
         }
         super.startSleeping(pos);
+    }
+
+    @Override
+    public double getMyRidingOffset() {
+        double defaultValue = super.getMyRidingOffset();
+        return 0.2f;
     }
 
     @Override

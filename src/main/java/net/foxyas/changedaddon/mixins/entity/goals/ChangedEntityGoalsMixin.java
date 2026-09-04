@@ -1,19 +1,15 @@
 package net.foxyas.changedaddon.mixins.entity.goals;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import net.foxyas.changedaddon.entity.ai.goals.simple.FollowAndLookAtLaser;
 import net.foxyas.changedaddon.entity.ai.goals.simple.SleepingWithOwnerGoal;
 import net.foxyas.changedaddon.entity.api.ICrawlAndSwimAbleEntity;
-import net.foxyas.changedaddon.entity.defaults.AbstractSemiAquaticEntity;
-import net.foxyas.changedaddon.entity.defaults.AbstractSwimmableEntity;
 import net.foxyas.changedaddon.init.ChangedAddonTags;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.beast.AbstractDarkLatexWolf;
 import net.ltxprogrammer.changed.entity.beast.DarkLatexWolfPup;
 import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.Goal;
-import net.minecraft.world.entity.ai.goal.GoalSelector;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -31,32 +27,24 @@ public class ChangedEntityGoalsMixin {
             thisFixed.goalSelector.addGoal(5, new SleepingWithOwnerGoal(thisFixed, true));
         }
         if (thisFixed.getSelfVariant() != null
-                && (thisFixed.getSelfVariant().is(ChangedAddonTags.TransfurTypes.CAT_LIKE)
-                || thisFixed.getSelfVariant().is(ChangedAddonTags.TransfurTypes.LEOPARD_LIKE))) {
+                && (thisFixed.getSelfVariant().is(ChangedAddonTags.TransfurVariants.CAT_LIKE)
+                || thisFixed.getSelfVariant().is(ChangedAddonTags.TransfurVariants.LEOPARD_LIKE))) {
             thisFixed.goalSelector.addGoal(5, new FollowAndLookAtLaser(thisFixed, 0.4));
         }
     }
 
-    @WrapOperation(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/goal/GoalSelector;addGoal(ILnet/minecraft/world/entity/ai/goal/Goal;)V", ordinal = 15), method = "registerGoals", remap = true)
-    private void floatGoalHook(GoalSelector instance, int pPriority, Goal pGoal, Operation<Void> original) {
+    @ModifyReturnValue(at = @At(value = "RETURN"), method = "makeFloatGoal", remap = false)
+    private Goal floatGoalHook(Goal original) {
         ChangedEntity self = ChangedAddonChangedEntityGoalsMixin$getSelf();
         if (self instanceof ICrawlAndSwimAbleEntity swimAbleEntity) {
-            var FloatGoal = new FloatGoal(self) {
+            return new FloatGoal(self) {
                 @Override
                 public boolean canUse() {
                     return super.canUse() && swimAbleEntity.shouldFloat();
                 }
             };
-
-            original.call(instance, pPriority, FloatGoal);
-            return;
-        } else if (self instanceof AbstractSemiAquaticEntity) {
-            return;
-        } else if (self instanceof AbstractSwimmableEntity) {
-            return;
         }
-
-        original.call(instance, pPriority, pGoal);
+        return original;
     }
 
     private ChangedEntity ChangedAddonChangedEntityGoalsMixin$getSelf() {

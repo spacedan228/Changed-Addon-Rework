@@ -7,7 +7,7 @@ import net.foxyas.changedaddon.datagen.worldgen.PlacedFeatureProvider;
 import net.foxyas.changedaddon.datagen.worldgen.StructureProvider;
 import net.foxyas.changedaddon.datagen.worldgen.template_pool.DazedMeteorPools;
 import net.foxyas.changedaddon.init.ChangedAddonDamageSources;
-import net.foxyas.changedaddon.world.features.processors.DayTimeStructureProcessor;
+import net.foxyas.changedaddon.init.ChangedAddonTransfurDiets;
 import net.foxyas.changedaddon.world.features.processors.OffSetSpawnProcessor;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
@@ -27,7 +27,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -35,19 +34,21 @@ import java.util.concurrent.CompletableFuture;
 public class DatapackEntriesProvider extends DatapackBuiltinEntriesProvider {
 
     public static final ResourceKey<StructureProcessorList> GRAVITY = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("gravity_rot"));
-    //.add(Registries.TRIM_PATTERN, TrimPatterns::bootstrap)//ArmorTrims::bootstrapPatterns)
-    //.add(Registries.TRIM_MATERIAL, TrimMaterials::bootstrap);//ArmorTrims::bootstrapMaterials);
     public static final ResourceKey<StructureProcessorList> DAZED_METEOR_POLL = ResourceKey.create(Registries.PROCESSOR_LIST, ChangedAddonMod.resourceLoc("dazed_meteor_rot"));
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
             .add(Registries.BIOME, DatapackEntriesProvider::biome)
             .add(Registries.CONFIGURED_FEATURE, ConfiguredFeatureProvider::bootstrap)
             .add(Registries.PLACED_FEATURE, PlacedFeatureProvider::bootstrap)
+            .add(Registries.TRIM_PATTERN, TrimPatterns::bootstrap)//ArmorTrims::bootstrapPatterns)
+            .add(Registries.TRIM_MATERIAL, TrimMaterials::bootstrap)//ArmorTrims::bootstrapMaterials);
             .add(ForgeRegistries.Keys.BIOME_MODIFIERS, BiomeModifierProvider::bootstrap)
             .add(Registries.DAMAGE_TYPE, DatapackEntriesProvider::damageType)
             .add(Registries.PROCESSOR_LIST, DatapackEntriesProvider::processorList)
             .add(Registries.TEMPLATE_POOL, DatapackEntriesProvider::templatePools)
             .add(Registries.STRUCTURE, StructureProvider::bootstrap)
-            .add(Registries.STRUCTURE_SET, StructureProvider::structureSet);
+            .add(Registries.STRUCTURE_SET, StructureProvider::structureSet)
+
+            .add(ChangedAddonTransfurDiets.TRANSFUR_VARIANT_DIET_KEY, new TransfurVariantDietProvider(ChangedAddonMod.MODID)::bootstrap);
 
     public DatapackEntriesProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries, BUILDER, Set.of(ChangedAddonMod.MODID));

@@ -20,6 +20,7 @@ import net.foxyas.changedaddon.network.ChangedAddonVariables;
 import net.foxyas.changedaddon.qte.FightToKeepConsciousness.MinigameType;
 import net.foxyas.changedaddon.variant.TransfurVariantInstanceExtensor;
 import net.ltxprogrammer.changed.Changed;
+import net.ltxprogrammer.changed.command.CommandTransfur;
 import net.ltxprogrammer.changed.data.AccessorySlots;
 import net.ltxprogrammer.changed.entity.ChangedEntity;
 import net.ltxprogrammer.changed.entity.latex.LatexType;
@@ -33,9 +34,11 @@ import net.ltxprogrammer.changed.init.ChangedTags;
 import net.ltxprogrammer.changed.process.ProcessTransfur;
 import net.ltxprogrammer.changed.world.LatexCoverState;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.ResourceLocationArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -49,6 +52,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.server.command.EnumArgument;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -155,6 +159,7 @@ public class ChangedAddonAdminCommand {
                                 )
                         )
                         .then(Commands.literal("getEntityAlphaGene")
+                                .executes(ctx -> getEntityAlphaGene(ctx.getSource().isPlayer() ? ctx.getSource().getPlayerOrException() : null, ctx))
                                 .then(Commands.argument("target", EntityArgument.entity())
                                         .executes(ChangedAddonAdminCommand::getEntityAlphaGene)
                                 )
@@ -167,6 +172,7 @@ public class ChangedAddonAdminCommand {
                                 )
                         )
                         .then(Commands.literal("getEntityAlphaGeneScale")
+                                .executes(ctx -> getEntityAlphaGeneScale(ctx.getSource().isPlayer() ? ctx.getSource().getPlayerOrException() : null, ctx))
                                 .then(Commands.argument("target", EntityArgument.entity())
                                         .executes(ChangedAddonAdminCommand::getEntityAlphaGeneScale)
                                 )
@@ -206,9 +212,20 @@ public class ChangedAddonAdminCommand {
                                 .executes(ChangedAddonAdminCommand::showTransfursSlots)
                         )
                 )
-                .then(Commands.literal("allow_boss_transfur")
+                .then(Commands.literal("allowPlayerBossTransfurVariant")
                         .then(Commands.literal("Exp9")
                                 .then(Commands.literal("get")
+                                        .executes(ctx -> {
+                                            if (!ctx.getSource().isPlayer()) {
+                                                return 0;
+                                            }
+                                            ServerPlayer target = ctx.getSource().getPlayerOrException();
+                                            ChangedAddonVariables.PlayerVariables vars = target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
+                                            if (vars == null) return 0;
+
+                                            ctx.getSource().sendSuccess(() -> Component.literal(target.getDisplayName().getString() + (vars.exp009BossTransfurPermission ? " has Exp009Transfur permission" : " has no Exp009Transfur permission")), false);
+                                            return Command.SINGLE_SUCCESS;
+                                        })
                                         .then(Commands.argument("player", EntityArgument.player())
                                                 .executes(arguments -> {
                                                     Player target = EntityArgument.getPlayer(arguments, "player");
@@ -216,7 +233,7 @@ public class ChangedAddonAdminCommand {
                                                     ChangedAddonVariables.PlayerVariables vars = target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
                                                     if (vars == null) return 0;
 
-                                                    arguments.getSource().sendSuccess(() -> Component.literal(target.getDisplayName().getString() + (vars.Exp009TransfurAllowed ? " has Exp009Transfur permission" : " has no Exp009Transfur permission")), false);
+                                                    arguments.getSource().sendSuccess(() -> Component.literal(target.getDisplayName().getString() + (vars.exp009BossTransfurPermission ? " has Exp009Transfur permission" : " has no Exp009Transfur permission")), false);
                                                     return Command.SINGLE_SUCCESS;
                                                 })
                                         )
@@ -231,7 +248,7 @@ public class ChangedAddonAdminCommand {
                                                             arguments.getSource().sendSuccess(() -> Component.literal(("The Exp009Transfur Perm of the " + target.getDisplayName().getString() + " was set to " + val)), true);
 
                                                             target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).ifPresent(capability -> {
-                                                                capability.Exp009TransfurAllowed = val;
+                                                                capability.exp009BossTransfurPermission = val;
                                                                 capability.syncPlayerVariables(target);
                                                             });
 
@@ -243,6 +260,17 @@ public class ChangedAddonAdminCommand {
                         )
                         .then(Commands.literal("Exp10")
                                 .then(Commands.literal("get")
+                                        .executes(arguments -> {
+                                            if (!arguments.getSource().isPlayer()) {
+                                                return 0;
+                                            }
+                                            ServerPlayer target = arguments.getSource().getPlayerOrException();
+                                            ChangedAddonVariables.PlayerVariables vars = target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
+                                            if (vars == null) return 0;
+
+                                            arguments.getSource().sendSuccess(() -> Component.literal(target.getDisplayName().getString() + (vars.exp10BossTransfurPermission ? " has Exp10Transfur permission" : " has no Exp10Transfur permission")), false);
+                                            return Command.SINGLE_SUCCESS;
+                                        })
                                         .then(Commands.argument("player", EntityArgument.player())
                                                 .executes(arguments -> {
                                                     Player target = EntityArgument.getPlayer(arguments, "player");
@@ -250,7 +278,7 @@ public class ChangedAddonAdminCommand {
                                                     ChangedAddonVariables.PlayerVariables vars = target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).resolve().orElse(null);
                                                     if (vars == null) return 0;
 
-                                                    arguments.getSource().sendSuccess(() -> Component.literal(target.getDisplayName().getString() + (vars.Exp10TransfurAllowed ? " has Exp10Transfur permission" : " has no Exp10Transfur permission")), false);
+                                                    arguments.getSource().sendSuccess(() -> Component.literal(target.getDisplayName().getString() + (vars.exp10BossTransfurPermission ? " has Exp10Transfur permission" : " has no Exp10Transfur permission")), false);
                                                     return Command.SINGLE_SUCCESS;
                                                 })
                                         )
@@ -265,7 +293,7 @@ public class ChangedAddonAdminCommand {
                                                             arguments.getSource().sendSuccess(() -> Component.literal(("The Exp10Transfur Perm of the " + target.getDisplayName().getString() + " was set to " + val)), true);
 
                                                             target.getCapability(ChangedAddonVariables.PLAYER_VARIABLES_CAPABILITY).ifPresent(capability -> {
-                                                                capability.Exp10TransfurAllowed = val;
+                                                                capability.exp10BossTransfurPermission = val;
                                                                 capability.syncPlayerVariables(target);
                                                             });
 
@@ -356,6 +384,48 @@ public class ChangedAddonAdminCommand {
                                 .then(getFightToKeepConscience)
                         )
                 )
+                .then(Commands.literal("setPlayerLatexInfection")
+                        .then(Commands.argument("target", EntityArgument.player())
+                                .then(Commands.argument("active", BoolArgumentType.bool())
+                                        .executes(context -> {
+                                            Player player = EntityArgument.getPlayer(context, "target");
+                                            boolean isActive = BoolArgumentType.getBool(context, "active");
+                                            return setPlayerTransfurInfection(context, player, isActive, TransfurMe.RANDOM_VARIANT, false);
+                                        })
+                                        .then(Commands.argument("form", ResourceLocationArgument.id())
+                                                .executes(context -> {
+                                                    Player player = EntityArgument.getPlayer(context, "target");
+                                                    boolean isActive = BoolArgumentType.getBool(context, "active");
+                                                    ResourceLocation form = ResourceLocationArgument.getId(context, "form");
+                                                    return setPlayerTransfurInfection(context, player, isActive, form, false);
+                                                })
+                                                .suggests(CommandTransfur.SUGGEST_TRANSFUR_VARIANT)
+                                                .then(Commands.argument("shouldStallTransfurProgress", BoolArgumentType.bool())
+                                                        .executes(context -> {
+                                                            Player player = EntityArgument.getPlayer(context, "target");
+                                                            boolean shouldStallTransfurProgress = BoolArgumentType.getBool(context, "shouldStallTransfurProgress");
+                                                            boolean isActive = BoolArgumentType.getBool(context, "active");
+                                                            ResourceLocation form = ResourceLocationArgument.getId(context, "form");
+                                                            return setPlayerTransfurInfection(context, player, isActive, form, shouldStallTransfurProgress);
+                                                        })
+                                                )
+                                        )
+                                )
+                        )
+                )
+                .then(Commands.literal("clearPlayerLatexInfection")
+                        .requires(CommandSourceStack::isPlayer)
+                        .executes(context -> clearPlayerLatexInfection(context.getSource().getPlayerOrException()))
+                        .then(Commands.argument("target", EntityArgument.player())
+                                .executes(context -> {
+                                    int returnValue = clearPlayerLatexInfection(EntityArgument.getPlayer(context, "target"));
+                                    if (returnValue >= 1) {
+                                        context.getSource().sendSuccess(() -> Component.translatable("commands.changed_addon.setPlayerLatexInfection.clear.success"), false);
+                                    }
+                                    return returnValue;
+                                })
+                        )
+                )
         );
 
         dispatcher.register(Commands.literal("alphaGeneHandle")
@@ -368,8 +438,37 @@ public class ChangedAddonAdminCommand {
         );
     }
 
-    private static int setMinigameType(CommandSourceStack commandSourceStack) {
-        return 0;
+    private static int setPlayerTransfurInfection(CommandContext<CommandSourceStack> context, Player player, boolean isActive, ResourceLocation form, boolean shouldStallTransfurProgress) throws CommandSyntaxException {
+        var vars = ChangedAddonVariables.ofOrDefault(player);
+        if (form.equals(TransfurMe.RANDOM_VARIANT)) {
+            form = Util.getRandom(TransfurVariant.getPublicTransfurVariants().collect(Collectors.toList()), player.getRandom()).getFormId();
+        }
+
+        ResourceLocation finalFormId;
+        if (TransfurVariant.getPublicTransfurVariants().map(TransfurVariant::getFormId).anyMatch(form::equals)) {
+            finalFormId = form;
+        } else if (form.equals(TransfurVariant.SPECIAL_LATEX)) {
+            finalFormId = Changed.modResource("special/form_" + player.getUUID());
+            if (!ChangedRegistry.TRANSFUR_VARIANT.get().containsKey(finalFormId))
+                throw TransfurMe.NO_SPECIAL_FORM.create();
+        } else {
+            throw TransfurMe.NOT_LATEX_FORM.create();
+        }
+
+        vars.latexInfection.setActive(isActive);
+        vars.latexInfection.setInfectionVariant(ChangedRegistry.TRANSFUR_VARIANT.get().getValue(finalFormId));
+        vars.latexInfection.setShouldStallTransfurProgress(shouldStallTransfurProgress);
+
+        vars.syncPlayerVariables(player);
+        context.getSource().sendSuccess(() -> Component.translatable("commands.changed_addon.setPlayerLatexInfection.set.success", isActive, finalFormId, shouldStallTransfurProgress), false);
+        return 1;
+    }
+
+    private static int clearPlayerLatexInfection(Player player) {
+        var vars = ChangedAddonVariables.ofOrDefault(player);
+        vars.latexInfection.restoreDefault();
+        vars.syncPlayerVariables(player);
+        return 1;
     }
 
     private static int untfImmunity(CommandSourceStack stack, Collection<ServerPlayer> targets, boolean value, UntransfurEvent.UntransfurType type) {
@@ -556,7 +655,11 @@ public class ChangedAddonAdminCommand {
     }
 
     private static int getEntityAlphaGene(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        Entity entity = EntityArgument.getEntity(context, "target");
+        return getEntityAlphaGene(null, context);
+    }
+
+    private static int getEntityAlphaGene(@Nullable Entity target, CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Entity entity = target == null ? EntityArgument.getEntity(context, "target") : target;
         entity = resolveChangedEntity(entity);
 
         if (entity instanceof IAlphaAbleEntity alpha) {
@@ -613,7 +716,11 @@ public class ChangedAddonAdminCommand {
     }
 
     private static int getEntityAlphaGeneScale(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        Entity entity = EntityArgument.getEntity(context, "target");
+        return getEntityAlphaGeneScale(null, context);
+    }
+
+    private static int getEntityAlphaGeneScale(@Nullable Entity target, CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        Entity entity = target == null ? EntityArgument.getEntity(context, "target") : target;
         entity = resolveChangedEntity(entity);
 
         if (entity instanceof IAlphaAbleEntity alpha) {

@@ -29,6 +29,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -81,7 +82,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         }
 
         if (canEntityGrab(type, level)) {
-            this.grabEntityAbilityInstance = this.createGrabAbility();
+            this.grabEntityAbilityInstance = this.createSimpleGrabAbility();
         }
     }
 
@@ -142,7 +143,7 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
         super.baseTick();
         if (canEntityGrab(this.getType(), level)) {
             if (grabEntityAbilityInstance == null) {
-                this.grabEntityAbilityInstance = createGrabAbility(); // fail-safe
+                this.grabEntityAbilityInstance = createSimpleGrabAbility(); // fail-safe
                 return;
             }
             if (!this.level.isClientSide()) {
@@ -307,7 +308,11 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
     @Override
     public boolean isAlpha() {
         ChangedEntity self = (ChangedEntity) (Object) this;
-        return self.getEntityData().get(IS_ALPHA);
+        boolean originalValue = self.getEntityData().get(IS_ALPHA);
+        if (this instanceof IOverrideAlphaState IOverrideAlphaState) {
+            return IOverrideAlphaState.isConsiderateAlpha(originalValue);
+        }
+        return originalValue;
     }
 
     @Override
@@ -318,7 +323,6 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
             this.refreshDimensions();
             refreshAttributes(self);
             refreshAttributesForHost(self);
-            this.setPersistenceRequired();
         }
     }
 
@@ -330,8 +334,12 @@ public abstract class ChangedEntityGrabHandleMixin extends Monster implements IG
             this.refreshDimensions();
             refreshAttributes(self);
             refreshAttributesForHost(self);
-            this.setPersistenceRequired();
         }
+    }
+
+    @Inject(method = "setTarget", at = @At("TAIL"), remap = true)
+    private void makeAlphaNotDespawnWhenTargetAPlayer(LivingEntity target, CallbackInfo ci) {
+        if (target instanceof Player || target instanceof AbstractVillager) this.setPersistenceRequired();
     }
 
     @Inject(method = "savePlayerVariantData", at = @At("RETURN"), cancellable = true)
